@@ -1,0 +1,56 @@
+
+
+申请地址（流通中心）
+
+<https://x.data.alibaba-inc.com/workbench/task-config?tenantId=2&type=fetchData&from=dataok>
+
+注意：申请人必须提前ideaLAB管理员及财务确认过取数范围，否则审批会被拒绝
+
+## 表名
+
+**ebusinessportal.idealab_business_invoke_llm_daily_statistics_bill_new_0829**
+
+## 场景目的
+
+根据实际需求填写
+
+## 选择表字段
+
+供给方所属产品及服务：选择**淘宝开放平台**即可
+
+### 分离字段配置
+
+自定义选择
+
+### 分离逻辑
+
+**取数维度： buyer_code = xxx**
+
+**获取方式：ideaLAB管理员及财务确认**
+
+**AK维度： business_code = xxx**
+
+**获取方式：****ideaLAB管理员及财务确认**
+
+  
+
+
+### 分离范围
+
+需要资产分离
+
+### 分离方式
+
+快速分离
+
+### 条件类型（按照其他条件）
+
+  
+
+
+  
+
+
+​  
+
+

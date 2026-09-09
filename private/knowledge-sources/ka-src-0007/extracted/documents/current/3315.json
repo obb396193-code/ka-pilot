@@ -1,0 +1,466 @@
+{
+  "documentId": 3315,
+  "documentName": "H5一键获取手机号接口【使用请联系行运提报】",
+  "documentType": 2,
+  "description": "<p>三方H5页面一键获取手机号</p>",
+  "summary": "",
+  "remark": "",
+  "content": "H5一键获取手机号接口【使用请联系行运提报】\n/rest/openapi/gw/magicsite/v1/lp/get_customer_phone\n{\n  \"advertiser_id\": 123,\n  \"user_remote_ip\": 11234,\n  \"app_id\": \"165903491\",\n  \"spt_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n  \"isp_type\": 2,\n  \"callback\": \"Bfpz7g4UwD6R5u34GXm7BEETw9rMoioK5wDdi7JCUjqLTR19iUb1M2LJmGb_ueEJSnNBedLuFvenWLjRG6LfOuikqaSO1MkZ9bP4ko8YKETytP8KbXVEX_aCJYGUsWbzxrcpCKfkphO3h6Fyg_haIV5n1bQ4OFRbOs1YjFCxhFozW_hGrap-BP5v32rCj8tuQE2Aozqk7fq9_MDYbKdo_7sehjAnf-8LATXBupSH4IIG2ZkEouW-9OtP7c9irNnEUc72p9bM46uxhTJq_Uv_mg\",\n  \"flow_source\": 1,\n  \"client_id\": 1,\n  \"platform\": 7,\n  \"app_version\": \"13.10.20.99999\"\n}\n{\n  \"code\": 4005,\n  \"data\": {\n    \"phone_encrypt\": \"\"\n  },\n  \"message\": \"手机号获取服务异常\",\n  \"request_id\": \"EL2AgIDw5pmOrAEYsQkgqPy5gqgzKI_3_9AP\"\n}\ndiy_app_key  String  <p>运营商appKey</p>\ndiy_appid  String  <p>运营商appid</p>\nsource_type  Integer  <p>0-无组件，1-有前端组件</p>\nuser_information  String  <p>JSSDK提供</p>\nuser_remote_ip  Long  <p>客户提供</p>\napp_version  String  <p>JSSDK提供</p>\nplatform  Integer  <p>JSSDK提供</p>\nclient_id  Integer  <p>JSSDK提供</p>\nflow_source  Integer  <p>JSSDK提供</p>\ncallback  String  <p>客户提供</p>\nisp_type  Integer  <p>JSSDK提供</p>\nspt_token  String  <p>JSSDK提供</p>\napp_id  String  <p>快手分配 </p>\ndata  PhoneEncrypt  <p>加密手机号</p>\nphone_encrypt  String  <p>1</p>\nmessage  String  <p>状态描述</p>\ncode  Integer  <p>状态码</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1769153468707
+    }
+  ],
+  "apiId": 1760,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/lp/get_customer_phone",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 123,\n  \"user_remote_ip\": 11234,\n  \"app_id\": \"165903491\",\n  \"spt_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n  \"isp_type\": 2,\n  \"callback\": \"Bfpz7g4UwD6R5u34GXm7BEETw9rMoioK5wDdi7JCUjqLTR19iUb1M2LJmGb_ueEJSnNBedLuFvenWLjRG6LfOuikqaSO1MkZ9bP4ko8YKETytP8KbXVEX_aCJYGUsWbzxrcpCKfkphO3h6Fyg_haIV5n1bQ4OFRbOs1YjFCxhFozW_hGrap-BP5v32rCj8tuQE2Aozqk7fq9_MDYbKdo_7sehjAnf-8LATXBupSH4IIG2ZkEouW-9OtP7c9irNnEUc72p9bM46uxhTJq_Uv_mg\",\n  \"flow_source\": 1,\n  \"client_id\": 1,\n  \"platform\": 7,\n  \"app_version\": \"13.10.20.99999\"\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 4005,\n  \"data\": {\n    \"phone_encrypt\": \"\"\n  },\n  \"message\": \"手机号获取服务异常\",\n  \"request_id\": \"EL2AgIDw5pmOrAEYsQkgqPy5gqgzKI_3_9AP\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [
+    {
+      "paramId": 79053,
+      "paramName": "access-token",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>access-token,从开放平台获取到的token</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "inputParams": [
+    {
+      "paramId": 79665,
+      "paramName": "diy_app_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>运营商appKey</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "运营商appKey，支持联盟渠道，必传。 快手运营分配",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79666,
+      "paramName": "diy_appid",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>运营商appid</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "运营商appid，支持联盟渠道，必传。快手运营分配",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79542,
+      "paramName": "source_type",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "<p>0-无组件，1-有前端组件</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": "0",
+        "max": "1"
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "0-无组件，1-有前端组件，接入的是有前端组件版时必传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78994,
+      "paramName": "user_information",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "用户信息,联盟流量必传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78995,
+      "paramName": "user_remote_ip",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>客户提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "用户请求IP",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78996,
+      "paramName": "app_version",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": " 版本号",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78997,
+      "paramName": "platform",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "6-ANDROID_PHONE_H5、7-IPHONE_H5\t",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78998,
+      "paramName": "client_id",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "1-IPHONE 2-ANDROID 3-WEB",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78999,
+      "paramName": "flow_source",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "1-快手主站 2-联盟 3-快手极速版",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79000,
+      "paramName": "callback",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>客户提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "广告参数",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79001,
+      "paramName": "isp_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": " 运营商类型  1-移动 2-联通 3-电信",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79002,
+      "paramName": "spt_token",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>JSSDK提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "手机号密钥",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79003,
+      "paramName": "app_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>快手分配 </p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 13,
+      "note": "应用ID ，gateway平台申请的应用id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 79005,
+      "paramName": "data",
+      "paramType": "PhoneEncrypt",
+      "example": "",
+      "description": "<p>加密手机号</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4469,
+      "sort": 1,
+      "note": "加密手机号",
+      "children": [
+        {
+          "paramId": 79004,
+          "paramName": "phone_encrypt",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>1</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "加密手机号",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79006,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>状态描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "状态描述",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79007,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "状态码",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1769153468707,
+  "creator": "zhangpengfei03",
+  "fullContext": null
+}

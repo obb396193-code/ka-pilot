@@ -21,7 +21,7 @@
 - 任一侧 `partial/truncated` 时禁止全量总计和差异结论；0 与 missing 必须分别表达。
 - 账户双源同源键固定为 `(workspace_id, media, account_id)`，保留字符串类型与前导零；同一键单侧无行记 `source_missing`。任务、商品、素材、广告组不可套用该结论。
 
-## 基础字段（来源：奇航 get_data，字段名照抄接口）
+## 基础字段（来源：启航 get_data，字段名照抄接口）
 
 | 字段 | 来源 resource | 含义 |
 |---|---|---|

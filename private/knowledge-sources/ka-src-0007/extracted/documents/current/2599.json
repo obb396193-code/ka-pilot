@@ -1,0 +1,577 @@
+{
+  "documentId": 2599,
+  "documentName": "获取快手号授权列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取快手号授权列表\n/rest/openapi/gw/dsp/v1/native/auth/list\n\n\nadvertiser_id  Long  <p>广告主id</p>\npage_info  PageInfoSnake  分页信息\ncurrent_page  Long  当前页面值\npage_size  Long  页面大小\nkol_user_id  Long  快手号用户id查询\nuser_name  String  快手号名称查询\nauth_status  Integer[]  授权状态查询\nkol_user_type  Integer[]  <p>达人类型 </p>\ncode  Integer  状态码\nmessage  String  返回信息\ndata  KwaiUserAuthorizeInfoViewSnake  返回数据\ndata  KwaiUserAuthorizeInfoSnake[]  授权列表\nuser_id  Long  用户id\nkol_status  Integer  快手号授权状态1 待达人确认2 达人已确认3 授权生效中4 达人拒绝授权5 达人超时未确认6 授权过期7 授权终止\nvalid_start_time  Long  授权开始时间，不限时间时为0\nvalid_end_time  Long  授权结束时间，不限时间时为0\nuser_info  UserProfileViewSnake  用户信息\nuser_id  Long  用户id\nuser_name  String  用户名称\nuser_sex  String  用户性别，男性M，女性F\nhead_url  String  用户头像\nkol_user_type  Integer  达人用户类型，2服务号达人，3聚星达人\nvalid_type  Integer  授权类型，1固定时间，2不限时间\nkol_user_type  Integer  快手号用户类型，1普通快手号达人 2蓝v服务号，3聚星达人\nauth_id  Long  授权记录ID，用于进行共享授权\ncomponent_status  Integer  组件授权状态 0待审核 1审核通过  2审核拒绝 3未授权 4已终止\npage_info  PageInfoSnake  分页信息\ncurrent_page  Long  当前页面值\npage_size  Long  页面大小\ntotal_count  Long  总共数目\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1786014980994
+    }
+  ],
+  "apiId": 467,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63146,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26684,
+      "paramName": "kol_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "快手号用户id查询",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26685,
+      "paramName": "user_name",
+      "paramType": "String",
+      "example": "",
+      "description": "快手号名称查询",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26686,
+      "paramName": "auth_status",
+      "paramType": "Integer[]",
+      "example": "",
+      "description": "授权状态查询",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "授权状态查询 枚举含义如下：1-新建待达人确认 2-达人已确认协议，未到授权开始时间 3-授权生效中 4-达人拒绝授权 5-授权超时未确认 6-授权过期失效 7-授权终止 8-授权已删除",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 40263,
+      "paramName": "kol_user_type",
+      "paramType": "Integer[]",
+      "example": "",
+      "description": "<p>达人类型 </p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "\t1普通快手号，2蓝V服务号 3聚星作品达人 5聚星直播达人 不传递该字段时默认查蓝V服务号，6游戏合伙人",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 26687,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26688,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26689,
+      "paramName": "data",
+      "paramType": "KwaiUserAuthorizeInfoViewSnake",
+      "example": "",
+      "description": "返回数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 980,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26681,
+          "paramName": "data",
+          "paramType": "KwaiUserAuthorizeInfoSnake[]",
+          "example": "[]",
+          "description": "授权列表",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 979,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 26672,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "用户id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26673,
+              "paramName": "kol_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "快手号授权状态1 待达人确认2 达人已确认3 授权生效中4 达人拒绝授权5 达人超时未确认6 授权过期7 授权终止",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26674,
+              "paramName": "valid_start_time",
+              "paramType": "Long",
+              "example": "0",
+              "description": "授权开始时间，不限时间时为0",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26675,
+              "paramName": "valid_end_time",
+              "paramType": "Long",
+              "example": "0",
+              "description": "授权结束时间，不限时间时为0",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26676,
+              "paramName": "user_info",
+              "paramType": "UserProfileViewSnake",
+              "example": "",
+              "description": "用户信息",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 970,
+              "sort": 5,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 26667,
+                  "paramName": "user_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "用户id",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 26668,
+                  "paramName": "user_name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "用户名称",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 26669,
+                  "paramName": "user_sex",
+                  "paramType": "String",
+                  "example": "M",
+                  "description": "用户性别，男性M，女性F",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 26670,
+                  "paramName": "head_url",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "用户头像",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 26671,
+                  "paramName": "kol_user_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "达人用户类型，2服务号达人，3聚星达人",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26677,
+              "paramName": "valid_type",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "授权类型，1固定时间，2不限时间",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 34574,
+              "paramName": "kol_user_type",
+              "paramType": "Integer",
+              "example": "2",
+              "description": "快手号用户类型，1普通快手号达人 2蓝v服务号，3聚星达人",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43199,
+              "paramName": "auth_id",
+              "paramType": "Long",
+              "example": "123",
+              "description": "授权记录ID，用于进行共享授权",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43200,
+              "paramName": "component_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "组件授权状态 0待审核 1审核通过  2审核拒绝 3未授权 4已终止",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1786014980994,
+  "creator": "guojingwei05",
+  "fullContext": null
+}

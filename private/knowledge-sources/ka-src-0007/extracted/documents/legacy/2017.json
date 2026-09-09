@@ -1,0 +1,42 @@
+{
+  "documentId": 2017,
+  "documentName": "4.8.3数据下载",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 数据下载\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/async_task/download\n\n请求方式：GET\n\n结果字段：CSV 文件中的字段同实时报表。注意：只能获取最近6个月内创建的任务，任务超过6个月需要重新创建\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 描述                                                      |\n| ------------- | ---- | -------- | --------------------------------------------------------- |\n| advertiser_id | long | 必填     | 广告主 ID（注：非账户快手 ID），在获取 accessToken 时返回 |\n| task_id       | long | 必填     | 任务 ID                                                   |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1713164141790
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1713164141790,
+  "creator": "yangchen07",
+  "fullContext": null
+}

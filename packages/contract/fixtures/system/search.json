@@ -5,21 +5,64 @@
       {
         "type": "account",
         "id": "KUAISHOU:account-1",
-        "label": "AAC拉新_快手_01",
-        "href": "/accounts/KUAISHOU/account-1"
+        "title": "AAC拉新_快手_01",
+        "href": "/accounts/KUAISHOU/account-1",
+        "workspaceKind": "personal",
+        "meta": {
+          "status": "active",
+          "taskName": "AAC 拉新"
+        }
       },
       {
         "type": "task",
         "id": "fixture-task-ready",
-        "label": "AAC 拉新",
-        "href": "/tasks/fixture-task-ready"
+        "title": "AAC 拉新",
+        "href": "/tasks/fixture-task-ready",
+        "workspaceKind": "personal",
+        "meta": {
+          "stage": "active",
+          "accountCount": 3
+        }
+      },
+      {
+        "type": "work_item",
+        "id": "00000000-0000-4000-8000-000000000402",
+        "title": "成本超考核持续 2 日 · AAC拉新_快手_02",
+        "href": "/work-items/00000000-0000-4000-8000-000000000402",
+        "workspaceKind": "personal",
+        "meta": {
+          "severity": "p1",
+          "status": "open"
+        }
+      },
+      {
+        "type": "material",
+        "id": "KUAISHOU:m-5001",
+        "title": "云感防晒一件搞定",
+        "href": "/materials?tab=materials&id=m-5001",
+        "workspaceKind": "personal",
+        "meta": {
+          "kind": "video",
+          "durationMs": 15000,
+          "analysisVersion": 2
+        }
+      },
+      {
+        "type": "document",
+        "id": "00000000-0000-4000-8000-000000002702",
+        "title": "新任务开户到基建 SOP",
+        "href": "/knowledge/00000000-0000-4000-8000-000000002702",
+        "workspaceKind": "personal",
+        "meta": {
+          "kind": "sop"
+        }
       }
     ],
     "recent": [
       {
         "type": "task",
         "id": "fixture-task-ready",
-        "label": "AAC 拉新",
+        "title": "AAC 拉新",
         "href": "/tasks/fixture-task-ready"
       }
     ]
@@ -30,6 +73,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "非 LLM 对象直达"
+    "_note": "v1.9：后端不出 subtitle，只出结构化 meta 机器值，中文由 fe 组装；work_item href 按 v1.7.6 正名为 /work-items/<id>"
   }
 }

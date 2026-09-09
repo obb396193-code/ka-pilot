@@ -12,7 +12,6 @@ import { Pool as PgPool } from "pg";
 
 import { createCanonicalHandler } from "../etl/canonical-handler.js";
 
-const DEFAULT_DATABASE_URL = "postgres://ka:ka@127.0.0.1:55432/ka";
 const ALLOWED_SCALES = new Set([100, 1_000, 5_000]);
 
 export interface PgBenchmarkOptions {
@@ -50,7 +49,7 @@ export interface PgBenchmarkReport {
 
 export function parsePgBenchmarkArgs(args: readonly string[]): PgBenchmarkOptions {
   const options: PgBenchmarkOptions = {
-    databaseUrl: process.env.TEST_DATABASE_URL ?? DEFAULT_DATABASE_URL,
+    databaseUrl: process.env.TEST_DATABASE_URL ?? "",
     accountCounts: [100, 1_000, 5_000],
     iterations: 3,
     chunkSize: 250,
@@ -96,13 +95,14 @@ function validatePgBenchmarkOptions(options: PgBenchmarkOptions): void {
 }
 
 export function assertLocalTestDatabase(databaseUrl: string): void {
+  if (!databaseUrl) throw new Error("Explicit isolated ka_*_test database required");
   const parsed = new URL(databaseUrl);
   if (!new Set(["127.0.0.1", "localhost", "::1"]).has(parsed.hostname)) {
     throw new Error("PostgreSQL benchmark only permits a local test database");
   }
   if (!new Set(["postgres:", "postgresql:"]).has(parsed.protocol) || parsed.search || parsed.hash ||
-    parsed.port !== "55432" || (parsed.pathname !== "/ka" && !/^\/ka_[a-z0-9_]{1,45}_test$/.test(parsed.pathname))) {
-    throw new Error("PostgreSQL benchmark requires a local ka or ka_*_test database on port 55432");
+    parsed.port !== "55432" || !/^\/ka_[a-z0-9_]*_test$/.test(parsed.pathname)) {
+    throw new Error("PostgreSQL benchmark requires an isolated ka_*_test database on port 55432");
   }
 }
 
@@ -272,7 +272,7 @@ async function runCanonical(pool: Pool, workspaceId: string, chunkSize: number) 
       upsertCanonicalBatch: metrics.upsertCanonicalBatch.bind(metrics),
     },
     runs: {
-      startRun: async () => 1,
+      startRun: async () => "1",
       finishRun: async () => undefined,
       failRun: async () => undefined,
     },

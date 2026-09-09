@@ -1,0 +1,10 @@
+# 程序版本回滚
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/otigc3/imgozylqKs3qJ.png)
+
+
+- 当存在历史线上版本时，可选择需要回滚到的历史线上版本
+- 当不存在历史线上版本时，则提示是否将域名与程序进行解绑，解绑后域名访问，将不再经过此 ER，解除绑定后仍可在应用概览页进行再次绑定
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/otigc3/imgdzpJKBd5Ri.png)
+
+

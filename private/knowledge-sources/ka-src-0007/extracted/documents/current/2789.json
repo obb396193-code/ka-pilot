@@ -1,0 +1,223 @@
+{
+  "documentId": 2789,
+  "documentName": "更新/恢复/删除应用分包",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094331827
+    }
+  ],
+  "apiId": 704,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/mod",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/mod' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"package_id\": [100009135],\n    \"put_status\":2    //0-更新 1-恢复 2-删除\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"result\": true\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMmAgICg4ZmOrAEYwwYglPLltvQwKMC6pvgI\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63206,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42126,
+      "paramName": "package_id",
+      "paramType": "Long[]",
+      "example": "[11,22]",
+      "description": "子包id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "支持批量",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42127,
+      "paramName": "put_status",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "更改子包的类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "0-更新 1-恢复 2-删除。当分包状态处于构建中或更新中时，不可对分包进行操作。更新分包指将分包升级到绑定最新发布版本的母包；删除分包将不能使用该分包创建广告；恢复分包可重新使用分包物料创建广告。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42128,
+      "paramName": "data",
+      "paramType": "MapiAppModResp",
+      "example": "",
+      "description": "MAPI-修改应用的响应参数",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2582,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42119,
+          "paramName": "result",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "修改分包备注是否成功",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "true-成功，false-失败",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42129,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42130,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094331827,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

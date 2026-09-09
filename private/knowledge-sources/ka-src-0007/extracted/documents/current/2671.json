@@ -1,0 +1,271 @@
+{
+  "documentId": 2671,
+  "documentName": "获取可用的转化目标",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取可用的转化目标\n/rest/openapi/v1/tool/convert/list\n\n\nadvertiser_id  Long  广告主id\ntype  Integer  转化目标类型\npage  Integer  页面值\npage_size  Integer  页面大小\nconvert_ids  Long[]  <p>转化目标id</p>\ncode  Integer  <p>返回码</p>\nmessage  String  <p>返回信息</p>\ndata  ConvertData  <p>返回数据</p>\ntotal_count  Long  <p>结果总数</p>\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1776224608235
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1769051503886
+    }
+  ],
+  "apiId": 130,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/tool/convert/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 5551,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "20000800",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5552,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "转化目标类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "1: JS 布玛; 2: Xpath; 3: 应用-SDK; 7: 应用-API;  17: 微信小程序; 20: API线索收集",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 5553,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "页面值",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5554,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "20",
+      "description": "页面大小",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5587,
+      "paramName": "convert_ids",
+      "paramType": "Long[]",
+      "example": "[11122]",
+      "description": "<p>转化目标id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 5555,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5556,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "-",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5557,
+      "paramName": "data",
+      "paramType": "ConvertData",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 347,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 5542,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "174",
+          "description": "<p>结果总数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1776224608235,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

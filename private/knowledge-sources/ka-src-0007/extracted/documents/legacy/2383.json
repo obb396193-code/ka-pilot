@@ -1,0 +1,42 @@
+{
+  "documentId": 2383,
+  "documentName": "上传图文视频",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 上传图文视频\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/upload/atlasPhoto](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/upload/atlasPhoto)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   |  是否必填   | 说明   | 备注                        |\n| ------------ | ------ |  ------ | ------ | --------------------------- |\n| advertiser_id | Long |  必填 | 广告主ID |  |\n| pic_ids | String[] |  必填 | 图片ID | 封面使用第一张图片 |\n| audio_bs_key | String | 可选 | 音频bs_key | [音频上传接口获取](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2382)|\n| shield_backward_switch | Boolean | 可选 | 上传视频后是否自动同步至快手个人主页, 默认false      |   |\n| wait_for_transcode | Boolean | 可选 |  用同步/异步方式上传视频,默认false  |  |\n\n### 返回参数\n\n| 字段         | 类型    | 说明                        | 备注         |\n| ------------ |  ------ | --------------------------- | ---------- |\n| data | Object  |  |  |\n| &#8195;photo_id | String | 图文视频ID  |  |\n| code | Integer |   |  |\n| message | String |   |  |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad-star-gateway-api-beta.corp.kuaishou.com/rest/openapi/gw/dsp/upload/atlasPhoto' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 139494,\n    \"pic_ids\": [\n        \"5215449848999249535\",\n        \"5220516399508008924\",\n        \"5206724126146862162\"\n    ],\n    \"audio_bs_key\": \"55a4aebd6b544b6aa4ac99ef9c004c18\",\n    \"shield_backward_switch\": false,\n    \"wait_for_transcode\": false\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"photo_id\": \"5254293505944748162\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EO60gICQgpGOChiqBSC_pPnDsjEorfyysww=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1697191483880
+    }
+  ],
+  "apiId": 954,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1697191483880,
+  "creator": "heran03",
+  "fullContext": null
+}

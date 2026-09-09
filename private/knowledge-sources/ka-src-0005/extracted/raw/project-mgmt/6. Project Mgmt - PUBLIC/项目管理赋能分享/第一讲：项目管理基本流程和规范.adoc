@@ -1,0 +1,273 @@
+# <span style="color: rgb(27, 18, 108);">**01 项目管理系列分享的背景和目的**</span>
+
+<span style="color: rgb(27, 18, 108);">**组织视角**</span>
+
+<span style="color: rgb(27, 18, 108);">**背景：**</span>
+- <span style="color: rgb(27, 18, 108);">在Lazada的产研项目中，技术PM/产品PM/测试PM扮演了不可或缺的角色，在大量项目的执行阶段，基本都依靠各PM来负责具体的项目管理工作；</span>
+- <span style="color: rgb(27, 18, 108);">在一些PMO参与度较深的大中型复杂项目中，项目管理工作的高效推进，也很大程度上依赖各PM和PMO打好配合；</span>
+
+<span style="color: rgb(27, 18, 108);">**目的：**</span>
+- <span style="color: rgb(27, 18, 108);">通过对Lazada项目管理流程规范、方法的宣导和实践的分享，提升各域各团队项目管理执行工作的</span><span style="color: rgb(27, 18, 108);">**质量**</span><span style="color: rgb(27, 18, 108);">和</span><span style="color: rgb(27, 18, 108);">**效率**</span><span style="color: rgb(27, 18, 108);">；</span>
+
+
+
+<span style="color: rgb(27, 18, 108);">**个人视角**</span>
+
+<span style="color: rgb(27, 18, 108);">**背景：**</span>
+- <span style="color: rgb(27, 18, 108);">项目管理方面的</span><span style="color: rgb(27, 18, 108);">**硬技能**</span><span style="color: rgb(27, 18, 108);">和</span><span style="color: rgb(27, 18, 108);">**软技能**</span><span style="color: rgb(27, 18, 108);">也是PM个人成长和职业发展中的一项重要技能；</span>
+- <span style="color: rgb(27, 18, 108);">从前期的技术PM访谈中，收集到若干痛点问题的反馈：如对Lazada的项目管理流程规范还不是很熟悉、跨域资源协调难、项目进度难把控、变更管理难应对、项目管理工具使用不熟练等；</span>
+
+<span style="color: rgb(27, 18, 108);">**目的：**</span>
+- <span style="color: rgb(27, 18, 108);">针对技术PM访谈中收集到的一些典型、共性的痛点问题，提供一些解决方案的建议，帮助各PM提升应对复杂项目管理问题的能力；</span>
+
+# <span style="color: rgb(27, 18, 108);">**02**</span> <span style="color: rgb(27, 18, 108);">什么是项目和项目管理</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/ec4b20a7-f325-4f15-b82a-94608a2acacf.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**03 项目、需求和迭代的关系**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/0d0f31a0-6581-4b25-80ff-9c6750c19917.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+Aone示例：
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/f666b30c-45ee-4a71-b6e3-00d5b90ec20d.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**04 项目是如何产生的**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/ed0caa92-bd69-4b3d-bd9d-173f50cc16ea.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**05 项目列表管理**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/f8dfacd8-5d5f-4456-9c5f-c6f26e7b4431.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**06 项目的生命周期及整体流程**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/b4f8137b-e928-4327-932d-8a8134d7992c.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**07**</span> <span style="color: rgb(27, 18, 108);">如何启动一个项目：核心环节</span>
+
+**作为技术PM，在项目启动阶段，需要重点关注【立项】和【KO】**
+
+**项目立项**
+
+Why（为什么需要立项）:
+- 与项目分级管理相匹配的优先级和资源分配（包括跨域资源协调）;
+- 项目线上化管理和闭环管理的抓手;
+- 为管理者提供合适颗粒度的项目信息;
+
+What&Who（立项具体要做什么,由谁来做）:
+- 钉钉群立项报备审批，By PMO;
+- 发起Aone立项，By PMO/技术PM/PDM;
+- 项目列表登记入册和更新，By PMO/技术PM;
+- 战役双周报登记入册和更新，By PMO/技术PM;
+
+When（什么时间得立项）：
+- 建议尽早明确项目核心信息并发起Aone立项;
+- 最晚开发排期前需完成Aone立项;
+
+How（按什么流程立项）:
+- 立项基本准入标准:研发人力投入大于30人日的项目
+- 立项SOP：[项目立项SOP](https://alidocs.dingtalk.com/i/nodes/MNDoBb60VLYDGNPytzxxA2QmJlemrZQ3)
+
+
+**项目KO（Kick-Off）**
+
+Why（为什么需要KO）:
+- 一般适用于中大型跨域、复杂项目;中小型简单项目，可省略该环节；
+- 统一目标认知、明确角色职责、建立沟通机制、建立风险预警和升级处理机制、确保相关方资源投入保障;
+
+What&Who（立项具体要做什么,由谁来做）:
+- 准备项目章程，By PMO/技术PM/PDM;
+- 组织项目KO会，By PMO/技术PM/PDM;
+
+When（什么时间进行KO）：
+- 项目目标和范围、相关方、High-Level方案、项目规模已经基本明确；
+- 正式投入开发前；
+
+How（怎么操作）:
+- 准备项目章程：[项目章程](https://alidocs.dingtalk.com/i/nodes/dQPGYqjpJYZnRbNYCY227AKN8akx1Z5N)
+
+- 组织召开项目KO会
+
+**项目KO示例**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/be1d5bcc-7d3e-488d-8071-158b0a5a07cb.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/716bcb7c-cf8a-4abf-8a92-a8996367f492.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**08 项目执行过程怎么管理：项⽬计划和Tracker**</span>
+
+| <span style="color: rgb(16, 18, 19);">**可选模板**</span> | <span style="color: rgb(16, 18, 19);">**简易版**</span> | <span style="color: rgb(16, 18, 19);">**中型项目**</span> | <span style="color: rgb(16, 18, 19);">**大型项目**</span> | <span style="color: rgb(16, 18, 19);">**需求Tracker**</span> | <span style="color: rgb(16, 18, 19);">**多维表Tracker**</span> | <span style="color: rgb(16, 18, 19);">**Aone空间**</span> |
+|-------------------------------------------------------------|----------------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------------|--------------------------------------------------------------|-----------------------------------------------------------------|-----------------------------------------------------------|
+| <span style="color: rgb(27, 18, 108);">**适用的项目类型**</span> | <span style="color: rgb(27, 18, 108);">建议50人日以下</span> | <span style="color: rgb(27, 18, 108);">建议50-100人日</span> | <span style="color: rgb(27, 18, 108);">建议100人日以上</span> | <span style="color: rgb(27, 18, 108);">建议结果型项目</span> | <span style="color: rgb(27, 18, 108);">建议需要有项目自定义统计，且文字内容少的项目</span> | <span style="color: rgb(27, 18, 108);">不需要长篇文字描述的，也可以通过Aone项目空间的工作项、里程碑、</span><br><span style="color: rgb(27, 18, 108);">需求时间节点等要素来做管理</span> |
+| <span style="color: rgb(27, 18, 108);">**模板链接**</span> | [【参考模版】简易版](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4HdlzoRZPJxAZB1Gv) | [【参考模版】中型项目](https://alidocs.dingtalk.com/i/nodes/Obva6QBXJwxNZoMOClGvdQXP8n4qY5Pr) | [【参考模版】大型项目](https://alidocs.dingtalk.com/i/nodes/oP0MALyR8kzGnoOwFNOY0lnpJ3bzYmDO) | [【参考模版】需求Tracker
+ Draft](https://alidocs.dingtalk.com/i/nodes/o14dA3GK8gQlkoYwcPBKRMxDV9ekBD76) | [【参考模版】需求Tracker](https://alidocs.dingtalk.com/i/nodes/KGZLxjv9VGkoG9YwH0e131xMV6EDybno?iframeQuery=entrance=data&sheetId=tB7knsJ&viewId=PMgNBVD) |  |
+
+管理要点小结：
+1. 所有子域业产研工作一张图；
+2. 按项目-\>需求-\>任务层层拆解成可跟踪到天/周进展的粒度；
+3. 时间计划一目了然；
+4. 责任到人；
+5. 进展状态和风险状态清晰可见；
+6.裁剪应用原则：根据项目规模和复杂度灵活选用合适的模板；
+
+# <span style="color: rgb(27, 18, 108);">**08 项目执行过程怎么管理：表格类项目计划示例**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/943f37e8-ce82-4c5b-b1ee-f9493f12fe28.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**08 项目执行过程怎么管理：Aone视图类的项目计划**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/42f4424d-6cc5-473b-92d1-aa0115d3a708.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**08 项目执行过程怎么管理：项目例会和报告**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/bc94df85-abb8-4f22-b54e-617daeaaa496.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+| <span style="color: rgb(16, 18, 19);">**报告类型**</span> | <span style="color: rgb(16, 18, 19);">**项目日报**</span> | <span style="color: rgb(16, 18, 19);">**项目周报**</span> | <span style="color: rgb(16, 18, 19);">**项目月报**</span> |
+|-------------------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------------|-------------------------------------------------------------|
+| <span style="color: rgb(27, 18, 108);">颗粒度</span> | <span style="color: rgb(27, 18, 108);">最细</span><br><span style="color: rgb(27, 18, 108);">●
+ 需求/任务进度</span><br><span style="color: rgb(27, 18, 108);">●
+ 问题和Action</span><br><span style="color: rgb(27, 18, 108);">●
+ 风险统计和监控</span> | <span style="color: rgb(27, 18, 108);">中等</span><br><span style="color: rgb(27, 18, 108);">●
+ 项目进展</span><br><span style="color: rgb(27, 18, 108);">●
+ 风险汇总</span><br><span style="color: rgb(27, 18, 108);">●
+ 下周计划</span> | <span style="color: rgb(27, 18, 108);">最粗</span><br><span style="color: rgb(27, 18, 108);">●
+ 阶段成果</span><br><span style="color: rgb(27, 18, 108);">●
+ 风险汇报</span><br><span style="color: rgb(27, 18, 108);">●
+ 下月目标</span> |
+| <span style="color: rgb(27, 18, 108);">目标</span> | <span style="color: rgb(27, 18, 108);">● 快速反馈问题</span> | <span style="color: rgb(27, 18, 108);">● 短期总结</span><br><span style="color: rgb(27, 18, 108);">● 短期调整</span> | <span style="color: rgb(27, 18, 108);">● 阶段总结</span><br><span style="color: rgb(27, 18, 108);">● 长期调整策略</span> |
+| <span style="color: rgb(27, 18, 108);">对象</span> | <span style="color: rgb(27, 18, 108);">项目成员、直接上级</span> | <span style="color: rgb(27, 18, 108);">项目PIC、发起人、中层管理者</span> | <span style="color: rgb(27, 18, 108);">高层管理者，需求方，跨域</span> |
+| <span style="color: rgb(27, 18, 108);">重点</span> | <span style="color: rgb(27, 18, 108);">当日完成项、阻塞点</span> | <span style="color: rgb(27, 18, 108);">周进展、关键问题、下周计划</span> | <span style="color: rgb(27, 18, 108);">里程碑、资源问题、风险警告</span> |
+| <span style="color: rgb(27, 18, 108);">Link</span> | [【模版】项目日报
+ \- 单项目-1](https://alidocs.dingtalk.com/i/nodes/ZX6GRezwJlzeYoPLFkaX3vGGWdqbropQ)[【模版】](https://alidocs.dingtalk.com/i/nodes/QOG9lyrgJPPNL2rXI9YDK0DYJzN67Mw4)<br>[项目日报
+ \- 单项目-2](https://alidocs.dingtalk.com/i/nodes/QOG9lyrgJPPNL2rXI9YDK0DYJzN67Mw4) | [【模版】项目周报-单项目-1](https://alidocs.dingtalk.com/i/nodes/kDnRL6jAJMLgNkw7tDqwaREDVyMoPYe1)<br>[【模版】项目周报-单项目-2](https://alidocs.dingtalk.com/i/nodes/vy20BglGWOxjGpq0ClDBl4MyVA7depqY) | [【模版】项目月报
+ \- 单项目](https://alidocs.dingtalk.com/i/nodes/MNDoBb60VLYDGNPytxONB726JlemrZQ3) |
+
+管理要点小结：
+项目例会：
+1. 项目核心成员要参加；
+2. 进展、风险、变化需同步；
+3. 会议组织需高效：会前有准备、会中要聚焦、会后待办有跟进；
+4. 不需要长篇文字描述的，也可以基于项目Tracker、Aone来开项目例会；
+
+项目报告：
+1. 根据频次和对象，报告不同详略程度的内容；
+
+裁剪应用原则：
+- 根据项目规模和复杂度灵活选用合适的方式和模板；
+
+<span style="color: rgb(27, 18, 108);">**项目例会&报告模板地址：**</span>[**Link**](https://alidocs.dingtalk.com/i/nodes/YMyQA2dXW7gYo6MzcDA4kaAqWzlwrZgb)
+
+示例：
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/2eda5c13-6626-46dc-a3f4-e7b8f30770cf.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/33e25303-bccd-4941-bb8a-a1944fee7626.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**08 项目执行过程怎么管理：风险清单**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/0b543d8c-4b6b-4b69-8143-618af6bf532b.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+管理要点小结：
+常见的风险类型：
+1. 需求频繁变更或需求蔓延;
+2. 技术实现风险;
+3. 外部依赖风险;
+4. 进度风险；
+5. 资源风险；
+6. 沟通协作风险；
+...
+
+管理要点：
+1. 风险识别要及时、充分，可以在各个项目沟通机制和渠道内去讨论挖掘，需要项目全员参与；
+2. 项目组内无法解决的风险，需要及时上升汇报给Leader，同时也可以请PMO参与支持；
+
+<span style="color: rgb(27, 18, 108);">**项目风险清单模板地址:**</span> [**Link**](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMEjp2V1waOeDk)
+
+风险清单示例：
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/af3ae89b-1c35-4e98-93cc-746335b60d06.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**09 项目如何收尾：项目复盘和结项**</span>
+
+**项目复盘、结项是项目有始有终、闭环管理的必要环节。**
+
+**项目复盘：**
+
+Why（为什么需要复盘）:
+- 对项目结果做个总结回顾：设定的业产技目标是否达成了？
+- 对项目过程做个总结回顾：哪些地方做的好，哪些地方做的不好？有什么经验教训？
+- 组织视角：投资回报情况怎么样？
+- 个人视角：项目结果对团队/个人OKR影响如何？
+
+What&Who（复盘具体要做什么,由谁来做）:
+- 复盘文档准备，By PD/技术PM/PMO;
+- 复盘会，By PMO/PD/技术PM;
+- 复盘结果报备，By PMO;
+- 项目列表/战役双周报更新复盘小结，By PMO/技术PM;
+
+When（什么时间得复盘）：
+- 项目上线后有业务结果和数据产出后即刻复盘;
+- 一般应于项目上线后2个月内完成复盘; 特殊情况除外;
+
+How（按什么流程复盘）:
+- 复盘SOP：[项目复盘SOP](https://alidocs.dingtalk.com/i/nodes/KGZLxjv9VGkoG9YwHo00B0EmV6EDybno)
+
+
+**项目结项：**
+
+Why（为什么需要结项）:
+- 项目资源解散
+- Aone项目空间关闭、成为终态
+
+What&Who（结项具体要做什么,由谁来做）:
+- 项目列表等文档的更新，By PMO;
+- 关闭Aone空间，By PMO;
+- 结项汇报，By PMO;
+
+When（什么时间进行结项）：
+- 项目发布上线、并且完成项目复盘和记录后
+
+How（怎么操作）:
+- 结项SOP：[项目结项SOP](https://alidocs.dingtalk.com/api/doc/transit?dentryUuid=93NwLYZXWyxXroNzCXYY2oo38kyEqBQm&queryString=utm_medium%3Ddingdoc_doc_plugin_card%26utm_source%3Ddingdoc_doc)
+
+
+**项目复盘示例：**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/0db47f2f-6d28-4596-affc-5a87b484161e.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/c1d47276-1e9d-435d-b764-77922b7b812c.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+**项目复盘数据汇总**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl952dWR9aklap/img/40224ba4-9bea-41ef-b409-7386aad2abf4.png?Expires=1776257438&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**10 小结回顾**</span>
+
+①<span style="color: rgb(27, 18, 108);">**项目、迭代、需求的关系：**</span>
+
+•<span style="color: rgb(27, 18, 108);">项目：</span><span style="color: rgb(27, 18, 108);">**从业务目标和策略拆解而来，**</span><span style="color: rgb(27, 18, 108);">重点关注</span><span style="color: rgb(27, 18, 108);">**项目目标和优先级设定、立项、复盘以及整体兵力投入情况**</span><span style="color: rgb(27, 18, 108);">。</span>
+
+•<span style="color: rgb(27, 18, 108);">需求：从项目拆解而来，项目：需求=1:N（N\>=1），重点关注</span><span style="color: rgb(27, 18, 108);">**交付效率和质量。**</span>
+
+•<span style="color: rgb(27, 18, 108);">迭代：是</span><span style="color: rgb(27, 18, 108);">**固定为两周周期的“冲刺”，**</span><span style="color: rgb(27, 18, 108);">用于明确</span><span style="color: rgb(27, 18, 108);">**交付节奏。**</span><span style="color: red;">**通过业务制定的项目优先级做指挥棒统一拉齐跨域协作的双周迭代。**</span>
+
+②<span style="color: rgb(27, 18, 108);">**项目管理的几个关键抓手**</span><span style="color: rgb(27, 18, 108);">：</span>
+
+•<span style="color: rgb(27, 18, 108);">通过立项和KO来正式启动项目；</span>
+
+•<span style="color: rgb(27, 18, 108);">通过制定项目计划使项目执行过程管理有据可依；</span>
+
+•<span style="color: rgb(27, 18, 108);">通过项目例会或报告等形式使信息透明；</span>
+
+•<span style="color: rgb(27, 18, 108);">通过风险清单来识别、记录和跟踪风险；</span>
+
+•<span style="color: rgb(27, 18, 108);">有始有终，做好复盘后完成结项。</span>
+
+③<span style="color: rgb(27, 18, 108);">**流程、模板：**</span>
+
+•<span style="color: rgb(27, 18, 108);">立项SOP：</span>[Link](https://alidocs.dingtalk.com/i/nodes/MNDoBb60VLYDGNPytzxxA2QmJlemrZQ3%0d)
+
+•<span style="color: rgb(27, 18, 108);">项目章程/KO模板：</span>[Link](https://alidocs.dingtalk.com/i/nodes/dQPGYqjpJYZnRbNYCY227AKN8akx1Z5N)
+
+•<span style="color: rgb(27, 18, 108);">项目计划&Tracker模板地址：</span>[Link](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMNN62V1waOeDk%0d)
+
+•<span style="color: rgb(27, 18, 108);">项目例会&报告模板地址：</span>[Link](https://alidocs.dingtalk.com/i/nodes/YMyQA2dXW7gYo6MzcDA4kaAqWzlwrZgb%0d)
+
+•<span style="color: rgb(27, 18, 108);">项目风险清单模板地址:</span> [Link](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMEjp2V1waOeDk%0d)
+
+•<span style="color: rgb(27, 18, 108);">复盘SOP：</span>[Link](https://alidocs.dingtalk.com/i/nodes/KGZLxjv9VGkoG9YwHo00B0EmV6EDybno)

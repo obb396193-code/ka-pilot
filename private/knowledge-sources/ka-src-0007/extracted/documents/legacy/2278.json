@@ -1,0 +1,42 @@
+{
+  "documentId": 2278,
+  "documentName": "删除定向模板",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 删除定向模板\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/delete](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/delete)\n\n请求方式：POST\n\n数据格式：JSON\n\n**注：本删除接口为物理删除，一旦删除后不可恢复，请谨慎操作**\n\n### 请求参数\n\n| 字段        | 类型 | 示例值 | 是否必填 | 说明   | 备注 |\n| ----------- | ---- | ------ | -------- | ------ | ---- |\n| template_id | Long |        | 可选     | 模板ID |      |\n\n### 返回参数\n\n| 字段               | 类型    | 说明     | 备注 |\n| ------------------ | ------- | -------- | ---- |\n| data               | struct  | 数据详情 |      |\n| &#8195;template_id | Long    | 模板ID   |      |\n| message            | String  | 错误详情 |      |\n| code               | Integer | 返回码   |      |\n\n### 请求样例\n\n```json\n{\n    \"template_id\": 123123\n}\n\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"template_id\": 123123\n    }\n}\n```\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677225542336
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677225542336,
+  "creator": "yanghua05",
+  "fullContext": null
+}

@@ -1,0 +1,15 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661cd9f3971d4707edca7b8e/](https://links.alibaba-inc.com/support/conversation/661cd9f3971d4707edca7b8e/)
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+当发现变更分支集成验证中存在扫描器未正常触发时，可以通过如下操作，进行触发：
+
+1. 将当前变更退出迭代集成区；
+2. 在迭代集成区点击「添加变更」按钮，将原变更加回迭代集成区。
+
+当变更进入迭代集成区时，会自动触发一次集成验证过程。后续还会在集成验证结果展示面板补充手动触发按钮来简化这一流程。
+

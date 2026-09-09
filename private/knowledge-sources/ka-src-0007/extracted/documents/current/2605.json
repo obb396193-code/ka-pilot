@@ -1,0 +1,400 @@
+{
+  "documentId": 2605,
+  "documentName": "获取原生快手号列表接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720092366988
+    }
+  ],
+  "apiId": 1172,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/user/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63154,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59342,
+      "paramName": "kol_user_type",
+      "paramType": "Integer[]",
+      "example": "[1,2]",
+      "description": "<p>达人原生类型，1 代表普通快手号大达人 2服务号原生达人，3聚星原生达人</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59343,
+      "paramName": "count",
+      "paramType": "Integer",
+      "example": "100",
+      "description": "<p>游标查询数量</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59344,
+      "paramName": "cursor",
+      "paramType": "String",
+      "example": "\"12312312312\"",
+      "description": "<p>游标</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 59345,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "-",
+      "description": "<p>请求状态</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59346,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "-",
+      "description": "<p>请求结果显示</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59347,
+      "paramName": "data",
+      "paramType": "UserProfileViewCursorSnakeList",
+      "example": "-",
+      "description": "<p>用户信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3318,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 59298,
+          "paramName": "user_list",
+          "paramType": "UserProfileViewSnake[]",
+          "example": "",
+          "description": "<p>-</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 970,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 26667,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "用户id",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26668,
+              "paramName": "user_name",
+              "paramType": "String",
+              "example": "",
+              "description": "用户名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26669,
+              "paramName": "user_sex",
+              "paramType": "String",
+              "example": "M",
+              "description": "用户性别，男性M，女性F",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26670,
+              "paramName": "head_url",
+              "paramType": "String",
+              "example": "",
+              "description": "用户头像",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26671,
+              "paramName": "kol_user_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "达人用户类型，2服务号达人，3聚星达人",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 53310,
+              "paramName": "suggestion",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>账号建议</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59299,
+          "paramName": "cursor",
+          "paramType": "String",
+          "example": "-",
+          "description": "<p>下次查询游标，如果后面无结果则返回 no_more; 如果后续有结果需用此返回填到请求参数cursor上</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720092366988,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

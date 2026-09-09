@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-lkzn79q1\">查询工具中的接口主要包含与计划创建相关的辅助接口，例如创建OCPC计划时可以利用tools/ad_convert/select接口获取可用的转化目标ID，而利用tools/estimate_audience接口可以预估所选定向的覆盖人群数量，来确定当前定向覆盖量级是否足够。</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "查询工具"
+}

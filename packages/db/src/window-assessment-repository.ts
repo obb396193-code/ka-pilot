@@ -6,6 +6,9 @@ import type { SemanticQueryScope } from "./semantic-query-types.js";
 
 const MAX_GROUPS = 10_000;
 export interface WindowAccountAssessmentCounts { total: number; determinable: number; onTarget: number }
+export interface AccountDailyAssessment {
+  workspaceId: string; media: string; accountId: string; taskId: string | null; bizName: string | null; input: DailyAssessmentInput;
+}
 const assessmentFromSql = `FROM expected_metric AS metric
   JOIN accounts AS account ON account.workspace_id=metric.workspace_id
     AND account.media=metric.media AND account.account_id=metric.account_id
@@ -44,12 +47,75 @@ function decodedNumber(value: unknown): number | null {
   return nullableNumber(value);
 }
 
+function decodeAssessment(row: AssessmentGroupRow): DailyAssessmentInput {
+  const mapped = dailyAssessmentInputSchema.safeParse({
+    ds: row.ds, cashCost: metricValue(decodedNumber(row.cash_cost)),
+    realConversion: metricValue(decodedNumber(row.real_conversion)),
+    price: row.version_id === null && row.price === null && row.effective_date === null ? null : {
+      versionKey: row.version_id, value: decodedNumber(row.price), effectiveDate: row.effective_date,
+    },
+  });
+  if (!mapped.success || (mapped.data.price !== null && mapped.data.price.effectiveDate! > mapped.data.ds)) {
+    throw new SemanticQueryContractError("Invalid assessment history result");
+  }
+  return mapped.data;
+}
+
+function assertBounded(rows: unknown[]): void {
+  if (rows.length > MAX_GROUPS || Buffer.byteLength(JSON.stringify(rows), "utf8") >= 16 * 1024 * 1024) {
+    throw new SemanticQueryContractError("Assessment input exceeds query boundary");
+  }
+}
+
+function nullableLabel(value: unknown): string | null {
+  if (value === null) return null;
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new SemanticQueryContractError("Invalid assessment membership metadata");
+  }
+  return value;
+}
+
 /** One SQL snapshot joins expected account-days to their actual effective history.
  * Groups collapse equal day/version members without averaging prices or CPA.
  * Public request authorization and the surrounding multi-query RR transaction belong to the service.
  */
 export class WindowAssessmentRepository {
   constructor(private readonly connection: Pick<Pool, "query">) {}
+
+  /** One batch, not N per-account queries. Every expected day remains represented;
+   * a duplicate tuple/day means ambiguous effective task/history and fails closed.
+   */
+  async loadByAccount(scope: SemanticQueryScope): Promise<AccountDailyAssessment[]> {
+    const filter = assessmentFilter(scope);
+    const result = await this.connection.query<AssessmentGroupRow & {
+      workspace_id: string; media: string; account_id: string; task_id: string | null; biz_name: string | null;
+    }>(`${EXPECTED_METRIC_CTE}
+      SELECT metric.workspace_id, metric.media, metric.account_id, metric.ds::text AS ds,
+        metric.cash_cost, metric.real_conversion, assessment.id::text AS version_id,
+        assessment.price, assessment.effective_date::text AS effective_date,
+        relation.task_id, task.biz_name
+      ${assessmentFromSql}
+      LEFT JOIN tasks AS task ON task.workspace_id=relation.workspace_id AND task.task_id=relation.task_id
+      WHERE ${filter.whereSql}
+      ORDER BY metric.media COLLATE "C", metric.account_id COLLATE "C", metric.ds
+      LIMIT 10001`, filter.values);
+    assertBounded(result.rows);
+    const seen = new Set<string>();
+    const allowed = new Set(scope.filters!.accountScopes!.map((row) => JSON.stringify([row.media, row.accountId])));
+    return result.rows.map((row) => {
+      const key = JSON.stringify([row.media, row.account_id, row.ds]);
+      if (row.workspace_id !== scope.workspaceId || !allowed.has(JSON.stringify([row.media, row.account_id])) ||
+        (scope.filters?.media !== undefined && scope.filters.media !== row.media) ||
+        (scope.filters?.accountId !== undefined && scope.filters.accountId !== row.account_id) ||
+        (scope.filters?.accountIds !== undefined && !scope.filters.accountIds.includes(row.account_id)) ||
+        row.ds < scope.dateFrom || row.ds > scope.dateTo || seen.has(key)) {
+        throw new SemanticQueryContractError("Invalid account assessment scope");
+      }
+      seen.add(key);
+      return { workspaceId: scope.workspaceId, media: row.media, accountId: row.account_id,
+        taskId: nullableLabel(row.task_id), bizName: nullableLabel(row.biz_name), input: decodeAssessment(row) };
+    });
+  }
 
   async loadAccountCounts(scope: SemanticQueryScope): Promise<WindowAccountAssessmentCounts> {
     const filter = assessmentFilter(scope);
@@ -97,20 +163,7 @@ export class WindowAssessmentRepository {
       ORDER BY metric.ds, assessment.id NULLS LAST
       LIMIT 10001`, filter.values);
     // SQL's extra row is an overflow sentinel, not silently truncated data.
-    if (result.rows.length > MAX_GROUPS || Buffer.byteLength(JSON.stringify(result.rows), "utf8") >= 16 * 1024 * 1024) {
-      throw new SemanticQueryContractError("Assessment input exceeds query boundary");
-    }
-    return result.rows.map((row) => {
-      const mapped = dailyAssessmentInputSchema.safeParse({
-        ds: row.ds,
-        cashCost: metricValue(decodedNumber(row.cash_cost)),
-        realConversion: metricValue(decodedNumber(row.real_conversion)),
-        price: row.version_id === null && row.price === null && row.effective_date === null ? null : {
-          versionKey: row.version_id, value: decodedNumber(row.price), effectiveDate: row.effective_date,
-        },
-      });
-      if (!mapped.success) throw new SemanticQueryContractError("Invalid assessment history result");
-      return mapped.data;
-    });
+    assertBounded(result.rows);
+    return result.rows.map(decodeAssessment);
   }
 }

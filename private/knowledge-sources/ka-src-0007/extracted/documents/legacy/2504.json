@@ -1,0 +1,54 @@
+{
+  "documentId": 2504,
+  "documentName": "文件流式上传&分片上传接入说明",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 接入说明\n\n### 现状\n\nMAPI视频上传目前是通过快手磁力引擎开放平台的 [素材管理-上传视频v2接口](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=1906&menuId=2428)（原生视频通过[工具-原生广告投放工具-本地上传接口](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2272&menuId=2819)）**直接将File文件同步上传至视频库**。\n在上传大文件场景时存在**开发者调用接口耗时长、上传偶发中断**的问题。\n\n### 上传方式\n为了解决上述问题，提升视频上传速度，MAPI新增了两种视频上传方式及对应接口：**文件流式上传、文件分片上传**。\n\n开发者可根据所上传文件的大小灵活选择：\n流式上传仍为整个视频上传，小幅提升上传速度；\n分片上传通过对视频切片并发上传，大幅提升上传速度。\n\n上传方式的主要变化是：将视频文件上传至视频的流程拆开——**先完成文件上传、再存到视频库**。\n\n### 文件上传环节\n第一步，先获取上传token和上传域名，第二步选择流式上传或者分片上传方式将文件上传，第三步领用上传token获取文件的存储位置。\n\n### 存视频库环节\n最后一步，直接通过文件的存储位置存到视频库即可。\n\n### 接入示意图\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformd8e1b84bdf85726c66350487442d2e8d.png)\n\n### 注意\n\n原有视频上传方式和接口**仍可使用**；新的视频上传方式拥有**更快的上传速度**，推荐使用。\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1713235550566
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1713235550566,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

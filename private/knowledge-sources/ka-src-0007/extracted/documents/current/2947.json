@@ -1,0 +1,245 @@
+{
+  "documentId": 2947,
+  "documentName": "创建或更新投放资质",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "创建或更新投放资质\n/rest/openapi/v1/agent/advertiser/delivery_cert/submit\n\n\nadvertiser_id  Long  广告主id\nagent_id  Long  代理商id\ncert_list  CertParam[]  投放资质列表\ncert_id  Long  资质id\ncert_category  Integer  资质类型\nfile_token  String  资质文件标识\nexpire_time  String  资质有效期\nresult  Boolean  是否成功\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1722910622559
+    }
+  ],
+  "apiId": 1318,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/agent/advertiser/delivery_cert/submit",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62319,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": "1",
+        "max": "12"
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62320,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "代理商id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "和access_token保持一致",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62321,
+      "paramName": "cert_list",
+      "paramType": "CertParam[]",
+      "example": "",
+      "description": "投放资质列表",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3442,
+      "sort": 3,
+      "note": "只传投放资质（cert_category为5)如果不填，代表删除所有投放资质",
+      "children": [
+        {
+          "paramId": 61486,
+          "paramName": "cert_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "资质id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "新增时传0，非0的只能是已有资质的id",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61487,
+          "paramName": "cert_category",
+          "paramType": "Integer",
+          "example": "",
+          "description": "资质类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "1-营业执照，必填，传1个文件，需要有效期；2-ICP备案，选填，传1个文件，永久有效，不需要有效期，expire_time可以不传或传任意值；3-投放承诺函，必填，最多10个文件，需要有效期；4行业资质，选填，最多50个文件，需要有效期；5-投放资质，选填，最多50个文件，永久有效，不需要有效期, expire_time可以不传或传任意值；开户资质接口：/rest/openapi/v1/agent/advertiser/cert/submit只能涉及开户资质1、2、3、4；投放资质接口：/rest/openapi/v1/agent/advertiser/delivery_cert/submit可以涉及全部资质1、2、3、4、5，但5只能在开户后提交",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61488,
+          "paramName": "file_token",
+          "paramType": "String",
+          "example": "",
+          "description": "资质文件标识",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "传入上传资质接口返回的file_token字段",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61489,
+          "paramName": "expire_time",
+          "paramType": "String",
+          "example": "",
+          "description": "资质有效期",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "时间格式如 yyyy-MM-dd，空字符串表示长期有效",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62322,
+      "paramName": "result",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "是否成功",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1722910622559,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

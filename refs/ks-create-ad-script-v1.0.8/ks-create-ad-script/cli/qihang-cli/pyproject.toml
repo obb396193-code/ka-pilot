@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qihang-cli"
+description = "Qihang OpenAPI CLI for material library queries / sharing / account copy."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Proprietary" }
+authors = [{ name = "Julang Agent" }]
+keywords = ["qihang", "openapi", "material", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+dependencies = []
+
+[project.scripts]
+qihang-cli = "qihang_cli.__main__:main"
+qihang = "qihang_cli.__main__:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "qihang_cli.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qihang_cli*"]

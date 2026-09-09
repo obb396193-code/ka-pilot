@@ -2,6 +2,9 @@ import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
+import { windowSize } from "./migration-window.js";
 
 // Synthetic data only. Execute on the explicitly selected isolated test database.
 const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -11,7 +14,7 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
   afterAll(async () => { await pool.end(); });
 
   it("round-trips legacy TEXT losslessly and refuses typed JSON/op loss on down", async () => {
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("012") })).toHaveLength(windowSize("012"));
     const ws = (await pool.query("INSERT INTO workspaces(name) VALUES($1) RETURNING id", [randomUUID()])).rows[0].id;
     const user = (await pool.query("INSERT INTO users(workspace_id,name) VALUES($1,'synthetic') RETURNING id", [ws])).rows[0].id;
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','legacy')", [ws]);
@@ -22,45 +25,45 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
       VALUES($1,$2,'KUAISHOU','legacy','account','legacy','budget',$3,$3)`, [change, ws, value]);
     const rows = async () => (await pool.query("SELECT from_value,to_value FROM changeset_items WHERE changeset_id=$1 ORDER BY id", [change])).rows;
     const expected = values.map((value) => ({ from_value: value, to_value: value }));
-    expect(await runMigrations({ databaseUrl, count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, count: windowSize("012") })).toHaveLength(windowSize("012"));
     expect(await rows()).toEqual(expected);
     expect((await pool.query("SELECT DISTINCT jsonb_typeof(from_value) AS kind FROM changeset_items WHERE changeset_id=$1 AND from_value IS NOT NULL", [change])).rows)
       .toEqual([{ kind: "string" }]);
     const item = (await pool.query("SELECT id FROM changeset_items WHERE changeset_id=$1 ORDER BY id LIMIT 1", [change])).rows[0].id;
     for (const value of [{ type: "number", value: 9 }, 1, false, null, [1]]) {
       await pool.query("UPDATE changeset_items SET from_value=$2::jsonb WHERE id=$1", [item, JSON.stringify(value)]);
-      await expect(runMigrations({ databaseUrl, direction: "down", count: 1 })).rejects.toThrow(/cannot downgrade losslessly/);
+      await expect(runMigrations({ databaseUrl, direction: "down", count: windowSize("012") })).rejects.toThrow(/cannot downgrade losslessly/);
       expect((await pool.query("SELECT to_regclass('agent_run_events') AS name")).rows[0].name).toBe("agent_run_events");
     }
     await pool.query("UPDATE changeset_items SET from_value=NULL WHERE id=$1", [item]);
     const coefficient = (await pool.query(`INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date)
       VALUES($1,$2,0.7812,'multiply','2026-09-01') RETURNING id`, [ws, `test-${randomUUID()}`])).rows[0].id;
-    await expect(runMigrations({ databaseUrl, direction: "down", count: 1 })).rejects.toThrow(/cannot downgrade semantics/);
+    await expect(runMigrations({ databaseUrl, direction: "down", count: windowSize("012") })).rejects.toThrow(/cannot downgrade semantics/);
     await pool.query("DELETE FROM channel_coefficients WHERE id=$1", [coefficient]);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("012") })).toHaveLength(windowSize("012"));
     expect(await rows()).toEqual(expected);
-    expect(await runMigrations({ databaseUrl, count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, count: windowSize("012") })).toHaveLength(windowSize("012"));
     expect(await rows()).toEqual(expected);
     await pool.query("DELETE FROM changeset_items WHERE changeset_id=$1", [change]);
     await pool.query("DELETE FROM changesets WHERE id=$1", [change]);
     await pool.query("DELETE FROM accounts WHERE workspace_id=$1", [ws]);
     await pool.query("DELETE FROM users WHERE workspace_id=$1", [ws]);
     await pool.query("DELETE FROM workspaces WHERE id=$1", [ws]);
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 
   it.each(["agent_messages", "agent_context_items"])("rejects legacy orphan %s without partial DDL", async (table) => {
-    await runMigrations({ databaseUrl, direction: "down", count: 1 });
+    await runMigrations({ databaseUrl, direction: "down", count: windowSize("012") });
     // table is a test-local constant, never a request identifier.
     const id = (await pool.query(`INSERT INTO ${table}(session_id) VALUES($1) RETURNING id`, [randomUUID()])).rows[0].id;
     try {
-      await expect(runMigrations({ databaseUrl, count: 1 })).rejects.toThrow(`${table} contains orphan sessions`);
+      await expect(runMigrations({ databaseUrl, count: windowSize("012") })).rejects.toThrow(`${table} contains orphan sessions`);
       expect((await pool.query(`SELECT count(*)::int AS n FROM information_schema.columns
         WHERE table_schema='public' AND table_name='alert_rules' AND column_name='condition_tree'`)).rows[0].n).toBe(0);
     } finally {
       await pool.query(`DELETE FROM ${table} WHERE id=$1`, [id]);
-      expect(await runMigrations({ databaseUrl, count: 1 })).toHaveLength(1);
+      expect(await runMigrations({ databaseUrl, count: windowSize("012") })).toHaveLength(windowSize("012"));
     }
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 
   it("enforces tenant/media mute keys, active dedupe, session idempotency, event and credential FKs", async () => {
     const wsA = (await pool.query("INSERT INTO workspaces(name) VALUES($1) RETURNING id", [randomUUID()])).rows[0].id;
@@ -107,5 +110,5 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
       await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [[wsA, wsB]]);
     }
     await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [[wsA, wsB]]);
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });

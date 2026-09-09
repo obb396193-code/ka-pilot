@@ -1,0 +1,893 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://ui.shadcn.com/docs/typeset",
+        "title": "Typeset - shadcn/ui",
+        "description": "A styling system for HTML and rendered markdown, from blog posts to streaming chat. One CSS file you own."
+      },
+      {
+        "url": "https://ui.shadcn.com/examples/tasks",
+        "title": "Tasks",
+        "description": "A task and issue tracker build using Tanstack Table."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/mcp",
+        "title": "MCP Server - shadcn/ui",
+        "description": "MCP support for registry developers"
+      },
+      {
+        "url": "https://ui.shadcn.com/create",
+        "title": "New Project - shadcn/ui",
+        "description": "Customize everything. Pick your component library, icons, base color, theme, fonts and create your own version of shadcn/ui."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/progress",
+        "title": "Progress - shadcn/ui",
+        "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/input-otp",
+        "title": "Input OTP - shadcn/ui",
+        "description": "Accessible one-time password component with copy-paste functionality."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/aspect-ratio",
+        "title": "Aspect Ratio - shadcn/ui",
+        "description": "Displays content within a desired ratio."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/dropdown-menu",
+        "title": "Dropdown Menu - shadcn/ui",
+        "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/base-nova/drawer.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/combobox",
+        "title": "Combobox - shadcn/ui",
+        "description": "Autocomplete input with a list of suggestions."
+      },
+      {
+        "url": "https://ui.shadcn.com/blocks",
+        "title": "Building Blocks for the Web - shadcn/ui",
+        "description": "Clean, modern building blocks. Copy and paste into your apps. Works with all React frameworks. Open Source. Free forever."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/calendar",
+        "title": "Calendar - shadcn/ui",
+        "description": "A calendar component that allows users to select a date or a range of dates."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/command",
+        "title": "Command - shadcn/ui",
+        "description": "Command menu for search and quick actions."
+      },
+      {
+        "url": "https://ui.shadcn.com/view/new-york-v4/dashboard-01",
+        "title": "dashboard-01 - shadcn/ui",
+        "description": "A dashboard with sidebar, charts and data table."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/legacy",
+        "title": "Legacy Docs - shadcn/ui",
+        "description": "View the legacy docs for shadcn/ui and Tailwind v3."
+      },
+      {
+        "url": "https://ui.shadcn.com/colors",
+        "title": "Tailwind Colors in Every Format - shadcn/ui",
+        "description": "The complete Tailwind color palette in HEX, RGB, HSL, CSS variables, and classes. Ready to copy and paste into your project."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/checkbox",
+        "title": "Checkbox - shadcn/ui",
+        "description": "A control that allows the user to toggle between checked and not checked."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/mcp",
+        "title": "MCP Server - shadcn/ui",
+        "description": "Use the shadcn MCP server to browse, search, and install components from registries."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/dialog.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/collapsible.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/field",
+        "title": "Field - shadcn/ui",
+        "description": "Combine labels, controls, and help text to compose accessible form fields and grouped inputs."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/dark-mode",
+        "title": "Dark Mode - shadcn/ui",
+        "description": "Adding dark mode to your site."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/checkbox",
+        "title": "Checkbox - shadcn/ui",
+        "description": "A control that allows the user to toggle between checked and not checked."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/javascript.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/popover",
+        "title": "Popover - shadcn/ui",
+        "description": "Displays rich content in a portal, triggered by a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/sidebar",
+        "title": "Sidebar - shadcn/ui",
+        "description": "A composable, themeable and customizable sidebar component."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/table",
+        "title": "Table - shadcn/ui",
+        "description": "A responsive table component."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/directory",
+        "title": "Registry Directory - shadcn/ui",
+        "description": "Discover community registries for shadcn/ui components and blocks."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/getting-started",
+        "title": "Getting Started - shadcn/ui",
+        "description": "Learn how to get setup and run your own component registry."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/dark-mode.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/blocks/login",
+        "title": "Building Blocks for the Web - shadcn/ui",
+        "description": "Clean, modern building blocks. Copy and paste into your apps. Works with all React frameworks. Open Source. Free forever., A simple login form."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components",
+        "title": "Components - shadcn/ui",
+        "description": "Here you can find all the components available in the library. We are working on adding more components."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/rtl/next",
+        "title": "Next.js - shadcn/ui",
+        "description": "Create a new Next.js project with RTL support."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2026-07-react-aria",
+        "title": "July 2026 - React Aria - shadcn/ui",
+        "description": "React Aria is now available as a component base in shadcn/ui."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/sheet",
+        "title": "Sheet - shadcn/ui",
+        "description": "Extends the Dialog component to display content that complements the main content of the screen."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/attachment",
+        "title": "Attachment - shadcn/ui",
+        "description": "Displays a file or image attachment with media, metadata, upload state, and actions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2025-09-registry-index",
+        "title": "September 2025 - Registry Index - shadcn/ui",
+        "description": "An index of open source registries that you can install items from."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/forms/next",
+        "title": "Next.js - shadcn/ui",
+        "description": "Build forms in React using useActionState and Server Actions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/_v0",
+        "title": "Open in v0 - shadcn/ui",
+        "description": "Open components in v0 for customization."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/dialog",
+        "title": "Dialog - shadcn/ui",
+        "description": "A window overlaid on either the primary window or another dialog window, rendering the content underneath inert."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/card",
+        "title": "Card - shadcn/ui",
+        "description": "Displays a card with header, content, and footer."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/date-picker",
+        "title": "Date Picker - shadcn/ui",
+        "description": "A date picker component with range and presets."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/pagination",
+        "title": "Pagination - shadcn/ui",
+        "description": "Pagination with page navigation, next and previous links."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2026-06-chat-components",
+        "title": "June 2026 - Components for Chat Interfaces - shadcn/ui",
+        "description": "MessageScroller, Message, Bubble, Attachment, and Marker. Components for building chat interfaces."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/theming",
+        "title": "Theming - shadcn/ui",
+        "description": "Using CSS variables and theme tokens."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/mcp.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/data-table",
+        "title": "Data Table - shadcn/ui",
+        "description": "Powerful table and datagrids built using TanStack Table."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/open-in-v0",
+        "title": "Open in v0 - shadcn/ui",
+        "description": "Integrate your registry with Open in v0."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/examples",
+        "title": "Examples - shadcn/ui",
+        "description": "Examples of registry items: styles, components, css vars, etc."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/vite",
+        "title": "Vite - shadcn/ui",
+        "description": "Install and configure shadcn/ui for Vite."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/badge",
+        "title": "Badge - shadcn/ui",
+        "description": "Displays a badge or a component that looks like a badge."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/next",
+        "title": "Next.js - shadcn/ui",
+        "description": "Install and configure shadcn/ui for Next.js."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/button",
+        "title": "Button - shadcn/ui",
+        "description": "Displays a button or a component that looks like a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2025-12-shadcn-create",
+        "title": "December 2025 - npx shadcn create - shadcn/ui",
+        "description": "Customize everything. Pick your component library, icons, base color, theme, fonts and create your own version of shadcn/ui."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/index.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/figma",
+        "title": "Figma - shadcn/ui",
+        "description": "Every component recreated in Figma. With customizable props, typography and icons."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/vite.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/dialog",
+        "title": "Dialog - shadcn/ui",
+        "description": "A window overlaid on either the primary window or another dialog window, rendering the content underneath inert."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation",
+        "title": "Installation - shadcn/ui",
+        "description": "How to install dependencies and structure your app."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/new-york/calendar-32.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components-json",
+        "title": "components.json - shadcn/ui",
+        "description": "Configuration for your project."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/tooltip",
+        "title": "Tooltip - shadcn/ui",
+        "description": "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/utils/scroll-fade",
+        "title": "scroll-fade - shadcn/ui",
+        "description": "Utilities for adding a fade effect to the edges of a scroll container."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components-json.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/questionnaire",
+        "title": "Questionnaire - shadcn/ui",
+        "description": "A multi-step questionnaire with single-choice, multiple-choice, freeform, and skippable questions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2026-07-base-ui-default",
+        "title": "July 2026 - Base UI as the Default - shadcn/ui",
+        "description": "New projects now use Base UI by default. Radix is still fully supported."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/card",
+        "title": "Card - shadcn/ui",
+        "description": "Displays a card with header, content, and footer."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/forms.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/empty",
+        "title": "Empty - shadcn/ui",
+        "description": "Use the Empty component to display an empty state."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/separator",
+        "title": "Separator - shadcn/ui",
+        "description": "Visually or semantically separates content."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/tabs",
+        "title": "Tabs - shadcn/ui",
+        "description": "A set of layered sections of content—known as tab panels—that are displayed one at a time."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/new-york-v4/dashboard-01.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/cli.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/context-menu",
+        "title": "Context Menu - shadcn/ui",
+        "description": "Displays a menu of actions triggered by a right click."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2025-06-radix-ui",
+        "title": "June 2025 - radix-ui Migration - shadcn/ui",
+        "description": "A new command to migrate to the new radix-ui package."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/drawer",
+        "title": "Drawer - shadcn/ui",
+        "description": "A drawer component for React."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/button.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/rtl",
+        "title": "RTL - shadcn/ui",
+        "description": "Right-to-left support for shadcn/ui components."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/cli",
+        "title": "shadcn - shadcn/ui",
+        "description": "Use the shadcn CLI to add components to your project."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/select",
+        "title": "Select - shadcn/ui",
+        "description": "Displays a list of options for the user to pick from—triggered by a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2026-05-registry-include",
+        "title": "May 2026 - Registry Include and Validate - shadcn/ui",
+        "description": "Organize and validate source registries."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/tabs",
+        "title": "Tabs - shadcn/ui",
+        "description": "A set of layered sections of content—known as tab panels—that are displayed one at a time."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog",
+        "title": "Changelog - shadcn/ui",
+        "description": "Latest updates and announcements."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/chart.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2025-08-cli-3-mcp",
+        "title": "August 2025 - shadcn CLI 3.0 and MCP Server - shadcn/ui",
+        "description": "Namespaced registries, advanced authentication, new commands and a completely rewritten registry engine."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/registry-item-json",
+        "title": "registry-item.json - shadcn/ui",
+        "description": "Specification for registry items."
+      },
+      {
+        "url": "https://ui.shadcn.com/rss.xml"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/toast",
+        "title": "Toast - shadcn/ui",
+        "description": "A succinct message that is displayed temporarily."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/avatar",
+        "title": "Avatar - shadcn/ui",
+        "description": "An image element with a fallback for representing the user."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs",
+        "title": "Introduction - shadcn/ui",
+        "description": "shadcn/ui is a set of beautifully-designed, accessible components and a code distribution platform. Works with your favorite frameworks and AI models. Open S..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2023-06-new-cli",
+        "title": "June 2023 - New CLI, Styles and more - shadcn/ui",
+        "description": "Complete CLI rewrite with new styles, theming options, and more."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/input-group.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/base-nova/collapsible.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/new-york-v4/table.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/accordion",
+        "title": "Accordion - shadcn/ui",
+        "description": "A vertically stacked set of interactive headings that each reveal a section of content."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/command",
+        "title": "Command - shadcn/ui",
+        "description": "Command menu for search and quick actions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2026-05-rhea",
+        "title": "May 2026 - Introducing Rhea - shadcn/ui",
+        "description": "A more compact Luma. Smaller spacing. Denser surfaces. Built for focused product interfaces."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/navigation-menu",
+        "title": "Navigation Menu - shadcn/ui",
+        "description": "A collection of links for navigating websites."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/react-router",
+        "title": "React Router - shadcn/ui",
+        "description": "Install and configure shadcn/ui for React Router."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/empty",
+        "title": "Empty - shadcn/ui",
+        "description": "Use the Empty component to display an empty state."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry",
+        "title": "Introduction - shadcn/ui",
+        "description": "Run your own code registry."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/rtl/vite",
+        "title": "Vite - shadcn/ui",
+        "description": "Create a new Vite project with RTL support."
+      },
+      {
+        "url": "https://ui.shadcn.com/schema.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/charts/area",
+        "title": "Beautiful Charts & Graphs - shadcn/ui",
+        "description": "A collection of ready-to-use chart components built with Recharts. From basic charts to rich data displays, copy and paste into your apps."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/badge",
+        "title": "Badge - shadcn/ui",
+        "description": "Displays a badge or a component that looks like a badge."
+      },
+      {
+        "url": "https://ui.shadcn.com/llms.txt"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/skeleton",
+        "title": "Skeleton - shadcn/ui",
+        "description": "Use to show a placeholder while content is loading."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/namespace",
+        "title": "Namespaces - shadcn/ui",
+        "description": "Configure and use multiple resource registries with namespace support."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/theming.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/data-table",
+        "title": "Data Table - shadcn/ui",
+        "description": "Powerful table and datagrids built using TanStack Table."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/helpers/ai-sdk",
+        "title": "AI SDK - shadcn/ui",
+        "description": "Create AI SDK messages and stream predefined conversations through useChat without a model, API route, network request, or API key."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/skills",
+        "title": "Skills - shadcn/ui",
+        "description": "Give your AI assistant deep knowledge of shadcn/ui components, patterns, and best practices."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/toggle-group",
+        "title": "Toggle Group - shadcn/ui",
+        "description": "A set of two-state buttons that can be toggled on or off."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/radix-nova/drawer.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/chart",
+        "title": "Chart - shadcn/ui",
+        "description": "Beautiful charts. Built using Recharts. Copy and paste into your apps."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/changelog/2026-03-cli-v4",
+        "title": "March 2026 - shadcn/cli v4 - shadcn/ui",
+        "description": "More capable, easier to use. Built for you and your coding agents. Skills, presets, dry run, new templates, monorepo and more."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/base-nova/chart.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/progress",
+        "title": "Progress - shadcn/ui",
+        "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/monorepo",
+        "title": "Monorepo - shadcn/ui",
+        "description": "Using shadcn/ui components and CLI in a monorepo."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/spinner",
+        "title": "Spinner - shadcn/ui",
+        "description": "An indicator that can be used to show a loading state."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/table",
+        "title": "Table - shadcn/ui",
+        "description": "A responsive table component."
+      },
+      {
+        "url": "https://ui.shadcn.com/r/styles/new-york/calendar-20.json"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/scroll-area",
+        "title": "Scroll Area - shadcn/ui",
+        "description": "Augments native scroll functionality for custom, cross-browser styling."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/calendar",
+        "title": "Calendar - shadcn/ui",
+        "description": "A calendar component that allows users to select a date or a range of dates."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/item",
+        "title": "Item - shadcn/ui",
+        "description": "A versatile component for displaying content with media, title, description, and actions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/button",
+        "title": "Button - shadcn/ui",
+        "description": "Displays a button or a component that looks like a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/alert",
+        "title": "Alert - shadcn/ui",
+        "description": "Displays a callout for user attention."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/collapsible",
+        "title": "Collapsible - shadcn/ui",
+        "description": "An interactive component which expands/collapses a panel."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/message-scroller",
+        "title": "Message Scroller - shadcn/ui",
+        "description": "A chat scroll container that anchors turns, opens saved transcripts, follows streamed responses, loads history without jumping, and jumps to any message."
+      },
+      {
+        "url": "https://ui.shadcn.com/blocks/sidebar",
+        "title": "Building Blocks for the Web - shadcn/ui",
+        "description": "Clean, modern building blocks. Copy and paste into your apps. Works with all React frameworks. Open Source. Free forever., A simple sidebar with navigation g..."
+      },
+      {
+        "url": "https://ui.shadcn.com",
+        "title": "The Foundation for your Design System - shadcn/ui",
+        "description": "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/dark-mode/next",
+        "title": "Next.js - shadcn/ui",
+        "description": "Adding dark mode to your Next.js app."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/data-table.md"
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/select",
+        "title": "Select - shadcn/ui",
+        "description": "Displays a list of options for the user to pick from—triggered by a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/bubble",
+        "title": "Bubble - shadcn/ui",
+        "description": "Displays conversational content in a message bubble. Supports variants, alignment, grouping, reactions, and collapsible content."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/dropdown-menu",
+        "title": "Dropdown Menu - shadcn/ui",
+        "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/collapsible",
+        "title": "Collapsible - shadcn/ui",
+        "description": "An interactive component which expands/collapses a panel."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/direction",
+        "title": "Direction - shadcn/ui",
+        "description": "A provider component that sets the text direction for your application."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/message",
+        "title": "Message - shadcn/ui",
+        "description": "Displays a message in a conversation, with optional avatar, header, footer, and alignment."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/forms/react-hook-form",
+        "title": "React Hook Form - shadcn/ui",
+        "description": "Build forms in React using React Hook Form and Zod."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/sidebar",
+        "title": "Sidebar - shadcn/ui",
+        "description": "A composable, themeable and customizable sidebar component."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/tailwind-v4",
+        "title": "Tailwind v4 - shadcn/ui",
+        "description": "How to use shadcn/ui with Tailwind v4 and React 19."
+      },
+      {
+        "url": "https://ui.shadcn.com/typeset",
+        "title": "Typeset - Shadcn UI",
+        "description": "In this guide, you will learn how to use the useChat hook to create a chatbot application with real-time message streaming."
+      },
+      {
+        "url": "https://ui.shadcn.com/examples/rtl",
+        "title": "RTL - Shadcn UI",
+        "description": "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/_blocks",
+        "title": "Blocks - shadcn/ui",
+        "description": "A block can be a single component (eg. a variation of a ui component) or a complex component (eg. a dashboard) with multiple components, hooks, and utils."
+      },
+      {
+        "url": "https://ui.shadcn.com/blocks/authentication",
+        "title": "Building Blocks for the Web - shadcn/ui",
+        "description": "Clean, modern building blocks. Copy and paste into your apps. Works with all React frameworks. Open Source. Free forever."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/new",
+        "title": "Your project is ready! - Shadcn UI",
+        "description": "Customize Your Theme#. You can edit your theme directly in your CSS file. Learn more about Theming and how to use CSS variables or utility classes. If you want ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/blocks/signup",
+        "title": "Signup - Building Blocks for the Web - shadcn/ui",
+        "description": "Clean, modern building blocks. Copy and paste into your apps. Works with all React frameworks. Open Source. Free forever. Browse BlocksView Components."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/javascript",
+        "title": "JavaScript - shadcn/ui",
+        "description": "How to use shadcn/ui with JavaScript."
+      },
+      {
+        "url": "https://ui.shadcn.com/charts/radar",
+        "title": "Radar Charts - Beautiful Charts & Graphs - shadcn/ui",
+        "description": "A collection of ready-to-use chart components built with Recharts. From basic charts to rich data displays, copy and paste into your apps. Browse ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/forms",
+        "title": "Forms - Shadcn UI",
+        "description": "Build forms with React and shadcn/ui. Pick Your Framework#. Start by selecting your framework. Then follow the instructions to learn how to build forms with ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/charts/bar",
+        "title": "Bar Charts - Beautiful Charts & Graphs - shadcn/ui",
+        "description": "A collection of ready-to-use chart components built with Recharts. From basic charts to rich data displays, copy and paste into your apps. Browse ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/examples/playground",
+        "title": "Playground - Shadcn UI",
+        "description": "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code."
+      },
+      {
+        "url": "https://ui.shadcn.com/charts/line",
+        "title": "Line Charts - Beautiful Charts & Graphs - shadcn/ui",
+        "description": "A collection of ready-to-use chart components built with Recharts. From basic charts to rich data displays, copy and paste into your apps. Browse ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/examples/authentication",
+        "title": "Authentication - Shadcn UI",
+        "description": "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/react/questionnaire",
+        "title": "Questionnaire - shadcn/ui",
+        "description": "Questionnaire is an unstyled form primitive for presenting one question at a time. It manages answers, progress, validation, and navigation."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/forms/formisch",
+        "title": "Formisch - Shadcn UI",
+        "description": "Build forms in React using Formisch and Valibot."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/authentication",
+        "title": "Authentication - Shadcn UI",
+        "description": "Authentication lets you run private registries, control who can access your components, and give different teams or users different content. This guide shows ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/tanstack",
+        "title": "TanStack Start - Shadcn UI",
+        "description": "Build Your Preset#. Open shadcn/create and build your preset visually. Choose your style, colors, fonts, icons, and more. Open shadcn/ ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/package-imports",
+        "title": "Package Imports - Shadcn UI",
+        "description": "The shadcn CLI supports package imports for installing components, rewriting imports, and resolving third-party registries. Package imports let you use ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/react-19",
+        "title": "Next.js 15 + React 19 - Shadcn UI",
+        "description": "To make it easy for you to track the progress of the upgrade, here is a table with the React 19 support status for the shadcn/ui dependencies."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/utils/shimmer",
+        "title": "shimmer - Shadcn UI",
+        "description": "Utilities for adding a shimmer effect to text elements."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/laravel",
+        "title": "Laravel - Shadcn UI",
+        "description": "Open shadcn/create and build your preset visually. Choose your style, colors, fonts, icons, and more. Open shadcn/create. Run the Command ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/chart",
+        "title": "Chart - Shadcn UI",
+        "description": "Introducing Charts. A collection of chart components that you can copy and paste into your apps. Charts are designed to look great out of the box."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/registry/faq",
+        "title": "FAQ - shadcn/ui",
+        "description": "The CLI will update the project CSS file. Once updated, the new colors will be available to be used as utility classes: bg-brand and text-brand-accent ."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/remix",
+        "title": "Remix - shadcn/ui",
+        "description": "Install and configure shadcn/ui for Remix. Note: This guide is for Remix. For React Router, see the React Router guide. Create project#."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/installation/astro",
+        "title": "Astro - Shadcn UI",
+        "description": "Build Your Preset#. Open shadcn/create and build your preset visually. Choose your style, colors, fonts, icons, and more. Open shadcn/ ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/rtl/start",
+        "title": "TanStack Start - Shadcn UI",
+        "description": "Create a new TanStack Start project with RTL support."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/aria/accordion",
+        "title": "Accordion - Shadcn UI",
+        "description": "A vertically stacked set of interactive headings that each reveal a section of content."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/direction",
+        "title": "Direction - Shadcn UI",
+        "description": "A provider component that sets the text direction for your application."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/field",
+        "title": "Field - shadcn/ui",
+        "description": "Combine labels, controls, and help text to compose accessible form fields and grouped inputs."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/marker",
+        "title": "Marker - shadcn/ui",
+        "description": "The Marker component displays inline conversation markers such as status updates, system notes, bordered rows, and labeled separators. Compose it with Message ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/carousel",
+        "title": "Carousel - Shadcn UI",
+        "description": "A carousel with motion and swipe built using Embla."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/breadcrumb",
+        "title": "Breadcrumb - shadcn/ui",
+        "description": "Displays the path to the current resource using a hierarchy of links."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/popover",
+        "title": "Popover - Shadcn UI",
+        "description": "A simple popover with a header, title, and description. Open Popover. Copy. import { Button } from \"@/components/ui/button\" import ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/dark-mode/astro",
+        "title": "Astro - shadcn/ui",
+        "description": "Astro · Create an inline theme script# · Add a mode toggle# · Display the mode toggle#. Place a mode toggle on your site to toggle between light and dark ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/react/message-scroller",
+        "title": "Message Scroller - Shadcn UI",
+        "description": "MessageScroller.Button#. A button that scrolls to the start or end of the transcript. It is inert and removed from the tab order when there is nothing to scroll ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/attachment",
+        "title": "Attachment - shadcn/ui",
+        "description": "Displays a file or image attachment with media, metadata, upload state, and actions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/carousel",
+        "title": "Carousel - Shadcn UI",
+        "description": "A carousel with motion and swipe built using Embla."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/base/breadcrumb",
+        "title": "Breadcrumb - shadcn/ui",
+        "description": "Displays the path to the current resource using a hierarchy of links."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/drawer",
+        "title": "Drawer - Shadcn UI",
+        "description": "A drawer component for React."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/questionnaire",
+        "title": "Questionnaire - Shadcn UI",
+        "description": "A multi-step questionnaire with single-choice, multiple-choice, freeform, and skippable questions."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/aria/avatar",
+        "title": "Avatar - Shadcn UI",
+        "description": "The AvatarGroup component displays a group of avatars with overlapping styling. Prop, Type, Default. className, string, -. AvatarGroupCount#. The ..."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/select",
+        "title": "Select - shadcn/ui",
+        "description": "Displays a list of options for the user to pick from—triggered by a button."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/radix/input",
+        "title": "Input - shadcn/ui",
+        "description": "A text input component for forms and user data entry with built-in styling and accessibility features."
+      },
+      {
+        "url": "https://ui.shadcn.com/docs/components/combobox",
+        "title": "Combobox - shadcn/ui",
+        "description": "Autocomplete input with a list of suggestions."
+      },
+      {
+        "url": "https://ui.shadcn.com/examples/dashboard",
+        "title": "The Foundation for your Design System - shadcn/ui",
+        "description": "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code."
+      }
+    ]
+  }
+}

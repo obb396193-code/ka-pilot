@@ -1,0 +1,80 @@
+## 操作入口
+
+团队空间——应用——应用订阅
+
+## 操作流程
+
+### 创建一个 HTTP 服务
+
+1. 传统应用或 FaaS 应用，都需要创建一个 HTTP POST 服务
+1. 本地测试完成业务逻辑，如果本地测试通过，则可以进行下个环节
+
+
+注意事项：
+
+1. HTTP Request Body 为[《O2 Space 统一事件对象》](https://yuque.antfin.com/docs/share/1524f247-c9ef-44bf-9452-c86d9557519a?# )第二节“真实例子”，可使用该信息进行自定义操作
+1. 后续审计环节强依赖返回值，所以返回值需要遵守以下规范。
+接口返回数据说明：
+
+```
+interface IResult<T> {
+  error: string
+  data: T
+}
+```
+接口返回数据示例：
+
+```
+async echo(@Body(ALL) body) {
+  this.ctx.logger.info('echo fn, body is: ', JSON.stringify(body));
+  return {
+    error: '',
+    data: `echo ${JSON.stringify(body)}`
+  };
+}
+```
+判断成功执行的条件是： `result.error.length === 0`
+
+### 将 POST 服务注册到 O2 网关
+
+1. 传统应用参考 [帮助文档](https://defgw-console.fc.alibaba-inc.com/docs/service)；faas参考 [帮助文档](https://defgw-console.fc.alibaba-inc.com/docs/service#faasServiceJoin)
+1. 如果通过网关 sdk 调用可以正常工作，意味着网关注册成功，则可以进行下个环节
+### 在 O2 Space 平台添加订阅
+
+1. 填写订阅用途、订阅范围、网关地址、订阅环境信息
+(https://o2-img.alistatic.com/i/i09blZ/9Fjicx4qkenyZ06UhlJWl-af2c940e54.png)
+
+
+- 订阅范围：
+	- 全量应用：即选择团队下所有应用
+	- 自定义范围：选择部分应用类型、或选择部分应用
+- 网关地址：`/v1.0/${路径}`
+(https://o2-img.alistatic.com/i/i09blZ/3jf8uNn4GpSdvyNDZfnwN-d75272581a.png)
+
+
+
+
+### 审核中与已上架
+
+(https://o2-img.alistatic.com/i/i09blZ/Xdp5xIzbA3GuoTfC1cY7X-743fe5208f.png)
+
+
+- 审核中：可点击审批单查看审批进度
+- 已上架：表示发布订阅已生效
+### 查看日志
+
+订阅信息右侧“日志”按钮，可以查看具体的调用日志
+
+(https://o2-img.alistatic.com/i/i09blZ/utkGgyywmEMQ9fhvoVQGO-d7815e8e64.png)
+
+
+
+
+(https://o2-img.alistatic.com/i/i09blZ/l2oMDeYfzYXvlUNYElF4Z-47e4e18018.png)
+
+
+## 注意事项
+
+- 团队中所有成员都可以查看订阅、查看日志；团队管理员可以添加、编辑、删除订阅
+- 审核过程中暂不支持编辑、删除操作，生效后可进行编辑、删除操作
+- 每个团队最多可添加 5 个发布订阅

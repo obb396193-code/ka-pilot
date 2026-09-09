@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><h2 data-id=\"h490b8bf-0M4iUC78\" id=\"link-0\"><span style=\"color: #333333;\">概念介绍</span></h2><p data-id=\"p838747a-fGfiervw\"><span style=\"color: #333333;\">创意组件：单元在客户端端展示时的附加内容，有更为创新的形态和表达方式。</span></p><h2 data-id=\"h490b8bf-sl2LTEKc\" id=\"link-1\"><span style=\"color: #333333;\">流程简述</span></h2><p data-id=\"p838747a-Ksct72vH\"><span style=\"color: #333333;\">创建创意组件</span></p><p data-id=\"p838747a-AQ4O9caN\"><span style=\"color: #333333;\">通过调用&nbsp;</span><a href=\"https://open.oceanengine.com/labels/7/docs/1696710672391183\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\"><span style=\"color: #20b2aa;\">【创建创意组件】</span></a><span style=\"color: #333333;\">&nbsp;接口，可以创建创意组件，在创编流程中使用</span></p><p data-id=\"p838747a-va6gVqSq\"><span style=\"color: #333333;\">查询创意组件</span></p><p data-id=\"p838747a-e3FGkFUF\">对于创建完成的创意组件，可以通过<a href=\"https://open.oceanengine.com/labels/7/docs/1696710673645580\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">【查询创意组件】</a>进行信息查询，查询到的组件信息</p><p data-id=\"p838747a-3HbJ2SPy\"><span style=\"color: #333333;\">更新创意组件</span></p><p data-id=\"p838747a-IsrUo9nu\">如果对于创建的创意组件进行信息变更，可以通过<a href=\"https://open.oceanengine.com/labels/7/docs/1696710673083407\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">&nbsp;【更新创意组件】</a>接口进行修改</p><p data-id=\"p838747a-HRgzgmfX\"><span style=\"color: #333333;\">创建单元和创意</span></p><p data-id=\"p838747a-hIakpad3\">组件创建完成之后才可以在创建计划，创建创意的时候使用</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "创意组件"
+}

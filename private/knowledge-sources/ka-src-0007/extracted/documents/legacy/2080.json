@@ -1,0 +1,42 @@
+{
+  "documentId": 2080,
+  "documentName": "4.8.1创建历史数据查询任务",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建历史数据查询任务\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/async_task/create\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 描述                                                                   |\n| ------------- | ------ | ---------------------------------------------------------------------- |\n| advertiser_id | long   | 广告主 ID（注：非账户快手 ID），在获取 accessToken 时返回              |\n| task_name     | string | 任务名称，最大不超过 50字符，不能为空；每个账户提交的任务名称不能重复 |\n| task_params   | struct | 报表任务参数，详见下方                                                 |\n\n### task_params\n\n| 字段                 | 类型    | 是否必填 | 说明             | 备注                                                                                                                                                              |\n| -------------------- | ------- | -------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| start_date           | string  | 必填     | 查询开始日期     | 格式如：yyyy-MM-dd，时间跨度不能超过 6 个月                                                                                                                       |\n| end_date             | string  | 必填     | 查询结束日期     | 格式如：yyyy-MM-dd，不大于查询开始日期                                                                                                                            |\n| view_type            | int     | 必填     | 查询维度         | 1：账户维度查询，2: 广告计划维度查询，3：广告组维度查询，4：广告创意维度查询(自定义创意) 5：视频报表 报表 7：封面报表 8：便利贴报表 10：程序化创意 2.0 报表 21：关键词报表 25：搜索词报表 |\n| campaign_ids         | long[]  | 可选     | 广告计划 ID 集   |                                                                                                                                                                   |\n| unit_ids             | long[]  | 可选     | 广告组 ID 集     |                                                                                                                                                                   |\n| word_info_ids             | long[]  | 可选     | 推广关键词ID集，过滤筛选条件，单次查询数量不超过 5000,推广关键词ID集可通过获取关键词列表接口获取     |       仅veiw_type=21,25可使用                                                                                                                                                            |\n| query             | string[]  | 可选     | 用户搜索词，过滤筛选条件，单次查询数量不超过5000     |     仅view_type=25可使用                                                                                                                                                              |\n| creative_ids         | long[]  | 可选     | 广告创意 ID 集   |                                                                                                                                                                   |\n| photo_ids(可选)      | long[]  | 可选     | 视频 ID 集       | 仅 view_type=5、7、8 可使用                                                                                                                                       |\n| cover_ids(可选)      | long[]  | 可选     | 封面 ID 集       | 仅 view_type=5、7、8 可使用                                                                                                                                       |\n| virtual_creative_ids | long[]  | 可选     | 程序化创意 ID 集 | 进行 virtual_creative_id 的筛选                                                                                                                                   |\n| report_dims          | string  | 可选     | 投放场景         | \"adScene\"：按广告场景；\"placementType\"：按广告范围，快手/联盟;不传/传空/传空数组：不限                                                                            |\n| temporal_granularity | string  | 可选     | 时间粒度         | “DAILY”：天粒度；“HOURLY”：小时粒度；默认按天粒度进行聚合                                                                                                         |\n| ~~status~~           | ~~int~~ | ~~可选~~ | ~~状态~~         | ~~1：投放中；2：已暂停；3：已删除~~                                                                                                                               |\n| selected_columns | string[] | 可选     | 自定义列|仅view_type=21或25支持使用，支持列名及其关联字段详见：https://docs.qingque.cn/d/home/eZQB-fLBIZLvGG50L7vFkHL3J?identityId=1oE314hFZmG |\n\n### 返回参数\n\n| 字段          | 类型   | 说明        | 备注 |\n| ------------- | ------ | ----------- | ---- |\n| code          | int    | 返回码      |      |\n| message       | string | 返回信息    |      |\n| data          | struct | JSON 返回值 |      |\n| advertiser_id | long   | 广告主 ID   |      |\n| task_id       | long   | 任务 ID     |      |\n\n### 请求样例\n\n```\n{\n    \"advertiser_id\": 20000681,\n    \"task_name\": \"Z异步数据指标拉齐-027\",\n    \"task_params\": {\n            \"start_date\": \"2022-02-07\",\n            \"end_date\": \"2022-02-15\",\n            \"view_type\": 25,\n            \"query\": [\"无糖拿铁\"],\n            \"temporal_granularity\": \"DAILY\"\n    }\n}\n\n{\n    \"advertiser_id\": 20000681,\n    \"task_name\": \"Z异步数据指标拉齐-028\",\n    \"task_params\": {\n            \"start_date\": \"2022-02-07\",\n            \"end_date\": \"2022-02-15\",\n            \"view_type\": 21,\n            \"word_info_ids\": [\"2800010\"],\n            \"temporal_granularity\": \"DAILY\"\n    }\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"advertiser_id\": 20000681,\n        \"task_id\": 1230104\n    },\n    \"request_id\": \"a1ad2f9a5dbd4450946ad85e9f7441e1\"\n}\n\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1706583926853
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1706583926853,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

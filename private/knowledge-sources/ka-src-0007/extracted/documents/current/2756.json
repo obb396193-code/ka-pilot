@@ -1,0 +1,197 @@
+{
+  "documentId": 2756,
+  "documentName": "智能托管删除接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721702645152
+    }
+  ],
+  "apiId": 68,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/hosting/project/delete",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 2564,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "advertiser_id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 2565,
+      "paramName": "project_ids",
+      "paramType": "Long[]",
+      "example": "1,2",
+      "description": "项目id集合",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 2566,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 2567,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "message",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 2568,
+      "paramName": "data",
+      "paramType": "AdHostingUpdatePutStatusResultForGateway",
+      "example": "",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 156,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 2553,
+          "paramName": "invalid_project_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "无效的projectIds，比如数字不正确或者不属于当前用户等。",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721702645152,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

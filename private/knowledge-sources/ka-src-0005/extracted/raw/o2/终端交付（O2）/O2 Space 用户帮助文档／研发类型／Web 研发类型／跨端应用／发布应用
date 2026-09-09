@@ -1,0 +1,44 @@
+应用的发布基于迭代，在发布前需要创建迭代。迭代中支持多分支集成，可以在迭代中添加多个变更，一起进行发布。
+
+## 新建迭代
+
+可以通过迭代列表的新建迭代来新建一个迭代。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qhkohe2y6886f0cs/imgceARv3kJO5.png)
+
+
+需要完善迭代名称、主干（一般是 master）、版本号信息。迭代中必须包含一个变更（可以有多个），创建迭代时可以同时添加变更到迭代。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qhkohe2y6886f0cs/imgOcqwyeatuP.png)
+
+
+注意：跨端应用的发布还需要确定应用是否有权限在站点下进行资源发布，创建应用后请及时跟进应用接入站点审批单，以免无法进行发布。
+
+## 发布流程
+
+发布主要包括：预发发布，线上发布，如果开启了灰度功能，还需要进行灰度放量。
+
+预发发布可以随时进行发布，如果有多个迭代在预发阶段，则最新的预发发布结果将会覆盖掉预发的资源内容。
+
+准备好上线后需要进行线上发布（取决于“安全生产”配置，线上发布可能需要提交 cf、cr 等前置操作）。同时只有一个迭代能进行线上发布（如果有迭代在灰度，其他迭代禁止发布线上）。线上发布后，代码会被 merge 到主干（master）分支，并进入灰度过程。全量发布或是取消灰度后，本次迭代完结。
+
+关于灰度操作的详细内容，可以参考 [灰度放量](https://alidocs.dingtalk.com/i/nodes/6LeBq413JA9BOdm2i0Ad0wD7JDOnGvpb?utm_scene=team_space) 
+
+## 结果查看
+
+发布后可以通过“页面部署”的节点中查看页面的可访问链接。注意：发布结果中的结果是本次发布的结果，发布后就不会再更新。如果应用修改了域名或是域名的路由配置，则需要重新部署后才会展示新的链接。
+
+在进行投放时，请使用线上发布后的页面地址，不要使用 assets 的地址进行投放。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qhkohe2y6886f0cs/img0zSfblyc8t.png)
+
+
+也可以通过【应用详情-页面】查看应用下发布过的所有页面。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qhkohe2y6886f0cs/imgpilYwmZdbj.png)
+
+
+## 产物约定
+
+请参见 [http://help.o2.alibaba-inc.com/docs/558](http://help.o2.alibaba-inc.com/docs/558)
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2303,
+  "documentName": "工具-投前预估-4-投前预估任务管理",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 投前预估任务管理\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/management](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/management)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 123 | 必填 | 广告主id |  |\n| management_type | int | 1 | 必填 | 管理类型 |  |\n| predication_ids | long[] | [23] | 必填 | 投前任务ids |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | int | 0 | 响应状态码 |  |\n| message | string | \"OK\" | 返回信息 |  |\n| request_id | string |    | 请求ID  |   |\n| data | struct |  | 投前预估创建结果 |  |\n| &#8195;successful | long | 1 | 成功数量 |  |\n| &#8195;failed | long | 0 | 失败数量 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 11440033,\n    \"predication_ids\": [60290963],\n    \"management_type\": 1\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"failed\": 0,\n        \"successful\": 1\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"0426b977221740af87a6171d8a2d623e\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677501714151
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677501714151,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

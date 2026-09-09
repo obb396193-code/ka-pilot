@@ -1,0 +1,223 @@
+{
+  "documentId": 3324,
+  "documentName": "代理商-广告主可转/退金额查询",
+  "documentType": 2,
+  "description": "<p>该接口用于查询广告主可转/退金额，可转/退金额存在消耗押款逻辑，具体可咨询销运同学。</p><p>广告主ID需要有直接归属关系，例如一代代理商只能查询未分配给子端口的账户，子端口只能查询已分配给自身的账户。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "代理商-广告主可转/退金额查询\n/rest/openapi/gw/agent/v1/finance/account/can/decrease/query\n\n\nagent_id  Long  <p>代理商id</p>\nadvertiser_id  Long  <p>广告主id</p>\nrefund_type  Integer  <p>退款/转账类型</p>\ncode  Integer  <p>响应code</p>\nmessage  String  <p>响应msg</p>\ndata  RefundTransferAmountResp  <p>响应内容</p>\namount  Long  <p>可转/退金额</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1764837120066
+    }
+  ],
+  "apiId": 1767,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/account/can/decrease/query",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79249,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79243,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "一代代理商只能查未分配给子端口广告主，子端口只能查已经分配给自己的广告主",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79244,
+      "paramName": "refund_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>退款/转账类型</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "1-现金转账，2-信用转账，3-框返转账，4-激励转账，6-信用+现金转账",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 79245,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "<p>响应code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79246,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "OK",
+      "description": "<p>响应msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79247,
+      "paramName": "data",
+      "paramType": "RefundTransferAmountResp",
+      "example": "",
+      "description": "<p>响应内容</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4493,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 79248,
+          "paramName": "amount",
+          "paramType": "Long",
+          "example": "10000",
+          "description": "<p>可转/退金额</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "单位：厘",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1764837120066,
+  "creator": "chenyang11",
+  "fullContext": null
+}

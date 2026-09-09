@@ -1,0 +1,54 @@
+{
+  "documentId": 2505,
+  "documentName": " 接口4：获取上传token及上传域名",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "#  获取上传token及上传域名\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/ad/common/upload/token/generate\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|          字段          |   类型   |        是否必填        |                 说明                 |                                                                                            备注                                                                                             |\n| :--------------------: | :------: | :--------------------: | :----------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|     advertiser_id      |   long   |          必填          |              广告主 ID               |                                                                               在获取 access_token 的时候返回                                                                                |\n|       file_type        |   string |          必填          |     文件类型，视频文件传 \"mp4\"          |\n\n### 返回参数\n\n| 字段      | 类型   | 说明            | 备注 |\n| --------- | ------ | --------------- | ---- |\n| code          | int    | 返回码          |      |\n| message       | string | 返回信息        |      |\n| data          | struct | JSON 返回值     |      |\n| upload_token  | string | 文件上传token   |      |\n| endpoint      | string | 文件上传的域名   |      |\n\n### 请求样例\n\n```\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/ad/common/upload/token/generate' \\\n--header 'Access-Token: xxxxxx' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 11111,\n    \"file_type\": \"mp4\"\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\"\n  \t\"data\": {\n        \t\"upload_token\": \"xxxx\"\n      \t\t\"endpoint\": [\"upload.kuaishouzt.com\"]\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1711957249030
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1711957249030,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

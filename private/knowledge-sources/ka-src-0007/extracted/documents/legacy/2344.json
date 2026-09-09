@@ -1,0 +1,42 @@
+{
+  "documentId": 2344,
+  "documentName": "共享授权-获取已共享授权授权记录",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 共享授权-获取已共享授权授权记录\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shareAccount/authorizeInfo](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shareAccount/authorizeInfo)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| kol_user_id | Long |  | 必填 | 达人ID |  |\n| advertiser_id | Long |  | 必填 | advertiser_id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 查询结果 0查询失败。1查询成功 |  |\n| message | String | \"OK\" | 状态信息 |  |\n| data | KwaiUserAuthorizeInfoSnake425[] |  | 授权记录信息 |  |\n| &#8195;user_id | Long |  | 用户id |  |\n| &#8195;kol_status | Integer |  | 快手号授权状态1 待达人确认2 达人已确认3 授权生效中4 达人拒绝授权5 达人超时未确认6 授权过期7 授权终止 |  |\n| &#8195;valid_start_time | Long | 0 | 授权开始时间，不限时间时为0 |  |\n| &#8195;valid_end_time | Long | 0 | 授权结束时间，不限时间时为0 |  |\n| &#8195;user_info | UserProfileView |  | 用户信息 |  |\n| &#8195;valid_type | Integer |  | 授权类型，1固定时间，2不限时间 |  |\n| &#8195;kol_user_type | Integer | 1 | 达人类型 1普通快手号达人 2 蓝V服务号 |  |\n| &#8195;auth_id | Long | 123 | 共享授权记录ID |  |\n| &#8195;account_id | Long |  | 账户ID |  |\n| &#8195;component_status | Integer |  | 组件授权状态 0待审核 1审核通过  2审核拒绝 3未授权 4已终止 |  |\n\n### 请求样例\n\n```js\nnull\n```\n\n### 返回样例\n\n```\nnull\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698138223363
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698138223363,
+  "creator": "zoujiaxiang",
+  "fullContext": null
+}

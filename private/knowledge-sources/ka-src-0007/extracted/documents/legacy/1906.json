@@ -1,0 +1,42 @@
+{
+  "documentId": 1906,
+  "documentName": "5.2.2上传视频接口 v2",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 上传视频接口 v2\n**📢 注意：此接口新增 blob_store_key参数。**\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/video/upload\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n|          字段          |   类型   |        是否必填        |                 说明                 |                                                                                            备注                                                                                             |\n| :--------------------: | :------: | :--------------------: | :----------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|     advertiser_id      |   long   |          必填          |              广告主 ID               |                                                                               在获取 access_token 的时候返回                                                                                |\n|          file          |   file   |          非必填        |               视频文件               |                只支持 mp4 格式，详细要求见附录。   **注意：file文件方式和[blob_store_key方式](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2504&menuId=3194)二选一填写**                                   |\n|      blob_store_key    | string   |         非必填         |             视频存储地址令牌          |  填写该字段时需要先使用文件流式上传或分片上传。**注意：file文件方式和[blob_store_key方式](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2504&menuId=3194)二选一填写**\n|       signature        |  string  |          必填          |             视频 md5 值              |                  用于服务端校验。**注意：保证与所上传视频文件或者[blob_store_key](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2504&menuId=3194)对应，请勿重复上传**                            |\n|          type          |   int    |          可选          |             上传视频类型             | 1：信息流竖版视频（默认） 2：信息流横版视频 3：后贴片竖版视频（已下线） 4：后贴片横版视频（已下线） 5: 开屏视频-720 *1280 6: 开屏视频-720 *1440 7: 开屏视频-720 *1520 8: 开屏视频-720 *1560 9: 开屏视频-720 *1280~1080 *1920 （加白使用）|\n|       photo_name       |  string  |         非必填         |       视频名称，默认是视频 id        |                                                                            不超过 50 字符，若不传默认为文件名称                                                                             |\n|       photo_tag        | string[] |         非必填         |               视频标签               |                                                                            单个标签不超过 10 字符，支持一个标签                                                                             |\n|          sync          |   int    |         非必填         |       用同步/异步方式上传视频        |                                                      0:(默认)以异步方式上传，不需要同步等待，上传较快。1:(选填)同步方式上传，上传较慢                                                       |\n| shield_backward_switch | boolean  | 非必须，后端默认 false | 上传视频后是否自动同步至快手个人主页 |                                                               false 表示后端屏蔽，视频不可 profile 页可见， true 表示不屏蔽。                                                               |\n| native_plc_switch | boolean  | 非必须，后端默认 true | 原生投放时视频挂载plc组件（建议设置为true，有机会获得更多流量曝光） |  false 表示不挂载plc true表示挂载，非白名单用户必须挂载plc，设置为true，平台将把根据推广目标生成的PLC组件挂载至该次本地上传的视频上。   | \n### 返回参数\n\n| 字段      | 类型   | 说明            | 备注 |\n| --------- | ------ | --------------- | ---- |\n| code      | int    | 返回码          |      |\n| message   | string | 返回信息        |      |\n| data      | struct | JSON 返回值     |      |\n| photo_id  | string | 视频 ID         |      |\n| photoId   | string | 视频 ID（废弃） |      |\n| signature | string | 视频 md5 值     |      |\n\n### 请求样例\n\n```\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/video/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"11311124\"' \\\n--form 'shield_backward_switch=\"false\"' \\\n--form 'type=\"1\"' \\\n--form 'file=@\"/Users/xxx.mp4\"' \\\n--form 'signature=\"36ffe2e21cb5b12bde752021331e2614\"' \\\n--form 'photo_name=\"测试\"' \\\n--form 'photo_tag=\"tag1\"' \\\n--form 'sync=\"0\"' \\\n--form 'shield_backward_switch=\"false\"'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"signature\": \"36ffe2e21cb5b12bde752021331e2614\",\n        \"photoId\": \"5238249419979025844\",\n        \"photo_id\": \"5238249419979025844\"\n    },\n    \"request_id\": \"9570f23378d9423eb16fbac70e987005\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1711972497439
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1711972497439,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

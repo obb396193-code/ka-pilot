@@ -1,0 +1,42 @@
+{
+  "documentId": 1955,
+  "documentName": "12.1频控和创建限制",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 频控和创建限制\n\n**1.报表**\n\n实时报表接口时间范围调整为近 7 天（含当天），历史投放报表接口时间范围为近 6 个月（含当天）；分时查询仅支持近 7 天（含当天）的数据。\n\n历史投放报表（离线报表）：每天最多可以生成 20 次任务\n\n**2.创建**\na.创建广告计划「rest/openapi/v2/campaign/create」，最多可支持创建**1000 个广告计划**。(总数限制)\n\nb.创建广告组「rest/openapi/v2/ad_unit/create」，最多可支持该计划**创建 600 个广告组/日新增**，对总数不限制。(日新增限制)\n\nc.创建广告创意/批量创意「rest/openapi/v2/creative/create」，「rest/openapi/v2/creative/batch/update」，最多支持单日创建上限**创建 2000 个/日新增**，对总数不限制（日新增限制）\n\nd.程序化创意创建「/rest/openapi/v2/creative/programmed/create」，最多支持 300 个/天。\n\n应用上传接口「rest/openapi/v1/dmp/population/upload」由之前上限提升至**200/日新增**。\n\n**程序化创意与组&创意上限不占用自定义 2000 创意**。\n\n**3.并发次数**\n\n**开发者**：并发次数 3000 次/分钟\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624351
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624351,
+  "creator": "linmenger",
+  "fullContext": null
+}

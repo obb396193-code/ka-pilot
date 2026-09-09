@@ -1,0 +1,62 @@
+## 应用规则
+
+在应用规则下，团队管理员可自行为团队配置应用规则，如门神检查器、外包发布管控、Aone 工作项强制绑定等。
+
+### 规则展示
+
+(https://o2-img.alistatic.com/i/i09blZ/N4jhhRc5y29osl2uF1deA-c727cf94d8.png)
+
+
+### 添加规则
+
+(https://o2-img.alistatic.com/i/i09blZ/Cg4NN1lWQzxii2IXW77hp-94ecca61a6.png)
+
+
+- 团队管理员可自行设置规则生效的范围，如全量范围、自定义范围。其中，自定义范围又分为为某些应用类型设置规则、为某些应用设置规则。
+- 同时，支持设置白名单，白名单中的应用不会命中该规则。白名单分为为某些应用类型设置白名单、为某些应用设置白名单。
+
+
+### 编辑、删除规则
+
+(https://o2-img.alistatic.com/i/i09blZ/gygMcd5ycyM97hWw4qdoV-695144e6cb.png)
+
+
+
+
+### 查看效果
+
+团队设置规则后，团队下的应用会命中这些规则，可在“应用-设置-发布规则”中查看。
+
+(https://o2-img.alistatic.com/i/i09blZ/SeSZ5FwAFHNdTFTuvYHad-27d522dafd.png)
+
+
+
+
+### 操作示例
+
+下面以是否设置“禁止跳过CodeReview”规则作为示例，展示设置规则到使用规则的过程。
+
+1.  正常情况下，用户在创建变更时可自行选择“是否跳过代码评审”。
+(https://o2-img.alistatic.com/i/i09blZ/LOWnNMnJdQGwusDQEf3oG-9922193ca7.png)
+
+
+
+
+1. 若当前团队设置了“禁止跳过CodeReview”规则、或当前团队命中了上层团队设置的禁止跳过CodeReview”规则。
+(https://o2-img.alistatic.com/i/i09blZ/S8DYz58XILLUVVPaRQA6N-3e01ab76ce.png)
+
+
+
+
+则用户在创建变更时，不会看到“是否跳过代码评审”按钮，所有变更都必须提交代码评审。
+
+
+
+1. 查看“禁止跳过CodeReview”的生效情况。
+(https://o2-img.alistatic.com/i/i09blZ/xMWBNwaw2nEa2OIpGhvp9-78ce109e25.png)
+
+
+
+
+- 若用户选择跳过代码评审，如下图中变更 A 所示，则不会对变更 A 进行卡口校验。
+- 若用户未选择跳过代码评审，如下图中变更 B 所示，则不会对变更 B 进行卡口校验，需提交代码评审并通过后才可进行发布。

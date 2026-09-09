@@ -8,10 +8,15 @@ import { AccountMuteRepository } from "../src/account-mute-repository.js";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
 if (databaseUrl === undefined) throw new Error("Explicit TEST_DATABASE_URL required for synthetic account-mute tests");
+const database = new URL(databaseUrl);
+if (!["127.0.0.1", "localhost"].includes(database.hostname) || database.port !== "55432" || !/^\/ka_[a-z0-9_]*_test$/.test(database.pathname)) {
+  throw new Error("Synthetic account-mute tests require an isolated local55432 ka_*_test database");
+}
 
 describe("account mute PostgreSQL scope and authority", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 5, connectionTimeoutMillis: 3000 });
   const repo = new AccountMuteRepository(pool);
+  const ownedWorkspaces: string[] = [], ownedIdentities: string[] = [];
   let first: ApprovedWorkspaceAuthContext;
   let second: ApprovedWorkspaceAuthContext;
   let identityId: string;
@@ -20,16 +25,33 @@ describe("account mute PostgreSQL scope and authority", () => {
   async function seed(): Promise<{ auth: ApprovedWorkspaceAuthContext; identityId: string }> {
     const workspaceId = randomUUID(), userId = randomUUID(), identityId = randomUUID();
     await pool.query("INSERT INTO workspaces(id,name,kind) VALUES($1,$2,'personal')", [workspaceId, `synthetic-mute-${workspaceId}`]);
+    ownedWorkspaces.push(workspaceId);
     await pool.query("INSERT INTO users(id,workspace_id,name,role) VALUES($1,$2,'合成用户','optimizer')", [userId, workspaceId]);
     await pool.query("INSERT INTO auth_identities(id,provider,provider_subject,display_name) VALUES($1::uuid,'internal_test',$1::text,'合成身份')", [identityId]);
+    ownedIdentities.push(identityId);
     await pool.query("INSERT INTO workspace_memberships(workspace_id,identity_id,user_id,role) VALUES($1,$2,$3,'optimizer')", [workspaceId, identityId, userId]);
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU',$2),($1,'TENCENT',$2)", [workspaceId, input.accountId]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id) VALUES($1,$2,'KUAISHOU',$3),($1,$2,'TENCENT',$3)", [workspaceId, identityId, input.accountId]);
     return { identityId, auth: { workspaceId, userId, role: "optimizer", workspaceKind: "personal",
       scope: { kind: "explicit_accounts", accounts: ["KUAISHOU", "TENCENT"].map((media) => ({ media, accountId: input.accountId, accessLevel: "read" })) } } };
   }
+  async function item(context = first, media = "KUAISHOU", status = "open") {
+    const id = randomUUID();
+    await pool.query("INSERT INTO work_items(id,workspace_id,type,media,account_id,status,title) VALUES($1,$2,'diagnosis',$3,$4,$5,'synthetic mute test')",
+      [id, context.workspaceId, media, input.accountId, status]);
+    return id;
+  }
   beforeAll(async () => { await runMigrations({ databaseUrl }); });
-  afterAll(async () => { await pool.end(); });
+  afterAll(async () => {
+    try {
+      // Restrict teardown to IDs created by this suite, including partially seeded cases.
+      for (const table of ["account_mutes", "work_items", "account_access_grants", "workspace_memberships", "accounts", "users"] as const) {
+        await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [ownedWorkspaces]);
+      }
+      await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [ownedWorkspaces]);
+      await pool.query("DELETE FROM auth_identities WHERE id=ANY($1::uuid[])", [ownedIdentities]);
+    } finally { await pool.end(); }
+  });
   beforeEach(async () => {
     const a = await seed(); const b = await seed(); first = a.auth; second = b.auth; identityId = a.identityId;
   });
@@ -67,5 +89,47 @@ describe("account mute PostgreSQL scope and authority", () => {
     const replay = await repo.set(first, { ...input, mutedUntil: "2026-09-10", reasonChip: null });
     expect(replay.createdAt).toEqual(original.createdAt);
     expect(replay).toMatchObject({ mutedUntil: "2026-09-10", reasonChip: null, mutedBy: first.userId });
+  });
+  it("atomically ignores the locked work item and mutes only its actual tuple", async () => {
+    const workItemId = await item();
+    const result = await repo.ignoreAndMute(first, { workItemId, mutedUntil: input.mutedUntil, reasonChip: "known" });
+    expect(result).toMatchObject({ workspaceId: first.workspaceId, media: "KUAISHOU", accountId: input.accountId, mutedBy: first.userId });
+    const state = await pool.query("SELECT status,ignore_reason,muted_until,resolved_at IS NOT NULL AS resolved FROM work_items WHERE id=$1", [workItemId]);
+    expect(state.rows).toEqual([{ status: "ignored", ignore_reason: "known", muted_until: null, resolved: true }]);
+    expect(await repo.find(first, { media: "TENCENT", accountId: input.accountId })).toBeNull();
+    expect(await repo.find(second, { media: "KUAISHOU", accountId: input.accountId })).toBeNull();
+  });
+  it("rolls back the ignored status when the account mute write fails", async () => {
+    const workItemId = await item();
+    // Isolated synthetic database only. Force the second write to fail after the
+    // work-item UPDATE, then remove the temporary constraint even on assertion failure.
+    await pool.query("ALTER TABLE account_mutes ADD CONSTRAINT synthetic_p131_failure CHECK (reason_chip <> 'synthetic-fail')");
+    try {
+      await expect(repo.ignoreAndMute(first, { workItemId, mutedUntil: input.mutedUntil, reasonChip: "synthetic-fail" })).rejects.toMatchObject({ code: "23514" });
+      expect((await pool.query("SELECT status,ignore_reason,resolved_at FROM work_items WHERE id=$1", [workItemId])).rows)
+        .toEqual([{ status: "open", ignore_reason: null, resolved_at: null }]);
+      expect((await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [first.workspaceId])).rows).toEqual([]);
+    } finally { await pool.query("ALTER TABLE account_mutes DROP CONSTRAINT synthetic_p131_failure"); }
+  });
+  it("concurrent ignore attempts commit only one pair of writes", async () => {
+    const workItemId = await item();
+    const args = { workItemId, mutedUntil: input.mutedUntil, reasonChip: "known" };
+    const results = await Promise.allSettled([repo.ignoreAndMute(first, args), repo.ignoreAndMute(first, args)]);
+    expect(results.filter(r => r.status === "fulfilled")).toHaveLength(1);
+    expect(results.find(r => r.status === "rejected")).toMatchObject({ reason: { code: "INVALID_STATE" } });
+    expect((await pool.query("SELECT count(*)::int AS n FROM account_mutes WHERE workspace_id=$1", [first.workspaceId])).rows).toEqual([{ n: 1 }]);
+  });
+  it("cannot mute another workspace or ungranted media through a work-item ID", async () => {
+    const foreign = await item(second), otherMedia = await item(first, "TENCENT");
+    const own: ApprovedWorkspaceAuthContext = { ...first, workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: input.accountId, accessLevel: "read" }] } };
+    await expect(repo.ignoreAndMute(own, { workItemId: foreign, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(repo.ignoreAndMute(own, { workItemId: otherMedia, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect((await pool.query("SELECT status FROM work_items WHERE id=ANY($1::uuid[])", [[foreign, otherMedia]])).rows).toEqual([{ status: "open" }, { status: "open" }]);
+  });
+  it("a live grant revocation rolls back before changing the work item", async () => {
+    const workItemId = await item();
+    await pool.query("DELETE FROM account_access_grants WHERE workspace_id=$1 AND identity_id=$2", [first.workspaceId, identityId]);
+    await expect(repo.ignoreAndMute(first, { workItemId, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect((await pool.query("SELECT status FROM work_items WHERE id=$1", [workItemId])).rows).toEqual([{ status: "open" }]);
   });
 });

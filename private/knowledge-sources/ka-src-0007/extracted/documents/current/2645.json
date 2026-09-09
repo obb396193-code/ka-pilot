@@ -1,0 +1,267 @@
+{
+  "documentId": 2645,
+  "documentName": "魔力建站更新落地页Cid信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095738960
+    }
+  ],
+  "apiId": 574,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/page/cid/info/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/page/cid/info/update' \\\n--header 'access-token:[REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n  \"page_id\": \"1\",\n  \"plat_form_type\": \"TAO_BAO\",\n  \"deep_link_url\": \"tbopen://m.taobao.com/tbopen/index.html?12323126\",\n  \"fallback_h5_url\": \"http://www.baidu.com?page4\",\n  \"advertiser_id\": \"0\"\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"page_id\": \"12\"\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EO-AgIDglZmOrAEYqAIg9LehrNkwKJ_on_QB\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 34835,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "100",
+      "description": "广告主账户ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34836,
+      "paramName": "page_id",
+      "paramType": "String",
+      "example": "1000",
+      "description": "落地页ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "查询落地页列表接口获取",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34837,
+      "paramName": "plat_form_type",
+      "paramType": "String",
+      "example": "PDD",
+      "description": "电商平台类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "更新链接的电商平台类型：PDD：拼多多, WECHAT_MALL:微信商城，TAO_BAO：淘宝，tmall：天猫，JD：京东",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34838,
+      "paramName": "deep_link_url",
+      "paramType": "String",
+      "example": "",
+      "description": "跳转链接",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "更新落地页中按钮组件 — 跳转应用 — 跳转链接如：taobao://huodong.m.taobao.com/act/snipcode.htm",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34839,
+      "paramName": "fallback_h5_url",
+      "paramType": "String",
+      "example": "",
+      "description": "h5链接",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "更新落地页中按钮组件 — 跳转应用 — H5链接如：https://www.taobao.com",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 34841,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "更新状态",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "\t0 操作成功",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34842,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "成功",
+      "description": "提示信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "提示信息",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34843,
+      "paramName": "data",
+      "paramType": "UpdatePageCidInfoRespGw",
+      "example": "",
+      "description": "更新状态",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 1963,
+      "sort": 3,
+      "note": "\tjson结构体",
+      "children": [
+        {
+          "paramId": 34659,
+          "paramName": "page_id",
+          "paramType": "String",
+          "example": "100",
+          "description": "落地页id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "更新成功的落地页ID",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095738960,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

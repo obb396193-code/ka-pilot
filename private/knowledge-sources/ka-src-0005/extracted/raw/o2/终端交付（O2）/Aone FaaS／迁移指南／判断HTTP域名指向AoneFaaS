@@ -1,0 +1,5 @@
+访问 HTTP 触发器域名，若响应头中携带了 X-Apiserver-Hostname: alifaas-api-server*    的字样，则说明该域名已指向新的 AoneFaaS 容器。
+
+(https://o2-img.alistatic.com/i/i09blZ/DLwCVECAQBoUxGjVpxOrB-144e0ad862.png)
+
+

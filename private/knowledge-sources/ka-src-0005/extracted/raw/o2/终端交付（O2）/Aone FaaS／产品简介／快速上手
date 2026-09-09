@@ -1,0 +1,48 @@
+## 快速开始
+
+- 研发平台
+	- [https://cd.faas.alibaba-inc.com](https://cd.faas.alibaba-inc.com)
+	- (https://o2-img.alistatic.com/i/i09blZ/4oAOZeRehim0cDgre6bsL-ff2e8dacdf.png)
+
+- 创建应用
+	- 1.应用注册
+	- (https://o2-img.alistatic.com/i/i09blZ/zh6wke7E2mX6cbOBKll1i-7762082363.png)
+
+	- 2.选择函数类型
+		- 接口服务、任务类服务
+		- 边缘服务（基座阿里云ESA边缘容器，公网）
+	- (https://o2-img.alistatic.com/i/i09blZ/nxYD7ZfpyEdBvLFHj2Cv0-1db5983da8.png)
+
+	- (https://o2-img.alistatic.com/i/i09blZ/4fuIdgsEvr2iKA0OhA5o1-2946f21bd9.png)
+
+		- 应用信息
+			- 应用仓库：可以新建和关联你的code代码仓库 （需要仓库中添加 tbfed 用户为 group 管理员）
+				- (https://o2-img.alistatic.com/i/i09blZ/wHctSkI8Aws6qfeIvO3EF-c8a9d9d374.png)
+
+
+
+		- Serverless 应用配置
+			- 租户：新增业务测试租户
+				- 注意租户务必选择 【Fiber】测试租户，如果没有这个选项可联系@孟祥瑞(夙言)@周方旭(阳介)添加内测权限
+			- 函数应用名：填写你的应用名称
+		- 脚手架信息
+			- 脚手架，面向函数编写，当前主要提供Nodejs和 Java 的脚手架，包含示例代码和相应的运行环境
+			- 脚手架支持开放定制（在建）
+			- 提供Python 和 go 的基础脚手架
+- 创建变更
+	- (https://o2-img.alistatic.com/i/i09blZ/ulUTRR6syBpLIdI9300Xl-c8b16c5b96.png)
+
+-  部署函数
+	- (https://o2-img.alistatic.com/i/i09blZ/R0EgJuPBRkkGEf543UGOQ-943193e471.png)
+
+	- (https://o2-img.alistatic.com/i/i09blZ/xRcHSK6uOORRrU6KGLZ4k-401666be0c.png)
+
+
+
+- 监控与日志
+	- 监控
+	- (https://o2-img.alistatic.com/i/i09blZ/Ga4DTV2lbVt0gR5pmhcZv-5a8cd5e4ef.png)
+
+	- 日志
+		- (https://o2-img.alistatic.com/i/i09blZ/Mv3ysJ1er4vNjF15BA5AI-e6cfb5352f.png)
+

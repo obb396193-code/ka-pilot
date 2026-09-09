@@ -1,0 +1,149 @@
+## 获取我的进行中迭代
+
+获取我的进行中迭代
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/my/undergoingiteration |
+| buc login | true |
+
+### Query parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| pn | Number | false | 0 | 页码，用于分页查询 |
+| rn | Number | false | 20 | 返回的数据条数 |
+| order | String | false | desc | 排序方式，升序/降序 |
+| orderTarget | String | false | id | 按 orderTarget 排序 |
+| version | String | false | - | 筛选指定版本号 |
+| name | String | false | - | 模糊搜索迭代名称 |
+| description | String | false | - | 模糊搜索迭代描述 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| iterations | 迭代详情，对象结构如下：({...[Iteration](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6xiuwp43jozm69u9h), app: [App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g), user: [User](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls369lxfelxab4mn50j), lastTask: [Task](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8dfb66h0t67j0phai), iterationconf: [IterationConf](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c3kve3swm6gi6twn), devbranches: [Change](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c5351a5qllc8tzaq)[]})[] |
+| total | 总迭代数 |
+| pn | 当前页面 |
+| rn | 每页迭代数 |
+
+### Example
+
+```
+client.get(`/v1.0/work/my/undergoingiteration`, {}, {
+  SSO_TICKET
+})
+
+{
+  "iterations": [
+      {
+          "id": 15126515,
+          "name": "test2",
+          "description": "",
+          "app_id": 1,
+          "group": "def-work",
+          "project": "front",
+          "branch": "def_releases_2024020510085050_def-work_front/2.25.51",
+          "version": "2.25.51",
+          "emp_id": "318805",
+          "status": 2,
+          "endtime": "1970-01-01T00:00:00.000Z",
+          "envstep": null,
+          "gmt_create": "2024-02-05T02:08:50.000Z",
+          "gmt_modified": "2024-02-05T02:08:50.000Z",
+          "app": {
+              "id": 1,
+              "group": "def-work",
+              "project": "front",
+              "emp_id": "",
+              "owner_emp_id": "287523",
+              "description": "O2 Space 研发平台前端仓库 ddd",
+              "pub_type": 1,
+              "is_module": 0,
+              "is_moduletrans": 0,
+              "dev_type": 0,
+              "pubtype_group": 0,
+              "platform_code": "",
+              "mode": "iteration_flow",
+              "pubtype_extend_path": "1",
+              "gmt_create": "2018-07-05T09:55:50.000Z",
+              "gmt_modified": "2023-10-26T10:49:46.000Z"
+          },
+          "user": {
+              "id": 241674,
+              "emp_id": "318805",
+              "nick": "时路",
+              "account": "kangyong.ky",
+              "gitlab_id": "262506",
+              "buc_id": "2188599",
+              "email": "kangyong.ky@alibaba-inc.com",
+              "gmt_create": "2021-05-07T02:04:55.000Z",
+              "gmt_modified": "2021-05-07T03:19:17.000Z"
+          },
+          "trunk": "master",
+          "lastTask": null,
+          "iterationconf": {
+              "pubenv": "[1,2]",
+              "id": 10744984,
+              "tnpm_tag": "beta",
+              "iteration_id": 15126515,
+              "trunk": "master",
+              "is_delete_branch": true,
+              "air_pages": "",
+              "pkg_apps": "",
+              "changefree_id": "",
+              "changefree_executor": "",
+              "aone_binds": "",
+              "aone_binds_autofinish": true,
+              "is_phase_grey": 0,
+              "is_pause_gitclean": null,
+              "is_un_release": 0,
+              "gmt_create": "2024-02-05T02:08:50.000Z",
+              "gmt_modified": "2024-02-05T02:08:50.000Z"
+          },
+          "devbranches": [
+              {
+                  "id": 3301400,
+                  "branch": "aaa",
+                  "description": "abc",
+                  "app_id": 1,
+                  "emp_id": "318805",
+                  "is_delete_branch": true,
+                  "aonecr_id": null,
+                  "aonecr_author": null,
+                  "aonecr_time": null,
+                  "aone_binds": "req|54895183",
+                  "aone_binds_autofinish": false,
+                  "is_finished": 0,
+                  "is_exist": 1,
+                  "endtime": null,
+                  "cr_status": null,
+                  "skip_cr": null,
+                  "un_release": 0,
+                  "commit_mode": false,
+                  "gmt_create": "2024-02-05T02:08:51.000Z",
+                  "gmt_modified": "2024-02-05T02:08:51.000Z",
+                  "user": {
+                      "id": 241674,
+                      "emp_id": "318805",
+                      "nick": "时路",
+                      "account": "kangyong.ky",
+                      "gitlab_id": "262506",
+                      "buc_id": "2188599",
+                      "email": "kangyong.ky@alibaba-inc.com",
+                      "gmt_create": "2021-05-07T02:04:55.000Z",
+                      "gmt_modified": "2021-05-07T03:19:17.000Z"
+                  },
+                  "iteration_id": 15126515,
+                  "branch_id": 21070144
+              }
+          ]
+      }
+  ],
+  "total": 35,
+  "pn": 0,
+  "rn": 2
+}
+
+```

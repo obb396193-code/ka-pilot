@@ -1,0 +1,268 @@
+{
+  "documentId": 2945,
+  "documentName": "获取商圈地域定向",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094745496
+    }
+  ],
+  "apiId": 1316,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/region/district/list",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/region/district/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n  \"advertiser_id\": 7075662\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"350213\": [\n           {\n               \"id\": 3502130002,\n               \"level\": 4,\n               \"name\": \"马巷\",\n               \"parent\": 350213,\n               \"full_name\": \"中国-福建-厦门-翔安-马巷\"\n           },\n                      ]\n          },\n\"request_id\":\"3e1dd1230fec46bb8501a9bb6e0c27f2\"\n\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62278,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62279,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62280,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62281,
+      "paramName": "data",
+      "paramType": "RegionDistrictList",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3506,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62273,
+          "paramName": "key",
+          "paramType": "Key",
+          "example": "",
+          "description": "地域 parent_id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3505,
+          "sort": 1,
+          "note": "该地域下的所有商圈 list",
+          "children": [
+            {
+              "paramId": 62269,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "商圈 id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62270,
+              "paramName": "level",
+              "paramType": "Integer",
+              "example": "",
+              "description": "地域层级-商圈层级=4",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62271,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "商圈名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62272,
+              "paramName": "full_name",
+              "paramType": "String",
+              "example": "",
+              "description": "全名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094745496,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

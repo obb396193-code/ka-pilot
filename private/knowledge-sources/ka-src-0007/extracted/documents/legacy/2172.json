@@ -1,0 +1,521 @@
+{
+  "documentId": 2172,
+  "documentName": "监测链接批量更新接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 监测链接批量更新接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/unit/batchUpdateMonitorUrls](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/unit/batchUpdateMonitorUrls)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| unit_monitor_urls | BatchModMonitorUrlParamSnake[] |  | 必填 | 监测链接详情 |  |\n| &#8195;unit_id | Long |  | 必填 | 广告组ID |  |\n| &#8195;actionbar_click_url | String |  | 可选 | actionbar点击监测 |  |\n| &#8195;click_url | String |  | 可选 | 点击监测（排除粉丝直播推广） |  |\n| &#8195;impression_url | String |  | 可选 | 曝光监测 |  |\n| &#8195;live_track_url | String |  | 可选 | 点击监测（计划为粉丝直播推广） |  |\n| &#8195;ad_photo_played_t3s_url | String |  | 可选 | 3s播放监测链接 |  |\n| &#8195;result | Boolean |  | 可选 | 修改是否成功 |  |\n| &#8195;message | String |  | 可选 | 修改成功与否提示信息 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 非1为失败 |  |\n| message | String |  | 错误详情 |  |\n| data | BatchModMonitorUrlViewSnake |  | 返回详情 |  |\n| &#8195;unit_monitor_urls | BatchModMonitorUrlParamSnake[] |  | 监测链接详情 |  |\n| &#8195;&#8195;unit_id | Long |  | 广告组ID |  |\n| &#8195;&#8195;actionbar_click_url | String |  | actionbar点击监测，命中有效触点白名单表示有效触点监测链接（限：快手主站/极速版场景） |  |\n| &#8195;&#8195;click_url | String |  | 点击监测（排除粉丝直播推广） |  |\n| &#8195;&#8195;impression_url | String |  | 曝光监测 |  |\n| &#8195;&#8195;live_track_url | String |  | 点击监测（计划为粉丝直播推广） |  |\n| &#8195;&#8195;ad_photo_played_t3s_url | String |  | 3s播放监测链接 |  |\n| &#8195;&#8195;result | Boolean |  | 修改是否成功 |  |\n| &#8195;&#8195;message | String |  | 修改成功与否提示信息 |  |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/unit/batchUpdateMonitorUrls' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\": 13949412321,\n    \"unit_monitor_urls\": [\n        {\n            \"click_url\": \"https//www.baidu.com\",\n            \"live_track_url\": \"https//www.baidu.com\",\n            \"unit_id\": 12321312\n        }\n    ]\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"result\": 1,\n    \"message\": \"OK\",\n    \"data\": {\n        \"unit_monitor_urls\": [\n            {\n                \"click_url\": \"https//www.baidu.com\",\n                \"live_track_url\": \"https//www.baidu.com\",\n                \"unit_id\": 12321312,\n                \"result\": true\n            }\n        ]\n    }\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1701854782902
+    }
+  ],
+  "apiId": 375,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/unit/batchUpdateMonitorUrls",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "{\n    \"result\": 1,\n    \"message\": \"OK\",\n    \"data\": {\n        \"unit_monitor_urls\": [\n            {\n                \"click_url\": \"https//www.baidu.com\",\n                \"live_track_url\": \"https//www.baidu.com\",\n                \"unit_id\": 12321312,\n                \"result\": true\n            }\n        ]\n    }\n}\n",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 22355,
+      "paramName": "unit_monitor_urls",
+      "paramType": "BatchModMonitorUrlParamSnake[]",
+      "example": "",
+      "description": "监测链接详情",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 813,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 22349,
+          "paramName": "unit_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "广告组ID",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 22350,
+          "paramName": "actionbar_click_url",
+          "paramType": "String",
+          "example": "",
+          "description": "actionbar点击监测",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 22351,
+          "paramName": "click_url",
+          "paramType": "String",
+          "example": "",
+          "description": "点击监测（排除粉丝直播推广）",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 22352,
+          "paramName": "impression_url",
+          "paramType": "String",
+          "example": "",
+          "description": "曝光监测",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 22353,
+          "paramName": "live_track_url",
+          "paramType": "String",
+          "example": "",
+          "description": "点击监测（计划为粉丝直播推广）",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24234,
+          "paramName": "ad_photo_played_t3s_url",
+          "paramType": "String",
+          "example": "",
+          "description": "3s播放监测链接",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 25861,
+          "paramName": "result",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "修改是否成功",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 25862,
+          "paramName": "message",
+          "paramType": "String",
+          "example": "",
+          "description": "修改成功与否提示信息",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 22356,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "非1为失败",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 22357,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "错误详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 22358,
+      "paramName": "data",
+      "paramType": "BatchModMonitorUrlViewSnake",
+      "example": "",
+      "description": "返回详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 814,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 22354,
+          "paramName": "unit_monitor_urls",
+          "paramType": "BatchModMonitorUrlParamSnake[]",
+          "example": "",
+          "description": "监测链接详情",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 813,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 22349,
+              "paramName": "unit_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告组ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 22350,
+              "paramName": "actionbar_click_url",
+              "paramType": "String",
+              "example": "",
+              "description": "actionbar点击监测",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 22351,
+              "paramName": "click_url",
+              "paramType": "String",
+              "example": "",
+              "description": "点击监测（排除粉丝直播推广）",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 22352,
+              "paramName": "impression_url",
+              "paramType": "String",
+              "example": "",
+              "description": "曝光监测",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 22353,
+              "paramName": "live_track_url",
+              "paramType": "String",
+              "example": "",
+              "description": "点击监测（计划为粉丝直播推广）",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24234,
+              "paramName": "ad_photo_played_t3s_url",
+              "paramType": "String",
+              "example": "",
+              "description": "3s播放监测链接",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25861,
+              "paramName": "result",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "修改是否成功",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25862,
+              "paramName": "message",
+              "paramType": "String",
+              "example": "",
+              "description": "修改成功与否提示信息",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1701854782902,
+  "creator": "fanhuanqing",
+  "fullContext": null
+}

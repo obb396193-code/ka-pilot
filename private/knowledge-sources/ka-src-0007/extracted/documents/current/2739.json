@@ -1,0 +1,444 @@
+{
+  "documentId": 2739,
+  "documentName": "获取直播间小铃铛列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095485911
+    }
+  ],
+  "apiId": 262,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/jingle_bell/live_user_bind_list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'http://star-gateway.test.gifshow.com/rest/openapi/gw/dsp/v1/jingle_bell/live_user_bind_list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 90001041,\n    \"current_page\": 1,\n    \"page_size\": 10,\n    \"live_user_id\": 1743291153\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 59,\n        \"jingle_bell_list\": [\n            {\n                \"conversion_type\": 2,\n                \"active\": false,\n                \"jingle_bell_status\": 3,\n                \"jingle_bell_id\": \"645078377796059\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"cd2ee1bed33d4fb285e9257334ab5552\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63130,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主 ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13333,
+      "paramName": "live_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><br>主播id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13334,
+      "paramName": "current_page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>当前页数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13335,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>每页行数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 13336,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13337,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13338,
+      "paramName": "data",
+      "paramType": "GetJingleBellInfoResponse",
+      "example": "",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 568,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 13331,
+          "paramName": "total_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>总行数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 13332,
+          "paramName": "jingle_bell_list",
+          "paramType": "JingleBellInfoView[]",
+          "example": "",
+          "description": "jingle_bell_list",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 567,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 13327,
+              "paramName": "jingle_bell_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>铃铛id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 13328,
+              "paramName": "jingle_bell_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>铃铛状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "铃铛状态 1-上架，2-下架，3-审核通过可随时投放，5-上架失败，6-审核失败，7-审核中",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 13329,
+              "paramName": "active",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p><br>激活状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 13330,
+              "paramName": "conversion_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>铃铛类型 </p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "铃铛类型 2-应用下载，5-H5落地页，9-短剧",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43591,
+              "paramName": "ios_app_id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "<p>ios应用id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43592,
+              "paramName": "android_app_id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "<p><br>android应用id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 59309,
+              "paramName": "jingle_bell_name",
+              "paramType": "String",
+              "example": "1",
+              "description": "<p>铃铛名字</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 59310,
+              "paramName": "series_id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "<p>短剧id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095485911,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

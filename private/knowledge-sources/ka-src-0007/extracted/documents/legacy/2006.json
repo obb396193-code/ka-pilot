@@ -1,0 +1,42 @@
+{
+  "documentId": 2006,
+  "documentName": "10.6.4删除定向模板",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 删除定向模板\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/target/template/delete\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明        | 备注                          |\n| ------------- | ------ | -------- | ----------- | ----------------------------- |\n| advertiser_id | long   | 必填     | 广告主 ID   | 在获取 accessToken 的时候返回 |\n| template_id   | string | 必填     | 定向模板 id |                               |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624713
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624713,
+  "creator": "linmenger",
+  "fullContext": null
+}

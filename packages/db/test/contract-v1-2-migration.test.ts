@@ -4,6 +4,9 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
+import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -20,7 +23,7 @@ describe("contract v1.2 P0 migration", () => {
   });
 
   it("backfills safe account scope, enforces P0 constraints and replays up/down/up", async () => {
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 2 })).toHaveLength(2);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("011") })).toHaveLength(windowSize("011"));
 
     const suffix = randomUUID();
     const workspaces = await pool.query<{ id: string }>(
@@ -71,7 +74,7 @@ describe("contract v1.2 P0 migration", () => {
       [changeset.rows[0]!.id],
     );
 
-    expect(await runMigrations({ databaseUrl, count: 2 })).toHaveLength(2);
+    expect(await runMigrations({ databaseUrl, count: windowSize("011") })).toHaveLength(windowSize("011"));
 
     const scopedItem = await pool.query<{
       workspace_id: string;
@@ -149,7 +152,7 @@ describe("contract v1.2 P0 migration", () => {
     );
     expect(inbound.rows[0]).toEqual({ attempts: 0, max_attempts: 5 });
 
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 2 })).toHaveLength(2);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("011") })).toHaveLength(windowSize("011"));
     const downState = await pool.query<{
       effect_table: string | null;
       item_workspace_column: boolean;
@@ -167,7 +170,7 @@ describe("contract v1.2 P0 migration", () => {
       effect_table: null,
       item_workspace_column: false,
     });
-    expect(await runMigrations({ databaseUrl, count: 2 })).toHaveLength(2);
+    expect(await runMigrations({ databaseUrl, count: windowSize("011") })).toHaveLength(windowSize("011"));
 
     await pool.query("DELETE FROM workflow_effects WHERE run_id = $1", [workflowRun.rows[0]!.id]);
     await pool.query("DELETE FROM workflow_runs WHERE id = $1", [workflowRun.rows[0]!.id]);
@@ -181,5 +184,5 @@ describe("contract v1.2 P0 migration", () => {
     await pool.query("DELETE FROM users WHERE workspace_id IN ($1, $2)", [workspaceA, workspaceB]);
     await pool.query("DELETE FROM accounts WHERE workspace_id IN ($1, $2)", [workspaceA, workspaceB]);
     await pool.query("DELETE FROM workspaces WHERE id IN ($1, $2)", [workspaceA, workspaceB]);
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });

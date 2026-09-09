@@ -1,0 +1,271 @@
+{
+  "documentId": 2601,
+  "documentName": "共享授权接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "共享授权接口\n/rest/openapi/gw/dsp/authorization/shard\n\n\nadvertiser_id  Long  <p>广告主id</p>\nauth_id  Long  要共享的授权ID\nshard_authorize_scope  Integer  共享授权范围 0 共享快手号授权 1共享快手号授权+组件授权\nshard_account_id  String  要共享给账户，accountId用英文逗号分隔\nshard_user_type  Integer  <p>共享授权类型</p>\ncode  Integer  保存共享授权任务结果 0失败 1成功\nmessage  String  失败原因\ndata  KolShardAuthId  共享授权任务ID，获取授权结果使用\nauth_id  Long  共享授权记录ID\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1750140244042
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1720092277031
+    }
+  ],
+  "apiId": 738,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shard",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63149,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43138,
+      "paramName": "auth_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "要共享的授权ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43139,
+      "paramName": "shard_authorize_scope",
+      "paramType": "Integer",
+      "example": "",
+      "description": "共享授权范围 0 共享快手号授权 1共享快手号授权+组件授权",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43140,
+      "paramName": "shard_account_id",
+      "paramType": "String",
+      "example": "12,34,56",
+      "description": "要共享给账户，accountId用英文逗号分隔",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59390,
+      "paramName": "shard_user_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>共享授权类型。1：同主体同代理商账户；2：同主体下账户；7：同代理下账户。</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 43142,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "保存共享授权任务结果 0失败 1成功",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43143,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "失败原因",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43144,
+      "paramName": "data",
+      "paramType": "KolShardAuthId",
+      "example": "",
+      "description": "共享授权任务ID，获取授权结果使用",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2648,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 43141,
+          "paramName": "auth_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "共享授权记录ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1750140244042,
+  "creator": "jiazhaochang",
+  "fullContext": null
+}

@@ -37,7 +37,7 @@ describe("backfill coordinator", () => {
     };
     const jobs = { enqueue: vi.fn(async (job: { id?: string }) => job.id!) };
     const store = {
-      startRun: vi.fn().mockResolvedValue(31),
+      startRun: vi.fn().mockResolvedValue("31"),
       appendRaw: vi.fn().mockResolvedValue(undefined),
       syncAccountMetadataAndRaw: vi.fn().mockResolvedValue(undefined),
       recordObservation: vi.fn().mockResolvedValue(undefined),
@@ -92,7 +92,7 @@ describe("backfill coordinator", () => {
         maxAttempts: 3,
       })),
     );
-    expect(store.finishRun).toHaveBeenCalledWith(31, 2);
+    expect(store.finishRun).toHaveBeenCalledWith("31", 2);
   });
 
   it("does not fan out any day when an account page transaction fails", async () => {
@@ -117,7 +117,7 @@ describe("backfill coordinator", () => {
     };
     const jobs = { enqueue: vi.fn() };
     const store = {
-      startRun: vi.fn().mockResolvedValue(32),
+      startRun: vi.fn().mockResolvedValue("32"),
       appendRaw: vi.fn(),
       syncAccountMetadataAndRaw: vi.fn().mockRejectedValue(new Error("page transaction failed")),
       recordObservation: vi.fn(),
@@ -148,7 +148,7 @@ describe("backfill coordinator", () => {
     })).rejects.toThrow("page transaction failed");
     expect(jobs.enqueue).not.toHaveBeenCalled();
     expect(store.failRun).toHaveBeenCalledWith(
-      32,
+      "32",
       "persist:account_page_1_accounts_and_raw",
       "page transaction failed",
     );
@@ -172,7 +172,7 @@ describe("backfill coordinator", () => {
     };
     const jobs = { enqueue: vi.fn() };
     const store = {
-      startRun: vi.fn().mockResolvedValue(33),
+      startRun: vi.fn().mockResolvedValue("33"),
       appendRaw: vi.fn(),
       syncAccountMetadataAndRaw: vi.fn(),
       recordObservation: vi.fn(),
@@ -203,7 +203,7 @@ describe("backfill coordinator", () => {
     expect(store.syncAccountMetadataAndRaw).not.toHaveBeenCalled();
     expect(jobs.enqueue).not.toHaveBeenCalled();
     expect(store.failRun).toHaveBeenCalledWith(
-      33,
+      "33",
       "validate:account_page_1",
       "Qihang account pagination total is missing",
     );

@@ -1,0 +1,399 @@
+## 能力介绍
+
+
+
+#### 基础能力
+
+
+
+Weex 发布流程是为 Weex 类型项目设计的发布解决方案，主要有以下特点。
+
+
+
+- 一键发布
+- 支持 Rax 和 Vue DSL
+- 同一域名可以发布 weex、h5 两个版本，多终端自动检测，支持手淘多版本降级
+- 发布流程包括发布 assets 和模板两个部分 
+	- assets 发布到 CDN
+	- weex bundle、h5 页面发布到 air 平台。
+- 代码云端构建
+- 分支开发规则同 assets，发布线上自动打 publish tag
+- 支持门神检查和 code review
+- 支持页面降级
+- 线上发布支持选择指定的页面发布
+- 支持页面性能检测，支持检测自定义用例
+​
+
+#### 提供的发布环境
+
+
+
+- 日常环境
+- 线上环境
+​
+
+> 说明： 若应用开启了灰度且页面非首次上线，则线上环境发布完成后会迭代会自动进入灰度阶段
+
+​
+
+#### 发布产物说明
+
+
+
+- assets：发布 assets 到 CDN （日常环境：dev.g.alicdn，线上环境：g.alicdn）。
+
+
+- 页面：将页面或者 bundle 转为 xtpl 格式后发布到 Air。
+​
+
+> 详情查看发布流程
+
+
+
+## 接入说明
+
+
+
+前往 [应用接入](https://space.o2.alibaba-inc.com/app/new)，选择 Weex 应用类型
+
+​
+
+> 接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/lziyyh/img1cOb0XTwVJ.png)
+
+
+
+
+## 发布流程
+
+
+
+### 流程介绍
+
+
+
+Weex 发布的流程如下图所示：
+
+​
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/lziyyh/imgokLk1WiPTa.png)
+
+
+
+
+主要过程有：
+
+​
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 构建：构建项目代码里的 abc.json （即云构建配置）对代码进行云端构建（云构建配置请参考 [文档](http://builder.alibaba-inc.com/document?slug=config)）
+- 门神检查：对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+- 发布：
+	- assets 发布：发布 assets 到 g.alicdn。如果你的 weex 发布有降级的 h5 页面，并且想把页面引用的 assets 分离到 CDN，可以使用这个功能，如果你只需要发 weex bundle 或者 h5 页面是 one page 模式，这一步可以忽略。。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/lziyyh/imgaZxAUV2Ldz.png)
+
+
+
+
+	- 页面发布：将页面或者 bundle 转为 xtpl 格式，文件命名包括 native,phone 用于区分同一路径的不同终端显示页面。native.xtpl 为 js 响应头设置 + bundle 代码， phone.xtpl 为 h5 页面代码。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/lziyyh/imgfCbcdMoaUH.png)
+
+
+关于 assets 规范和 页面规范见下：
+
+### 发布到 CDN 的 assets 规范
+
+
+
+在发布页面到 Air 前，流程会把文件先发到 assets 环境，给 h5 版的页面引用，如果你没有发 h5 页面的需求或者你的 assets 是打包在页面里，可以忽略。
+
+
+
+假如代码经过云构建后，构建后文件列表如下，仓库名称为 def/test, 分支为 daily/1.0.0
+
+
+
+```
+home/index.js
+home/index.css
+
+search/result/index.js
+search/result/index.css
+```
+
+
+则发布的 assets 地址为：
+
+
+
+日常
+
+
+
+```
+    dev.g.alicdn.com/def/test/1.0.0/home/index.js
+    dev.g.alicdn.com/def/test/1.0.0/home/index.css
+    dev.g.alicdn.com/def/test/1.0.0/search/result/index.js
+    dev.g.alicdn.com/def/test/1.0.0/search/result/index.css
+```
+
+
+线上
+
+
+
+```
+    g.alicdn.com/def/test/1.0.0/home/index.js
+    g.alicdn.com/def/test/1.0.0/home/index.css
+    g.alicdn.com/def/test/1.0.0/search/result/index.js
+    g.alicdn.com/def/test/1.0.0/search/result/index.css
+```
+
+
+> 由于历史原因，目前 xtpl 也会发布到 CDN，你可以忽略
+
+​
+
+### 发布到 Air 的页面规范
+
+
+
+发布流程会提取构建结果中 **/phone.xtpl, **/native.xtpl 文件发布到 Air，对应 h5 和 weex 端，你需要将页面和 js bundle 转换为上述格式。
+
+
+
+假如代码经过云构建后，构建后文件列表如下，仓库名称为 def/test, 分支为 daily/1.0.0
+
+
+
+```
+home/native.xtpl
+home/phone.xtpl
+search/result/phone.xtpl
+```
+
+
+则发布完成后，页面地址为：
+
+
+
+日常
+
+
+
+```
+	market.wapa.taobao.com/app/def/test/home (发布了 weex、h5)
+    market.wapa.taobao.com/app/def/test/search/result (只发布了 h5)
+```
+
+
+线上
+
+
+
+```
+	market.m.taobao.com/app/def/test/home (发布了 weex、h5)
+    market.m.taobao.com/app/def/test/search/result (只发布了 h5)
+```
+
+
+- 页面地址为 market.m.taobao.com/app/{repo}/{prefix}
+- weex js bundle 转化成 xtpl 时，需要在页面头部加一行代码 {{$page.setHeader('Content-Type','application/javascript')}}，这行代码是告诉 Air 当前地址返回的时一个 js bundle，你可以下载查看 [示例](http://builder.alibaba-inc.com/task/download?id=1104626&type=dist)
+- market.waptest.taobao.com 同 market.wapa.taobao.com, 可用于日常环境接口的调试
+- 发布到 Air 的代码需符合 XTemplate 语法。如代码中包含 {{ 等内容（如 Vue 页面等），需使用 {{% content %}} 语法逃逸。
+​
+
+### 流程汇总
+
+
+
+总结一下，发布 weex 的流程如下：
+
+
+
+- 云构建完成，从云构建系统获取构建后文件
+- 将降级页面里引入的 assets 发布
+- 提取 xtpl，包括 js bundle 和对应的降级页面，发布 Air；构建脚本必须要将 bundle 和 html 页面转换成 xtpl 格式
+
+
+假如代码经过云构建后，构建后文件列表如下，仓库名称为 def/test, 分支为 daily/1.0.0
+
+
+
+```
+home/index.js
+home/index.css
+home/native.xtpl
+home/phone.xtpl
+
+search/result/index.js
+search/result/index.css
+search/result/phone.xtpl
+```
+
+
+则发布完成后，文件地址为：
+
+
+
+日常
+
+
+
+```
+assets:
+    dev.g.alicdn.com/def/test/1.0.0/home/index.js
+    dev.g.alicdn.com/def/test/1.0.0/home/index.css
+    dev.g.alicdn.com/def/test/1.0.0/search/result/index.js
+    dev.g.alicdn.com/def/test/1.0.0/search/result/index.css
+
+模板:
+    market.wapa.taobao.com/app/def/test/home (发布了 weex、h5)
+    market.wapa.taobao.com/app/def/test/search/result (只发布了 h5)
+```
+
+
+线上
+
+
+
+```
+    assets:
+    g.alicdn.com/def/test/1.0.0/home/index.js
+    g.alicdn.com/def/test/1.0.0/home/index.css
+    g.alicdn.com/def/test/1.0.0/search/result/index.js
+    g.alicdn.com/def/test/1.0.0/search/result/index.css
+
+模板:
+    market.m.taobao.com/app/def/test/home (发布了 pc、weex、phone 三种终端页面)
+    market.m.taobao.com/app/def/test/search/result (只发布了 phone 终端页面)
+```
+
+
+## 页面回滚
+
+
+
+[页面回滚](https://alidocs.dingtalk.com/i/nodes/G1DKw2zgV2KnvL4kFM65GM5AJB5r9YAn?utm_scene=team_space)
+
+
+
+## url 投放
+
+
+
+Air 有强大的终端检测功能，支持同一个 url 针对 webview、weex 容器访问时返回不同的内容。Air 的投放地址使用的是 wh_weex=true 形式。[查看](http://doc.weex.alibaba-inc.com/aliweex/taobao-tmall-url-intercept.html)
+
+
+
+假设 url 为 x.com, 在 Air 上绑定了 h5 端，weex 端内容分别为 content_h5, content_weex
+
+
+
+- 访问 x.com 时，返回 content_h5
+- weex 容器访问 x.com?wh_weex=true，返回 content_weex
+- 如果 x.com 在 Air 后台配置了降级 H5，weex 容器访问 x.com 和 x.com?wh_weex=true 都会返回 content_h5
+- 访问 x.com?wh_ttid=native 时，强制返回 content_weex(主要用于查看 bundle 内容)
+​
+
+## 按需发布
+
+
+
+发布线上前你需要配置本次迭代(分支)需要发布的页面，如果没有配置，o2 p -o 前会提示里先配置。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/lziyyh/imgQEMMgEb1yK.png)
+
+
+
+
+你可以选择：
+
+
+
+1. 发布部分页面
+1. 发布全部页面
+
+
+按需迭代详情查看: [https://space.o2.alibaba-inc.com/doc/kbmcin?version=v3](https://space.o2.alibaba-inc.com/doc/kbmcin?version=v3)
+
+​
+
+## 构建发布类型和发布环境区分
+
+
+
+当发布流程为 weex 时，你可以从环境变量 BUILD_ARGV_STR 读取 weex 流程相关信息
+
+
+
+```
+const buildArgv = require('yargs-parser')(process.env.BUILD_ARGV_STR);
+```
+| 参数 | 值 | 说明 |
+|-|-|-|
+| buildArgv['def_publish_type'] | weex | 标明当前发布类型，为 weex |
+
+
+
+对于构建脚本，可以执行如下命令模拟传入环境变量测试
+
+
+
+```
+# -- 后面表示传入云构建的环境变量
+def build -- --def_publish_type=weex
+```
+
+
+对于构建器，构建器本地 link 后执行如下命令测试
+
+
+
+```
+# -- 后面表示传入云构建的环境变量, -l 表示调用本地构建器，调试过程需要先在构建器目录下执行 def dev 链接
+def build -l -- --def_publish_type=weex
+```
+
+
+weex 发布流程如果需要发布降级页面，可能会有根据环境区分引入 assets 地址的需求。不像 webapp，weex 流程没有提供线上构建流程，但 weex 发布的页面是 xtpl 格式的，可以使用动态变量运行时判断环境。示例如下：
+
+
+
+```
+// production 线上环境，beta 表示小淘宝环境
+{{#if ($page.env==='production' || $page.env==='beta')}}
+  {{set (prefix='g.alicdn.com')}}
+{{else}}
+  {{set (prefix='dev.g.alicdn.com')}}
+{{/if}}
+<script src="//{{prefix}}/path/index.web.js"></script>
+```
+
+
+## 其他发布说明
+
+
+
+#### 命令行发布
+
+
+
+- 日常：o2 p -d
+- 线上：o2 p -o 
+
+
+为了减少回归成本，线上发布时不会全量发布所有页面，在发布前你需要选择本次需要正式发布的页面。如果未选择页面，会提示选择，选择完成后再次执行 o2 p -o 即可发布。
+
+​
+
+#### 示例仓库
+
+
+
+[http://gitlab.alibaba-inc.com/def-demo/pub-assets/tree/master](http://gitlab.alibaba-inc.com/def-demo/pub-assets/tree/master)
+
+
+

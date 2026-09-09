@@ -1,0 +1,42 @@
+{
+  "documentId": 2306,
+  "documentName": "工具-素材唤醒-2-素材唤醒配置查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 素材唤醒配置查询（素材唤醒功能已下线，请勿调用！）\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/wakeStatus](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/wakeStatus)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 123456 | 必填 | 账户Id |  |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int        |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data | GateAccountWakeStatusView |  | 账户素材唤醒配置信息 |  |\n\n| GateAccountWakeStatusView     |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| advertiser_id | long | 139494 | 账户Id |  |\n| wake_status | int   | 1 | 素材唤醒状态 | 1：关闭，2：开启，3：唤醒中 |\n| wake_start_time | long | 1655273477000 | 账户素材唤醒配置开始时间 | 毫秒时间戳 |\n| wake_end_time | long | 1655481599000 | 账户素材唤醒配置结束时间 | 毫秒时间戳，-1为长期 |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 123456\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"advertiser_id\": 123456,\n        \"wake_status\": 1,\n        \"wake_start_time\": 1676131200000,\n        \"wake_end_time\": -1\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677503280600
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677503280600,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

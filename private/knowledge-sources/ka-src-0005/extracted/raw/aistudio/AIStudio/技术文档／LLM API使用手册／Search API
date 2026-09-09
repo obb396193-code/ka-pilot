@@ -1,0 +1,480 @@
+
+# 支持的模型
+
+| 模型供应商 | idea-lab对模型的命名 | 说明 |
+| --- | --- | --- |
+| [Google Serper](https://serper.dev/playground) | google-search | 上架 |
+| [Microsoft Bing](https://learn.microsoft.com/en-us/bing/search-apis/) | bing-search | 上架 |
+| [SerpApi](https://serpapi.com/google-lens-api) | serpapi-search | 上架 |
+
+# 模型价格
+
+* 模型具体收费标准参见<https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs#OSqgV>
+
+# Getting Started
+
+## curl格式
+
+## 请求体格式
+
+* 结构说明
+* 字段说明
+
+| 参数类型 + 参数名称 | 是否必传 | 说明 |
+| --- | --- | --- |
+| String query | 是 | 查询内容 |
+| Integer num | 取决于搜索类型，详见：[Google Search 示例](#l2tD8) | 查询结果的个数 |
+| String country | 取决于搜索类型，详见：[Google Search 示例](#l2tD8) | 国家，例如：中国（cn） |
+| String locale | 取决于搜索类型，详见：[Google Search 示例](#l2tD8) | 当地语言，例如：简体中文（zh-cn） |
+| String location | 取决于搜索类型，详见：[Google Search 示例](#l2tD8) | 定位，例如：中国（China） |
+| Integer page | 取决于搜索类型，详见：[Google Search 示例](#l2tD8) | 分页 |
+| String model | 是 | 哪个搜索模型，目前仅支持：google-search |
+
+## 响应体格式
+
+* 成功：
+
+* originalOutput为搜索模型的原生输出，参考：[Google Search 示例](#l2tD8)
+
+* 失败:
+
+# Google Search
+
+## 示例
+
+### search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| Integer num | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### images search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| Integer num | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### videos search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| Integer num | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### places search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### maps search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| String gpsPositionAndZoomLevel | 是 |
+| String locale | 是 |
+| String placeId | 否 |
+| String cid | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### news search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| Integer num | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### shopping search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| Integer num | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* 说明：
+
+* （1）location要设为United States，否则搜不到内容。
+
+> 在google serper官方也是这种情况。
+
+* curl请求：
+
+* 响应：
+
+* 注意：
+
+* 即使传了num为2，也被模型提供方修改为了num=20
+
+### scholar search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### patents search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| Integer num | 是 |
+| String country | 否 |
+| String locale | 否 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### autocomplete search
+
+* 如何传参：
+
+| 参数类型 + 参数名称 | 是否必传 |
+| --- | --- |
+| String query | 是 |
+| String country | 是 |
+| String locale | 是 |
+| String location | 否 |
+| Integer page | 是 |
+
+* curl请求：
+
+* 响应：
+
+### lens search
+
+* 如何传参：
+
+* curl请求：
+
+* 响应：
+
+# Bing Search
+
+## 参数补充说明
+
+* azure的q相当于ideaLAB的query
+
+* 如果不是query、num参数，都放到extendParams中，详见：[其他参数](#yxnUr)。例如：freshness。
+
+## 实例版本说明
+
+| search type | 可用的instanceVersion |
+| --- | --- |
+| web search | F1、S1 |
+| images search |
+| videos search |
+| news search |
+| suggestions search |
+| visual search | F1、S9 |
+
+> * 必须要传instanceVersion！
+> * 如果业务使用建议使用S系列，F1仅作为联通测试使用。
+> * F1、S1、S9的价格不同，详见：<https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs>
+
+## 示例
+
+### search （相当于web search）
+
+* 请求：
+
+* 响应：
+
+### images search
+
+* 请求：
+
+* 响应：
+
+### videos search
+
+* 请求：
+
+* 响应：
+
+### news search
+
+* 请求：
+
+* 响应：
+
+### suggestions search
+
+* 请求：
+
+* 响应：
+
+### 其他参数
+
+> 以search为例
+
+* 请求：queryParameters、 headers支持哪些，可以参考[官方文档](https://learn.microsoft.com/en-us/bing/search-apis/)。
+
+* 响应：
+
+  
+
+
+## Visual Search 示例
+
+> instanceVersion：F1、S9
+
+官方文档：<https://learn.microsoft.com/en-us/bing/search-apis/bing-visual-search/how-to/get-insights#filtering-similar-images-and-products>
+
+​  
+
+
+### CURL模版
+
+> 下列示例只需修改 --data-raw中的内容就可以了
+
+​  
+
+
+### 简单URL 示例
+
+  
+
+
+### 指定图像的信息
+
+### 图像标记示例
+
+  
+
+
+### 感兴趣区域示例
+
+### 包括实体数据
+
+  
+
+
+### 过滤相似的图片和产品
+
+### Paging VisualSearch 和 ProductVisualSearch 操作类型
+
+# serpapi-search
+
+### type: google_lens
+
+#### 参数
+
+* 注意：
+
+* url必传
+* hl、country不要填中国相关的，否则调不通。
+* no_cache："true" or "false"
+* async："false"
+
+* 暂不支持"true"
+
+* output："JSON"
+
+* 暂不支持"html"
+
+#### 示例
+
+### type: bing
+
+#### 参数
+
+* 输入
+
+* 输出
+
+#### 示例
+
+### type: google_scholar
+
+#### 参数
+
+* 输入
+
+* 输出
+
+#### 示例
+
+# 
+
+# 360So
+
+| 搜索功能 | type | 接口举例 | 接口内容 |
+| --- | --- | --- | --- |
+| 网页 (AI增强系列) | mwebsearch | aiso-sr | 默认10条，AI增强(AI重排和AI摘要): 同360so-s1，但经过AI相关度重排，并增 加AI抽取生成的长摘要(summary_ai字 段)，对大模型更友好，需要时可输出正 文。 |
+| aiso-km-e2 | 默认10条，内部精品知识库，专为大模 型场景打造，段落语义召回。业务定制 时，可按内容类别检索，如旅游(增加参 数:category=旅游)、教育等。 |
+| aiso-pro | ​默认10条，网页+内部精品知识库(结果 含有sr + km-e2混排)。 |
+| 网页 (传统搜索系列) | mwebsearch | 360so-s1 | 默认3条:自然结果，提供字段:标题， url，传统飘红摘要等。 |
+| 垂类和多模态 | vertical | 360so-v-ik | 默认60条，以文搜图，提供图片的宽、 高、图片url，所在网页url。 |
+| 360so-v-ig | ​默认30条，以图搜图。通过post提交 base64格式的图片数据(小于5M)或者 公网图片URL，或者此接口可以不传q参 数 |
+| 360so-v-news | 默认10条。 搜索近期新闻。 |
+
+  
+
+
+### type: mwebsearch
+
+#### 参数
+
+* 注意：
+
+* ref_prom,query必传
+* ref_prom 支持aiso-sr,aiso-km-e2,aiso-pro,360so-s1
+* sid 即sessionId，用于后续接口调用的问题排查跟踪，不传则自动生成。
+
+#### 示例
+
+#### 响应体格式
+
+| 字段 | 类型 | 备注 | 是否必 须 | 示例 |
+| --- | --- | --- | --- | --- |
+| title | string | 标题 | 是 | "<b>为什么</b>大多数<b>植物</b>都<b>是绿色</b>" |
+| summary | string | 传统摘要 | 是 | "<b>植物</b>的<b>绿色</b>是光合作用的结果。<b>植物</ b>之所以呈现绿色,是因为有光的存在。任何物体表现出的 颜色,就是它反射出来的那部分光线的颜色。<b>植物</b>之 所以<b>是绿色</b>的,是依赖于它们细胞内含有能捕获能量 的色素,..." |
+| url | string | 详情页地 址 | 是 | https://m.baike.so.com/...9.html |
+| site_name | string | 来源名称 | - | 360百科 |
+| site | string | 来源域名 | - | m.baike.so.com |
+| time | int | 页面发布 日期 | - | 1542297600 (秒) ; |
+| page_time | string | 页面发布 日期 | - | 根据time字段转的格式化时间，2025-02-12 12:12:12 |
+| type | string | 类型 | 是 | engine，kvdb，wenda等; |
+| from | string | 结果来源 | 是 | engine |
+| summary_ ai | string | 基于全文 通过AI重 新生成的 长摘要 | 是    (aiso) | 较长，略。可参见后面例子。    注:高级接口(如aiso开头)会基于全文通过AI重新生成长摘 要，并对结果重新排序，对大模型应用更友好。360so-s1为 方便业务开发，兼容赋值为传统摘要。 |
+
+### type:vertical
+
+以文搜图，ref_prom为360so-v-ik，360so-v-news。
+
+#### 参数
+
+* 注意：
+
+* ref_prom,query必传
+* ref_prom,支持360so-v-ik，360so-v-news
+* sid 即sessionId，用于后续接口调用的问题排查跟踪，不传则自动生成。
+
+#### 示例
+
+#### 响应体格式
+
+| 字段名 | 字段描述说明 | 取值和示例 |
+| --- | --- | --- |
+| id | 数据id，排查case追溯用 | 见示例 |
+| title | 标题 | 见示例 |
+| content | 图片描述 | 见示例 |
+| purl | 图片所在的原始网页url | 见示例 |
+| imgurl | 图片本身的原始url | 见示例 |
+| height | 原图高像素 | 见示例 |
+| width | 原图宽像素 | 见示例 |
+
+  
+
+
+以图搜图，ref_prom为360so-v-ig
+
+#### 参数
+
+* 注意：
+
+* ref_prom,query必传
+* ref_prom,支持360so-v-ig
+* 传图片链接使用img_url参数，传base64使用img_buf参数。(使用base64理论延时更低)
+* sid 即sessionId，用于后续接口调用的问题排查跟踪，不传则自动生成。
+
+#### 示例
+
+#### 响应体格式
+
+| 字段名 | 字段描述说明 | 取值和示例 |
+| --- | --- | --- |
+| id | 数据id，排查case追溯用 | 见示例 |
+| title | 标题 | 见示例 |
+| content | 图片描述 | 见示例 |
+| purl | 图片所在的原始网页url | 见示例 |
+| imgurl | 图片本身的原始url | 见示例 |
+| height | 原图高像素 | 见示例 |
+| width | 原图宽像素 | 见示例 |
+
+### 
+
+# 相关文档
+
+* [LLM_API使用手册](https://aliyuque.antfin.com/aiplus/aistudio/db90ux8597ssdeuw?singleDoc#)
+* [Chat Completion API](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9?singleDoc#)
+* [Workspace批量任务API说明](https://aliyuque.antfin.com/aiplus/aistudio/qdb8dxpg2hg8hrrz?singleDoc#)

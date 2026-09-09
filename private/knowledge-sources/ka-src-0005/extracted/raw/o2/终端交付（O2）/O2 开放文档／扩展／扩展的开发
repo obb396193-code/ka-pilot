@@ -1,0 +1,116 @@
+> 开发的前提是已经新建了一个扩展，新建扩展的流程可以看 《新建扩展》
+
+#### 目录结构
+
+(https://o2-img.alistatic.com/i/i09blZ/CBPqJLYIKhXiommXPdJ1F-d3755683f0.png)
+
+
+#### 创建迭代
+
+进入扩展，点击创建迭代
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/aeb5607b-0a71-4e99-a403-21420859d5c7.png)
+
+
+迭代创建完成后，进入迭代详情页，可以看到共有四个阶段（开发、预发部署、线上部署、灰度放量）
+
+(https://o2-img.alistatic.com/i/i09blZ/8HM97cVawlrGxCPqAPIHk-4d3e5d5038.png)
+
+
+#### 本地研发
+
+在“开发“阶段，点击进入本地开发
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1GXn4BvooakbODQ4/img/8703a912-c845-4be0-ac3b-70f684c78116.png)
+
+
+进入后，可以按顶部的提示启动本地项目，完成开发、调试
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1GXn4BvooakbODQ4/img/a1b54cd3-dd6f-4bb0-afbf-dddb4d3f5f4c.png)
+
+
+#### 云研发（可选）
+
+> 通过云研发的方式完成扩展功能的开发
+
+点击进入云研发
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/a6a90836-759b-4cfb-bf43-8280cfae1e7d.png)
+
+
+等待云研发 IDE 初始化完成
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/89a35770-5c31-460a-b7f3-aa90c0fc98b8.png)
+
+
+可以看到扩展项目，并且命令行已经安装依赖完成、启动编译
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/0bf8e152-80c9-402b-a161-45c58cba4a08.png)
+
+
+点击阴影区域或按 ESC 键可以隐藏/显示 IDE，点击扩展点右侧的“云研发”按钮，可以定位到对应扩展点的代码（如果项目中还没有这个扩展点目录，将自动初始化该扩展点对应的文件目录）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/ad1543c0-4476-4abe-8fd9-ad0c230ece0c.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/7b7aae90-3f11-4b6e-aa05-c14945470478.png)
+
+
+（点击扩展点后自动生成相关目录结构和模版代码）
+
+隐藏 IDE / 手动按下刷新按钮（或快捷键）时会自动刷新扩展点，查看最新效果
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/0b45d287-2b8f-4e8e-9679-968e868a0460.png)
+
+
+开发完成可以到右侧提交代码，或通过 git 命令行提交到当前分支
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/6de38422-4079-4197-bc94-d726399efa89.png)
+
+
+提交成功后关闭当前页面
+
+#### 预发发布
+
+代码提交后，回到迭代页，可以看到刚才的 commit，我们切换到预发部署阶段，点击立即发布
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/00001865-4a16-457c-ace9-f11ae666f6a9.png)
+
+
+发布完成，可以在“O2 扩展发布”面板中看到发布的扩展点
+
+(https://o2-img.alistatic.com/i/i09blZ/SID4f88iJix4x9WjTTO49-51e28607c3.png)
+
+
+#### 线上发布
+
+预发验证完成后，点击线上部署阶段，在卡口检查中提交审批，
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/6f0b3a2d-bfb1-459b-b9b5-884cddcceabf.png)
+
+
+审批通过后，可以点击发布
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/6951b525-9ab6-418d-acff-22615f5aef2a.png)
+
+
+发布完成，可以看到发布的扩展点
+
+(https://o2-img.alistatic.com/i/i09blZ/cSZzF3xMisozNtHRjkruh-2e69ce7e9f.png)
+
+
+
+
+注意：此时，扩展包为灰度状态，只灰度到点击线上发布的用户，需要到灰度阶段操作放量
+
+#### 灰度放量
+
+进入灰度阶段，设置灰度团队范围（选择相关团队 TL 或个人，TL 包括团队内所有成员）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/b2cf06e2-8a72-434c-9269-f5a3a0f3250a.png)
+
+
+全量发布：灰度范围覆盖全量，并完成迭代
+
+取消发布：灰度范围停留在当前范围，并完成迭代
+

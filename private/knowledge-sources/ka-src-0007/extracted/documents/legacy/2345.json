@@ -1,0 +1,42 @@
+{
+  "documentId": 2345,
+  "documentName": "共享授权结果",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 共享授权结果\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shard/result](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shard/result)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| shard_auth_id | Long |  | 必填 | 共享授权任务ID |  |\n| advertiser_id | Long |  | 必填 | advertiser_id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 共享授权任务信息查询是否成功 0代表查询失败 1代表查询成功 |  |\n| message | String | \"OK\" | 返回信息 |  |\n| data | ShardAuthorizeResultSnake |  | 共享授权结果 |  |\n| &#8195;status | Integer |  | 授权任务状态 0 处理中 1全部成功 2部分成功 3全部失败 |  |\n| &#8195;success_account | AuthAccountSnake[] |  | 共享授权成功的账户信息 |  |\n| &#8195;&#8195;account_id | Long |  | 账户ID |  |\n| &#8195;&#8195;account_name | String |  | 账户名称 |  |\n| &#8195;&#8195;fail_reason | String |  | 授权失败原因 |  |\n| &#8195;fail_account | AuthAccountSnake[] |  | 共享授权失败的账户信息 |  |\n| &#8195;&#8195;account_id | Long |  | 账户ID |  |\n| &#8195;&#8195;account_name | String |  | 账户名称 |  |\n| &#8195;&#8195;fail_reason | String |  | 授权失败原因 |  |\n\n### 请求样例\n\n```js\nnull\n```\n\n### 返回样例\n\n```\nnull\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1683279542491
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1683279542491,
+  "creator": "mapi",
+  "fullContext": null
+}

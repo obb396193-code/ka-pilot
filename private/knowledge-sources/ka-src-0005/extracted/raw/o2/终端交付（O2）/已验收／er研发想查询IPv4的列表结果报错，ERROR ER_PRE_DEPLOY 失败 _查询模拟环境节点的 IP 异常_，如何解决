@@ -1,0 +1,18 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/6604d8bd0a31a105699e4123/](https://links.alibaba-inc.com/support/conversation/6604d8bd0a31a105699e4123/)
+
+作者：时路
+
+评审人：上坡
+
+
+
+**可能原因一：**可能是网络原因造成的，请确保网络联通正常
+
+
+
+**可能原因二**：当前子账号未开通相关权限，请确保开通了 CDN 的 DescribeStagingIp 权限 
+
+
+
+
+

@@ -31,7 +31,7 @@ function store() {
   const records: RawMetricRecord[] = [];
   const metadata: AccountMetadataUpsert[] = [];
   const value: AccountMetadataEtlStore = {
-    startRun: vi.fn().mockResolvedValue(91),
+    startRun: vi.fn().mockResolvedValue("9007199254740993"),
     appendRaw: vi.fn(async (rows) => {
       records.push(...rows);
     }),
@@ -147,7 +147,7 @@ describe("ETL handlers", () => {
       "full",
       expect.objectContaining({ workspaceId }),
     );
-    expect(runStore.value.finishRun).toHaveBeenCalledWith(91, runStore.records.length);
+    expect(runStore.value.finishRun).toHaveBeenCalledWith("9007199254740993", runStore.records.length);
     expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
       jobType: "canonical_merge",
       workspaceId,
@@ -186,7 +186,7 @@ describe("ETL handlers", () => {
     expect(runStore.value.appendRaw).not.toHaveBeenCalled();
     expect(downstream.enqueue).not.toHaveBeenCalled();
     expect(runStore.value.failRun).toHaveBeenCalledWith(
-      91,
+      "9007199254740993",
       "persist:account_page_1_accounts_and_raw",
       "account sync failed",
     );
@@ -223,7 +223,7 @@ describe("ETL handlers", () => {
     expect(runStore.value.syncAccountMetadataAndRaw).not.toHaveBeenCalled();
     expect(runStore.value.appendRaw).not.toHaveBeenCalled();
     expect(runStore.value.failRun).toHaveBeenCalledWith(
-      91,
+      "9007199254740993",
       "validate:account_page_1_scope",
       "Qihang account response escaped requested account scope",
     );
@@ -375,7 +375,7 @@ describe("ETL handlers", () => {
         hh: 9,
       }),
     ]);
-    expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 3);
+    expect(runStore.value.finishRun).toHaveBeenCalledWith("9007199254740993", 3);
     expect(hourly.upsertHourly).toHaveBeenCalledWith([{
       workspaceId,
       media: "KUAISHOU",
@@ -503,7 +503,7 @@ describe("ETL handlers", () => {
         focusAccountIds.slice(0, 5),
         focusAccountIds.slice(5, 6),
       ]);
-    expect(runStore.value.failRun).toHaveBeenCalledWith(91, "ad_realtime", "ad batch truncated");
+    expect(runStore.value.failRun).toHaveBeenCalledWith("9007199254740993", "ad_realtime", "ad batch truncated");
     expect(hourly.upsertHourly).not.toHaveBeenCalled();
     expect(downstream.enqueue).not.toHaveBeenCalled();
   });
@@ -548,12 +548,12 @@ describe("ETL handlers", () => {
       }),
       expect.objectContaining({ resource: "account_realtime", ds: "2026-08-20" }),
     ]);
-    expect(runStore.value.recordObservation).toHaveBeenNthCalledWith(1, 91, {
+    expect(runStore.value.recordObservation).toHaveBeenNthCalledWith(1, "9007199254740993", {
       ...observation("account_offline", 0),
       beginDate: "2026-08-19",
       endDate: "2026-08-19",
     });
-    expect(runStore.value.recordObservation).toHaveBeenNthCalledWith(2, 91, {
+    expect(runStore.value.recordObservation).toHaveBeenNthCalledWith(2, "9007199254740993", {
       ...observation("account_realtime", 1),
       ds: "2026-08-20",
     });
@@ -633,7 +633,7 @@ describe("ETL handlers", () => {
     expect(hourly.upsertHourly).toHaveBeenCalledWith([
       expect.objectContaining({ hh: 0, cost: 7 }),
     ]);
-    expect(runStore.value.recordObservation).toHaveBeenCalledWith(91, expect.objectContaining({
+    expect(runStore.value.recordObservation).toHaveBeenCalledWith("9007199254740993", expect.objectContaining({
       kind: "hourly_derivation",
       issueCount: 0,
       issueFields: [],
@@ -668,7 +668,7 @@ describe("ETL handlers", () => {
     }))).rejects.toThrow("hourly unavailable");
 
     expect(runStore.records.filter((record) => record.resource === "ad_realtime")).toHaveLength(2);
-    expect(runStore.value.failRun).toHaveBeenCalledWith(91, "hourly_upsert", "hourly unavailable");
+    expect(runStore.value.failRun).toHaveBeenCalledWith("9007199254740993", "hourly_upsert", "hourly unavailable");
     expect(downstream.enqueue).not.toHaveBeenCalled();
   });
 
@@ -758,7 +758,7 @@ describe("ETL handlers", () => {
     }))).rejects.toThrow("outside the requested ds");
 
     expect(runStore.value.failRun).toHaveBeenCalledWith(
-      91,
+      "9007199254740993",
       "hourly_derive",
       expect.stringContaining("outside the requested ds"),
     );
@@ -781,7 +781,7 @@ describe("ETL handlers", () => {
 
     await expect(handler(failingJob)).rejects.toThrow("offline unavailable");
     expect(runStore.value.failRun).toHaveBeenCalledWith(
-      91,
+      "9007199254740993",
       "fetch:account_page_1",
       "offline unavailable",
     );
@@ -810,7 +810,7 @@ describe("ETL handlers", () => {
       asOfDate: "2026-08-19",
     }))).rejects.toThrow("pagination total");
     expect(runStore.value.failRun).toHaveBeenCalledWith(
-      91,
+      "9007199254740993",
       "validate:account_page_1",
       expect.stringContaining("pagination total"),
     );

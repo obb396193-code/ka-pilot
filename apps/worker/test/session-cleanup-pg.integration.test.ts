@@ -52,7 +52,7 @@ describe("session maintenance real PG + executable / synthetic only", () => {
     expect(await sessionExists(own)).toBe(false); expect(await sessionExists(foreign)).toBe(true);
     expect((await pool.query("SELECT status,attempts FROM jobs WHERE id=$1", [mediaJob])).rows[0]).toEqual({ status: "queued", attempts: 0 });
     expect((await pool.query("SELECT status FROM jobs WHERE workspace_id=$1 AND job_type=$2", [workspaceId, SESSION_CLEANUP_JOB_TYPE])).rows).toEqual([{ status: "done" }]);
-  });
+  }, 30000);
   it("same logical run replay and concurrent invocations do not create duplicate jobs or redo a done run", async () => {
     await oldSession(); const config = parseSessionCleanupConfig(env());
     await Promise.all([executeSessionCleanupOnce(config), executeSessionCleanupOnce(config)]);

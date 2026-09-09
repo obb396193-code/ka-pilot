@@ -37,7 +37,7 @@
 - v1.2 相对你上次复核的变化（重点核对这些）：
   1. 老板六终裁：工作流画布做（模板+自由编排）／钉钉群查数做／网关独立部署／公共资产五段全套（表全字段 UI 两态起步）／素材拆片做（复用 CR）／卡片 L0-L3 四档全做
   2. 你的六项修正全部采纳：部署拆三单元（Web-API/Worker-Scheduler/DingTalk-Gateway + job/outbox 表 + DB lease）／B1 拆 B1a/b/c／Schema 契约硬要求（含你列的 30+ 缺失表）／LLM Provider 抽象+现状如实／充值提审改"自愿快捷方式非门槛"／补 6 缺失件（加关账户/选品/相似查找/群建工作项/运行监控页/能力目录）
-  3. 老板新终裁：**每用户三凭证自持**（奇航 userId+Multica mul_ PAT+IdeaLab AK，secret ref；谁操作用谁的凭证；无 PAT 降级只读+深链；服务级后台任务 demo 用老板 PAT→正式化 mcn_）
+  3. 老板新终裁：**每用户三凭证自持**（启航 userId+Multica mul_ PAT+IdeaLab AK，secret ref；谁操作用谁的凭证；无 PAT 降级只读+深链；服务级后台任务 demo 用老板 PAT→正式化 mcn_）
   4. **一级导航老板定稿 9 项**：工作台/投放任务/数据分析/账户资源/自动化/商品素材/报告/知识库/钉钉中心 + 头像菜单(设置+治理后台)；工作台加警报监控区；数据分析加完整数据总表；值守与警报配置放钉钉中心；协作=工作台 tab
   5. 商品素材域改"数据可得性优先"（能拿到数据做深，拿不到保持占位）
 - 要求：
@@ -92,11 +92,11 @@
 - 交付物（目录边界：apps/worker、apps/web/app/api、packages/db、packages/domain）：
   1. `packages/db`：按 schema.sql 出迁移（node-pg-migrate 或 drizzle，你选并在状态文件记录理由）；迁移可重放；分区表按月建
   2. `packages/domain`：metrics.md 全部派生指标纯函数实现 + 单测（含环比 NEW/null 边界、双口径合并、零耗日剔除）——**这是"agent 不算数"的唯一计算实现**
-  3. `apps/worker` 骨架：jobs 表轮询消费器（DB lease，SELECT FOR UPDATE SKIP LOCKED）+ etl_full/etl_incr 两个 job handler（调奇航 get_data，userId 从 payload 取）+ etl_runs 留痕 + 失败重试进 outbound 告警
+  3. `apps/worker` 骨架：jobs 表轮询消费器（DB lease，SELECT FOR UPDATE SKIP LOCKED）+ etl_full/etl_incr 两个 job handler（调启航 get_data，userId 从 payload 取）+ etl_runs 留痕 + 失败重试进 outbound 告警
   4. qihang client：GET get_data 封装（account/account_offline/account_realtime/ad_realtime 四 resource；502/503/504 重试 3 次指数退避；鉴权失败不重试直接 blocked_auth）
   5. metrics_raw 落库 → canonical 合并 job（字段级合并规则见 metrics.md）
 - 工程纪律：`[be]` 前缀路径限定 commit；在自己分支 `be/b1a`；建 `docs/plans/B1a-状态.md`（从 CR 状态文件模板样式）逐条更新；完成给 SHA 等 arch 验收
-- 本地环境：PG 用 docker 本地起；**不碰 SQLite**；奇航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
+- 本地环境：PG 用 docker 本地起；**不碰 SQLite**；启航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
 - 契约缺口：写 inbox-arch.md 提议，不自己发明字段
 - **✅ P-001~P-003 已裁决**（2026-08-19）：契约 v1.1 已冻结（SHA 4696fdf），9 条问题全部已落契约本体；inbox-arch.md 已更新逐条回复。**继续 B1a**：按契约 v1.1 补 migration 主键变更（复合主键含 workspace_id）、`metrics_raw.resource` 持久化/回放、Worker/gateway composition 对接三新端点（`POST /agent/sessions/:id/query` + `POST /tasks` + `POST /work-items/:id/reply`）；完成交最终 SHA 等 arch 逐条验收。
 - 状态：已完成（最终 SHA `f98952f8cf1daae126e22c431052d688644237c9`；回执见 `inbox-arch.md` P-004）
@@ -163,7 +163,7 @@
   10. **Next BFF**：以上全部对应 `/api/internal/*` 路由，转发 Session cookie + requestId，不接受 `dataView`。
   11. **Capability Registry**：把 ka-src-0007 评估列出的快手 MAPI 核心能力（campaign update/status、unit budget、creative update/status/review、四层实时 report）录入 `provider_model_capabilities` 同构的 capability 表（B7 Registry），状态 `documented_unverified`；修 kuaishou-cli 2 处 HTTP 方法冲突。
 - 拆批（**2026-09-05 修订**，按"用户闭环"切，不按模块切）：
-  - **R-010a1「每天能看」**：#6 语义查询（summary/trend/table/dimension/health，`meta` 补 `workspaceKind`）+ #9 `GET /system/health`/`etl-runs` + #5 `GET /accounts/:id` 小传/余额 + BFF。**验收句**：合入后老板能在数据总表/大盘/账户池用真实奇航数据看全字段、下钻账户、导出 Excel。
+  - **R-010a1「每天能看」**：#6 语义查询（summary/trend/table/dimension/health，`meta` 补 `workspaceKind`）+ #9 `GET /system/health`/`etl-runs` + #5 `GET /accounts/:id` 小传/余额 + BFF。**验收句**：合入后老板能在数据总表/大盘/账户池用真实启航数据看全字段、下钻账户、导出 Excel。
   - **R-010a2「每天能处理」**：#2 工作项动作 + `meta.coverage` 三态（api.md 9-5 冻结）+ #3 变更集全流程 + #4 任务详情/写 + #5 其余。**验收句**：老板能在工作台看到有证据的队列、处理或跳后台、T+1 看到回收。
   - **R-010b**：#7 日报、#8 Agent SSE、#9 rerun/search、#11 Registry。
   - 每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。**不能写出验收句的项标"基础建设"，不计入可用功能。**
@@ -173,7 +173,7 @@
 #### R-009 追加（2026-09-04 arch 六簇审计新发现）
 
 11. ~~Task4 P1-1 登录 credential oracle~~ **撤回**（arch 2026-09-04 复核：`session-http.ts` `login()` 两条失败路径均走 `loginFailure()` 统一 401，测试 `session-http-service.test.ts:140-170` 已断言一致；我 grep 到的 401/403 分叉是已登录后的 `view()`，属正确行为。root Task4 复验结论成立）。
-12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（奇航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
+12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（启航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
 13. 交付时在状态文件逐条定位以下 4 项代码行给 arch 复核：B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退。
 
 
@@ -182,7 +182,7 @@
 ### R-011 后端：Task6 团队数据接入（按 v1.2「team→ka_data」重做；2026-09-04）
 
 - 派活方：arch　日期：2026-09-04　顺序：R-009 → R-010a → **R-011** → R-010b
-- **现场**：`/private/tmp/ka-personal-team-task6-20260904`（`codex/personal-team-task6-ingestion@4e67315`）。其中 `f009e19`（个人 Session 候选查询 `LIMIT 2` 稳定排序）可独立审后合入；`feec2ec/6d02cfe/4e67315`（source-neutral 团队接入计划/Domain contract/staging 设计）与未提交的 `011_team_data_sync.cjs` 草稿**按旧"奇航主源、KA Data 备用"设计写的，与 v1.2 冲突，作废重做**——但 root 停工前补的六条设计要求**全部保留**：
+- **现场**：`/private/tmp/ka-personal-team-task6-20260904`（`codex/personal-team-task6-ingestion@4e67315`）。其中 `f009e19`（个人 Session 候选查询 `LIMIT 2` 稳定排序）可独立审后合入；`feec2ec/6d02cfe/4e67315`（source-neutral 团队接入计划/Domain contract/staging 设计）与未提交的 `011_team_data_sync.cjs` 草稿**按旧"启航主源、KA Data 备用"设计写的，与 v1.2 冲突，作废重做**——但 root 停工前补的六条设计要求**全部保留**：
   1. 团队同步不逐页直接覆盖当前 canonical；
   2. run-scoped staging / versioned rows；
   3. 全部页 + coverage + lineage 验证通过后才原子 publish；
@@ -195,7 +195,7 @@
   3. `ka_data` → staging → 校验 → publish 的 Worker job 链（`team_sync_run`/`team_sync_page`/`team_sync_publish`），确定性 job id，失败保留上一 snapshot。
   4. 团队 readiness：不依赖个人 grants/credential owner（root P2 指出的 partial/stale 永久降级问题一并修）。
   5. 真实 PG 反例：中途失败保 snapshot、并发两 run 只发布一个、团队失败不动个人行、unknown lineage 不 ready。
-- 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（奇航 vs ka-data）**交 OS agent。
+- 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（启航 vs ka-data）**交 OS agent。
 - 状态：#1 提案已交 P082（2026-09-06），`docs/plans/2026-09-06-R011团队KA快照接入-契约提案.md`，proposal_pending_arch；#2–5 未实施，等 arch 冻结后再动013/代码，不复活旧Task6。
 
 
@@ -240,7 +240,7 @@
 
 **R-013 修订（2026-09-05，Codex 审查会话指出的死循环，arch 核实属实）**：`workspace-sync-service.ts` `planJob` 在授权账户为空时返回 `ACCOUNT_SCOPE_MISSING` 不发首次全量——所以"ETL 首跑后再补授权"走不通。改为：
 - **删除** `grants: "all_accounts_in_workspace"` 快捷值；grants 必须显式列账户。
-- 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调奇航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
+- 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调启航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
 - 反例加两条：grants 为空时 seed 成功但 sync tick 返回 `ACCOUNT_SCOPE_MISSING`（说明门还在）；discover 命令在无 `QIHANG` 配置时 fail closed 不伪造空清单。
 - 这不是放宽安全边界，是把"首次账户发现→人确认→显式授权→同步"这条真实首次路径补齐；以后 4.5「加/关账户闭环」复用 discover。
 
@@ -429,3 +429,156 @@
 
 **解阻后顺序**（P-099 按此）：① `git merge main` + Domain/Web 权威样例复跑 + 真 PG 补跑 P-069～P-097 各批 → ② R-010a1 收口（公开 v3 两 Adapter/HTTP/BFF 全切、旧 v2 边界删）→ ③ R-010a2 收口（P-083 三处 + rollback 表 + 静音 HTTP + 规则解释器）→ ④ R-011 migration 013 + 团队快照 → ⑤ R-012 → R-014 → R-015 → R-016 → R-010b。恢复自动续跑。
 - 登录图：3 张已到老板手里（竖版 A 上传失败一次，重试中），等他选。OS f.yml 仍在等。
+
+#### P-103 门禁：worker 1 红要你首批修（F-P103-1）；db 迁移测试要能并行（arch 2026-09-06 深夜）
+- 数字：domain 720 / db 692（串行干净库）/ worker 1140+1 ✗ / gateway 36 / web 140，tsc/eslint 全 0。
+- **F-P103-1（P1，先于其他一切）**：`platform-read-snapshot-pg.integration.test.ts` 的"concurrent refresh after lineage"在真 PG 返回 `unavailable`/`Platform source unavailable`/`dataAsOf:null`。公开 v3 切换后这条 PG 用例没跑过。你要做的：① 在该路径把 `SOURCE_UNAVAILABLE` 兜底前的原始异常打进测试日志，定性是用例数据缺 v3 输入（history/lineage 一致性）还是 v3 平台窗口在合法数据上抛错；② 按定性修代码或修用例，**不许把期望改成 unavailable**；③ 真 PG 跑全 worker 套件回 exact 数字。
+- **F-P103-2（P2）**：db 迁移测试在并行文件 / PG 有其他负载时随机红（advisory lock / lock_timeout 5s 撞车）。要么每个迁移测试文件用自己的 schema/库，要么 vitest 配 `fileParallelism:false` 让 `npm test` 默认串行；不能靠"记得加 --maxWorkers=1"。
+- 顺序：先 F-P103-1 → `git merge main`（v1.7.5 + fixtures）→ 权威样例复跑 → 各批 PG 补跑 → R-010a1 收口 → …（前一条）。
+- be状态（2026-09-07）：F-P103-1已修b46ae5d并被P104合流；原始异常补证1f4a974待审。F-P103-2串行套件残留修复e1702e3已合流；本机最终DB692/Worker1142+2/Gateway36真PG通过，Domain765/Web140通过，详情P105。总信箱未完成，继续R010a1；不再以旧契约/PG拒连为等待原因。
+
+#### P-104 ✅ F-P103-1 已消，be/r010 @ b46ae5d 合 main `7691819`（arch 2026-09-07）
+- 五包真 PG 全绿（domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140）。你这三笔没写回执——补一条 P 编号，写明 F-P103-1 的定性（用例过期 vs 路径 bug）一句话即可。
+- F-P103-2 剩余：db 迁移测试并行仍会撞锁，vitest 配 `fileParallelism:false` 或每文件独立库，下批带上。
+- **磁盘警告**：Docker.raw 从 12G 涨到 24G（反复建库删库不回收），本机只剩 ~4G。你跑 PG 套件用固定库名重复利用（`ka_be_*_test` 各包一个），不要每次新建库名；大日志别写 /tmp。
+- 继续：`git merge main` → R-010a1 收口 → R-010a2 收口 → R-011（013）。
+
+### R-FE-IMG-002 登录图重做（老板 2026-09-07 否了 R-FE-IMG-001 四张；Codex 生图，空档做）
+- 老板原话要点：**太像 AI 生成的通用图；颜色/明暗不对；不要这种大图**。玻璃环/丝带/柔光/浅景深/黑底这一套整体作废，别在这上面修。
+- 改做 **3 个方向各 1 张（先只出 16:9 横版 2400×1350）**，老板挑中方向后再出 3:4 竖版与正式尺寸/体积：
+  1. **数据线条抽象**：浅色底（米白/浅灰），细线折线、网格、柱形组成的抽象矢量构图，一处 D-CON 橙高亮；像金融/数据产品的登录页，扁平、克制、无 3D。
+  2. **极简几何**：大面积留白，2–3 个几何色块/圆弧构图，三色（米白 + 深灰 + 橙），扁平印刷感，像 Stripe/Notion 的品牌页。
+  3. **摄影质感**：真实感场景（办公桌上的屏幕/会议室数据大屏/城市清晨），自然光、明亮偏浅，不做赛博、不做霓虹。
+- 三条硬约束：整体**明亮偏浅**（老板嫌暗）；**禁**玻璃/丝带/柔光光晕/紫蓝渐变/赛博/人物特写/任何文字 logo；右侧 40% 留空放登录卡。
+- 交付同 001：落 `output/brand-candidates/2026-09-07/login-16x9-{data,geo,photo}.png`，inbox-arch 回路径；不进 public、不提交图片；fe 不动占位。
+
+#### R-FE-IMG-002 补充：参考图与硬结论（arch 2026-09-07，老板看过参考后）
+- 参考截图（今天实截）在 `docs/frontend/references/login-2026-09-07/`：巨量引擎登录页、磁力金牛首页、腾讯营销首页、Vercel 登录页。
+- **硬结论**：国内三家投放平台全部 **亮色浅底**（浅蓝/白/米白）+ 一个品牌主视觉 + 大标题在左上 + 登录卡浮在右侧。你 001 那批黑底暗色方向反了，老板说的"明暗不对"就是这个。
+- 三个方向按参考重定义（仍各 1 张 16:9，2400×1350）：
+  1. **扁平插画卡片**（参考腾讯营销）：浅底上 2–3 块圆角插画卡片/图形组合，扁平、无 3D、无玻璃；主色米白 + 深灰，橙作点缀。
+  2. **数据线条抽象**（参考巨量的构图，换掉它的 3D）：浅底、细线折线/网格/柱形抽象矢量，一处橙高亮，左上留出大标题位。
+  3. **摄影质感**：明亮自然光的真实场景（屏幕/数据大屏/清晨城市），浅色调。
+- 构图：右侧 40% 留空放登录卡；左上 25% 留空放"KA Pilot + 一句定位"大标题（图里不要带文字）。
+- 底线：三张老板都不要就走 Vercel 式无图纯表单，前端不改结构只去掉图。
+
+#### 1f4a974 收 ✅（F-P103-1 定性=用例过期已实证）；请补回执并 `git merge main`（arch 2026-09-07）
+- 你的诊断测试证明旧注入路径在任何快照查询前就抛 "Window reader unavailable"，定性成立，已合 main。但三笔（c30f6f1/e1702e3/b46ae5d/1f4a974）仍没有 P 编号回执，补一条 P-105 三行即可。
+- be/r010 还没合 `7691819` 之后的 main（含 v1.7.5 fixtures/契约、登录页参考、fe 回改）；先 `git merge main` 再继续 R-010a1 收口。R-FE-IMG-002 补充见上一条（亮色浅底 + 参考图路径）。
+
+#### P-105 ✅ + e398f24 ✅ 合 main（回执编号 P-109，你的 P-106 保留） `5b9db7c`；F-P109-1 小修（arch 2026-09-07）
+- 两笔过；数字见 inbox-arch P-109。**F-P109-1（P2）**：`db/test/migrations.test.ts` 回放用例 5053ms 撞 5s 默认超时（纯耗时增长，非错），给它设 `testTimeout: 30_000`，别动全局。
+- 继续 R-010a1 收口；R-FE-IMG-002 三张出来放 `output/brand-candidates/2026-09-07/`。
+
+#### P-106（fdc5f5b）✅ 事后补审通过；F-P110-1：两个重用例设 30s 超时（arch 2026-09-07）
+- fdc5f5b 逐条见 inbox-arch P-110。dimension fixture 的 datasetVersion/queryTemplateVersion/metricVersion/objectIdentity 已补齐（56fd109），`git merge main` 后可去掉"unknown 合成 metadata"的绕行。
+- **F-P110-1（并 F-P109-1）**：`domain/test/dimension-window-rows.test.ts` 10k 哨兵用例与 `db/test/migrations.test.ts` 回放用例在全量并发下撞 vitest 5s 默认超时（单跑 1.5s/5.0s），给这两个用例 `testTimeout: 30_000`，不动全局。
+- 纪律：**发回执前先停手**——你两次在我门禁后又推了提交，我只能事后补审。以后"交审"= 写完回执后不再往该分支提交，直到收到我的 ✅ 或 ❌。
+
+### OS 八条回收 → 三处派活（arch 2026-09-07；契约 v1.7.7）
+- **R-013b 追加**：worker 暴露 `POST /internal/worker/once`（`X-Worker-Trigger-Token`=`WORKER_TRIGGER_TOKEN`，401/409 WORKER_BUSY/硬截止），复用你 P-057 的单轮内核；轻量 FaaS 无 timer，由 autopilot cron 触发。f.yml 三 HTTP 函数版见 `docs/evidence/integration/2026-09-07-os-八条回收.md` §4。内测拓扑改**方案 A 整套跑沙箱**（PG localhost:5432 trust），部署脚本首步起 PG。
+- **R-011 源版本策略**（OS 实证 ka-data 无版本号）：每 ds 单条 SQL ≤10000 行不分页；`source_snapshot_evidence`=该 ds `MAX(updated_at)`，两读不一致丢弃重拉；ds ≥ D-3 `provisional` 每日重同步，≤ D-4 `stable`；team lineage 加 `sourceBatch`/`stability`。把这条并进你的 R-011 提案再实现。
+- **R-012 bid_tool 码表**：从 ka-src-0007 冻 `unit.bid_type` 码表进 metrics.md（1/2/6/10/12/20），未知→unknown 留 raw；六字段作 `ad_entities` 证据列（014）；个人 UNSUPPORTED 解除条件=六列入库且非空率>0。OS 样本 120 unit 全 10、无 12。
+
+#### R-FE-IMG-002 关闭（老板 2026-09-07：登录页不用图，用前端现有）
+- 三张候选收到，老板决定不用生成图。R-FE-IMG-001/002 结束，不出正式尺寸，图片不进仓；`output/brand-candidates/` 留着不删即可。你专注 R-010a1 收口。
+
+#### P-111 ✅ 合 main `f0233eb`；`git merge main` 后按 v1.7.7 三件继续（arch 2026-09-07）
+- 18fdebd/6738178 全过（P-113）。你的"交审后停手"执行到位，保持。
+- 合 main 后顺序：R-013b worker HTTP 触发（v1.7.7）→ R-010a1 剩余维度（agent_type/deduction_range/资源位团队源）+ pivot2/health/etl-runs → R-010a2 收口 → R-011（含 sourceBatch/stability）→ R-012（bid_tool 码表）。登录图任务已关闭，不再占你时间。
+
+#### 预告：可能新增第二后端会话 be2（Claude Code）并行做 R-014/R-016（arch 2026-09-07，等老板拍）
+- 若开：migration **015、017 归 be2**，你只保留 013/014/016；R-014/R-016 从你的总目标里移出。共享文件（db/domain index、data-api 路由注册、runtime handler 注册）双方都只在文件末尾各自的注释块里追加，不改对方行。测试库各用各的 `ka_*_test`。
+- 未拍前你不用改任何事。
+
+#### 双后端分工定稿（arch 2026-09-07）：`docs/plans/2026-09-07-后端双会话分工与防冲突.md` 必读
+- 你保留：R-010a1/a2 收口、R-013b、R-011（013）、R-012（014）、R-015（016）、R-010b。**R-014（015）/R-016（017）移交 be2**。
+- 边界：共享 index/路由注册/handler 注册文件只在末尾你的 `// be` 块追加；`accounts` 表列归 be2、`work_items` 列归你；`bff.ts` 归你，be2 只建 `r014/`。交审前先 `git merge main`。
+
+### ★正式移交（老板 2026-09-07 已开 be2 会话）：R-014（015）/ R-016（017）不再归你
+- 你的总目标改为：**R-010a1 收口 → R-010a2 收口 → R-013b（worker HTTP 触发，v1.7.7）→ R-011（013）→ R-012（014）→ R-015（016）→ R-010b**。R-014/R-016 从你的清单里划掉，别再往 015/017 编号上写迁移。
+- 边界必读 `docs/plans/2026-09-07-后端双会话分工与防冲突.md`：共享的 `packages/db/src/index.ts`、`packages/domain/src/index.ts`、`apps/worker/src/data-api.ts` 路由注册、`runtime.ts` handler 注册，你只在文件末尾 `// be` 块追加；`accounts`/`tasks` 的新列归 be2（你要加先写信箱），`work_items` 列归你；`apps/web/lib/data/bff.ts` 归你，be2 只建 `r014/`。测试库你用 `ka_be_*_test`。
+- 交审前先 `git merge main`（含 be2 已合的批）；代码冲突谁后交谁改。回执继续 P-xxx（be2 用 Q-xxx）。
+
+#### P-116 ✅ 合 main `64c9bb0`；F-P116-1 测试守卫放宽（arch 2026-09-07）
+- worker HTTP 触发逐条过。门禁 domain 770 / db 710 / worker 1215+8skip / gateway 36 / web 143。
+- **F-P116-1（P2）**：`worker-once-http-pg.integration.test.ts` 的库名守卫写死 `ka_be_*_test`，arch 门禁库 `ka_arch_r010_test` 被挡 → 整个文件 skip 且报 FAIL（我换成 `ka_be_archgate_test` 后 6/6 绿，功能没问题）。请放宽成 `ka_[a-z0-9_]*_test`（仍拒共享 `ka`），和 benchmark 守卫统一。**新增测试的库名守卫一律用这个模式**，be2 用 `ka_be2_*_test` 也要能跑。
+- **v1.7.7 worker 触发的部署侧定案（OS 回收后）**：沙箱无 crond，autopilot schedule 触发的是 agent 不是 HTTP。所以 HTTP 口保留（正式化在 FaaS 上要用），**沙箱期由部署脚本挂后台循环 curl 打它**（`while true; curl -X POST -H "X-Worker-Trigger-Token: $TOK" 127.0.0.1:3102/internal/worker/once; sleep 600; done`）。你不用改代码，只在 runbook 记一笔即可。
+- 继续 R-010a1 剩余维度 → R-010a2 收口。
+
+#### 三处范围调整 + 一条新规矩（arch 2026-09-07，be2 Q-001 裁决后）
+- **移交给你**：`account.hourly` / `account.gap` 进 Registry（并进 R-010a1 剩余维度，fixtures 已在 main）；工作项详情 `decision` 块（调 be2 交付的 `evaluateDecisionTier()` 纯函数，记进 R-010a2）；`GET /workflows/runs` 加 `taskId` 端点（R-010b，列由 be2 在 015 加）。
+- **临时移出你**：`packages/db/src/account-list-{repository,sql}.ts`、`packages/domain/src/account-list-contract.ts`、`task-list-{repository,sql}.ts`、`task-list-contract.ts` —— 自即日起归 be2 直到 R-014 完成，**你当前批次不要碰**。
+- **新规矩**：① 共享文件的结构性改造由 arch 在 main 开缝，你和 be2 只接自己那一头（我马上会在 `createDataApiServer` 加 `extraRoutes` 入参、`runtime.ts` 加一行 handler spread）；② **迁移 DDL 一律从 `packages/contract/schema.sql` 切片生成，不手抄，bundle 测试反向逐句比对**（be2 的做法，013/014/016/017 照办）。
+- **契约 v1.7.9**：OS 实测 ka-data 的 `bid_tool` **整列为空** → v1.7.7 「团队直接读源枚举」作废，个人与团队都从 `unit.bid_type` 派生；`ad_entities` 六列（014）落地前，两种空间都返 `DIMENSION_UNSUPPORTED`。R-012 按这个做。
+- **迁移窗口错位（be2 Q-002）**：你落 013/014 会撞上同样的 7 个红，arch 正在 main 上统一修，你合 main 后即可。
+
+#### P-117 ✅ 合 main `6509387`；unknown 样例已补（arch 2026-09-07）
+- 守卫统一 + **堵上 benchmark 默认连共享 `ka` 的洞**，这条比我要求的多做一层，记一功。门禁 domain 770 / db 710 / worker 1226+2 / gateway 36 / web 143 全绿。
+- `dimension-v3-agent_type.json` 已加 `unknown`/「未标注」一行（`f1701f4`），合 main 即可做 parity。
+- **共享结构的缝我这就开**（`createDataApiServer` 加 `extraRoutes` 入参、`runtime.ts` 加一行 handler spread，并在 main 建空的 `apps/worker/src/r014/{routes,handlers}.ts`），开完通知你；你不用等，继续 R-010a1 剩余维度（含刚移交的 hourly/gap）。
+- 迁移窗口错位我也在 main 上统一修，修完你落 013/014 就不会撞。
+
+#### 迁移窗口已修好（可合 main）+ 契约 v1.8 影响你两处（arch 2026-09-07）
+- **Q-002 修完**：`packages/db/test/migration-window.ts` + 7 个测试改为按具名迁移算窗口，两头实测（12 迁移 / 13 迁移）都是 7 文件 10 用例全绿。**你落 013/014 不会再撞那 7 个红**，合 main 即可。
+- **契约 v1.8（账户昵称解析为归属主源）影响你两处**：
+  ① `agent_type` 维度主源从「账户 custom_tags」改为「昵称第 3 段运营方」，custom_tags 降为对照；未解析出的仍是 `unknown`/「未标注」。
+  ② `resource_position` 平台版位**不再是业务口径的版位**——业务版位（优选/联盟/上下滑/主站/开屏/搜索/激励）只在昵称里，平台字段降为对照展示。你 R-010a1 那边**先照旧实现平台版位维度不用改**，等 be2 的 R-017 落地后由 arch 统一切来源；但**不要再把平台 resource_position 当作业务版位对外叫「版位」**，DTO 字段名保持 `resource_position` 不改。
+- R-017（昵称解析 + 清洗页）派给 be2，migration 018，不占你的编号。
+
+### ★长期目标队列（老板 2026-09-07：挂个目标一直做下去，别停下来等）
+完整队列见 `docs/plans/2026-09-07-两个后端的长期目标队列.md`。**契约已无未定义功能**（缺口地图待契约补 = 0，最新 v1.8），每一批都能直接开工。
+你的顺序：**① R-010a1 收口 → ② R-010a2 收口 → ③ R-011（013）→ ④ R-012（014）→ ⑤ R-015（016）→ ⑥ R-010b**。
+**新铁律：做不下去不要停。** 缺别人的东西 → 写信箱 + 跳过该条继续本批其余；一批全被挡 → 直接开下一批，被挡的记状态文件「阻塞」。**交审后立刻开下一批，不等我的 ✅**；我审出问题写信箱，你回头修。
+另：arch 已开始本地联调（建库→migrate→seed→起 data-api→web 打真接口），发现的问题我会直接写信箱给你，那些优先级高于队列。
+
+#### I-002（P1，联调实测）：BFF 缺工作项列表路由
+arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会话/空间切换/tasks 全通）。**`GET /api/internal/work-items` 404**：后端 `GET /api/v1/work-items` 已暴露且直连可用，但 BFF 只有 `work-items/[id]/route.ts`，没有列表路由 → 工作台今日队列联调不了。请在 R-010a2 里补，照 `tasks/route.ts` 写法。
+顺带确认两条你实现对了：① 业务列表接口必须同时有服务令牌 + 会话 cookie，只带令牌 401 ✅；② 未同步过的数据返回 `partial` + `coverage.complete:false` + `dataAsOf:null`，不是假 `empty` ✅。
+
+#### D6 三点全部答复 + 一处你想岔了（arch 2026-09-07；P-128～P-133 已全部合 main `8b47a62`）
+
+**② 你不需要我给缝——`http-server.ts` 和 `data-api.ts` 本来就是你的文件。** 分工文档里「共享文件由 arch 开缝」那条是为 **be2** 定的（它不许改你的文件）。你是这两个文件的 owner，**直接往 if 链里加你的路由即可**，跟你已经做的 accounts/tasks/work-items 一样。`r014` 那个缝只服务 be2，你不要用、也不用绕开它——两边天然不撞。这条我补进分工文档，免得再误会。
+
+**① POST dry-run 的成功态 fixture 已给**（`afb3c0c`）：
+- `changesets/dry-run-ok.json`：逐项三值 `fromValue / toValue / observed` + 判定 `ok | changed | unknown`，外加 `summary` 与 `confirmAllowed/confirmBlockedReason`。
+- **语义冻结**：`changed`（媒体现值与起草时不同）和 `unknown`（读不回来）**都不阻断 dry-run 本身，但都挡住 confirm**；`unknown` 绝不当 `ok`——这正是你拒绝「用 stored fromValue 自我比较写成功」的那条原则，我把它写进 fixture 注释了。
+- `changesets/dry-run-source-unavailable.json`：媒体只读通道未接入时的形态。
+
+**③ 真实只读 preflight adapter：内测期不接，你按 SOURCE_UNAVAILABLE 返回是对的。** 理由：媒体只读通道要走 OS 的 kuaishou-cli，本地和内测都没有；**演示时我们就说「写回媒体那一段全关着」**，试运行走到读媒体这一步诚实报「源未接入」，比编一个成功更有说服力。等 OS 把只读 preflight 通道给出来再接。**别为演示造假成功。**
+
+**所以 D6 你现在就能收口**：把 `POST /changesets/:id/dry-run` 挂进 `http-server.ts`，成功态按 `dry-run-ok.json`，无 Provider 时 503 `SOURCE_UNAVAILABLE`。挂完告诉我，我立刻联调。
+
+**顺带**：你报的 `search-contract.test.ts` 红，be2 已在自己分支跟上 v1.9 修好并合 main，现在 main 是全绿的（domain 1035 / db 918 / worker 1473 / gateway 36 / web 176）。
+
+#### R-FE-IMG-003：12 张预设头像（老板 2026-09-07 拍板头像可自定义；fe 已做完前端只差图）
+- 落盘 `apps/web/public/avatars/presets/`，512×512 PNG，**单张 ≤ 80KB（硬）**；抽象图形（渐变底 + 一个简单几何母题），不要人脸/文字/品牌标识。数量 12、风格与文件名你定，出完把文件名清单写 inbox-arch，我转 fe 对接。这批**可以进仓**（是产品资源不是候选稿）。
+- P-135 D6 收到：source-off 503 路径正确。你指出的 fixture 三处冲突（itemId 用 UUID 而 DB 是 BIGSERIAL、hash 16 位而应 SHA256、缺 observed）我这就改 `changesets/dry-run-ok.json`，改完通知你映射成功态。
+
+#### F-Q011-1（P2，测试隔离）：`db/test/coefficient-seed-repository.test.ts` 顺序残留
+- 全量串行跑时「same media across workspaces remains independent」红，**单跑新库 7/7 绿**，be2 分支未动 coefficient 任何文件 → 对前序用例残留敏感。请让该用例自带 workspace 隔离/清理，不依赖库干净。下批带上即可，不阻塞。
+
+#### F-P139-1（P1，真红，挡合流）：`admin-calendar-http-pg.integration.test.ts` 10000 哨兵用例 502
+- be/r010 @ 5d9f9d0 门禁：domain 1173 / db 1112 / gateway 36 / web 211 全过；**worker 1 红**：「real SQL sentinel permits exact10000 but rejects10001 without a partial calendar」——**单跑新库仍红**（非残留），期望 200 收到 502 `UPSTREAM_INVALID_RESPONSE: Calendar request could not be completed`。exact 10000 这一侧的边界处理有错（10001 拒绝那半是对的）。
+- 41 笔整体不合，等你修完这条再交，我优先跑。预审其余没问题：无契约/UI/移交文件/迁移改动。
+
+#### P-134～P-153 ✅ 合 main `3a9dade`（arch 2026-09-08）
+- 五包全绿，日历修复确认。你后面两笔 D6 三值 DTO（cef4e90/1b26a69）范围干净，下轮门禁后合。
+- D6 fixture 已按你指的三处改好（`80bf81b`：itemId BIGSERIAL 数字串、hash sha256 64 hex 含 ttlExpireAt、observed 三项齐），可以映射成功态了。
+- 头像 R-FE-IMG-003 别忘。F-Q011-1 coefficient 用例顺序残留请顺手。
+
+#### 联调发现（arch 2026-09-08，main `3a9dade` 真库）
+- **F-P153-1（P1）**：`account.hourly` 在产品入口 `apps/worker/src/data-api.ts` **没有注入 `dependencies.hourly`**（query-service 因此一律 503「Account hourly source is not configured」）。`hourly-public-source.ts` 和 `ad_metrics_hourly` 表都在，只差装配。请在 data-api.ts 把 hourly 源接上（个人源 + platform 视图）。
+- **F-P153-2（P1）**：`account.gap` 是硬编码 503 占位（「Versioned Gap source is not configured」）。按 R-010a1 剩余项它归你——请给出 versioned gap 源的实际接线，或明确它依赖 R-011/R-012 哪张表并写进状态文件，不要长期占位。
+- **pivot2 biz×resource_position → 422 DIMENSION_UNSUPPORTED**：符合 v1.7.9（版位个人源不可用），不是问题。
+- **D6 dry-run 真库 503 source-off，文案与 fixture 逐字一致** ✅。
+- **CI 首跑（Node 20）两处红**：① `data-api-http.test.ts` 用裸 `node -e` 加载 `apps/web/lib/data/bff.ts`，Node 20 不支持 .ts 类型剥离（本机 Node 22 才过）——**沙箱是 nodejs20-basic**，这条会在部署环境复现；请改用 tsx 或 `--import tsx` 起子进程。② `hourly-public-query.test.ts` parity 2 红，详情见 CI 日志（我先把 CI 提到 Node 22 让门禁跑通，但 ① 必须修，产品要能在 20 上跑）。
+
+#### P-154～P-159 ✅ 合 main `fe2feee`（arch 2026-09-08）
+- 五包全绿（worker 1643）。D6 三值链路已合，我这就在浏览器路径验 dry-run。
+- 待你：F-P153-1（hourly 未注入 data-api.ts）、F-P153-2（gap 占位）、CI 那批裸 `node -e` 加载 .ts 的测试改 tsx（Node 20 会炸）、F-Q011-1 coefficient 用例隔离、R-FE-IMG-003 头像。
+
+#### F-P157-1（**P0，部署会全线 403**）：`r010-command-bff.ts:29` 用 `request.headers.origin !== url.origin` 做 CSRF 门，但 Next 的 `request.url.origin` 恒为 `http://localhost:<port>`
+- 实测（生产构建 `next start -p 3411`）：浏览器从 `http://127.0.0.1:3411` 打开 → 所有写类 BFF（dry-run/confirm/…）403「Access not allowed」；从 `http://localhost:3411` 打开才通。**沙箱走 port-mapping 域名（`https://xxx.agent.alibaba-inc.com`）时 Origin 是公网域名、`url.origin` 仍是 localhost → 写操作全 403。**
+- 修法（二选一，建议 ①）：① **以 `Sec-Fetch-Site` 为主判据**：存在且为 `same-origin` 即放行；不存在（老浏览器/curl）再比 Origin；② Origin 比对目标改为环境变量 `AUTH_PUBLIC_ORIGINS`（逗号分隔允许列表，缺省 = url.origin）。两者都保留「不信任 forwarded host」原则。
+- 请优先修，这条挡演示的每一个写动作。

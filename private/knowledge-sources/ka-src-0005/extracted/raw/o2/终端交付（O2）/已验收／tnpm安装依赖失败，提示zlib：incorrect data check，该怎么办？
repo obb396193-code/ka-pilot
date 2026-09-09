@@ -1,0 +1,26 @@
+作者：时路
+
+ 评审人：上坡 
+
+
+
+1. ** 问题现象： **
+
+ 执行 tnpm install 时，出现 zlib: incorrect data check、Z_DATA_ERROR 报错信息。 
+
+** 报错示例： **
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1710234916492-cc43d14d-4cb1-47e1-9885-8a7d7f9b19ad.png) 
+
+** 问题原因： **
+
+ 如果你使用的是     mac arm 系列芯片（M1 / M2），旧版本的 node 在 mac arm 系列芯片下存在兼容性问题。 
+
+** 解决方法： **
+
+ 请升级你的 node 版本（升级到 node14 最新版，或是 node16 以上版本）。 
+
+** 拓展阅读 **
+
+[https://stackoverflow.com/questions/69793334/z-data-error-errno-3-zlib-incorrect-data-check-mba-m1](https://stackoverflow.com/questions/69793334/z-data-error-errno-3-zlib-incorrect-data-check-mba-m1)
+

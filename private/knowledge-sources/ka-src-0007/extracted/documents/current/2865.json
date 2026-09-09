@@ -1,0 +1,469 @@
+{
+  "documentId": 2865,
+  "documentName": "创建或更新账户信息和开户资质",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "创建或更新账户信息和开户资质\n/rest/openapi/v1/agent/advertiser/cert/submit\n\n\nadvertiser_id  Long  广告主id\nagent_id  Long  代理商id\nindustry_id  Long  二级行业id\ncorporation_name  String  公司名称\nweb_site  String  公司网站\ncontact_name  String  联系人姓名\nemail  String  邮箱\nphone  String  手机号码\nproduct_name  String  产品名/品牌名\nmarketing_content_type  Integer  推广内容类型\nlicence_id  String  营业执照编号\nlicence_location  String  营业执照注册地\ncert_list  CertParam[]  开户资质列表\ncert_id  Long  资质id\ncert_category  Integer  资质类型\nfile_token  String  资质文件标识\nexpire_time  String  资质有效期\nresult  Boolean  是否成功\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1756969818251
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1721735764411
+    }
+  ],
+  "apiId": 1284,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/agent/advertiser/cert/submit",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61495,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61496,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "代理商id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61497,
+      "paramName": "industry_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "二级行业id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61498,
+      "paramName": "corporation_name",
+      "paramType": "String",
+      "example": "",
+      "description": "公司名称",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "不能超过50个字符",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61499,
+      "paramName": "web_site",
+      "paramType": "String",
+      "example": "",
+      "description": "公司网站",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "http://或https://开头，可以访问的网站",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61500,
+      "paramName": "contact_name",
+      "paramType": "String",
+      "example": "",
+      "description": "联系人姓名",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "中文或英文，不能超过50个字符",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 61501,
+      "paramName": "email",
+      "paramType": "String",
+      "example": "",
+      "description": "邮箱",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "xxx@",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 61502,
+      "paramName": "phone",
+      "paramType": "String",
+      "example": "",
+      "description": "手机号码",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "不加区号，11位",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 61503,
+      "paramName": "product_name",
+      "paramType": "String",
+      "example": "",
+      "description": "产品名/品牌名",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61504,
+      "paramName": "marketing_content_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "推广内容类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "1-推广内容链接，2-推广应用",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61505,
+      "paramName": "licence_id",
+      "paramType": "String",
+      "example": "",
+      "description": "营业执照编号",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": "只能有数字和字母",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61506,
+      "paramName": "licence_location",
+      "paramType": "String",
+      "example": "",
+      "description": "营业执照注册地",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "注册地列表的地区，格式是\"xx省-xx市\"",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61507,
+      "paramName": "cert_list",
+      "paramType": "CertParam[]",
+      "example": "",
+      "description": "开户资质列表",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3442,
+      "sort": 13,
+      "note": "只传开户资质（cert_category包括1-营业执照，2-ICP备案，3-投放承诺函，4-行业资质）",
+      "children": [
+        {
+          "paramId": 61486,
+          "paramName": "cert_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "资质id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "新增时传0，非0的只能是已有资质的id",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61487,
+          "paramName": "cert_category",
+          "paramType": "Integer",
+          "example": "",
+          "description": "资质类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "1-营业执照，必填，传1个文件，需要有效期；2-ICP备案，选填，传1个文件，永久有效，不需要有效期，expire_time可以不传或传任意值；3-投放承诺函，非必填，最多10个文件，需要有效期；4行业资质，选填，最多50个文件，需要有效期；5-投放资质，选填，最多50个文件，永久有效，不需要有效期, expire_time可以不传或传任意值；开户资质接口：/rest/openapi/v1/agent/advertiser/cert/submit只能涉及开户资质1、2、3、4；投放资质接口：/rest/openapi/v1/agent/advertiser/delivery_cert/submit可以涉及全部资质1、2、3、4、5，但5只能在开户后提交",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 61488,
+          "paramName": "file_token",
+          "paramType": "String",
+          "example": "",
+          "description": "资质文件标识",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "传入上传资质接口返回的file_token字段",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61489,
+          "paramName": "expire_time",
+          "paramType": "String",
+          "example": "",
+          "description": "资质有效期",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "时间格式如 yyyy-MM-dd，空字符串表示长期有效",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62314,
+      "paramName": "result",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "是否成功",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1756969818251,
+  "creator": "chenyang11",
+  "fullContext": null
+}

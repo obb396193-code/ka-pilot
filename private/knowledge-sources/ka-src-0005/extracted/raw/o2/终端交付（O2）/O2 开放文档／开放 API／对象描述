@@ -1,0 +1,410 @@
+## User
+
+用户基本信息
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| emp_id | String | 用户工号 |
+| nick | String | 用户花名 |
+| account | String | 域账号 |
+| gitlab_id | String | 用户 gitlab id |
+| buc_id | String | 用户 BUC id |
+| email | String | 用户邮箱 |
+| dept_path | String | 部门全路径 |
+| dept_no | String | 部门编码 |
+| dept_name | String | 部门名称 |
+| bu_dept_no | String | BU 编号 |
+
+```
+{
+  emp_id: 'WORKER_1460007882503',
+  nick: 'upx 外包模拟账户',
+  account: 'upxgitproxy',
+  gitlab_id: '201950',
+  buc_id: '794829',
+  email: 'upxgitproxy@alibaba-inc.com',
+  dept_path: "00001/36821/L5536/L5809/72506/L6635/38205/B3301",
+  dept_no: "B3301",
+  dept_name: "阿里集团-阿里控股-爱橙科技-技术风险与效能部-研发运维基础设施-终端交付-工程研发平台",
+  bu_dept_no: "L5809"
+}
+
+```
+## App
+
+O2 Space 应用基本信息
+
+| 属性名 | 属性类型 | 描述 | 取值范围 |
+|-|-|-|-|
+| id | Number | 应用 ID |  |
+| group | String | 代码组 |  |
+| project | String | 仓库名称 |  |
+| emp_id | String | 创建人 |  |
+| owner_emp_id | String | 应用负责人 |  |
+| description | String | 应用描述 |  |
+| pub_type | Number | 应用发布类型 | 见 PubType |
+| mode | String | 应用研发模式 | iteration_flow：迭代研发 trunkbase_flow：主干研发 |
+| is_module | Number | 应用是否是组件或者模块类，通常无需关心 |  |
+| is_moduletrans | Number | 是否将 app 自动转换为业务 app，通常无需关心 |  |
+| dev_type | Number | 应用类型，组合应用类型需要用到，通常无需关心 | 0：普通应用 1：研发应用 2：基础应用 |
+| pubtype_group | Number | 发布类型组合 id，组合应用类型需要用到，通常无需关心 |  |
+| pubtype_extend_path | String | 应用类型继承路径 |  |
+
+```
+{
+    "id": 1,
+    "group": "def-work",
+    "project": "front",
+    "emp_id": "",
+    "owner_emp_id": "287523",
+    "description": "O2 Space 研发平台前端仓库",
+    "pub_type": 1,
+    "is_module": false,
+    "is_moduletrans": false,
+    "dev_type": 0,
+    "pubtype_group": 0,
+    "platform_code": "",
+    "mode": "iteration_flow",
+    "pubtype_extend_path": "1"
+}
+
+```
+## PubType
+
+应用类型，不同类型的应用类型功能不同。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/AJdl64MYL58Qqke1/img/ea823723-a97b-4cc0-9cfe-1ed83d553311.png)
+
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| id | Number | 应用类型 ID |
+| type | String | 具体的应用类型值 |
+| name | String | 应用类型名称 |
+| description | String | 应用类型描述 |
+| platform_code | String | 研发类型 |
+| owner | String | 负责人工号 |
+| parent_id | Number | 父类型（该类型的发布环境、流水线、脚手架等配置继承自父类型） |
+
+```
+{
+  id: 1,
+  type: 'assets',
+  name: 'Assets',
+  description: '根据指定版本号分支规则，发布 assets 到 dev.g.alicdn.com 和 g.alicdn.com。详情查看',
+  platform_code: 'assets',
+  owner: '078636'
+  parent_id: 0
+}
+
+```
+平台常用 pubtype 如下：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/AJdl64MYL58Qqke1/img/c6ddf45d-d9c4-4e52-95df-7a8a31ce8d8b.png)
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/AJdl64MYL58Qqke1/img/46f80129-b554-467b-b760-5a2f073dd0e5.png)
+
+
+## Iteration
+
+迭代基础信息
+
+| 属性名 | 属性类型 | 描述 | 取值范围 |
+|-|-|-|-|
+| id | Number | 迭代 ID |  |
+| name | String | 迭代名称 |  |
+| description | String | 迭代描述 |  |
+| app_id | Number | 迭代所属应用 ID |  |
+| group | String | 代码组名称 |  |
+| project | String | 代码仓库名称 |  |
+| branch | String | 迭代分支 |  |
+| version | String | 迭代版本号 |  |
+| emp_id | String | 迭代创建人工号 |  |
+| status | Number | 迭代状态 | 2：进行中 3：成功 4：失败 5：废弃 |
+| endtime | Datetime | 迭代结束时间 |  |
+| envstep | Number | 根据发布环境划分迭代阶段 | (https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/AJdl64MYL58Qqke1/img/58107949-c530-47c7-8023-20ec0d351385.png) |
+
+```
+{
+  "id": 15122015,
+  "name": "d/0.0.1",
+  "description": "",
+  "app_id": 387436,
+  "group": "o2-space",
+  "project": "try-api",
+  "branch": "def_releases_202402021105055_o2-space_try-api/0.0.1",
+  "version": "0.0.1",
+  "emp_id": "318805",
+  "status": 2,
+  "endtime": "1970-01-01T00:00:00.000Z",
+  "envstep": null,
+}
+
+```
+## AppTrunk
+
+应用主干分支信息
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| id | Number | 主干 ID |
+| app_id | Number | 所属应用 ID |
+| trunk | String | 主干分支名称 |
+| description | String | 主干分支描述 |
+| emp_id | String | 创建人 |
+| latest_commit_id | String | 主干上 O2 合入的最新 commit_id |
+| is_default | Number | 是否是默认主干 |
+
+```
+{
+  id: 309,
+  app_id: 1,
+  trunk: 'trunk-1.x',
+  description: '1.x',
+  emp_id: '72927',
+  latest_commit_id: '601cebd35db53ccec249f515f772b38c803533b6'
+  is_default: 0
+}
+
+```
+## AppConf
+
+应用配置
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| app_id | Number | 应用 ID |
+| level | Number | 应用等级，1 核心应用，2 非核心应用 |
+| is_pub_online_delete_branch | Number | 是否上线后删除分支 |
+| deleted | Number | 软删除标识 |
+| is_check_br_trunk_sync | Number | 是否关闭分支主干同步检测，0 不检测，1 开启检测 |
+| is_detect_trunk_not_def_push_disallow | Number | 是否关闭主干非 O2 提交的探测检查 |
+| generator_id | Number | 脚手架 ID |
+| is_reuse_release_br | Number | 多分支集成时是否复用发布分支 |
+| is_online_build | Number | 是否开启线上构建 |
+| is_cr | Number | 是否开启 Code Review |
+| is_cr_block | Number | CR 是否作为流程卡口 |
+| sourcemap_is_enable | Number | 是否开启 sourcemap |
+| is_tnpm_build | Number | 是否开启云构建 |
+| is_tnpm_cdn | Number | 是否开启 CDN 同步 |
+| is_tnpm_beta | Number | 开启日常环境发布 |
+| is_iteration_page_all | Number | 迭代页面默认设为全部页面 |
+| performance_check | Number | 是否开启性能检测 |
+| air_greypub | Number | 线上发布时是否先灰度发布 |
+
+```
+{
+  "is_online_build": false,
+  "air_id": 0,
+  "air_path": "",
+  "air_platform": 1,
+  "is_steins": false,
+  "steins_platform_id": 0,
+  "steins_app_id": 0,
+  "is_pwa": false,
+  "is_page_assetsoverride": false,
+  "is_page_faas": false,
+  "pwa_conf": "",
+  "performance_check": 0,
+  "is_cr": false,
+  "tbapp_appid": "",
+  "tbapp_appkey": "",
+  "tbapp_apptype": "",
+  "tbapp_userid": "",
+  "ide_appname": "",
+  "air_greypub": 0,
+  "is_tnpm_cdn": false,
+  "is_tnpm_build": false,
+  "tnpm_cdn_dir": "dist",
+  "tnpm_cdn_desttype": 0,
+  "tnpm_user_name": "",
+  "tnpm_user_token": "",
+  "tbapp_is_new": false,
+  "is_zcache_push_open": false,
+  "is_zcache_ios_bundle_open": false,
+  "page_bizcode": "",
+  "is_tnpm_beta": false,
+  "is_reuse_release_br": true,
+  "is_detect_trunk_not_def_push_disallow": 0,
+  "is_check_br_trunk_sync": true,
+  "is_pub_online_delete_branch": 1,
+  "deleted": false,
+  "is_enable_aem": 0,
+  "app_id": 387707,
+  "sourcemap_is_enable": true,
+  "sourcemap_is_clear_result": true,
+  "is_iteration_page_all": true,
+  "is_gog_sync": false,
+  "branch_pub_mode": 1,
+  "generator_id": 5,
+  "bu_id": "L5809",
+  "id": 930620,
+  "gmt_modified": "2024-02-04T07:30:33.680Z",
+  "gmt_create": "2024-02-04T07:30:33.680Z"
+}
+
+```
+## AppPubConf
+
+应用发布配置
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| app_id | Number | 应用 ID |
+| enable_lockfile_install | Number | 是否开启锁依赖安装能力 0 关闭 1 开启 |
+| enable_node_engine_custom | Number | 是否开启命令模式构建下的 Node 版本自定义能力 |
+| enable_dep_bot | Number | 是否开启依赖助手能力 |
+| is_pause_gitclean | Number | 是否支持暂停代码合并节点的运行 |
+| enable_aot | Number | 日常发布时是否使用预构建产物，默认使用 |
+| enable_dependence_cache | Number | 是否开启依赖缓存能力 0 关闭 1 开启 |
+
+```
+{
+    "id": 3065,
+    "app_id": 1,
+    "enable_lockfile_install": true,
+    "enable_dep_bot": false,
+    "is_pause_gitclean": null,
+    "enable_aot": false,
+    "enable_dependence_cache": false,
+    "gmt_create": "2023-01-16T03:13:01.000Z",
+    "gmt_modified": "2023-08-17T08:49:17.000Z"
+}
+
+```
+## IterationConf
+
+迭代配置基本信息
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| iteration_id | Number | 迭代 ID |
+| trunk | String | 迭代主干 |
+| pubenv | String | 迭代包含的阶段阶段 |
+| is_delete_branch | Number | 迭代完成后是否删除源分支 |
+| changefree_id | String | ChangeFree ID 标识 |
+| aone_binds_autofinish | Number | 是否自动完成 Aone 工作项 |
+| is_phase_grey | Number | 是否支持灰度（创建迭代时是否打开灰度开关） |
+| is_pause_gitclean | Number | 是否支持暂停代码合并节点的运行 |
+| is_un_release | Number | 是否为不可上线迭代（测试迭代） |
+
+```
+{
+  "pubenv": "[1,2]",
+  "id": 10744994,
+  "tnpm_tag": "beta",
+  "iteration_id": 15126525,
+  "trunk": "master",
+  "is_delete_branch": true,
+  "air_pages": "",
+  "pkg_apps": "",
+  "changefree_id": "",
+  "changefree_executor": "",
+  "aone_binds": "",
+  "aone_binds_autofinish": true,
+  "is_phase_grey": 0,
+  "is_pause_gitclean": null,
+  "is_un_release": 0,
+  "gmt_create": "2024-02-05T02:12:46.000Z",
+  "gmt_modified": "2024-02-05T02:12:46.000Z"
+}
+
+```
+## Change
+
+变更基本信息
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| branch | String | 分支名 |
+| description | String | 变更描述 |
+| app_id | Number | 应用 ID |
+| emp_id | String | 创建人 |
+| is_delete_branch | Boolean | 上线后是否删除源分支 |
+| aonecr_id | Number | Aone 代码评审 ID |
+| aonecr_author | String | CR 发起人工号 |
+| aonecr_time | Datetime | CR 创建时间 |
+| aone_binds | String | 绑定 aone 的需求列表，格式为 'req|id,issue|id' |
+| aone_binds_autofinish | Number | 是否自动完成 Aone 工作项 |
+| is_finished | Number | 是否已完成上线 |
+| is_exist | Number | 分支是否存在 |
+| endtime | Datetime | 当前变更完成时间 |
+| skip_cr | Number | 当前开发分支是否跳过CR状态检查 |
+| un_release | Number | 当前变更是否为测试变更 |
+| commit_mode | Number | 变更是否使用 commit CR 模式 |
+
+```
+{
+  "id": 3301400,
+  "branch": "aaa",
+  "description": "abc",
+  "app_id": 1,
+  "emp_id": "318805",
+  "is_delete_branch": true,
+  "aonecr_id": null,
+  "aonecr_author": null,
+  "aonecr_time": null,
+  "aone_binds": "req|54895183",
+  "aone_binds_autofinish": false,
+  "is_finished": 0,
+  "is_exist": 1,
+  "endtime": null,
+  "cr_status": null,
+  "skip_cr": null,
+  "un_release": 0,
+  "commit_mode": false,
+  "gmt_create": "2024-02-05T02:08:51.000Z",
+  "gmt_modified": "2024-02-05T02:08:51.000Z",
+  "iteration_id": 15126515,
+  "branch_id": 21070144
+}
+
+```
+## Task
+
+发布任务基础信息
+
+| 属性名 | 属性类型 | 描述 |
+|-|-|-|
+| id | Number | 发布任务 ID |
+| group | String | 仓库代码组 |
+| project | String | 仓库名 |
+| branch | String | 迭代分支 |
+| commit_id | String | 迭代分支 commit id |
+| version | String | 迭代版本号 |
+| emp_id | String | 迭代创建人 |
+| pub_env | Number | 发布环境 (https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/AJdl64MYL58Qqke1/img/58107949-c530-47c7-8023-20ec0d351385.png) |
+| pub_type | Number | 发布类型 |
+| pub_status | Number | 发布任务，2 为发布中，3 为成功，4 为失败 |
+| app_id | Number | 应用 ID |
+| iteration_id | Number | 迭代 ID |
+| client_id | Number | 调用方 |
+| flow_id | Number | 流程任务 ID |
+| endtime | Datetime | 任务结束时间 |
+
+```
+{
+  "id": 135625955,
+  "group": "def-ui",
+  "project": "widget",
+  "branch": "def_releases_2023081815563030_def-ui_widget/0.27.2",
+  "commit_id": "6179c01ade91af46ee0a854c9599e0da706d2291",
+  "version": "0.27.2",
+  "emp_id": "244744",
+  "pub_env": 1,
+  "pub_type": 28,
+  "pub_status": 4,
+  "app_id": 206718,
+  "client_id": 1,
+  "iteration_id": 14798022,
+  "flow_id": 19381478,
+  "flow_version": "2",
+  "caller": "website",
+  "tbuser_id": "",
+  "branch_pub_mode": 1,
+  "engine_mode": 1,
+  "endtime": "2024-01-31T01:54:35.000Z",
+  "gmt_create": "2024-01-30T14:29:41.000Z",
+  "gmt_modified": "2024-01-31T01:54:35.000Z"
+}
+
+```

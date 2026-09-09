@@ -94,7 +94,7 @@ npm run benchmark:data -- --accounts 100,1000,5000 --iterations 5
 步骤：
 
 1. 迁移隔离测试库并清理本用例涉及表；插入两个 workspace、脱敏账户、任务、账户任务关系、渠道系数和考核价。
-2. 建确定性假奇航 QueryPort，运行真实 Full ETL Handler，断言 Raw 和 Canonical Job。
+2. 建确定性假启航 QueryPort，运行真实 Full ETL Handler，断言 Raw 和 Canonical Job。
 3. 领取或直接按真实 payload 执行 Canonical Handler，使用 RawMetricsRepository、MetricsRepository、EtlRunRepository 和 JobRepository，断言 Canonical 和质量 Job。
 4. 运行真实 DataQualityHandler/Repository，断言检查记录和同 workspace 隔离。
 5. 用 SemanticQueryRepository 查询 summary/trend/dimension，确认与 Canonical 口径一致。
@@ -147,13 +147,13 @@ npm run benchmark:data:pg -- --accounts 100,1000,5000 --chunk-size 250 --iterati
 2. 重放 PostgreSQL migration up/down/up，确认本批没有意外 migration 差异。
 3. 扫描变更生产代码：复杂度 ≤10、单函数 ≤100 行、动态执行/任意 SQL/凭证形态字符串和真实公司数据。
 4. 对比基线 `3d90bed`，确认 `packages/contract`、`packages/db/migrations`、前端零差异。
-5. 逐项复核纵向链路不是“全 mock”：数据库、Repository 和 Handler 都是真实现；仅奇航、未冻结规则候选和外发告警是测试适配器。
+5. 逐项复核纵向链路不是“全 mock”：数据库、Repository 和 Handler 都是真实现；仅启航、未冻结规则候选和外发告警是测试适配器。
 6. 在 P-016 中列明功能 SHA、性能证据、已完/未做、风险和 Claude 必审点。
 7. 每个独立 Task 完成后提交；最终 `git status` 干净并执行 `git show --stat HEAD`。
 
 ## 完成定义
 
-- 真实 PG 纵向链路可重复通过，且不访问真实奇航/Multica/OS；
+- 真实 PG 纵向链路可重复通过，且不访问真实启航/Multica/OS；
 - Canonical 不再按行读取设置/历史并写入；
 - 100/1000/5000 行性能结果和查询计划有可复核证据；
 - 幂等、失败恢复、跨租户和缺配置反例通过；

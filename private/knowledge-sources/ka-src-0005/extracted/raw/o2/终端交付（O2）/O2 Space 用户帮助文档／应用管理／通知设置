@@ -1,0 +1,49 @@
+## 功能说明
+
+进入应用设置页，点击【通知设置】的 tab，即可设置应用不同操作时的 钉钉通知
+
+(https://o2-img.alistatic.com/i/i09blZ/DxKChDJwo3qpytrIkZGPD-8a130da7e8.jpg)
+
+
+
+
+在这个页面，可对各消息通知场景增加群聊配置，也可以自定义额外关注人。
+
+### 群聊配置步骤
+
+1.将 O2小秘书 企业机器人拉进想要通知的钉钉群（群设置 -> 智能群助手 -> 添加机器人 -> 搜索O2小秘书 -> 添加）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/rig9hp/imgYeulkc3KiQ.png)
+
+
+
+
+
+
+2.【移动端】查询群链接。（群设置 -> 群二维码 -> 群链接）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/rig9hp/img8PwCZKepTY.png)
+
+
+3.将群链接填入O2 Space 对应应用的钉钉机器人栏。
+
+(https://o2-img.alistatic.com/i/i09blZ/71wPeWAXHTaOWm5gjy8oG-e2231d20df.jpg)
+
+
+点击保存。
+
+### 自定义人员
+
+⚠️：添加的自定义人员，不受个人消息管理订阅/退订控制！
+
+
+
+## 消息类型
+
+当前通知方式为钉钉通知，形式为钉钉交互卡片。
+
+| (https://o2-img.alistatic.com/i/i09blZ/ta3jlYHdKyJ5RH5PSMwqp-cbadb41489.png) | (https://o2-img.alistatic.com/i/i09blZ/ZT7rQlP2C1Hj1akIumwzk-e965c34a47.png) |
+|-|-|
+| (https://o2-img.alistatic.com/i/i09blZ/vYa1lwKmjS2aGdtSRNm20-002afe16de.png) | (https://o2-img.alistatic.com/i/i09blZ/O68ap7dekozEcziVpIllf-692546b862.png) |
+| (https://o2-img.alistatic.com/i/i09blZ/vHEmJkZBPHG2fgqny1m4z-d6ce8b83cf.png) |  |
+

@@ -1,0 +1,378 @@
+{
+  "documentId": 3378,
+  "documentName": "游戏合伙人推送视频至 DSP 视频库",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1786331226442
+    }
+  ],
+  "apiId": 2608,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/gamePartner/push/video",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n  \"advertiser_id\": 900015364,\n  \"target_advertiser_ids\": [900015364, 900015365],\n  \"photo_ids\": [\n    \"5196309750037828523\",\n    \"5196309750037828524\"\n  ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n  \"code\": 0,\n  \"message\": \"OK\",\n  \"request_id\": \"EJiEgICwqpWaChiICCCiqZConjIot_CX-w4=\",\n  \"data\": {\n    \"results\": [\n      {\n        \"success\": true,\n        \"advertiser_id\": 900015364,\n        \"photo_id\": \"5196309750037828523\",\n        \"push_status\": 1,\n        \"message\": \"success\"\n      },\n      {\n        \"success\": false,\n        \"advertiser_id\": 900015365,\n        \"photo_id\": \"5196309750037828524\",\n        \"push_status\": 2,\n        \"message\": \"推送失败，请重试\"\n      }\n    ],\n    \"invalid_photo_ids\": [\"5196309750037828525\"],\n    \"invalid_advertiser_ids\": [900015366]\n  }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87986,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账户ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87987,
+      "paramName": "target_advertiser_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p>被推送账户广告主 ID 列表</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87988,
+      "paramName": "photo_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>待推送视频 ID 列表</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 87997,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87998,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87999,
+      "paramName": "data",
+      "paramType": "MarketGamePartnerPushResponse",
+      "example": "",
+      "description": "<p>结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 5001,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 87994,
+          "paramName": "results",
+          "paramType": "MarketGamePartnerPushResultView[]",
+          "example": "",
+          "description": "<p>结果</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 5002,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 87989,
+              "paramName": "success",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>本条是否推送成功</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87990,
+              "paramName": "advertiser_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>账户ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87991,
+              "paramName": "photo_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>视频ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87992,
+              "paramName": "push_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>推送状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87993,
+              "paramName": "message",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>成功或失败原因</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87995,
+          "paramName": "invalid_photo_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>非打标通过的视频 ID 列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87996,
+          "paramName": "invalid_advertiser_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "<p>非白名单账户 ID 列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1786331226442,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

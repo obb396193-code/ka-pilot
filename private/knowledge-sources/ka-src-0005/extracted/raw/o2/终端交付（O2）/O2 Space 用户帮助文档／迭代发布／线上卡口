@@ -1,0 +1,261 @@
+本文介绍如何在 O2 Space 中使用 “迭代流程· 线上阶段” 中的发布卡口功能。
+
+
+
+## 什么是线上发布卡口
+
+线上发布卡口是一套 O2 Space 平台用于控制和保证发布流程质量的机制，它包含多个检测点，旨在确保部署资源的稳定性和可靠性。这些检测点包括部署状态检测、工作项绑定检测、代码评审检测、Changefree检测和异步任务检测卡口等。交互示例如下：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01KXFykR1zIzRIc68kU_!!6000000006692-2-tps-3366-596.png)
+
+
+
+
+## 有哪些线上发布卡口
+
+目前的线上发布卡口包括：
+
+- 部署状态检测
+- 工作项绑定检测
+- 代码评审检测
+- Changefree 检测
+- 业务自定义的异步任务检测卡口（如阿里云变更管控检测、云测、维纳斯国际化扫描、SOC 扫描等）
+
+
+以下是各卡口通过的必要条件：
+
+
+
+#### 1. 部署状态检测通过条件
+
+- [x] 前一个环境发布成功（如当发布环境为 日常->预发->线上 时，须保证预发环境发布成功；日常 -> 线上 时，须保证日常环境发布成功）
+- [x] 迭代集成区中变更分支的最新 commit_id 已发布成功
+
+
+#### 2. 工作项检测通过条件
+
+- [x] 迭代集成区中的变更都绑定 Aone 工作项
+
+
+#### 3. 代码评审检测通过条件
+
+- [x] 迭代集成区中的变更通过代码评审
+
+
+#### 4. Changefree 检测通过条件
+
+- [x] 当前迭代的 Changefree 检测单通过
+
+
+注意：为保障 changefree 检测单的有效性，只有当部署状态检测通过后用户才能进行 changefree 相关操作
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/xfi0i0/img4qzfmmirFJ.png)
+
+
+
+
+前置的部署状态检测通过后，用户可以提交变更单
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/xfi0i0/imgjCQd4ewXkd.png)
+
+
+
+
+提交审批单后的状态
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/xfi0i0/imgdDiSYWYpFY.png)
+
+
+
+
+审批单被拒绝或撤销后，用户需重新检测
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/xfi0i0/imgdarzbmGqKg.png)
+
+
+
+
+审批单通过后的状态
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/xfi0i0/img4WlhOXGFWO.png)
+
+
+
+
+当 changefree 显示通过，但没有提交过审批单的情况时，请先自行检查自己bu或团队是否设置了 changefree 的规则，如有疑问请通过研发平台右侧的研发小蜜提交答疑单
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/xfi0i0/imghqawnO4D6e.png)
+
+
+
+
+#### 5. 业务自定义的异步任务检测卡口
+
+- [x] 检测状态由业务检测平台控制，当业务检测平台返回的检测状态为 通过 时， O2 Space 平台将判定为卡口检测通过
+
+
+## 备注：Changefree 机制
+
+### 1. 什么是 Changefree 卡口？
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/b1bf0746-677b-402d-8046-a14f7b046106.png)
+
+
+
+
+O2 Space 平台在线上发布时会对应用进行 Changefree 卡口检测。[Changefree 官方介绍](https://tr.alibaba-inc.com/portal/article/trdocs/changefree/sbiy4g)
+
+
+
+### 2. 哪些应用类型需要检测？
+
+以下覆盖式发布的应用类型都默认开启了 Changefree 检测：
+
+覆盖式发布：指发布内容包含页面资源、或者发布的 assets 资源不带版本号，也就是资源上线后会将原资源覆盖掉。
+
+| 应用类型 ID | 应用类型 Code | 应用类型中文名 |
+|-|-|-|
+| 2 | assets_o | Assets 覆盖 |
+| 3 | weex | Weex |
+| 6 | webapp | WebApp |
+| 14 | hl_faas | 函数 |
+| 15 | page_faas | 移动端一体化 |
+| 17 | assets_faas | Web 端一体化 |
+| 19 | sub_tm_faas | 天马模块一体化 |
+| 23 | er | 边缘程序 |
+| 24 | multi-end | 跨端应用 |
+| 26 | assets_grey | Assets 灰度 |
+| 30 | multiend_cached_faas | 可缓存 SSR |
+| 31 | web_intra | 内网资源 |
+| 37 | tm_mod | 天马模块 |
+| 38 | tm_source_page | 天马源码页面 |
+| 39 | tm_solution | 天马 Solution |
+| 40 | tm_source_multi | 天马源码多物料发布 |
+| 44 | assets_plus | Assets Plus |
+| 58 | web_plus | Web Plus |
+| 61 | icbu_assets_push | Assets版本号推送研发 |
+| 63 | unifyweb_faas | SSR |
+
+若因为业务要求 非覆盖式类型 也要开启 Changefree，可联系 [@乾杯](https://aliyuque.antfin.com/qiyang.hqy)开启。（后续平台会将开关入口透出到用户侧）
+
+### 3. 提交并通过了 Changefree 审批，为什么仍然显示未提交？
+
+原因简述：提交审批单后，迭代又有新的代码提交和发布。
+
+原因描述：提交为保障用户实际发布上线的功能和提交 Changefree 单时验证功能的一致性，O2 Space 平台将 Changefree 检测单的 ID 生成格式调整为 <iteration_id>_<发布分支 commit_id>_<时间戳>。简单理解为用户在提交迭代的 Changefree 审批单后，如果又提交了新的代码并发布，平台就会更新上述 ID 格式中的 <发布分支 commit_id>，之前提交过的 Changefree 单子也就失效了，此时平台会提示 “Changefree 未提交”。
+
+解决办法：根据提示重新提交变更单。
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/3f24c244-1a69-4a26-aa3d-08d6244b790c.png)
+
+
+
+
+### 4. 为什么 Changefree 默认就是检测通过的？
+
+原因简述：在当前时间段，当前登录用户和该应用都没有命中 Changefree 的管控规则（该判断是 Changefree 平台的逻辑）。如果 CF 返回检测通过，则 Space 平台会展示通过。
+
+解决办法：刷新“线上发布卡口” / 重新发布下日常或预发环境。
+
+
+
+### 5. 如何配置 Changefree 的规则？
+
+1. 前往 [Changefree 平台](aicf.alibaba-inc.com)-> 变更风险 -> [管控规则](https://aicf.alibaba-inc.com/aicf/riskManagement/rule)-> 右上角新建规则
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/150da7ca-6ae1-4690-8a2a-1fc03aaab5dc.png)
+
+
+
+
+1. 设置规则的生效时间 -> 提交 -> 完成规则创建
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/03828a9a-4b06-4ea1-ad33-332c132f2f02.png)
+
+
+
+
+1. 进入管控规则组 -> 新建变更规则组
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/bef3f42b-c96f-4087-b8db-3a771a2f6a1e.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/d60ea0f5-3710-41bb-9086-cf124bbd4baf.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/3011f9e6-b20f-496e-90b3-cafc22df8e20.png)
+
+
+
+
+在规则组配置页，主要填写生效团队、变更系统名、变更行为场景、变更等级、变更应用、使用场景、检测规则。
+
+- 生效团队：填写期望命中的团队；
+- 变更系统名：选择 `def-work`；
+- 变更行为场景：不用填，默认不填表示都会命中；
+- 变更等级：
+	- 非常重要、重要：对应 O2 Space 应用的`核心应用`
+	- 普通、不重要：对应 O2 Space 应用的`非核心应用`
+- 变更对象：
+	- 选择 def应用，可模糊搜索 O2 Space 应用名并添加进 变更对象范围
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/89f50d8d-7129-4c6f-a195-1f534dde968b.png)
+
+
+- 试用场景：
+	- 场景主要作用是跟被此规则组拦截后走的审批流，审批流配置由各 BU 稳定性负责人或 GOC 技术支持在CF后台配置；[查看 BU 稳定性负责人列表](https://aicf.alibaba-inc.com/aicf/backstageManagement/buManagement/list)
+	- 场景优先级：高危 > 私有 > 紧急 > 重要 > 日常 > 低危。
+- 检测规则配置：
+	- 选择上一步配置的生效时间规则
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/aa80ac1b-9871-492f-9d8c-0a048fee1d4d.png)
+
+
+完成上述配置后，提交后即可完成 Changefree 卡口规则配置。
+
+
+
+### 6. 大促时如何配置 O2 Space 平台的封网规则
+
+1. 进入 [封网列表页](https://aicf.alibaba-inc.com/aicf/plan/list)，点击新建封网计划，进入 [创建页](https://aicf.alibaba-inc.com/aicf/plan/newCreate)
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/2484d6a2-b824-4f3d-85d3-bd33c6ad872e.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/8a07dc17-f7fa-4cf7-a033-1fe8d832fd30.png)
+
+
+
+
+1. 将相应内容进行填写后点击下一步，进入配置封网范围，在该页面可以根据不同时间端进行不同的封网范围配置
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/76374875-c5ff-464c-93be-a5a1f50ea9e8.png)
+
+
+
+
+
+
+比如在该时间段，填写完相应的封网信息后，在变更对象处选择 def 应用，支持按照应用进行封网范围配置
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/e88832f5-6493-4edb-ac88-b1b165b0726c.png)
+
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/614b646c-11d6-4763-8181-463e84f27880.png)
+
+
+
+
+1. 如果有不同时段的需求，可以点击最下方的新增时间段进行配置
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/3fa510c5-8315-4428-bde1-0a213afbce52.png)
+
+
+
+
+1. 如果有相似的配置，也可点击复制按钮，复制一个配置，再在其基础上进行修改
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2VPzeRO3p8/img/ff53df59-0985-41cf-ae43-8f9c703fd4af.png)
+
+
+
+
+
+
+
+

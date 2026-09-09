@@ -1,0 +1,554 @@
+{
+  "documentId": 3187,
+  "documentName": "添加增量探索配置",
+  "documentType": 2,
+  "description": "<p>注意：</p><p>1.同一种转化目标（ocpx_action_type X deep_conversion_type）开启uax和未开启uax的inc_explore_time_type必须相同且first_start_time必须相同。</p><p>2.历史上有消耗的转化目标从/rest/openapi/gw/dsp/account/incExplore/ocpxTypes接口返回。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1739800287297
+    }
+  ],
+  "apiId": 1599,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/account/incExplore/add",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "javascript",
+      "body": "{\n  \"advertiser_id\": 123456,\n  \"inc_explore_info\": [\n    {\n      \"ocpx_action_type_name\": \"表单转化\",\n      \"ocpx_action_type\": 53,\n      \"deep_conversion_type\": 3,\n      \"deep_conversion_type_name\": \"付费\",\n      \"auto_mode\": 2,\n      \"explore_budget\": \"500\",\n      \"inc_explore_time_type\": 3,\n      \"first_start_time\": 1739432679938\n    },\n    {\n      \"ocpx_action_type_name\": \"表单转化\",\n      \"ocpx_action_type\": 53,\n      \"deep_conversion_type\": 3,\n      \"deep_conversion_type_name\": \"付费\",\n      \"auto_mode\": 1,\n      \"explore_budget\": \"500\",\n      \"inc_explore_time_type\": 3,\n      \"first_start_time\": 1739432679938\n    }\n  ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "javascript",
+      "body": "{\n  \"code\": 0,\n  \"message\": \"OK\",\n  \"request_id\": \"ENKAgICg1OWcChjzCyC38Leg0TIotMm_jQY=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 71196,
+      "paramName": "inc_explore_info",
+      "paramType": "GwIncExploreDetailDto[]",
+      "example": "",
+      "description": "<p>增量探索配置列表</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4065,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 71188,
+          "paramName": "ocpx_action_type_name",
+          "paramType": "String",
+          "example": "激活",
+          "description": "<p>转化目标名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71189,
+          "paramName": "ocpx_action_type",
+          "paramType": "Long",
+          "example": "180",
+          "description": "<p>转化目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71190,
+          "paramName": "deep_conversion_type_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>深度转化目标名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71191,
+          "paramName": "deep_conversion_type",
+          "paramType": "Long",
+          "example": "0",
+          "description": "<p>深度转化目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71192,
+          "paramName": "auto_mode",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "<p>是否开启uax:<br>1-开启<br>2-未开启</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71193,
+          "paramName": "explore_budget",
+          "paramType": "Double",
+          "example": "300",
+          "description": "<p>探索预算，单位（元）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71194,
+          "paramName": "first_start_time",
+          "paramType": "Long",
+          "example": "1736862595671",
+          "description": "<p>第一次开始时间（长期生效会多次开启）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71195,
+          "paramName": "inc_explore_time_type",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "<p>增量时间类型<br>1-长期生效<br>2-当日生效<br>3-立即生效6小时</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71197,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账号id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 71198,
+      "paramName": "error_msg",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>具体报错信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71199,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>状态码描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71200,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71201,
+      "paramName": "data",
+      "paramType": "GwIncExploreDetailDto",
+      "example": "",
+      "description": "请补充描述详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4065,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 71188,
+          "paramName": "ocpx_action_type_name",
+          "paramType": "String",
+          "example": "激活",
+          "description": "<p>转化目标名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71189,
+          "paramName": "ocpx_action_type",
+          "paramType": "Long",
+          "example": "180",
+          "description": "<p>转化目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71190,
+          "paramName": "deep_conversion_type_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>深度转化目标名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71191,
+          "paramName": "deep_conversion_type",
+          "paramType": "Long",
+          "example": "0",
+          "description": "<p>深度转化目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71192,
+          "paramName": "auto_mode",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "<p>是否开启uax:<br>1-开启<br>2-未开启</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71193,
+          "paramName": "explore_budget",
+          "paramType": "Double",
+          "example": "300",
+          "description": "<p>探索预算，单位（元）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71194,
+          "paramName": "first_start_time",
+          "paramType": "Long",
+          "example": "1736862595671",
+          "description": "<p>第一次开始时间（长期生效会多次开启）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71195,
+          "paramName": "inc_explore_time_type",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "<p>增量时间类型<br>1-长期生效<br>2-当日生效<br>3-立即生效6小时</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1739800287297,
+  "creator": "wangxiaobo07",
+  "fullContext": null
+}

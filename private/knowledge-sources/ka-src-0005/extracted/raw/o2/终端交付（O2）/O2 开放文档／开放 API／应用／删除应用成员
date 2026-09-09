@@ -1,0 +1,48 @@
+## 删除应用成员
+
+移除 O2 应用成员列表中某成员
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appId}/members/delete |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appId | Number | true | - | O2  应用 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 | 取值范围 |
+|-|-|-|-|-|-|
+| emp_id | String | true | - | 待删除成员工号 |  |
+| git | Int | true | - | 是否移除仓库 git 权限 | 1：移除 0：不移除 |
+| role_code | String | true | - | O2 应用权限类型 | developer：开发负责人 tester：测试负责人 code_reviewer：代码评审负责人 |
+
+### Returns
+
+Empty Object.
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/${appId}/members/delete`,
+  {},
+  {
+    emp_id,
+    git,
+    role_code,
+  },
+  {
+    SSO_TICKET,
+  }
+)
+
+{
+  
+}
+
+```

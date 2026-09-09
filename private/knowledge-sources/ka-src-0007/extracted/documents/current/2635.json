@@ -1,0 +1,201 @@
+{
+  "documentId": 2635,
+  "documentName": "视频库-删除视频标签",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093105211
+    }
+  ],
+  "apiId": 1030,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/tag/delete",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/tag/delete' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\" : 11311124,\n    \"photo_tag\": [\"标签1\", \"标签2\"]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"photo_tag\": [\n            \"标签1\",\n            \"标签2\"\n        ]\n    },\n    \"request_id\": \"00aa2f969e1544349000aa09a2248434\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 53038,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主 id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53039,
+      "paramName": "photo_tag",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>视频标签</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "最多 10 个",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 53041,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53042,
+      "paramName": "data",
+      "paramType": "PhotoDeleteTagResultSnake",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3103,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 53040,
+          "paramName": "photo_tag",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>-</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53043,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093105211,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

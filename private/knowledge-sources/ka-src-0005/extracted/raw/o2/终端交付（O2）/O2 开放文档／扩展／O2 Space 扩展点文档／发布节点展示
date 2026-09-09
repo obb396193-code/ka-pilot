@@ -1,0 +1,37 @@
+### flow-publish-result-node
+
+发布结果节点的扩展
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/uktvifhtehr0y115/imglF2usaeUZa.png)
+
+
+#### config
+
+```
+[
+  {
+    tpl: 'miniapp-prebuild'
+  }
+]
+
+```
+通过 config 指定定制的发布节点，切换对应节点时展示对应的 UI Spi impl module，module 内通过 tpl 判断展示哪个定制节点，参数通过 widgetProps 传入
+
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+  tpl: string;
+  appOwner: any;
+}
+
+```
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/P4maOgrJw8pxqWNX/img/15fc2a2b-aba7-4c1f-9e8e-3a4ae5e8e7ca.png)
+
+

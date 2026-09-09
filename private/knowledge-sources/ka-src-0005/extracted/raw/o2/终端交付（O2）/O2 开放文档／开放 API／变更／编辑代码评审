@@ -1,0 +1,133 @@
+## 编辑代码评审
+
+对已有代码评审进行编辑
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/devbranch/{devbranchId}/cr/update |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+| devbranchId | Number | true | - | 变更 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| title | String | true | - | 代码评审标题 |
+| description | String | false | - | 代码评审描述 |
+| assignee_ids | String | true | - | 评审人，多个评审人用","分割 |
+
+### Returns
+
+CodeReview 对象，详情见下方 Example
+
+### Example
+
+```
+client.post(`/v1.0/work/iterations/{iterationId}/devbranch/{devbranchId}/cr/update`, {}, {
+  title
+}, {
+  SSO_TICKET
+})
+
+{
+  "accepted_revision": null,
+  "approve_check_result": {
+      "satisfied_check_results": [
+          {
+              "check_name": "需要所有的讨论都被解决",
+              "check_status": "satisfied",
+              "check_type": "discussion",
+              "extra_users": [],
+              "satisfied_code_owner_rules": [],
+              "satisfied_items": [],
+              "unsatisfied_code_owner_rules": [],
+              "unsatisfied_items": []
+          }
+      ],
+      "total_check_result": "unsatisfied",
+      "unsatisfied_check_results": [
+          {
+              "check_name": "需要至少1名有权限的评审人评审通过",
+              "check_status": "unsatisfied",
+              "check_type": "approver_number",
+              "extra_users": [],
+              "satisfied_code_owner_rules": [],
+              "satisfied_items": [],
+              "unsatisfied_code_owner_rules": [],
+              "unsatisfied_items": []
+          }
+      ]
+  },
+  "assignee": null,
+  "assignees": [],
+  "attributes": [],
+  "author": {
+      "avatar_url": "https://work.alibaba-inc.com/photo/318805.jpg",
+      "email": null,
+      "extern_uid": "318805",
+      "id": 262506,
+      "name": "时路",
+      "state": "active",
+      "username": "kangyong.ky",
+      "web_url": "https://code.alibaba-inc.com/u/kangyong.ky"
+  },
+  "closedComments": 0,
+  "code_owner_mode": "NONE",
+  "comments": 0,
+  "created_at": "2024-02-05T15:02:10.000+08:00",
+  "creation_method": "O2",
+  "description": "undefined",
+  "detail_url": "https://code.alibaba-inc.com/def-work/front/codereview/15670730",
+  "diff_too_large": false,
+  "downvotes": 0,
+  "email_groups": [],
+  "id": 15670730,
+  "iid": 656129,
+  "is_support_change_state": false,
+  "is_support_close": true,
+  "is_support_merge": false,
+  "is_support_modify": true,
+  "is_support_reassign": false,
+  "is_support_reopen": true,
+  "is_support_workitem": false,
+  "is_use_push_block": true,
+  "labels": [],
+  "local_branch": null,
+  "mergeStatus": "can_be_merged",
+  "merge_base": "601cebd35db53ccec249f515f772b38c803533b6",
+  "merge_error": null,
+  "merge_params": null,
+  "merge_when_build_succeeds": false,
+  "merged_revision": null,
+  "milestone": null,
+  "patch_commands": null,
+  "project_id": 425441,
+  "project_path": "def-work/front",
+  "ref_old_oid": null,
+  "source_branch": "aaa",
+  "source_branch_exist": true,
+  "source_project_id": 425441,
+  "source_type": "BRANCH",
+  "ssh_url_to_repo": "git@gitlab.alibaba-inc.com:def-work/front.git",
+  "state": "opened",
+  "subscribers": [],
+  "support_merge_ff_only": true,
+  "target_branch": "master",
+  "target_branch_exist": true,
+  "target_project_id": 425441,
+  "target_type": "BRANCH",
+  "title": "123",
+  "updated_at": "2024-02-05T15:02:26.000+08:00",
+  "upvotes": 0,
+  "warning_message": null,
+  "web_url": "https://code.alibaba-inc.com/def-work/front",
+  "work_in_progress": false
+}
+
+```

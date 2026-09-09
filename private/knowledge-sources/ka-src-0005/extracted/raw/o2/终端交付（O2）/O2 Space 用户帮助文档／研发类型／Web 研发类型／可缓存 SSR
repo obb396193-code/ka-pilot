@@ -1,0 +1,55 @@
+## 方案特性
+
+通过可缓存 SSR 的前端页面研发解决方案，可以基于一体化框架 rax 编写代码，通过 serverless 函数进行 SSR 页面渲染，一键部署到 CDN 获得投放域名，并提供完善的降级、兜底、容灾方案。
+
+页面发布后，可以获得可访问的 CDN 地址。用户请求页面时，可以在端上携带可枚举的标签（比如：人群分类），当前仅支持 header: x-u-tag，如果 CDN 中有相关的副本可以直接使用 CDN 缓存，无需回源。如果没有，则会回源到 Air，并经过 Air 函数网关转发到 FaaS 渲染函数进行 SSR 渲染，获取结果后缓存到 CDN，下次可以直接使用 CDN 缓存。如果没有携带标签（比如：高端机），可以降级返回 CSR 的主文档，进行端上渲染。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1GXn4BMr0g1dODQ4/img/3746af61-0c09-4ddf-9314-88153a8effd3.png)
+
+
+在进行应用发布时，我们提供了相关的安全生产能力，比如：基于用户百分比的灰度切流；按迭代的快速回滚；新函数上线前的安全、容量等必要评审的卡口等。
+
+注意：
+
+- 该方案不是简单将 serverless 函数暴露到公网，不能提供 API 服务。该方案中的 serverlss 函数仅用于页面渲染。
+- 该方案不支持 query（请通过 header: x-u-tag 做个性化），页面请求时的 query 会被过滤后请求 FaaS 渲染函数，函数中获取不到 query 信息。
+- CDN 的缓存时间默认设置为 5 分钟，函数可以在 response 头中返回 cache-control 来控制缓存时间（如：cache-control: s-maxage=300）
+## 前置准备
+
+如果没有接入过站点和域名，请参考 [域名接入](https://yuque.antfin-inc.com/gubal/site/domain-apply)进行 CDN 的域名接入。
+
+接入后在站点中配置路由，进入“站点详情-路由配置”，点击“添加路由”，进行路由的配置。
+
+## 新建应用
+
+1）进入新建应用页面。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1GXn4BMr0g1dODQ4/img/e4e2d5c9-5e6f-4423-8103-91ae1fd6869c.png)
+
+
+2）选择 “Web 研发” 下”可缓存 SSR“，选择 “Rax SSR” 解决方案后，进入下一步。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1GXn4BMr0g1dODQ4/img/870c2fcb-8616-4287-9dc7-dfa958e393c2.png)
+
+
+3）选择接入的站点（如果是测试应用可以选择“Air 测试站点”），完善函数相关的配置，然后“确定”。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1GXn4BMr0g1dODQ4/img/d21825cd-b324-4e83-85aa-7e03e467531d.png)
+
+
+## 应用发布
+
+应用发布和 DEF 的发布基本一致，创建迭代后直接进行发布即可。
+
+## 应用灰度
+
+应用的灰度切流实现了基于用户的切流功能，可以逐步 5%、25%、50% 的逐步进行放量。
+
+## 应用回滚
+
+回滚支持按照迭代进行回滚，回滚对应迭代下的页面和函数。
+
+## 参考资料
+
+rax ssr 文档：[https://rax.alibaba-inc.com/docs/guide/ssr](https://rax.alibaba-inc.com/docs/guide/ssr)
+

@@ -1,0 +1,58 @@
+{
+  "documentId": 2247,
+  "documentName": "商品库批量查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取商品库列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/library/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/library/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 0 | 必填 | 广告主账号ID |  |\n| library_id | Long | 0 | 可选 | 商品库ID |  |\n| name | String |  | 可选 | 商品库名称 |  |\n| status | Integer | 2 | 可选 | 商品库状态 | 1-审核中, 2-使用中, 3-审核失败, 4-暂停使用, 5-XML初始化中, 6-XML初始化失败 |\n| query_type | Integer | 1 | 必填 | 商品库权限类型 | 1-使用权限, 2-编辑权限(含使用权限) |\n| biz_id     |\tInteger[]  |[2, 3]|可选|商品库业务类型|1-主站, 2-联盟, 3-通用|\n| page_info | PageInfoSneak |  | 可选 | 分页信息 |  |\n| &#8195;page_size | Integer | 20 | 可选 | 页大小 |  |\n| &#8195;current_page | Integer | 1 | 可选 | 当前页码 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | LibraryQueryResponse |  | 商品库列表 |  |\n| &#8195;data | AdDpaLibraryViewSneak[] |  | 商品库列表 |  |\n| &#8195;&#8195;library_id | Long | 0 | 商品库ID |  |\n| &#8195;&#8195;name | String |  | 商品库名称 |  |\n| &#8195;&#8195;library_desc | String |  | 商品库描述 |  |\n| &#8195;&#8195;status | Integer | 2 | 商品库状态 | 1-审核中, 2-使用中, 3-审核失败, 4-暂停使用, 5-XML初始化中, 6-XML初始化失败 |\n| &#8195;&#8195;create_time | Long | 0 | 商品库创建时间 | 毫秒时间戳 |\n| &#8195;&#8195;biz_id|\tInteger[]|[2, 3]|商品库业务类型|0-未知, 1-主站, 2-联盟, 3-通用|\n| &#8195;page_info | PageInfoSneak |  | 分页信息 |  |\n| &#8195;&#8195;total_count | Long | 1 | 总数 |  |\n| &#8195;&#8195;page_size | Integer | 20 | 页大小 |  |\n| &#8195;&#8195;current_page | Integer | 1 | 当前页码 |  |\n| code | Integer | 0 | 请求返回状态码 |  |\n| message | String |  | 请求返回状态信息 |  |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/library/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": ******,\n    \"query_type\": 2\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"data\": [\n            {\n                \"create_time\": 1655383372262,\n                \"library_id\": *****,\n                \"library_desc\": \"***\",\n                \"name\": \"**库\",\n                \"status\": 2\n            }\n        ],\n        \"page_info\": {\n            \"total_count\": 51,\n            \"current_page\": 1,\n            \"page_size\": 10\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EJf0-4CQ1by7Chjy-hIgopiYl8wwKNOZ6NED\"\n}\n```",
+  "url": "",
+  "version": "1.0.1",
+  "versionList": [
+    {
+      "version": "1.0.1",
+      "createTime": 1701421676555
+    },
+    {
+      "version": "1.0.0",
+      "createTime": 1701421554194
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1701421676555,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

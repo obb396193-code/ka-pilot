@@ -1,0 +1,53 @@
+vega发布SOP：[https://aliyuque.antfin.com/intention2order/wf66fv/fz61b7f6gc8qkskd?singleDoc#](https://aliyuque.antfin.com/intention2order/wf66fv/fz61b7f6gc8qkskd?singleDoc#)
+
+### 合并及Review代码
+
+### 直接走正式流程将代码合并发布到预发
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxebd60PeBO8j/img/1a873046-223c-447f-8be6-33153ed93631.png?Expires=1776252813&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+### 改为全部变更，在发布文档的中，找出所有的要发布的分支填上、查询并勾选
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxebd60PeBO8j/img/6b7c0beb-a92f-46f5-926f-e3d277b50e60.png?Expires=1776252813&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxebd60PeBO8j/img/15be7fa8-cc37-4f07-a051-7a042e191d85.png?Expires=1776252813&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+### 全部成功勾选后点击提交发布
+
+
+
+### 逐个点击进入变更检查变更创建时间及关联需求创建时间是否符合预期
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxebd60PeBO8j/img/3497d008-0a96-4a6b-a72f-337a392e7359.png?Expires=1776252813&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxebd60PeBO8j/img/e356b0f6-2200-4bcb-bc3f-f8933ecf2408.png?Expires=1776252813&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+如果变更创建超过11个日然日或者需求创建超过18个自然日（<span style="color: rgb(232, 50, 60);">变更需要关联到子需求上，不能关联到任务上，否则部分统计会失效</span>），让变更对应负责人检查，是否反应真实的情况，
+- 若是，则保留发布
+- 若否，则将该变更踢出发布列表
+
+但踢出变更列表后 需保证代码仍然在其他的发布变更对应的分支里包含，同时踢出后，是无法统计个人的 代码工作量、发布的需求个数、需求的交付时长 等数据，对个人量化数据产生影响。
+
+
+
+
+
+### 冲突解决
+
+将代码合并到CRID最小的变更（最前面的变更）所对应的分支后，后续的合并发布代码均不会冲突
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxebd60PeBO8j/img/79ca294f-151a-483b-a2de-192a30f97efc.png?Expires=1776252813&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+### 构建完成进入预发进行全量天启回归
+
+
+
+### 回归完成后直接进行线上发布

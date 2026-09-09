@@ -52,3 +52,15 @@ const typedSchema = z.discriminatedUnion("type", [
 ]);
 export const changeValueSchema = transportSchema.pipe(typedSchema);
 export type ChangeValue = z.infer<typeof changeValueSchema>;
+
+// Callers validate the complete transport tree first. Keep serialization and
+// typed equality shared by draft hashing, Worker proofs and the BFF validator.
+export function canonicalChangeJson(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalChangeJson).join(",")}]`;
+  const object = value as Record<string, unknown>;
+  return `{${Object.keys(object).sort().map(key => `${JSON.stringify(key)}:${canonicalChangeJson(object[key])}`).join(",")}}`;
+}
+export function sameChangeValue(left: unknown, right: unknown): boolean {
+  return canonicalChangeJson(changeValueSchema.parse(left)) === canonicalChangeJson(changeValueSchema.parse(right));
+}

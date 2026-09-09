@@ -1,0 +1,19 @@
+[    7595ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rK (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:45827)
+    at rX (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:46860)
+    at https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:140579
+    at sp (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:145740)
+    at sc (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:137080)
+    at https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:131909
+    at u9 (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:132010)
+    at sV (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:158392)
+    at MessagePort.O (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:7353)
+[   12348ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.kibo-ui.com'). @ https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js:162
+[   12585ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.kibo-ui.com'). @ https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js:162
+[   12836ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.kibo-ui.com'). @ https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js:162
+[   13086ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.kibo-ui.com'). @ https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js:162
+[   13335ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.kibo-ui.com'). @ https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js:162
+[   13585ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.kibo-ui.com'). @ https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js:162
+[   14923ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://static.doubleclick.net/instream/ad_status.js:0
+[   14925ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://googleads.g.doubleclick.net/pagead/id:0
+[   16205ms] [INFO] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2 @ https://www.youtube.com/s/_/ytembeds/_/js/k=ytembeds.base.en_US.Mfs3hFsFeSk.es5.O/ck=ytembeds.base.j2tjCFXklP0.L.W.O/am=AAAAQA/d=1/exm=base,root/excm=base,root/ed=1/br=1/rs=AGKMywFNdjL98HezQYKGkkJUBZYJmBDJGQ/m=r78Drb:1641

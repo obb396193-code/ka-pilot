@@ -1,0 +1,271 @@
+{
+  "documentId": 3373,
+  "documentName": "代理商素材推送",
+  "documentType": 2,
+  "description": "<p>代理商素材推送</p>",
+  "summary": "",
+  "remark": "",
+  "content": "代理商素材推送\n/rest/openapi/gw/agent/v1/syncMaterial\n\n\nmapi_ip  String  <p>mapiIp</p>\nmaterial_ids  Long[]  <p>素材id列表</p>\naccount_ids  Long[]  <p>账户id</p>\nsync_profile  Boolean  <p>是否同步个人主页</p>\ncode  Integer  <p>属性</p>\nmessage  String  <p>响应msg</p>\ndata  SyncMaterialResp  <p>返回数据</p>\nsuccess  Boolean  <p>是否成功</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1784036923156
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1783425642816
+    }
+  ],
+  "apiId": 2570,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/syncMaterial",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87811,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "-",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "代理商id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 87746,
+      "paramName": "mapi_ip",
+      "paramType": "String",
+      "example": "-",
+      "description": "<p>mapiIp</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "mapiIp",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87747,
+      "paramName": "material_ids",
+      "paramType": "Long[]",
+      "example": "-",
+      "description": "<p>素材id列表</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "素材id列表",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87748,
+      "paramName": "account_ids",
+      "paramType": "Long[]",
+      "example": "-",
+      "description": "<p>账户id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "账户id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87749,
+      "paramName": "sync_profile",
+      "paramType": "Boolean",
+      "example": "-",
+      "description": "<p>是否同步个人主页</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "是否同步个人主页",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 87750,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "200",
+      "description": "<p>属性</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "状态",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87751,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "“”",
+      "description": "<p>响应msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "响应msg",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87752,
+      "paramName": "data",
+      "paramType": "SyncMaterialResp",
+      "example": "{}",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4976,
+      "sort": 3,
+      "note": "返回数据",
+      "children": [
+        {
+          "paramId": 87683,
+          "paramName": "success",
+          "paramType": "Boolean",
+          "example": "-",
+          "description": "<p>是否成功</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "是否成功",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1784036923156,
+  "creator": "hanxu18",
+  "fullContext": null
+}

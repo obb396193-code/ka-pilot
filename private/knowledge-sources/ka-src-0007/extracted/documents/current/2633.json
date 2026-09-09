@@ -1,0 +1,245 @@
+{
+  "documentId": 2633,
+  "documentName": "视频库-批量更新视频功能",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093067589
+    }
+  ],
+  "apiId": 1029,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/update' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\" : 11311124,\n    \"photo_ids\" : [\"5238249419979025844\"],\n    \"photo_name\" : \"视频名称\",\n    \"photo_tag\": [\"标签1\"]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"photo_ids\": [\n            \"5238249419979025844\"\n        ]\n    },\n    \"request_id\": \"62c361a29c974b50ab04c704e0eb9c24\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 53024,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><br>广告主 id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53025,
+      "paramName": "photo_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p><br>视频 ids，</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "\t不超过 100 个",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53026,
+      "paramName": "photo_name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>视频名称</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "photo_name 和 photo_tags 填其一即可。photo_name 长度不得超过 100 字符",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53027,
+      "paramName": "photo_tag",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>视频标签</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "单个标签长度不能超过 10，只支持一个标签",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 53029,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53030,
+      "paramName": "data",
+      "paramType": "PhotoUpdateResultSnake",
+      "example": "",
+      "description": "<p><br>JSON 返回值</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3101,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 53028,
+          "paramName": "photo_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p><br>视频 ids，</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53031,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093067589,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -25,7 +25,7 @@ export type SystemHealth = {
   sources: HealthSource[]
 }
 
-const sourceLabel: Record<SourceKey, string> = { platform: "奇航", ka_data: "KA Data" }
+const sourceLabel: Record<SourceKey, string> = { platform: "启航", ka_data: "KA Data" }
 const kindLabel = { personal: "个人空间", team: "团队数据" } as const
 const stateOf: Record<HealthSource["status"], SystemHealthState> = { green: "fresh", yellow: "backfilling", red: "stale" }
 
@@ -83,7 +83,7 @@ export function DataHealthPill() {
       <TooltipContent side="bottom" className="max-w-80">
         <p className="font-medium">{stateLabel[health.state]}</p>
         <p className="mt-1 opacity-80">{health.detail}</p>
-        <p className="mt-1 opacity-80">口径：{health.metricVersion}；切空间即切源（个人 = 奇航本人授权账户，团队 = KA Data 只读）。</p>
+        <p className="mt-1 opacity-80">口径：{health.metricVersion}；切空间即切源（个人 = 启航本人授权账户，团队 = KA Data 只读）。</p>
         {health.sources.length ? (
           <ul className="mt-2 space-y-0.5 opacity-80">
             {health.sources.map((item) => <li key={item.source}>{sourceLabel[item.source]}：数据至 {fmtTime(item.dataAsOf)}{item.note ? ` · ${item.note}` : ""}</li>)}

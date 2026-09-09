@@ -7,6 +7,7 @@
     "start": "tsx src/index.ts",
     "sync:tick": "tsx src/scheduling/sync-tick-cli.ts",
     "worker:once": "tsx src/scheduling/worker-once-cli.ts",
+    "start:worker-http": "tsx src/scheduling/worker-once-http-cli.ts",
     "auth:cleanup": "tsx src/auth/session-cleanup-cli.ts",
     "discover:accounts": "tsx src/qihang/discover-accounts.ts",
     "start:data-api": "tsx src/data-api.ts",

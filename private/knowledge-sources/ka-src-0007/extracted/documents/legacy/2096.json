@@ -1,0 +1,42 @@
+{
+  "documentId": 2096,
+  "documentName": "3.2刷新token",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 刷新 tonken\n\n请求快手服务器，刷新 access_token 和 refresh_token 及 token 过期时间。\n请求地址：https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/refresh_token\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 备注                             |\n| ------------- | ------ | -------------------------------- |\n| app_id        | number | 申请应用后快手返回的 app_id      |\n| secret        | string | 申请应用后快手返回的 secret      |\n| refresh_token | string | 最近一次快手返回的 refresh_token |\n\n### 返回参数\n\n| 字段                     | 类型   | 备注                                                         |\n| ------------------------ | ------ | ------------------------------------------------------------ |\n| code                     | number | 返回码                                                       |\n| message                  | string | 返回信息                                                     |\n| data                     | JSON   |                                                              |\n| access_token             | string | 用于验证权限的 token                                         |\n| access_token_expires_in  | number | access_token 剩余有效时间，单位：秒                          |\n| refresh_token            | string | 用于获取新的 access_token 和 refresh_token，并且刷新过期时间 |\n| refresh_token_expires_in | number | refresh_token 剩余有效时间，单位：秒                         |\n\n### 请求参数\n\n```\ncurl -H \"Content-Type:application/json\" \\\n-d '\n{\n\"app_id\": 1,\n\"secret\": \"abcd\",\n\"refresh_token\": \"[REDACTED_SECRET_EXAMPLE]\"\n} '\n\n```\n\n### 返回参数\n\n```\n{\n\"code\": 0,\n\"message\": \"OK\",\n\"data\": {\n\"access_token\":\"[REDACTED_SECRET_EXAMPLE]\",\n\"refresh_token_expires_in\":xxxxxxxxx,\n\"refresh_token\":\"[REDACTED_SECRET_EXAMPLE]\",\n\"access_token_expires_in\":xxxxxxxxx\n        }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1725243953204
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 8,
+  "bizName": "磁力金牛",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1725243953204,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

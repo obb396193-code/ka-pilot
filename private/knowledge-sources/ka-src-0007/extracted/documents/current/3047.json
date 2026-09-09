@@ -1,0 +1,289 @@
+{
+  "documentId": 3047,
+  "documentName": "刷新token",
+  "documentType": 2,
+  "description": "<p>请求快手服务器，刷新 access_token 和 refresh_token 及 token 过期时间。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "刷新token\n/rest/openapi/oauth2/authorize/refresh_token\ncurl -H \"Content-Type:application/json\" \\\n-d '\n{\n\"app_id\": 1,\n\"secret\": \"abcd\",\n\"refresh_token\": \"[REDACTED_SECRET_EXAMPLE]\"\n} '\n{\n\"code\": 0,\n\"message\": \"OK\",\n\"data\": {\n\"access_token\":\"[REDACTED_SECRET_EXAMPLE]\",\n\"refresh_token_expires_in\":xxxxxxxxx,\n\"refresh_token\":\"[REDACTED_SECRET_EXAMPLE]\",\n\"access_token_expires_in\":xxxxxxxxx,\n\"advertiser_id\": xxxxxxxxx\n        }\n}\napp_id  Long  <p>申请应用后快手返回的 app_id</p>\nsecret  String  <p>申请应用后快手返回的 secret</p>\nrefresh_token  String  <p>最近一次快手返回的 refresh_token</p>\ncode  Integer  <p>返回码</p>\nmessage  String  <p>返回信息</p>\ndata  AuthorizeRefreshTokenData  <p>返回数据</p>\naccess_token  String  <p>用于验证权限的 token</p>\naccess_token_expires_in  Long  <p>access_token 剩余有效时间，单位：秒</p>\nrefresh_token  String  <p>用于获取新的 access_token 和 refresh_token，并且刷新过期时间</p>\nrefresh_token_expires_in  Long  <p>refresh_token 剩余有效时间，单位：秒</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1725244131013
+    }
+  ],
+  "apiId": 1279,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/refresh_token",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -H \"Content-Type:application/json\" \\\n-d '\n{\n\"app_id\": 1,\n\"secret\": \"abcd\",\n\"refresh_token\": \"[REDACTED_SECRET_EXAMPLE]\"\n} '"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n\"code\": 0,\n\"message\": \"OK\",\n\"data\": {\n\"access_token\":\"[REDACTED_SECRET_EXAMPLE]\",\n\"refresh_token_expires_in\":xxxxxxxxx,\n\"refresh_token\":\"[REDACTED_SECRET_EXAMPLE]\",\n\"access_token_expires_in\":xxxxxxxxx\n        }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61401,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>申请应用后快手返回的 app_id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61402,
+      "paramName": "secret",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>申请应用后快手返回的 secret</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61403,
+      "paramName": "refresh_token",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>最近一次快手返回的 refresh_token</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61404,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61405,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61406,
+      "paramName": "data",
+      "paramType": "AuthorizeRefreshTokenData",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3436,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61392,
+          "paramName": "access_token",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>用于验证权限的 token</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61393,
+          "paramName": "access_token_expires_in",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>access_token 剩余有效时间，单位：秒</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61394,
+          "paramName": "refresh_token",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>用于获取新的 access_token 和 refresh_token，并且刷新过期时间</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61395,
+          "paramName": "refresh_token_expires_in",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>refresh_token 剩余有效时间，单位：秒</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1725244131013,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

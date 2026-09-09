@@ -1,0 +1,42 @@
+{
+  "documentId": 2216,
+  "documentName": "搜索否定词批量查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取否定词列表（已废弃，见[智能化广告组查询接口](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2264&menuId=2809)）\n\n此接口仅支持根据unit_id获取该广告组下的否定词。\n\n请求接口： [https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/list](https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|必填|广告主账号ID||\n|unit_ids|Long[]|必填|广告单元ID|最大数量100|\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|--|--|--|--|\n|code|Integer|返回状态码||\n|message|string|返回状态信息||\n|data|Object|返回数据内容||\n|&#8195;details|&#8195;Object[]|&#8195;数据详情||\n|&#8195;&#8195;negative_word|&#8195;&#8195;Object|&#8195;&#8195;否定词内容||\n|&#8195;&#8195;&#8195;exact_words|&#8195;&#8195;&#8195;String[]|&#8195;&#8195;&#8195;精确否定词列表||\n|&#8195;&#8195;&#8195;phrase_words|&#8195;&#8195;&#8195;String[]|&#8195;&#8195;&#8195;短语否定词列表||\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 90000344,\n    \"unit_id\": 3833404\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"details\": {\n            \"negative_word\": {\n                \"exact_words\": [\n                    \"精确匹配\",\n                    \"hahha\",\n                    \"nihao\"\n                ],\n                \"phrase_words\": [\n                    \"短语匹配\"\n                ]\n            }\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMqAgICQ5JmOrAEY5wIg9uj7kOcwKOSDtckN\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1711684259543
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 12,
+  "bizName": "Marketing-Api",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1711684259543,
+  "creator": "yanghua05",
+  "fullContext": null
+}

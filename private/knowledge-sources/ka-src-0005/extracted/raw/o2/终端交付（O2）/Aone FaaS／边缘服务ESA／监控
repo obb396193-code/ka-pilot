@@ -1,0 +1,31 @@
+对边缘容器应用，平台提供各个环境独立、包含容器指标的监控信息感知：
+
+# 日常 / 预发
+
+边缘容器应用的日常 / 预发环境监控同其他 Aone FaaS 应用，支持以下几种 metrics 指标监控（JVM 相关监控在 node 应用中不适用）：
+
+- qps
+- 错误率
+- RT
+- CPU 使用率
+- 内存使用率
+- 容器数量
+(https://o2-img.alistatic.com/i/i09blZ/MEJHyyqrBX2nL5k2yCRLq-39c35fbee6.png)
+
+
+# 线上
+
+## 容器监控
+
+在线上环境，对于边缘容器，平台支持几个容器健康度指标：
+
+- CPU总使用量（核）
+- CPU配额使用率
+- 内存实际使用量（MB）
+- 内存配额使用率
+- 容器健康状态（基于健康检查）
+(https://o2-img.alistatic.com/i/i09blZ/xWwnRTzwUqUL0JGP0sAm6-6a55e9df02.png)
+
+
+
+

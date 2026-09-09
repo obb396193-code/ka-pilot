@@ -1,0 +1,42 @@
+{
+  "documentId": 2343,
+  "documentName": "评论管理-取消评论置顶",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 评论管理-取消评论置顶\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/comment/cancelTop](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/comment/cancelTop)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 100 | 必填 | 广告主id |  |\n| comment_id | Long | 100 | 必填 | 评论id |  |\n| photo_id | Long | 100 | 必填 | 视频id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 1 | 状态码 |  |\n| message | String | succ | 返回信息 |  |\n| data | CommentUpdateStructSnake | 100 | 返回结果 |  |\n| &#8195;comment_id | Long | 100 | 评论id |  |\n\n### 请求样例\n\n```js\n{\n  \"advertiser_id\":10010,\n  \"comment_id\": 634356637492,\n  \"photo_id\": 5196028089786633607\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 1,\n  \"message\": \"succ\",\n  \"data\": {\n    \"comment_id\": 634356637492\n  }\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681982909936
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681982909936,
+  "creator": "gaozheng",
+  "fullContext": null
+}

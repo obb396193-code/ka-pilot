@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kuaishou-cli"
+description = "Kuaishou MAPI CLI for information-flow ad delivery."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Proprietary" }
+authors = [{ name = "Julang Agent" }]
+keywords = ["kuaishou", "mapi", "advertising", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+dependencies = []
+
+[project.scripts]
+kuaishou-cli = "kuaishou_cli.__main__:main"
+kuaishou = "kuaishou_cli.__main__:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "kuaishou_cli.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["kuaishou_cli*"]

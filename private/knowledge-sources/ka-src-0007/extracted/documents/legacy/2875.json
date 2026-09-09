@@ -1,0 +1,54 @@
+{
+  "documentId": 2875,
+  "documentName": "行为意向升级-类目查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 行为意向4.0，类目查询接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/option/behavior_interest](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/option/behavior_interest_)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | <p>账户ID</p> |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | TargetBehaviorCategory[] |  | 数据详情 |  |\n| &#8195;children | TargetBehaviorCategory[] |  | 子类目列表 |  |\n| &#8195;count | Long |  | 类目覆盖人群数 |  |\n| &#8195;id | Long |  | 类目ID，可用于广告组创编 |  |\n| &#8195;level | Integer |  | 类目层级 |  |\n| &#8195;name | String |  | 类目名称 |  |\n| message | String |  | 错误详情，正常时返回 OK |  |\n| code | Integer |  | 错误码 |  |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1717580122696
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1717580122696,
+  "creator": "yanghua05",
+  "fullContext": null
+}

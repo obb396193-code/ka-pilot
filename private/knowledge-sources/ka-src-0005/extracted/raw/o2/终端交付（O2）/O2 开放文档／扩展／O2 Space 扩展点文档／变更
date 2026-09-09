@@ -1,0 +1,132 @@
+### change-new-branch-name-rule
+
+业务定制自己的变更分支名称格式规范
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/cmua873bymaf8gn7/imgyzXfVD1kWw.png)
+
+
+#### Config
+
+```
+{
+  "tip": "变更分支格式需满足 daily/x.x.x(迭代版本号) 的格式", // 检测不通过的提示
+  "glob": "daily/${iteration_version}", // 检测通配表达式 ${iteration_version} 表示迭代版本
+  "type": "prefix" // type 为 prefix 时只匹配前缀，支持 daily/${iteration_version}-xxx 这样
+}
+
+```
+### change-workitem-rule
+
+业务定制工作项可选范围
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/cmua873bymaf8gn7/imgjOjl3avfU7.png)
+
+
+#### Config
+
+```
+{
+  "product": { // 产品
+    "value": "853629", // 默认值
+    "disable": true // 是否允许用户修改
+  },
+  "project": { // 项目
+    "value": 858140,
+    "option": [ // 用户可修改的选项
+      1053299,
+      858140
+    ],
+    "disable": false
+  },
+  "business": { // 业务
+    "value": [
+      "2232",
+      "3154"
+    ],
+    "disable": true
+  }
+}
+
+```
+### change-exist-branch-name-rule
+
+业务定制变更的已有分支范围
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/cmua873bymaf8gn7/imgv7TuLd6kOr.png)
+
+
+#### Config
+
+```
+{
+  "tip": "变更分支格式需满足 daily/x.x.x(迭代版本号) 的格式", // 检测不通过的提示
+  "glob": "daily/${iteration_version}", // 检测通配表达式 ${iteration_version} 表示迭代版本
+  "type": "prefix" 
+  // type 默认为 complete 表示全匹配
+  // type 为 prefix 时只匹配前缀，支持 daily/${iteration_version}-xxx 这样
+  // type 为 fix 时全匹配，且默认选择第一条分支，且默认选择已有分支
+}
+
+```
+### change-detail-extend-page
+
+业务定制变更详情页的扩展页面，采用 tab 的布局方式
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/cmua873bymaf8gn7/imgrdXya2kZAA.png)
+
+
+Config
+
+```
+{
+  items: [{
+    key: 'modal',
+    tab: '模型'
+  }, {
+    key: 'page',
+    tab: '页面'
+  }]
+}
+
+```
+备注：自定义扩展的这几个页面统一采用 ui-spi 提供的组件渲染，通过传入 currentKey 进行区分。
+
+
+
+### change-create-rule
+
+业务定制的变更创建规则，所有的创建规则都收敛到这个扩展点中
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/cmua873bymaf8gn7/imgHEQMB6A4vo.png)
+
+
+#### Config
+
+```
+{
+  "branchReasonType": "autoFill", // 变更原因类型，自动填充
+  "branchReasonAutoFillRule": "workItemName", // 工作项的名称
+  "branchNameType": "autoFill", // 分支类型，自动填充
+  "branchNameAutoFillRule": "date", // 日期，到分钟。 例如：202201121706 
+  "workItemCount": number // 工作项个数限制
+}
+
+```
+### select-current-change
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/cmua873bymaf8gn7/imgXmYgfZHJxC.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    appId: string;
+    onChange: (changeIds: string[]) => void; // 选中的变更 id      
+}
+
+```
+
+

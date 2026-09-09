@@ -1,0 +1,822 @@
+{
+  "documentId": 3312,
+  "documentName": "客户共享钱包绑定账户查询",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "客户共享钱包绑定账户查询\n/rest/openapi/gw/dsp/trade/shared/bindList\n\n\npage_size  Integer  <p>分页大小</p>\npage_num  Integer  <p>分页页码</p>\nagent_id  Long  <p>代理商id</p>\nwallet_id  Long  <p>钱包id</p>\ndata  AccountSharedWalletAccountRelationQueryForMapiResp  <p>账户详细信息</p>\ntotal_cnt  Long  <p>总数</p>\naccount_shared_wallet_account_info  AccountSharedWalletAccountInfo[]  <p>绑定账户信息列表</p>\napp_id_list  Integer[]  <p>业务线列表</p>\naccount_status_desc  String  <p>投放账户状态描述</p>\naccount_type_desc  String  <p>账户类型描述</p>\nyesterday_consume  Long  <p>昨日消耗</p>\nbind_time  Long  <p>绑定时间</p>\nopen_account_name  String  <p>开户人</p>\naccount_bind_status  Integer  <p>账户绑定状态</p>\nupdate_time  Long  <p>更新时间</p>\ncreate_time  Long  <p>创建时间</p>\nproduct_name  String  <p>产品名称</p>\nproduct_id  Long  <p>产品id</p>\naccount_status  Integer  <p>投放账户状态</p>\nuser_name  String  <p>关联投放账户快手名称</p>\nuser_id  Long  <p>关联投放账户快手id</p>\nsubject  String  <p>公司主体，投放账户公司名称</p>\naccount_type  Integer  <p>关联投放账户类型</p>\naccount_name  String  <p>关联投放账户名称</p>\naccount_id  Long  <p>关联投放账户id</p>\nagent_name  String  <p>代理商名称</p>\nagent_id  Long  <p>代理商id</p>\napp_id  Integer  <p>业务线</p>\nwallet_id  Long  <p>钱包id</p>\nid  Long  <p>id</p>\nwallet_name  String  <p>钱包名称</p>\nwallet_id  Long  <p>钱包id</p>\nmessage  String  <p>错误描述</p>\ncode  Integer  <p>返回码</p>\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1762160046764
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1762156667408
+    }
+  ],
+  "apiId": 1749,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/trade/shared/bindList",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 78315,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分页大小</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78316,
+      "paramName": "page_num",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分页页码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78317,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78318,
+      "paramName": "wallet_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>钱包id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 78323,
+      "paramName": "data",
+      "paramType": "AccountSharedWalletAccountRelationQueryForMapiResp",
+      "example": "",
+      "description": "<p>账户详细信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4435,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 78319,
+          "paramName": "total_cnt",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>总数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 78320,
+          "paramName": "account_shared_wallet_account_info",
+          "paramType": "AccountSharedWalletAccountInfo[]",
+          "example": "",
+          "description": "<p>绑定账户信息列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4434,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 78286,
+              "paramName": "app_id_list",
+              "paramType": "Integer[]",
+              "example": "",
+              "description": "<p>业务线列表</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78287,
+              "paramName": "account_status_desc",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>投放账户状态描述</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78288,
+              "paramName": "account_type_desc",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>账户类型描述</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78289,
+              "paramName": "yesterday_consume",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>昨日消耗</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78290,
+              "paramName": "bind_time",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>绑定时间</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78291,
+              "paramName": "open_account_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>开户人</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78292,
+              "paramName": "account_bind_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>账户绑定状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78293,
+              "paramName": "update_time",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>更新时间</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78294,
+              "paramName": "create_time",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>创建时间</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78295,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>产品名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78296,
+              "paramName": "product_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>产品id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78297,
+              "paramName": "account_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>投放账户状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78298,
+              "paramName": "user_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>关联投放账户快手名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78299,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>关联投放账户快手id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78300,
+              "paramName": "subject",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>公司主体，投放账户公司名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78301,
+              "paramName": "account_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>关联投放账户类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78302,
+              "paramName": "account_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>关联投放账户名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78303,
+              "paramName": "account_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>关联投放账户id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 18,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78304,
+              "paramName": "agent_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>代理商名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 19,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78305,
+              "paramName": "agent_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>代理商id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 20,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78306,
+              "paramName": "app_id",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>业务线</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 21,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78307,
+              "paramName": "wallet_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>钱包id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 22,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 78308,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 23,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 78321,
+          "paramName": "wallet_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>钱包名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 78322,
+          "paramName": "wallet_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>钱包id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78324,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78325,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    }
+  ],
+  "createTime": 1762160046764,
+  "creator": "liuzhonghang",
+  "fullContext": null
+}

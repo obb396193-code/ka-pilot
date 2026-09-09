@@ -259,7 +259,7 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 
 #### F-006 顺序修订（老板 2026-09-05；arch 记录）
 
-- 新顺序：**登录 → 账户池 → 数据分析 → 工作台 → 投放任务**。理由：先做能用真实奇航数据看的页面去联调（账户池 R-009 后、数据分析 R-010a1 后就能真联），工作台依赖 R-010a2 的工作项动作/coverage，放第四。
+- 新顺序：**登录 → 账户池 → 数据分析 → 工作台 → 投放任务**。理由：先做能用真实启航数据看的页面去联调（账户池 R-009 后、数据分析 R-010a1 后就能真联），工作台依赖 R-010a2 的工作项动作/coverage，放第四。
 - 已经动手的工作台不作废：停在布局壳状态，视觉基调保留，转做登录页。
 - 页头横幅按 `F-006-页面规划.md` 9-5 更新：常显「空间 · 来源 · 数据日期 · 更新时间 · 口径」；队列底部改「已检查 · 待检查 · 缺数无法判断」三数（api.md `meta.coverage`）。
 
@@ -356,3 +356,94 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 工作树规则已写 docs/23；你的 `/Users/aik/ka-fe-f006` 保持。**现在 `git merge main`**（main 含 be/r010 两轮 + 契约 v1.7.4/1.7.5 + fixtures 159 已同步 priceSource/三键/attempt 级），合完把 3401 起起来给老板精修。
 - 旧分支 `codex/fe-functional-bff-v2`、`codex/fe-task5-session-bff` 已被 R-009 二批的 BFF/v2 适配取代，`codex/personal-team-task4/5/6` 由 R-009/R-011 取代；等老板点头后删，你不用管。
 - 精修期纪律：老板口头改 → 你直接改 → 每页一 commit → SHA 发我即合；视觉改动不动导航/路由/数据形状；契约缺口继续写 inbox-arch。
+
+
+### 登录页参考与方向（arch 2026-09-07；老板看完参考后）
+- 参考截图在 `docs/frontend/references/login-2026-09-07/`（巨量引擎/磁力金牛/腾讯营销/Vercel）。结构照巨量：**亮色浅底全幅图 + 左上大标题（产品名 + 一句定位）+ 右侧浮起登录卡**；你现在的分屏改成这个"全幅底图 + 浮卡"即可，图位先用浅色占位，别再用黑底光谱。
+- 图由 Codex 重做（R-FE-IMG-002，三方向），老板挑；三张都不要就切 Vercel 式无图纯表单（居中卡，去掉左栏）。两种壳都先备好，切换只改一个开关。
+
+
+### 回改批 `3d7fef5` 复跑 ✅ 已合 main；C6 已定；继续 §13（arch 2026-09-07）
+- 复跑：test 140/0、tsc 0、eslint 0 错 12 warn；16 文件全在 apps/web ✅。已 --no-ff 合进 main，连同 Codex 的 F-P103-1 诊断测试。
+- **C6**：以老板 D1 为准，默认 `bw`；fixture `me/preferences.json` 已改成 `bw`，不用再问老板。
+- 下一步照你说的：§13 v1.7 九块按页开做（fixtures 都在 main），老板精修并行；每页一 commit、SHA 发我即合。合 main 前先 `git merge main`（含本条与 C6 fixture）。
+- 磁盘：已清 4G，Docker 跑测试时会临时吃十几 G 再回收，你起 dev server 前看一眼 `df -h`，低于 5G 先喊我。
+
+
+### §13 九块 `e7a08de`～`73d594c` 复跑 ✅ 已合 main；第三批 fixture 已补（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错；17 文件全在 apps/web。已 --no-ff 合进 main `5b9db7c`。
+- 第三批 fixture（main HEAD，README「2026-09-07 第三批」）：`me/workload.json`、`system/search.json`（五类 + subtitle，**旧 label 改 title**）、`me/watchlist.json`（+task 项）、`reports/daily-v1.json` 加 `delivery` + `daily-v1-not-sent.json`、`materials/list.json` 加 `ratios.cvr`、`summary-window-v3-conversion-missing.json`、`rules/explain-7.json`/`explain-9.json`、`agent/run-events-1802.json`（失败 run）、`integrations/connections.json`（+degraded/disconnected）、`admin/grants-member-2.json`、`tasks/attribution-cost.json`、`strategies/detail-3002.json`。`git merge main` 后按页接上，search 的 label→title 要改一处。
+- 之后就是老板精修；每页一 commit、SHA 发我。
+
+
+### F-008 页面齐全性补漏（arch 2026-09-07；老板问"页面是否齐全"审计结果）
+
+对照 PRD 路由表 33 条 + F-007 清单 + 实际 `apps/web/app`：**全部 PRD 路由都有落点**（路由或页内 tab），下面是审出来的漏项，按优先级做，穿插在老板精修之间：
+
+| # | 项 | 优先级 | 做法 | 契约 |
+|---|---|---|---|---|
+| F8-1 | **移动端值班最小路径**（PRD P1，之前清单漏了） | P1 | 只保三处手机可用：工作项详情、变更集确认弹层、数据健康横幅；其余页 `<md` 顶部「请到桌面处理」条 + 写动作禁用 | 无 |
+| F8-2 | **错误页壳**：404 / 500 / 403 | P1 | `app/not-found.tsx`、`app/(main)/error.tsx`、403 组件复用 admin 锁页；500 显 requestId + 重试 | v1.7.6 |
+| F8-3 | **账号安全**：改密码 | P1 | 设置「三凭证」tab 内加「账号安全」块（当前密码/新密码/确认；成功后提示其他设备已下线） | v1.7.6 `POST /auth/password`；fixture 由 arch 补 |
+| F8-4 | 工作项详情路由正名 `/work-items/[id]` | P2 | 现 `/diagnostics/[findingId]` 保留 301；所有链接改新路径 | 无 |
+| F8-5 | 铃铛下拉「最近通知」 | P2 | 侧栏铃铛点开显最近 10 条（复用 `integrations/messages` 形状）+「查看全部」→ 集成/消息记录 tab | 无（复用） |
+| F8-6 | 首次登录引导条 | P2 | 三凭证任一未绑 → 工作台顶部横幅「先绑定 X 才能拉数」→ 跳设置；不做向导页 | 无 |
+| F8-7 | 上线前清理 `/login/candidates`、`/login/directions` | 老板拍登录壳后 | 删路由与组件 | — |
+
+已确认齐的（不用动）：Agent/OS 运行监控（在自动化·运行中心）、主题偏好（theme-switch）、空间切换器、导出记录（报告 tab）、协作中心（工作台协作 tab）、公共资产（治理后台资产 tab）。
+
+
+### 登录页定案：不用生成图，就用你现在做的（老板 2026-09-07）
+- 老板看了两轮候选，决定**不用图**：登录页保持你现有的实现（D9 分屏 + 你现在的左栏处理），不再等 Codex 的图，也不用做"全幅底图 + 浮卡"那套壳。把"等图"的占位逻辑收干净，左栏用你自己的方案定稿即可。
+- `/login/candidates`、`/login/directions` 两个演示路由现在可以删（F8-7 提前）。
+
+
+### 自审两批 `876b4ca` 复跑 ✅ 已合 main `f0233eb`（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错，54 文件全在 apps/web。commit 前缀请回 `[fe]`。`git merge main` 后接着老板精修与 F-008。
+
+
+### 自审 3 `e9771fc` ✅ 已合 main `ffa6c6c`；F8-2 记完成（arch 2026-09-07）
+- 404/错误边界/个人资料/死链修 全过，范围合规。F-008 里 F8-2 打勾；F8-3 账号安全（改密码）等我补 fixture 后做；F8-1 移动端最小路径仍是 P1。`git merge main` 后继续。
+
+
+### 自审 4/5 `c9f382c` ✅ 合 main `e5ef145`；G10–G13 全裁（契约 v1.7.8）（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错，范围合规。**F-008 里 F8-2/F8-5/F8-6 你已顺手做完**，剩 F8-1（移动端值班最小路径，P1）、F8-3（改密码表单，等端点）、F8-4（工作项路由正名）、F8-7（登录演示路由清理，可以做了）。
+- G10 通知流：`GET /me/notifications` + `POST /me/notifications/read`，五个 kind、未读数与 `me/counts` 同源；fixture `me/notifications.json`（含空态）已在 main —— 把你现在三 fixture 合并的临时做法换成读它。
+- G11 改密码：端点 `POST /auth/password`（v1.7.6），成功响应 `{changedAt, otherSessionsRevoked}`；fixture `auth/password-changed.json` / `password-error.json`。可以把「找管理员重置」换成真表单（走 fixture）。
+- G12 `/403` 确认保留；BFF 遇 FORBIDDEN/NOT_A_MEMBER 跳 `/403?from=<path>`，`/admin` 非 admin 仍就地锁页。
+- G13 watchlist 的 `type` fixture 已在 main，合了就有 task 项。
+- commit 前缀仍请回 `[fe]`。
+
+
+### 自审 6–13 `26afe2f` ✅ 全部合 main `6509387`（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错，60 文件全在 apps/web，未碰 lib/data 与 app/api。这批「把界面上的技术词换成人话」做得对，继续。
+- 提醒两件：① commit 前缀还是 `[fe]`（现在是 `fe(自审N)`）；② 账户池那个「全部 5 / 投放中 18」自相矛盾是好发现——这类**同页数字对不上**的问题，看到就记进状态文件的「冲突点」，我在契约侧一起看。
+- F-008 剩余：F8-1 移动端值班最小路径（P1）、F8-3 改密码表单（fixture `auth/password-changed.json` 已在 main，可以做了）、F8-4 工作项路由正名、F8-7 登录演示路由清理（登录页已定案用你现有的，可以删了）。
+
+
+### 契约 v1.8：归属清洗页（治理后台第七个 tab）+ 一条全局铁律（arch 2026-09-07）
+
+- **老板铁律**：系统里凡是「归属」性质的字段，**都必须有页面能人工改，且改完不被自动流程覆盖**。你在做的页面里凡涉及归属（任务归属、账户负责人、账户状态、以后的昵称解析各段），都要有改的入口和「已人工修改」的标记。
+- **新页面：治理后台加第七个 tab「归属清洗」**（`/admin?tab=naming`）。不新开一级路由，按视图收敛原则做成 tab。四块：
+  1. **规范模板**（按渠道切换：快手/腾讯/字节各一套）：12 段的定义表，可加分隔符（半角/全角减号、下划线、空格）。**改的时候旁边有个「干跑」框**：贴一批账户名进去，实时看每条解析成什么、命中率多少，满意了才保存。
+  2. **待确认列表**：五种状态过滤 —— 解析成功 / 部分成功 / 解析失败 / **冲突** / 已确认。冲突那栏最重要，要能并排看「昵称说什么 vs 平台说什么」，人工选一边。
+  3. **单条编辑抽屉**：12 段每段可改，改过的段打「人工」角标（这就是 override，永久优先）。
+  4. **批量确认**：解析成功的一键全过。
+- fixture 我随后补（`admin/naming-rules.json`、`admin/account-names.json` 五种状态各一例、`admin/naming-rules-test.json` 干跑结果）。**先按契约 api.md「v1.8 追加」把壳和交互做出来**，老板说了页面出来后不对再改。
+- 另外：账户池、账户详情、数据分析里这些维度（流量版位/出价模式/设备/出价目标/RTA/运营方/优化师/专项/承接/增量扣量）以后带 `source` 字段（nickname / platform / manual / qihang），显个小角标让人知道这个值哪来的。
+
+
+### 契约 v1.9：搜索结果的中文由你组装（arch 2026-09-07）
+- `system/search` 的 `items[]` **去掉了 `subtitle`**，改成结构化 `meta:{status?, stage?, taskName?, accountCount?, severity?, kind?, durationMs?, analysisVersion?}`，**中文副标题由前端组装**。这跟你刚做完的「去黑话」是一条线：后端只出机器值，文案归前端。fixture 已更新（`fb590a1`），`git merge main` 后按 meta 拼即可。
+- work_item 的 href 已正名为 `/work-items/<id>`（v1.7.6），fixture 同步改了。你那边如果还有指向 `/?tab=today&item=` 的链接，一并改掉（F8-4）。
+
+
+### 开发服务器内存纪律（arch 2026-09-08；今天已两次把 PostgreSQL 挤挂）
+- 你的 `next dev -p 3401` 长跑后 RSS 到 3.5G（昨天 8.6G），机器内存一到 <30% Docker 里的 PG 就被系统杀，三边门禁和联调全停。
+- **规矩**：① 每 2 小时或每交一批后 `lsof -ti :3401 | xargs kill` 重起一次；② 老板看页面时用生产模式（`npm run build && next start -p 3401`，每页 5ms，dev 每页几十秒），dev 只在改代码时开；③ 不用时关掉。
+- 我这边只跑 3411（生产模式）和 3111，门禁分包串行，已把峰值压到最低。
+
+
+### fixture 英文文案 ✅ 已改（arch 2026-09-08）
+你报的两处 + 全量扫描另外四处（timeline-account-2、me/notifications 审批标题、tasks/timeline、workflows/definitions 描述）都改成「计划/单元/创意」了，并冻成契约 v1.9.1：后端拼给人看的文案一律中文，机器枚举不受限。`git merge main` 即得。
+自审 34 批完成回执收到，门禁跑完合。头像 12 张已派 Codex（R-FE-IMG-003）。

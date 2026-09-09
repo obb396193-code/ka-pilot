@@ -1,0 +1,642 @@
+{
+  "documentId": 2791,
+  "documentName": "获取分包管理/回收站列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094351141
+    }
+  ],
+  "apiId": 711,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subPackage/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subPackage/list' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"app_id\":2199123264588\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 1,\n        \"list\": [\n            {\n                \"can_recycle\": null,\n                \"description\": \"\",\n                \"package_id\": 100009068,\n                \"put_status\": 1,\n                \"url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-app/bb3e554f-30dd-4958-9e3f-001f07ddea12_2199123264588_2023-03-29%2002%3A21%3A30_1_1680027700492.apk\",\n                \"update_time\": 1680027701625,\n                \"real_app_version\": \"7.9.232\",\n                \"review_status\": 2,\n                \"build_status\": 2,\n                \"sub_package_status\": 4,\n                \"parent_package_id\": 1099611636813,\n                \"channel_id\": \"2199123264588_2023-03-29 02:21:30_1\",\n                \"can_update\": false\n            }\n        ],\n        \"current_page\": 1,\n        \"page_size\": 10\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EPSAgIDwg5mOrAEY4Qcgl_PZu_QwKPK0tp8I\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63210,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>advertiser_id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42481,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "应用id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42482,
+      "paramName": "key_word",
+      "paramType": "String",
+      "example": "",
+      "description": "搜索关键词",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "渠道号或分包备注关键词",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42483,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "当前页",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "\t页码，默认1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42484,
+      "paramName": "list_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "列表类型",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "不填为分包管理列表  填2-分包回收列表",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42485,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "分页大小",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "个数，默认10",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 51358,
+      "paramName": "version",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>版本信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "\t分包管理列表生效，筛选版本信息，多选。不传默认全部。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 51359,
+      "paramName": "status",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分包状态</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "\t分包管理列表生效，筛选分包状态，单选。不传默认全部，0-全部，1-审核中，2-审核未通过，4-已发布，6-分包构建中，7-分包更新中，8-分包构建失败",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42504,
+      "paramName": "data",
+      "paramType": "PageDataListQueryAppSubPackageResp921Snake",
+      "example": "",
+      "description": "请补充描述详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2599,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42500,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "",
+          "description": "当前页",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42501,
+          "paramName": "list",
+          "paramType": "QueryAppSubPackageResp307Snake[]",
+          "example": "",
+          "description": "应用分包的返回参数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2600,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 42487,
+              "paramName": "can_recycle",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "是否可恢复",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "\t仅分包回收站列表时有效，表示应用分包是否可以恢复",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42488,
+              "paramName": "can_update",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "是否可更新",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "\t仅分包管理列表时有效，表示应用分包是否可以更新",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42489,
+              "paramName": "channel_id",
+              "paramType": "String",
+              "example": "",
+              "description": "渠道号(分包号)",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42490,
+              "paramName": "delete_time",
+              "paramType": "Long",
+              "example": "",
+              "description": "删除时间",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "仅分包回收站列表时有效，表示应用分包的删除时间",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42491,
+              "paramName": "description",
+              "paramType": "String",
+              "example": "",
+              "description": "分包描述",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42492,
+              "paramName": "package_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "应用包ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42493,
+              "paramName": "parent_package_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "分包的母包ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42495,
+              "paramName": "real_app_version",
+              "paramType": "String",
+              "example": "",
+              "description": "应用版本信息",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42497,
+              "paramName": "sub_package_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "应用分包状态",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "1-审核中，2-审核失败，3-待发布，4-已发布，5-已下架 6-创建中，7-更新中，8-构建失败",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42498,
+              "paramName": "update_time",
+              "paramType": "Long",
+              "example": "",
+              "description": "更新时间",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "仅分包管理列表时有效，表示应用分包的更新时间",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42499,
+              "paramName": "url",
+              "paramType": "String",
+              "example": "",
+              "description": "应用下载地址",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42502,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "分页大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42503,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "总数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42505,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42506,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094351141,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

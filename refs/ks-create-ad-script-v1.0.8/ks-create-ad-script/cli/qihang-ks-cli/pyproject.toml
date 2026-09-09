@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qihang-ks-cli"
+description = "Qihang Kuaishou OpenAPI CLI: inventory spec / material share / account copy / task info."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Proprietary" }
+authors = [{ name = "Julang Agent" }]
+keywords = ["qihang", "kuaishou", "openapi", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+dependencies = []
+
+[project.scripts]
+qihang-ks-cli = "qihang_ks_cli.__main__:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "qihang_ks_cli.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qihang_ks_cli*"]

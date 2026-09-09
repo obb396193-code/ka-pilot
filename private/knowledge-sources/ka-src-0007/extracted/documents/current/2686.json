@@ -1,0 +1,355 @@
+{
+  "documentId": 2686,
+  "documentName": "定向模板同步",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721702514746
+    }
+  ],
+  "apiId": 626,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/unit_sync",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n  \"sync_unit_type\": 1,\n  \"template_id\": 213123\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"unit_error_count\": null,\n        \"async_task\": true,\n        \"template_id\": 3102,\n        \"task_id\": 204572,\n        \"unit_success_count\": null,\n        \"has_task\": true\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICw0JiOrAEY3wIg2aeu7-YwKMmZ_ZEM\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 39580,
+      "paramName": "sync_unit_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>同步的广告组ID列表</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39581,
+      "paramName": "sync_unit_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>同步模式</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "1：同步定向模板关联的所有广告组，此时sync_unit_ids应该为空或者不传；2：同步到定向模板下指定的部分广告组，此时sync_unit_ids应该有值；3：同步到定向模板下的排除掉 sync_unit_ids 列表中的所有广告组。当 sync_unit_type = 2/3 时，对应的 sync_unit_ids 字段可从接口「/rest/openapi/gw/dsp/target/template/related_unit_list」获取相关联的广告组ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39582,
+      "paramName": "template_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>模板ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 39590,
+      "paramName": "data",
+      "paramType": "TemplateSyncRespSnake",
+      "example": "",
+      "description": "<p>返回的json数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2379,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 39583,
+          "paramName": "async_task",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>是否是异步任务</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39584,
+          "paramName": "has_task",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p><br>是否存在同步任务</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "仅当模板同步时同步到的广告组为空时，该字段为 true",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39585,
+          "paramName": "in_time",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39586,
+          "paramName": "task_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>同步的任务ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "返回的 task_id 可根据接口 「/rest/openapi/gw/dsp/target/template/sync_history」查询相关的同步详情",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39587,
+          "paramName": "template_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>同步的模板ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39588,
+          "paramName": "unit_error_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>同步失败的广告组数量</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "仅同步任务时会返回此字段",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39589,
+          "paramName": "unit_success_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>同步成功的广告组数据</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "\t仅同步任务时会返回此字段",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39591,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39592,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721702514746,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

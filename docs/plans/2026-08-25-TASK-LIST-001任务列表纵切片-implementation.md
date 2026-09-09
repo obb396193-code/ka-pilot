@@ -10,7 +10,7 @@
 2. DB：新增 workspace-scoped task list repository，参数化搜索/筛选/稳定排序/分页；同一查询
    快照得到 items 与 total。考核价按业务日取有效版本，账户数与工作项摘要必须先过批准
    `(media,account_id)` scope。
-3. Service：组合 AUTH-001、上海 03:00 业务日、coverage/dataAsOf 和奇航主源审计；禁止
+3. Service：组合 AUTH-001、上海 03:00 业务日、coverage/dataAsOf 和启航主源审计；禁止
    data source 自选，禁止前端计算。
 4. HTTP：挂载 `GET /api/v1/tasks`，只接受冻结参数；BFF `/api/internal/tasks` 由唯一前端线
    在后端 fixture 到齐后实现。

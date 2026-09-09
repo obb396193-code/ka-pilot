@@ -1,0 +1,58 @@
+{
+  "documentId": 1899,
+  "documentName": "3.6.2创建高级创意接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "### 创建高级创意接口\n\nhttps://ad.e.kuaishou.com/rest/openapi/v1/asset/adv_card/create\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型     | 是否必填 | 说明             | 备注                                                                                  |\n| ------------- | -------- | -------- | ---------------- | ------------------------------------------------------------------------------------- |\n| advertiser_id | long     | 必填     | 广告主 id        |                                                                                       |\n| adv_list      | struct[] | 必填     | 卡片             |                                                                                       |\n| card_type     | int      | 必填     | 卡片类型         | 100:图片卡片 101:多利益卡-图文 102：多利益卡-多标签 103：电商促销样式 104：快捷评论卡 107：倒计时卡 108：优惠券卡 125: 价格差卡片 131: 商品卡-汽车样式 132: 商品卡-电商样式 133: 商品卡-小说样式 134: 商品卡-房产样式 200：推广位 |\n| url           | string   | 非必填   | 图片 url         | 当 card_type = 100、101、103、125 必填                                                     |\n| title         | string   | 非必填   | 标题             | 当 card_type = 101、102、103、107、108、125、200 必填, 104时表示文案信息（非必填）                                                    |\n| sub_title     | string   | 非必填   | 副标题           | 当 card_type = 102 必填                                                               |\n| price         | int      | 非必填   | 原价格(单位：分) | 当 card_type = 103、125 必填                                                               |\n| sale_price    | int      | 非必填   | 售卖价(单位：分) | 当 card_type = 103、125必填                                                               |\n| content_type  | int      | 非必填   | 卡片内容类型)    | 当 card_type = 104 必填，当创建 emoji 快捷评论卡时，填 2                              |\n| emoji_list    | struct[] | 非必填   | emoji 信息       | 当 card_type = 104 必填                                                               |\n| emoji_code    | int      | 非必填   | emoji 编码       | 当 card_type = 104 必填                                                               |\n| emoji_url     | int      | 非必填   | emoji url        | 当当 card_type = 104 必填                                                             |\n| discount     | int      | 非必填   | 折扣金额        | 当 card_type = 108，即优惠券卡时必填                                                             |\n| style_type  | int    | 非必填   |高级创意样式类型       |，1=普通卡片，2=推广位                                                     |\n| begin_time    | long   | 非必填   | 倒计时卡开始时间       | 当 card_type = 107，即倒计时卡时必填                                                             |\n| end_time   | long    | 非必填   | 倒计时卡结束时间        |当 card_type = 107，即倒计时卡时必填                                                          |\n|library_id|long|非必填|商品库ID|当 card_type = 131、132、133、134，即SDPA商品卡时必填|\n|product_id|long|非必填|商品ID|当 card_type = 131、132、133、134，即SDPA商品卡时必填|\n\n### 返回参数\n\n| 字段     | 类型   | 说明         | 备注 |\n| -------- | ------ | ------------ | ---- |\n| code     | int    | 返回码       |      |\n| message  | string | 返回信息     |      |\n| data     | struct |              |      |\n| adv_list | long[] | 卡片 id 数组 |      |\n\n### 请求样例\n\n```\n{\n    \"advertiser_id\": 90000446,\n    \"adv_list\": [\n        {\n            \"card_type\": 100,\n            \"url\": \"http://static.yximgs.com/udata/pkg/536fd750628a4cfb97ca82758e6a7ecd.png\",\n            \"width\": 720,\n            \"height\": 408\n        },\n        {\n            \"card_type\": 104,\n            \"content_type\": 2,\n            \"emoji_list\": [\n                {\n                    \"emoji_code\": \"[加油]\",\n                    \"emoji_url\": \"https://js2.a.yximgs.com/bs2/emotion/app_1576120138988_5x756gefzbda399.png\"\n                },\n                {\n                    \"emoji_code\": \"[期待]\",\n                    \"emoji_url\": \"https://js2.a.yximgs.com/bs2/emotion/app_1576120138988_5x78bpjjb5d63ps.png\"\n                },\n                {\n                    \"emoji_code\": \"[红包]\",\n                    \"emoji_url\": \"https://ali2.a.yximgs.com/bs2/emotion/app_1576120138988_5x2vtpwxnm7ikbc.png\"\n                }\n            ],\n            \"title\": \"11221\"\n        }\n    ]\n}\n```\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721197345219
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1644820623838
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1721197345219,
+  "creator": "zhangshucheng",
+  "fullContext": null
+}

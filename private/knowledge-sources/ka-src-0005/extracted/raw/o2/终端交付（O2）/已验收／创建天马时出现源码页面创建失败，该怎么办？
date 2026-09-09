@@ -1,0 +1,14 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/660240e44e653907d973ef7e/](https://links.alibaba-inc.com/support/conversation/660240e44e653907d973ef7e/)
+
+作者：时路
+
+评审人：上坡
+
+
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1712567870947-db667e46-7c92-4ffe-90ed-b7d6b8e43c5d.png) 
+
+**问题说明：**接入的仓库未添加平台公共账号，平台无权限创建，导致创建失败
+
+**解决方案：**在仓库的 group 增加 **tbfed** 和 **zebra-gitlab** 作为管理员
+

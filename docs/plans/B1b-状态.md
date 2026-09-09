@@ -25,7 +25,7 @@
 - 历史回灌不复用 `etl_full`，避免重复账户发现和 7 天实时请求。
 - 当前队列按 priority 升序领取，因此使用 `etl_incr=1 / rule_scan=3 / default=5 / backfill=9`。
 - raw 可重复抓取；canonical 与质量对平只使用每账户/日/resource 最新 raw。
-- mock PostgreSQL 冒烟不等于奇航真实接口已联通，真实联调仍在 B7。
+- mock PostgreSQL 冒烟不等于启航真实接口已联通，真实联调仍在 B7。
 
 ## 验证记录
 
@@ -40,7 +40,7 @@
 | 2026-08-19 | 四包全量 tests + coverage + typecheck + lint | ✅ 88 tests；行覆盖率 93.39% / 85.24% / 84.75% / 86.62% |
 | 2026-08-19 | 依赖、安全、复杂度与 diff 门禁 | ✅ 4 包 0 vulnerabilities；0 Critical/High；生产源文件最长 288 行；diff 无空白错误 |
 
-证据：`docs/evidence/B1b-90天回灌日志.txt`、`docs/evidence/B1b-90天回灌.png`。全部为程序生成的脱敏假数据，不代表真实奇航接口已联通。
+证据：`docs/evidence/B1b-90天回灌日志.txt`、`docs/evidence/B1b-90天回灌.png`。全部为程序生成的脱敏假数据，不代表真实启航接口已联通。
 
 ## 质量审查结论
 

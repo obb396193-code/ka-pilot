@@ -35,3 +35,35 @@ export * from "./bootstrap-seed-repository.js";
 export * from "./window-assessment-repository.js";
 export * from "./semantic-read-snapshot.js";
 export * from "./session-cleanup-repository.js";
+// be2-r014
+export * from "./r014/workspace-authority.js";
+export * from "./r014/identity-preferences-repository.js";
+export * from "./r014/user-watchlist-repository.js";
+export * from "./r014/saved-view-repository.js";
+export * from "./r014/decision-policy-repository.js";
+export * from "./r014/export-repository.js";
+export * from "./r014/capability-repository.js";
+export * from "./r014/task-readiness-repository.js";
+export * from "./r014/report-run-repository.js";
+export * from "./r014/external-change-repository.js";
+export * from "./r014/account-pipeline-repository.js";
+export * from "./r014/me-workspace-repository.js";
+export * from "./r014/search-repository.js";
+
+// be: workspace/tuple-scoped canonical health observation.
+export * from "./platform-health-repository.js";
+// be: bounded canonical account-day facts for the pivot window reader.
+export * from "./platform-pivot-repository.js";
+export * from "./r014/task-bindings-repository.js";
+// be: internal rule definition and effective target-scope observation.
+export * from "./rule-definition-repository.js";
+// be: same-snapshot rule/metric observation, not a public trigger decision.
+export * from "./rule-evidence-repository.js";
+// be: authenticated read-only global model capability catalog.
+export * from "./agent-model-catalog-repository.js";
+// be: workspace-scoped readonly calendar.
+export * from "./admin-calendar-repository.js";
+// be: server-approved workspace member/grant reads.
+export * from "./admin-members-repository.js";
+// be: authorized local work-item commands, no public/media write routes.
+export * from "./work-item-command-repository.js";

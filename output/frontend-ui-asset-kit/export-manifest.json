@@ -1,0 +1,1182 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-20T04:58:25.394Z",
+  "visibility_target": "private",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 36,
+      "sha256": "7842cad85c7d49ef5c9901c62f3f9b3d9ce3aa91323651c11365ad1fa0da8fed"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 735,
+      "sha256": "277eb435594afb2b4e2c321b560e15fd9c982f839cfe6c6643d11ca339a6b975"
+    },
+    {
+      "path": "EXCLUDED_ASSETS.md",
+      "bytes": 922,
+      "sha256": "7afefe6524a4afd6ab1874045989e3ecb93631a3ce0e5dd42c22034486d483a2"
+    },
+    {
+      "path": "LICENSE.md",
+      "bytes": 295,
+      "sha256": "66dcd3a7a776250b2556a845222dfe3fc9c6f99c94c8d4156340e67124db78b0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1494,
+      "sha256": "03993ab75586ff33dd81b2dfc256e4d68561b0e7db381df50e30eee0d086eb82"
+    },
+    {
+      "path": "THIRD_PARTY_LICENSES.md",
+      "bytes": 1709,
+      "sha256": "5cb535297ff1d659d8201285204c9137740c1aeb9b42e1dc92d062ff2ce293c4"
+    },
+    {
+      "path": "docs/ui-assets/README.md",
+      "bytes": 534,
+      "sha256": "156fc6bafb2f0e1f515e6180f7196e3205ea781e5ffdf76140bddd51d31cb50c"
+    },
+    {
+      "path": "docs/ui-assets/agent-workflow.md",
+      "bytes": 5718,
+      "sha256": "08fcd07543e922d7771944bd8839ca083369cccef5af012971eeebd5b1e5f915"
+    },
+    {
+      "path": "docs/ui-assets/capabilities.json",
+      "bytes": 12886817,
+      "sha256": "9b024c64fd09d13d09fe808c6721a80fefe00d3499783b159fb6dbc14a5de09c"
+    },
+    {
+      "path": "docs/ui-assets/catalog.schema.json",
+      "bytes": 3116,
+      "sha256": "65dd458883956578c4784b60eb5ced869ce8b18d107c750a0f08feea73d76c90"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/README.md",
+      "bytes": 4520,
+      "sha256": "cfc13dcc4ea219a61239e43f5224cfb6671d686e62e267124c64ef7ab89126db"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/aceternity.json",
+      "bytes": 721574,
+      "sha256": "101f974736ddfb5e9b950c9a2a6b0175ba7a6177244d5b9a05e1e0fb6bbf8617"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/ai-elements.json",
+      "bytes": 231826,
+      "sha256": "fc5d67a0d23a43c4a759433daed0a968a3f0ca0da7ade699bd2c8a29d46690ea"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/animate-ui.json",
+      "bytes": 1286282,
+      "sha256": "f99684fb53aa01ea43e1250f51c96e2661c66be745eb7bd7b10c4b0b056a7cd6"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/coss-origin.json",
+      "bytes": 967323,
+      "sha256": "2e685102635f35522470d7d46cbfd1d3983d4e3903379de0a65099dd7bc23ccf"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/coss.json",
+      "bytes": 1059319,
+      "sha256": "018f4f3bb167eab60cd9b49d057207c828eb7c6c61e532fae8223ca47fe3eecc"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/dice-ui.json",
+      "bytes": 423480,
+      "sha256": "d71742ae3d44f71c9163988dc53449d1d919554405114d52feb4ccdd508b7183"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/index.json",
+      "bytes": 10720,
+      "sha256": "78dfd210a5069529c623698a61bd3653cc33131e794c364d1b20ab27eabe5584"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/kibo-ui.json",
+      "bytes": 489455,
+      "sha256": "6507640856fce401ebc763162931593c261b8c72001b125f2e26b023f204fb3b"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/magic-ui-pro.json",
+      "bytes": 157690,
+      "sha256": "f28d8e192e91d3aab1ba58940579fffa735ce03c3560a3d1ce46416d6fb328c8"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/magic-ui.json",
+      "bytes": 440792,
+      "sha256": "67650590e5543d5f16aaebc78d52167066ca7446b988487a501a7c18f558a225"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/motion-primitives.json",
+      "bytes": 65164,
+      "sha256": "a7255f4ce695837feeab99d2079f5e6da90e658f8ff913e8d3baec6a5cf801f1"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/react-bits-pro.json",
+      "bytes": 1136104,
+      "sha256": "037d320630661df560aa049f9e23da1bf587d8acfd01ef4e1a319067a9bced28"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/react-bits.json",
+      "bytes": 237058,
+      "sha256": "428e754b5f14f04274ee416abb1fcfe7194ec13cc8d812f29aa1de696fb79bd7"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/reui.json",
+      "bytes": 5390748,
+      "sha256": "560de96fe9d8c6b87a25acadfa430364a86078716ce8423ca11ae365dbbb220e"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/shadcn.json",
+      "bytes": 825512,
+      "sha256": "b928e7963b9cec92425af20db7b3d0fefdc30b660e35c690ed07cb7fd3f0761d"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/tremor-legacy.json",
+      "bytes": 41680,
+      "sha256": "ecdfeb28e7901cb313582b47c52047424ee4536a93fcadac587ad0cd572492a2"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/tremor.json",
+      "bytes": 501716,
+      "sha256": "2cd42adaf94d329a5ca2fb60a8effe1184b8ee9989e47f36eda40ac391b79575"
+    },
+    {
+      "path": "docs/ui-assets/catalogs/tweakcn.json",
+      "bytes": 184020,
+      "sha256": "9fa3f747db7184e5f79e96718928e751e29223c8f4019814e646d242f26e1db2"
+    },
+    {
+      "path": "docs/ui-assets/changelog-watch.md",
+      "bytes": 2279,
+      "sha256": "c5ed99e09bdc267ff6e652ef018679dfc9df045e303f3b741f30898fe5b871cf"
+    },
+    {
+      "path": "docs/ui-assets/comparison-template.md",
+      "bytes": 1447,
+      "sha256": "f772e78fb3bee18e3cce4455090eea4063910de4d6c46c7de0b345927d143091"
+    },
+    {
+      "path": "docs/ui-assets/coverage-audit.json",
+      "bytes": 15936,
+      "sha256": "97202382380cf46f5af84fc0d30ab6a3755c6d38fab9c6bb6e3369f53e71839a"
+    },
+    {
+      "path": "docs/ui-assets/coverage-audit.md",
+      "bytes": 8384,
+      "sha256": "853512a63af434df50c87cfb488f494b1ff285ae93f1693a50a34568a038a001"
+    },
+    {
+      "path": "docs/ui-assets/decisions/README.md",
+      "bytes": 981,
+      "sha256": "c492bb03c932b7480885b36aab060ea034802043db8cd3567899d3d3eeab307b"
+    },
+    {
+      "path": "docs/ui-assets/decisions/date-picker.md",
+      "bytes": 4354,
+      "sha256": "858bd60359f2f5421475abc0e72eab513bd630cab68ebc58b84b5b472e9773c7"
+    },
+    {
+      "path": "docs/ui-assets/decisions/source-intake-2026-08-19.md",
+      "bytes": 2056,
+      "sha256": "f038cab31e3a91dfa347a893d968b67a365044ffd44699e8a789ce7f97581658"
+    },
+    {
+      "path": "docs/ui-assets/discovery.json",
+      "bytes": 8953,
+      "sha256": "73c7d8ec2128186e8e0dd2652a34537f752a77f444c8fca477ba15ab79ce0dc2"
+    },
+    {
+      "path": "docs/ui-assets/discovery.md",
+      "bytes": 2819,
+      "sha256": "fb62397b0d457b21cb5916ef23d6b7decdf427d78d5ebd891cff10cee7c154cd"
+    },
+    {
+      "path": "docs/ui-assets/free-alternatives.json",
+      "bytes": 8459118,
+      "sha256": "d1674af3e2f112cd4d5da16f313f616a70cabf61614f13382b2c003e153e2c21"
+    },
+    {
+      "path": "docs/ui-assets/free-alternatives.md",
+      "bytes": 10868,
+      "sha256": "7b8ff043a2ba13212aac91ddc4b738a822d6e29bc4e49d082e505bbe7d16b18d"
+    },
+    {
+      "path": "docs/ui-assets/frontend-product-standard.md",
+      "bytes": 19555,
+      "sha256": "de05552e01768aa2338ac53d7b61b8fc7b31cd5c536f020cb729191fbde8371f"
+    },
+    {
+      "path": "docs/ui-assets/github-export.md",
+      "bytes": 2792,
+      "sha256": "0a09e85ee2a50ea44c9f7954fa1271c1f923f44b9669921de310ebdc6bfb2db5"
+    },
+    {
+      "path": "docs/ui-assets/guides/aceternity.md",
+      "bytes": 3033,
+      "sha256": "1d309080440ead6a63bfd3ffc4aae9e0b2bc86256a269f0613f07511bc5fdc11"
+    },
+    {
+      "path": "docs/ui-assets/guides/ai-elements.md",
+      "bytes": 2389,
+      "sha256": "961a8d88ac3cc4ac54619e03c61933218ef380f514dce91c5ac92d6b12766e94"
+    },
+    {
+      "path": "docs/ui-assets/guides/animate-ui.md",
+      "bytes": 2235,
+      "sha256": "2c5942ff0797f2c9051da8484dab0661c55c1acfab1e92f7bcbf4102964110b8"
+    },
+    {
+      "path": "docs/ui-assets/guides/coss.md",
+      "bytes": 4234,
+      "sha256": "c9095a16668570608418b4e9ffbc3b452f2713a84459d653b6a26b5267bdb9f6"
+    },
+    {
+      "path": "docs/ui-assets/guides/dice-ui.md",
+      "bytes": 2136,
+      "sha256": "8bbba6f07cb2e5e3beea4a903031958873ed23fc57f16b1e5070218d4daf88dc"
+    },
+    {
+      "path": "docs/ui-assets/guides/kibo-ui.md",
+      "bytes": 2219,
+      "sha256": "e81b278e2de10f15709a7f74344ea991c43c6fd9c88e0944235b0be568f384ed"
+    },
+    {
+      "path": "docs/ui-assets/guides/magic-ui.md",
+      "bytes": 2615,
+      "sha256": "1368459e8be9a0bdf8003126d32b8690866a8cfeef6be6cf82a1f3a1869cac71"
+    },
+    {
+      "path": "docs/ui-assets/guides/motion-primitives.md",
+      "bytes": 1976,
+      "sha256": "8785f0544ea9bc2aae9fc561c3841b86d8d27b4fded1e76614a9b98d67d53ff3"
+    },
+    {
+      "path": "docs/ui-assets/guides/react-bits.md",
+      "bytes": 2647,
+      "sha256": "057f5204a03d86bd6a6f9ca3be57b940e79a2a2b41718a741dec82686eb3c4e2"
+    },
+    {
+      "path": "docs/ui-assets/guides/reui.md",
+      "bytes": 3679,
+      "sha256": "52c07b6ed67caefcf7102029850cc4a18cfaed6c8aa7d5b0777eea951e2de636"
+    },
+    {
+      "path": "docs/ui-assets/guides/shadcn.md",
+      "bytes": 3755,
+      "sha256": "30ec84d03f34384d4ef02553b2fbac9669682930aad0de2b236e64f2592a17b9"
+    },
+    {
+      "path": "docs/ui-assets/guides/tremor.md",
+      "bytes": 2743,
+      "sha256": "a6fcf60d76c3c0cab84f1d0840d2a5fc841b6eba378463c355b547df4005dc99"
+    },
+    {
+      "path": "docs/ui-assets/guides/tweakcn.md",
+      "bytes": 3260,
+      "sha256": "12caec0eb9e677b98d1cdd9756a214054c0e2714f0aaa81041a4ebaea5cbe382"
+    },
+    {
+      "path": "docs/ui-assets/licenses.md",
+      "bytes": 2932,
+      "sha256": "4dbaee8b5440821c7bb84aeb451af9028b03c543bb06508218cb653f89189355"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/ai-elements.js",
+      "bytes": 245199,
+      "sha256": "37e9289e3c7d6d0eb2a7911becc5a14d4f7c6cf2865cbd17275699323e893913"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/coss-origin.js",
+      "bytes": 222112,
+      "sha256": "f6d76c51a77d5dddf14cd4995b10c469d70cb3e243e41199ac55cb52fd002489"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/coss.js",
+      "bytes": 416614,
+      "sha256": "b86631c86b1524fc87d0d9c6f7f3665c6e1d2d8865dbecf2da94c5219ac321ad"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/dice-ui.js",
+      "bytes": 289357,
+      "sha256": "59a6c75089ce94e769362e61829b9f63ded6c9acf1dd93ddb3f4dac58f2bdacc"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/kibo-ui.js",
+      "bytes": 377947,
+      "sha256": "90d8c7bd236f410e7453061af97ae86df4dc27b66047066e4e8762aa43736bf9"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/magic-ui.js",
+      "bytes": 242711,
+      "sha256": "43b2ac724d94972edd731f2140b623debe89e788ffb20d7d298c6e324e5856e5"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/motion-primitives.js",
+      "bytes": 351651,
+      "sha256": "9a3ba95174c8783deba28f492ce2175ab71a0ef5dc32b1a107fa84950788a589"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/preview.css",
+      "bytes": 190125,
+      "sha256": "6c9ebb176e723f1f0a249cf93fa301f2c3037eecc944e9dd702c3ba604c95698"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/reui.js",
+      "bytes": 501671,
+      "sha256": "c3ccff57fa250d7e4357669a9e6b2d16d9ca0619e1077a8d880caed346591913"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/shadcn.js",
+      "bytes": 298155,
+      "sha256": "34d569ccab20c0d0ec612cd1549cb792e273d9da0f1c1fc78677a343d7c8e78d"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/tremor-legacy.js",
+      "bytes": 220717,
+      "sha256": "bc4a08f8633cc183437b64365cc5f9c1a9485fa4fe3461d1091d597c6b5a3f78"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/tremor.js",
+      "bytes": 216317,
+      "sha256": "135c8493790c260a58f6f37eae588dd0d98595fd63422974f6e8571179fe171e"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/assets/tweakcn.js",
+      "bytes": 269482,
+      "sha256": "eca344d7c3e25dc0667ea7049a186b51f25a5b0a035e74b601d62f1141694327"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/ai-elements.html",
+      "bytes": 435749,
+      "sha256": "89cff2cd18f756df311ba0acea8193005de29c9c94585efb482b9ecb45eee5cf"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/animate-ui.html",
+      "bytes": 1140,
+      "sha256": "9c12af06dbdc9c2ea122e2476a8e4a0775885cb26004856c9dd0759d4da23891"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/coss-origin.html",
+      "bytes": 412655,
+      "sha256": "94d7b4f5bbba6f2aba3533bfcf0dfbdcb12ebbfe23a40d49ac34da999f590bc2"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/coss.html",
+      "bytes": 607153,
+      "sha256": "db899a672e934d11d66c5fa4d235d88e9fc9596504d7b1d7f01b3daeb5df5508"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/dice-ui.html",
+      "bytes": 479896,
+      "sha256": "8c41cbbf849e1601e173c944bfdd0b98ab4e1bbf6695929845a34a9db20c1991"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/kibo-ui.html",
+      "bytes": 568486,
+      "sha256": "934335c2a3cbc510205a5cb7251a18cb9391be24e4875995e9c32da520d8122f"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/magic-ui.html",
+      "bytes": 433256,
+      "sha256": "bd65e18c2946b600d20d929f7454c643862d3c6b86bcd13371d099e6e56c8f3d"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/motion-primitives.html",
+      "bytes": 542200,
+      "sha256": "efad81ace30631b88900c4ec1b3744dc723a2d2e44898faacf5a494a1350c637"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/reui.html",
+      "bytes": 692207,
+      "sha256": "99a798a8667d88e08cb5442422d0575830fe722cba045d911ad5ccf6a15933f3"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/shadcn.html",
+      "bytes": 488696,
+      "sha256": "68c23a0a739812e53fe0155f8e437985e65a8846165a9439e7785e0b0face347"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/tremor-legacy.html",
+      "bytes": 411262,
+      "sha256": "065265e8939a1a2a26ed2c412d135976934f45de4ea93f651bde7cb587839ab3"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/tremor.html",
+      "bytes": 406855,
+      "sha256": "f80f67ac1e70beefb83724ba65bba7242fc1892c277f2133cb5dd45f5886ef30"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/frames/tweakcn.html",
+      "bytes": 460021,
+      "sha256": "295c5fa527714a42262150308af271e977510e77528d4b3a8abc0e14e2b7e66d"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/ai-elements.tsx",
+      "bytes": 3119,
+      "sha256": "20270e644086279c807bbe2873624c992a0f540e55fed6b2466dd56af9f7c1c9"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/coss-origin.tsx",
+      "bytes": 1134,
+      "sha256": "29a426665b9a2afaf924a82cfad93468e211724987554242f1e410ce88aaed6e"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/coss.tsx",
+      "bytes": 1091,
+      "sha256": "b4118ddfa64bad529dbc8fd24192a84519f5537326be09b6c59dd337d17a33f4"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/dice-ui.tsx",
+      "bytes": 3746,
+      "sha256": "599c5756d6ffc70f867a205098289253d0026a6f1cd6c8c289382053750f9e5a"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/kibo-ui.tsx",
+      "bytes": 2339,
+      "sha256": "cd5bd2b4ebc7e57d7636d24bdea31920f87c7265ee54355389535d4bb21fa222"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/magic-ui.tsx",
+      "bytes": 1144,
+      "sha256": "95d199bb1b808f87b36062b33e165755c2791715bda3878b544ab68bf31a20e9"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/motion-primitives.tsx",
+      "bytes": 2241,
+      "sha256": "fea6a6e517e0448a25d7732cc063ef9cefd313a23f002e883f2b265adbefe265"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/reui.tsx",
+      "bytes": 637,
+      "sha256": "354ed5d85712605446691c515b746355a38da00e2aa16835eeb7c66593f7f4fa"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/shadcn.tsx",
+      "bytes": 1067,
+      "sha256": "6567486572f89698f087088cf18cee3ce83d5daa5184f265f76ce689e55f6d74"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/tremor-legacy.tsx",
+      "bytes": 1048,
+      "sha256": "fdafd5f310b462d78553c9fa8f6a5c489b1ae17b34398951ded281c7f9ca0cdf"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/tremor.tsx",
+      "bytes": 615,
+      "sha256": "aa7a255762817e92d67a21746ced52970674c3d3cdfe16202758564d7a3cf881"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/harness/tweakcn.tsx",
+      "bytes": 2014,
+      "sha256": "ca07a6e686e5a76717332be5bb315a50a500da334a68aa560367dac9dd3267f0"
+    },
+    {
+      "path": "docs/ui-assets/live-previews/manifest.json",
+      "bytes": 17714,
+      "sha256": "669ba32a1ec79cbe9cd5b4f77d9ee30f69375429b6299cbc2b0dcd483a18deae"
+    },
+    {
+      "path": "docs/ui-assets/reviews/2026-08-19-code-quality.md",
+      "bytes": 3622,
+      "sha256": "304c1c6f3a739d1ebe77bb2b2a562323c095576f945f42ab9edc68b4b1fdeafd"
+    },
+    {
+      "path": "docs/ui-assets/reviews/2026-08-19-independent-audit.md",
+      "bytes": 10014,
+      "sha256": "9ed22f00133cca5cb928b7d3e96d1a502759eae0a84480fb65140fce10e6ce3e"
+    },
+    {
+      "path": "docs/ui-assets/reviews/2026-08-19-new-source-evidence.md",
+      "bytes": 2768,
+      "sha256": "f0d9dbaca4457540ec3e64a50c9f4f436f3de85436a0ff0eee943e83e18f3c99"
+    },
+    {
+      "path": "docs/ui-assets/reviews/2026-08-20-17-library-preview-evidence.md",
+      "bytes": 3605,
+      "sha256": "124750d10436957c896aa90e331c34d5401fa19efc5917711dcaed994162c3a2"
+    },
+    {
+      "path": "docs/ui-assets/reviews/2026-08-20-17-library-showroom-qa.md",
+      "bytes": 2107,
+      "sha256": "008e772252fb42e0b2a0193b23d992cf820dad26e4dbc026bbdc3260dbc6ab9d"
+    },
+    {
+      "path": "docs/ui-assets/screenshots/coss-date-picker.png",
+      "bytes": 76224,
+      "sha256": "d78033055d5a43fa3d454e924d4f292a535a645f072a28c41bbbd5ee4ac678b5"
+    },
+    {
+      "path": "docs/ui-assets/screenshots/magic-bento.png",
+      "bytes": 122952,
+      "sha256": "fc55b7490411729930f9748588f53623997cf310f8987a0e05532baebd7a3c87"
+    },
+    {
+      "path": "docs/ui-assets/screenshots/react-bits-home.png",
+      "bytes": 1386135,
+      "sha256": "c0e614f75f21b482243a5dcf9009bbed9affbe2c1906091367a7a6f14003dae7"
+    },
+    {
+      "path": "docs/ui-assets/screenshots/reui-data-grid.png",
+      "bytes": 110863,
+      "sha256": "aedb4641b1c5c6aae5c12da1b188f21a0e796327e2ad6b1b464e3342ac1e6885"
+    },
+    {
+      "path": "docs/ui-assets/screenshots/tremor-blocks.png",
+      "bytes": 128098,
+      "sha256": "aa2c21ef414849ad5f3a815397ae76fbdbb6c96d60700a8157bdec6ebbba4ce5"
+    },
+    {
+      "path": "docs/ui-assets/screenshots/tweakcn-themes.png",
+      "bytes": 141421,
+      "sha256": "47221fcbe90da665ec9782ac2d922b6448fdf67c2672b9f6d11f64a4a29467b2"
+    },
+    {
+      "path": "docs/ui-assets/showroom-data.json",
+      "bytes": 14373152,
+      "sha256": "83a2d828b30b4ec3f8cc697db13ebb5e5a16c14e09c993ce8c3e6cd6187d7cfa"
+    },
+    {
+      "path": "docs/ui-assets/showroom.html",
+      "bytes": 10555,
+      "sha256": "938f2f7dcc50eae04af94ef6de697e585b8b732dab521f482ba8b645a2235a98"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/README.md",
+      "bytes": 1536,
+      "sha256": "7c7f4b33802eba970494caa02a27976b8d705293b9e86fcc9758fdbfc8dc5b90"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/code-block.json",
+      "bytes": 14937,
+      "sha256": "b5ac0e9373b26576c69a2035aae8868d957189bd3c52807bfa91e2a12904db32"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/conversation.json",
+      "bytes": 5123,
+      "sha256": "7b964b9252cb39218ebbf1e156bcf42be7a049c51e881cf72cc7b7bc2ce31090"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/message.json",
+      "bytes": 9555,
+      "sha256": "c37a2189906cf9e14d95f304d609dc6c0b53e22f78d1d644cddbe1d62284e804"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/prompt-input.json",
+      "bytes": 41237,
+      "sha256": "660efa7c9a10c204ceeb8d32a320ef430a26776b283a148113a1f672a90af0b8"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/reasoning.json",
+      "bytes": 7148,
+      "sha256": "4d2e0195a483c40f3cb976ba87df2a931edbb3098bf968ba780f1cc155d5c1e9"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/shimmer.json",
+      "bytes": 2618,
+      "sha256": "8b4b49bfa332e84db6bb2e8b717e65663af6085ac10e757eeb6a6889e8c787ae"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/sources.json",
+      "bytes": 2388,
+      "sha256": "ded01a76a27cf4f2a8f49c88b300df02e07b25a812b3785798f731823621d978"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/ai-elements/tool.json",
+      "bytes": 5839,
+      "sha256": "ac2f38003fe00b0a0b7594bc028f0d6ff09db1a8a79a40bb4fa632565c06194b"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss-origin/button.json",
+      "bytes": 2275,
+      "sha256": "cfe4225d7852735198eb12faf964b975c8f1b2c97ca0ad80fcc20d9d2515ac64"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss-origin/comp-100.json",
+      "bytes": 1977,
+      "sha256": "e5df7b22321db49a28b6a56bed4a4d8275b89c79e9d683233badb2ea4f123eb5"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/autocomplete.json",
+      "bytes": 11257,
+      "sha256": "cb12993e367e4895813549b43422431ab6aaa89f4f9bde746852d11d1ab0de63"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/avatar.json",
+      "bytes": 1563,
+      "sha256": "cbdb88971a62b21f3be7a7c61e06dfd753b24eb358dfb8c30782e50090addae9"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/badge.json",
+      "bytes": 3965,
+      "sha256": "6447fc6679885712adfd66649ed70793baec9c086dc6b47b90c3e281b3d1cf45"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/button.json",
+      "bytes": 6807,
+      "sha256": "ec0425ff3e8a3d1b74f8f7f98184fae522ad012a24593d99314148333571560c"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/calendar.json",
+      "bytes": 5856,
+      "sha256": "89bf3cf8aa970fb0fc46f0aa16c6436e684668f065e3cf681a87350d01009162"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/card.json",
+      "bytes": 7789,
+      "sha256": "79fac2382b2163be07481e9ec2e42920ba7eedab69cebed903471695fe54c53d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/checkbox-group.json",
+      "bytes": 801,
+      "sha256": "3052be19ec09c3451f7c00c5d5f917cb387fd2ae5a0eff854d7a5f510bb8da96"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/checkbox.json",
+      "bytes": 3371,
+      "sha256": "1fe5b0cb7f79ef206b8a4bae042444aba5c66cd249128818deffdbc01b52bcae"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/combobox.json",
+      "bytes": 16078,
+      "sha256": "6450394eecabdb898dfb907a562343af42f3d61982ec662ed3573bf8fa1e613f"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/command.json",
+      "bytes": 8138,
+      "sha256": "a613b0e2cbc96385b3df844595db2a2318fda77895052b2de9cba85180a89464"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/dialog.json",
+      "bytes": 7219,
+      "sha256": "c234338b47dea3973152d1223293af5cc39b16441d0329da68e84efba9250838"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/drawer.json",
+      "bytes": 25474,
+      "sha256": "672bb0eca94da40c20843b9b3d8831234767471ca7fb8aa291f0e284ca45c986"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/empty.json",
+      "bytes": 3957,
+      "sha256": "3f72196b7f77ace3122f479277c415d7d7dcaea0a364a4fd754209fa50244b5d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/field.json",
+      "bytes": 2372,
+      "sha256": "b0efc6f3d69fc935419ee4ebeb5ce79d4bf7ee7f1f797439ce8748240503fe94"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/form.json",
+      "bytes": 610,
+      "sha256": "88cd07481e6f1682b9459c9522d650b2d291dc2338d1693290334a8d8e095ce8"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/input-group.json",
+      "bytes": 6831,
+      "sha256": "40971ef8038ef03256ae5fcae595873e521a419403129fa9ee0a298877ee97fe"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/input.json",
+      "bytes": 3437,
+      "sha256": "dd80584491e555f2ee4e81f4a30c996bc0a91858bca026d4f5fb459b54b87307"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/kbd.json",
+      "bytes": 1062,
+      "sha256": "c8bac185ada7123916b9a2161a263c84c89654222c8a2fc6dcf8d0c36fdb3be2"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/label.json",
+      "bytes": 977,
+      "sha256": "88fb40fa51b80e2924882f35d5b144c95defd156921577e093342c211ab717aa"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/number-field.json",
+      "bytes": 6279,
+      "sha256": "2de96e15c631e70017b715b2a2554a7e2f7cdbbe20f86592a517644a0ed8dc77"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-calendar-13.json",
+      "bytes": 2784,
+      "sha256": "790d6a65af5dc891b254aec9743340a1545ed8d61475bbdd0662f926f65397ae"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-combobox-19.json",
+      "bytes": 5207,
+      "sha256": "dab2bc984d3282ebb6ee55de09e62b1a2fcec3a2b166841211c614373ca0812d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-command-2.json",
+      "bytes": 21975,
+      "sha256": "c57aa8fb32836953ba293ce5325145e33f67a365e3109388029d487319daae88"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-date-picker-2.json",
+      "bytes": 1914,
+      "sha256": "f5c045026424ac74b7e81c5d655af62628ee02e559bf354162b77ce399b37a80"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-date-picker-9.json",
+      "bytes": 1962,
+      "sha256": "b3a0458eeca487e2fd393fb70e4d0cc6d58d11869be8e7ea726eb4d9fed85738"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-drawer-12.json",
+      "bytes": 3557,
+      "sha256": "2e0bc1f863cab7630cd67a58698eb76fed1dc5d06c41234889750fc65c7a30e7"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-empty-1.json",
+      "bytes": 1355,
+      "sha256": "08695e65ec6da8b68f2028a343d4c38c06cf43b6766b91957dde7ea69688518d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-field-9.json",
+      "bytes": 2595,
+      "sha256": "885cdb6273f861da5ce5cc422a78534a68aaf698e716d85a1f5ae46c00fde923"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-input-group-23.json",
+      "bytes": 2531,
+      "sha256": "d74540b1b13bb8d3d74dc139292f7485cdfff1cfb98786ed1221e330e8fe7f03"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-slider-22.json",
+      "bytes": 7803,
+      "sha256": "c3ebb2cfc9b3598928cd373a9ecfcdc5bd633881cace1e3cc89a24e4ca923b3b"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-switch-7.json",
+      "bytes": 12634,
+      "sha256": "eca077bce2706a3273d7d5e922d199a9eedf2b6ff1181926fbb9cdce1f8a5c0d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/p-table-8.json",
+      "bytes": 20760,
+      "sha256": "faf1430bcd93d2b2693c60d2dd406f945704e8dfc1208e71514c99be81a157af"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/pagination.json",
+      "bytes": 3653,
+      "sha256": "e0eb63bd9aa52b0448bc84bcf63c881f297d12e6e7cbad1a7048ced419e8e626"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/popover.json",
+      "bytes": 5058,
+      "sha256": "8a71de3696b38f0dedbb1e1e0ac74ab7c106ea2c2abfca4130c74d62039b7903"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/scroll-area.json",
+      "bytes": 3384,
+      "sha256": "7dec1f81d43ad3d444d9622640fd6f4dba12bb2a913ab1847dfcbc07e388710c"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/select.json",
+      "bytes": 10166,
+      "sha256": "96c0f2af83901ba856c933ba6cc3d2ae8e9d1e0ef15abb16390d20304c81441d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/skeleton.json",
+      "bytes": 1090,
+      "sha256": "a44259c84ccddfeaa311aa4fb7d74217953f3dcc38702f56498566e7677de161"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/slider.json",
+      "bytes": 3492,
+      "sha256": "6362f5bfb69bcb80e8d5264f4bb5c1f033a654248300b7e0a177d22b8857c2c0"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/spinner.json",
+      "bytes": 668,
+      "sha256": "5ad5667bc3e317a97f8aba803211958c1045e954c86f1110fc7325a2bc61bfad"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/switch.json",
+      "bytes": 1947,
+      "sha256": "4b803868161ff34db087eadc874128df1df043c3da24ecfd521bc30ca5052d99"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/table.json",
+      "bytes": 5920,
+      "sha256": "5597158df48fdab3e125f28b343a09acc9f2f8c737a8954ce6de7e681d842858"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/textarea.json",
+      "bytes": 2938,
+      "sha256": "d19bba7b7d40252b6a7cc1178ae53392c62e4c5ea3e40d613027e0a3f7266016"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/tooltip.json",
+      "bytes": 3647,
+      "sha256": "e462c49b1b68fe0dcdfd3308418def8bf79a1403bd8712d2941e4761885aeadb"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/coss/use-media-query.json",
+      "bytes": 3056,
+      "sha256": "c4c16f3bc82635a4a69b700c041776d999482a751d50552d79721d72b74b05b5"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid-demo.json",
+      "bytes": 9079,
+      "sha256": "0a664763be79273d98038521b95931d8f28c69f2aa75c55b23893dc8c38f4f19"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-cell-variants.tsx",
+      "bytes": 66426,
+      "sha256": "b2ba0cd55929e1d2cc676e50538bced58e15b13ef6d2b4323525a9078956b062"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-cell-wrapper.tsx",
+      "bytes": 5516,
+      "sha256": "4a0817b0cd0d552378abeedc52deacb7b68d5177c5e150831d819c1fa4dbea9c"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-cell.tsx",
+      "bytes": 2834,
+      "sha256": "65ac45929267522421da4d56f73dd572950f04d9011296497f9db39814e0f79d"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-column-header.tsx",
+      "bytes": 9003,
+      "sha256": "39f1c5d7b80d98e1f23475f8bb89157a9bef53cef2c96dc5428fa971c8be11f0"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-context-menu.tsx",
+      "bytes": 6694,
+      "sha256": "fc13bf446b3124b0462629ae74edd5512e4edf166c314a5d97e2ffedb7ad4026"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-keyboard-shortcuts.tsx",
+      "bytes": 9516,
+      "sha256": "1dbbe8db4b7a75cd2895d4d3b2854260f579bd20bac6bb27d258880e79f93839"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-paste-dialog.tsx",
+      "bytes": 4869,
+      "sha256": "a48f9c495f0b8eae30dec988824693874af4fa057edb372ed1cb02e1bc741c26"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-row.tsx",
+      "bytes": 8556,
+      "sha256": "2244698ca14cbd7785319f5a65967bd36fcf24d6eb4be81302ca24d3ac48901a"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid-search.tsx",
+      "bytes": 6341,
+      "sha256": "beb91a6a8ae15a05538d78db57e6dfd70f893382e78e4bd5c26243e0fd24eee0"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/data-grid/data-grid.tsx",
+      "bytes": 9233,
+      "sha256": "b306550ae0557105d9279f909dfe1d15847bff1bb94a29ef9408ded8ff75d601"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/file-upload.json",
+      "bytes": 40451,
+      "sha256": "1aa97277c4a1f0f761eb519b46fa82ee6cf8b2c45aa26bdc8e2fbe01da10e05c"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/kanban.json",
+      "bytes": 34231,
+      "sha256": "cd117b19aa76dc8aebe713743ca22a85f91f0ad7297084f3baf3db9783b84cf9"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/use-as-ref.json",
+      "bytes": 601,
+      "sha256": "b55b9222e22aecbfd12b2ff482dab2b5098b132e8430568e248c093aa495b759"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/use-isomorphic-layout-effect.json",
+      "bytes": 418,
+      "sha256": "801f9ea610449267b3f7133075175ca3e497aaa25908ba7fab6ae3a51fd4ee6a"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/dice-ui/use-lazy-ref.json",
+      "bytes": 447,
+      "sha256": "0395290e27950de363708034c4f1353bf27378298e61b55b5a4d59b0c0396787"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/kibo-ui/calendar.json",
+      "bytes": 13678,
+      "sha256": "69474d43a9435cf1280d2299dc4dfef166f8ef2b2b2037ee560586afdde84e1e"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/kibo-ui/color-picker.json",
+      "bytes": 14069,
+      "sha256": "a99b73e7cec2cbced48d52dc5cd800d07af97ad1c86fac8f7cc444d5abf8ba9c"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/kibo-ui/dropzone.json",
+      "bytes": 5820,
+      "sha256": "4bcd4ffadc9f8d88bf2d6168721ba108c26933656287cadf531d1aeef5b68fc5"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/kibo-ui/editor.json",
+      "bytes": 52723,
+      "sha256": "86c2aa383bf8807b172d689618d0ce11018c5782f2ad9306d8d180c4548e1798"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/kibo-ui/gantt.json",
+      "bytes": 42521,
+      "sha256": "83aed0a5f157f535f169f6ba3ad47af552cd2babb14745a45fa3b82633745eeb"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/kibo-ui/kanban.json",
+      "bytes": 9709,
+      "sha256": "346d0ba69230146ac42a8eb6440ebc28db268c29b88a21894314620512420bd9"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/animated-list.json",
+      "bytes": 2586,
+      "sha256": "a95ae266e0eda12b8230724c690818a434d22bad0a2093a8197417cc997d298b"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/bento-grid.json",
+      "bytes": 3849,
+      "sha256": "f43018c50fbc37f00856e3d2b5934af9bb56276d841151987a376b8caaf8c9ea"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/blur-fade.json",
+      "bytes": 2765,
+      "sha256": "5161e38f05b5898ee42892daa9c133688f528b20817bb4c62ae79f68967a88ba"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/border-beam.json",
+      "bytes": 2997,
+      "sha256": "5ed4f31cf1aa2cf44b03d57058b6bc46ae2b100fef426c9bf7f5ee9663ecf66a"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/magic-card.json",
+      "bytes": 7066,
+      "sha256": "d487ae39795640bd3fbb467a5a98285a4c803036d71e5b1a9a06cb7d26c2a755"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/marquee.json",
+      "bytes": 2694,
+      "sha256": "6378d12f6ac7b383bcbe25cbfcd21ad567d4726ff9979bf07991598a7bdef1ce"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/magic-ui/number-ticker.json",
+      "bytes": 2291,
+      "sha256": "c4808c7218100b218df9ada8e5d1ff21ce99045b41468131534b3d8db61122a7"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/manifest.json",
+      "bytes": 122558,
+      "sha256": "e49a595aa920d807fbfd975ba911ccc5ad3054b22dba3fbdee29d573254ccbb7"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/motion-primitives/animated-number.json",
+      "bytes": 1198,
+      "sha256": "a3476cfedab344923bd0cc63d5c04c14db7a8d7f42968fb6c4ffa529e319a8a7"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/motion-primitives/disclosure.json",
+      "bytes": 4786,
+      "sha256": "e2e34972db4c1a9de1091e69e8e3321d27370beaefeb45b5ea1b4869653a6a0e"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/motion-primitives/text-effect.json",
+      "bytes": 7894,
+      "sha256": "51ce1832ee8ee211bb7f9baa44c2e6a143bdf6a7edbd29985dec6659a73308c8"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/badge.json",
+      "bytes": 5533,
+      "sha256": "43a95d2c2953c96b00094d8be0d9b81dba660f2c241e44d99bf50711ecbcc18c"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-calendar-29.json",
+      "bytes": 7223,
+      "sha256": "5d373adea696b757822ee9807647ba87a8baf996b0996a81d1a634de3d737696"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-combobox-25.json",
+      "bytes": 10463,
+      "sha256": "75b9848c9e943e9ae3de3a9e25125d7fa4e6034f398aa688bbbe72b17fc6f1d9"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-command-5.json",
+      "bytes": 3474,
+      "sha256": "5a7205137aec6ca0cb5cdb87665a28e8ded3ffdf4e2e6cf4c397413629be5293"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-data-grid-20.json",
+      "bytes": 11964,
+      "sha256": "112111abc40009104eb89c366dc80d7e079cc774835d78996da7df0783032e36"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-data-grid-22.json",
+      "bytes": 20671,
+      "sha256": "e2bfe9fafecf841f75d633f91c4296d89e0c5b5201ca71f71339d2d0869b37e1"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-data-grid-27.json",
+      "bytes": 7794,
+      "sha256": "c0bd29bdec8fbba9d161d82fc8625f8919659977af3c7964a751bd183e9301f7"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/c-empty-12.json",
+      "bytes": 2312,
+      "sha256": "807aa48a2a09ef38418af8eb478a88749e70f8ea1c2af49e11f74b7240c9cfe3"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid-column-header.json",
+      "bytes": 16950,
+      "sha256": "33f922465f345e76c810c67d2ab1f93ff82a1f5910eb769af82a05eb1dd4b36a"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid-column-visibility.json",
+      "bytes": 2133,
+      "sha256": "febd00a17989f0a7e3afe7e762536bef69a5678c3eccca99d3a637e14ae41c1b"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid-pagination.json",
+      "bytes": 8270,
+      "sha256": "7f49fdbd8309e67f695a56cb04eda397c2c6cbd1588a51f0f9690fa409f65f33"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid-scroll-area.json",
+      "bytes": 16784,
+      "sha256": "6121df7e01e7d490e0a55b4c2040bc2cde279d7656b327e0abc3dd754c8ae364"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid-table-virtual.json",
+      "bytes": 29585,
+      "sha256": "5a2c48d539641a47f024243b2283d0307d5b6328bf47dfa7dcfa63c7ff860d24"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid-table.json",
+      "bytes": 68323,
+      "sha256": "8e083cfafbe734052c9dbdd10b840fe86cc46111bb9f189211e864a97b73be72"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/data-grid.json",
+      "bytes": 208637,
+      "sha256": "bb8817f0dcebe894a5be2c12ffe8f720daddab65ceeb61982580f04c274c0489"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/reui/use-copy-to-clipboard.json",
+      "bytes": 1063,
+      "sha256": "fd2a396af79c828b2a9ef7c0a0afb5444fc668c1d340ee51f35875048e37b651"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/shadcn/button.json",
+      "bytes": 2796,
+      "sha256": "9f7f226ca4f52ad6c9ea420e82ec1ca4e236cfa69e8d0b0ac3096a3133cfc465"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/shadcn/calendar-demo.json",
+      "bytes": 755,
+      "sha256": "d26d9a8d7dc28c48d9309e540a9701430a629f32eaed3cc5ca58f446dfaacbf8"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/shadcn/calendar.json",
+      "bytes": 8531,
+      "sha256": "80e46a0d543399ff61114b0f86db25f9ff8a4102eefe89d19cdd5fe25654d734"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor-legacy/ui-card/react-3.18.7.tgz",
+      "bytes": 121339,
+      "sha256": "7978829ac7a9f8224c61211e83fa91d14dc1cc7b76c31fef402a4a4cdc031bef"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-chart-compositions-chart-composition-01/chart-composition-01.tsx",
+      "bytes": 12714,
+      "sha256": "507e9a80c69330184f8ec1407f6e367df71c32891f2f18b108a199d807b74cea"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-empty-states-empty-state-01/empty-state-01.tsx",
+      "bytes": 1113,
+      "sha256": "70b695bf936f89b8cc62b02edb76411dad1db4cc7dcd44985073cb1d5dc0c6ec"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-filterbar-filterbar-01/filterbar-01.tsx",
+      "bytes": 2743,
+      "sha256": "139a442a351d38b8e51ebdd23913a60301e9ad2d371bb1fa67dcd18ade22e883"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-kpi-cards-kpi-card-01/kpi-card-01.tsx",
+      "bytes": 1432,
+      "sha256": "4023f20de8030f368ea7f4cb88955479e5c4c605e1d5e63c1b8c91f29b8d2a38"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-page-shells-page-shell-01/page-shell-01.tsx",
+      "bytes": 3569,
+      "sha256": "4555810c27829941b26153f1422779df861e722932da38a87eb52c779ea1b1be"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-table-actions-table-action-01/table-action-01.tsx",
+      "bytes": 7560,
+      "sha256": "b1324b92a7264e3e51b7c3eeff740b37dddff7dafc6cb4b82314d0dc7f84a8f6"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tremor/block-tables-table-01/table-01.tsx",
+      "bytes": 3333,
+      "sha256": "bb97fc6a2af65017560c9fb780053f111bbfb8387a93bf45fecae05645775ea2"
+    },
+    {
+      "path": "docs/ui-assets/source-cache/tweakcn/modern-minimal/theme-presets.ts",
+      "bytes": 114849,
+      "sha256": "d333858a5a4f1e2fd615f1b73709f552e5a84c12882196456dfc48e1f09376a8"
+    },
+    {
+      "path": "docs/ui-assets/source-download-manifest.json",
+      "bytes": 17226,
+      "sha256": "e3cf6a6c86671f4f77d6767edaa3e3cac54c5efca0de36a830f6a61853f6e96a"
+    },
+    {
+      "path": "docs/ui-assets/source-download-status.md",
+      "bytes": 4553,
+      "sha256": "2718e9c22ee83c9c90507f2ca7eb43e9a3073b66be05a419aa789b9955fd9153"
+    },
+    {
+      "path": "docs/ui-assets/source-health.json",
+      "bytes": 25594,
+      "sha256": "0b4455cfde3cdfdc8b1dc412aebbfa2fa6781d9a5de42146501557c619caaa0b"
+    },
+    {
+      "path": "docs/ui-assets/sources.md",
+      "bytes": 4048,
+      "sha256": "9fa2ca67aa0d27f8d040146a115e08b1d1b1c0544b2f40bd29e4e4acd5e75bd5"
+    },
+    {
+      "path": "docs/ui-assets/standards-demo/README.md",
+      "bytes": 1249,
+      "sha256": "b4258308988e9422228d81a2014092576f7e4c8a40115951e252b351b0493bac"
+    },
+    {
+      "path": "docs/ui-assets/standards-demo/index.html",
+      "bytes": 65948,
+      "sha256": "e3619b19388aa8be82cd726c03fc7dd3b89e5deb8991a2c39fa24d3af98223d9"
+    },
+    {
+      "path": "docs/ui-assets/standards-demo/standards-demo.test.mjs",
+      "bytes": 1472,
+      "sha256": "ca2175f42915c17dceffb6320beb76fb2c078e213c487029548a9b00c67589da"
+    },
+    {
+      "path": "docs/ui-assets/starter-pack.json",
+      "bytes": 15055,
+      "sha256": "de12494b778e4aa6f7616a2a9ecce8a5da9db25e17c76c83b7b9e30d1121965d"
+    },
+    {
+      "path": "docs/ui-assets/storage-format.md",
+      "bytes": 7436,
+      "sha256": "d4ce04bbef141ced1b715040d6b3bb8662ee17a4da5b27894e7cf769638488f7"
+    },
+    {
+      "path": "docs/ui-assets/visual-guide.md",
+      "bytes": 5574,
+      "sha256": "cb22638746cc3fe1e5f2379f3097e11e90e4b86d9b39eaf91c473d51d2e95ede"
+    },
+    {
+      "path": "docs/ui-assets/前端视觉与体验审核清单.md",
+      "bytes": 16606,
+      "sha256": "9cbdbf85c881951668bfbb684d48442c67432d9416a30527a5615009cc061107"
+    }
+  ]
+}

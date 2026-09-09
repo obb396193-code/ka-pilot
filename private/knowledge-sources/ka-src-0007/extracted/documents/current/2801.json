@@ -1,0 +1,311 @@
+{
+  "documentId": 2801,
+  "documentName": "查询企微回传投放信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095981505
+    }
+  ],
+  "apiId": 1164,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/qywx/callback",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 59216,
+      "paramName": "state",
+      "paramType": "String",
+      "example": "KSAD_84468288888",
+      "description": "<p>渠道参数，以KSAD开头的为合法值</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59217,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 59218,
+      "paramName": "data",
+      "paramType": "GetQywxCallbackData",
+      "example": "",
+      "description": "<p>res</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3309,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 59207,
+          "paramName": "callback",
+          "paramType": "String",
+          "example": "1",
+          "description": "<p>广告回传信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59208,
+          "paramName": "out_page_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "<p>落地页id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59209,
+          "paramName": "creative_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "<p>创意id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59210,
+          "paramName": "unit_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "<p>单元id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59211,
+          "paramName": "campaign_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "<p>计划Id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59212,
+          "paramName": "account_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "<p>用户id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "22",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59219,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59220,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>响应码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095981505,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

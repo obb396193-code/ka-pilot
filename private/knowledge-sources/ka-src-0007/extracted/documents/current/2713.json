@@ -1,0 +1,337 @@
+{
+  "documentId": 2713,
+  "documentName": "通过上传方式新建样本接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1729591471487
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1720096220173
+    }
+  ],
+  "apiId": 718,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 4,
+  "bizName": "建模平台",
+  "inputParamExample": "{\n    \"code\": 0,\n    \"data\": {\n        \"id\": 1\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2Chj0CiD7p8X19zAou_mB9w4=\"\n}",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com//rest/openapi/gw/ad_model/v1/sample/upload/create' \\\n--header 'Access-Token: xxxxx' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] apdid=22aa3170-fecc-4e3d-aaf3-b83825191ca119473a5d1ce8417a307644cdc2c666ad:16801541231:1; accessproxy_session=e5c8db0b-ca32-490f-a0a2-74d9178a8sfa' \\\n--data-raw '{\n    \"advertiser_id\":1,\n    \"name\":\"sample-open-01\",\n    \"source_type\":\"UPLOAD\",\n    \"upload_type\":\"IMEI_MD5\",\n    \"token\":\"[REDACTED_SECRET_EXAMPLE]\",\n    \"upload_file_name\":\"test.zip\",\n    \"feature_date\":\"2023-01-01\"\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"id\": 1\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2Chj0CiD7p8X19zAou_mB9w4=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 68869,
+      "paramName": "sample_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>样本类型 1、正样本 2、负样本</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 68870,
+      "paramName": "source_platform",
+      "paramType": "String",
+      "example": "2",
+      "description": "<p>DMP平台：2 ，其他平台：null</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 42783,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42784,
+      "paramName": "name",
+      "paramType": "String",
+      "example": "样本名称",
+      "description": "样本名称",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42785,
+      "paramName": "token",
+      "paramType": "String",
+      "example": "xx",
+      "description": "上传文件接口返回的token",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42786,
+      "paramName": "upload_file_name",
+      "paramType": "String",
+      "example": "test.zip",
+      "description": "上传文件接口返回的文件名",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42787,
+      "paramName": "upload_type",
+      "paramType": "String",
+      "example": "IMEI",
+      "description": "上传类型IMEI,IDFA,OAID,IMEI_MD5,IDFA_MD5,OAID_MD5,PHONE_MD5,PHONE_SHA256",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42788,
+      "paramName": "feature_date",
+      "paramType": "String",
+      "example": "2023-01-01",
+      "description": "特征计算基准日期",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42790,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "200",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42791,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "success",
+      "description": "状态消息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42792,
+      "paramName": "data",
+      "paramType": "SampleUploadCreateGatewayResponse",
+      "example": "s",
+      "description": "s",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2618,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42789,
+          "paramName": "id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "样本id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1729591471487,
+  "creator": "wanglu31",
+  "fullContext": null
+}

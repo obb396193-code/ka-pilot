@@ -3,6 +3,9 @@ import { Client, Pool } from "pg";
 
 import { ensureMetricPartitions } from "../src/partition-maintenance.js";
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
+import { migrationCount, windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -288,7 +291,8 @@ describe("contract migrations", () => {
     expect(contractV12Migration).toHaveLength(1);
     const contractV13Migration = await runMigrations({ databaseUrl, count: 1 });
     expect(contractV13Migration).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl })).toHaveLength(0);
+    // 走到 012 之后，剩下的正好是 012 之后的迁移数（不写死"012 就是头部"，新批次落地不错位）
+    expect(await runMigrations({ databaseUrl })).toHaveLength(windowSize("012") - 1);
     const workspaceKind = await client.query<{
       column_default: string | null;
       is_nullable: string;
@@ -367,13 +371,9 @@ describe("contract migrations", () => {
     `);
     expect(tenantRows.rows[0]?.count).toBe("3");
 
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    // 从头部一路退到 006（含）——不写死步数，新批次落地也不错位；下一步退 005 必须被守卫拒绝
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("006") }))
+      .toHaveLength(windowSize("006"));
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
@@ -397,6 +397,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(12);
-  });
+    expect(replay).toHaveLength(migrationCount()); // 不写死总数，新批次落地自动跟上
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });

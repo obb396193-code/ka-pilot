@@ -1,0 +1,42 @@
+{
+  "documentId": 2288,
+  "documentName": "工具-评论管理-5-增加屏蔽评论信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 增加屏蔽评论信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/comment/shield_info/create\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段                | 类型     |  示例  | 是否必填 | 说明         | 备注                                                                                                                  |\n| ------------------- | -------- | ------- | -------- | ------------ | --------------------------------------------------------------------------------------------------------------------- |\n| advertiser_id       | long     |     123    | 必填     | 广告主 ID    | 在获取 access_token 的时候返回                                                                                        |\n| shield_content_list | string[] |     \\[\"test\"]    | 必填     | 屏蔽信息内容 | 根据 shield_type 类型填写屏蔽信息内容                                                                                 |\n| shield_type         | int  |     1    | 必填     | 屏蔽信息类型 | 1：评论内容关键词（数量上限 100，长度上限 20），5：用户昵称关键词（数量上限 100，长度上限 20），6：快手 ID（数量上限 200） |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int     |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | struct   |    |返回结果                         |     |\n| &#8195; shield_info_id_list | long[] |      |生成的屏蔽信息id  | 仅返回创建成功的屏蔽信息id（超过数量限制返回为空；超过长度限制、屏蔽信息重复的屏蔽信息会被过滤掉） |\n\n\n### 请求样例\n\n```js\n{\n    \"shield_type\": 1,\n    \"shield_content_list\": [\n        \"test_a688fe31a8c8\"\n    ],\n    \"advertiser_id\": 58\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"shield_info_id_list\": [1, 2, 3]\n    }\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677478048365
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677478048365,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

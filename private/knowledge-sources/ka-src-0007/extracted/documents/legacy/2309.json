@@ -1,0 +1,42 @@
+{
+  "documentId": 2309,
+  "documentName": "工具-素材唤醒-5-素材唤醒数据报表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 素材唤醒数据报表（素材唤醒功能已下线，请勿调用！）\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/detailedReport](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/detailedReport)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 123456 | 必填 | 账户ID |  |\n| start_time | long | 1660060800000 | 必填 | 开始时间 | 毫秒时间戳，只取天级别精度，不可早于当前时间三个月前 |\n| end_time | long | 1661097600000 | 必填 | 结束时间 | 毫秒时间戳，只取天级别精度，不可早于开始时间 |\n| selected_columns | string[] | \\[\"photoWakeCount\", \"accountPhotoTotalCount\", \"photoWakeRatio\", \"photoWakeCharge\", \"photoWakeChargeRatio\", \"accountTotalCharge\", \"accountTotalChargeRatio\"\\] | 必填 | 所选列 |  |\n| page_info | GatePage |  | 必填 | 分页参数 |  |\n\n| GatePage  |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| current_page | int | 1 | 当前页码 |  |\n| page_size | int | 10 | 分页大小 |  |\n| total_count | long | 100 | 总数 |  |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int        |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | struct   |    |返回结果                         |     |\n| &#8195;global | GatePhotoWakeDetailedReportInfoView |  | 素材唤醒全局汇总数据 |  |\n| &#8195;list | GatePhotoWakeDetailedReportInfoView[] |  | 素材唤醒详细数据列表 |  |\n| &#8195;page_info | GatePage |  | 分页信息 |  |\n\n| GatePhotoWakeDetailedReportInfoView    |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| photo_wake_count | int |  | 素材唤醒数 | 选定时间内被唤醒到的素材数 |\n| account_photo_total_count | int |  | 账户素材数量 | 当前账户总在投素材数 |\n| photo_wake_ratio | double |  | 素材唤醒比例 | 所选周期内，账户在投素材中被唤醒到的比例，账户素材数量为0时返回NaN |\n| photo_wake_charge | long |  | 素材唤醒期花费 | 单位：厘。被唤醒到的素材唤醒期间的花费 |\n| photo_wake_charge_ratio | double |  | 素材唤醒期成本比例 | 被唤醒到的素材，唤醒期间花费/预期花费-1，预期花费为0时返回NaN |\n| account_total_charge | long |  | 账户花费 | 单位：厘。选定周期内，账户整体花费（包含非唤醒素材、非唤醒期数据） |\n| account_total_charge_ratio | double |  | 账户成本比例 | 选定周期内，账户整体（包含唤醒+非唤醒数据）花费/预期花费-1，预期花费为0时返回NaN |\n| date | string |  | 日期 | 年月日 |\n\n\n| GatePage  |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| current_page | int | 1 | 当前页码 |  |\n| page_size | int | 10 | 分页大小 |  |\n| total_count | long | 100 | 总数 |  |\n\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 123456,\n    \"start_time\": 1660060800000,\n    \"end_time\": 1661097600000,\n    \"selected_columns\": [\"photoWakeCount\", \"accountPhotoTotalCount\", \"photoWakeRatio\", \"photoWakeCharge\", \"photoWakeChargeRatio\", \"accountTotalCharge\", \"accountTotalChargeRatio\"],\n    \"page_info\": {\n    \t\"page_size\": 10,\n    \t\"current_page\": 1,\n    \t\"total_count\": 0\n    }\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"page_info\": {\n            \"total_count\": 3,\n            \"current_page\": 1,\n            \"page_size\": 10\n        },\n        \"global\": {\n            \"date\": \"\",\n            \"account_total_charge_ratio\": \"NaN\",\n            \"photo_wake_charge_ratio\": \"NaN\",\n            \"photo_wake_ratio\": 0.0,\n            \"account_photo_total_count\": 2,\n            \"photo_wake_count\": 0,\n            \"account_total_charge\": 0,\n            \"photo_wake_charge\": 0\n        },\n        \"list\": [\n            {\n                \"date\": \"2022-08-17\",\n                \"account_total_charge_ratio\": \"NaN\",\n                \"photo_wake_charge_ratio\": \"NaN\",\n                \"photo_wake_ratio\": 0.0,\n                \"photo_wake_count\": 0,\n                \"account_photo_total_count\": 1,\n                \"account_total_charge\": 0,\n                \"photo_wake_charge\": 0\n            },\n            {\n                \"date\": \"2022-08-16\",\n                \"account_total_charge_ratio\": \"NaN\",\n                \"photo_wake_charge_ratio\": \"NaN\",\n                \"photo_wake_ratio\": 0.0,\n                \"photo_wake_count\": 0,\n                \"account_photo_total_count\": 1,\n                \"account_total_charge\": 0,\n                \"photo_wake_charge\": 0\n            },\n            {\n                \"date\": \"2022-08-15\",\n                \"account_total_charge_ratio\": \"NaN\",\n                \"photo_wake_charge_ratio\": \"NaN\",\n                \"photo_wake_ratio\": 0.0,\n                \"photo_wake_count\": 0,\n                \"account_photo_total_count\": 1,\n                \"account_total_charge\": 0,\n                \"photo_wake_charge\": 0\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677504393879
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677504393879,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

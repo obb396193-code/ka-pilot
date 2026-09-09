@@ -1,0 +1,18 @@
+| 数据库名 | APPNAME | 备注 |
+| --- | --- | --- |
+| p4p（逻辑库） | SC_P4P_HZ_APP、SC_P4P_US_APP<br/> | 老BP关键词等 |
+| p4p@11.15.3.104:3306【dbfree_P23NK6YoTpEI9wwR】 | SC_P4P_HZ_APP、<br/><font style="color:#262626;">SC_P4P_US_APP</font> | bss\新客\nmas\ |
+| p4p_cust(逻辑库) | <font style="color:#333333;background-color:#FAFAFA;">SC_P4PCUST_HZ_APP、</font><font style="color:#333333;background-color:#FAFAFA;">SC_P4PCUST_US_APP</font> | 客户上下线日志 |
+| p4p_cust@11.15.3.104:3306【dbfree_P23NK6YoTpEI9wwR】 | <br/><font style="color:#333333;background-color:#FAFAFA;">SC_P4PCUST_HZ_APP、</font><br/><font style="color:#333333;background-color:#FAFAFA;">SC_P4PCUST_US_APP、</font><br/><br/><font style="color:#333333;background-color:#FAFAFA;">DX_P4P_CUST_APP</font> | 花费、结算、账户、 |
+| p4p_offline(逻辑库) | <font style="color:#333333;background-color:#FAFAFA;">P4P_OFFLINE_APP</font> | ipkg/product/ |
+| solar_mercury_american_p【上海-单元】 | <font style="color:#333333;background-color:#FAFAFA;">SOLAR_MERCURY_AMERICAN_P_APP</font> | 推广 |
+| intl_bw | <font style="color:#333333;background-color:#FAFAFA;">INTL_BW_US_APP、</font><font style="color:#333333;background-color:#FAFAFA;">INTL_BW_HZ_APP</font> |  |
+| p4p_offline_ins@11.8.87.35:3306【alidb_E6GmOf88hiEqZ73wWW1B】 | <font style="color:#333333;background-color:#FAFAFA;">P4P_OFFLINE_INS_APP</font> |  |
+| ads_creative(逻辑库) | <font style="color:#333333;background-color:#FAFAFA;">ADS_CREATIVE_APP</font> |  |
+| solar_mercury_american_g@10.176.220.58:3306【kuka_9610a62df7b4461ca322a9e0762b9c2d】 | <font style="color:#333333;background-color:#FAFAFA;">SOLAR_MERCURY_AMERICAN_G_APP</font> |  |
+|  |  |  |
+|  |  |  |
+
+
+
+

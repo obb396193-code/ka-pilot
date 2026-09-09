@@ -1,0 +1,42 @@
+{
+  "documentId": 2079,
+  "documentName": "5.3.4视频库-视频关联创意数查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 视频关联创意数查询\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/relate/creatives\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型     | 是否必填 | 说明      | 备注                           |\n| ------------- | -------- | -------- | --------- | ------------------------------ |\n| advertiser_id | long     | 必填     | 广告主 ID | 在获取 access_token 的时候返回 |\n| photo_ids     | string[] | 必填     | 视频 id   | 最大 20 个，可以动态配置       |\n\n### 返回参数\n\n| 字段              | 类型     | 说明                     | 备注                                                                     |\n| ----------------- | -------- | ------------------------ | ------------------------------------------------------------------------ |\n| code              | int      | 返回码                   |                                                                          |\n| message           | string   | 返回信息                 |                                                                          |\n| data              | struct   | JSON 返回值              |                                                                          |\n| related_creatives | struct[] | 与视频相关联的创意的信息 | 关联创意数=审核中+投放中的创意，仅包含自定义创意，程序化创意数量暂未计入 |\n\n| related_creatives |          |                            |      |\n| ----------------- | -------- | -------------------------- | ---- |\n| 字段              | 类型     | 说明                       | 备注 |\n| photo_id          | string   | 视频 id                    |      |\n| creatives         | struct[] | 与视频关联的创意的信息     |      |\n| creative_count    | long     | 与此视频 id 关联的创意总数 |      |\n| advanced_creative_ids    | long[]     | 与此视频 id 关联的程序化创意ID |      |\n| advanced_creative_count    | long     | 与此视频 id 关联的程序化创意数量 |      |\n\n| creative_messages |        |          |      |\n| ----------------- | ------ | -------- | ---- |\n| 字段              | 类型   | 说明     | 备注 |\n| creative_id       | long   | 创意 id  |      |\n| creative_name     | string | 创意名称 |      |\n\n### 请求样例\n```\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/relate/creatives' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"photo_ids\": [\n        \"5228679230762349823\",\n        \"5251760176597172988\"\n    ]\n}'\n```\n\n### 返回样例\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"related_creatives\": [\n            {\n                \"advanced_creative_count\": 0,\n                \"advanced_creative_ids\": [],\n                \"photo_id\": \"5228679230762349823\",\n                \"creative_count\": 2,\n                \"creatives\": [\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意6\",\n                        \"creative_id\": 20473687787\n                    },\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意1\",\n                        \"creative_id\": 10375405875\n                    }\n                ]\n            },\n            {\n                \"advanced_creative_count\": 0,\n                \"advanced_creative_ids\": [],\n                \"photo_id\": \"5251760176597172988\",\n                \"creative_count\": 1,\n                \"creatives\": [\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意4\",\n                        \"creative_id\": 20473687789\n                    }\n                ]\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMSAgICwzKu1ChiRCSDXg-6OgzEo6fT_8wg=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625243
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625243,
+  "creator": "heran03",
+  "fullContext": null
+}

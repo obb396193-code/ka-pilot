@@ -1,0 +1,70 @@
+
+
+**ideaLAB文档中心已全部迁移至钉钉文档，请移步至钉钉文档：**[**https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview**](https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview)
+
+各位同学，大家好！
+
+为了确保财务流程的规范性，请注意以下关于FY26年度预算申请及现有AK余额使用的重要事项：
+
+**1. 预算使用跨财年限制：**
+
+* 财务规定，预算使用**不允许跨财年**。
+* **FY26年度预算**必须通过新的[申请单](https://yida-group.alibaba-inc.com/s/AIStudioV2_FY26)进行申请，并于**2025年4月1日**起生效。
+* **FY26年度预算建议在2025.1.19之前提交，便于资源统筹安排。**
+
+**2. 现有AK余额失效：**
+
+* 所有现有AK的余额将于**2025年3月31日**截止失效，如填写了FY26预算则从4月1日采用新预算（仍采用原先的AK，不需要更换）。
+* **截止日期后，剩余的AK余额将无法延续至FY26使用**，请务必注意，年前我们会统一把AK失效改为2025年3月31日。
+* 请在申请FY26预算时，务必仔细评估并确认所需金额，避免将本年度的余额计入下年度的费用。
+
+**3. FY26预算申请：**
+
+* 请使用以下链接填写FY26年度预算申请单（注明原AK的业务code，如下图）：<https://yida-group.alibaba-inc.com/s/AIStudioV2_FY26>
+
+* 为便于更好的统筹，符合财务要求，建议同步在经管系统进行预算申请，产品代码为**AOAI**（SKU选“接口收费自动抛账”，单价是￥1，直接填写预算即可）。
+* 经管系统是财务预算统计申请口径，yida表单是系统额度开通依据，后者是AK申请必须流程。
+
+**4. 现有AK余额查询：**
+
+* 您可以通过以下链接查询现有AK余额：<https://aistudio.alibaba-inc.com/#/aistudio/manage/billManage>
+* FY25预算申请，还是走原有申请单<https://yida.alibaba-inc.com/s/AIStudioV2#/> 蚂蚁集团或打不开yida表单的同学可以走新申请单<https://yida-group.alibaba-inc.com/s/AIStudioV2>
+
+**5. 历年费用查询：**
+
+* 如财务人员需要查询历年的费用，请联系申请FBI地址进行查询。
+
+  
+
+
+**关于通义大模型**
+
+**1. 调用费用**
+
+* **适用范围:** 本政策仅适用于**通过AI Studio调用的通义在线模型**，与通过Whale部署的通义模型不同。
+* FY25 (2024年4月1日至2025年3月31日): 免费调用。
+* FY26 (2025年4月1日起): 免费调用。
+* 费用冲回： FY25期间通过AI Studio调用通义在线模型产生的费用，将在阿里云费用冲回后，于2025.3在经管系统统一冲回。
+
+**2. 配额（Quota）隔离**
+
+* **背景:** 为了保证业务稳定性，对于需要独立配额的业务，我们提供了配额隔离方案。
+* **方案:** 您可以通过API调用时，路由您自己的百炼AK参数，使得通义模型调用使用您AK对应的配额，见[文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9#mt6SH)。
+* **优势:** 确保您的业务拥有独立的配额，避免因其他业务影响而出现调用异常。
+* **操作:**
+
+* **申请阿里云AK:** 请参考相关[文档](https://alidocs.dingtalk.com/i/nodes/2Amq4vjg89jyZdNnCkNZNn5GW3kdP0wQ?cid=215788255%3A3892433644&utm_source=im&utm_scene=team_space&iframeQuery=utm_medium%3Dim_card%26utm_source%3Dim&utm_medium=im_card&corpId=dingd8e1123006514592)进行申请。
+* **配额扩容：** 如需扩容，请联系 。
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+

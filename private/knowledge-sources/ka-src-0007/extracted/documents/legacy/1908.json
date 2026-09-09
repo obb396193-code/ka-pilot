@@ -1,0 +1,42 @@
+{
+  "documentId": 1908,
+  "documentName": "6.1获取素造视频信息接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取素造视频接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/ad_creator/video/list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      |   类型   | 是否必填 |     说明     |                                                                备注                                                                |\n| :-----------: | :------: | :------: | :----------: | :--------------------------------------------------------------------------------------------------------------------------------: |\n| advertiser_id |   long   |   必填   |  广告主 ID   |                                                   在获取 access_token 的时候返回                                                   |\n|   photo_ids   | string[] |   可选   |  视频 ID 集  |                 过滤筛选条件；photo_ids 与 start_date&end_date 只能有一个生效，指定 photo_ids 时以 photo_ids 为准                  |\n|  start_date   |  string  |   可选   |   开始时间   |  与 end_date 同时传或同时不传；以下两种筛选条件兼容；过滤筛选条件，格式为\"yyyy-MM-dd\"；过滤筛选条件，格式为 “yyyy-MM-dd HH:mm:ss”  |\n|   end_date    |  string  |   可选   |   结束时间   | 与 start_date 同时传或同时不传；以下两种筛选条件兼容；过滤筛选条件，格式为\"yyyy-MM-dd\"；过滤筛选条件，格式为 “yyyy-MM-dd HH:mm:ss” |\n|     page      |   int    |   可选   | 查询的页码数 |                                                              默认为 1                                                              |\n|   page_size   |   int    |   可选   |   单页行数   |                                                       默认为 20，不超过 200                                                        |\n\n### 返回参数\n\n|         字段          |   类型   |            说明             |                                                                                                             备注                                                                                                              |\n| :-------------------: | :------: | :-------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|         code          |   int    |           返回码            |                                                                                                                                                                                                                               |\n|        message        |  string  |          返回信息           |                                                                                                                                                                                                                               |\n|        details        |  struct  |         JSON 返回值         |                                                                                                                                                                                                                               |\n|      total_count      |   int    |        数据的总行数         |                                                                                                                                                                                                                               |\n|         data          |          |                             |                                                                                                                                                                                                                               |\n|         width         |   int    |          视频宽度           |                                                                                                                                                                                                                               |\n|        height         |   int    |          视频高度           |                                                                                                                                                                                                                               |\n|     watermark_url     |  string  |        视频预览链接         |                                                                                                                                                                                                                               |\n|          md5          |  string  |         视频 md5 值         |                                                                                                                                                                                                                               |\n|       photo_id        |  string  |           视频 ID           |                                                                                                                                                                                                                               |\n|      material_id      |  string  |       素造视频素材 ID       |                                                                                                                                                                                                                               |\n|       cover_url       |  string  |      视频首帧图片链接       |                                                                                                                                                                                                                               |\n|       sync_date       |  string  |        视频同步日期         |                                                                                          photo 的被创建日期格式: yyyy-MM-dd HH:mm:ss                                                                                          |\n|        covers         | struct[] | 包括多封面 url 和预审核状态 |                                                                                                                                                                                                                               |\n|     material_tag      |  string  |        素造素材标签         | firstLevel：；1 电商；2 游戏；3 网服；4 本地；5 金融；secondLevel：；1 综合平台类；2 垂直电商；3 二类电商；4 传统 IP/经典成熟；5 休闲游戏；6 主流经济；7 工具类；8 社交类；9 阅读类；10 贷款平台；11 保险；12 信用卡；13 本地 |\n|    material_title     |  string  |        素造素材标题         |                                                                                                                                                                                                                               |\n|  supplier_account_id  |   long   |        素造供应商 id        |                                                                                                                                                                                                                               |\n| supplier_account_name |  string  |         供应商名称          |                                                                                                                                                                                                                               |\n\n### &nbsp\n\n|  covers   |        |          |                                       |\n| :-------: | :----: | :------: | :-----------------------------------: |\n|   字段    |  类型  |   说明   |                 备注                  |\n| cover_url | string | 封面 url |                                       |\n|  status   |  int   | 审核状态 | 0：预审通过，1：预审失败，2：非预审核 |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820623976
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820623976,
+  "creator": "linmenger",
+  "fullContext": null
+}

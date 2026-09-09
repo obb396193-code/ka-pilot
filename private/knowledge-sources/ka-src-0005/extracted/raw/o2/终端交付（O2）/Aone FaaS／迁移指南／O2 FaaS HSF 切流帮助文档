@@ -1,0 +1,20 @@
+HSF 流量迁移的原理
+
+我们保留了历史的 HSF Provider，通过修改切流配置来做流量的转发，回滚也是同理。
+
+(https://o2-img.alistatic.com/i/i09blZ/jqmvHkeqGsMjI8vRIf7xE-cf9bc70748.png)
+
+
+函数切流前如何做功能验证？
+
+修改 HSF Provider 验证
+
+| FC  服务名 | AoneFaaS 服务名 |
+|-|-|
+| com.alibaba.ginkgo.open.api.hsf.HsfGatewayService:2.0.0 | com.alibaba.afc.gateway.hsf.GinkgoHsfGatewayService:2.0.0 |
+| com.aliyun.fc.open.api.hsf.HsfGatewayService:1.0.0_sync | com.alibaba.afc.gateway.hsf.AoneFaasHsfGatewayService:1.0.0_sync |
+| com.aliyun.fc.open.api.hsf.HsfGatewayService:1.0.0 | com.alibaba.afc.gateway.hsf.AoneFaasHsfGatewayService:1.0.0 |
+
+(https://o2-img.alistatic.com/i/i09blZ/kZ0LeS5dFd4hoX65C2AKJ-15627f3f2b.png)
+
+

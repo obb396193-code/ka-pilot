@@ -1,0 +1,10 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661cf4d4442a43056b7c9a0b/](https://links.alibaba-inc.com/support/conversation/661cf4d4442a43056b7c9a0b/)
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+O2 Space 在新建迭代-新建变更-通过已有分支创建操作中，下拉列表仅展示未绑定变更的分支，因此在这一场景中下拉列表不会展示已绑定其他变更的分支。如果对应分支已经绑定至其他变更，则推荐使用「已有变更」的方式将对应变更关联进当前迭代，而不是重新创建一个变更。
+

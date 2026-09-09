@@ -1,0 +1,914 @@
+{
+  "documentId": 3278,
+  "documentName": "智投项目查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1765251290956
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1756386497946
+    }
+  ],
+  "apiId": 1715,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/simple/project/query",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "shell",
+      "body": "curl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n       \"advertiser_id\":\"1234567890\",\n       \"page\":\"1\",\n       \"page_size\":\"10\"\n}'  -L https://ad.e.kuaishou.com/rest/openapi/gw/dsp/simple/project/query"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"total_count\": 16,\n    \"list\": [\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 3994549,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 2890302,\n          \"book_name\": \"版权商小说-2\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选602\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 3994495,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 2890304,\n          \"book_name\": \"版权商小说-4\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选600\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 4004321,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 2890301,\n          \"book_name\": \"版权商小说\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选599\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 4004320,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 2890303,\n          \"book_name\": \"版权商小说-3\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选598\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 4004318,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 2915804,\n          \"book_name\": \"线上测试望通过-小说全文付费3.5w字\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选592\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 4004316,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 6731202,\n          \"book_name\": \"听书2-付费锚点在2章中间\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选590\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 4012448,\n        \"put_status\": 1,\n        \"book_info\": {\n          \"id\": 2915803,\n          \"book_name\": \"线上测试望通过-小说全文付费5.5w字\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选589\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [\n          {\n            \"photo_package_id\": 14001271220,\n            \"name\": \"dana测试素材包1\"\n          },\n          {\n            \"photo_package_id\": 12958266002,\n            \"name\": \"测试素材包权限新建\"\n          }\n        ],\n        \"auto_photo_scope\": 1,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 0,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 3994493,\n        \"put_status\": 2,\n        \"book_info\": {\n          \"id\": 17028806,\n          \"book_name\": \"【新版】-数据2全文付费多作者\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"1\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 4012451,\n        \"put_status\": 2,\n        \"book_info\": {\n          \"id\": 17028805,\n          \"book_name\": \"【新版】-数据1章节付费2章\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选603\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      },\n      {\n        \"kol_user_id\": 2022036857,\n        \"roi_ratio\": 4,\n        \"photo_package_details\": [],\n        \"auto_photo_scope\": 2,\n        \"account_auto_manage\": 1,\n        \"auto_manage_type\": 1,\n        \"create_type\": 1,\n        \"description\": \"后悔看的太快，年度爆款出圈小说，强烈推荐！\",\n        \"auax_project_id\": 3994548,\n        \"put_status\": 2,\n        \"book_info\": {\n          \"id\": 3331405,\n          \"book_name\": \"测试连载小说-全文付费\"\n        },\n        \"kol_user_type\": 1,\n        \"kol_user_info\": {\n          \"user_id\": 2022036857,\n          \"user_name\": \"饺子好吃\"\n        },\n        \"name\": \"书籍优选601\",\n        \"ocpx_action_type\": 191,\n        \"series_info\": null\n      }\n    ],\n    \"page_size\": 10\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"ELaAgIDgtsGcChi8BSDWqIH4jjMo08r55g8=\"\n}\n"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 77435,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>当前页码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77436,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>每页大小</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 77470,
+      "paramName": "data",
+      "paramType": "PageDataListAuaxSimpleProjectQueryResp698Snake203455",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4388,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 77466,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>当前页码</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "ADD"
+        },
+        {
+          "paramId": 77467,
+          "paramName": "list",
+          "paramType": "AuaxSimpleProjectQueryResp632Snake987949[]",
+          "example": "",
+          "description": "查询智投项目返回参数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4389,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 77449,
+              "paramName": "account_auto_manage",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>智投开关</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77450,
+              "paramName": "auax_project_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>项目id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77451,
+              "paramName": "auto_manage_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>账号智投模式类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77452,
+              "paramName": "auto_photo_scope",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>基建素材选取范围</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77453,
+              "paramName": "book_info",
+              "paramType": "BookInfo739Snake160310",
+              "example": "",
+              "description": "<p>小说信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 4390,
+              "sort": 5,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 77438,
+                  "paramName": "book_name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "小说标题",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77439,
+                  "paramName": "id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "小说id",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77455,
+              "paramName": "create_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>创建类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77456,
+              "paramName": "description",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>作品广告语</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77457,
+              "paramName": "kol_user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>广告主快手ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77458,
+              "paramName": "kol_user_info",
+              "paramType": "KolUserInfoSnake",
+              "example": "",
+              "description": "<p>快手号信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 4370,
+              "sort": 10,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 77312,
+                  "paramName": "user_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "<p>授权快手号ID</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "CHANGE"
+                },
+                {
+                  "paramId": 77313,
+                  "paramName": "user_name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "<p>授权快手号名称</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "CHANGE"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77459,
+              "paramName": "kol_user_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>快手号类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77460,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>智投名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77461,
+              "paramName": "ocpx_action_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>转化目标</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77462,
+              "paramName": "photo_package_details",
+              "paramType": "PhotoPackageDetail752Snake329674[]",
+              "example": "",
+              "description": "<p>素材包信息的集合</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 4391,
+              "sort": 14,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 77440,
+                  "paramName": "name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "<p>素材包名称</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77441,
+                  "paramName": "photo_package_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "<p>素材包id</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77463,
+              "paramName": "put_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>投放状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77464,
+              "paramName": "roi_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>roi系数</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77465,
+              "paramName": "series_info",
+              "paramType": "SeriesInfo611Snake593742",
+              "example": "",
+              "description": "<p>短剧信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 4392,
+              "sort": 17,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 77442,
+                  "paramName": "cover_img",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "短剧封面",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77443,
+                  "paramName": "description",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "短剧描述",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77444,
+                  "paramName": "episode_amount",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "剧集数量",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77445,
+                  "paramName": "id",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "短剧id",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77446,
+                  "paramName": "support_ad_unlock",
+                  "paramType": "Boolean",
+                  "example": "",
+                  "description": "是否支持观看剧集解锁",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77447,
+                  "paramName": "support_multi_template",
+                  "paramType": "Boolean",
+                  "example": "",
+                  "description": "是否支持短剧付费面板优选",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 6,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 77448,
+                  "paramName": "title",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "短剧标题",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 7,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77468,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>每页大小</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77469,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>数据总条数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 77471,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77472,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1765251290956,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

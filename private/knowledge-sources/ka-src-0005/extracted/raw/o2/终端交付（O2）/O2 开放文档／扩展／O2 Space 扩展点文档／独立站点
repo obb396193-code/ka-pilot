@@ -1,0 +1,155 @@
+> 独立域名（联系管理员配置）下固定业务，支持包括一些高阶扩展（如定制 header ，站点主题等）
+
+### independent-header-custom
+
+【仅限独立站点】定制站点头部
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/imgmb2NjdpQbg.png)
+
+
+#### Component
+
+```
+interface IProps {
+    // 重新获取徽标数据的方法
+    refreshBadge: () => void   
+}
+
+```
+#### Config
+
+```
+{
+  "hide": false,
+  "logo": "//img.alicdn.com/imgextra/i3/O1CN01kLMtGj1irTZFweyCl_!!6000000004466-2-tps-1676-480.png",
+  "navs": [
+    {
+      "name": "工作台",
+      "key": "home",
+      "path": "/"
+    }, {
+      "name": "研发",
+      "key": "workbench",
+      "path": "/workbench/FBI"
+    }
+  ],
+  "badgeRequestUrl": "", // 为导航栏元素增加徽标的接口url，方法为GET，网关配置见https://open.o2.alibaba-inc.com/
+  "theme": "dark",
+  "hideTools": "true", // 隐藏导航条右侧的“服务、工具、文档、反馈”按钮
+  "hidePromotion": "true", // 隐藏导航条右侧的“产品更新”图片
+  "searchBoxLength": 250 // 指定隐藏导航条右侧搜索框的长度，默认为300
+  "isRenderNavsPage": "true" // 使用自定义路由的开关
+}
+
+// key: string 指定导航栏项目
+// count: number 指定徽标数字，0或未定义则不显示
+// dot: boolean 使用小红点样式
+
+const res = {
+    data: [
+        { key: "home", count: 1 },
+        { key: "workbench", count: 2, dot: true },
+    ],
+};
+
+```
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/WmeonaN3Y06rqXxj/img/35bf5aa6-64a3-453a-9890-0bfedc1bbbf1.png)
+
+
+### independent-category-bar
+
+【仅限独立站点】定制研发类型导航栏
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/imgPKZkkJZlIj.png)
+
+
+#### Config
+
+```
+{
+  "hide": true
+}
+
+```
+### independent-system-notice
+
+【仅限独立站点】定制系统公告
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/imgjKO3RJsK01.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/img4FwP86tfve.png)
+
+
+#### Config
+
+```
+{
+  "hide": true
+}
+
+```
+### independent-app-create
+
+【仅限独立站点】定制新建应用
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/img0ggB6nDCi7.png)
+
+
+#### Config
+
+```
+{
+  "category": {
+    "hide": true
+  },
+  "keyword": {
+    "app": "能力"
+  }
+}
+
+```
+### independent-robot
+
+【仅限独立站点】定制答疑机器人，加载一个全局的扩展模块，该模块只用于初始化答疑机器人，实现此扩展后默认的研发小蜜不显示（业务方用的不是研发小蜜的情况）
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/imgCYRjWRo9bK.png)
+
+
+### independent-intro
+
+【仅限独立站点】关闭升级说明和新人引导
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/imgG5mOXIESBW.png)
+
+
+#### Config
+
+```
+{
+  "hide": true
+}
+
+```
+### independent-host
+
+【仅限独立站点】设置独立站点域名（独立站点必开启此扩展点），根据域名匹配独立站点
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qar8k46ggp1o6f4g/imgJfpNF8nWcD.png)
+
+
+#### Config
+
+```
+{
+  "domain": {
+    "prod": "fbi-o2.alibaba-inc.com", 
+    "pre": "pre-fbi-o2.alibaba-inc.com"
+  }
+}
+
+```
+
+

@@ -1,0 +1,295 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710501763087",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710497745920",
+          "parent_ids": [
+            "1696710497745920"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "术语解释"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1699352157034496",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710497745920",
+          "parent_ids": [
+            "1696710497745920"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "接口清单（Scope权限点）"
+        }
+      ],
+      "doc_id": "1696710497745920",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "入门指南"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710758840332",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710758159360",
+          "parent_ids": [
+            "1696710758159360"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "基础实践：频控限流器开发"
+        }
+      ],
+      "doc_id": "1696710758159360",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "频控限制"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1803016515293203",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "如何申请授权&生成授权链接"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710504654860",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "回调地址怎么设置和使用"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710505596940",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/access_token/",
+          "status": 4,
+          "title": "获取Access Token"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710506574848",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/advertiser/get/",
+          "status": 4,
+          "title": "获取已授权账户"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710507039756",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/2/user/info/",
+          "status": 4,
+          "title": "获取授权User信息"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710506097679",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/refresh_token/",
+          "status": 0,
+          "title": "刷新Refresh Token"
+        }
+      ],
+      "doc_id": "1696710502277120",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "Oauth2.0授权"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710520884224",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710519122956",
+              "parent_ids": [
+                "1696710519122956"
+              ],
+              "path": "/open_api/2/customer_center/advertiser/list/",
+              "status": 4,
+              "title": "获取旧版巨量引擎工作台下账户列表"
+            }
+          ],
+          "doc_id": "1696710519122956",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710508029967",
+          "parent_ids": [
+            "1696710508029967"
+          ],
+          "path": null,
+          "status": 3,
+          "title": "旧版巨量引擎工作台账户管理"
+        }
+      ],
+      "doc_id": "1696710508029967",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "账号服务"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760171535",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "枚举值"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760866831",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "返回码"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710762109967",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "过滤条件"
+        }
+      ],
+      "doc_id": "1696710759506944",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "附录"
+    }
+  ]
+}

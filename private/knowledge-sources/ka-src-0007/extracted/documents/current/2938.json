@@ -1,0 +1,799 @@
+{
+  "documentId": 2938,
+  "documentName": "获取联盟定向媒体包列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093522630
+    }
+  ],
+  "apiId": 1307,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/asset/media/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST \\\n -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n -H 'Content-Type: application/json' \\\n -d '{\n    \"advertiser_id\":20000152,\n    \"media\":{\n        \"media_id\":213123213,\n        \"name\":\"新建定向媒体包\",\n        \"source_type\":2,\n    },\n    \"is_related_unit\": true,\n    \"pageInfo\":{\n        \"current_page\":1,\n        \"page_size\":10,\n     }\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/asset/media/list\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\":0,\n    \"message\":\"OK\",\n    \"data\":{\n        \"details\":[\n            {\n                \"media\":{\n                    \"media_id\":337630,\n                    \"advertiser_id\":42932,\n                    \"create_time\":1603291774359,\n                    \"update_time\":1603291774359,\n                    \"name\":\"test——2\",\n                    \"source_type\":2,\n                    \"pos_ids\":[\n                        \"sadsads231afasfs\",\n                        \"231erew232123231\"\n                    ],\n                    \"status\":1\n                },\n                \"relate_units\":[\n                    {\n                        \"unit_id\":1213,\n                        \"unit_name\":\"媒体包测试组\",\n                        \"campaign_id\":23213112,\n                        \"campaign_type\":2,\n                        \"put_status\":1,\n                        \"media_type\":1\n                    }\n                ]\n            },\n            {\n                \"media\":{\n                    \"media_id\":33890,\n                    \"account_id\":42932,\n                    \"create_time\":1563173027191,\n                    \"update_time\":1563173027191,\n                    \"name\":\"模板_test_1\",\n                    \"source_type\":2,\n                    \"pos_ids\":[\n                        \"212wqeqwe1312\",\n                        \"23123eqweqwe21\"\n                    ],\n                    \"status\":1\n                },\n                \"relate_units\":[\n                    {\n                        \"unit_id\":1213,\n                        \"unit_name\":\"媒体包测试组\",\n                        \"campaign_id\":23213112,\n                        \"campaign_type\":2,\n                        \"put_status\":1,\n                        \"media_type\":1\n                    }\n                ]\n            }\n        ],\n         \"total_count\":2\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62130,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62131,
+      "paramName": "media",
+      "paramType": "MediaIn",
+      "example": "",
+      "description": "媒体包参数结构",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3493,
+      "sort": 2,
+      "note": "用于支持搜索",
+      "children": [
+        {
+          "paramId": 62117,
+          "paramName": "media_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "媒体包 ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62118,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "媒体包名字",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "修改媒体包名",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62119,
+          "paramName": "source_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "媒体包来源",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "0-不限，未指定，1-行业优质流量包，2-广告主自定义，默认 0",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62120,
+          "paramName": "pos_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "广告位列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "修改媒体包广告位",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62121,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "状态",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "删除媒体包，0-下线，1-上线，默认 1",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62132,
+      "paramName": "is_related_unit",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "是否关联广告组信息",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "默认 false",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62133,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "当前页码",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "默认为 1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62134,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "分页大小",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "默认 20，最大不超过 50",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62135,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62136,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62137,
+      "paramName": "data",
+      "paramType": "MediaListData",
+      "example": "",
+      "description": "媒体包对象",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3492,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62115,
+          "paramName": "datails",
+          "paramType": "MediaListDetails[]",
+          "example": "",
+          "description": "关联广告组信息列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3491,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 62113,
+              "paramName": "relate_units",
+              "paramType": "RelateUnits[]",
+              "example": "",
+              "description": "关联广告组信息列表",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 3490,
+              "sort": 1,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 62105,
+                  "paramName": "unit_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "广告组 ID",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62106,
+                  "paramName": "unit_name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "广告组名字",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62107,
+                  "paramName": "campaign_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "广告计划 ID",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62108,
+                  "paramName": "campaign_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "广告计划类型",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "计划类型，过滤筛选条件：1 - 作品推广；2 - 提升应用安装；3 - 获取电商下单；4 - 推广品牌活动；5 - 收集销售线索；6 - 保量广告；7 - 提高应用活跃",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62109,
+                  "paramName": "put_status",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "在投状态",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "UNKNOWN_PUT_STATUS = 0; // 默认值；PUT_STATUS_OPEN = 1; // 投放；PUT_STATUS_PAUSE = 2; // 暂停；PUT_STATUS_DELETED = 3; // 删除",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62110,
+                  "paramName": "review_status",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "审核状态",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 6,
+                  "note": "UNKNOWN_REVIEW_STATUS = 0; // 默认值；REVIEW_WAIT_AUDIT = 1; //审核中；REVIEW_THROUGH = 2; //通过审核；REVIEW_NOT_THROUGH = 3; //审核未通过；BANNED = 4; //封禁",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62111,
+                  "paramName": "media_using",
+                  "paramType": "Boolean",
+                  "example": "",
+                  "description": "媒体包是否在使用",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 7,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62112,
+                  "paramName": "media_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "媒体包的使用类型",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 8,
+                  "note": "0-未知，1-定向，2-排除",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62114,
+              "paramName": "media",
+              "paramType": "Media",
+              "example": "",
+              "description": "媒体包信息",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 3488,
+              "sort": 2,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 62097,
+                  "paramName": "media_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "媒体包 ID",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62098,
+                  "paramName": "name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "媒体包名字",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62099,
+                  "paramName": "advertiser_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "广告主 ID",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62100,
+                  "paramName": "source_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "媒体包来源",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "0-不限，未指定，1-行业优质流量包，2-广告主自定义，默认 0",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62101,
+                  "paramName": "pos_ids",
+                  "paramType": "String[]",
+                  "example": "",
+                  "description": "广告位列表",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "修改媒体包广告位",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62102,
+                  "paramName": "status",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "状态",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 6,
+                  "note": "删除媒体包，0-下线，1-上线，默认 1",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62103,
+                  "paramName": "create_time",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "创建时间",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 7,
+                  "note": "时间戳",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 62104,
+                  "paramName": "update_time",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "更新时间",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 8,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62116,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "总共条数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093522630,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

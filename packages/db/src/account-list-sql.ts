@@ -26,6 +26,8 @@ const FILTERED_ACCOUNTS_CTE = `
       AND ($9::text[] IS NULL OR COALESCE(account.tags, ARRAY[]::text[]) @> $9::text[])
       AND ($10::uuid IS NULL OR account.owner_user_id = $10::uuid)
       AND ($11::text IS NULL OR account.status = $11::text)
+      AND ($12::text[] IS NULL OR account.pool_status = ANY($12::text[]))
+      AND ($13::text IS NULL OR account.product_name = $13::text)
   )`;
 
 export const ACCOUNT_LIST_COUNT_SQL = `
@@ -62,6 +64,7 @@ export const ACCOUNT_LIST_COUNT_SQL = `
 
 export const ACCOUNT_LIST_PAGE_SQL = `
   WITH ${FILTERED_ACCOUNTS_CTE}
+  /* account-list-page */
   SELECT
     account.workspace_id,
     account.media,
@@ -80,7 +83,16 @@ export const ACCOUNT_LIST_PAGE_SQL = `
     metric.assessment_price_snapshot,
     metric.computed_at AS data_as_of,
     balance.balance,
-    balance.synced_at AS balance_synced_at
+    balance.synced_at AS balance_synced_at,
+    account.pool_status,
+    account.pool_status_source,
+    account.product_name,
+    account.product_ref,
+    last_action.at AS last_action_at,
+    last_action.kind AS last_action_kind,
+    last_action.summary AS last_action_summary,
+    suggestion.id AS next_suggestion_id,
+    suggestion.title AS next_suggestion_title
   FROM filtered_accounts AS account
   LEFT JOIN users AS owner
     ON owner.workspace_id = account.workspace_id
@@ -103,6 +115,46 @@ export const ACCOUNT_LIST_PAGE_SQL = `
         AND (account_task.valid_to IS NULL OR account_task.valid_to >= $2::date)
     ) AS relation
   ) AS linked ON true
+  LEFT JOIN LATERAL (
+    -- 最近一次动作：本系统变更集 / 带外变更 / 人工置态，三者取最新的一条。
+    -- 只报观测得到的事实，取不到就没有 lastAction，不拿创建时间之类的东西凑。
+    SELECT action.at, action.kind, action.summary
+    FROM (
+      SELECT changeset.created_at AS at, 'changeset'::text AS kind,
+             COALESCE(NULLIF(changeset.title, ''), '变更集') AS summary
+      FROM changesets AS changeset
+      WHERE changeset.workspace_id = account.workspace_id
+        AND changeset.media = account.media
+        AND changeset.account_id = account.account_id
+      UNION ALL
+      SELECT external.detected_at AS at, 'external_change'::text AS kind,
+             external.target_type || ' ' || external.field AS summary
+      FROM external_changes AS external
+      WHERE external.workspace_id = account.workspace_id
+        AND external.media = account.media
+        AND external.account_id = account.account_id
+      UNION ALL
+      SELECT account.pool_status_changed_at AS at, 'pool_status'::text AS kind,
+             account.pool_status AS summary
+      WHERE account.pool_status_changed_at IS NOT NULL
+        AND account.pool_status_source = 'manual'
+    ) AS action
+    WHERE action.at IS NOT NULL
+    ORDER BY action.at DESC
+    LIMIT 1
+  ) AS last_action ON true
+  LEFT JOIN LATERAL (
+    -- 下一步建议只能来自真实的 open 工作项；没有就是没有，绝不生成假建议（v1.5.1 ①）。
+    SELECT item.id, item.title
+    FROM work_items AS item
+    WHERE item.workspace_id = account.workspace_id
+      AND item.media = account.media
+      AND item.account_id = account.account_id
+      AND item.status = 'open'
+      AND item.title IS NOT NULL
+    ORDER BY item.created_at DESC
+    LIMIT 1
+  ) AS suggestion ON true
   LEFT JOIN account_metrics_daily AS metric
     ON metric.workspace_id = account.workspace_id
    AND metric.media = account.media
@@ -127,4 +179,4 @@ export const ACCOUNT_LIST_PAGE_SQL = `
     account.account_name ASC NULLS LAST,
     account.media ASC,
     account.account_id ASC
-  LIMIT $12 OFFSET $13`;
+  LIMIT $14 OFFSET $15`;

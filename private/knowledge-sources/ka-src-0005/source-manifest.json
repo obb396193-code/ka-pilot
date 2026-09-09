@@ -1,0 +1,4053 @@
+{
+  "document_id": "ka-src-0005",
+  "source_url": "https://a1-client-faas-225pcj0k.fn.taobao.net/files",
+  "ingested_at": "2026-08-20T09:10:02.390809+00:00",
+  "original_archive": {
+    "filename": "ka-platform-docs-v2.zip",
+    "bytes": 1251679,
+    "sha256": "0d250a5a0f7057c64811f4069a800e224cd19bd9c640924741e1157c2847c3e8"
+  },
+  "canonical_archive": {
+    "filename": "source.sanitized.zip",
+    "bytes": 1199850,
+    "sha256": "33bfb76477cb8a170da71a811d470ce16aaad925b65a122552b860192b3a1127"
+  },
+  "entry_count": 671,
+  "credential_sanitization_counts": {
+    "aliyun_access_key_id": 1,
+    "bearer_token": 0,
+    "database_url_password": 0,
+    "known_secret_prefix": 0,
+    "named_secret_assignment": 3,
+    "signed_url_access_key": 128,
+    "signed_url_signature": 128
+  },
+  "entries": [
+    {
+      "path": "INDEX.md",
+      "bytes": 4372,
+      "sha256": "87a1445fbf2e66b25c3e2e66e6381b3ccd0b0cb4374ea8d9b180ceb446f92247",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/145201/_搜索索引_仅摘要可见.json",
+      "bytes": 78173,
+      "sha256": "8917db8c417bb08078b3ea998d2825201c32fd902be31e2da2b1b3b0f94b24bc",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/145201/_搜索索引_摘要版.md",
+      "bytes": 53286,
+      "sha256": "182016a2465a8a33cf2da56f6a968a5bc734ecad4fc030dd7232343a5a7f63a0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/145201/新人单权益插卡素材配置字段",
+      "bytes": 16151,
+      "sha256": "86e20035ec56affec0b4f3c537116904e5a2201aac0e5c498f15eccd4d9804fe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/AE 广告",
+      "bytes": 456,
+      "sha256": "cf5915cf2ea6d24087532dc55652c294f41843a9f9829775e5255ee4643e7248",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/BP外部依赖",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/FY20 广告稳定性排雷",
+      "bytes": 2682,
+      "sha256": "d7978556f7e4c43f2683dbe23aa9b6952de7d24fac8ac9af1589d061f0e06aeb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/ICBU 广告",
+      "bytes": 467,
+      "sha256": "65b602dffd8d9dd3ec2143e88789e50b038e1d35b3eced3a3dfc80e6b5e7feca",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/ICBU广告-简介",
+      "bytes": 1230,
+      "sha256": "bd402d8d063885569e04378209ccc991b8814295f02de790d36a4fefe33ac000",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/test",
+      "bytes": 32,
+      "sha256": "bdab41782643645aaeec5c3cf11b7da0c1bf1b5c9555642e9684c1a05c41ded2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/※广告大事记※",
+      "bytes": 1028,
+      "sha256": "6f88d4d7254d8af4acef9a4e52d6c4eb01f3d2a0bf3b7b3d0f98724a93da7698",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/参考资料",
+      "bytes": 738,
+      "sha256": "ac2cd9e9ba02730618e964cc4be8d8ae54f8ac8e61372e1848b2cf0f6c58a6fe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/发布验证",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/国际广告应用清单/ads-web",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/国际广告应用清单/p4pnmas",
+      "bytes": 1170,
+      "sha256": "fd87684716d43152cd297d409b7113f1c2b4f06971c8d8e710af3be5e23e8da4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/国际广告应用清单/广告应用机器汇总",
+      "bytes": 1368,
+      "sha256": "48ba9d70e91291c9174c986c32332f86843d967574249b9fc702009cd58a7d85",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/国际广告应用清单/数据库",
+      "bytes": 1761,
+      "sha256": "a3a35de2abefbbeff0971522e4b9bab71a98f60905e1648ded72f08d1c417351",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/国际广告白皮书",
+      "bytes": 582,
+      "sha256": "520c604ab32efd2b85b608b4a251b529cf3f42a4964e8665c406ce80169e8296",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/如何实现支持多币种&多税率的国际化广告竞价系统？",
+      "bytes": 4728,
+      "sha256": "a381dc9d7084b46345a858c9e70c26a99c6e6a180c10c0d29d7c92a4a2f049bf",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/安全领域建设",
+      "bytes": 117,
+      "sha256": "84dbd8f29a7fe1373ded90373848c61329fd5c0a21f2c10118ec23503f927812",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/容灾体系建设",
+      "bytes": 153,
+      "sha256": "4cf45f53fba111cf8f006c27e362160629017227d3c6256f7fe257b2f1a68568",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/广告团队研发规约",
+      "bytes": 3608,
+      "sha256": "5e7f7e6aef392cf8519eb236de3c0e0df351ef1c0a019f128014fe498275461f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/故障快速恢复",
+      "bytes": 87,
+      "sha256": "f7bbdb5d6d01b190ce66c4661c76c2878de2a7c8d0c052dec3a5df7472308db5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/智能运营平台",
+      "bytes": 68,
+      "sha256": "0452c4ec3b4eedc8b52d3ac7ba3992389e26f5e4d71ffbddd463f18c6390a49d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/架构稳定性建设",
+      "bytes": 2,
+      "sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/FY19 S1计划",
+      "bytes": 910,
+      "sha256": "470caa936d1c8d7a80df3f39acfe71b8d12ea362fe5784aaa947d21fb532e241",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/GOC盯屏广告监控简单思路",
+      "bytes": 3561,
+      "sha256": "1498295f61eb7a7813be937fae8500b52d9b927a20c9849b54e2b043ad96ebe2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/New document",
+      "bytes": 1,
+      "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/P4P充值订单与消耗订单匹配关系方案初稿",
+      "bytes": 6320,
+      "sha256": "f7b12f5abf88ba04c8d3cbbcd002839d0ae9c329647650aeaaf040eaa877c598",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/P4P／AE P4P结算设计",
+      "bytes": 1,
+      "sha256": "36a9e7f1c95b82ffb99743e0c5c4ce95d83c9a430aac59f84ef3cbfab6145068",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/adclickserver点击服务器排查日志",
+      "bytes": 1874,
+      "sha256": "330df61eded8d9c46223e8cef32862643ac66ee9f2deec7da581aafd03d0e378",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/p4pclickserver 交接文档",
+      "bytes": 2786,
+      "sha256": "4bdd094d046355e9f590dd524815ac27d428e991c129229a8cf3f5f86327b70d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/p4pclickserver与adclickserver合并",
+      "bytes": 2032,
+      "sha256": "3ed2d3028c3b8f0461d6fc299505915739bed077e0c76656a215e1e7bd86bedc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/与Alink沟通内容",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/卡券分产品方案设计&对接CRM卡券平台",
+      "bytes": 4997,
+      "sha256": "e0f8f1b16432655859518efd44eaa6b97d790e9ebb0bcdebfc7726b8d52b7962",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/多帐户打通-P4P资金支付其他产品",
+      "bytes": 10527,
+      "sha256": "09a7c3d2ab3eca0ebf3dd32b0eb809e1296a1772b0187b824ba20b2c20898af6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/实时结算流程",
+      "bytes": 1996,
+      "sha256": "affb9c0caeea5376b1dea14befbd32a99dc2748304c879d26439e61ed85d5226",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/实时计算对比",
+      "bytes": 511,
+      "sha256": "8e6ea82dc45e2fa22f316b7d90433091ec4073dc5d02fa040e61707ddedd5254",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/广告全链路监控",
+      "bytes": 4772,
+      "sha256": "3de33ee80b990d220851cb96109b0b53816d9f1fe076e7b4738859799bdba4d8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/广告消耗影响分析",
+      "bytes": 1592,
+      "sha256": "1c80244aeea211a606551d34f3f2edcc77c3b240ad51794887197f0872331905",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/广告点击服务接入说明",
+      "bytes": 954,
+      "sha256": "e05cb9b5c00b7a90bf089a39c4d81cf0939c605fea86875cfc8f51acb658b49c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/广告监控治理",
+      "bytes": 2180,
+      "sha256": "1afb690e6a78f0d3998c31a9dc24c9e0204ff047ee3ed73d4de0b752845e81ca",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/广告结算平台规划",
+      "bytes": 3777,
+      "sha256": "a3027bcdf2cb3b477451ec1e70d64ad66bc4cabb0b3a0f49759c550b5c76d955",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/广告结算账户支持GGS p4p",
+      "bytes": 2789,
+      "sha256": "085af58f096365e8feb82ce87d3e70b7b42379b4c075e0b38acf6936b5a5cdd9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/数据表规划",
+      "bytes": 782,
+      "sha256": "dbc8ccf79f1485a5befb260f0a007e1ab9127ae05c3956a2b9ac4572a5271897",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/新增卡券使用",
+      "bytes": 4578,
+      "sha256": "8461ffdc6354ffc0defdc0501c67e30551fbc2a5d62e957b1b63091f984eb5e4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/新增钻展账户类型",
+      "bytes": 1130,
+      "sha256": "594ef23867a570c8543ae20c750ce409e922c84f314016e131920698117a4ac4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/日终结算完成后通知",
+      "bytes": 725,
+      "sha256": "0b24dbad329b47fa8b3ad82481ac033e6fafa7b6f65dd645d9c0af4c655145fe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/日结报警处理方式",
+      "bytes": 6492,
+      "sha256": "aa800291432a4c0b2e5d5bda7aeac08791a04d98bd2a1444d6a861ee280e965c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/监控智能诊断建设思路",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/线下日终运行步骤",
+      "bytes": 1036,
+      "sha256": "6aaa6c869c13e0dd5248e46d48922434c14f878ce00bdb6bab8d1984d2798be4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/结算产品化设计",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/结算压测",
+      "bytes": 1517,
+      "sha256": "6817fceb95a89385e7d9f4625b865f49ec2d32d5b0585d7f8af5e21f89c4a445",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/结算增加计划（省心宝升级）",
+      "bytes": 2507,
+      "sha256": "dfd24670ec7c88cbd29caa3937ec3050dc0f56b81a67c92c7663abcf57b61196",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/结算常见关注点",
+      "bytes": 2414,
+      "sha256": "3032872e5a49474cc342b4657915a1a11c50a4932af0caa33efae6fac801838e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/结算监控项明细",
+      "bytes": 16424,
+      "sha256": "3e16f4fe54b10005fffa9fe9bce3bd2030743a5c38bd28c8d981eaf6eac97211",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/网红结算账户改造",
+      "bytes": 2667,
+      "sha256": "9915cb624f41ece54ddf1255c824d66a6209369f817e572ddcc4d373c116bf52",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/账户结算现状",
+      "bytes": 8565,
+      "sha256": "37561666f10ddade2ae17ecdaf0b112f5ec2caa3c049e076fdd3f67bd37afe26",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台/集团与P4P账户维护关系方案对比",
+      "bytes": 2346,
+      "sha256": "e8d361aafd27714d0ac33aadea8fba3fde45690d24e0d05c2e848f177a29c2ac",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/结算平台升级pandora-boot",
+      "bytes": 616,
+      "sha256": "0b8c7694a69e7f00f69df829605f69634bf83a0ea6a1de222811c3380f4f0a6b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/ad-whitepaper/国际广告白皮书/营销能力任务",
+      "bytes": 279,
+      "sha256": "c16aa110d6afac42d126b0a1a35982712f2603586e3ea4236482f62bc76b7766",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/AK申请须知（AI Studio&API）／主AK FY26预算配置",
+      "bytes": 367,
+      "sha256": "5d806d740199f456021cda42c07169628aa2fe21ffd82039b65a41be8bad636c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/AK申请须知（AI Studio&API）／关于FY26年度预算申请及AK余额使用",
+      "bytes": 3480,
+      "sha256": "5c8e844d651cc9f0a90c54cc491cbc984c480aadca24a1612561458879f697d7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/IDEAs应用实践模版／Agent构建方法-运维&排障机器人为例",
+      "bytes": 2195,
+      "sha256": "3ccfbf52522a8b9168b6703828ba4d6cd5c649484c6351b3609560190ff4ffa2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/IDEAs应用实践模版／客服机器人(FLOW版）",
+      "bytes": 2576,
+      "sha256": "0c84aecd2ed0e29ec13e9e0fc9f45bc6ef93ee24a5c3526273aa3c14ecb534e8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型",
+      "bytes": 662,
+      "sha256": "8d497ea50cbb159c76d6547cf9a7aeac9525b96e37c3eb1cd3ce9791121cf425",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试",
+      "bytes": 1057,
+      "sha256": "ace2f0b48b8ad42dca5557844589686244eb286c0c44782d7aa0c2a97ab02cfe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／上下文",
+      "bytes": 1816,
+      "sha256": "f9500d54b71db32f8d3d0133a5264652d2a7fa457447b20ed3548f5a3fd8c52b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／保存&发布",
+      "bytes": 1072,
+      "sha256": "91d42108ef22e6d3e55b1c5da9855d0ec7a6b4e5627ed52e250a1ec22a81139f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／变量",
+      "bytes": 2094,
+      "sha256": "070655599917fd769ca7ba15276a5bfe22ad6dbfff4428f00150c44c4bf3a051",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／工作流使用",
+      "bytes": 579,
+      "sha256": "68e6d8f6256436f8735e2f07d633a118f3d36e4754f064cedbddf59891c87d0e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／工具使用",
+      "bytes": 1212,
+      "sha256": "7a73982d65c543ec80584e251145f5d4993e10049b9a8743c4cf3f70baf6d12c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／提示词",
+      "bytes": 1818,
+      "sha256": "fff35a335f8d2fa81bd2bddb48b5620e2cda4865964623c72bc38f7d5fcdbe2e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／模型设置",
+      "bytes": 1796,
+      "sha256": "0f95794e7077c321cd13e126801d3947463a4b09aa305dd73fbdf1de5ff88272",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／调试对比",
+      "bytes": 627,
+      "sha256": "a7251c0bbf2235712b549df311841a72f6779149c27df1ca758b30111a99e99a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-智能助手、生成型／调试／调试运行",
+      "bytes": 5059,
+      "sha256": "334bcdef1810308890abb569fe0d76b804f16f802ce5c8d1a5c713d48c5b96a5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）",
+      "bytes": 1408,
+      "sha256": "9343d7dc9c410cd1a044b8e657e39ca44416a7bb720f321162a55091c1a9f55f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）／ideaLAB上线Flow流程编排详细介绍",
+      "bytes": 14518,
+      "sha256": "fbe06d9316e26321631c82f7b842c30aaf388f5aebb841cfbb0d0e23c5797b83",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）／搭建及管理流程",
+      "bytes": 1041,
+      "sha256": "06b1bc6feaa2682d211676edc81f47255cc63d1296dcba7c853c5e3f9acb39b6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）／核心概念",
+      "bytes": 3532,
+      "sha256": "29bdff8b26f7709d7e06b44d0dd5ec32a41e29452da45498766bbd3d87f40e2a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）／节点及功能说明",
+      "bytes": 13525,
+      "sha256": "b4845cc36a664452251813b36e3533142c3325f9cb688aeed1b2062a185a74cc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）／节点及功能说明／代码节点示例",
+      "bytes": 409,
+      "sha256": "17e2fcf931ebbd2a8a5cd33268bf99c86afed360b3da070a38fd2d6abf783327",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／IDEAs创建-流程编排型（FLOW）／节点及功能说明／参数提取&输出变量设置",
+      "bytes": 907,
+      "sha256": "1b4bcf43114412b9ab18e0bd02c4c606c43ef8405f5dea0c2809e1c62fb9a9d8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／发布管理",
+      "bytes": 3663,
+      "sha256": "85e2c85c33fc74f5bee816f326eda6e5db0e641938894df2b916caea078b1067",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／发布管理／1分钟快速接入阿里钉个人助理！",
+      "bytes": 2789,
+      "sha256": "5c36781e3660f6a673c85e56be9ca6833fccd81c12886629f03dc4582f36d84e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／应用管理",
+      "bytes": 2275,
+      "sha256": "6af1d198e965992d0c73066f10159bec6f7e77f0e88dc2af4db8e7fd9c046623",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／IDEAs构建／调试记录",
+      "bytes": 2015,
+      "sha256": "79204073fe1879b9e9b958474b79e6deee57f4fdfeca0cda2895207fa79b685d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／ideaTALK",
+      "bytes": 2850,
+      "sha256": "f39f42c67ca34c2bcdac813c164f79b9fd633e1423675d01712727a4f8a1422e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／任务中心",
+      "bytes": 2828,
+      "sha256": "7dee7c1002fbdd4d0d52fd28c2d5cf6a9829a3ecc53a33166822dd227296f155",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／协作空间",
+      "bytes": 1076,
+      "sha256": "a72d0351971048fa89b4a2053505e49ce54d68dbf23dec65246b62c8d6d36b4b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／工具",
+      "bytes": 1017,
+      "sha256": "c31368d30532827b1dc3553b4d5f2f117e0ef8005c838118f2f70b95ca9623c5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／工具／创建工具箱&工具",
+      "bytes": 2821,
+      "sha256": "a464c2353c715e7daec2faa783937ee164bb0ce2722012780790a64e561b3540",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／工具／将ideas发布成工具",
+      "bytes": 1093,
+      "sha256": "137a54833754617e39ae90ba3e41288daae4829591b2f530a2ae65985940982d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／工具／工具箱／工具管理",
+      "bytes": 230,
+      "sha256": "fb9f7194d14399821241d0ab13259b8e708445fc090080e63804cb0345215a58",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／工具／平台工具使用指南",
+      "bytes": 14893,
+      "sha256": "7e92a5b61592475631625e46058c56bcc964818f0207a56a436fdc57aff2aee0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／快速开始／业务场景使用贴士",
+      "bytes": 6183,
+      "sha256": "eec52433ad37f8d3b477de2cf9559efdbf4c5569b7e0390117ccace1c0227f46",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／快速开始／体验IDEAs",
+      "bytes": 263,
+      "sha256": "430213bb38c0b8e28e478d4898a3d1dd315ae49a2caa6b742a7fcf70ac53a836",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／快速开始／搭建你的IDEAs（智能助手）",
+      "bytes": 3607,
+      "sha256": "889271ff7cbed9c7ba74f42bd1f5a157cb3c591709a46b13fd83fa84d4c2122b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／我的",
+      "bytes": 679,
+      "sha256": "0f0ffbd49d9b6822cde1a87202571a0473d2920230394e9141aa90d47eff6cc0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库",
+      "bytes": 1413,
+      "sha256": "8d03f82b3414384921e7834102823de5a4c1512fdc4325230bee653da0740c8b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／召回评测",
+      "bytes": 2537,
+      "sha256": "134f626098cdf52190b3059af1b9bdbbc77ae74f1efe0f9330e00b8fd8c5e599",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／文档上传及内容管理",
+      "bytes": 66,
+      "sha256": "126071f42af4fdfa9413fb7e0fa3ed4b881d35f1c8196100bed979ed5e9a90e4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／文档上传及内容管理／ODPS 上传说明",
+      "bytes": 3912,
+      "sha256": "d191ca779e0cacadbd9f8efdf5f45f49aba0a32ec7a57369d38e3c75b0262830",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／文档上传及内容管理／文本类文档上传及内容管理",
+      "bytes": 3347,
+      "sha256": "1d5e17ccd20c43ec0a7f072a36ac514b366878e402a51a4fe807228204a6cb52",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／文档上传及内容管理／表格类文档上传及内容管理",
+      "bytes": 2935,
+      "sha256": "b609a217499204b42d5a76b70414881f1e3be466bbadb46d15a0c4e0eeb4ae9d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／文档上传及内容管理／钉钉文档上传说明",
+      "bytes": 3175,
+      "sha256": "9ab87e98bc7a0dd1a23637a3ff43e3a4c6cfc02f57d66523b32a2c981b5b19a1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／知识库文档更新",
+      "bytes": 204,
+      "sha256": "7f5dd129543becd8a0b9a38c47e6d7986a139eb746f8ba49e9b2887e12aee2e7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／知识库文档更新／文档手动更新",
+      "bytes": 1413,
+      "sha256": "16a0503229ee6a2a4d949a68937598dc8638e5f0a17a09ee36fa23c884bc81ce",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／知识库文档管理",
+      "bytes": 1078,
+      "sha256": "48a7c715dff90eebb0afd75806d193fb0609adf3e64ba327a350d84a9e53ae2d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／知识库／知识库新建及管理",
+      "bytes": 4080,
+      "sha256": "b5d937b87fe0d5ce332a3661b01250f12247c0f3f75947306baf25a1f50e6132",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／评测（应用）",
+      "bytes": 1587,
+      "sha256": "e9ef69b051216c23c6ca3eb215ce7d6dc1862035f8fbc6dfff637059fc3adb1d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／评测（应用）／评测任务发起及管理",
+      "bytes": 5567,
+      "sha256": "a4f3957c298123e1d6239c19db78eaee64bed9ef0c0a1002bf7fdf270ad4702f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／评测（应用）／评测数据集打标",
+      "bytes": 1105,
+      "sha256": "7e979b933d8c41f85dfef82908f9e4c2dd541312370b62946a6678665c3c5833",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/产品使用指南／评测（应用）／评测集创建及管理",
+      "bytes": 2643,
+      "sha256": "528c840d821b3c86c7a2c48fd28e35252dfdab070b5ba5842eec8fb21262d348",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/平台内容分享／RAG技术详解",
+      "bytes": 11908,
+      "sha256": "f0e3043d5b747b0c0f3df5906db0ce7d845b1b45fa6448adb3f763ab6d91565d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/平台内容分享／idealab-AI Studio平台介绍&这一年的一些变化",
+      "bytes": 13242,
+      "sha256": "792aba41ef62a3cc9cf8d372fb22ba92f5bd8d764e93e6c317fb6fbeb2153efb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/平台内容分享／拜托了-极客工具箱_玄空24.10",
+      "bytes": 2405,
+      "sha256": "749d9d5fd85b8fad8bc95543cbe67228e023b88626b6202bff7715c818095ce7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／DeepSeek问题汇总",
+      "bytes": 985,
+      "sha256": "d4f3bc7bf01b7060aebbfaf4ed15c2888402e4ccc837a6e4eaa652a65a3d56f0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／FAQ",
+      "bytes": 26195,
+      "sha256": "952b0e862da8335f66bfb69ee9e3e3e646dac37aedbc5b9fcabbda9a8002aa5d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册",
+      "bytes": 512,
+      "sha256": "338d0b831c4dac32d4822ee151c395df40f27c44081b73f2ce3c297c9c39b29c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Audio API",
+      "bytes": 6882,
+      "sha256": "8468bff4ed5ba2c5e77605715188e0c252a644eeeab50507133d13fec0de37c9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Chat Completion API",
+      "bytes": 18151,
+      "sha256": "ed23e748c90d55c2bde74db264772469c7fb5416f97d2841fd994c79853e1e67",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Chat Completion API／AI Studio Chat模型清单",
+      "bytes": 142,
+      "sha256": "e1d4d513804c850385d7834366f565785aa279f8aaee949b507709fe1ab2776c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Chat Completion API／OpenAI流式使用FunctionCall & ToolChoice示例",
+      "bytes": 307,
+      "sha256": "ffaff4fba5876b2096ed7fa1fd62750ee6ac6fbf80741bb5b929928073091001",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Chat Completion API／错误码",
+      "bytes": 2394,
+      "sha256": "9e11586b6de909e396ea36f3333f5f0e21c4e466a175c2bf108396ea52efc704",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Embeddings API",
+      "bytes": 4890,
+      "sha256": "a70b66fa9115d3bcdcde086a730e9732b89dce9ffac52c0db0389bbb43e3a1d4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Image API",
+      "bytes": 5716,
+      "sha256": "a0fe5955ed26a4640a00782ebaac8ffb46c736a9dff9b8fed05a15353ae59525",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Realtime API",
+      "bytes": 1613,
+      "sha256": "45a038e0ace7cab0043e6743f68b6a5006ed68c3e946d72d263e2e52c98f66c5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／Search API",
+      "bytes": 10914,
+      "sha256": "acad2639b64f6dfbc33030bd6741eb3f21da1768555270c7c571ff97312ca57a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／模型下架及替换说明",
+      "bytes": 1703,
+      "sha256": "f3ff1ba635d2c04be5d21319cf7129da27488027eb4fd9d43d26524ecb4709aa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／模型的FAQ",
+      "bytes": 7222,
+      "sha256": "2e9d1cb115ad22572f768d27264148e51153e7cc9dccdf233bf80220a9adb5a1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／LLM API使用手册／模型的FAQ／gpt-4o-2024-05-13、gpt-4o-mini，图片转成token的规则不同",
+      "bytes": 2494,
+      "sha256": "f31b7230e392f55efa4a35475a6e91b69929453f0fb97e36160f27aabaf2e070",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／SDK使用手册／JavaSDK RAG模块使用文档",
+      "bytes": 6959,
+      "sha256": "2f787d34d24c0a8b0ffb5843badf5cc35950e3f705c73a39887039d8bf6e000e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／SDK使用手册／JavaSDK使用文档",
+      "bytes": 8697,
+      "sha256": "8bb01e406f2eae6e222fe36043a6a7fd99040b75b1a55462a29c9c8b4098b1e8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／SDK使用手册／PandoraBootStarter使用文档",
+      "bytes": 3519,
+      "sha256": "e92adcac2097ca187500762a5e8544b516d2f4c54272d6d41ce234a88e9049e7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／SDK使用手册／适配主流SDK和框架：OpenAI-SDK、LangChain、LangChain4J",
+      "bytes": 2345,
+      "sha256": "981ae7bae5d9e1dd754bce7c98fd53ad99b3970a01d01349d5f64b3c0907eec7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／IDEAs API使用说明",
+      "bytes": 11543,
+      "sha256": "32f0768fb25fe0c67f7e63a8ac675393c16ea60952cc4cb11ae4207640f1d6c4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／IDEAs 会话日志数据回流申请（ODPS）",
+      "bytes": 1008,
+      "sha256": "4a2b10eb466012f5c59200365e6be3e71bf5d5631f0efeabf4d3250ebc5ffeed",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／IDEAs页面嵌入_JS插件引入使用文档",
+      "bytes": 6484,
+      "sha256": "3fc76f9990e2b3ea4966d73fc773751df02448dc4a8c706e49f90321131e1327",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／批量任务API说明",
+      "bytes": 5273,
+      "sha256": "5aa9ca3c752edd8bb7ff7a8d1a5ef67eaa798ac04f0181c0d410d450f5ac4066",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／私有模型接入指南",
+      "bytes": 4589,
+      "sha256": "fffe8eae26ad70747380de2b0d397c71fbf10d338c6a6ba235cda79a70971c25",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／绑定百炼AK",
+      "bytes": 1058,
+      "sha256": "29dd967e5c839e5cfe9c2ed0ba2307d64f03862ebef7a4845e3a61864a448b5a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／WORKSPACE／账单日志数据回流申请（ODPS）",
+      "bytes": 833,
+      "sha256": "66f7fc217ec9edcf6a4bb581594f913ba6d1d9cb2e3e42917788f97fda2e8043",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／ideaTALK／前端嵌入式IDEAS接入文档",
+      "bytes": 227,
+      "sha256": "85ffab28498574f2a1027577b91d9c0065cee2d64e2c1caca14dcc0143e347a0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库快速开始／AI-Studio 知识库模块的一些基本概念",
+      "bytes": 4262,
+      "sha256": "bcce3736a46dac1dec39e6135f23c593580b29b29a9b6be50800e5b5c7f34fa8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库快速开始／最基础的 RAG 知识",
+      "bytes": 935,
+      "sha256": "9c95cc1d9b686ed4fe3aedf6d36fc0c95e3c02ebd18e3cefdb133cdc98902712",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／@Deprecated／@Deprecated 知识库数据上传API",
+      "bytes": 3377,
+      "sha256": "1be1a39260189d5106c8c3395b88eb45b75380bcb4d1b9d1b33e7d1c2ddb8e73",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／@Deprecated／知识库文档上传API（最新版）",
+      "bytes": 13012,
+      "sha256": "97617a533c0ab66cfbe0694f6931d230d6c6d9b46a2d0dc77de70a3baefb54ac",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／@Deprecated／知识库文档管理API",
+      "bytes": 11269,
+      "sha256": "74be3bd3aefe5268f4c82c03da9001ab1404e25e3c0f7557aa4f9a3821f91231",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／参数说明／API-常用参数及获取方式",
+      "bytes": 810,
+      "sha256": "2de5a4a3f5c5dd55129a6620deebaaf230793420147dcc31193f7c9ef6d4f1c3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-ODPS文档类文档上传",
+      "bytes": 3204,
+      "sha256": "09e98db1c5ce0fc1441e7af14d60e5083dc33ec8ae9689b266ad43204a163253",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-ODPS表格类文档上传",
+      "bytes": 5493,
+      "sha256": "5a93af9add6f30c37a10830ff1c77b4065a62dcabdf1ee454bf97600136ab705",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-文档处理进度",
+      "bytes": 4188,
+      "sha256": "8866afd790aeb83607bcd5cf8a561838f387a3db9faa96edc58e9423b372c5f7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-本地普通文档上传、更新、删除、查询",
+      "bytes": 6614,
+      "sha256": "aa76c7e1a961a32d87e5c355ff7b5b604f0520c1494acd68338277e9f2546c72",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-查询文档详情的参数解释",
+      "bytes": 2166,
+      "sha256": "96478c47667a9f68de14740973910376ea544f84b9c1b59a609f33b24ef4ce0e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-语雀知识库文档上传、更新、查询、删除",
+      "bytes": 4780,
+      "sha256": "8edb7308661630756073f760e6cb38b096aec018b6b03244f9b305f43cec3690",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-语雀表格文档上传、更新、查询、删除",
+      "bytes": 5004,
+      "sha256": "13aebd771da72c2c7707721fa5551c81af5939097adfacefd0f207cf7f5540d0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-钉钉知识库文档上传、更新、查询、删除",
+      "bytes": 5859,
+      "sha256": "a990e60175de48855ba658e1198f1a05161d02b3dc05f6fcbed6320947f51866",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／API-钉钉表格文档上传、更新、查询、删除",
+      "bytes": 6080,
+      "sha256": "4f67ae668880e36c4e1dee76c60ccf2e74d754d35745420d2a602a5fa21ece8c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档上传／知识库文档上传API-表格文档",
+      "bytes": 1661,
+      "sha256": "f1cd288f5ce5bf0980b509f02668d7869b94d2e330d6bacf72e975b2f2707f9e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／文档检索／知识库文档检索API",
+      "bytes": 12683,
+      "sha256": "6ac7dbf8ce1142dea61fb3dd9645e7aab811305ba9f0932d190a9efdab458683",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库 API 的功能及其间的关系",
+      "bytes": 470,
+      "sha256": "4e5fc7845917b08151e50e413a9fefc47b3ec822ddf58ed0900642e029f26bf0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库 API 说明",
+      "bytes": 6413,
+      "sha256": "9bb72b078a489f8a4944d2adbe864a447b54b0f5f029c38e8445c88dd004176d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库-基于工具实现自定义重排模型、切分模型、向量化模型",
+      "bytes": 1905,
+      "sha256": "ba63992acff5fde9350394ea4a4713d9e58248ce41c747b4af807d4c29a8275b",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库常见QA",
+      "bytes": 5439,
+      "sha256": "4dcc772df60ff3d8f63f6498784e7aa24b9ecc8ded9e041c7447274413b9173d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库常见QA／QA-文档切分相关",
+      "bytes": 346,
+      "sha256": "c15c809bb338da09b0d2c91b3ea2cb26525c4da4bb17c065970f8aef8cdd052f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库文档切分API",
+      "bytes": 21441,
+      "sha256": "2c8e8e82fe1dcbedbe272a6aa313f6808a70e7ca1d488522feee429440d125bf",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库管理／知识库创建",
+      "bytes": 1682,
+      "sha256": "a352065cb3c4a578bfb4235e23a119f3a70826059a34141247551e258307925e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／知识库／知识库接口列表／知识库评测",
+      "bytes": 172,
+      "sha256": "3db1ceb23db50bd56a4e6204fe40b03e3911926004a7df02818195f16e6e3243",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/技术文档／账单接口使用文档",
+      "bytes": 1719,
+      "sha256": "f3f9b82fcf7c426f25107aed5e0148982f0c67020ef2e0b25b51586b0c727d90",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/／AK申请须知（AI Studio&API）",
+      "bytes": 280,
+      "sha256": "c1c06b450788d50fcb3a8d30cce49f5e571b19eed25f7ea322ce0d7b967516e6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/／语雀→钉钉文档知识库迁移通知",
+      "bytes": 350,
+      "sha256": "fee7b166adcafa32a5ae894039890f23eb418b35e21c768c9f041da1893e05c5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/AIStudio/／📢版本更新提示",
+      "bytes": 13360,
+      "sha256": "ca9fb8cecd8228c9e72f964922e228bd63ef527dc4a74c39322af912e964043a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/MCP测试文档-指定文件夹.md",
+      "bytes": 210,
+      "sha256": "92f13c472b3c429ec396c904e9db66935713637111c0d3b7870fedf978357b37",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/OpenClaw工程开发实战指南.md",
+      "bytes": 9318,
+      "sha256": "d3a683fab6c62ccd48333849ceb0cffa72971254b7944b86a509c8e8f506751e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/00_README",
+      "bytes": 2108,
+      "sha256": "a286798fc6bb9aa6e0e9a31351d1fea52e646dffff87550daeb149384ad68f4c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/01_quickstart/environment.md",
+      "bytes": 1051,
+      "sha256": "dc288f1c991b9152231a9e2718fdfd24775c384ac417c1c6f6b5069c6102a2b6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/02_workflows/overview.md",
+      "bytes": 1791,
+      "sha256": "54a593556ce7b3874c22234ab4cb1c728156c5f257feda978291d582d221c69b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/03_ai_models/models_matrix.md",
+      "bytes": 1569,
+      "sha256": "6270a6b4fb3ba19a53ff61b5a0bbbcf4f8d1efb3ad2599797e6ea4f9486c47e0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/04_data_architecture/state_machines.md",
+      "bytes": 1459,
+      "sha256": "dd7ca83aa7ebbff09f07af13af6256fe4910a6781ae1a6384c19fac2f042a724",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/05_infrastructure/cloud_services.md",
+      "bytes": 909,
+      "sha256": "e71829d4dd95c13f3674e7ef8c8e8598ea01f58e23bad476510d724cc6467c98",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/PICPLOT 知识库索引",
+      "bytes": 2108,
+      "sha256": "a286798fc6bb9aa6e0e9a31351d1fea52e646dffff87550daeb149384ad68f4c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/README.md",
+      "bytes": 2108,
+      "sha256": "a286798fc6bb9aa6e0e9a31351d1fea52e646dffff87550daeb149384ad68f4c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/index.md",
+      "bytes": 25,
+      "sha256": "72c6770a021d93c288c55d826420456f575ca6581a049df2e84bbbdd402de510",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/picplot_project/project_summary.md",
+      "bytes": 4120,
+      "sha256": "cd7b2aea4770338a61474f775880bdb49a9f06cb97e4b95ef294c7fa44ca003c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/PICPLOT 知识库/picplot_project/vidu_migration_requirement.md",
+      "bytes": 1350,
+      "sha256": "84450de59b8808b49d939fa45db2c330f6df6cc3ecab79a7befaed47d255e143",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/ProcurementToolsSelectorComponent需求文档.md",
+      "bytes": 5462,
+      "sha256": "58df2ec8a60349d48550fe12c77d9749c0759682cc830a8c7eb6e5fdcad45941",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/YACS部署器业务文档/yacs-deployer-发布完成清理流程.md",
+      "bytes": 5771,
+      "sha256": "a95d60f9f896acb0a94046366c44ccc88ca1a1b480b40b358ba1e5ac7c2fd9d1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/!!!雀儿空投测试!!!",
+      "bytes": 94,
+      "sha256": "8c6431f4fa9e3ad72e5f2840d7f8a6e528c3c2e80cea06fc943d5429c4f1b278",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/01_quickstart/environment",
+      "bytes": 1051,
+      "sha256": "dc288f1c991b9152231a9e2718fdfd24775c384ac417c1c6f6b5069c6102a2b6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/02_workflows/overview",
+      "bytes": 1791,
+      "sha256": "54a593556ce7b3874c22234ab4cb1c728156c5f257feda978291d582d221c69b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/03_ai_models/models_matrix",
+      "bytes": 1569,
+      "sha256": "6270a6b4fb3ba19a53ff61b5a0bbbcf4f8d1efb3ad2599797e6ea4f9486c47e0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/04_data_architecture/state_machines",
+      "bytes": 1459,
+      "sha256": "dd7ca83aa7ebbff09f07af13af6256fe4910a6781ae1a6384c19fac2f042a724",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/05_infrastructure/cloud_services",
+      "bytes": 909,
+      "sha256": "e71829d4dd95c13f3674e7ef8c8e8598ea01f58e23bad476510d724cc6467c98",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/README",
+      "bytes": 2108,
+      "sha256": "a286798fc6bb9aa6e0e9a31351d1fea52e646dffff87550daeb149384ad68f4c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/picplot_project/project_summary",
+      "bytes": 4120,
+      "sha256": "cd7b2aea4770338a61474f775880bdb49a9f06cb97e4b95ef294c7fa44ca003c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/PICPLOT知识库/picplot_project/vidu_migration_requirement",
+      "bytes": 1350,
+      "sha256": "84450de59b8808b49d939fa45db2c330f6df6cc3ecab79a7befaed47d255e143",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/picplot/雀儿测试文档",
+      "bytes": 6,
+      "sha256": "d8b8cbbec1ed15a6679650ae561b127dc879340d3b6bb2105fc68d397489cd5e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/测试文档-淘宝购买系统.md",
+      "bytes": 451,
+      "sha256": "9d941ed5ce3bbcfa5c8499295bb16d92b118760216ffa66ead217e34c837ff8d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/aistudio/测试文档.md",
+      "bytes": 75,
+      "sha256": "1d75afc872bfb328bd479f120a2a6634987752b58d3da6831447485b951d532c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/0.平台介绍",
+      "bytes": 5741,
+      "sha256": "b811590bb6fbfa3ce3da414b012e7cfc4850d763d44f998bc4422f40d41b731d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/1.业务接入指南",
+      "bytes": 5031,
+      "sha256": "1752d214a3cdae8edc7d8f1228f3d3c9ef5f02327acdc9b87a862f8027e9d28e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/2. A／B 实验全流程",
+      "bytes": 4878,
+      "sha256": "cf81112fc500d6740d9e5a4080b4ada06004c722949aa6aa05a1180dd3891522",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/3.平台管理",
+      "bytes": 2,
+      "sha256": "75a11da44c802486bc6f65640aa48a730f0f684c5c07a42ba3cd1735eb3fb070",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/4.实验案例",
+      "bytes": 3910,
+      "sha256": "04c242de0562cf612655d2f876813712a8c6cd191d35e45fda972b5207207701",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/5.A／B 知识专区",
+      "bytes": 730,
+      "sha256": "cd7e114a2c7b43c2f3d8fae44ee2506f1a6fa24c195bd0978590e30883722a76",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/7.常见问题FAQ",
+      "bytes": 6779,
+      "sha256": "ce0043b227835ca96f81b8eb3ef191ecbb3a1b646ab1e8d65970473815c75345",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/8.二方平台接入支持手册",
+      "bytes": 2023,
+      "sha256": "a07f176047f89b81233cbfa450d02f7c9073fd8960c6ab0de85a411a3b9e2f28",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/【重要❗️必读❗️】一休平台服务等级协议(SLA)",
+      "bytes": 19313,
+      "sha256": "a8f906fcdbb2a95679f7002d6e3ce8807aa2b3f43fca992decf50fec6eb4526b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/一休平台服务BU收费细则",
+      "bytes": 1107,
+      "sha256": "0cd84f1722aa01e6c6f1ed90b1946e748bc0ba2d869b016ffbc41f5517953ecc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/Rax 接入文档",
+      "bytes": 15151,
+      "sha256": "89f90193b2ccba7eb61b01d691412b253edc18689407dfea7bf08c0c464a6f77",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/React 接入文档",
+      "bytes": 13773,
+      "sha256": "2857d8c70e52a7477162c9cea31cb717bb7917de74686357972859a63fc4e4ee",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/rax多端小程序 接入文档",
+      "bytes": 6274,
+      "sha256": "986d838fee789aca1ca33f04003fa93af54e82e07abb1986234aa991508809d0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/创建实验（2.0版本）",
+      "bytes": 685,
+      "sha256": "19b957d9232d1d84c67b842f9e045411af5a672b6b12121c9f39055008850cc1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/废弃文档",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/淘宝／支付宝小程序 接入文档",
+      "bytes": 12370,
+      "sha256": "ab3f262cc446a348cf9286204ccd6a7cabaec90fd2419d31f486948e6555fee4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/历史文档/离线分流",
+      "bytes": 1392,
+      "sha256": "5818ec1207b9eb48c19dbaa4d7c913dd8991155158e9ab04dacd3a1f476304cf",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/封网通知 & 一休大促实验操作规范白皮书",
+      "bytes": 9137,
+      "sha256": "1ee38afc469a6334848740a5f0bb5562a7915604aedf3ffcf77f4db7ba213ac8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/evo/EVO（一休）实验平台用户手册/更新日志",
+      "bytes": 2180,
+      "sha256": "48558fc595c0971f9c3736d4eb6dbebd01690fd465fc3dc49fc6ab2f66c122ec",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／产品简介／Aone FaaS产品介绍",
+      "bytes": 1926,
+      "sha256": "7bb2496d4db9aea6b775c5665353dcb695fb1f2d187b04bb3e61bad896d2c040",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／产品简介／AoneFaaS 运行时",
+      "bytes": 1207,
+      "sha256": "538e205b9122cbf035022a03eccbcab8dbec4b83ef1f5c4d7e5a8b036db50c3a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／产品简介／什么场景下不适合用函数",
+      "bytes": 366,
+      "sha256": "7b0919b6fe3d7630be89228858474d49208e387ca465fcd663b1aa736e5edf56",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／产品简介／快速上手",
+      "bytes": 1782,
+      "sha256": "11a0bc93af6de23692b21880abe1f0082346921d04fbc69e801d8731def10c8c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／内侧方案（请联系平台使用）／Aone FaaS 支持 GPU 类函数",
+      "bytes": 2169,
+      "sha256": "240f7c7f3edea3620426294f2d2faf130cad3c11565041f2be95077241bed318",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／方案定制／五分钟使用社区模板部署 node 函数",
+      "bytes": 3233,
+      "sha256": "9dffecd976fb4b046b22a62716585e91825535d72b4fd7a7d6ef6c840e88c851",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／方案定制／在 AoneFaaS 部署存量 O2 应用",
+      "bytes": 1056,
+      "sha256": "a1ae1892d491b3c32f67bd2fbb11ed970ee701a0f578d9465647354ba86f9820",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／方案定制／自定义脚手架",
+      "bytes": 749,
+      "sha256": "3bdcd9356fb54405865b4797483218a0bef4a9d9ab0e9d5cc0f868a3b62ea384",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／方案定制／自定义运行时打包工具",
+      "bytes": 2033,
+      "sha256": "1fe5155b4886ce029504324abe0f6f097974468698171cb716d0668728e4802a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／最佳实践／Python 获取入参",
+      "bytes": 243,
+      "sha256": "fa5f283bc0d7732c9182cc47a4811b45b54a36f2eb4e909bb21f61f64ac830d9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／最佳实践／多语言触发器配置",
+      "bytes": 4006,
+      "sha256": "db3144d92860b2f467c303c5e5f288542f42831a3dc67878612bce5d7ae9aa00",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／最佳实践／实现流式和SSE",
+      "bytes": 752,
+      "sha256": "9f28c8df379f86d6dc5c49d0e7cfa33742a4102176effe1fb815ce8b91d1363c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／最佳实践／获取当前运行环境",
+      "bytes": 849,
+      "sha256": "72fabced611437d2de236b59699953f6f5a31466a8bb6ddf88d11ee5bd45c810",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／AoneFaaS 报警帮助文档",
+      "bytes": 3020,
+      "sha256": "99373ce7cce804b31af8158861fc9ad5c6b8edc71f88bc3cd2b2329a2716102b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／AoneFaaS 日志",
+      "bytes": 1840,
+      "sha256": "5bcd6d5657d607b8de5735d8057d60df207c7e2d67cb26990939a842c37af72f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／AoneFaaS 监控",
+      "bytes": 533,
+      "sha256": "b67dd76328d0125f332abf9ddf3cacb9df036011003245ee8cb9f90d3f4f59be",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／函数容量评估",
+      "bytes": 2700,
+      "sha256": "87b6d4719870caf08cc9b514c4715fb3cab3800a7dad3732d4077cc76e6dc0ce",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／函数常见错误码",
+      "bytes": 2956,
+      "sha256": "627dd0714cb57aa197ac13887b3541f3162f5a70957b4ae9fe4b8dd430c9f763",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／函数并发度与容器范围",
+      "bytes": 2560,
+      "sha256": "bc265a8a12c189d10d25cd80c598bb233ceeb84f27ec6d2022d0a2a3e9c7b49d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／函数环境变量",
+      "bytes": 302,
+      "sha256": "a300073eeee03db2e7ed3efe548b95db0e71e4dc346facbbc2f311d4a7018303",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／函数部署单元",
+      "bytes": 1155,
+      "sha256": "dce38c99aeb8fff2b270a018382fe42fa888e684d79aeeadbf6be6335a6cec16",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／更改函数部署单元",
+      "bytes": 1376,
+      "sha256": "27b4b1494c51a9f0f50c4e3309ce44c330a481fb926a643c71a79f4ab914ada7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／研发平台／自定义域名",
+      "bytes": 1246,
+      "sha256": "cd7a5345d6459350961738ea230e19d53f39fd9aaea5f28a98c5fd9d85715169",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／域名接入 & 站点管理",
+      "bytes": 4136,
+      "sha256": "34df28b569dbbae3b7c15ea626a5d8787bd5a427c184727a16b0e9376429e480",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／容器应用快速上手",
+      "bytes": 11589,
+      "sha256": "74762b9198332da82adadea63765d29eba047f93a90af790cbf3160d2b8de5c6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／容器日志",
+      "bytes": 1503,
+      "sha256": "17c528857fac281f6cba997725d20e70d89ad1f03ba8165f4cda97ee95a7dde4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／容器预留",
+      "bytes": 3592,
+      "sha256": "c138bda5775d5bea67c956c7dc6ae376aa9a32301154cf170c856b7963e6f46e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／监控",
+      "bytes": 781,
+      "sha256": "2a71e39967107b03172f73b6c5332c343a6b7fbd308f3cc3a50aedb2b45adeb1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／资源自持（内测）／什么是资源自持",
+      "bytes": 1848,
+      "sha256": "f10fe1a2ec322ad6566724e2d7ce9d39d4c56b1cfcca8a3eae5c3fb1e72041c0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／资源自持（内测）／如何进行自持接入",
+      "bytes": 1038,
+      "sha256": "6be050700cfb0d78e213476b6fd86bd3472260649c8274c5b6c9614217d7571b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／边缘服务ESA／边缘容器介绍",
+      "bytes": 2201,
+      "sha256": "7663a8f4b787964138e35d77bee6688afa8968e99f2da83ad5d37c2c1f464f8b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／迁移指南／O2 FC 基座迁移指南",
+      "bytes": 2125,
+      "sha256": "1f9841ab600cad22d0c89af1598cf83df3987af36c62e5a587587049a284cb46",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／迁移指南／O2 FC 泛域名复用",
+      "bytes": 1296,
+      "sha256": "a8300652e61f55b72cf3b53a16d76871c8e7f29bc5aeb55fff2a4beba6a684cb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／迁移指南／O2 FaaS HSF 切流帮助文档",
+      "bytes": 775,
+      "sha256": "14ee212829539297fccbde94a0585d851468cb214f47f7d53f36027d20953fe1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／迁移指南／O2 FaaS 应用 HTTP 域名迁移方案",
+      "bytes": 3916,
+      "sha256": "3f86a1d3499febb4c75965139d0d5ddf8230bd82289c271a673a42e0f39ba5c7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／迁移指南／O2 域名迁移复用（存在BUC版本）",
+      "bytes": 1848,
+      "sha256": "bc888c9e0eef7cf3cb532dfeb7baa6dd2b31419611cfe40b03e322f4514c1427",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/Aone FaaS／迁移指南／判断HTTP域名指向AoneFaaS",
+      "bytes": 245,
+      "sha256": "aafde65a56dd5c91773b792072e5a8e52e83ce4ebc8cf6dede7a045c88ae9012",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／函数相关／FaaS 老 alinode5 项目升级运行时 nodejs 版本到 16",
+      "bytes": 819,
+      "sha256": "4d7a3eba6bd0395a47d4ce617e78faee61bacdb40185bd65b2fd5654b3d9e8b0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／函数相关／O2 Faas 计费项相关说明",
+      "bytes": 1655,
+      "sha256": "1529f0d16d6246b00ffd31bef125931271a811f580cdc7db68f1d97caa3b4259",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／函数相关／函数查询请求日志",
+      "bytes": 1458,
+      "sha256": "84e14904fea94198ec2cb26b28f2e42dbb197129a28fa88a618d613a8d8e58cd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／函数相关／函数海外单元部署-新加坡",
+      "bytes": 1245,
+      "sha256": "cca42164f68e69650f2e6d16fddfc8197f81e80fcdd698cb37cba5ebc594263a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／发布规范／为什么不允许发布注释到生产环境",
+      "bytes": 3637,
+      "sha256": "d9f831586fa0023ba36bf0b18373251b302613d7a8bd4e4c28f7cbab2c38284f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／发布规范／为什么文件大小严格控制在20MB以下",
+      "bytes": 2726,
+      "sha256": "b14f8db4388be3d79c6eebca2c4aee7af98e1d7b7f204d7f54890affade83b52",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／发布规范／为什么要限制CDN发布文件类型",
+      "bytes": 1634,
+      "sha256": "46027c18359901baed5b4f34a22f257ac7ba5a705752da563d1c50b17e656f5c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／发布规范／禁止擅自使用代理应用到O2侧服务",
+      "bytes": 872,
+      "sha256": "f761dfc672aac292bbab33e2b2e47110dcf699956dcd3a005220b6010e61d676",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／平台操作相关／XReplay 录制安全公告",
+      "bytes": 278,
+      "sha256": "f702641350a2db92ef158437cefbc1e54f0b762672b4cab9766e1e1bfa779121",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／平台操作相关／在构建时使用无头浏览器（puppeteer）",
+      "bytes": 1700,
+      "sha256": "2fb5f54ea98a973da9051c3d84fbc4763f1574e1b8c576c8da7fd07c04c5ea19",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／平台操作相关／如何批量转交／接收应用负责人",
+      "bytes": 1319,
+      "sha256": "934508d0c7b28cfb323ee9c1153826b33561f5a0cf4424127a9894d86c059ae6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／平台操作相关／推送版本号边界说明",
+      "bytes": 505,
+      "sha256": "f26320bc90945264f6fd83b63b6d8a2150449b121175b5abcc1b84920d3772ad",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／平台操作相关／迭代版本号推送逻辑",
+      "bytes": 665,
+      "sha256": "c94d02dd70c0baa2187f4383eb468fb429777d9381bc44b6cd85b82fd80a63e2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／源站相关／CDN 域名资源处置 FAQ",
+      "bytes": 9808,
+      "sha256": "6d8f81fd954aaee1ab31086bd63358fa6bc021e5bd50a13a16a5f6c4b3c0f74d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／源站相关／O2 CDN 及 源站 404资源治理优化方案",
+      "bytes": 6958,
+      "sha256": "da1ea85024dd69d51514180fe2cc106c5b2d41bfa9f289d2c34ef6fab0ff4834",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／源站相关／O2 源站 CDN 计费相关说明",
+      "bytes": 5232,
+      "sha256": "5921ee812a8d97c15bb0d2f451b7b077196c8507852690c2c012730e517eff87",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／源站相关／O2研发平台CDN相关问题的应急排查SOP",
+      "bytes": 9006,
+      "sha256": "dd8faac882b6805b9db48a3c737ce7728221b219d39af07d85b46e55c07be780",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／源站相关／如何查看CDN证书信息",
+      "bytes": 1160,
+      "sha256": "7681e3856b6014ddbf326158a3335b134c66223944f3ea92a0d64ef2c336ad58",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／研发类型相关／Assets 开发测试环境域名迁移 FAQ",
+      "bytes": 2694,
+      "sha256": "4e9de3331e24dabbb7e7652bd68903d03f4aa9a71d28bb0bfa6dff565c38049f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／研发类型相关／SSR 应用替换测试域名为正式域名",
+      "bytes": 2358,
+      "sha256": "196ead358eec811ad4431dee5f6fa7fa13db452018ac5ee199d21297e7c6eac2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／研发类型相关／Web一体化站点OSS资源申请",
+      "bytes": 914,
+      "sha256": "626269991f1a01525f407d7493cd6192c5cb5ac33adbea2383fae5e69ffb8b03",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／FAQ／研发类型相关／应用类型大全",
+      "bytes": 2753,
+      "sha256": "1d920078c5c7d2016db6404963ef141046558840a3776f26d36653f3ac1b9ba3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／主干研发／使用指南",
+      "bytes": 13564,
+      "sha256": "d5a7010d17406d930d231ad5dc199d833c1a4b8c5d42921508a88c1d0825f8a3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／AOT",
+      "bytes": 176,
+      "sha256": "2b81e878f8f3bcf21b4255fb8d3336bee9c5bc84ab6ec78ba958942dfbd59404",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／Node 版本自定义",
+      "bytes": 3721,
+      "sha256": "d92d0b95292d1bc251f3c0b85dbd3a8d07bf30b8aeee02714e4c5e4d507b2ac5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／云构建数据洞察",
+      "bytes": 4697,
+      "sha256": "adb065790a61db26f3f010add369360a4880cb60381379c0d41da9d93e785cf3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／云构建配置",
+      "bytes": 2483,
+      "sha256": "5e3a2081c28b0059e73c7d19afbe2f1e1fd134df51a89f283a27fbc90cffe244",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／依赖助手与锁依赖自动升级",
+      "bytes": 9763,
+      "sha256": "deeaed21fe3669923ee2a4ef714396c777ec5841747b37d68ea1b0a6350fff23",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／依赖缓存",
+      "bytes": 2296,
+      "sha256": "570d4123eb277e94f5d97d84865d2d237a7381aaff341d7d5d08e0babe36c215",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／依赖锁定",
+      "bytes": 18680,
+      "sha256": "631120ac2812ffc2b833098763478419b32083abd236e3a305db8da93ac309b9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／关于构建时长的说明",
+      "bytes": 380,
+      "sha256": "2df5a73c8e12e856f904de3e91cabe6b10bd299f2dafcd189b678245684bb833",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／如何接入云端编译缓存",
+      "bytes": 11417,
+      "sha256": "fde6ecc59b264b4b51a47215c23c65293c719978839c7663b46fca032c4be88f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／平台默认开启编译缓存",
+      "bytes": 3339,
+      "sha256": "a8babd0568b5b8179871d294415b15fa0bf2a2f1e069e89f499d22e23daf9aeb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／构建详情",
+      "bytes": 6764,
+      "sha256": "d25fcd0db5cbdfdd7ebd8c1b30abac43a5b39de81782294764e6d31eced699be",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／云构建／构建阶段化",
+      "bytes": 4187,
+      "sha256": "c471097a19fb35edeb15587295a50faba17508cac06008e32a71a250cf90c170",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 03 月产品更新",
+      "bytes": 1685,
+      "sha256": "cb1ef000f2d090fc4386853557468c54e4375fb7fb3d7cfccc5250a655e0d8a2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 04 月产品更新",
+      "bytes": 1917,
+      "sha256": "cb3d75b7d4d8afef5f49501a280a5c6fa09a4d3fd563fd8b7ac4f118856db26c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 05 月产品更新",
+      "bytes": 4075,
+      "sha256": "9f7d60a8463476dbe69e5ef4074d4af2e8a088b1679e57eb5c89e1c5070bbe26",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 06 月产品更新",
+      "bytes": 3393,
+      "sha256": "9545737b9affe0457aac4eca82117bda30e372e789af0087b779a80fd4ae2471",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 07 月产品更新",
+      "bytes": 2607,
+      "sha256": "64dbbcd4567c01b1599f935dad49a4648d122e329bf109aaf284be60f0adb6f6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 08 月产品更新",
+      "bytes": 780,
+      "sha256": "52b192c9c02df2a2acf5d10d6f620e836767b320ea44e114e1513736e4dcf5e0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 09 月产品更新",
+      "bytes": 2636,
+      "sha256": "4978efae9f81d4c3f96f0d98ba84de5991ceee753533a6cb96a0d34c6a4001ab",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品动态／2024 年 10 月产品更新",
+      "bytes": 848,
+      "sha256": "41ffa7c37427b50dab078b365aca65ff6c57dff63218a409e939132ad8c4c228",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品简介／平台介绍",
+      "bytes": 15741,
+      "sha256": "26c43f5701529d42835e90180a75334ad4af42ec2401e1e24a8de81f3a6379b5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／产品简介／术语库",
+      "bytes": 2630,
+      "sha256": "1ba07fc5e0b353db5c9112ce9e55527d9cf4d9f7b54f8667babe4119c26f682f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／体验故事／体验故事十一期",
+      "bytes": 4966,
+      "sha256": "3550fa7f370a7ac44bcb39220900ef41e406a06d1a5f803c44700d2000e23d03",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／变更管理／变更创建",
+      "bytes": 994,
+      "sha256": "5b41425af533825747886f90bd1718cdb313c687e5f3e072155143d048096862",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／变更管理／变更概述",
+      "bytes": 792,
+      "sha256": "7301aa20ad13032280ade37a3ced0009f0faabccdc8f518e9cce63d11b5e743f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／变更管理／变更设置",
+      "bytes": 404,
+      "sha256": "c77bfa314f655ad7408eb011f94f9330a15d6b705cce5a7d376827cffc35e8d2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／代码评审",
+      "bytes": 3441,
+      "sha256": "58d775eabe6261e68ad35fda4a968647390c6abf1d46236cd6ca296d45f9d925",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／应用／应用分析",
+      "bytes": 512,
+      "sha256": "31db2613f36e5e39a8ffcf046411178f11c20847f9186abbd134aee56f3281ba",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／应用／应用列表&类型",
+      "bytes": 1518,
+      "sha256": "091dd23e61a663da937e17a4a787ac908b9a296b4a608ab935cfa93461ef212b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／应用／应用规则",
+      "bytes": 2128,
+      "sha256": "f2246a2ce666830aafaa72a95636973ebaf1330a5e8a558d6dce2d17def11580",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／应用／应用订阅",
+      "bytes": 2448,
+      "sha256": "fc7dc7d43058846119610eb1a1611a82a435a79171ed5229735e674bc100a960",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／应用／质量检测",
+      "bytes": 2270,
+      "sha256": "99bd5900b1602e978fb6c9e1de4bbb46b48f24df3f97d4b0705fd5fae9fd8e01",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／成员管理",
+      "bytes": 438,
+      "sha256": "5d15c50fd91371e79edd83677550609ad6d03012a5abbda5f05f85425fee16fe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／概述",
+      "bytes": 925,
+      "sha256": "3fc008d43c2c97f5ef1b9948ad6fd4c47698c0e7bd3a7f07926cd6b4c1545e0f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／账单分析",
+      "bytes": 607,
+      "sha256": "13502e6473aaef4b207965a79dddc7abb2499f88009c91efee3b7bd186cd7a94",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／资源管理",
+      "bytes": 1208,
+      "sha256": "63082efb3f3653417fd9b55414a9d527114456a2ef518d93b450f3c21eefdae9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／团队空间／首页",
+      "bytes": 1117,
+      "sha256": "6c88c9e10ddbfa2ebc0f5b286d943b072a728adc346cb6af11bc6fd53c383103",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／平台工具／O2 命令行工具",
+      "bytes": 2952,
+      "sha256": "58bfab95159c9131dd29d83fbf244bc038a0cd318a43de2d006dd3325d2b1520",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／发布设置",
+      "bytes": 4394,
+      "sha256": "f4c645e7dc763732b22f3888420265ba9936063aa6fe4ef1ccb05fd45a71a14b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／基础设置",
+      "bytes": 1455,
+      "sha256": "534ff2c5a4a55645fdd325e60091b7caeec06417cafb39d34cb59e2829ff2896",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／应用创建",
+      "bytes": 4734,
+      "sha256": "10dd606028f14723d378ad47f2bf9d7aed7315f26db9c7bb813c3363bbeea1cb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／应用概述",
+      "bytes": 905,
+      "sha256": "10ffa25827bda7db57d197b7acfeae7edd546a93a576bb63c3b1b9601d31a25a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／成员管理",
+      "bytes": 1024,
+      "sha256": "9094107de59c789a709ccb64731bf1ee8d78b0f9b848c0985f9e6342078e4e1a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／更多功能",
+      "bytes": 339,
+      "sha256": "30f4eb7ad9097134fe8d291db02a71e760888c7adf6b28eaf8d25f72d1adbc51",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／通知设置",
+      "bytes": 1581,
+      "sha256": "a0caef86bbfa98b3b03955c9ad6e37ec2bd6c243ecb163567f9e02dd84252945",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／集成验证",
+      "bytes": 6052,
+      "sha256": "80163f82f68d81eeaf55e02d57b046539ccd20ca79fed6ef92d0f27b7019dc63",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／应用管理／高级设置",
+      "bytes": 2122,
+      "sha256": "ae6f6d9a79c852d657dec7423269a52cc5813ad946e367e7c1647c19e2494537",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／开发指南／metaq 消息",
+      "bytes": 2021,
+      "sha256": "b787c549ffd9fdd284d76a756114e21e49bd7c1b8a2cb4820e8705503f358807",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／开发指南／离线数据",
+      "bytes": 6021,
+      "sha256": "e5c7976e8606762af8a5da33d8da5eac897311c418ad4c5d56bd178d2c1696f7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／开发指南／自定义异步任务／线上卡口",
+      "bytes": 6863,
+      "sha256": "d91ee6ff32beb614e993ab79bd334e5b04cca398f031f466f1fa1b55d0fb6eff",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／归档／AI 生成单元测试",
+      "bytes": 3610,
+      "sha256": "9fcbe55bca763953229084bc0057870c2bbbd279bc81604ef5aaa88496ba8e4b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／归档／自定义质量插件",
+      "bytes": 6592,
+      "sha256": "3d7b94a5b51758834ba7de3b68f7559626db7ae3910bc25c80935c3126423eba",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／快速入门",
+      "bytes": 9140,
+      "sha256": "e5f7b7e976375b48e98574e7bca49a14203f894fee3b6a340a89144e9e1a50eb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型研发类型／小程序",
+      "bytes": 7631,
+      "sha256": "a9374bccef157f129e43e28d78471b79087387a26370ad7788a4972d255dcdd9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Assets 研发类型／Assets Plus",
+      "bytes": 7903,
+      "sha256": "412b504b1dcfb9779ead1697e227d4d23de02fa67b676d48fd6985788c68bf89",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Assets 研发类型／Assets 灰度覆盖式",
+      "bytes": 3897,
+      "sha256": "ca1b86a55e4d78632999978f79f6aff0e51415eb6b6dcbfa156ab877dab480e1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Assets 研发类型／Assets 覆盖",
+      "bytes": 2092,
+      "sha256": "cb463452fca1c507f0c355f1c8e920f81530fb10d6c91763453510ac4f213ee7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Assets 研发类型／Assets 覆盖／Assets 自定义 Header",
+      "bytes": 797,
+      "sha256": "f86d51cd8bb842254b9df84af127533055d10effff85e415292c1530e64b0a66",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Assets 研发类型／Assets 非覆盖",
+      "bytes": 2253,
+      "sha256": "85f9305e88a15b329533efde72f87a7291942327afb414adeb32e569302b2c2e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Assets 研发类型／开启线上构建",
+      "bytes": 2929,
+      "sha256": "bc9177669e63ab346f210a2e51c264a6ba5f8a637e949f14c547297e9dbb4e8f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／ER常见问题",
+      "bytes": 1606,
+      "sha256": "5c80a25ffbcf42fe964a188b35664c1bdf87c763dc1beb80ecbcc9687e6ca432",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／EdgeRoutine",
+      "bytes": 9180,
+      "sha256": "00b4304fa595586108f4674bdcfd8f47ef46f60cb4c41af2f9341619adb1791d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／主账号给子账号授权 CDN、DCDN",
+      "bytes": 1334,
+      "sha256": "8bba24196ae7fdb376d35a60f913697b22c1d11d1bb06a78f15a4ac5a98acb3b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／域名与边缘程序绑定",
+      "bytes": 1009,
+      "sha256": "84e4a9a3e9034cbf37ce2ee17369fecb4a9e99cdc92f60a5f07d76d1eaf36dfe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／域名接入",
+      "bytes": 3755,
+      "sha256": "ca7f9212ecfe08d03023454e8b2b959871c59c359ab571320a08f6cfcd236377",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／程序发布与灰度",
+      "bytes": 2684,
+      "sha256": "7a97005cd7f2f13140a0d72e84275c995d33d381f5422ae894b39d175ae2399d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／程序版本回滚",
+      "bytes": 541,
+      "sha256": "d3ccfffccf56677fc7c0c54c142eeab9aad66ec8ce5ff70a496c1217404db08e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／ER 研发类型／程序管理",
+      "bytes": 2066,
+      "sha256": "b15646810fb2efcfbd5b83a3fc14e2557d45693073c8e8a5ce48547f999cfbfa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／TNPM 研发类型／TNPM 单包",
+      "bytes": 7421,
+      "sha256": "fe8a1a02f8f374d1885e994032dc5a3aac813decec293bccfb2a3fc9e0aba68f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／TNPM 研发类型／TNPM 单包／自定义 prerelease 版本号",
+      "bytes": 2974,
+      "sha256": "765fae08ecf5d62e59a8f3686cd235758952ca6ddbcb50aaf8b034753d51f158",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／TNPM 研发类型／TNPM 多包",
+      "bytes": 5861,
+      "sha256": "3e4549ec82fa525e1d451898271fb6b6dab09f76b57f62a129e078c2d8f2080c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／TNPM 研发类型／TNPM 多包／自定义prerelease 版本号",
+      "bytes": 3004,
+      "sha256": "3266fb9955d733c44384597c85b4d95bd0245d941f6b8debf32c7a4863d02682",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／TNPM 研发类型／TNPM 常见问题",
+      "bytes": 448,
+      "sha256": "89dcecb83517f3fb30ba27f92a2529c4e71da6356d2f0661b2c9d34481dfb7de",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／TNPM 研发类型／开启 TNPM 日常环境发布",
+      "bytes": 1248,
+      "sha256": "ce9e50850af932e5fc42614457a04a4d2c28d178aef8783a9b354f3e5daf0597",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／SSR",
+      "bytes": 3186,
+      "sha256": "16c56f28d0a71ccf750e19c5fd54c3258f316acee275110261b52412cec19914",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／WEB CDN资源刷新&预热",
+      "bytes": 1320,
+      "sha256": "06b978f88de7240d50b9172337baf3719839a7f53636134814220dbd4e1acaf1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／Web Plus",
+      "bytes": 6456,
+      "sha256": "d8f0199e69224aaa37c1f21b28176044e1b0fec74ab6745ba47c1f95ef90945e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／WebApp",
+      "bytes": 6017,
+      "sha256": "376c9f64e11b98ac3dd50a3d14de1b6d34dba76e1c30b5378372bc31df8ab671",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／Weex",
+      "bytes": 9983,
+      "sha256": "0aa23cec305dec4823cda18d593a773284b5d10cc9faa6ea5d2b258429d3be58",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／产物约定",
+      "bytes": 8447,
+      "sha256": "f0f99ddd8ff685862454ef51a952ac04bc317dbc5ec1c896a3bffc5bf3b1e074",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／可缓存 SSR",
+      "bytes": 3075,
+      "sha256": "54e8045241cf1cdc3073e475a7e76227a81ed169f731506a7e19ae6f4998c91b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／灰度发布",
+      "bytes": 7938,
+      "sha256": "56ef99f5afe8b03aea5cfdee17857b0be82282a9178508234a5ad2099a951be3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／灰度发布(自定义)",
+      "bytes": 3080,
+      "sha256": "0874f95798ca4b7212fff0f47092f6f142b1ab8f9341aa29b1d75fcb0ac18c6f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用",
+      "bytes": 1257,
+      "sha256": "d4036dfee20ff0272d692c975e799340e7d1372dbf33b3597c54f8f3a26ed037",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／创建应用",
+      "bytes": 3627,
+      "sha256": "1af6660265098fbeef0d0c5b6190f54f7d68825e4427d18a0034c09a0887aa4d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／发布应用",
+      "bytes": 2590,
+      "sha256": "5e82aec176056bfb9e0b1b76c4984749aafbed224555af48cc3a1dc656f98751",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／发布文件到自定义域名",
+      "bytes": 2094,
+      "sha256": "b2e4b4c5d61a37b5ce58c557000c930c5c33b97511b9b180cb383bf59c204273",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／回滚应用",
+      "bytes": 1290,
+      "sha256": "232ca66c073bc8eb5c45e51f2ebf894eb2067d24eabaac2cce3752106cc78018",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／埋点&监控",
+      "bytes": 1682,
+      "sha256": "7ffca38f5052075d018eaaf9fa395ff80f5cd58007178fab54083a22bb087309",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／多套预发",
+      "bytes": 5480,
+      "sha256": "16fa731eff64180849de3b3e5836f03b8b236583928aaa83db2e2f8243022ce2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／应用设置",
+      "bytes": 1542,
+      "sha256": "ed061f94194a756cc0056550e15dc18a86fd2e5a40a8564798410d93c7d59b24",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／接入 SPA 应用",
+      "bytes": 2780,
+      "sha256": "650c4b10fb020d7b09a03c94759a58dc9da9995a619c09478bb6bac66ac71e2e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／跨端应用／灰度放量",
+      "bytes": 6892,
+      "sha256": "94636fa150dfc4e628a782ec70c8a9069d2ceef5b9e36a0e141d4e02b224e4fa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／Web 研发类型／页面回滚",
+      "bytes": 1183,
+      "sha256": "6056df93db78510db92c3b1e0e753f9060aebada95e234aea4977e6faa90205e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／函数研发类型／Next.js 使用文档",
+      "bytes": 9568,
+      "sha256": "77c4eddcb4d6db21a8071826635a66203e5ab71bb2fdc78a25fc92d037e45746",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／小程序研发类型／PHA 轻应用",
+      "bytes": 105,
+      "sha256": "d3e022e3bf0f5c30d21315a447c32c7dd2ed4b23ecc9a1ee869f2a0e78648a15",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／小程序研发类型／小程序 + WebApp",
+      "bytes": 3269,
+      "sha256": "378bae534b449b5fefd47bfde1ba3bca7d03e28c810e90e2ee4ec6f03026adb8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／研发类型／小程序研发类型／小程序 + 跨端",
+      "bytes": 1744,
+      "sha256": "d49628d2bc90c07ac74c725b38f077a758977ce66eafe6eb2843b58479eb636c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／【案例】域名接入斑马",
+      "bytes": 586,
+      "sha256": "87830b4b76e44c3267711c69ee3a43ab814ce262e8ff498a5ab7f73ea17e3aec",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／【案例】验证类文件发布",
+      "bytes": 2067,
+      "sha256": "99eaa5fd6e3f9cf9212c049fe699b9e79f0742bd33d908443bfd0576c96d977e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／什么是 O2 站点",
+      "bytes": 1692,
+      "sha256": "b64ba40f94594975021e4bdc7b52ba05f88bb7a0af368b1b2c21ed7b800e9296",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／内网劫持（SPE）接入",
+      "bytes": 4746,
+      "sha256": "2fa3fe593e59383f520fa8bca1865d938f6d759a56d5e12705cb0ba1a11eae99",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／创建站点",
+      "bytes": 1818,
+      "sha256": "1bae367234f3fc174a40c3bac7fa391a5e6769506038a81aa78eb039156cbffd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／域名接入",
+      "bytes": 10466,
+      "sha256": "0bb473e88c906258c5670b20356fa76ba1dd682fb66cfa8aac2e5177cb38b0fa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／域名证书维护",
+      "bytes": 4536,
+      "sha256": "07489b1c2c360dfc65b6e047f751fe0d77f9cd202c356e008b4e5a7e5d762ec3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／添加路由关联",
+      "bytes": 3384,
+      "sha256": "01870e699994799b16ca3905641a1b4e7d982ad9d64c1d997e80e7cb5c62b59b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／监控、分析与告警",
+      "bytes": 8007,
+      "sha256": "eb19d2d5ed2b7baf5bf220f7068fd3ab004584a70de68b680e9d411a5c48f5b7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／站点成员管理",
+      "bytes": 853,
+      "sha256": "8301a9806ae66f1f9e3c05d8acc34188fdbdfa3e3e80a42214340762d19d95c5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／站点管理／路由配置发布",
+      "bytes": 3352,
+      "sha256": "8c2de70801cf3e4bb7035f29682ef19f126380523640b35b19531634af1c50af",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代发布／发布操作",
+      "bytes": 5155,
+      "sha256": "a8b8a8b0c2ed24e800e1b8af11c580f68f2a753d26b2b8befc4590e0e25c5795",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代发布／测试阶段",
+      "bytes": 7044,
+      "sha256": "7723b9796a28aeec6042a8c598fe673b6f450541769a03596087ac8da637533a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代发布／线上卡口",
+      "bytes": 9630,
+      "sha256": "6dc730fda01b74c8bb019bc771df17a0caa527ab8dd2dc249ad23ba5aee29075",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代管理／更多功能",
+      "bytes": 1273,
+      "sha256": "145f6f10de94e44ba275c792ef460f0c9d807b2c3ae4fb10d58b3b84d2bd89fd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代管理／迭代创建",
+      "bytes": 1289,
+      "sha256": "b778e78ed904fbbfda7180ff72bfe27d8afee9e88d73d23335289405a9ea255f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代管理／迭代概述",
+      "bytes": 986,
+      "sha256": "06035c5a7a5bfc2ce69b4f90a6cf16f97ee61c97a2ae5cbb1848a9b90adfb44e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代管理／迭代设置",
+      "bytes": 884,
+      "sha256": "b5135a6847f69a228439d6bd14dc526e199aa4460451b9ebd615986e706262aa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 Space 用户帮助文档／迭代管理／迭代集成区",
+      "bytes": 2943,
+      "sha256": "d9f421abca5a0194ade1b971e8a55e1b8ffc92d0bd4a3ddde0e6edc77e8dbcdc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／事件中心／事件中心使用指南",
+      "bytes": 14748,
+      "sha256": "201570b2544beb385e36ecdac162b57390e316390eb0b9adb3ba114b54d05464",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／发布／创建迭代发布任务",
+      "bytes": 1249,
+      "sha256": "198992b65b189647850323261deb99b7795df83d69b9e744b2496d403b904bd3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／发布／取消迭代发布任务",
+      "bytes": 524,
+      "sha256": "117dfc7f57b4fcd29af9335f836680a3b071629ed76aa3abef7375c9f712b03d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／发布／获取发布任务详情",
+      "bytes": 15110,
+      "sha256": "71a8b6a44dabbfa60837b5fd277a65dde10e53631c80bd1b638e2cdf034f096a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／发布／获取发布列表",
+      "bytes": 5152,
+      "sha256": "2d963acf264267f2dcfd23c9323a9000ac9968e1433ca4725b2404f1de4c78fa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／发布／获取应用发布列表",
+      "bytes": 5287,
+      "sha256": "0414ddcc606a0950c6aa1fcd1de7ddd2e7f4e0557db806d0afb2af1ddc15197f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／变更／创建变更",
+      "bytes": 1545,
+      "sha256": "b854b878f7ed6dd931e43107aa0f70df2b915fab344c512bfc059fad99cb632e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／变更／发起代码评审",
+      "bytes": 1198,
+      "sha256": "5ecb3810e653d51f1642e20b164f3738f06345d8a1d46936fb8ae8ef5f47f7ba",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／变更／废弃代码评审",
+      "bytes": 3422,
+      "sha256": "c0321605415f574c9c554f37701ff2d2f9a9aa8c63e3dc0bd403511868ceab52",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／变更／废弃变更",
+      "bytes": 466,
+      "sha256": "71996423d7033266c407696f4be49631ce8801f2c82211963f3f575a74d3e920",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／变更／编辑代码评审",
+      "bytes": 3769,
+      "sha256": "27433f0b05784f11758a1973d0ff0b96da40ecb78f44ab1039694a4b9fbb8421",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／变更／编辑变更",
+      "bytes": 955,
+      "sha256": "23299d8884afd3b7513845b62beb19e13b79221f3a7a889760515dee161e7d53",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／对象描述",
+      "bytes": 12335,
+      "sha256": "898a7b8fa813b57619ae65a120d27a0ddb575b5f77cd81f1f958ec97a2b80cd6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／常见问题（FAQ）",
+      "bytes": 781,
+      "sha256": "d635395b2b1e14ab54b96446ad59e35e5094d093cadefcb713759249b7ebf8e9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／创建应用的主干分支",
+      "bytes": 1194,
+      "sha256": "78449ffab8c734f85c4226947a6210fc160df6c4103ce9b269b3b4563a5a218a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／删除应用",
+      "bytes": 517,
+      "sha256": "eb78bb23730c981ced13f6d8c5d0d88422546e16cb3a79df50eb8dd57b61b60d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／删除应用主干",
+      "bytes": 812,
+      "sha256": "5b9fca03536aaa796073815dad27fb14fbe233795ca31a8427cb81efbd3f68dd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／删除应用成员",
+      "bytes": 910,
+      "sha256": "935fd33c1cce3b37451a1c9ce019eb083b1a60dc8875329dd51acb09b14db012",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／新建应用",
+      "bytes": 2919,
+      "sha256": "bb355a91e878c7a7759f7a64bc688e9e7bd6c9df601fa303271c7edf10fbc066",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／更新应用设置",
+      "bytes": 1518,
+      "sha256": "ff89bfc881f1210b076a31ee9520b932dd58d8b25343685ab41edc4a9c9b4df4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／检查仓库是否可以接入",
+      "bytes": 1178,
+      "sha256": "6a64d161e1eb2842a8cabf491a7407426062ee4899737c28e7e2ab76931f5a0a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／添加应用成员",
+      "bytes": 880,
+      "sha256": "5ca491fab4b159fed8df7a15085b8126c3334a95a929409d6cfc9dd22407932b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／获取应用基础信息",
+      "bytes": 2022,
+      "sha256": "a2d2af4518847fa99946c8f13a46e439496cdb855916817b5371349985b268a2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／获取应用成员",
+      "bytes": 1933,
+      "sha256": "605e58406d7601e79004c5908c8d6d01801e8398df1a5af9b13749c7b034d96d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／获取应用的主干分支列表",
+      "bytes": 1037,
+      "sha256": "3e0b757b6da04d87c16020b494ac0e16cb9da4ed0f267603b8d088aab1cac8a8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／获取应用详细信息",
+      "bytes": 6215,
+      "sha256": "703d1e49700366008dabafa41f1057e9029c9ff5a7f9d82f5398d9e7f2c84922",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／应用／获取我创建的应用",
+      "bytes": 3241,
+      "sha256": "ec1daaa985d47e3bcc9a551f7003bb1efef57327a57074c742abcd7f86d38060",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／接入指南（接入必看）",
+      "bytes": 2747,
+      "sha256": "0dc0edd55ec9b09724e22dcfde8dac7ca04e7dbd36c2bb3cfb94645f2e717798",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／创建迭代",
+      "bytes": 1332,
+      "sha256": "b2902452e1c23df5b8f2f6e51eb4aa8e1759065d45e5ac91cbcbaca9e7850fa2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／废弃迭代",
+      "bytes": 616,
+      "sha256": "8aa2b28aa318ccd65de1135bd5b13b9c0498d82783fe9c9444eb7c694f87a2aa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／获取应用迭代列表",
+      "bytes": 10557,
+      "sha256": "bae8abfb36c2a8c3b1d2b2d65ddf80c317e7696b5a08b32c9e38de81e0363945",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／获取我的进行中迭代",
+      "bytes": 5746,
+      "sha256": "2df48ba70bf4a771726f8446aac0e26ab0ca8ac5b350a267f1de6cad110b55f3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／获取迭代变更列表",
+      "bytes": 1672,
+      "sha256": "cebb52e8ae750cf1823900ae964a3922edc150cbbad2ea20104e54e332041a69",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／迭代绑定变更",
+      "bytes": 1777,
+      "sha256": "5badae7a4b976a95218df7688361439ec0169962ab41223f6c7a340b65f529f1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／通过ID获取迭代信息",
+      "bytes": 11902,
+      "sha256": "b287a20c7b008bdf94d01949dd5af6e2cd29910cba6238bdfa9d0e93a4094429",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放 API／迭代／通过分支获取迭代信息",
+      "bytes": 1067,
+      "sha256": "83e729b6b74d1077e55daeadf17471b9560f74d29be524af135c3816a4e5d779",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放简介／开放体系介绍",
+      "bytes": 1188,
+      "sha256": "3f9ec70433f447856f5bb763426f154ec3a3aee7e2f172d0c4265ec3d92bd209",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／开放简介／术语库",
+      "bytes": 2151,
+      "sha256": "1b460fe72453cbe1c39e097fbc275aa93fea8d35f71d35260388d88097c5eaab",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／全局导航",
+      "bytes": 499,
+      "sha256": "70fd5f353035a803d95eb6233565d3fbcaabf78ffbda8bf15e9e6bcb9c9c56f2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／发布",
+      "bytes": 712,
+      "sha256": "68e591ea6c47692a958478dfebef8fa38c8099827a85559fb05c432a8e8e21b6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／发布节点展示",
+      "bytes": 657,
+      "sha256": "21b82a2ad0655bb7ca09317a4d90afd9a9f3bd360f2a4b9864fb2ed8919caed3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／变更",
+      "bytes": 3243,
+      "sha256": "f6939d70bda6ad61f83a58f0ac51295531b38a5396e2ec0725c8726232b9abb4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／基础",
+      "bytes": 3032,
+      "sha256": "cb8a46036b6c0fc0421e4782380f95e139653663fe724a50f6c2d46856537e9f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／工作台",
+      "bytes": 1722,
+      "sha256": "7365c3e71326fcc59b4a1fe5225a9866f84cfdf0449183b8492d6adef69663a1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／应用",
+      "bytes": 9757,
+      "sha256": "1921e04bb57824f2a46058e867ab979f0b80cb01b4b24be4a86de0e3cb615009",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／搜索",
+      "bytes": 753,
+      "sha256": "987a59142c662de143399a627a14f19faa4d01a9664eab752d47c5860402b11f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／独立站点",
+      "bytes": 3641,
+      "sha256": "f3544b686e7633f5c8a57364d5a421fd9ed2d07de1f88d62e74edeaa5727a6cc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／研发小蜜",
+      "bytes": 351,
+      "sha256": "862934ea06102fef5d9e1b0e9e72b24542022748b282ba4368a776f15e2961c7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／O2 Space 扩展点文档／迭代",
+      "bytes": 9241,
+      "sha256": "cfab212030cf0d51c9276599d1e11215ddc6c406192214526893da2f541f121b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／使用扩展",
+      "bytes": 845,
+      "sha256": "06bca6165024eda4e9d3e43763dc714c48804ecaf9bbefbc4a2cfb6a4e7559fa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／发布后置流程扩展",
+      "bytes": 4503,
+      "sha256": "e098fd2c1f92e826b050278926398ee30e9e96f3993282c69027bead4e95892a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／已过时的文档／ 已有的扩展如何修改目录结构",
+      "bytes": 1723,
+      "sha256": "600cafcdb264c6b9922bb4bd8976a0968041fe4273f0cca14666f67bd54ab58a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／已过时的文档／按应用类型接入扩展",
+      "bytes": 3698,
+      "sha256": "de50216933968be1ff4e16c6f3f478d6cdc84a5467c12ba390b6b2c6ff61ae32",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／已过时的文档／老的目录结构",
+      "bytes": 3390,
+      "sha256": "77a3d57ad0ee7c7811e082ff5f3090b4a1b91990ce54b05ce671562d60eab2b0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／扩展的开发",
+      "bytes": 4004,
+      "sha256": "d787d708ce7146b4bfb4ac44789a9b517a8d37a81e60fbf3fcb0673dce58115e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/O2 开放文档／扩展／新建扩展",
+      "bytes": 3612,
+      "sha256": "43b42831ab7a903ee6a2151ac0e1072317f30ee109233d6cac58ee1e25830133",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／CR显示已通过，发布卡口显示未提交，无法进行发布该怎么办？",
+      "bytes": 466,
+      "sha256": "59a2d77308b4f774732ae4862b25fa54873ccadc7c54ca343ddd26fc19b623ac",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／ER应用灰度后为什么无法进行全量发布？",
+      "bytes": 853,
+      "sha256": "f6c981d0fe7ff4bea88009e4bca03ea4b8445bcff787a5bfe1fe41c3763747a9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／ER研发发布完成后在哪里查看IPv4列表",
+      "bytes": 435,
+      "sha256": "02ede1ad2aa09aab7b03eb136983824d8737bc33421892f4f167b8bd462ad454",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／FAAS 如何配置固定 ip",
+      "bytes": 246,
+      "sha256": "ea801dfe2b8da5595d79105663eff5d033fb92aecede51c8bd0fde2f683130ea",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／InternalServerError，好几个应用日常环境没有任何发布，为什么突然就打不开了？",
+      "bytes": 152,
+      "sha256": "30b34840024d55a5ec3f7c3f49720b8f0e8642a28cee3bfbc939c51980243e83",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2 PaiApp 这样的场景下，需要怎么调开放服务？",
+      "bytes": 688,
+      "sha256": "11040dc57d5149e77e323b0c5e04a872b75fc1f066ee990f7b84920b9641a426",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2源码基础检查器提示有不规范的license，无法发布，该怎么办？",
+      "bytes": 832,
+      "sha256": "35df358d2133a5f7052d06891603b4e4b5cf3b1a2b50ce307741839f33da8320",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／CDN",
+      "bytes": 135,
+      "sha256": "1c9aacfa1b70ea4be8498a984adf8fde0004aafdb739f1360e9cd119dda33998",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／Node",
+      "bytes": 94,
+      "sha256": "393b5056806efbed2033d5bc55c5753557c07d117e6a3538fa01788adf511791",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／abc.json",
+      "bytes": 94,
+      "sha256": "81b36da55459712b666fabfc272e8c75df13b4393f24fada79b36d006f566c06",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／ice",
+      "bytes": 107,
+      "sha256": "165abb8d7ae36409bc367790de5cdb3194f2bfbfbb57b6269002cb7f167d1801",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／package.json",
+      "bytes": 174,
+      "sha256": "082ac555f48f9b98f1b181bd7e8d5ab12368824e33e34404eb9c181eeea508ba",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／构建阶段化",
+      "bytes": 67,
+      "sha256": "7b909bfb1405462c6da4606c8e0330fca5cb76cecde8a2ab98893fb1d1aa0af2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／终端Web代码规范扫描",
+      "bytes": 104,
+      "sha256": "0482b338c96be7ac728191d969100d98f7de5b42923d34cd6009a3ba932b7efb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／脚手架",
+      "bytes": 73,
+      "sha256": "296fa79308d9dd6be2c49fd39017e35a57a6a36aca6c1eb6f97a46e96bc4c9fd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／O2／锁依赖",
+      "bytes": 87,
+      "sha256": "c8386bfc8a2c149b5326f63fe44f4255892050f4ccca5d531c7fa003ffeec8e4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／SPA站点配置Robots.txt后不生效是怎么回事？",
+      "bytes": 273,
+      "sha256": "61340b70ee759b8b33ae9b8650823e2e01cc1966dd6e4d8392131d38f7568b07",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／aone流水线提示有冲突，在 O2 解决冲突时显示未检测到冲突，该如何解决？",
+      "bytes": 858,
+      "sha256": "a4ac72a074d0ff539f546c8b7cea3baa1abd1c7066874570eaae0db9eff520a6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／assets应用，外包可以把资源发布上线，如何能够拦截？",
+      "bytes": 886,
+      "sha256": "9df0087541e6009aae260708b0bfadff4fb36f6f77f7389407fa89bf5aea986c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／assets研发日常获取到的环境变量是production，如何才能获取到daily或pre呢？需要通过环境变量判断环境",
+      "bytes": 1253,
+      "sha256": "4eccb7adbe660245ff0b788dcf5582d107537fdfbad45b4d1d8a769a829f2d36",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／def的预发域名是什么",
+      "bytes": 268,
+      "sha256": "3b80ee5d97d95132e8d70984d215b88bb09912f5203be8f4163acae1a352072c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／diamond 如何推送除了版本号之外的信息呢？",
+      "bytes": 591,
+      "sha256": "68e63b855a6ef0392e5e403f812d0687ec99ecdda7faca46ca52ab611f656170",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／er 研发，灰度发布暂停时无法取消发布，该怎么办？",
+      "bytes": 327,
+      "sha256": "5818aa94e7893c8b3a21a0a20b5b6eba165d76b4a71f410de940af637a3a8f01",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／er域名如何访问源站的内网SPE环境",
+      "bytes": 166,
+      "sha256": "c67b675a3a5c1ea61c2ad27a46ca2b16ba59e27e1425e08e6eb283489d087752",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／er研发想查询IPv4的列表结果报错，ERROR ER_PRE_DEPLOY 失败 _查询模拟环境节点的 IP 异常_，如何解决",
+      "bytes": 428,
+      "sha256": "97b6749e4aeb791f586f807a2ec6ac06fe1f970ed35c5735af4b2a58a2810fd2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／o2 web ide无法进入",
+      "bytes": 578,
+      "sha256": "e181f4b7f07059a9af3d1e703ac7db58f755c0b6d8c0e12fd27733f788c030d6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／oxs区访问不了dev.g.alicdn.com资源，该怎么办？",
+      "bytes": 1969,
+      "sha256": "dd9a6673a664fc731fa9ac7278d0b75708fbd3599f231412e2f3f786a9db0996",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／serverless 如何流式调用",
+      "bytes": 597,
+      "sha256": "a64eeabc5f0d0bbe9e1ef957fd05fa974a135ac4480bbb76b994e81e99fe4917",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／serverless函数调用日志的查询结果都是空的，应该从哪儿看函数调用日志呢？",
+      "bytes": 1592,
+      "sha256": "746839e59cfc98446e2b81341694424360d62ffa94a30d7a5b2773a7461ea4af",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／taskId怎么获得",
+      "bytes": 419,
+      "sha256": "5e04e08daf00d3281613695d2b4fb6c9eade872ff9dae27915e3419a1b39241d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／tnpm 研发没有 diamond 推送入口，是不支持吗？",
+      "bytes": 302,
+      "sha256": "a269facc3bf3393e77f68b92758030a94cdca51f6814b51752995f72020807fd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／tnpm安装依赖失败，提示zlib：incorrect data check，该怎么办？",
+      "bytes": 808,
+      "sha256": "8e84ca776ef59225da4947771aad73d34b4eb9b25fa4c3c77c48d5287f117d70",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／为什么er研发中根据地区灰度的功能不生效？我选了线上灰度北京，但是我在北京访问还是旧版本的页面",
+      "bytes": 918,
+      "sha256": "af56a36024cad8aa50e2d4a2a677c4a7464a5c5471854baa6ca143626f023493",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／为什么函数发布后预发internal server error？",
+      "bytes": 507,
+      "sha256": "4c41e2cb1651dffe41058fd1ca7800a299a9b45cd3c9666013b85b7382b2ccc6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／为什么站点接入CDN域名时提示不允许接入内网域名？",
+      "bytes": 461,
+      "sha256": "2f975c14c6d33df8eb701e1737dee2b57b436c2b6b537f79f1539929973d0e7a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／主干分支是 main，如何改回 master",
+      "bytes": 442,
+      "sha256": "40cbe912741520084887565ee1a30ecb48155fab26f38d609497ea0c22779548",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／事件中心报错，错误信息为空怎么办",
+      "bytes": 165,
+      "sha256": "1b756196f520cd8d74ae73bb7a3a7927888bc318dc6e5e8184ad9ee82941b3f5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／产物：js／index.js   超出大小限制，能否部署上线？",
+      "bytes": 403,
+      "sha256": "561a9950270c88b9bd3a5dce507f2dc48f4795f64ef23f2ccd7f04b3ecfcbf6b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／代码已合并到master了，但cr检查提示cr未提交，该怎么办？",
+      "bytes": 496,
+      "sha256": "d6c156522ffb9fa8597f919a3594d75dce23e2d692b91c7f97e5bfe3faec3b8c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／代码已经被合并，但是未发布成功，该如何处理？",
+      "bytes": 849,
+      "sha256": "9d38b68586a835971ea5982f5a9ded9f1f8d6609743a6af490dd232d570ffad4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／代码评审人怎么可以变成多选框的格式呢？",
+      "bytes": 566,
+      "sha256": "8b76233786fed8a41e31f5d4a5cb06b47317cbff74b5b5e0cf6869e63dc83668",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／使用o2组件开发发布平台，window.PageData_.fgModules.is_use_o2_code_lite_merge_conflict 这个值是undefine，导致无法发布，该怎么办？",
+      "bytes": 382,
+      "sha256": "85af7f6911224fae9ba3294bc4d7576635bcdfd121bdeecee1d82c188a21bc08",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／修改仓库会有什么影响呢？",
+      "bytes": 907,
+      "sha256": "e59ccf1e1469c897f8d76e98181389078301dd9effca27f715aba0d1ac708e99",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／函数发布提示未找到对应环境下的域名信息，如何解决？",
+      "bytes": 652,
+      "sha256": "56e9619d1f1bb5d7cc81b69575e1226fe2427e40ea1b4d39447d6ca9e2e926c3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／函数应用删除多套环境时，实例会释放吗",
+      "bytes": 303,
+      "sha256": "c3c2537d0b01f5bd0d621d97a02851b49968fe8881976438a2959c7fcf88f128",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／函数应用，将一些变量放到内存中进行缓存，发现本地和预发都可行，但线上偶尔会读到最新的缓存，偶尔会读到老的缓存，是因为预发只有一台机器，线上多台机器导致的吗？",
+      "bytes": 502,
+      "sha256": "23045217ab56e6e4bf00548ba8169b6e55176ce877f5b8222774ddc555d06b81",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／创建天马时出现源码页面创建失败，该怎么办？",
+      "bytes": 550,
+      "sha256": "610866bffec5fd21196079b55ddc717f3719749de3a4c22c2c05e8a46b218585",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／创建构建任务失败_ VError_ 没有权限调用开放服务builder，如何处理",
+      "bytes": 500,
+      "sha256": "53f5923f70d9c05a972c2595b4ed6b866bd8295e809c8399bc87ec5bdbca0e9f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／创建迭代页面，新建变更，通过已有分支创建，在下拉列表里没有找到全量远程git分支，这是为什么？",
+      "bytes": 593,
+      "sha256": "70661238e9d2fc0de15617614621f3ad59438ad1a9ca4003969020684186b508",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／前端动态资源未做替换",
+      "bytes": 513,
+      "sha256": "19d630b35329388530cf523a09e7c2836be28ee2a4900a35fbdf7ca1b1f1f356",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／单元测试结果显示错误，看不到正确结果怎么办？",
+      "bytes": 1045,
+      "sha256": "486e7ed11c1197d6262eacc425f3c295bf8e31d8e9b23b2ee56e15198292677b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／原aone前端项目如何迁移到o2",
+      "bytes": 512,
+      "sha256": "a26fd46eaa1d319365973c1571af77afd686d37ef64d062345be72b24359c631",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／发布失败（doing）",
+      "bytes": 1404,
+      "sha256": "b398bc063c0c4f18dee89c0dd8b6e8b39093478b226ded0f380eda7c447f6c55",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／发布时提示“天马业务扩展 hook”执行失败怎么办",
+      "bytes": 984,
+      "sha256": "4e9bc889a0776799c21054c759b2cfc455c035c0fb5ea627d21df0dfd42d911f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／发布时显示变更的 终端 Web 代码规范扫描 未触发，该如何触发",
+      "bytes": 647,
+      "sha256": "5d023d676d22d25e131958db342ef0e0fd8a3b1abdea2d646101bc0f024417e9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／发布页面的构建日志智能诊断窗口是否可以关闭？已经遮挡左边的构建信息了",
+      "bytes": 441,
+      "sha256": "40e6387e691e38f1915f1c9b123802c39fc084abdcf69e6d634d196695707af0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／在发布的时候，遇到release分支不见的问题",
+      "bytes": 254,
+      "sha256": "b2becca738023d2fdf59ae13fb61f7e57161c9a8008bc2a675ce9250ba372c3b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／在开发扩展的时候，为什么没有【扩展配置】按钮",
+      "bytes": 467,
+      "sha256": "a200a4ae2efc9573a649bcfae92878080a618e83b848e3cf5accfa5b937d3e73",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／在接入 O2 ER 研发时，子账号需要开通哪些权限",
+      "bytes": 1442,
+      "sha256": "4f91dd0cccece243388e07f309aab816be4444f77e0b15919dc4719ea7f11123",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／在线解冲突提交代码有没有办法通过lint-staged做代码检查",
+      "bytes": 366,
+      "sha256": "ebc9a5eef1f51d9e35514bd2ca262c0a26a1afbd53733d111c8619c0c8faf0a8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／天马创建的gcp应用为什么在gcp中找不到",
+      "bytes": 486,
+      "sha256": "5323ccd5ca988cb767f4e4986c4b0d1aa27f9de216c12919b83350793f55c78c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何为应用启用门神检查器",
+      "bytes": 1295,
+      "sha256": "e6d7e96836035f81e19c4e59c47e8d4acc2e71fcea0f5d1e714fdcd77c168ddd",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何修改三方异步任务的负责人",
+      "bytes": 232,
+      "sha256": "d02ed17979a0d9f566fc9a7a6dd39c59153e028b0ee83b4d16b3906ede6ff2a8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何删除assets应用",
+      "bytes": 504,
+      "sha256": "842e4d1a10e05c34700951da141e1d6593ae540bfc6efa02cb9f39e0b4b7c8d1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何增加发布卡点任务",
+      "bytes": 603,
+      "sha256": "6fd1c58bb30169675f22872af1d251399a7a5fe38a9050fe2969de631774cc96",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何导出负责的应用list",
+      "bytes": 377,
+      "sha256": "3455efe25470a4e6678cdc020a8e97dc5bc67eadd395a16d8a37cf2b95b4ff35",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何查看历史上的 Blocker 问题和 Major 问题？",
+      "bytes": 427,
+      "sha256": "e626dd035f7977645e0245871aee9ae48318598734373c26dc5f4c3c7ecd2c40",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何申请成为npm包的管理员？",
+      "bytes": 767,
+      "sha256": "4f69faeeda8d81af0af8dcefaedd57d97f1f118cfe7186fd8cfa90307cc512fe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何移除质量卡口",
+      "bytes": 998,
+      "sha256": "6fd6b350906a80ce6876a04fbb8e1d02d943b1870350a4b9aacba429a19084bb",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何获取BU所有前端应用的仓库信息",
+      "bytes": 959,
+      "sha256": "b00ce21b39b6bb71d603e465d929e4192c0a36420444295e4ce1016dcbe543ad",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何获取离线数据",
+      "bytes": 606,
+      "sha256": "608c46896589f2add5ddeb9da17c438732d80242c5785f1afde589f7e9d7f8c4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何解决分支合并时报错：refusing to merge unrelated histories？",
+      "bytes": 1253,
+      "sha256": "0a6bbf223863a43337fe50eccceece4fad82874beff178716afd8f9911fd2118",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何解决发布TNPM包时遇到报错Can't modify pre-existing version_ @ali／___-___@x.y.z-beta._",
+      "bytes": 797,
+      "sha256": "ffe6a987df85903c7f19bf062a760bbaef9e3dbb01f7b8886b716691629032c1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何解决报错：413 Request Entity Too Large",
+      "bytes": 487,
+      "sha256": "5151b9591273fac4afec1e18230bb035157b44857bc676b42bb6abb591bb4539",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何解决版本号推送配置失败",
+      "bytes": 509,
+      "sha256": "c78707707ac2d301bcb4ed8eb5d77eb6ae17bdf33cd92a1706ec47945851dc3a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何解绑域名",
+      "bytes": 574,
+      "sha256": "7c014375039f692f8f457d22b92dca2ab5b58e160e78adb784872e3232e56db9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何跳过代码评审",
+      "bytes": 1336,
+      "sha256": "0f5291322f0ddff4fb7c195924f8d2e2faa1012366aa57c9b736159145311115",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如何通过api跳过cr",
+      "bytes": 661,
+      "sha256": "6bff15453a07aa42e372a31c6bec979c51e7c4b6dc7cb42cb66e9550a7ef85a0",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／如果diamond推送的版本有问题，如何回滚呢？",
+      "bytes": 505,
+      "sha256": "4b98bedfd6dd8143ecf27a0e5fceced79c8ce794b31def596fff7f4d185de246",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／小程序构建遇到报错：sh_ 1_ anpm_ not found，如何处理？",
+      "bytes": 247,
+      "sha256": "b1d4bd6939a53d76f8f9415eecc958c67fcbcc50cfbcf77285c00e96639913c9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工信部备案是不是只需要主域名备案就可以",
+      "bytes": 381,
+      "sha256": "3e08e9dd6b21e4045190cd3abbfc1d2c8a6b0097741f8e06340f90b60c8e27c5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程基础／npm包发布时如何同时打包对应的 asset 的资源？",
+      "bytes": 891,
+      "sha256": "d719cb218bb4707be7a1ecaf8811a2ebb32c3ffb2092ded5bc81adbeef31915e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程基础／tnpm多包构建，有个包没有改动为什么没有跳过构建？该如何跳过构建？",
+      "bytes": 911,
+      "sha256": "9e163d5280738aaba3fbd5b47de9d091f1c2db23ad07fdfb323b2f8b95ecc8e7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程基础／构建时提示：tnpm8 已不再维护，请升级至新版本。请问如何升级tnpm",
+      "bytes": 728,
+      "sha256": "ae45a40b15b6b9ca77114cb03aa861e62f5c4fe344571152ae1230a85cb6e2ea",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程研发平台／三方代码存在注释，导致产物检查不通过，发布失败，该怎么办",
+      "bytes": 514,
+      "sha256": "3381be443201b3a9302978cd589eac32dc2f5126813838f41c508449b2204124",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程研发平台／如何修改配置对应的diamond",
+      "bytes": 600,
+      "sha256": "d2a0f5a9d110d5cd45e4bc944895c1e0c14fbd929a605a85275574bb68c1dce5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程研发平台／如何将 whrxpi 代码分组添加到天马",
+      "bytes": 147,
+      "sha256": "66c685a476929b0d7b13ec56d44c2c81a0c280dd6dc2008c2a17e07a4afa3b15",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／工程研发平台／如何解决发布失败，cdn检查提示分支已存在",
+      "bytes": 849,
+      "sha256": "ed215f963ece1d1a45cb6acf3fa912129142b79cd559a98397975b44323aa610",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／已经开通了 dcdn 的所有权限，为什么er发布结果了查询不到IPv4列表",
+      "bytes": 330,
+      "sha256": "d2c7c15f9f822a2ee9e4402e45b9565996ccabc125a47c3b4a728bd6e853a912",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／应用删除的入口在哪里",
+      "bytes": 763,
+      "sha256": "2605c0107491be35cc104dfb0b55720efb0ec207813afd0320ab0605c2f83876",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／应用发布进程一直处在质量检测中不完成怎么办？",
+      "bytes": 1291,
+      "sha256": "809f6dc66707dbb04a4055e73e91d69ccda296d2f17ea40ffc508b6b1c6578b1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／应用还需要申请开启覆盖式发布吗？",
+      "bytes": 437,
+      "sha256": "efca7b2bad3d293fffb69012fd88e6a5c67440b263af9cfcf59cd5404807e06a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／开放平台如何创建服务开放",
+      "bytes": 667,
+      "sha256": "0de9abf655209f273c58fc4f9283817c017536121c1878e517e5cf274324ab17",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／开放接口调用404，显示网关到调用侧请求404，是哪里的问题？",
+      "bytes": 553,
+      "sha256": "9835e93f770f4adf9ab1fd2cbbcf9179160225f03df25d424e886331e7cb18fc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／待部署文件中未找到 package.json",
+      "bytes": 780,
+      "sha256": "36a111ef2aa34cb11e7e4e854e1ba43c0ab1a0641e5a901c482e33139293b1d5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／微信小程序预构建卡在了查询构建任务中，但是从构建日志看已经成功了，这是怎么回事？",
+      "bytes": 450,
+      "sha256": "0bc9edacd7b2c4460771a99d3115df7e70ece9a9a44967eec1810bdf2015fe8c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／怎么查看当前迭代的代码质量？",
+      "bytes": 951,
+      "sha256": "e0e3c55acb7736ef87c22e6a9e36ea1e93a41e24cc1b2cc8e8e7de5d79acc476",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／怎么根据代码仓库找应用",
+      "bytes": 601,
+      "sha256": "3a426966da96f6386723b43d2e881c3f0b6dec512121e441971a9c57389464f4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／想给应用成员中增加一个部门账号，应该怎么操作",
+      "bytes": 333,
+      "sha256": "66c653e3711d5191b915537cf3c0444955a58d226ad17a851277c2949b929241",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／想要关联O2到AEM，但是应用设置里没有体验监控设置，该怎么办？",
+      "bytes": 308,
+      "sha256": "fa4edd0e7c197817c998c0e0b47254f2d6081071c41a462883e2129e9484b74d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／想要搭建一个前端项目，能够在日常环境，预发环境，线上环境都能访问到，并且是三个不同域名，该怎么做呢？",
+      "bytes": 977,
+      "sha256": "554ac9ddce84e8d1b464371efc9ee68c6cece73726d1483e32c713042b50df01",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／我们项目中配置了@ali／eslint-config-att／typescript／react 进行开发规范，但是还是无法在开发阶段暴露major级别的问题，是否major问题只能在平台上扫描 再手动处理？",
+      "bytes": 534,
+      "sha256": "d9c3d9dc34d72c7270d9de8b5750712d28aa03cec1c06ce8c7429a3eca64675b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／推送版本的时候changfree检测一直查询结果怎么办？",
+      "bytes": 416,
+      "sha256": "c01e647d03ce53e73648d6acd7d887bf4b1b99d8b3b819fc3e52783d70603baa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／新增多主干分支时遇到报错_[GitLab create branch API]Invalid reference name_该怎么办？",
+      "bytes": 261,
+      "sha256": "6dd74dbd5828e1f3195367e04a4ba336e897e050bd2c997f5ffd7a8bc2f80972",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／无法发布，提示无法获取变更分支的最新提交，请检查分支是否存在，如何解决？",
+      "bytes": 537,
+      "sha256": "d57a2bb6ee497fd0996ed9a2d694ff5f80ea13263fcf3128de6b53f5b5e9baf1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／日常环境的 cdn 资源为什么会被清空？",
+      "bytes": 579,
+      "sha256": "ad5ef721550d18724488918f0d3ac618a40db2980321a0fee2a3b690c3d1670c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／是否支持通过小程序id查找对应的o2应用？",
+      "bytes": 350,
+      "sha256": "c8e3daa1bb765832599b3c902d726992866a9f4b1ea173d7e36ae729b0c76bb7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／普通的web研发应用无法开启多套预发吗？",
+      "bytes": 358,
+      "sha256": "1360afc652b27ad3b58408b4c4f431118305241e257e8e8bef3dc7d342e02be2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／构建的产物有什么接口或者方法可以上传到cdn上呢",
+      "bytes": 570,
+      "sha256": "d629978cd614c3abf6ec591ea9b8c0ea2157c35167ab81cf9940c48a8df1c1a9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／构建类型可以切换吗",
+      "bytes": 542,
+      "sha256": "b12ac29e30837711395555cd8d3b4869db96b340713e149cf6f958d18aafa910",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／构建过程中未生成预期的结果目录或构建产物为空",
+      "bytes": 1185,
+      "sha256": "93c2dbe5f0188dceeb7c160368253d95b185b3c3f4b0aa70dd6350c88fc334e4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／没有找到推送版本号入口，请问在哪里？",
+      "bytes": 920,
+      "sha256": "ac4a8b6567a6d4b626b95ff856a6bf6e9cdc0679e99bfd2d9c2e2cb494a3e812",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源码静态检测生效范围是团队下全部应用，但实际上团队里的部分应用却没有生效这是为什么？",
+      "bytes": 1600,
+      "sha256": "67953bbccb7e2c76b8595950cd0dfc2416df5762347ef04603e7991049022418",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／函数发布时提示请检查当前“http”协议域名是否存在风险，该怎么处理？",
+      "bytes": 136,
+      "sha256": "5f72fd88181aa445c237674bc4e8a9ff8fd58bca012dcaa776c96a43534b0ca7",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／函数应用如何修改租户",
+      "bytes": 44,
+      "sha256": "41aa50bc3da8f156876ab497d93327126a3087c035c4f0d02f6e02c2fd6d1ada",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／函数应用监控报警为什么收不到告警短信？",
+      "bytes": 249,
+      "sha256": "bd12d0d5cd7be1028d8401521eb24032f5c224acee89072535a337dd50d47a2e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／函数日志遇到Error_ function handler = app.handler not found怎么处理",
+      "bytes": 92,
+      "sha256": "213cf48d458f7dfd2452dacefb18a829ccdf7e47abb6b6ac88b92e584f36e90d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／函数调用日志全部为空，如何查看调用日志？",
+      "bytes": 165,
+      "sha256": "3d05188058c88a88ef3d858d392c40a8ff35e96d4f0a9ab1f60e19335423c628",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／如何查看函数调用量统计",
+      "bytes": 198,
+      "sha256": "e1b6f9605bcfe51fe4017c4eded658cfb0830bb1ba28e51724e0729990a73ae4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／如何获取Assets应用资源访问量",
+      "bytes": 288,
+      "sha256": "2ab878c803d2c82797f8cdf06886ab3515696522fad796b283149a91cdb04511",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／安全部这边说我这个静态资源涉及 xss 漏洞，目前应用已经删除，但cdn访问（https_／／g.alicdn.com／dt-f2e／aplus_h5_demo／0.0.1／index.html）还可以，该如何处理呢",
+      "bytes": 1917,
+      "sha256": "e5ec1022bafa0433b5a35bddc0c3ef2e3879c4fbeb4656c10a1a401c3b55a589",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／已经切换为了alinode7，为什么构建时还提示：由于函数运行 Runtime 版本为 alinode5，所以将使用 Alinode5(Node12) 进行构建",
+      "bytes": 378,
+      "sha256": "cbc55333719250222f114b83d02492adabf1d11221b68d91308a8b2e789a38fa",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／怎么在页面中发布静态产物且地址中不携带迭代版本号？",
+      "bytes": 83,
+      "sha256": "5fd5de8f6db5898ea4f74349841b88d801950371750e1af06e95c3d8f0344c8d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／想发布一个内网的网站，我需要怎么做？看起来Assert发布会直接将产物发布到公网的，会有影响吗？",
+      "bytes": 445,
+      "sha256": "fdd0d3379e5ca2018a1a52f639747d4bf4984aa3ba5893b37288175ea2c6264d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／想要将一个域名redirect 到另一个域名，该如何操作",
+      "bytes": 304,
+      "sha256": "2fe4316e1b879de27fdf1ce38365e6ca90579f5b1cde36eff08ae0ead012e1dc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／日常发布失败，提示g.alicdn.com already has files, please checkout a new branch，该如何处理？",
+      "bytes": 290,
+      "sha256": "cab1dba1f15f33a7c5c3f65d2f9e1656f99c1ed72f1d8347c9aff18ce3d645f8",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／请问下怎么查看我们业务页面的源站访问量？",
+      "bytes": 274,
+      "sha256": "f89f0ec781e21cf7a9892a0d42ae358a29c8fb31808bc9c10c098fa36f8fc4c9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／源站／跨端应用发布静态资源，提示不支持访问后缀.wasm文件，该如何解决？",
+      "bytes": 269,
+      "sha256": "820c651d3023865cdb1590284041739087ed6f1190ce98ce4059bfb3edaaa718",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／研发类型tab中，无法找到 大淘宝终端研发，团队有配置该类型，团队其他成员也能正常显示，这是为什么？",
+      "bytes": 762,
+      "sha256": "d848466e732f0a7e1c0946e6b8854b356c07730c5fce2ffd26c085c56f3a7a8a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／研发类型的负责人离职后如何修改",
+      "bytes": 654,
+      "sha256": "31e430142b85958b1b03fd72fb858082265653160f51e858f205fb9030f49596",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／离职人员负责应用产生的账单，该如何处理",
+      "bytes": 445,
+      "sha256": "026986cf01c620e56a0114c65e8414ad0282291906823d25902a067b91565ae6",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／私网（VPC）域名是否支持接入cdn域名",
+      "bytes": 110,
+      "sha256": "c67e18b056e84f4f115b4baeccc4b32dfe3fe0ab44aba77e0071d07815c70e26",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／线上事件中心连接器触发成功，为什么在正式服务器上未找到访问日志？",
+      "bytes": 596,
+      "sha256": "152fce98c64bc141bd1da9942863802572808e0fb8f5f48707f099da217c546e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／线上发布卡口前置部署检查不通过怎么办？",
+      "bytes": 262,
+      "sha256": "9903b7eeaf916872d40cd23b4c599d7ff58d28215063370fd1820098495830a9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／线上发布卡口集团soc安全扫描异常怎么处理",
+      "bytes": 203,
+      "sha256": "dac48385e8d52d0cb428b5f247037a868cc67191f51a0a6309c80dec208d19b2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／线上环境发布异常：线上发布卡口【前置部署检查、集团 SOC 安全扫描】未检测通过，实际显示扫描已通过，怎么办？",
+      "bytes": 561,
+      "sha256": "b8fd693a4981706c14b8c4d79e875b88400327d60ae8c2f4267dab63c3f1ee3f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／线上环境构建完成后会自动合入 master，如何取消这个能力？",
+      "bytes": 928,
+      "sha256": "55a4e0dcc454a26368e6e68982bbb89be1a988fe4ccf8e5ef944f164114f465d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／自定义 Webhook 添加失败，提示：域名不在白名单内，如何解决？",
+      "bytes": 461,
+      "sha256": "3227bc806f7a066e73bc8eea4c6ee49e15818ffb7d651bb4b6dd672f035c1074",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／访问平台时遇到一堆接口报错是什么情况？",
+      "bytes": 394,
+      "sha256": "d9b57be2e47ff68a6bcb30b8f9067cc25f607e5a87d7d0b4e81770432f05f783",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／请问能否支持在g.alicdn.com上传一个微信小程序校验文件",
+      "bytes": 394,
+      "sha256": "1520855bc168bcc01311bb194a0049b6e4b4bc2b37b5fc230af7d2044093b218",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／资源上传到cdn后出现中文乱码怎么办",
+      "bytes": 630,
+      "sha256": "0f417deddfc089b4d24d8fc25280aabd52185a28aeeb1b61be11a2fb45479215",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／遇到提示：无权限创建类型为def_extend的应用，如需申请，请咨询研发小蜜，如何解决？",
+      "bytes": 436,
+      "sha256": "5f7a1c00711f0df58f849b1fcbc21405bef9a7a10e098b0da57f36e2641e0563",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／部分用户内网访问不了页面，报错ERR_CONTENT_DECODING_FAILED，如何解决？",
+      "bytes": 340,
+      "sha256": "6764ec4d2ee5e8a076dd99a7c91a691bb88fb5979eea0af6434477a9a08f7b1b",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／配置单测后，如何作为应用的发布卡口",
+      "bytes": 865,
+      "sha256": "96b657044cb5c90c9405b384d8b2594982a293edc24b3d44061c1df5c2dec233",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／集成验证E2E测试结果白屏该怎么办？",
+      "bytes": 1122,
+      "sha256": "0643506c1c4a850e8df80beadf2a66c487bf9f3d8fc04d2d673a1c6eda8b0733",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／预发发布后访问页面404怎么办",
+      "bytes": 1127,
+      "sha256": "55645f6808920fd0273b08100d999a1b5057013320896c4b46ab00bf62981755",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/o2/终端交付（O2）/已验收／预发域名接入失败。提示没有证书",
+      "bytes": 1659,
+      "sha256": "5495cd6f08dbf1102dac4eaa46f9515a281c6df90363668d169a3cba893d59f4",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/FBI技术方案/3. FBI 开放接入+数据处理技术",
+      "bytes": 18979,
+      "sha256": "9da9a1f6849049d25f67d88e8094d5c94051e75f25bfd1bb8f7cf97887079e96",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/FBI技术方案/正向账单数据迁移至FBI技术方案",
+      "bytes": 7421,
+      "sha256": "0761dd5e6882cf26f45ff1f0612d7632f049a4ab7bc26b49d8d8ef788b0e2664",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/01-业务与产品总览/巴拿马跨境分销业务与产品总览.md",
+      "bytes": 15293,
+      "sha256": "0bac222da63ef41df22959763fc5c8b1bb6c4380ae0837d838fec3f9e0029678",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/02-交易与履约链路/采购交易与履约链路.md",
+      "bytes": 25075,
+      "sha256": "b0e6e7447ddf489784b503138689ae69e0818061eaf659f1e88fa45220100636",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/03-佣金结算与资损防控/佣金结算与资损防控.md",
+      "bytes": 30647,
+      "sha256": "85f7c4cc440a62c1475bdb75dd747be438ac7caa9bedcaa81a3027a3d3d5fbf2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/04-商品域铺货选品与搜索/商品域·铺货·选品与搜索.md",
+      "bytes": 28899,
+      "sha256": "10ed5e106ed09166cc765896bf8356b9f9eb08669e81db04e4232be0a395aed9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/05-账号体系与开放平台/账号体系与开放平台.md",
+      "bytes": 20516,
+      "sha256": "db4654c80c85326216886c6322b3a078d3ea2bc6a2279fbc1776ba9c2d6b0ba1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/06-消息中心与IM工具/消息中心与IM工具.md",
+      "bytes": 18239,
+      "sha256": "e6199f062d9f33173b7113947072fc3ec1fc35a7da298172266054d3b474c810",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/07-限流与服务治理/限流与服务治理.md",
+      "bytes": 22381,
+      "sha256": "50de65e8f9f3b36630f4661bdbe86350186e454d00ce36440a716c412b17f40e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/08-技术架构与研发规范/技术架构与研发规范.md",
+      "bytes": 24437,
+      "sha256": "808e33203e9e54aaca1dc9b7980fd8f94525136830141312cf5b424306d5d4ff",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/panama/_wiki/09-安全生产与稳定性保障/安全生产与稳定性保障.md",
+      "bytes": 22223,
+      "sha256": "451286af27d71293f47e0c25fc502ecc82a9816c4f7731eca8bd5cda1a37191e",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/10-AI能力建设/AI能力建设.md",
+      "bytes": 27283,
+      "sha256": "cafac6245b29feea0412ab61fc15114803ede6c16a20957bcd028caf3d4425a1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/11-日本站与自营独立站/日本站与自营独立站.md",
+      "bytes": 23423,
+      "sha256": "d54a21676f60965e9fb30de106d8c2f2da589ce327d447aa8187706242daf8ce",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/index.md",
+      "bytes": 5276,
+      "sha256": "86fc4960fe2a6629617c9c5a5c8144599ee5a9c631d0cf704ff1dd66b9b98235",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/panama/_wiki/log.md",
+      "bytes": 2057,
+      "sha256": "caa82533b696945df17a2758f6b373dc54fd8842d3f77384b4826c03c9ab0309",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/Lazada项目管理Tips.adoc",
+      "bytes": 187,
+      "sha256": "9a70147b26ebb9eaf438340e12ccbff7069c49372fdf26c27356263ed25a09c3",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/Lazada测试规范V1.0.adoc",
+      "bytes": 38062,
+      "sha256": "e1a73f1d635edd90908f6b539f9d4381e5e4373aef21861bbff55316cdddfc52",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/SIT标准流程.adoc",
+      "bytes": 11926,
+      "sha256": "2dfdfb73d1aa660b78efbe0494b3fc48d877ec4ee13dc4fe6162e425cff559d9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/UAT流程标准.adoc",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/发布SOP.adoc",
+      "bytes": 2647,
+      "sha256": "7a2980ac0d2bdf60938a8e8c60eaba3a590e433e29c93d0fc5d827267dccb515",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/回滚SOP - 交易.adoc",
+      "bytes": 2700,
+      "sha256": "6c0a4cc57200658c6b8e570512989f7545aa118f22ec1772ec0765d5057758ed",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/软件研发跨域联调指引.adoc",
+      "bytes": 9456,
+      "sha256": "28436eeff68e2fd679d227330111ccbd2166b1526034debaa0d0c95c753f2ab2",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/执行&监控/项目风险管理 SOP.adoc",
+      "bytes": 10812,
+      "sha256": "a76acd1fbe83b108a42068713a5d5fbcc5e9a5b60b95b34115688494238f475d",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/收尾/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/收尾/线上复盘操作手册 AiOne Postmortem Q&A.adoc",
+      "bytes": 22187,
+      "sha256": "d6571fe41ed86d8b7fae20c2ce55a82e5d996d10f23ee52a89f9ba0bc80f8866",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/收尾/项目复盘SOP.adoc",
+      "bytes": 5579,
+      "sha256": "668bd210532200a83ed81908e134968ef5b09f1819194629639f6fe6e8f804f2",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/收尾/项目结项SOP.adoc",
+      "bytes": 2198,
+      "sha256": "cd1702ce3b92b8db821324d92fe196c7195e2a35e2102b8f58933adddedd675a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/立项/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/立项/项目命名规则.adoc",
+      "bytes": 7689,
+      "sha256": "f8e3a1ec6224c35eaea08cbe1247720ebb63aff2f0ac69193bef9152edb64e8d",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/立项/项目立项SOP.adoc",
+      "bytes": 11506,
+      "sha256": "c5f5516e9ab59a9f08df93c90eccd92c1f0188f09d6a54cdc9189f91ff6751c9",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理SOP/规划",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/业务文档/BRD文档汇总.adoc",
+      "bytes": 242,
+      "sha256": "f3d6523fdd115d8dda11dbfca1962e4de02bf2e87ad69ec3f2a7f10f285ac3a1",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/业务文档/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/业务文档/【参考模板】业务方案BRD.adoc",
+      "bytes": 7913,
+      "sha256": "cc1e9d2e251ca5219823efee98770fa4acefdaaed6ec526fc6ad8081c861a431",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/产品文档/PRD文档汇总.adoc",
+      "bytes": 343,
+      "sha256": "9f08863fb2f4d28ab62ad10f333451c1cd7e7a54668035742f9108b3255ca70c",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/产品文档/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/产品文档/产品方案PRD.adoc",
+      "bytes": 712,
+      "sha256": "5a60e70bf6a52c9b039e05e3cdafa399ab8fcd409ad8c7b1922117621170efcf",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/技术文档/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/技术文档/【参考模板】技术方案.adoc",
+      "bytes": 4271,
+      "sha256": "75df6756cd9a5c88e250ecad0ea6c19cf37c463ccb2e55749ac3add90c8d6540",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/技术文档/发布计划.adoc",
+      "bytes": 1080,
+      "sha256": "3e2b5dea301e48cbd866159dafc98f1f98b989d488d58f7bbb4d8fd1b2257037",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/技术文档/技术方案文档汇总.adoc",
+      "bytes": 260,
+      "sha256": "3ab9a2192a342c80a2c5ddd896756c4ee6dc60456fecaa177561da3b32b0cc68",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/技术文档/提测.adoc",
+      "bytes": 2270,
+      "sha256": "f4a9af9db0f331efac46743303db70c7c0596dfdcf088c459b55f681f5c040d5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/测试文档/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/测试文档/【参考模板】测试方案.adoc",
+      "bytes": 1339,
+      "sha256": "4d972c6da7246dcf53c23e88683722d405fe70aa11154e61e7e07b469b637997",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/测试文档/功能测试.adoc",
+      "bytes": 2300,
+      "sha256": "99d48a8ed299caefca230fb0c56d60b95763dcb591c53af4ba2f00ab339c9c73",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/测试文档/测试方案文档汇总.adoc",
+      "bytes": 260,
+      "sha256": "5ccbc4d9284bc682ceb771a8cebfceba9602080c6f2d79c73b8080cf8d9e1381",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目会议&报告/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目会议&报告/【参考模版】项目例会材料&纪要.adoc",
+      "bytes": 6708,
+      "sha256": "bf71b2f2ef4837d138effb81023c8a3baa1eb5485e4a4aa2fd3bdebd40bbeed5",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目会议&报告/项目报告产出.adoc",
+      "bytes": 1275,
+      "sha256": "11bfaa3eb6069d308c8a06430c170284500bfdc7a6dd238e64e409f11177fdbe",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目复盘结项.adoc",
+      "bytes": 854,
+      "sha256": "00d29a8f81c7e0d1775ef05d4eec25f0098800cd611a871dc26082a325707fa9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目章程.adoc",
+      "bytes": 8911,
+      "sha256": "18c81631234598af4036fa92bc539d4d43041e8de9c75293c5cbdac33756b13a",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目计划/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目计划/功能验收（UAT）.adoc",
+      "bytes": 1423,
+      "sha256": "2613200bbd6f543c3022566a1029472ef7a86057b5d6ea377d45a6fec9ef618f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目计划/灰度／放量计划.adoc",
+      "bytes": 1823,
+      "sha256": "271f33f6a0bf4d4508372bf61e4c6be87dcceb6e0b959e6eeb00e486e811fc61",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目计划/项目变更／待办／风险模版.adoc",
+      "bytes": 344,
+      "sha256": "b0ad125bd5c6579cbf62de84c0cead121ad1c9b72324146118a6819bfe8fbb95",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理模版库/项目管理/项目计划/项目计划-Tracker.adoc",
+      "bytes": 2707,
+      "sha256": "f62173507f082858ce5cef038b908863f3f83e2faffca916b119a01690d2682f",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/Lazada项目管理分享.adoc",
+      "bytes": 4165,
+      "sha256": "1fddf2c601c6229c64f16f803cd7ce605a5b8ac1d397ee0b28a1e544c3fe2a88",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/index.md",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第一讲：项目管理基本流程和规范.adoc",
+      "bytes": 20412,
+      "sha256": "f970ac83a46aa47964d5ae717269ec69303f08fb15fc222e13b801b76a5f7641",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第一讲：项目管理基本流程和规范.pdf",
+      "bytes": 14170,
+      "sha256": "bdb854a44b377d9363d02a4d628ead8e2faa7aa2c65790a2963425140fe5e2bc",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第三讲：项目进度管理.adoc",
+      "bytes": 20488,
+      "sha256": "dfc81d901641336176fcd5b610fdb030c98c440b14a162b9830ef8ab0ff101af",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第三讲：项目进度管理.pdf",
+      "bytes": 13655,
+      "sha256": "4333b41341247edf10c1f8fb1fa1314a93a49853e5114f9bf40a5d2a0a1d5d74",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第二讲：从项目到需求的拆解方法.adoc",
+      "bytes": 10374,
+      "sha256": "948ceab66f2ccbdbeeaae5520ec0b817e648bfab9720cf574c613a40ae379975",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第二讲：从项目到需求的拆解方法.pdf",
+      "bytes": 12411,
+      "sha256": "e1fa3a002a12bfeb6a6bc0aa5e973c99365b17c418c67013a447abd032e67048",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第五讲：项目风险管理.adoc",
+      "bytes": 8754,
+      "sha256": "778959ea08788c255ce28f623483cc127e3c6e66b7e22b9e2c0d735f6e1edfb1",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第五讲：项目风险管理.pdf",
+      "bytes": 6231,
+      "sha256": "09251563829422c6a4fdc961d6b4c9531c7ce3f2d61e4fa3b300111b821abfb9",
+      "changed_by_credential_sanitizer": false
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第四讲：项目沟通管理.adoc",
+      "bytes": 63691,
+      "sha256": "fd3c94b1528d39819b9d9bf5b20db99ba4d064c83647a4993771f3566f0a443e",
+      "changed_by_credential_sanitizer": true
+    },
+    {
+      "path": "raw/project-mgmt/6. Project Mgmt - PUBLIC/项目管理赋能分享/第四讲：项目沟通管理.pdf",
+      "bytes": 24609,
+      "sha256": "a103e93e54ed5e8e899b19f2268f043a0515200f028329aafd57caa41fc50dde",
+      "changed_by_credential_sanitizer": false
+    }
+  ]
+}

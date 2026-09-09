@@ -1,0 +1,1217 @@
+{
+  "documentId": 2796,
+  "documentName": "获取新版应用发布详情",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取新版应用发布详情\n/rest/openapi/gw/dsp/appcenter/app/release/detail\n\n\nadvertiser_id  Long  <p>广告主id</p>\npackage_id  Long  应用包id\ndata  QueryAppReleaseResp332Snake  [创编]应用详情的返回参数\naccount_app_id  Integer  账号业务线\naccount_id  Long  创建应用的账号ID\napp_detail_img  String  应用详情图片\napp_icon_url  String  应用图标链接\napp_id  Long  应用ID\napp_privacy_url  String  应用隐私政策链接\ncert_md_5  String  签名MD5\nchannel_id  String  渠道号(分包号)\ncompatibility  String  兼容性\ncreate_time  Long  创建时间\ndeveloper  String  开发者\neffect_status  Integer  生效状态\nglobal_app_id  Long  全局应用ID\nios_app_id  String  解析出的iosAppID\nios_page_id  String  iOS15自定义产品页\nmd_5  String  MD5\noffline_app_stores  String  下架的应用商店\npackage_id  Long  应用包ID\npackage_name  String  应用包名\npackage_size  Long  应用包大小\nparent_package_id  Long  分包的母包ID\npermission_information  String[]  权限信息ID列表\npermissions  AndroidPermissionSnake  请补充描述详情\nordinary_permissions  PermissionDetailSnake[]  请补充描述详情\ndescription  String  请补充描述详情\nid  Integer  请补充描述详情\nname  String  请补充描述详情\npermission_ids  String[]  请补充描述详情\nsensitive_permissions  SensitivePermissionSnake[]  请补充描述详情\ngroup  String  请补充描述详情\npermission_details  PermissionDetailSnake[]  请补充描述详情\ndescription  String  请补充描述详情\nid  Integer  请补充描述详情\nname  String  请补充描述详情\nplatform  String  android或ios\nput_status  Integer  投放状态\nreal_app_name  String  应用名称\nreal_app_version  String  应用版本信息\nreview_detail  String  审核详情\nreview_status  Integer  审核状态\nupdate_time  Long  更新时间\nurl  String  应用下载地址\nuse_sdk  Integer  是否接入快手广告监测SDK\nversion_code  Long  应用版本号\nfunction_introduction  String  应用功能介绍\nrecord_number  String  备案号\ndocument_number  String  证件号码\ncode  Integer  请补充描述详情\nmessage  String  请补充描述详情\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1719456266428
+    }
+  ],
+  "apiId": 714,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/detail",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/detail' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"package_id\":100009087\n}'\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"app_detail_img\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/cfea5ec7dc1a4ccbb29b472eee731a94.png\",\n        \"package_size\": 68118183,\n        \"package_id\": 100009087,\n        \"put_status\": 1,\n        \"platform\": \"android\",\n        \"offline_app_stores\": \"[]\",\n        \"app_privacy_url\": \"https://master--kuaishou-frontend-app-platform.jinx.staging.kuaishou.com/create/android?__accountId__=900015364\",\n        \"update_time\": 1680490891299,\n        \"ios_page_id\": \"\",\n        \"real_app_version\": \"4.8.81\",\n        \"review_status\": 2,\n        \"parent_package_id\": 1099611636861,\n        \"app_id\": 2199123264636,\n        \"create_time\": 1680147135611,\n        \"global_app_id\": 4801145,\n        \"review_detail\": \"\",\n        \"permission_information\": [\n            96,\n            41,\n            35,\n            43,\n            73,\n            71,\n            22,\n            34,\n            20,\n            119,\n            4,\n            3,\n            39,\n            63,\n            87,\n            82,\n            147,\n            40,\n            145,\n            141,\n            115,\n            154,\n            45,\n            15,\n            80,\n            13,\n            104,\n            146,\n            84,\n            116,\n            121,\n            70\n        ],\n        \"version_code\": 220831,\n        \"app_icon_url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/5e258659e38b493ca6449bcc0cc9a665.jpg\",\n        \"ios_app_id\": \"\",\n        \"account_app_id\": 1,\n        \"url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-app/e2c9cab1-6872-4803-886b-9f2bfbf3deaf_2199123264636_2023-03-30%2011%3A32%3A15_1_1680147141182.apk\",\n        \"effect_status\": 0,\n        \"use_sdk\": 1,\n        \"account_id\": 900015364,\n        \"package_name\": \"com.snda.wifilocating\",\n        \"real_app_name\": \"WiFi万能钥匙\",\n        \"developer\": \"全年龄网赚\",\n        \"cert_md_5\": \"e25b9a4e4ed5a7810be03b42cfaa9f39\",\n        \"compatibility\": \"Android4.3及以上\",\n        \"channel_id\": \"2199123264636_2023-03-30 11:32:15_1\",\n        \"md_5\": \"0ac0cd80d0541d4675beebd10e41146a\",\n        \"function_introduction\":\"功能介绍\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EPSAgIDwg5mOrAEYvAkg4avkuPQwKJDKmp8E\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63179,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42648,
+      "paramName": "package_id",
+      "paramType": "Long",
+      "example": "123",
+      "description": "应用包id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "支持母包id或分包id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42682,
+      "paramName": "data",
+      "paramType": "QueryAppReleaseResp332Snake",
+      "example": "",
+      "description": "[创编]应用详情的返回参数",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2607,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42649,
+          "paramName": "account_app_id",
+          "paramType": "Integer",
+          "example": "",
+          "description": "账号业务线",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42650,
+          "paramName": "account_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "创建应用的账号ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42651,
+          "paramName": "app_detail_img",
+          "paramType": "String",
+          "example": "",
+          "description": "应用详情图片",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42652,
+          "paramName": "app_icon_url",
+          "paramType": "String",
+          "example": "",
+          "description": "应用图标链接",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42653,
+          "paramName": "app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "应用ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42654,
+          "paramName": "app_privacy_url",
+          "paramType": "String",
+          "example": "",
+          "description": "应用隐私政策链接",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42655,
+          "paramName": "cert_md_5",
+          "paramType": "String",
+          "example": "",
+          "description": "签名MD5",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42656,
+          "paramName": "channel_id",
+          "paramType": "String",
+          "example": "",
+          "description": "渠道号(分包号)",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42657,
+          "paramName": "compatibility",
+          "paramType": "String",
+          "example": "",
+          "description": "兼容性",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42658,
+          "paramName": "create_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "创建时间",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42659,
+          "paramName": "developer",
+          "paramType": "String",
+          "example": "",
+          "description": "开发者",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42660,
+          "paramName": "effect_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "生效状态",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42661,
+          "paramName": "global_app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "全局应用ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42662,
+          "paramName": "ios_app_id",
+          "paramType": "String",
+          "example": "",
+          "description": "解析出的iosAppID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42663,
+          "paramName": "ios_page_id",
+          "paramType": "String",
+          "example": "",
+          "description": "iOS15自定义产品页",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42664,
+          "paramName": "md_5",
+          "paramType": "String",
+          "example": "",
+          "description": "MD5",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 16,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42665,
+          "paramName": "offline_app_stores",
+          "paramType": "String",
+          "example": "",
+          "description": "下架的应用商店",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 17,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42666,
+          "paramName": "package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "应用包ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42667,
+          "paramName": "package_name",
+          "paramType": "String",
+          "example": "",
+          "description": "应用包名",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42668,
+          "paramName": "package_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "应用包大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42669,
+          "paramName": "parent_package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "分包的母包ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 21,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42670,
+          "paramName": "permission_information",
+          "paramType": "String[]",
+          "example": "",
+          "description": "权限信息ID列表",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 22,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42671,
+          "paramName": "permissions",
+          "paramType": "AndroidPermissionSnake",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2590,
+          "sort": 23,
+          "note": "",
+          "children": [
+            {
+              "paramId": 42319,
+              "paramName": "ordinary_permissions",
+              "paramType": "PermissionDetailSnake[]",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 2591,
+              "sort": 1,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 42314,
+                  "paramName": "description",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "请补充描述详情",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 42315,
+                  "paramName": "id",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "请补充描述详情",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 42316,
+                  "paramName": "name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "请补充描述详情",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42320,
+              "paramName": "permission_ids",
+              "paramType": "String[]",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 42321,
+              "paramName": "sensitive_permissions",
+              "paramType": "SensitivePermissionSnake[]",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 2592,
+              "sort": 3,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 42317,
+                  "paramName": "group",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "请补充描述详情",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 42318,
+                  "paramName": "permission_details",
+                  "paramType": "PermissionDetailSnake[]",
+                  "example": "",
+                  "description": "请补充描述详情",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 2591,
+                  "sort": 2,
+                  "note": "",
+                  "children": [
+                    {
+                      "paramId": 42314,
+                      "paramName": "description",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "请补充描述详情",
+                      "required": 0,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 42315,
+                      "paramName": "id",
+                      "paramType": "Integer",
+                      "example": "",
+                      "description": "请补充描述详情",
+                      "required": 0,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 2,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 42316,
+                      "paramName": "name",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "请补充描述详情",
+                      "required": 0,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 3,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42672,
+          "paramName": "platform",
+          "paramType": "String",
+          "example": "",
+          "description": "android或ios",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 24,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42673,
+          "paramName": "put_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "投放状态",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 25,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42674,
+          "paramName": "real_app_name",
+          "paramType": "String",
+          "example": "",
+          "description": "应用名称",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 26,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42675,
+          "paramName": "real_app_version",
+          "paramType": "String",
+          "example": "",
+          "description": "应用版本信息",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 27,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42676,
+          "paramName": "review_detail",
+          "paramType": "String",
+          "example": "",
+          "description": "审核详情",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 28,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42677,
+          "paramName": "review_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "审核状态",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 29,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42678,
+          "paramName": "update_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "更新时间",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 30,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42679,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "应用下载地址",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 31,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42680,
+          "paramName": "use_sdk",
+          "paramType": "Integer",
+          "example": "",
+          "description": "是否接入快手广告监测SDK",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 32,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42681,
+          "paramName": "version_code",
+          "paramType": "Long",
+          "example": "",
+          "description": "应用版本号",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 33,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45934,
+          "paramName": "function_introduction",
+          "paramType": "String",
+          "example": "",
+          "description": "应用功能介绍",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 34,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 49513,
+          "paramName": "record_number",
+          "paramType": "String",
+          "example": "",
+          "description": "备案号",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 35,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 49514,
+          "paramName": "document_number",
+          "paramType": "String",
+          "example": "",
+          "description": "证件号码",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 36,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42683,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42684,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1719456266428,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

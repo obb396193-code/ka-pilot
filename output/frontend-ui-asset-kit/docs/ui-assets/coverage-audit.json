@@ -1,0 +1,515 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-19T15:38:06.845Z",
+  "terminology": {
+    "catalog_item": "Discoverable normalized metadata record; does not mean source is downloaded.",
+    "public_source": "Official source/item endpoint is available without a paid license.",
+    "public_metadata_only": "Official name/configuration is public but no source file is attached to this record.",
+    "paid_source_after_license": "Public metadata/preview is known; source requires the stated paid tier or license key.",
+    "source_cached": "An exact upstream source payload is cached with a path and hash; catalogued alone is not cached."
+  },
+  "summary": {
+    "catalog_items": 7056,
+    "source_count": 17,
+    "by_access_status": {
+      "paid-source-after-license": 2176,
+      "public-metadata-only": 97,
+      "public-source": 4783
+    },
+    "by_source_cache_status": {
+      "not-cached": 7056
+    },
+    "fully_cached_catalog_items": 0
+  },
+  "sources": [
+    {
+      "id": "shadcn",
+      "catalog_count": 473,
+      "coverage": "complete-new-york-v4-plus-logical-index",
+      "access": {
+        "public-metadata-only": 59,
+        "public-source": 414
+      },
+      "source_cache": {
+        "not-cached": 473
+      },
+      "maintenance": {
+        "current": 473
+      },
+      "variant_matrix": {
+        "variants": [
+          "aria-luma",
+          "aria-lyra",
+          "aria-maia",
+          "aria-mira",
+          "aria-nova",
+          "aria-rhea",
+          "aria-sera",
+          "aria-vega",
+          "base-luma",
+          "base-lyra",
+          "base-maia",
+          "base-mira",
+          "base-nova",
+          "base-rhea",
+          "base-sera",
+          "base-vega",
+          "radix-luma",
+          "radix-lyra",
+          "radix-maia",
+          "radix-mira",
+          "radix-nova",
+          "radix-rhea",
+          "radix-sera",
+          "radix-vega"
+        ],
+        "foundation_count": 3,
+        "style_count": 8,
+        "upstream_variant_record_count": 5120,
+        "deduplicated_logical_name_count": 216,
+        "note": "Variant records are implementations/configuration records, not 5,120 unique components."
+      },
+      "official_scope": "New York v4 complete Registry plus current logical UI index",
+      "evidence": [
+        "https://ui.shadcn.com/r/styles/new-york-v4/registry.json",
+        "https://ui.shadcn.com/r/index.json",
+        "https://ui.shadcn.com/r/config.json"
+      ],
+      "outside_catalog": [
+        "24 preset variants contain 5,120 implementation/config records but only 216 deduplicated names; stored as a variant matrix, not unique assets.",
+        "Registry Directory lists 280 third-party providers; their internal counts, prices and authentication are not supplied by shadcn.",
+        "Official Figma page lists 3 free and 7 paid third-party kits; these are discovery metadata, not first-party code items."
+      ],
+      "unresolved": [
+        "Third-party Registry Directory provider inventories require per-provider audits."
+      ]
+    },
+    {
+      "id": "coss",
+      "catalog_count": 577,
+      "coverage": "complete-current-registry",
+      "access": {
+        "public-metadata-only": 7,
+        "public-source": 570
+      },
+      "source_cache": {
+        "not-cached": 577
+      },
+      "maintenance": {
+        "current": 577
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete current coss/ui Registry",
+      "evidence": [
+        "https://coss.com/ui/r/registry.json",
+        "https://coss.com/ui/docs/roadmap"
+      ],
+      "outside_catalog": [
+        "Deprecated orphan p-input-group-25 remains publicly reachable but is excluded from the current 577."
+      ],
+      "unresolved": [
+        "Future atoms mentioned on the roadmap have no published count or Registry."
+      ]
+    },
+    {
+      "id": "coss-origin",
+      "catalog_count": 646,
+      "coverage": "complete-legacy-registry",
+      "access": {
+        "public-source": 646
+      },
+      "source_cache": {
+        "not-cached": 646
+      },
+      "maintenance": {
+        "maintenance-stale": 646
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete preserved Origin public Registry snapshot",
+      "evidence": [
+        "https://github.com/cosscom/coss/tree/main/apps/origin",
+        "https://github.com/cosscom/coss/blob/main/apps/origin/config/components.ts"
+      ],
+      "outside_catalog": [
+        "Two repo-only internal sources, resizable and toaster, have no public item JSON and are not counted in the 646 Registry items."
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "reui",
+      "catalog_count": 2315,
+      "coverage": "complete-official-llms-index",
+      "access": {
+        "paid-source-after-license": 1166,
+        "public-source": 1149
+      },
+      "source_cache": {
+        "not-cached": 2315
+      },
+      "maintenance": {
+        "current": 2315
+      },
+      "variant_matrix": {
+        "variants": [
+          "base-luma",
+          "base-lyra",
+          "base-maia",
+          "base-mira",
+          "base-nova",
+          "base-rhea",
+          "base-sera",
+          "base-vega",
+          "radix-luma",
+          "radix-lyra",
+          "radix-maia",
+          "radix-mira",
+          "radix-nova",
+          "radix-rhea",
+          "radix-sera",
+          "radix-vega"
+        ],
+        "foundation_count": 2,
+        "style_count": 8,
+        "icon_style_count": 4,
+        "icon_render_variant_count": 2552,
+        "note": "The catalog stores logical assets once; inspect the concrete style endpoint before copying source."
+      },
+      "official_scope": "Official Registry plus llms.txt product index",
+      "evidence": [
+        "https://reui.io/llms.txt",
+        "https://reui.io/r/registry.json",
+        "https://reui.io/pricing"
+      ],
+      "outside_catalog": [
+        "16 Base/Radix style variants are stored as a matrix.",
+        "638 icon concepts produce 2,552 style variants; the catalog counts concepts once."
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "tremor",
+      "catalog_count": 375,
+      "coverage": "complete-current-public-surfaces",
+      "access": {
+        "public-source": 375
+      },
+      "source_cache": {
+        "not-cached": 375
+      },
+      "maintenance": {
+        "current": 375
+      },
+      "variant_matrix": null,
+      "official_scope": "Current Raw, Blocks and Templates public surfaces",
+      "evidence": [
+        "https://www.tremor.so/docs",
+        "https://blocks.tremor.so/blocks",
+        "https://blocks.tremor.so/templates"
+      ],
+      "outside_catalog": [
+        "Dashboard OSS is recorded as a related variant, not a seventh unique current template."
+      ],
+      "unresolved": [
+        "The template-dashboard README retains old commercial wording while its current LICENSE.md is MIT."
+      ]
+    },
+    {
+      "id": "tremor-legacy",
+      "catalog_count": 30,
+      "coverage": "complete-live-legacy-docs",
+      "access": {
+        "public-source": 30
+      },
+      "source_cache": {
+        "not-cached": 30
+      },
+      "maintenance": {
+        "maintenance-stale": 30
+      },
+      "variant_matrix": null,
+      "official_scope": "Still-live @tremor/react 3.18.7 documentation",
+      "evidence": [
+        "https://npm.tremor.so/sitemap.xml",
+        "https://www.npmjs.com/package/@tremor/react/v/3.18.7"
+      ],
+      "outside_catalog": [],
+      "unresolved": [
+        "No official deprecated declaration was found; maintenance-stale is an evidence-based status, not a deprecation claim."
+      ]
+    },
+    {
+      "id": "aceternity",
+      "catalog_count": 319,
+      "coverage": "complete-to-ai-index",
+      "access": {
+        "paid-source-after-license": 207,
+        "public-source": 112
+      },
+      "source_cache": {
+        "not-cached": 319
+      },
+      "maintenance": {
+        "current": 319
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete to the official AI recommendations index",
+      "evidence": [
+        "https://ui.aceternity.com/ai-recommendations",
+        "https://ui.aceternity.com/pricing",
+        "https://ui.aceternity.com/licence"
+      ],
+      "outside_catalog": [],
+      "unresolved": [
+        "Pricing says 200+ premium blocks while the public AI index enumerates 167 leaf blocks; a paid account would be needed to reconcile the product pack."
+      ]
+    },
+    {
+      "id": "magic-ui",
+      "catalog_count": 247,
+      "coverage": "complete-free-registry",
+      "access": {
+        "public-metadata-only": 1,
+        "public-source": 246
+      },
+      "source_cache": {
+        "not-cached": 247
+      },
+      "maintenance": {
+        "current": 247
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete free Registry",
+      "evidence": [
+        "https://magicui.design/r/registry.json",
+        "https://github.com/magicuidesign/magicui"
+      ],
+      "outside_catalog": [],
+      "unresolved": []
+    },
+    {
+      "id": "magic-ui-pro",
+      "catalog_count": 104,
+      "coverage": "partial-public-docs-lower-bound",
+      "access": {
+        "paid-source-after-license": 101,
+        "public-source": 3
+      },
+      "source_cache": {
+        "not-cached": 104
+      },
+      "maintenance": {
+        "current": 104
+      },
+      "variant_matrix": null,
+      "official_scope": "Public documentation lower bound, not a complete Pro manifest",
+      "evidence": [
+        "https://pro.magicui.design/",
+        "https://pro.magicui.design/sitemap.xml",
+        "https://pro.magicui.design/docs/installation"
+      ],
+      "outside_catalog": [
+        "95 exact public block slugs and 9 observed template names are catalogued; 3 templates have public official repositories."
+      ],
+      "unresolved": [
+        "Official copy says 50+ sections and 9+ templates but exposes no total Registry; unknown additional assets remain outside the lower-bound catalog."
+      ]
+    },
+    {
+      "id": "react-bits",
+      "catalog_count": 166,
+      "coverage": "complete-free-repository",
+      "access": {
+        "public-source": 166
+      },
+      "source_cache": {
+        "not-cached": 166
+      },
+      "maintenance": {
+        "current": 166
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete free repository capability set, four code variants deduplicated",
+      "evidence": [
+        "https://github.com/DavidHDev/react-bits",
+        "https://reactbits.dev/get-started/installation"
+      ],
+      "outside_catalog": [],
+      "unresolved": []
+    },
+    {
+      "id": "react-bits-pro",
+      "catalog_count": 702,
+      "coverage": "complete-public-pro-index",
+      "access": {
+        "paid-source-after-license": 702
+      },
+      "source_cache": {
+        "not-cached": 702
+      },
+      "maintenance": {
+        "current": 702
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete public Pro documentation asset index",
+      "evidence": [
+        "https://pro.reactbits.dev/",
+        "https://pro.reactbits.dev/sitemap.xml",
+        "https://pro.reactbits.dev/docs/installation"
+      ],
+      "outside_catalog": [],
+      "unresolved": []
+    },
+    {
+      "id": "tweakcn",
+      "catalog_count": 42,
+      "coverage": "complete-default-presets-partial-dynamic-community",
+      "access": {
+        "public-source": 42
+      },
+      "source_cache": {
+        "not-cached": 42
+      },
+      "maintenance": {
+        "current": 42
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete 42 defaultPresets; dynamic community is a separate discovery surface",
+      "evidence": [
+        "https://github.com/jnsahaj/tweakcn/blob/main/utils/theme-presets.ts",
+        "https://tweakcn.com/community",
+        "https://tweakcn.com/pricing"
+      ],
+      "outside_catalog": [
+        "Anonymous community themes are cursor-paginated and continuously growing; no stable finite total or promised public Registry API exists."
+      ],
+      "unresolved": [
+        "A community snapshot can be taken for a dated design review but cannot be called permanent full coverage."
+      ]
+    },
+    {
+      "id": "ai-elements",
+      "catalog_count": 136,
+      "coverage": "complete-official-runtime-registry",
+      "access": {
+        "public-source": 136
+      },
+      "source_cache": {
+        "not-cached": 136
+      },
+      "maintenance": {
+        "current": 136
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete deployed runtime Registry: components and examples",
+      "evidence": [
+        "https://elements.ai-sdk.dev/api/registry/registry.json",
+        "https://github.com/vercel/ai-elements"
+      ],
+      "outside_catalog": [
+        "Documentation headings and prose recipes are not counted as installable assets."
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "kibo-ui",
+      "catalog_count": 69,
+      "coverage": "complete-current-registry-plus-public-block-docs",
+      "access": {
+        "public-metadata-only": 29,
+        "public-source": 40
+      },
+      "source_cache": {
+        "not-cached": 69
+      },
+      "maintenance": {
+        "current": 69
+      },
+      "variant_matrix": null,
+      "official_scope": "Current Registry plus finite official block documentation leaves",
+      "evidence": [
+        "https://www.kibo-ui.com/r/registry.json",
+        "https://www.kibo-ui.com/",
+        "https://github.com/shadcnblocks/kibo"
+      ],
+      "outside_catalog": [
+        "Shadcnblocks patterns are a separate product and are not Kibo Registry assets."
+      ],
+      "unresolved": [
+        "Twenty-eight documented blocks currently return HTTP 500 at sampled /r endpoints, so they remain public-metadata-only."
+      ]
+    },
+    {
+      "id": "dice-ui",
+      "catalog_count": 242,
+      "coverage": "complete-current-radix-registry",
+      "access": {
+        "public-source": 242
+      },
+      "source_cache": {
+        "not-cached": 242
+      },
+      "maintenance": {
+        "current": 242
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete current Radix Registry",
+      "evidence": [
+        "https://diceui.com/r/registry.json",
+        "https://github.com/sadmann7/diceui"
+      ],
+      "outside_catalog": [
+        "Base/Radix and Nova/Vega distributions are a variant matrix, not separate logical products."
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "animate-ui",
+      "catalog_count": 580,
+      "coverage": "complete-current-registry",
+      "access": {
+        "public-metadata-only": 1,
+        "public-source": 579
+      },
+      "source_cache": {
+        "not-cached": 580
+      },
+      "maintenance": {
+        "current": 580
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete current Registry including demos, hooks, styles and icons",
+      "evidence": [
+        "https://animate-ui.com/r/registry.json",
+        "https://github.com/imskyleen/animate-ui"
+      ],
+      "outside_catalog": [],
+      "unresolved": [
+        "Commons Clause permits application use but prohibits selling or redistributing the component library itself."
+      ]
+    },
+    {
+      "id": "motion-primitives",
+      "catalog_count": 33,
+      "coverage": "complete-official-repository-registry",
+      "access": {
+        "public-source": 33
+      },
+      "source_cache": {
+        "not-cached": 33
+      },
+      "maintenance": {
+        "current": 33
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete Registry committed in the official repository",
+      "evidence": [
+        "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json",
+        "https://github.com/ibelick/motion-primitives"
+      ],
+      "outside_catalog": [],
+      "unresolved": [
+        "The deployed Registry endpoint rate-limits some automated clients; refreshes use the official repository copy."
+      ]
+    }
+  ]
+}

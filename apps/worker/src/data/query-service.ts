@@ -27,6 +27,7 @@ import { resolveRequestId } from "./request-id.js";
 import { PlatformDataSourceError } from "./platform-data-source.js";
 import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePolicy, type SelectedDataSourceRoute } from "./data-source-routing.js";
 import { maskCanonicalQueryRows } from "./canonical-query-rows.js";
+import { HourlySourceError, validateHourlySource, type HourlyQueryPort } from "./hourly-public-source.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
 export const SEMANTIC_QUERY_HTTP_PATH = "/api/v1/query";
@@ -34,9 +35,13 @@ export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
 
 export interface DataSourceQueryPort {
   query(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<SourceQueryResult>;
+  pivot?(resolved: ResolvedDataQuery, auth: ApprovedWorkspaceAuthContext): Promise<{
+    source: SourceQueryResult; cellCoverage: { cells: number; withData: number; undeterminable: number };
+  }>;
 }
 
 export interface DataQueryServiceDependencies {
+  hourly?: HourlyQueryPort;
   registry: DataQueryRegistry;
   kaData: DataSourceQueryPort;
   platform: DataSourceQueryPort;
@@ -108,6 +113,8 @@ function stableError(
 }
 
 function mapError(error: unknown, requestId: string): StableDataQueryError {
+  if (error instanceof HourlySourceError) return stableError(error.code, error.code === "FORBIDDEN"
+    ? "Hourly source escaped approved scope" : "Invalid or truncated hourly source", false, requestId);
   if (error instanceof DataSourceRoutingError) {
     return stableError(error.code, error.message, error.retryable, requestId);
   }
@@ -145,7 +152,7 @@ function unavailableLineage(
   workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceLineage {
   return {
-    ...((resolved.queryId === "account.summary" || resolved.queryId === "account.trend") ? { window: {
+    ...((resolved.queryId === "account.summary" || resolved.queryId === "account.trend" || resolved.queryId === "account.dimension") ? { window: {
       from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
     } } : {}),
     workspaceKind,
@@ -176,6 +183,7 @@ function unavailableSource(
 ): SourceQueryResult {
   return {
     queryId: resolved.queryId,
+    ...(resolved.queryId === "account.dimension" ? { dimension: resolved.params.dimensionType } : {}),
     rowSchemaVersion: resolved.rowSchemaVersion,
     status: "unavailable",
     rows: [],
@@ -231,7 +239,7 @@ function guardSourceOutput(
     throw new OutputContractError();
   }
   result = parsed.data;
-  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
+  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend" || resolved.queryId === "account.dimension" || resolved.queryId === "account.pivot2") {
     const window = result.lineage.window;
     if (!window || window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo ||
       window.preset !== (resolved.params.preset ?? "custom")) throw new OutputContractError();
@@ -244,15 +252,31 @@ function guardSourceOutput(
     if (result.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();
     return result;
   }
+  if (resolved.queryId === "account.dimension" && result.dimension !== resolved.params.dimensionType) throw new OutputContractError();
   const allowed = new Set(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
   );
+  if (resolved.queryId === "account.pivot2") {
+    if (result.dimA !== resolved.params.dimA || result.dimB !== resolved.params.dimB) throw new OutputContractError();
+    if (result.lineage.truncated || result.rows.length > resolved.maxRows) throw new OutputContractError();
+    if (scope.scopeKind === "explicit_accounts" && (result.lineage.coverage.requestedObjects !== scope.accounts.length ||
+      (result.lineage.coverage.returnedObjects !== undefined && result.lineage.coverage.returnedObjects > scope.accounts.length) ||
+      (result.lineage.coverage.complete && result.lineage.coverage.returnedObjects !== scope.accounts.length))) throw new OutputContractError();
+    for (const row of result.rows) for (const [side, dim] of [["a", result.dimA], ["b", result.dimB]] as const) {
+      if (dim !== "account") continue;
+      const key = (row[side] as { key: string }).key, separator = key.indexOf(":");
+      if (scope.scopeKind === "explicit_accounts" && !allowed.has(`${key.slice(0, separator)}\u0000${key.slice(separator + 1)}`)) throw new OutputScopeError();
+    }
+  }
   for (const row of result.rows) {
     if (resolved.outputShape === "account_rows" && resolved.params.taskId !== undefined && (!Array.isArray(row.tasks) || !row.tasks.some((task: unknown) =>
       typeof task === "object" && task !== null && "taskId" in task && task.taskId === resolved.params.taskId))) {
       throw new OutputContractError();
     }
     const identity = rowAccountIdentity(row);
+    // Frozen dimension rows omit workspaceId. The trusted adapter validates the
+    // internal three-key identity; this boundary still enforces every approved pair.
+    if (resolved.queryId === "account.dimension" && result.dimension === "account") identity.workspaceId = scope.workspaceId;
     const carriesIdentity = identity.media !== null || identity.accountId !== null;
     if (resolved.outputShape === "account_rows" && (
       identity.workspaceId === null ||
@@ -405,6 +429,48 @@ export class DataQueryService {
         throw error;
       }
 
+      if (resolved.queryId === "account.gap") {
+        // Frozen gapStatus requires a real versioned rule plus scoped source
+        // contributions. Neither an old daily aggregate nor a constant threshold
+        // is a substitute. This runs AFTER request and approved tuple validation.
+        throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Versioned Gap source is not configured");
+      }
+      if (resolved.queryId === "account.hourly") {
+        if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.hourly)
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is not configured");
+        const allowed = new Set(scope.accounts.map(a => JSON.stringify([a.media, a.accountId])));
+        const filtered: ApprovedWorkspaceAuthContext = { ...auth, scope: { ...auth.scope,
+          accounts: auth.scope.accounts.filter(a => allowed.has(JSON.stringify([a.media, a.accountId]))) } };
+        let proof: unknown;
+        // Object spread preserves the Registry's symbol brand; clone nested data
+        // so a provider cannot broaden the trusted query used below for checking.
+        const providerQuery = { ...resolved, params: structuredClone(resolved.params), supportedViews: [...resolved.supportedViews],
+          authorityPolicy: { ...resolved.authorityPolicy } };
+        try { proof = await this.dependencies.hourly.query(providerQuery, structuredClone(filtered)); }
+        catch { throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is unavailable"); }
+        const source = withFrozenAuthority(validateHourlySource(proof, resolved, filtered), resolved, "platform", requestId, "personal");
+        if (source.status === "unavailable") {
+          if (source.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is unavailable");
+        }
+        return dataQueryResponseSchema.parse({ ok: true, data: { mode: "platform", source }, meta: { requestId,
+          businessDate: resolved.params.dateFrom, dataAsOf: source.lineage.dataAsOf, workspaceKind: "personal", selectedSource: "platform" } });
+      }
+      if (resolved.queryId === "account.pivot2") {
+        if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.platform.pivot) {
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Pivot source is not configured");
+        }
+        // Preserve the unique approved context and its actual role/access levels;
+        // only narrow its tuple list, never fabricate an auth context in an adapter.
+        const allowed = new Set(scope.accounts.map(a => JSON.stringify([a.media, a.accountId])));
+        const filteredAuth: ApprovedWorkspaceAuthContext = { ...auth, scope: { ...auth.scope,
+          accounts: auth.scope.accounts.filter(a => allowed.has(JSON.stringify([a.media, a.accountId]))) } };
+        const result = await this.dependencies.platform.pivot(resolved, structuredClone(filteredAuth));
+        const source = withFrozenAuthority(guardSourceOutput(result.source, resolved, scope), resolved, "platform", requestId, auth.workspaceKind);
+        const response = dataQueryResponseSchema.safeParse({ ok: true, data: { mode: "platform", source }, meta: { cellCoverage: result.cellCoverage } });
+        if (!response.success) throw new OutputContractError();
+        return response.data;
+      }
       if (route.selectedSource === "ka_data") {
         const source = withFrozenAuthority(
           guardSourceOutput(await this.dependencies.kaData.query(resolved, scope), resolved, scope),
@@ -501,7 +567,7 @@ function errorStatus(code: StableDataQueryErrorCode): number {
   if (code === "UNAUTHORIZED") return 401;
   if (code === "FORBIDDEN") return 403;
   if (code === "QUERY_NOT_ALLOWED") return 404;
-  if (code === "VIEW_UNSUPPORTED") return 422;
+  if (code === "VIEW_UNSUPPORTED" || code === "DIMENSION_UNSUPPORTED") return 422;
   if (code === "SOURCE_UNAVAILABLE" || code === "UPSTREAM_TIMEOUT") return 503;
   if (code === "SOURCE_TRUNCATED" || code === "UPSTREAM_INVALID_RESPONSE") return 502;
   if (code === "INTERNAL_ERROR") return 500;

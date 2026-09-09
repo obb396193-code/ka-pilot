@@ -1,0 +1,42 @@
+{
+  "documentId": 2027,
+  "documentName": "10.18.4获取智能托管详情接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取智能托管详情接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/hosting/project/detail\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 属性          | 类型 | 含义            | 使用说明 |\n| ------------- | ---- | --------------- | -------- |\n| project_id    | Long | 项目id          | 必填       |\n| advertiser_id | Long | 广告主accountId |    必填      |\n\n### 返回参数\n\n**detail返回的data内容**\n\n| 属性                                         | 类型 | 含义   | 使用说明               |\n| -------------------------------------------- | ---- | ------ | ---------------------- |\n| project_id                                   | Long | 项目id | 无                     |\n| campaign_id                                  | Long | 计划id | 项目会唯一对应一个计划 |\n| 省略属性请参考创编的入参，含义和格式完全一样 |      |        |                        |\n\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {/*本属性为json结构体，见如下说明*/}\n}\n\n```\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624870
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624870,
+  "creator": "wb_yuanbowen",
+  "fullContext": null
+}

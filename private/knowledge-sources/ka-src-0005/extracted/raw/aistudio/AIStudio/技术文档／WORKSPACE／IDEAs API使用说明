@@ -1,0 +1,390 @@
+
+# AI应用交付运行（新）
+
+ai应用交付API仅支持HTTP
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/run/{appCode}/{appVersion}
+
+​  
+
+
+可以在发布管理页面获取。 如果需要最新版本，appVersion可以填写为 `latest`表示使用最新发布的版本
+
+#### POST参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **说明** | **是否必填** | **示例** |
+| --- | --- | --- | --- |
+| empId | 对话的员工工号 | 生成型：非必填  对话型：必填 | ​ |
+| sessionId | 对话的id，由调用方生成。注意保证唯一性，如果sessionId重复，会被视为同一个对话 | 必填 | ​ |
+| messageId | 一个对话的消息id | 非必填，默认为traceId | ​ |
+| question | 用户问题，对话型应用必填 | 生成型：非必填  对话型：必填 | ​ |
+| variableMap | 变量和对应的值 | * 生成型：必填 * 对话型：非必填   **注：对于变量设置了必填的，必须要传** | flow类型的多模态需要使用此字段，比如传入图片参数：  "variableMap": {"image1": [{"content": "[http://xxx-url](http://xxx-url/)"，"level": "low"}],"image2": [{"content": "[http://xxx-url](http://xxx-url/)"}]}  content是图片链接  level是图片清晰度：high、low、auto，不填默认auto |
+| mediaEntities | 多模态数据，flow类型使用 variableMap | 否 | ​ |
+| stream | 是否流式输出 | 否，默认false | ​ |
+| returnRunLog | 是否输出运行日志 | 否，默认true 输出运行日志 | ​ |
+
+#### 示例
+
+提示词如下，需要传递一个参数，并且使用了多模态模型
+
+**入参示例：**
+
+* 设置了多模态的参数 mediaEntities，传入了图片
+* 设置了变量：language=英文
+* 设置了question：用户输入的问题
+
+**出参示例（块式）:**
+
+​  
+
+
+**流式的每一行和块式相同，content内容是流式拼接的结果**
+
+  
+
+
+**流式结束时，最后一行结果，streamEnd=true**
+
+  
+
+
+#### 错误码
+
+错误码会在最外面的result里返回
+
+* errorCode：错误码
+* errorDesc：错误码描述
+* errorMsg：详细错误信息
+
+# Flow类型的应用，执行发送MetaQ消息
+
+流程的每个节点和完成后，都会发metaq消息
+
+* topic：**idealab_ideas_run_topic**
+* tag：**可以根据业务bizCode进行过滤**
+
+* `{bizCode}:idealab_ideas_finish_tag` 运行结束
+* `{bizCode}:start` 开始节点
+* `{bizCode}:llm` 模型节点
+* `{bizCode}:code` 代码节点
+* `{bizCode}:custom_tool` 工具节点
+* `{bizCode}:ideas` ideas节点
+* `{bizCode}:if_else` 条件分支
+* `{bizCode}:knowledge_retrieval` 知识库
+* `{bizCode}:variable_aggregator` 变量聚合
+* `{bizCode}:answer` 回复
+* `{bizCode}:parallel` 并行
+* `{bizCode}:for_each` 循环
+* `{bizCode}:human` 用户干预
+* `{bizCode}:question_classifier` 问题分类
+* `{bizCode}:http` HTTP节点
+
+* messagBody:
+
+* logId (根据logId查询日志详情)
+* appCode
+* appVersion
+* sessionId
+* messageId
+
+* **查询日志详情接口 (POST)**
+
+* **URL: https://aistudio.alibaba-inc.com/api/aiapp/getMetaQLog**
+* **Header: X-AK**
+* **Body：**
+
+* **logId**
+* **appCode**
+
+# AI应用交付日志查询（新）
+
+ai应用交付日志API仅支持HTTP
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/run/findLogs
+
+#### POST参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **说明** | **类型** | **是否必填** |
+| --- | --- | --- | --- |
+| empIds | 员工工号 | array string | 非必填 |
+| endTime | 结束时间 | string | 非必填 |
+| startTime | 开始时间，格式：yyyy-MM-dd HH:mm:ss | string | 非必填 |
+| messageIds | 一个对话的消息id或者traceId | array string | 非必填 |
+| pageNo | 页码 | int | 必填 |
+| pageSize | 数量 | int | 必填 |
+| source | 来源（DEBUG：调试，API：API接口，WEB：分享页面，IDEAS：IDEAs分享页面，DING：钉钉机器人，WEB_JS:页面嵌入） | array string | 非必填 |
+| appCode | 应用code | string | 必填 |
+| sessionId | 会话记录id | string | 非必填 |
+| orderBy | 排序 | string | 非必填，默认倒序  ASC:升序  DESC:倒序 |
+
+#### 示例
+
+**入参示例：**
+
+**出参示例：**
+
+# AI应用交付日志查询消耗金额明细（新）
+
+仅支持HTTP
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/run/findAmountLogs
+
+#### POST参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **说明** | **类型** | **是否必填** |
+| --- | --- | --- | --- |
+| endTime | 结束时间 | string | 非必填 |
+| startTime | 开始时间，格式：yyyy-MM-dd HH:mm:ss | string | 非必填 |
+| messageIds | 一个对话的消息id或者traceId | array string | 非必填 |
+| pageNo | 页码 | int | 必填 |
+| pageSize | 数量 | int | 必填 |
+| source | 来源（DEBUG：调试，API：API接口，WEB：分享页面，IDEAS：IDEAs分享页面，DING：钉钉机器人） | array string | 非必填 |
+| appCode | 应用code | string | 必填 |
+| sessionId | 会话记录id | string | 非必填 |
+| orderBy | 排序 | string | 非必填，默认倒序  ASC:升序  DESC:倒序 |
+
+#### 示例
+
+**入参示例：**
+
+**出参示例：**
+
+# AI应用消息评价
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/session/evaluate
+
+#### POST参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **说明** | **类型** | **是否必填** |
+| --- | --- | --- | --- |
+| evaluateMsg | 评价信息 | string | 非必填（小于1000个字符） |
+| messageId | 一个对话的消息id或者traceId | string | 必填 |
+| appCode | 应用code | string | 必填 |
+| sessionId | 会话记录id | string | 必填 |
+| interaction | 1赞 -1踩 0取消 | int | 必填 |
+
+#### 返回结果
+
+# AI应用清除会话记忆
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/clearMemory
+
+#### POST参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **说明** | **类型** | **是否必填** |
+| --- | --- | --- | --- |
+| appCode | 应用code | string | 必填 |
+| sessionId | 会话记录id | string | 必填 |
+
+#### 返回结果
+
+  
+
+
+# Flow编排运行日志轮询
+
+Flow运行时，轮询此接口获取运行过程日志
+
+​  
+
+
+**注意：**
+
+1. Flow运行成功后会返回完整的日志（runLog字段），**此接口查询的日志有1小时过期时间，Flow运行结束后不应再调用**
+2. 同一时刻，一个empId在一个sessionId下只会发起一次调用
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/runLog
+
+#### POST请求参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **说明** | **是否必填** |
+| --- | --- | --- |
+| empId | 对话的员工工号 | 必填 |
+| sessionId | 对话的id，由调用方生成。注意保证唯一性，如果sessionId重复，会被视为同一个对话 | 必填 |
+| appCode | flow的应用code | 必填 |
+
+##### 请求示例
+
+#### 返回结果
+
+应用日志格式
+
+| **字段名称** | **字段key** | **说明** |
+| --- | --- | --- |
+| traceId | traceId |  |
+| 状态： | status | 1 成功，-1 失败，0执行中 |
+| 错误信息 | errorMsg |  |
+| 总RT | totalRt |  |
+| 开始时间 | startAt |  |
+| 结束时间 | endAt |  |
+| 应用版本号 | appVersion | 本次调用的发布版本 |
+| 问题token数 | questionTokens |  |
+| 回答token数 | completionTokens |  |
+| 回答是否来源于标注 | fromMark | 回答是否来源于标注 |
+| 每个节点的日志 | nodeLogs | 每个节点日志的列表 |
+
+Flow节点
+
+| **字段名称** | **字段key** | **说明** |
+| --- | --- | --- |
+| 节点类型 | flowNodeType | flow的节点类型 |
+| 节点id | nodeId | 节点唯一id |
+| 节点名称 | nodeName |  |
+| 状态 | status | 1 成功，-1 失败，0执行中 |
+| 错误信息 | errorMsg |  |
+| 开始时间 | startAt |  |
+| 结束时间 | endAt |  |
+| 耗时 | rt |  |
+| 问题token数 | questionTokens |  |
+| 回答token数 | completionTokens |  |
+| 输入 | input | {} json格式 |
+| 数据处理（中间过程） | processData | {} json格式 |
+| 输出 | output | {} json格式 |
+
+##### 返回结果示例
+
+## 用户干预节点，流程暂停后恢复运行API
+
+#### 使用场景
+
+流程中使用了用户干预节点，流程执行到此节点会暂停，此接口用于恢复运行
+
+#### HTTP地址
+
+https://aistudio.alibaba-inc.com/api/aiapp/runContinue
+
+#### POST请求参数
+
+##### Header
+
+* X-AK: 空间绑定的ak，必填
+
+##### Body
+
+| **字段key** | **类型** | **说明** | **是否必填** |
+| --- | --- | --- | --- |
+| empId | String | 对话的员工工号 | 必填 |
+| appCode | String | flow的应用code | 必填 |
+| source | String | 固定传入 API | 必填 |
+| sessionId | String | 会话sessionId | 必填 |
+| messageId | String | 会话messageId | 必填 |
+| operateType | String | * CONTINUE 继续运行 * CANCEL 取消运行 | 非必填，默认CONTINUE |
+| lastNodeVariableValue | Object | 用于修改上个节点的输出结果    类型和上个节点的输出类型一致 | 非必填 |
+| currentNodeVariableValue | Map | 用于补充当前节点的输出    map里的字段和页面上设定的字段一致 | 非必填 |
+| stream | boolean | 是否流式输出 | 必填 |
+
+## 异步工具相关
+
+ideas支持工具的异步调用，适用于工具运行RT太长需要异步化运行的场景，流程如下：
+
+### 如何注册异步工具？
+
+联系巧锋处理
+
+### 异步工具回调接口
+
+用于写入异步工具执行结果
+
+* /api/tool/async/callback
+* body：
+
+* idealabRequestId 调用异步工具时，会设置header：`IDEALAB-REQUEST-ID`，回调时需要传递此值
+* result： 工具执行结果，String类型
+
+## 恢复运行接口（失败、干预暂停，异步暂停的恢复都是此接口）
+
+此接口支持流式，和/api/aiapp/run/{appCode}/{appVersion} 接口返回结果一致
+
+* /api/aiapp/runContinue
+* headers:
+
+* X-AK: ak
+
+* body：
+
+* appCode
+* sessionId
+* messageId
+* stream: 是否流式输出
+
+* 返回结果：见[接口示例](#rDl8J)
+
+调用示例：
+
+### 接口返回结果示例说明
+
+* **块式和流式的最后一帧的结果一致**
+* **提交运行、恢复运行、copy运行，这三个接口的返回结果一致**
+* **runStatus状态说明**
+
+| **状态** | **说明** | **恢复运行说明** |
+| --- | --- | --- |
+| **0** | **运行中** |  |
+| **1** | **运行成功（流程的终态）** |  |
+| **-1** | **运行失败 （中间过程有报错的场景都是-1）** | **可通过****恢复运行接口****发起重试** |
+| **2** | **等待回复（遇到****干预节点****，或者****关联的****ideas节点、工作流内部有干预节点导致的暂停， 会层层透传到最外层。）** | **可通过****恢复运行接口****发起重试**  **​**  **运行接口会额外返回humanNodeData 字段，用于展示上个节点的结果和用户可填写的干预内容。在恢复运行时，可以填写这些字段** |
+| **3** | **等待回调（遇到****异步工具****节点，或者****关联的****ideas节点、工作流内部有异步工具节点导致的暂停， 会层层透传到最外层。）** | **可通过****恢复运行接口****发起重试，有异步工具结果的回调时机由工具提供方控制，所以需要****轮询****恢复运行接口获取结果** |
+
+**返回结果示例：**
+
+## 主动暂停接口
+
+* /api/aiapp/runStop POST
+* body：
+
+* appCode
+* sessionId
+* messageId
+
+* 返回结果：boolean
+
+## ​
+

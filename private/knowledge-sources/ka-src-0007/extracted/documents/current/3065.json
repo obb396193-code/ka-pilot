@@ -1,0 +1,334 @@
+{
+  "documentId": 3065,
+  "documentName": "查询企微授权成员",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721704745130
+    }
+  ],
+  "apiId": 1339,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/qywx/getQywxCorpAuthInfo",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "java",
+      "body": "//  请输入示例代码\n{\"corp_id\":\"ww026587a59a4f\",\"advertiser_id\":\"901526\"}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "java",
+      "body": "//  请输入示例代码\n{\n\t\"code\": 401000,\n\t\"data\": {\n\t\t\"user_infos\": [{\n\t\t\t\"open_user_id\": \"woIcKmHwAAnHtU3MjPEjuLclQ\",\n\t\t\t\"dept_ids\": [2]\n\t\t}, {\n\t\t\t\"open_user_id\": \"woIcKmHwAANbFo8waaJ34JXw\",\n\t\t\t\"dept_ids\": [2]\n\t\t}, {\n\t\t\t\"open_user_id\": \"woIcKmHwAAFw2O2IifK3iVAv5w\",\n\t\t\t\"dept_ids\": [2]\n\t\t}],\n\t\t\"agent_id\": \"10006\"\n\t},\n\t\"message\": \"OK\",\n\t\"request_id\": \"ELiAgIDAqpiOrAEY9wMy3Vw=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62675,
+      "paramName": "corp_id",
+      "paramType": "String",
+      "example": "xxx",
+      "description": "<p>corpId</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "企微id明文",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62676,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "12345",
+      "description": "<p>accountId</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "账户id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63505,
+      "paramName": "dep_ids",
+      "paramType": "Integer[]",
+      "example": "[1,2]",
+      "description": "<p>部门列表，必须是授权可见部门，查当前层级的成员</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "部门列表",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62677,
+      "paramName": "data",
+      "paramType": "GetQywxCorpAuthInfoData",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3527,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62670,
+          "paramName": "user_infos",
+          "paramType": "QywxOpenUser[]",
+          "example": "",
+          "description": "<p>-</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3528,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 62668,
+              "paramName": "open_user_id",
+              "paramType": "String",
+              "example": "woIcKmHwAAGIlM8wUUH",
+              "description": "<p>-</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62669,
+              "paramName": "dept_ids",
+              "paramType": "Integer[]",
+              "example": "[1]",
+              "description": "<p>部门id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63508,
+              "paramName": "active_status",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "<p>激活状态0-已激活、1-未激活、2-初始免费期、3-已过期</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63509,
+              "paramName": "expire_time",
+              "paramType": "Long",
+              "example": "1722090015",
+              "description": "<p>过期时间 </p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62671,
+          "paramName": "agent_id",
+          "paramType": "String",
+          "example": "10005",
+          "description": "<p>-</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62678,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "ok",
+      "description": "<p>OK-成功，其他错误信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62679,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "<p>0-成功</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721704745130,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

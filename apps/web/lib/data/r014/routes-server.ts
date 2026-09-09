@@ -1,0 +1,22 @@
+import "server-only"
+
+// 与 task-list-server.ts 同一织法：server-only 只做再导出，
+// 实现放在无副作用的 handlers.ts，测试才导得进来。
+export {
+  handleAccountPipeline,
+  handleCapabilities,
+  handleDecisionPolicy,
+  handleExportCreate,
+  handleExportDetail,
+  handleMeCounts,
+  handleMeNotifications,
+  handleMeNotificationsRead,
+  handleMePreferences,
+  handleMeView,
+  handleMeViews,
+  handleMeWatchlist,
+  handleMeWorkload,
+  handleSearch,
+  handleTaskBindings,
+  handleTaskReadiness,
+} from "./handlers.ts"

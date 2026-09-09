@@ -1,0 +1,42 @@
+{
+  "documentId": 2253,
+  "documentName": "上传资质文件",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 上传资质文件\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/agent/file/upload\n\n请求方式：POST \n\n### 请求参数\n| 字段   | 类型        | 说明           | 是否必填 | 备注                               |\n| -------- | ------------- | ---------------- | -------- | ------------------------------------ |\n| file     | MultipartFile | 要上传的资质文件 | 是      | 支持jpg、jpeg、pdf、gif格式，小于5MB |\n| agent_id | long          | 代理商 id     | 是      |                                      |\n\n### 返回参数\n| 字段     | 类型 | 说明       | 备注 |\n| ---------- | ------ | ------------ | ---- |\n| file_token | string | 资质文件标识 |      |\n| url        | string | 文件预览链接 |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1675406431987
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1675406431987,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

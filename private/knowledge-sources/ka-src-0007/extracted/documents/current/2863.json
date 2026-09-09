@@ -1,0 +1,685 @@
+{
+  "documentId": 2863,
+  "documentName": "获取广告账户流水信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取广告账户流水信息\n/rest/openapi/v1/advertiser/fund/daily_flows\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800,\n    \"start_date\":\"2019-09-15\",\n    \"end_date\":\"2019-09-15\",\n    \"page\":1,\n    \"page_size\":20\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/daily_flows\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"date\": \"2019-09-05\",\n                \"balance\": 0.0,\n                \"advertiser_id\": 20000152,\n                \"daily_charge\": 0.0,\n                \"real_charged\": 0.0,\n                \"contract_rebate_real_charged\": 0.0,\n                \"direct_rebate_real_charged\": 0.0,\n                \"daily_transfer_in\": 0.0,\n                \"real_recharged\": 0.0,\n                \"contract_rebate_real_recharged\": 0.0,\n                \"direct_rebate_real_recharged\": 0.0,\n                \"daily_transfer_out\": 0.0,\n                \"daily_share_charge\": 0.0,\n                \"share_real_charge\": 0.0,\n                \"share_credit_charge\": 0.0\n            }\n        ]\n    }\n}\nadvertiser_id  Long  广告主 ID\nstart_date  String  开始日期\nend_date  String  结束日期\npage  Integer  查询的页码数\npage_size  Integer  单页行数\ncode  Integer  返回码\nmessage  String  返回信息\ndata  AdvertiserFundDailyFlowsData  JSON 返回值\nshare_credit_charge  Double  <p>共享信用花费</p>\nshare_real_charge  Double  <p>共享实耗花费</p>\ndaily_share_charge  Double  <p>每日共享总花费</p>\nadvertiser_id  Long  广告主 ID\ndate  String  日期\ndaily_charge  Double  实耗总花费\nreal_charged  Double  实耗充值花费\ncontract_rebate_real_charged  Double  实耗框返花费\ndirect_rebate_real_charged  Double  实耗激励花费\ndaily_transfer_in  Double  转入\ndaily_transfer_out  Double  转出\nbalance  Double  日终结余\nreal_recharged  Double  充值转入\ncontract_rebate_real_recharged  Double  框返转入\ndirect_rebate_real_recharged  Double  激励转入\norder_total_charged  Double  订单总花费\norder_real_charged  Double  订单充值花费\norder_contract_charged  Double  订单框返花费\norder_direct_charged  Double  订单激励花费\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1763446824425
+    }
+  ],
+  "apiId": 1281,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/daily_flows",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800,\n    \"start_date\":\"2019-09-15\",\n    \"end_date\":\"2019-09-15\",\n    \"page\":1,\n    \"page_size\":20\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/daily_flows"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"date\": \"2019-09-05\",\n                \"balance\": 0.0,\n                \"advertiser_id\": 20000152,\n                \"daily_charge\": 0.0,\n                \"real_charged\": 0.0,\n                \"contract_rebate_real_charged\": 0.0,\n                \"direct_rebate_real_charged\": 0.0,\n                \"daily_transfer_in\": 0.0,\n                \"real_recharged\": 0.0,\n                \"contract_rebate_real_recharged\": 0.0,\n                \"direct_rebate_real_recharged\": 0.0,\n                \"daily_transfer_out\": 0.0,\n                \"daily_share_charge\": 0.0,\n                \"share_real_charge\": 0.0,\n                \"share_credit_charge\": 0.0\n            }\n        ]\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61442,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61443,
+      "paramName": "start_date",
+      "paramType": "String",
+      "example": "",
+      "description": "开始日期",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "默认是当天，格式：yyyy-MM-dd",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61444,
+      "paramName": "end_date",
+      "paramType": "String",
+      "example": "",
+      "description": "结束日期",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "默认是当天，格式：yyyy-MM-dd",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61445,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "查询的页码数",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "默认为 1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61446,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "单页行数",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "默认为 20，不超过 500",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61447,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61448,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61449,
+      "paramName": "data",
+      "paramType": "AdvertiserFundDailyFlowsData",
+      "example": "",
+      "description": "JSON 返回值",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3438,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 66248,
+          "paramName": "share_credit_charge",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>共享信用花费</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 66249,
+          "paramName": "share_real_charge",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>共享实耗花费</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 66250,
+          "paramName": "daily_share_charge",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>每日共享总花费</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61422,
+          "paramName": "advertiser_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "广告主 ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61423,
+          "paramName": "date",
+          "paramType": "String",
+          "example": "",
+          "description": "日期",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61424,
+          "paramName": "daily_charge",
+          "paramType": "Double",
+          "example": "",
+          "description": "实耗总花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61425,
+          "paramName": "real_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "实耗充值花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "广告主的现金消耗和返点消耗，单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61426,
+          "paramName": "contract_rebate_real_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "实耗框返花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "年框广告主的框架返点的消耗，单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61427,
+          "paramName": "direct_rebate_real_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "实耗激励花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "广告主激励账户中余额的消耗，单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61428,
+          "paramName": "daily_transfer_in",
+          "paramType": "Double",
+          "example": "",
+          "description": "转入",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61429,
+          "paramName": "daily_transfer_out",
+          "paramType": "Double",
+          "example": "",
+          "description": "转出",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61430,
+          "paramName": "balance",
+          "paramType": "Double",
+          "example": "",
+          "description": "日终结余",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61431,
+          "paramName": "real_recharged",
+          "paramType": "Double",
+          "example": "",
+          "description": "充值转入",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61432,
+          "paramName": "contract_rebate_real_recharged",
+          "paramType": "Double",
+          "example": "",
+          "description": "框返转入",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61433,
+          "paramName": "direct_rebate_real_recharged",
+          "paramType": "Double",
+          "example": "",
+          "description": "激励转入",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61434,
+          "paramName": "order_total_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "订单总花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 16,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61435,
+          "paramName": "order_real_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "订单充值花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 17,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61436,
+          "paramName": "order_contract_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "订单框返花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61437,
+          "paramName": "order_direct_charged",
+          "paramType": "Double",
+          "example": "",
+          "description": "订单激励花费",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 79235,
+          "paramName": "frame_share_wallet_charge",
+          "paramType": "Double",
+          "example": "-",
+          "description": "<p>年框共享钱包花费</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "单位：元",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1763446824425,
+  "creator": "liumengyun",
+  "fullContext": null
+}

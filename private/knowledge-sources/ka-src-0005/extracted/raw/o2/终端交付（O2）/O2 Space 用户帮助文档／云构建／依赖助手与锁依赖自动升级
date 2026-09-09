@@ -1,0 +1,176 @@
+## 简介
+
+在前端生态中，npm 依赖不可或缺，但因依赖包升级与 Semver 动态版本而造成的各项问题层出不穷。
+
+社区为应用提供了“依赖锁定”能力，来解决动态版本造成的问题，但其也有弊端：无法享受包自动升级带来的 Bug 修复、性能优化、新特性，也会造成依赖包版本碎片化的问题，且锁定的时间越长，后续升级时遇到的阻碍越大。
+
+​
+
+我们在谈依赖锁定时，其实本质上是在谈信任问题：
+
+- “我是否能信任这个包的更新符合 Semver 的规范？”
+- “我能否信任这个开发者不会在更新时注入恶意脚本？”
+- “我在遇到问题时，如何能保证依赖包作者修复这个问题？/我是否对这个依赖包有控制权？”
+而依赖锁定则是给出了一个“我测试过这个版本，所以我只信任这个版本”的答案。
+
+​
+
+在阿里在前端生态中，框架、通用库一类的依赖，会有专门的团队负责维护、答疑、更新，出现漏洞与故障，也会尽时修复，这解决了我们前述的“信任问题”。云构建将这类集团内二方持续维护的，高质量的包定义为“锁依赖白名单包”。
+
+锁依赖白名单包相比外部三方包，其一是更稳定与负责，其二是维护者会有减少版本碎片化的倾向。而在社区的依赖锁定方案里，无法区分这类不同特质的包。基于此，云构建在依赖锁定能力的基础上，为锁依赖白名单包提供了“锁依赖自动升级”的能力，即只锁定非锁依赖白名单包的版本，而让锁依赖白名单包继续享受 Semver 动态范围带来的即时更新优点。
+
+此外，在使用依赖锁定的过程中，部分用户因混用不同的包管理软件，可能造成锁文件与 pacakge.json 不同步的情况出现，继而导致依赖锁定失败。本功能在更新锁依赖白名单包的同时，也会尝试同步 package.json 与锁文件，并将锁的更新详情提示给用户，避免锁文件的意外更新。
+
+​
+
+整套能力通过对不同供应链依赖包的不同级别锁定处理，实现在保证稳定性的情况下，最大程度降低项目、依赖升级的成本。
+
+## 适用场景
+
+### 前端应用开发者
+
+在享受依赖锁定的稳定性保障下，继续动态升级锁依赖白名单包的版本，而尽量不影响已锁定的其它版本。项目开启本功能后，可享受在构建、CI 和发布环节自动化的依赖锁版本检测、更新、自动修复功能，如：
+
+| 包 | package.json | 原锁定版本（package-lock.json） | 基于 Semver 最新版本 | 最终构建时使用版本 |
+|-|-|-|-|-|
+| 锁依赖白名单包ice.js | ^1.3.0 | 1.3.4 | 1.5.0 | 1.5.0✅跟没锁一样！ |
+| 三方依赖库 @babel/transform | ^5.6.0 | 5.6.1 | 5.7.8 | 5.6.1✅保持版本锁定！ |
+
+> 注：如果 ice.js 依赖了 @babel/transform 并修改了 Semver，后者可能会随着 ice.js 的升级而升级，视具体情况而定，此处仅为演示效果。
+
+还可以解决因“锁文件与 package.json”不匹配（混用不同的包管理软件，有时候更新了 package.json 但是忘了更新锁）的问题。
+
+#### 构建环节
+
+在非线上环境构建时，锁依赖白名单包将自动按声明的 Semver 更新（如在 package.json 中声明 ^1.0.0，则会把锁中的版本从 1.0.0 升级为 1.0.1），还会附带同步 package.json：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01W488eU1wp6MmVtJmP_!!6000000006356-2-tps-1550-1006.png)
+
+
+#### CI 环节
+
+可以对各变更独立的扫描需要升级的依赖，并能自动修复，提交更新后的锁更新 CR 到指定变更：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01CJQQWU1hoRYn4Qnof_!!6000000004324-1-tps-800-508.gif)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN014yiypQ1e6z8EepLsW_!!6000000003823-2-tps-2722-1538.png)
+
+
+#### 发布环节
+
+会在线上发布前，要求用户确认在构建时自动更新的依赖列表，确保依赖版本的更新是清晰、确定、可感知的：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01WWUpRm1OqISmWcoaY_!!6000000001756-1-tps-800-433.gif)
+
+
+### 依赖库开发者
+
+内部持续维护，更新的框架、组件、通用能力 npm 包，需要开启锁依赖自动升级能力，继续按声明的 Semver Range 自动更新时，可申请加入锁依赖白名单。
+
+请先阅读 [锁依赖自动升级服务协议 - 包维护者](https://alidocs.dingtalk.com/i/nodes/4Pko7gla1mAWRe9NBwNj8Bxz5qZY9Q6j)，确定满足要求后，走下方渠道进行审批：
+
+[锁依赖白名单申请](https://space.o2.alibaba-inc.com/approval/new/32)
+
+申请后即视为认可上述协议。O2 Space 可能会更新对可信二方包的管控规则，届时会通过钉钉/邮件再次通知。
+
+## 开启方法
+
+### 前置条件
+
+使用该功能的前提是应用开启了“依赖锁定”能力，并保证仓库中有锁，以 O2 Space 为例：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01iRR2pk1L8NdYaW0BF_!!6000000001254-2-tps-561-388.png)
+
+
+依赖锁定能力的详细文档请参见：
+
+- 三方 Client：[云构建依赖锁定能力文档](https://builder.alibaba-inc.com/document?slug=lock-install)
+- O2 平台：[O2 Space 文档](https://docs.dingtalk.com/i/nodes/QG53mjyd800agdlKHDnYDdnn86zbX04v?doc_type=wiki_doc# 「依赖锁定」)
+### CI 时能力
+
+CI 环节依赖自动更新功能可以手动开启，开启后即可在提交时自动运行依赖助手，并可在结果页中发起自动修复 CR：
+
+(https://img.alicdn.com/imgextra/i1/O1CN01QPkoY71vNKjkYxOMR_!!6000000006160-2-tps-2772-1336.png)
+
+
+## 支持范围
+
+支持范围与依赖锁定功能的支持范围保持一致。
+
+|  | npm 6 | npm 7+ | yarn 1 (classic) | yarn 2+ (berry) | pnpm |
+|-|-|-|-|-|-|
+| 顶层依赖升级 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 子依赖（依赖的依赖）升级 | ✅ | ✅ | ✅ | ✅ | ❌ ✅ |
+| 锁文件自动与 package.json 同步 | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 锁变更分析 | ✅ | ✅ | ✅ | ⚠️ | ⚠️ |
+| MR 自动更新锁文件 | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+
+### npm 6
+
+npm 6 生成的 package-lock.json v1 版本锁，会被自动升级为 npm 7+ 以上的 package-lock.json v2 版本锁。且升级时将默认开启 legacy-peer-deps （即保持不安装 peer 的 npm 6 默认行为）。
+
+### npm 7+
+
+需要注意，自动升级时，[legacy-peer-deps](https://docs.npmjs.com/cli/v7/using-npm/config#legacy-peer-deps) 的行为与 npm 默认行为保持一致（即 false，非兼容模式），如果需要使用 npm 7+ 对 npm 6 的兼容不装 peer 的行为，需要在 .npmrc 中显式配置 "legacy-peer-deps=true"，如：
+
+```
+# .npmrc
+legacy-peer-deps=true
+```
+否则在依赖锁定时有可能报“EUSAGE Missing”“Peer conflict"“Could not resolve”等错误。
+
+但我们建议，如果出现 peer conflict 的错误，还是最好按下文文档，本地调用依赖助手进行升级，并解决 peer resolve 冲突后，提交对应锁文件再重新发布。
+
+### yarn 2+
+
+锁变更分析仅支持纯文本 Diff。
+
+### pnpm
+
+node14目前环境中内置的版本为 pnpm 5，不支持升级子依赖。node16 为pnpm7 已支持升级子依赖。
+
+更新后可能会修改 lock version。锁变更分析仅支持纯文本 Diff
+
+本地使用依赖助手
+
+仓库可以在本地接入 依赖助手 CLI（[@ali/cloudbuild-dependence-bot](https://npm.alibaba-inc.com/package/@ali/cloudbuild-dependence-bot)），并配置 Git 或 npm 钩子，在安装依赖或提交代码后自动更新 可信二方包依赖在锁中的版本，以配置 prepare 钩子为例：
+
+1. 安装依赖助手到仓库中（可选）
+```
+npm i -D @ali/cloudbuild-dependence-bot
+```
+1. 配置钩子
+	1. 安装依赖到仓库后配置钩子：
+```
+{  
+  "scripts": {
+    "prepare": "cdb"
+  }
+}
+```
+1. 或 不安装依赖，直接调用依赖助手
+```
+{
+  "scripts": {
+    "prepare": "tnpx --ignore-existing -p @ali/cloudbuild-dependence-bot cdb"
+  }
+}
+```
+1. 记得把升级后修改的锁文件提交到仓库中。
+默认情况下，cdb 会自动使用官方可信二方包列表中的包进行升级。如果应用有自定义需求，可以按 [@ali/cloudbuild-dependence-bot](https://npm.alibaba-inc.com/package/@ali/cloudbuild-dependence-bot) 文档，配置额外需要升级的包列表。但需要注意的是，平台并不会在构建、发布、CI 环节中支持这些自定义的包，这些规则仅在本地执行时生效。
+
+## 重要提示
+
+- 开启依赖助手后，平台会保证线上构建时使用的锁文件为日常最后一次发布时，经过依赖助手更新后的锁文件（在图中为依赖助手锁）。也即，在日常发布和线上发布之间，即使可信二方包有升级，线上也不会再次升级了，而是使用日常发布时的更新的版本。
+(https://img.alicdn.com/imgextra/i4/O1CN01ZqwKvQ1LBaPWUAnum_!!6000000001261-2-tps-1216-640.png)
+
+
+- 如果用户/构建器在依赖锁定步骤后，执行了其它可能影响依赖结构的操作（如使用其它包管理软件重装了部分依赖），可能造成依赖锁定的部分不一致。这部分不一致在依赖助手中是不会体现的，用户需要使用“依赖实际变更”提示来检测这类行为。（在开启锁依赖后，可以在异步任务中看到“Space 依赖变动检测”，会提示实际的依赖变动）
+(https://img.alicdn.com/imgextra/i2/O1CN01QPSmFq24pZhSMrY00_!!6000000007440-2-tps-3264-924.png)
+
+
+## 了解更多
+
+- [更细粒度的前端依赖版本控制：依赖可信二方包与部分升级](https://ata.alibaba-inc.com/articles/243612)
+- [为什么你应该锁定前端应用的依赖版本](https://ata.alibaba-inc.com/articles/225664)

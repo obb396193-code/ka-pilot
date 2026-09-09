@@ -1,0 +1,129 @@
+### workbench-left-bottom-overview
+
+工作台左边下面区域的自定义扩展
+
+#### 
+
+#### props
+
+```
+
+### props 声明
+
+interface IProps {
+  routerInfo: {
+    match: string,
+    location: Location,
+    history: History
+  }
+}
+            
+```
+
+
+### workbench-right-top-overview
+
+工作台右边上面区域的自定义扩展
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yvsf2fbgm1ss0dxp/imgibEEwBrSKU.png)
+
+
+
+
+#### props
+
+```
+
+### props 声明
+
+interface IProps {
+  routerInfo: {
+    match: string,
+    location: Location,
+    history: History
+  }
+}
+            
+```
+
+
+### workbench-left-app-list
+
+工作台左下方的应用列表
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yvsf2fbgm1ss0dxp/img5YYimK896Q.png)
+
+
+
+
+#### props
+
+```
+
+### props 声明
+
+interface IProps {
+  routerInfo: {
+    match: string,
+    location: Location,
+    history: History
+  }
+}
+            
+```
+
+
+### workbench-app-list-replace
+
+替换工作台应用列表页应用列表
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yvsf2fbgm1ss0dxp/imgmTj9W2NvdX.png)
+
+
+
+
+#### props
+
+```
+
+### props 声明
+
+interface IProps {
+  routerInfo: {
+    match: string,
+    location: Location,
+    history: History
+  }
+}
+            
+```
+
+
+### workbench-right-notice-list-addon
+
+工作台右侧公告补充数据
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yvsf2fbgm1ss0dxp/imgzbIPrhVGaf.png)
+
+
+
+
+#### props
+
+```
+
+### props 声明
+
+interface IProps {
+  routerInfo: {
+    match: string,
+    location: Location,
+    history: History
+  }
+}
+            
+```
+
+
+
+

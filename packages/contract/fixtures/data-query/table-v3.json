@@ -304,6 +304,9 @@
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
+        "datasetVersion": "canonical-20260905-01",
+        "queryTemplateVersion": "account-summary-v3",
+        "metricVersion": "account-metrics-v2",
         "dataAsOf": "2026-09-05T08:00:00.000+08:00",
         "timezone": "Asia/Shanghai",
         "dayCut": "business_day_0300",
@@ -317,6 +320,14 @@
           "from": "2026-09-05",
           "to": "2026-09-05",
           "preset": "today"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
         },
         "coverage": {
           "complete": true

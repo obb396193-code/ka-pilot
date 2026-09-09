@@ -1,0 +1,38 @@
+## 删除应用
+
+删除 O2 应用
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/delete |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名称 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| data | 符合条件的删除行数 |
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/{appIdorName}/delete`,
+  {},
+  {},
+  {
+    SSO_TICKET,
+  }
+)
+
+"data": [
+  1
+]
+
+```

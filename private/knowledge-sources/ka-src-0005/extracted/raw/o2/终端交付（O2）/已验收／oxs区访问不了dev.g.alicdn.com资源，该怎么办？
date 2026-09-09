@@ -1,0 +1,45 @@
+ 用户真实问题链接:  [https://links.alibaba-inc.com/support/conversation/6612654f32aca907ef930448/](https://links.alibaba-inc.com/support/conversation/6612654f32aca907ef930448/)
+
+ 作者：冠夫 
+
+ 评审人： [@时路](undefined/kangyong.ky)
+
+  
+
+OXS区限了弹内域名的访问，所以无法访问dev.g.alicdn.com，请使用daily-assets.aliyun-inc.com进行替换。此外，g.alicdn.com是公网CDN域名，不受OXS访问限制。
+
+ 如： [ https://dev.g.alicdn.com/salesforce/console-frontend/0.0.1/index.html ](https://dev.g.alicdn.com/salesforce/console-frontend/0.0.1/index.html)   
+
+  对应 
+
+   [ https://daily-assets.aliyun-inc.com/salesforce/console-frontend/0.0.1/index.html ](https://dev.g.alicdn.com/salesforce/console-frontend/0.0.1/index.html)
+
+  
+
+ 网络基础说明： 
+
+###  七网隔离 
+ 理解OXS区前，我觉得先有必要了解下的公司的七网隔离，所谓七网，具体如下： 
+
++  阿里公有云 
++  阿里生产网 
++  阿里办公网 
++  阿里开发测试网 
++  小微生产网 
++  小微办公网 
++  小微开发测试网 
+
+ 七网隔离将这7张网络分为7个「安全域」，安全域之间内网不可达。  
+  而且我们通常把云和非云的环境称为弹外和弹内，「弹」就是「弹性计算」的意思。  
+  简单来说，主站、生产网这些叫法都是弹内，意味着你是用淘宝的跳板机登录机器的  
+  OXS、ECS这些都是弹外，意味着你是用阿里云的跳板机登录机器的 
+
+ 我们比较容易理解的是线上和线下网络不通这个事情，但是做了七网隔离之后，公有云（弹外）和生产网（弹内）的内网也是不通的。 
+
+###  OXS区 
+ OXS属于阿里公有云环境，专门用来部署那些公司内部开发又想发布到公网的服务。简单点讲就是阿里云的生产网。 
+
+ 目的就是：安全/高效 
+
+ 安全：同一套依赖都部署到同一个安全域上，最大限度保证安全 
+

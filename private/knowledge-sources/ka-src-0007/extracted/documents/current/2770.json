@@ -1,0 +1,1018 @@
+{
+  "documentId": 2770,
+  "documentName": "更新 Android 应用",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "更新 Android 应用\n/rest/openapi/gw/dsp/appcenter/app/update/android\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/update/android' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 900015366,\n    \"app_info\": {\n        \"app_id\": 2199123264333,\n        \"app_detail_img\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/9983e874ee7843c08d69076cc34fd875.png\",\n        \"app_icon_url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/3252058c79ec40069cdeafb08cfd3b92.png\",\n        \"apply_age\": 1,\n        \"category\": 1,\n        \"contact_email\": \"test@kuaishou.com\",\n        \"contact_name\": \"后端测试联系人\",\n        \"contact_tel\": \"18888888888\",\n        \"description\": null,\n        \"developer\": \"后端测试\",\n        \"location\": \"[\\\"北京\\\",\\\"北京\\\",\\\"海淀\\\"]\",\n        \"offline_app_stores\": \"[\\\"xiaomi\\\"]\",\n        \"online_earn_type\": 1,\n        \"use_sdk\": 1,\n        \"function_introduction\":\"我是功能介绍\",\n        \"record_number\": \"911823145670\",\n\t\"document_number\": \"563178963123\",\n        \"service_category\": \"[500,21]\",\n        \"network_type\": 2,\n        \"offline_app_letter_url\": \"https://static.yximgs.com/udata/pkg/3ba2fb.png\"\n    },\n    \"app_privacy_info\": {\n        \"privacy_id\": 4801049,\n        \"url\": \"https://raymond-dsp.staging.kuaishou.com/backend-test.html\"\n    },\n    \"package_info\": {\n        \"package_id\": 1099611636558,\n        \"app_name\": \"\",\n        \"sensitive_permission_desc\": \"\",\n        \"blob_store_key\": \"c5411044-b4fb-4508-9b57-792d8fae7f44.apk\"\n    }\n}'\n{\n    \"code\": 0,\n    \"data\": {\n        \"privacy_id\": 4801049,\n        \"package_id\": 1099611636558,\n        \"app_id\": 2199123264333\n    },\n    \"message\": \"OK\"\n}\napp_info  MapiAppInfoSnake  <p>应用数据</p>\napp_detail_img  String  <p>应用详情图片，通过上传图片 API 获取。</p>\napp_icon_url  String  <p><br>应用图标，通过上传图片 API 获取。</p>\napp_id  Long  请补充描述详情\napply_age  Integer  <p>应用适用年龄： 1：全年龄段 2：未成年人 3：成年人</p>\ncategory  Integer  <p>应用分类：1：软件 2：游戏</p>\ncontact_email  String  <p>联系邮箱</p>\ncontact_name  String  <p><br>联系人</p>\ncontact_tel  String  <p>联系电话</p>\ndescription  String  <p>应用备注</p>\ndeveloper  String  <p><br>开发者名称（需与软著保持一致）</p>\nlocation  String  <p>开发者地区：格式必须为：[\"北京\",\"北京\",\"东城\"] 这种，否则平台回显失败。</p>\noffline_app_stores  String  <p>下线的应用商店，可不填。可选值：[\"huawei\", \"oppo\", \"xiaomi\", \"meizu\", \"vivo\", \"smartisan\", \"honor\"]</p>\nonline_earn_type  Integer  <p>是否网赚类型：1：网赚类型 2：非网赚类型</p>\nrelease_type  Integer  <p>发布类型：1：手动发布 2：自动发布</p>\nuse_sdk  Integer  <p>是否已接入快手 SDK：0：未接入 1：已接入</p>\nfunction_introduction  String  应用功能介绍\nrecord_number  String  备案号\ndocument_number  String  证件号码\nservice_category  String  <p>服务类目</p>\nnetwork_type  Integer  <p>网络类型</p>\noffline_app_letter_url  String  <p>单机承诺函</p>\nrecord_corp_name  String  <p>备案主体名称</p>\napp_record_screenshot_url  String  <p>APP备案截图</p>\nrecord_corp_license_url  String  <p>备案主体营业执照</p>\napp_privacy_info  MapiAppPrivacyInfoSnake  <p><br>隐私声明数据</p>\nprivacy_id  Long  请补充描述详情\nurl  String  <p>隐私声明链接</p>\npackage_info  MapiPackageInfoSnake  <p>应用包数据</p>\napp_name  String  <p>应用名称：可不填，如果不填则默认使用上传 APK 时解析出的应用名称。</p>\nblob_store_key  String  <p>应用存储 Key，上传应用 APK 时返回。</p>\nsensitive_permission_desc  String  <p>敏感权限使用说明，可不填，如果 APK 文件使用了敏感权限则必填。</p>\nurl  String  请补充描述详情\npackage_id  Long  请补充描述详情\ntask_id  Long  请补充描述详情\ndata  ModAppResponseSnake  <p><br>JSON 返回值</p>\napp_id  Long  <p>应用ID</p>\nglobal_app_id  Long  请补充描述详情\npackage_id  Long  <p>应用包ID</p>\nprivacy_id  Long  <p>隐私声明ID</p>\ntask_id  Long  链接下载任务ID\ncode  Integer  <p><br>返回码</p>\nmessage  String  <p><br>返回信息</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1730863055435
+    }
+  ],
+  "apiId": 697,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/update/android",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/update/android' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 900015366,\n    \"app_info\": {\n        \"app_id\": 2199123264333,\n        \"app_detail_img\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/9983e874ee7843c08d69076cc34fd875.png\",\n        \"app_icon_url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/3252058c79ec40069cdeafb08cfd3b92.png\",\n        \"apply_age\": 1,\n        \"category\": 1,\n        \"contact_email\": \"test@kuaishou.com\",\n        \"contact_name\": \"后端测试联系人\",\n        \"contact_tel\": \"18888888888\",\n        \"description\": null,\n        \"developer\": \"后端测试\",\n        \"location\": \"[\\\"北京\\\",\\\"北京\\\",\\\"海淀\\\"]\",\n        \"offline_app_stores\": \"[\\\"xiaomi\\\"]\",\n        \"online_earn_type\": 1,\n        \"use_sdk\": 1,\n        \"function_introduction\":\"我是功能介绍\",\n        \"record_number\": \"911823145670\",\n\t\"document_number\": \"563178963123\",\n        \"service_category\": \"[500,21]\",\n        \"network_type\": 1,\n        \"record_corp_name\": \"快手科技\",\n        \"app_record_screenshot_url\": \"https://static.yximgs.com/udata/pkg/3ba2fb.png\",\n        \"record_corp_license_url\": \"https://static.yximgs.com/udata/pkg/3ba2fb.png\"\n    },\n    \"app_privacy_info\": {\n        \"privacy_id\": 4801049,\n        \"url\": \"https://raymond-dsp.staging.kuaishou.com/backend-test.html\"\n    },\n    \"package_info\": {\n        \"package_id\": 1099611636558,\n        \"app_name\": \"\",\n        \"sensitive_permission_desc\": \"\",\n        \"blob_store_key\": \"c5411044-b4fb-4508-9b57-792d8fae7f44.apk\"\n    }\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"privacy_id\": 4801049,\n        \"package_id\": 1099611636558,\n        \"app_id\": 2199123264333\n    },\n    \"message\": \"OK\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 41956,
+      "paramName": "app_info",
+      "paramType": "MapiAppInfoSnake",
+      "example": "",
+      "description": "<p>应用数据</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2575,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 41934,
+          "paramName": "app_detail_img",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>应用详情图片，通过上传图片 API 获取。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41935,
+          "paramName": "app_icon_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>应用图标，通过上传图片 API 获取。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41936,
+          "paramName": "app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41937,
+          "paramName": "apply_age",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>应用适用年龄： 1：全年龄段 2：未成年人 3：成年人</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41938,
+          "paramName": "category",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>应用分类：1：软件 2：游戏</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41939,
+          "paramName": "contact_email",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>联系邮箱</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41940,
+          "paramName": "contact_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>联系人</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41941,
+          "paramName": "contact_tel",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>联系电话</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41942,
+          "paramName": "description",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>应用备注</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41943,
+          "paramName": "developer",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>开发者名称（需与软著保持一致）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41944,
+          "paramName": "location",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>开发者地区：格式必须为：[\"北京\",\"北京\",\"东城\"] 这种，否则平台回显失败。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41945,
+          "paramName": "offline_app_stores",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>下线的应用商店，可不填。可选值：[\"huawei\", \"oppo\", \"xiaomi\", \"meizu\", \"vivo\", \"smartisan\", \"honor\"]</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41946,
+          "paramName": "online_earn_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>是否网赚类型：1：网赚类型 2：非网赚类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41947,
+          "paramName": "release_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>发布类型：1：手动发布 2：自动发布</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41948,
+          "paramName": "use_sdk",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>是否已接入快手 SDK：0：未接入 1：已接入</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45931,
+          "paramName": "function_introduction",
+          "paramType": "String",
+          "example": "",
+          "description": "应用功能介绍",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "\t字数需要在100~1000字之间。",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 49509,
+          "paramName": "record_number",
+          "paramType": "String",
+          "example": "",
+          "description": "备案号",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 49510,
+          "paramName": "document_number",
+          "paramType": "String",
+          "example": "",
+          "description": "证件号码",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53352,
+          "paramName": "service_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>服务类目</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 21,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59383,
+          "paramName": "network_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>网络类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 22,
+          "note": "\t1-联网，2-单机（单机应用需上传单机承诺函图片，并无须填写备案号）",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 59384,
+          "paramName": "offline_app_letter_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>单机承诺函</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 23,
+          "note": "network_type = 2时必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69166,
+          "paramName": "record_corp_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>备案主体名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 24,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69167,
+          "paramName": "app_record_screenshot_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>APP备案截图</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 25,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69168,
+          "paramName": "record_corp_license_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>备案主体营业执照</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 26,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41957,
+      "paramName": "app_privacy_info",
+      "paramType": "MapiAppPrivacyInfoSnake",
+      "example": "",
+      "description": "<p><br>隐私声明数据</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2576,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 41949,
+          "paramName": "privacy_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41950,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>隐私声明链接</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41958,
+      "paramName": "package_info",
+      "paramType": "MapiPackageInfoSnake",
+      "example": "",
+      "description": "<p>应用包数据</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2577,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 41951,
+          "paramName": "app_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>应用名称：可不填，如果不填则默认使用上传 APK 时解析出的应用名称。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41952,
+          "paramName": "blob_store_key",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>应用存储 Key，上传应用 APK 时返回。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41953,
+          "paramName": "sensitive_permission_desc",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>敏感权限使用说明，可不填，如果 APK 文件使用了敏感权限则必填。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41954,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41955,
+          "paramName": "package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45739,
+          "paramName": "task_id",
+          "paramType": "Long",
+          "example": "-",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 41959,
+      "paramName": "data",
+      "paramType": "ModAppResponseSnake",
+      "example": "",
+      "description": "<p><br>JSON 返回值</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2571,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 41896,
+          "paramName": "app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>应用ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41897,
+          "paramName": "global_app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41898,
+          "paramName": "package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>应用包ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41899,
+          "paramName": "privacy_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>隐私声明ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45741,
+          "paramName": "task_id",
+          "paramType": "Long",
+          "example": "-",
+          "description": "链接下载任务ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41960,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p><br>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41961,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "1",
+      "description": "<p><br>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1730863055435,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

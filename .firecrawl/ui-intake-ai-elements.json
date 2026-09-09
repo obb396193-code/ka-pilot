@@ -1,0 +1,355 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://elements.ai-sdk.dev/components/prompt-input",
+        "title": "Prompt Input",
+        "description": "Allows a user to send a message with file attachments to a large language model. It includes a textarea, file upload capabilities, a submit button, and a dro..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/setup",
+        "title": "Setup",
+        "description": "Get AI Elements installed and running in your project."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/conversation",
+        "title": "Conversation",
+        "description": "Wraps messages and automatically scrolls to the bottom. Also includes a scroll button that appears when not at the bottom."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/troubleshooting",
+        "title": "Troubleshooting",
+        "description": "What to do if you run into issues with AI Elements."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/message",
+        "title": "Message",
+        "description": "A comprehensive suite of components for displaying chat messages, including message rendering, branching, actions, and markdown responses."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/task",
+        "title": "Task",
+        "description": "A collapsible task list component for displaying AI workflow progress, with status indicators and optional descriptions."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/llms.txt"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs",
+        "title": "Introduction",
+        "description": "What is AI Elements and why you should use it."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev",
+        "title": "AI Elements",
+        "description": "A component library and custom registry built on top of shadcn/ui to help you build AI-native applications faster."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/benefits",
+        "title": "Benefits - AI Elements",
+        "description": "Why AI Elements is the best choice for building AI chat interfaces."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/community"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/how-to-contribute",
+        "title": "How to Contribute",
+        "description": "Help improve the docs by: Fixing typos and unclear explanations; Adding code examples; Improving component documentation; Writing tutorials. Bug Fixes. Fix ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/new-components",
+        "title": "New Components - AI Elements",
+        "description": "New Components. Guidelines for proposing and building new AI Elements components. Want to add a new component to AI Elements? This guide covers what we look for ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/philosophy"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/skill"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/usage",
+        "title": "Usage - AI Elements",
+        "description": "Learn how to use AI Elements components in your application."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/vercel-ai-frontend",
+        "title": "The Vercel AI Frontend Stack - AI Elements",
+        "description": "Vercel provides a complete stack for building AI-powered applications. Here's how the pieces fit together. The Stack. AI Gateway."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/attachments",
+        "title": "Attachments - AI Elements",
+        "description": "A flexible, composable attachment component for displaying files, images, videos, audio, and source documents."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/chain-of-thought",
+        "title": "Chain of Thought",
+        "description": "Features · Collapsible interface with smooth animations powered by Radix UI · Step-by-step visualization of AI reasoning process · Support for different step ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/checkpoint",
+        "title": "Checkpoint - AI Elements",
+        "description": "The Checkpoint component provides a way to mark specific points in a conversation history and restore the chat to that state. Inspired by VSCode's Copilot ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/confirmation",
+        "title": "Confirmation - AI Elements",
+        "description": "The Confirmation component provides a flexible system for displaying tool approval requests and their outcomes. Perfect for showing users when AI tools require ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/context",
+        "title": "Context",
+        "description": "The Context component provides a comprehensive view of AI model usage through a compound component system. It displays context window utilization, token ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/inline-citation",
+        "title": "Inline Citation - AI Elements",
+        "description": "A hoverable citation component that displays source information and quotes inline with text, perfect for AI-generated content with references. The ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/model-selector",
+        "title": "Model Selector",
+        "description": "A comprehensive suite of components for displaying chat messages, including message rendering, branching, actions, and markdown responses. Plan. A collapsible ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/plan",
+        "title": "Plan",
+        "description": "Allows a user to send a message with file attachments to a large language model. It includes a textarea, file upload capabilities, a submit button, and a ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/queue",
+        "title": "Queue",
+        "description": "The Queue component provides a flexible system for displaying lists of messages, todos, attachments, and collapsible sections. Perfect for showing AI workflow ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/reasoning",
+        "title": "Reasoning - AI Elements",
+        "description": "A collapsible component that displays AI reasoning content, automatically opening during streaming and closing when finished."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/shimmer",
+        "title": "Shimmer",
+        "description": "An animated text shimmer component for creating eye-catching loading states and progressive reveal effects."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/sources",
+        "title": "Sources - AI Elements",
+        "description": "A component that allows a user to view the sources or citations used to generate a response."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/suggestion",
+        "title": "Suggestion - AI Elements",
+        "description": "A suggestion component that displays a horizontal row of clickable suggestions for user interaction."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/tool",
+        "title": "Tool - AI Elements",
+        "description": "Tool. A collapsible component for displaying tool invocation details in AI chatbot interfaces. The Tool component displays a collapsible interface for showing/ ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/agent",
+        "title": "Agent - AI Elements",
+        "description": "A container component for displaying generated content like code, documents, or other outputs with built-in actions. On this page. Installation. Usage with AI ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/artifact",
+        "title": "Artifact",
+        "description": "Artifact. A container component for displaying generated content like code, documents, or other outputs with built-in actions. The Artifact component provides a ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/code-block"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/commit",
+        "title": "Commit",
+        "description": "Display commit information with hash, message, author, and file changes."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/environment-variables"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/file-tree",
+        "title": "File Tree",
+        "description": "Display hierarchical file and folder structure with expand/collapse functionality."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/jsx-preview",
+        "title": "JSX Preview - AI Elements",
+        "description": "A component that dynamically renders JSX strings with streaming support for AI-generated UI."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/package-info",
+        "title": "Package Info",
+        "description": "The PackageInfo component displays package dependency information including version changes and change type badges. Preview. Code."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/sandbox",
+        "title": "Sandbox - AI Elements",
+        "description": "Sandbox. A collapsible container for displaying AI-generated code and output in chat interfaces. The Sandbox component provides a structured way to display AI- ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/schema-display",
+        "title": "Schema Display",
+        "description": "Subcomponents ... A collapsible container for displaying AI-generated code and output in chat interfaces. Snippet. Lightweight inline code display for terminal ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/snippet",
+        "title": "Snippet",
+        "description": "The Snippet component provides a lightweight way to display terminal commands and short code snippets with copy functionality."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/stack-trace"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/terminal",
+        "title": "Terminal",
+        "description": "The Terminal component displays console output with ANSI color support, streaming indicators, and auto-scroll functionality. Preview. Code. Build Output. ✓ ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/test-results",
+        "title": "Test Results",
+        "description": "The TestResults component displays test suite results including summary statistics, progress, individual tests, and error details. Preview. Code."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/web-preview"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/image",
+        "title": "Image - AI Elements",
+        "description": "Displays AI-generated images from the AI SDK."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/open-in-chat",
+        "title": "Open In Chat",
+        "description": "A dropdown menu for opening queries in various AI chat platforms including ChatGPT, Claude, T3, Scira, and v0."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/audio-player",
+        "title": "Audio Player - AI Elements",
+        "description": "The AudioPlayer component provides a flexible and customizable audio playback interface built on top of media-chrome. It features a composable architecture that ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/mic-selector"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/persona",
+        "title": "Persona",
+        "description": "The Persona component displays an animated AI visual that responds to different conversational states. Built with Rive WebGL2, it provides smooth, ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/speech-input"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/transcription",
+        "title": "Transcription - AI Elements",
+        "description": "A composable component for displaying interactive, synchronized transcripts from AI SDK transcribe() results with click-to-seek functionality."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/voice-selector",
+        "title": "Voice Selector - AI Elements",
+        "description": "<VoiceSelectorPreview />. A button that allows users to preview/play a voice sample before selecting it. Shows play, pause, or loading icons based on state."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/canvas",
+        "title": "Canvas",
+        "description": "A React Flow-based canvas component for building interactive node-based interfaces."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/connection",
+        "title": "Connection",
+        "description": "The Connection component provides a styled connection line for React Flow canvases. It renders an animated bezier curve with a circle indicator at the ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/controls",
+        "title": "Controls",
+        "description": "Controls. A styled controls component for React Flow-based canvases with zoom and fit view functionality. The Controls component provides interactive zoom and ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/edge",
+        "title": "Edge",
+        "description": "A solid edge with an animated circle that moves along the path. The animation repeats indefinitely with a 2-second duration, providing visual feedback for ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/node",
+        "title": "Node",
+        "description": "A styled panel component for React Flow-based canvases to position custom UI elements. On this page. Installation. Features. Props. <Node />. <NodeHeader />."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/panel",
+        "title": "Panel",
+        "description": "A styled panel component for React Flow-based canvases to position custom UI elements."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/toolbar"
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/examples/chatbot",
+        "title": "Chatbot - AI Elements",
+        "description": "An example of how to use the AI Elements to build an AI-powered IDE with file navigation, code display, terminal output, and an integrated chat assistant."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/examples/ide",
+        "title": "IDE - AI Elements",
+        "description": "An example of how to use the AI Elements to build an AI-powered IDE with file navigation, code display, terminal output, and an integrated chat assistant."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/examples/v0",
+        "title": "v0 clone",
+        "description": "An example of how to use the AI Elements to build a v0 clone."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/examples/workflow",
+        "title": "Workflow",
+        "description": "You now have a working workflow visualization! Feel free to explore dynamic workflows by connecting this to AI-generated process flows, or extend it with ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/loader",
+        "title": "Spinner - Shadcn UI",
+        "description": "Add a spinner to a button to indicate a loading state. Place the <Spinner /> before the label with data-icon=\"inline-start\" for a start position, or after the ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/",
+        "title": "AI Elements",
+        "description": "A component library and custom registry built on top of shadcn/ui to help you build AI-native applications faster."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/agent.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Agent description: A composable component for displaying AI agent configuration with model, instructions, tools, and output schema. --- # Agent The `Agent` component displays an interface for showing AI agent configuration details. It's designed to represent a configured agent from the AI SDK, showing the agent's model, system instructions, available tools (with expandable input ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/docs/usage.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Usage description: Learn how to use AI Elements components in your application. type: guide summary: How to use AI Elements components in your application. prerequisites: - /docs/setup related: - /docs/troubleshooting --- # Usage Once an AI Elements component is installed, you can import it and use it in your application like any other React component. The components are added as ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/message.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Message description: A comprehensive suite of components for displaying chat messages, including message rendering, branching, actions, and markdown responses. --- # Message The `Message` component suite provides a complete set of tools for building chat interfaces. It includes components for displaying messages from users and AI assistants, managing multiple response branches ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/examples/workflow.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Workflow description: An example of how to use the AI Elements to build a workflow visualization with interactive nodes and animated connections. --- # Workflow <Preview path=\"workflow\" type=\"block\" className=\"p-0\" /> ## Tutorial Let's walk through how to build a workflow visualization using AI Elements. Our example will include custom nodes with headers, content, and footers, along ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/attachments.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Attachments description: A flexible, composable attachment component for displaying files, images, videos, audio, and source documents. --- # Attachments ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/queue.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Queue description: A comprehensive queue component system for displaying message lists, todos, and collapsible task sections in AI applications. --- # Queue The `Queue` component provides a flexible system for displaying lists of messages, todos, attachments, and collapsible sections. Perfect for showing AI workflow progress, pending tasks, message history, or any structured list of ..."
+      },
+      {
+        "url": "https://elements.ai-sdk.dev/components/code-block.md",
+        "title": "elements.ai-sdk.dev",
+        "description": "--- title: Code Block description: Provides syntax highlighting, line numbers, and copy to clipboard functionality for code blocks. --- # Code Block The `CodeBlock ..."
+      }
+    ]
+  }
+}

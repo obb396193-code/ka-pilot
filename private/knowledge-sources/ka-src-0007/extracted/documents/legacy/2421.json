@@ -1,0 +1,54 @@
+{
+  "documentId": 2421,
+  "documentName": "通过短剧作者和短剧id查询短剧下付费模版信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 通过短剧作者和短剧id查询短剧下付费模版信息\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/payModeTemplateInfo](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/payModeTemplateInfo)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 900015364 | 必填 | - | - |\n| series_id | Long | 384643 | 必填 | 短剧id | - |\n| series_pay_mode | Integer | 1 | 必填 | 付费模式 | - |\n| series_pay_template_id | Long | 192 | 非必填 | 付费模版id (非必填，填写则代表查询该模板id对应信息） | - |\n| user_id | Long | 2196670040 | 必填 | 短剧作者id | - |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | MapiSeriesPayModeTemplateInfoSnake[] |  | mapi短剧付费模板详情信息 |  |\n| &#8195;series_pay_mode | Integer |  | 请补充描述详情 |  |\n| &#8199;series_pay_template_id | Long |  | 请补充描述详情 |  |\n| &#8195;template_name | String |  | 请补充描述详情 |  |\n| &#8195;template_status | Integer |  | 1 有效，2已删除 |  |\n| code | Integer |  | 请补充描述详情 |  |\n| message | String |  | 请补充描述详情 |  |\n\n### 请求样例\n\n```js\n{\n  \"advertiser_id\": 900015364,\n  \"user_id\": 2196670040,\n  \"series_id\": 384643,\n  \"series_pay_mode\": 1\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 0,\n  \"data\": [\n    {\n      \"template_name\": \"基础模版1618\",\n      \"template_status\": 1,\n      \"series_pay_template_id\": 1618,\n      \"series_pay_mode\": 1\n    },\n    {\n      \"template_name\": \"已删除的模版1621\",\n      \"template_status\": 2,\n      \"series_pay_template_id\": 1621,\n      \"series_pay_mode\": 1\n    }\n  ],\n  \"message\": \"OK\",\n  \"request_id\": \"EO60gICQgpGOChipDSCm-Z73uDEo963k4QM=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698979141801
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698979141801,
+  "creator": "yushiping03",
+  "fullContext": null
+}

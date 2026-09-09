@@ -1,0 +1,47 @@
+应用是以 Code 仓库为基础的研发单位，一个仓库一个应用。
+
+## 操作流程
+
+访问 [https://space.o2.alibaba-inc.com/app/new](https://space.o2.alibaba-inc.com/app/new) 来进行应用创建。
+
+### Step 1 选择解决方案
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dzw0f59hrxzvod3r/imgfg0XhN1BRC.png)
+
+
+依次选择 “Web 研发”，“跨端应用”应用类型，按需选择适合自己业务的解决方案。
+
+注意：如果你看不到跨端应用的应用类型和相关的解决方案，请联系自己所在租户的租户管理员进行添加。
+
+### Step 2 完善应用信息
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dzw0f59hrxzvod3r/imgO5lBIlUXe0.png)
+
+
+#### Step 2-1 完善基本信息
+
+应用创建需要准备 code 仓库，可以选择新建仓库或者关联已有仓库。如果发现看不到自己需要的仓库，请先确认是否有对应的仓库权限。
+
+你可以对自己的应用做个简短描述，方便后续新进来的维护者更好的了解应用。
+
+#### Step 2-2 完善扩展信息
+
+扩展信息中主要是提供跨端应用特有的额外信息，主要包括：站点信息、域名信息、审批人信息。
+
+应用发布的页面需要通过 CDN 域名进行投放，可以在“接入站点”选择器中通过域名筛选需要的站点。默认情况下，“接入站点”选择器只会展示你拥有权限的站点（你所在 BU 下的站点、你是站点的成员）。如果没有你需要的域名，请参考 [域名接入](https://yuque.antfin-inc.com/gubal/site/domain-apply) 来接入需要的域名。
+
+选择站点后，你可以从站点中选择该应用的“主投放域名”，该域名主要用于来在发布结果的页面链接中进行展示。
+
+不同于以往的应用类型，跨端应用在应用接入站点时，需要站点负责人审批通过后才能进行发布。选择站点后，你可以在“接入审批人”表单处选择一个站点负责人作为审批人，如果你是站点成员则可以免审批进行接入。
+
+### Step 3 跟进应用接入审批
+
+应用创建成功后，如果是免审批的接入则可以直接进行发布。如果需要站点负责人审批，请及时跟进审批单，以免影响发布。你可以在 [https://space.o2.alibaba-inc.com/extend/6/flow?tab=my](https://space.o2.alibaba-inc.com/extend/6/flow?tab=my) 查看自己提交的审批记录。
+
+## 注意事项
+
+- 跨端应用不支持发布 weex1.0 应用，仅支持发布 weex2.0 应用。如果需要发布 weex1.0 应用，请创建“weex 应用类型”的应用。
+- rax 脚手架创建的 weex 项目模板，构建产物是 weex1.0。如需发布 weex2.0 应用，请参考[文档](https://yuque.antfin-inc.com/weex/bc0338/hydwbf#HzgLo)进行配置。
+- 为了更好的隔离和管理应用发布的页面，应用不再提供默认的 market 域名（market.wapa.taobao.com 和 market.m.taobao.com），而是需要选择接入站点，从而获得访问域名。你可以参考 [域名接入](https://yuque.antfin-inc.com/gubal/site/domain-apply) 进行操作。
+- 为了避免大量无效应用被随意创建和发布，非站点成员的应用接入需要站点负责人审批通过后才能进行发布。创建应用后请及时跟进审批单，避免影响应用发布。
+- 接入应用时选择的域名是“主投放域名”（发布结果展示时主要使用的域名），站点下如果接入了多个域名，则站点下的域名都是可以访问到应用发布的资源的。

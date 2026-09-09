@@ -1,0 +1,133 @@
+# 一、封网通知
+<font style="color:rgb(38, 38, 38);">大促期间，平台将于峰值时间段封网，</font><font style="color:rgb(255, 0, 0);">封网阶段实验不可新建，不可变更。</font>
+
+**<font style="color:rgb(226, 0, 28);">【提醒】请大家检查并调整自己的实验开始/结束时间，禁止在预热期及正式期封网时间内内上下线。</font>**
+
+**<font style="color:rgb(226, 0, 28);">【提醒】禁止在预热期及正式期封网时间内新建或变更实验。</font>**
+
+```plain
+最新封网时间（双12）
+2021-12-11 23:00:00～2021-12-12 02:00:00
+```
+
+Tips：<font style="color:rgb(23, 26, 29);">若需要在封网期间上下线，请联系</font>**<font style="color:rgb(23, 26, 29);">  </font>**<font style="color:rgb(23, 26, 29);"> 说明业务背景，申请加白。</font>
+
+# 二、重保实验
+为保障在大促期间的A/B实验稳定性，一休通常会收集在运行的实验（含正在的运行实验+预计大促期间上线实验）。
+
+## 1.近期大促（双12）重保实验
+<font style="color:rgb(23, 26, 29);">为减轻大家备战压力，</font><font style="color:rgb(23, 26, 29);background-color:rgb(255, 255, 0);">本次双12大促不需报备重保实验，</font><u><font style="color:rgb(23, 26, 29);background-color:rgb(255, 255, 0);">平台会保障非封网时间内实验配置的正常下发。</font></u>
+
+
+
+## <font style="color:rgb(0, 0, 0);">2.</font><font style="color:rgb(38, 38, 38);">实验数据影响说明</font>
+<font style="color:rgb(23, 26, 29);">实时指标和离线指标会跟随集团集群降级而延迟，影响时间为12.12号。</font>
+
+<font style="color:rgb(23, 26, 29);background-color:rgb(255, 255, 0);">具体延迟时长可参考当天平台消息</font><font style="color:rgb(23, 26, 29);">。</font>
+
+<font style="color:rgb(23, 26, 29);">当天数据不丢失，延迟结束后正常产出。</font>
+
+<font style="color:rgb(23, 26, 29);">如有数据问题可及时联系  </font>[@有元](undefined/kaicheng.xkc)[@宁酒](undefined/xiaomengshuang.xms)
+
+
+
+# 三、配置规范（自检）
+## 一、应用接入(开发必看)
+### <font style="color:#F5222D;">【必须】1.推送单元</font><font style="color:#F5222D;">与应用部署单元对齐</font>
++ 描述：在页面中，客户端推送方式与SDK接入方式一致；<font style="color:black;">服务端推送单元需要与线上应用部署单元一致。</font>例如应用部署在线上中心和上海单元，推送单元也必须选择线上中心和上海单元。
+
+1）服务端实验，请保证推送单元与应用部署单元对齐：
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/65996/1600138212148-a07ac6e3-1004-4ac5-8341-eeecdca9d00b.png)
+
+2）客户端实验(推送模式)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/65996/1600053215708-a656be76-1856-4dd0-a6f1-ca2cde3c721f.png)
+
+完成配置后如需更改配置请参考[应用管理](https://yuque.antfin-inc.com/ikkuy/gw2n3b/irqrbi)文档。
+
++ <font style="color:red;">违反危害：部分单元无法获取实验信息</font>
+
+ 
+
+### 【建议】2.客户端埋点规范
+
+
+**1）****手动埋点规范：**
+
+1、一休平台上创建实验时，埋点页面需要如实填写，并与实验激活时所在页面相同(配置见[PageName](#IzNQh))；
+
+2、需要在步骤1中填写的页面调用激活实验的方法<font style="color:#111F2C;">EVO.activateSync(客户端实验)或</font>EVO.activateServerAsync(服务端实验)，并且在调用时传入页面对象（**PageObject**）；
+
+3、步骤2的调用时机需要在ut的pageappear和ut的pagedisappear之间调用；同时，在2201和2101事件发生之前调用；如果是对应多个实验页面，每个页面都需要满足上述要求。
+
+**2）自动埋点规范：**
+
+1、一休平台上创建实验时，埋点页面需要如实填写，并与实验激活时所在页面相同(配置见[PageName](#IzNQh))
+
+2、需要在步骤1中填写的页面调用激活实验的方法<font style="color:#111F2C;">EVO.activateSync(客户端实验)或</font>EVO.activateServerAsync(服务端实验)；
+
+3、步骤2的调用时机需要早于ut的pagedisappear、2201和2101事件之前调用
+
+
+
+### <font style="color:#F5222D;">【必须】3.</font><font style="color:#F5222D;">接</font><font style="color:red;">入代码必须设计</font><font style="color:red;">异常</font><font style="color:red;">兜底</font>
++ 描述：<font style="color:black;">在调用分流接口时，业务方必须做好异常时的兜底处理，避免分流接口异常影响业务</font><font style="color:black;">，尤其权益资金发放类实验。</font>
++ <font style="color:red;">违反危害：分流接口异常导致业务异常</font>
+
+
+
+## 二、实验设计
+### <font style="color:#F5222D;">【必须】1</font><font style="color:#F5222D;">.大促实验报备必须</font><font style="color:#F5222D;">关联</font><font style="color:#F5222D;">Aone</font><font style="color:#F5222D;">需求</font>
++ 描述：报备大促实验需求时，请在下拉列表中选择实验对应的Aone需求，以便确定实验情况。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/65996/1600053566141-ef2ead6e-5d08-4381-8cfb-6be43312eac3.png)
+
++ <font style="color:#F5222D;">违反危害：</font><font style="color:red;">追溯和止血问题缓慢</font>
+
+### <font style="color:#F5222D;">【必须】2.</font><font style="color:#F5222D;">使用客户端埋点或服务端实验使用通用指标时</font><font style="color:#F5222D;">PageName</font><font style="color:#F5222D;">必填</font><font style="color:red;">，且接入代码需与其一致</font>
++ 描述：客户端或服务端实验如需使用客户端埋点，或服务端实验使用通用指标时，必须正确填写分流设置中【埋点页面】字段，该值为ut埋点中定义的实验页面名称，如 Page_Detail，可输入多个。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/65996/1600072415010-765a4289-7975-485f-95a1-2415ba4452b2.png)
+
+<font style="color:red;">违反危害：无法上报埋点数据</font>
+
+###  
+### 【建议】3.流量达到最小样本量要求
+建议填写数据指标的【最小预期提升值】，平台会基于该值计算实验所需最小样本量，并直接直接影响实验显著性结论。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/65996/1600072436652-6ee549ad-cf60-443c-91a7-cc98713095f2.png)
+
+
+
+ 
+
+## 四、实验发布
+### <font style="color:#F5222D;">【必须】1.</font><font style="color:#F5222D;">调整分流比例时确保对线上业务无影响</font>
++ 描述：<font style="color:black;">调整运行态实验的分流比例后，要规避流量串桶的风险。尤其修改全局空桶实验中域流量时将会影响该域内所有实验流量。</font>例如，执行下面的实验调整时将会导致部分流量串桶，实验分组1流量的扩大是通过缩减基准分组实现的，基准分组的部分用户（40%）会进入到实验分组1，导致前后交互不一致：
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/65996/1600083360405-27be0f88-19af-4cd4-98ef-a51f902ca5ce.png)
+
++ **操作建议：**某一分桶扩量如果是通过缩减其他分桶流量，可能会引起用户落入其他分桶。建议对A、B两个分桶进行小流量实验（各5%，保证各分桶有1w DAU以上），确定实验效果后，逐步扩大某一个分桶流量，例如保持基准分组 5%流量，按10% 20% 逐步扩大实验分组1流量，这样的操作不会引起用户前后行为不一致。
+
+
+
++ <font style="color:red;">违反危害：调整流量不规范会让用户行为前后不一致，打破实验单一变量控制原则，影响实验结果准确性</font>
+
+### 【建议】2.确认实验数据符合预期
+实验发布后，建议在实验数据页面确认分流比例、指标数据是否符合预期。其中，实验数据显著性结论建议定期查看，如果达到最小样本量或实验运行长时间后数据仍不显著，则建议修改实验策略。
+
+如有数据异常请及时联系[@彼端](undefined/jym229664)反馈。
+
+ 
+
+### 【建议】3.适时进行实验归档
+实验已满足业务决策条件或长期无显著性结论，建议及时下线实验以便归档实验配置及数据。
+
+
+
+## 五、实验结束（开发必看）
+### <font style="color:#F5222D;">【必须】1.</font><font style="color:red;">实验结束后接入代码必须设计固化或兜底</font>
++ <font style="color:#0D0D0D;">描述：</font><font style="color:#0D0D0D;">实验结束</font><font style="color:#0D0D0D;">(</font><font style="color:#0D0D0D;">推</font><font style="color:#0D0D0D;">全、到期、</font><font style="color:#0D0D0D;">下线</font><font style="color:#0D0D0D;">)</font><font style="color:#0D0D0D;">后，必须尽快下线清理实验代码，否则有影响业务的潜在风险。</font>
++ <font style="color:red;">违反危害：实验配置下线，代码残留，分流接口无法命中导致业务异常</font>
+

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
+import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
 import { DeprecatedWorkItemMuteError, WorkItemRepository } from "../src/work-item-repository.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000081";
@@ -23,6 +24,16 @@ function setup(status = "processing", updateReturnsRow = true) {
 }
 
 describe("work item rejection transaction boundary", () => {
+  it("dedupe lookup binds the canonical active statuses rather than a drifting SQL literal", async () => {
+    const s = setup("dispatched");
+    s.query.mockImplementation(async sql => ({ rows: sql.includes("FROM work_items") || sql.includes("UPDATE work_items") ? [s.row] : [] }));
+    const result = await s.repo.createOrMergeAlert({ workspaceId, media: "KUAISHOU", accountId: "account-1", ruleId: 11,
+      type: "diagnosis", severity: "P1", title: "synthetic repeated signal", evidenceSnapshot: {} });
+    const lookup = s.query.mock.calls.find(([sql]) => sql.includes("FROM work_items"));
+    expect(lookup?.[0]).toContain("status = ANY($5::text[])");
+    expect(lookup?.[1]).toEqual([workspaceId, "11", "KUAISHOU", "account-1", [...ACTIVE_WORK_ITEM_STATUSES]]);
+    expect(result).toMatchObject({ disposition: "merged", workItem: { id: workItemId, status: "dispatched" } });
+  });
   it.each([undefined, null, "", " \n\t ", 7, false, {}])("rejects invalid reason %j before a DB connection", async (reason) => {
     const { repo, connect } = setup();
     await expect(repo.transition({ ...base, rejectReason: reason as string })).rejects.toThrow(/reason/i);

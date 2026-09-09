@@ -1,0 +1,104 @@
+
+# ODPS文档上传
+
+## 接口描述
+
+* 支持ODPS文档的上传
+
+  
+
+
+## ODSP限制
+
+具体的上传限制和页面上上传的限制一致，参考文档：
+
+
+
+  
+
+
+## 接口限制
+
+1. 表格行数、索引列的限制目前与产品的限制一致，以产品文档为主
+
+1. 产品文档查看：
+
+  
+
+
+## ODPS表格上传
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/batchUploadDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| documentLoadBaseInfo.repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentLoadBaseInfo.projectId | 项目空间ID | 129372 |
+| documentSource | 数据源类型 | 固定值：ODPS，表示文件来源 |
+| documentLoadBaseInfo.fileType | 文件的类型 | 固定值：RE，表示参考文档 |
+| documentLoadBaseInfo.fileStructureType | 文件的结构类型 | 固定值：NORMAL_DOC，表示表格文档 |
+| documentLoadBaseInfo.empId | 文档上传者的工号 | 319417 |
+| OdpsTableReaderRequest.projectName | odps的项目 | ​ |
+| OdpsTableReaderRequest.accessId | odps的AK | LTAI5xxxxxxxxx |
+| OdpsTableReaderRequest.accessKey | odps的SK | 5YNZ5xxxxxxxxxx |
+| OdpsTableReaderRequest.endpoint | odps的endpoint | 1. **endpoint：**数据中心网络接口地址，需要用户自行提供endpoint，可咨询部门数据管理员  1. 淘天集团下大部分为<http://service-corp.odps.aliyun-inc.com/api> 2. 可参考文档<https://aliyuque.antfin.com/computing-platform-doc/mc/guqfmg> |
+| OdpsTableReaderRequest.odpsPartitionEnum | UNPARTITIONED：非分区表  LATEST_PARTITION：最新分区  SPECIFIED_PARTITION：指定分区 | UNPARTITIONED |
+| OdpsTableReaderRequest.partition | 如果上面的odpsPartitionEnum是SPECIFIED_PARTITION，这里要指定具体的分区，格式类似ds=20250225 | ds=20250225 |
+| OdpsTableReaderRequest.odpsVariableMapping | 变量映射，类似页面上传时选择的变量映射，把odps表中的列映射到知识库需要的字段 | {  "id": "id",  "title": "title",  "content": "content",  "gmt_modified": "gmt_modified",  "status": "status",  "tags": "tags"  } |
+| nodeParseConfig | 可选，不填就是默认使用智能切分 | 该配置的方式查看文档：  [文档类文档切分说明](https://aliyuque.antfin.com/aiplus/oeefl8/ngn1hnpidd04rvze) |
+
+  
+
+
+#### request example odps表格上传
+
+  
+
+
+### response
+
+  
+
+
+#### 返回的内容是什么？
+
+**返回的内容，是文档读取任务的id。**
+
+文档是通过异步方式读取的。该接口本质上是提交了一个文档读取任务。
+
+​  
+
+
+#### 文档上传接口返回的任务id可以用来干什么？
+
+根据任务id，可以查看文档的处理进度。
+
+  
+
+
+#### 通过API上传文档后，文档会自动构建索引吗？
+
+文档会自动构建索引，会使用知识库使用的向量模型来构建索引。
+
+​  
+
+
+### 文档上传结果
+
+可以在知识库文档列表页，查看文档的上传结果。
+
+  
+
+
+  
+
+

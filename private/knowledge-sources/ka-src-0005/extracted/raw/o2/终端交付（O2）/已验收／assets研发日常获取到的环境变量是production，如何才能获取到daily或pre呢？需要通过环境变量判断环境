@@ -1,0 +1,29 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65fb9d248a58df066dd5dd8c/](https://links.alibaba-inc.com/support/conversation/65fb9d248a58df066dd5dd8c/)
+
+作者：时路
+
+评审人：上坡
+
+
+
+**原因**：assets 发布，默认线上是不执行构建过程的，而是直接获取对应 commitId 最新日常发布的构建结果。这样做主要是为了遵循所测即所发的原则，避免在日常测试好的代码线上发布时重新构建引入 bug。因此，默认日常获取到的环境变量是 production。
+
+
+
+**解决方案：**
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1711356968147-a80c78b2-43bc-4e6e-84af-7141e65599fd.png) 
+
+如您仍然需要区分本地的构建和线上的构建过程，请前往应用设置->发布设置，将“线上构建”开关开启。
+
+
+
+**影响：**
+
+1. 线上发布时会重新执行代码构建，不再取日常构建结果。
+2. 默认线上发布是不执行门神检查任务的，只要对应 commitId 的日常发布门神检查通过即可。但开启线上构建后发布会重新执行门神检查任务。
+
+
+
+更多详情请参考文档：[线上构建](https://alidocs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtmZkKLQLJ3pmz5aA)
+

@@ -1,0 +1,62 @@
+## 创建迭代
+
+创建 O2 迭代
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/iteration |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名称 |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| name | String | true | - | 迭代名称 |
+| description | String | false | - | 迭代描述 |
+| version | String | true | - | 迭代版本号 |
+| trunk | String | false | master | 主干分支 |
+
+### Returns
+
+An [Iteration](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6xiuwp43jozm69u9h) Object.
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/{appIdorName}/iteration`,
+  {},
+  {
+    name,
+    description,
+    version,
+    trunk
+  },
+  {
+    SSO_TICKET,
+  }
+)
+
+{
+  "status": 2,
+  "endtime": "1970-01-01T00:00:00.000Z",
+  "name": "api-test",
+  "description": "api-test",
+  "app_id": 1,
+  "group": "def-work",
+  "project": "front",
+  "version": "2.25.52",
+  "emp_id": "318805",
+  "branch": "def_releases_2024020510124646_def-work_front/2.25.52",
+  "id": 15126525,
+  "gmt_modified": "2024-02-05T02:12:46.146Z",
+  "gmt_create": "2024-02-05T02:12:46.146Z"
+}
+
+```

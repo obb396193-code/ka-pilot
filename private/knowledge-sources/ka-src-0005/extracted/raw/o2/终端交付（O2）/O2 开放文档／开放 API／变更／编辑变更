@@ -1,0 +1,43 @@
+## 编辑变更
+
+对已有变更进行编辑
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/devbranchs/{devbranchId}/edit |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true |  | 应用 ID 或应用名 |
+| devbranchId | Number | true | - | 变更 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| description | String | false | - | 变更描述 |
+| is_delete_branch | Number | false | - | 上线后删除分支 |
+| aone_binds_autofinish | Number | false | - | 上线后自动完成 Aone 工作项 |
+| aone_binds | String | false | - | 绑定的 Aone 工作项，格式为：'req|123,issue|344' |
+
+### Returns
+
+成功的记录数数
+
+### Example
+
+```
+client.post(`/v1.0/work/apps/{appIdorName}/devbranchs/{devbranchId}/edit`, {}, {
+  description
+}, {
+  SSO_TICKET
+})
+
+[
+  1
+]
+
+```

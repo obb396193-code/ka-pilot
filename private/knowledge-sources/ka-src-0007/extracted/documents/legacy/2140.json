@@ -1,0 +1,42 @@
+{
+  "documentId": 2140,
+  "documentName": "文件上传接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 文件上传接口(新)\n## 功能升级说明\n人群包上传相关接口已经更新：\n分别是**文件上传接口(新)、人群包创建接口(新)、人群包更新接口(新)**，对人群包实现扩容、支持全量更新等功能！\n\n老接口文档已下线，请您按照本接口说明进行开发切换。\n\n### 接口使用流程\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform9cd808489c1feb7079894da1ff050c0f.png)\n\n## 文件上传接口文档(新)\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/file/upload](https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/file/upload)\n\n请求方式：POST\n\n数据格式：FORM-DATA\n\n### 请求参数\n\n| 字段         | 类型   |  是否必填   | 说明   | 备注                        |\n| ------------ | ------ |  ------ | ------ | --------------------------- |\n| advertiser_id | long |   必填 | 广告主ID |  在获取 access_token 的时候返回|\n| file | file |   必填 | 上传的文件 | 支持直接上传*.txt（UTF-8)文本；支持将单个/多个*.txt文件经过zip格式压缩上传 |\n| type | int |   必填 | 文件的数据类型 | 1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID |\n\n\n### 返回参数\n\n| 字段         | 类型    | 说明                        | 备注         |\n| ------------ | ---- | --------------------------- | ---------- |\n| code | int |   返回码 |  |\n| message | string  | 消息 |  |\n| data | struct | json返回值 |  |\n|file_path|\tstring\t|文件路径\t|包含作为文件唯一标识的字符串| \n|upload_file_type\t|int|\t上传文件格式\t|TXT或ZIP|\n|record_size|\tlong|\t上传文件总行数\t||\n|match_type|\tlong|\t文件数据类型（英文）\t||\n|type|\tint\t|文件数据类型\t|1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID|\n|file_size|\tlong|\t文件大小\t||\n|md5\t|long\t|文件摘要标识\t||\n|advertiser_id|\tstring\t|广告主ID\t||\n\n\n\n\n### 请求样例\n\n```js\ncurl -X POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/file/upload' \\\n-H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n-H 'Content-Type: multipart/form-data' \\\n-F 'advertiser_id=\"12345678\"' \\\n-F 'file=@\"/Users/xxxxxxx03/Desktop/测试人群包/imei-md5.txt\"' \\\n-F 'type=\"3\"'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"file_path\": \"12345678_3_0d0bdfaaab8df08cf052d0ea41b6e05f.txt\",\n        \"upload_file_type\": \"TXT\",\n        \"record_size\": 1367738,\n        \"match_type\": \"IMEI_MD5\",\n        \"type\": 3,\n        \"file_size\": 45135769,\n        \"md5\": \"0d0bdfaaab8df08cf052d0ea41b6e05f\",\n        \"advertiser_id\": 12345678\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"89399f2f9e91472c833d0a78937f6a0e\"\n}\n```\n### 注意事项\n1、接口调用次数限制：单次调用只能上传一个文件，**同一个广告主ID的文件不支持并行上传**，当前文件上传成功或失败后才可以进行下一个文件上传\n\n2、文件大小限制：单个文件最大1G（为了您的传输速度，建议文件大小<250M），单日上传总容量50G（特殊需求可申请扩容）\n\n3、文件过期时间：1个月（文件过期不影响人群包投放）",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1646818180104
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 6,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1646818180104,
+  "creator": "luojingyu03",
+  "fullContext": null
+}

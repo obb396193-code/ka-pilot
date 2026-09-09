@@ -1,0 +1,234 @@
+## 开始使用
+
+### 通过脚手架建立新应用（推荐）
+
+在新建应用页面中，选择“函数研发-全栈应用-Next.js”：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3M0OzBYyZoKYOzeE/img/076a3940-30a4-4350-8d60-493cbb9317e9.png)
+
+
+如果没有找不到对应的脚手架，请访问“团队空间-应用-应用类型-Web 端一体化”，点击“添加脚手架”后，在对话框中搜索 Next.js 并选择。如有疑问，请联系平台答疑：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3M0OzBYyZoKYOzeE/img/75dae73c-8348-48b4-b2f0-4f382ff0ffb0.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3M0OzBYyZoKYOzeE/img/4e3b6805-8bde-4208-a90d-658662ce9430.png)
+
+
+### 已有项目接入
+
+请在应用页面中选择设置-函数配置-Runtime 选择，将 Runtime 版本修改为 `custom.debian10`；请注意不同环境需要分别修改，并点击绑定按钮：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3M0OzBYyZoKYOzeE/img/e1918465-362e-496b-bb7c-8ae06cc3baf0.png)
+
+
+在您的项目仓库中，通过包管理器安装 `@ali/harmony-nextjs-build-scripts`，并将 build 命令修改为 `next build && next-postbuild`。`abc.json`配置参考如下：
+
+```
+{
+  "builder": {
+    "name": "@ali/builder-harmony-common"
+  },
+  "cache": {
+    "build": {
+      "enable": true,
+      "cacheDir": [".next/cache/**"]
+    }
+  },
+  "nodeVersion": 20
+}
+
+```
+在项目根目录下，建立 `f.yml`，内容如下（请将 `<app-name>` 修改为函数组名）：
+
+```
+service: <app-name>
+
+```
+检查 next.js 的配置文件（通常为 `next.config.js`），将 [output](https://nextjs.org/docs/pages/api-reference/next-config-js/output) 设置为 `standalone`
+
+#### monorepo 特殊配置
+
+monorepo 非 O2 官方推荐模式，请您按照下方指引尝试配置；如有问题，请联系心羽
+
+
+如果您的项目为 monorepo 且 next.js 本身在子目录内，请执行以下操作：
+
+- 将 `f.yml` 放置在 next.js 应用所属路径下，而非仓库根路径
+- 在构建时确保在应用路径（而非仓库根路径）下执行 `next build && next-postbuild`
+- 在 `f.yml` 中增加 entry 字段，内容为产物服务入口相对于 `<app-root>/.next/standalone/`的路径
+例如，当 next.js 应用在 `projects/app` 路径下时，请参考以下设置：
+```
+service: <app-name>
+entry: projects/app/server.js
+```
+
+
+## 扩展能力
+
+### 日志
+
+可以直接通过 console 打印日志，在应用左侧“日志查询”-“更多查询”中可以查询到日志内容。查询时请注意时间、环境等设置。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3M0OzBYyZoKYOzeE/img/16270453-5c3c-4b16-9537-0358898bd813.png)
+
+
+### 通过 CDN 访问静态资源
+
+由于 Next.js 不支持在运行时修改 assetPrefix，在默认情况下，Next.js 应用将通过函数应用域名提供静态资源访问。您可以选择通过启用线上构建或自行设置跳转启用 CDN 访问静态资源。具体配置如下（通过脚手架生成的项目默认包含此段代码）：
+
+```
+import {
+  gitGroup,
+  gitProject,
+  publishEnv,
+  publishVersion,
+  isBuildingForRelease,
+  isPublishingToCDN,
+} from '@ali/harmony-nextjs-build-scripts';
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone',
+};
+
+// 由于 Next.js 不支持在运行时修改 assetPrefix，因此只在满足以下两个条件时使用 CDN 加载资源：
+// 1. 发布流程包含 CDN 发布节点（应用类型为 “Web 端一体化”）
+// 2. 已启用 “线上构建”
+// 如果未满足条件 2，默认不设置 assetPrefix，只通过相对路径访问资源
+// 如果业务希望使用 CDN，可以修改此条件，但在预发测试过程中需要自行在浏览器侧配置插件，跳转到 dev 域名
+const isSettingAssetPrefix = isPublishingToCDN && isBuildingForRelease;
+// const isSettingAssetPrefix = isPublishingToCDN;
+
+if (isSettingAssetPrefix) {
+  const useDevDomain = publishEnv === 'daily' || publishEnv === 'prepub';
+  const domain = `${useDevDomain ? 'dev.' : ''}g.alicdn.com`;
+  nextConfig.assetPrefix = `https://${domain}/${gitGroup}/${gitProject}/${publishVersion}`;
+}
+
+export default nextConfig;
+
+```
+### 接入 BUC 登录
+
+在 Next.js 中，可以通过 OIDC 接入 BUC 登录，官方文档：https://ata.atatech.org/articles/11000228960
+
+在[内网应用脚手架](https://code.alibaba-inc.com/node-harmony/faas/tree/master/templates/nextjs-inner)中，我们提供了使用 `NextAuth.js` 对接 BUC 的示例，您可以参考配置，或根据[解码实现](https://code.alibaba-inc.com/node-harmony/faas/blob/master/templates/nextjs-inner/src/utils/nextauth-buc.ts)通过其他工具对接。注意事项如下：
+
+1. 请在配置文件（或环境变量）中配置参数：
+	1. `BUC_CLIENTKEY`：在 BUC 注册应用后获取 ClientKey
+	1. `NEXTAUTH_SECRET`：用于 cookie 加密的随机字符串，可以使用 `openssl rand -base64 32`生成
+1. next-auth 默认不会向 session 中注入用户 ID。如需在前端使用，请参考 [https://github.com/nextauthjs/next-auth/issues/1921](https://github.com/nextauthjs/next-auth/issues/1921) 配置
+1. 由于 BUC 使用的私钥 modulus 长度不合标准，社区的 `jose` 会拒绝验签，请使用 [patch](https://code.alibaba-inc.com/innpaul.zyp/npm-patches/blob/master/patches/jose/jose-npm-4.15.2-fed23a3194.patch) 后的 `@ali/xy-jose`
+```
+{
+  "overrides": {
+    "jose": "npm:@ali/xy-jose@4.15.4"
+  }
+}
+```
+1. 默认配置中，会从环境变量中读取应用名并作为 BUC 应用名传递。如果您需要指定引用名或在本地测试，请：
+	1. 在 `config.default.ts` 中，将 `BUC_APP` 修改为字面量
+	1. 如果只需要解决本地调试问题，可以用 `SIGMA_APP_NAME=你的应用名 npm run dev` 启动
+1. FC 函数日常环境访问 BUC 存在网络问题，建议在本地和预发环境测试
+1. 如需使用 Ticket，请安装 1.0.9 以上版本的 [@ali/harmony-buc-login](https://code.alibaba-inc.com/node-harmony/middleware/blob/master/packages/buc-login/README.md) 后参考文档获取。注意使用 ticket 时需要定时调用 `client.refreshSsoToken`刷新（推荐 5 分钟刷新一次）
+### 使用集团中间件
+
+在 Next.js 函数应用中，可以使用对应的 node sdk 调用 hsf、tair、diamond 等集团中间件服务。下面以通过 `@ali/harmony-native-adapter` 调用为例：
+
+1. 安装依赖
+```
+$ npm i --save @ali/harmony-native-adapter
+# -- or --
+$ yarn add @ali/harmony-native-adapter
+# -- or --
+$ pnpm i --save @ali/harmony-native-adapter
+```
+1. 配置 Next.js，在打包过程中忽略中间件依赖（部分中间件的底层依赖无法通过 webpack 编译，需要跳过打包）
+```
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'standalone',
+  // next 14
+  experimental: {
+    serverComponentsExternalPackages: ['@ali/harmony-native-adapter'],
+  },
+  // next 15+
+  // serverExternalPackages: ['@ali/harmony-native-adapter'],
+};
+```
+1. 创建工具方法，用于获取相关中间件实例实例
+```
+import { NativeMiddlewareAdapter } from '@ali/harmony-native-adapter';
+
+const adapter = new NativeMiddlewareAdapter({
+  appName: process.env.SIGMA_APP_NAME || '-',
+  logger: console,
+});
+
+let isReady = false;
+const ready = adapter.ready().then(() => {
+  isReady = true;
+});
+
+export async function getTairManagerInstance() {
+  if (!isReady) await ready;
+  return adapter.tairManager;
+}
+
+export async function getHsfClientInstance() {
+  if (!isReady) await ready;
+  return adapter.hsfClient;
+}
+
+export async function getDiamondInstance() {
+  if (!isReady) await ready;
+  return adapter.diamond;
+}
+
+export async function getConfigClientInstance() {
+  if (!isReady) await ready;
+  return adapter.configclient;
+}
+
+export async function getVipClientInstance() {
+  if (!isReady) await ready;
+  return adapter.vipClient;
+}
+
+```
+1. 以调用 HSF 方法为例：
+```
+import { cache } from 'react';
+import { getHsfClientInstance } from './middleware';
+
+export const getDemoHSFData = cache(async () => {
+  const hsfClient = await getHsfClientInstance();
+
+  return hsfClient.invoke({
+    id: 'com.taobao.uic.common.service.userdata.UicDataService:1.0.0.daily',
+    method: 'getData',
+    group: 'HSF',
+    parameterTypes: ['java.lang.Long', 'java.lang.String', 'java.lang.String'],
+    args: [123, 'data-info-userdata', 'langneng'],
+  });
+});
+
+```
+1. 【重要】在调用 HSF 或其他中间件的 App Router （`layout.tsx | page.tsx | route.ts`）中，添加如下代码设置强制动态渲染：
+```
+export const dynamic = 'force-dynamic';
+```
+> Next.js 构建时会尝试执行数据请求进行预渲染。由于构建环境与生产网络不通，预渲染无法取得正确结果。因此需要将调用中间件的页面设置为强制动态渲染（[文档](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config#dynamic)）
+
+## 常见问题
+
+Q: 应用无法正常启动，本地执行 `.next/standalone/server.js` 时提示缺少 wasm 文件
+
+A: 如果您使用了 `@ali/midway-native-adapter`，请将其替换为 `@ali/harmony-native-adapter`
+
+Next.js 的构建逻辑目前无法正常拷贝 HSF 的底层依赖 `@ali/cmms-client` 中的 wasm 文件；为修复此问题，`next-postbuild`会在检测到 `@ali/cmms-client` 时执行补偿逻辑，请检查构建日志中是否有下图字样：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3M0OzBYyZoKYOzeE/img/ae500897-4073-4ea1-ac5f-ff42afca2c3f.png)
+
+

@@ -1,0 +1,23 @@
+用户真实问题链接: https://links.alibaba-inc.com/support/conversation/663df2063b62ac04d5a9ea4e/
+
+作者：时路
+
+评审人：上坡
+
+
+
+**前提**：平台固定了推送的 Group 为 `O2_SPACE_FRONT`，平台暂不支持修改 Diamond Group 或 DataId 前缀的诉求。
+
+
+
+若只是想配置平台默认的 Diamond 推送配置，可以参考如下步骤：
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1716281767493-30c60ada-7856-47d4-8e6e-37c5c3d38438.png) 
+
+1. 确保应用开启了 Diamond 配置
+2. 前往“设置-基础设置-diamond设置”配置即可
+
+
+
+
+

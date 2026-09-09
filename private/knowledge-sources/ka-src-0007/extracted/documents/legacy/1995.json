@@ -1,0 +1,42 @@
+{
+  "documentId": 1995,
+  "documentName": "拉取token下授权广告账户接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 拉取token下授权广告账户接口\n\n请求地址：https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/approval/list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 备注                             |\n| ------------- | ------ | -------------------------------- |\n| app_id        | Long | 申请应用后快手返回的 app_id      |\n| secret        | string | 申请应用后快手返回的 secret      |\n| access_token | string | 查询的 access_token |\n| page_no | Integer | 分页页码，必填 |\n| page_size | Integer | 分页每页展示条数，必填，最大值为200 |\n\n### 返回参数\n\n| 字段                     | 类型   | 备注                                                         |\n| ------------------------ | ------ | ------------------------------------------------------------ |\n| code                     | Integer | 返回码                                                       |\n| message                  | string | 返回信息                                                     |\n| data                     | JSON   | 返回数据                                                            |\n| details             | Long[] | 查询获得的广告主 ID                                         |\n| isEnd             | boolean | 本次查询对应分页是否大于总页数，true-当前分页大于总分页，无需继续向后查询；false-当前分页小于等于总页数，需要查询。                                         |\n\n\n### 请求参数\n\n```\ncurl -H \"Content-Type:application/json\" \\\n-d '\n{\n\"app_id\": 74751,\n\"secret\": \"abcd\",\n\"access_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n\"page_no\":1,\n\"page_size\":100\n}' https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/approval/list\n\n```\n\n### 返回参数\n\n```\n{\n    \"code\": 1,\n    \"message\": \"成功\",\n    \"data\": {\n        \"details\": [\n            8173064\n        ],\n        \"isEnd\": false\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1725888327788
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1725888327788,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

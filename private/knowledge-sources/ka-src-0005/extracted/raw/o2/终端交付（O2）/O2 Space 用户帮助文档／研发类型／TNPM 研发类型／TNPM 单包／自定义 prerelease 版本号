@@ -1,0 +1,123 @@
+# 日常环境
+
+## 版本号为 x.y.z-beta. 形式
+
+建议使用官方构建器 `@ali/builder-package`
+
+### 操作步骤
+
+项目代码根目录下，新建 `abc.json` 文件
+
+```
+{
+  "builder": "@ali/builder-package"
+}
+
+```
+
+
+## 已经有构建器
+
+声明构建器`@ali/builder-XXXXX`
+
+### 操作步骤
+
+项目代码根目录下，新建 `abc.json` 文件
+
+```
+{
+  "builder": "构建器名称的 npm 包名"
+}
+
+```
+
+
+## 自定义日常环境下版本号
+
+构建阶段化能力，提供构建阶段的钩子，通过这些时机允许自定义版本号  [构建阶段化-官方文档](https://builder.alibaba-inc.com/document?slug=config-script) 
+
+```
+{
+  // $schema: 类型提示，非必需
+  "$schema": "https://dip.alibaba-inc.com/api/v2/schemas/221995/content",
+  "builder": {
+    "name": "@ali/builder-base", // 必需。介绍: https://anpm.alibaba-inc.com/package/@ali/builder-base
+    "config": {
+      // 必需，将路径下的内容移动到构建产物中，推荐 根目录 ./ 自动过滤 node_modules
+      "outputDir": "${希望发布的内容的路径}",
+      // 非必需，默认读取 pacakge.json 中 script.build
+      "build": "npm run build",
+      // 非必需，默认读取 pacakge.json 中 script.preinstall
+      "preinstall": "echo preinstall",
+      // 非必需，默认读取 pacakge.json 中 script.postinstall
+      "postinstall": "echo postinstall",
+      // 非必需，在构建之前修改版本号
+      "prebuild": "node update-version.js",
+      // 非必需，在构建之后执行操作
+      "postbuild": "echo postbuild"
+    }
+  },
+  "nodeVersion": 16,
+  "packageManager": "npm"
+}
+
+```
+### 操作步骤
+
+项目代码根目录下，新建 `abc.json` 文件
+
+```
+{
+  "builder": {
+    "name": "@ali/builder-base",
+    "config": {
+      "outputDir": "./",
+      "prebuild": "node update-version.js"
+    }
+  },
+  "nodeVersion": 16,
+  "packageManager": "npm"
+}
+
+// update-version.js
+
+const semver = require('semver');
+const path = require('path');
+const fs = require('fs');
+
+// 构建运行时变量，更多变量见：https://builder.alibaba-inc.com/document?slug=env-intro
+const buildArgv = require('yargs-parser')(process.env.BUILD_ARGV_STR);
+const env = buildArgv.def_publish_env;
+const pkgPath = path.join(__dirname, './package.json');
+
+function updatePkgVersion() {
+  const pkgJSON = require(pkgPath);
+  let version = pkgJSON.version;
+  if (!version) {
+    throw new Error('package.json 中不存在 version 字段');
+  }
+  version = semver.coerce(version);
+  pkgJSON.version = version += '-beta.' + new Date() * 1;
+  fs.writeFileSync(pkgPath, JSON.stringify(pkgJSON, null, 2), 'utf8');
+}
+
+// 如果是日常环境，则每次构建自动更新版本号
+if (env === 'daily') {
+  updatePkgVersion();
+}
+
+```
+
+
+# 只需要线上环境
+
+请直接修改 `pacakge.json` 中 version 内容，并进行代码推送
+
+```
+  {
+      "name": "要发布的 npm 包名",
+-     "version": "1.2.0",
++     "version": "1.2.1",
+  }
+
+```

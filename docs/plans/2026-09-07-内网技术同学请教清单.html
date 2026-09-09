@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>内网平台请教清单</title>
+<style>
+  :root{
+    --paper:#f7f8fa; --surface:#ffffff; --ink:#10151c; --ink-2:#3a4553; --muted:#5c6672;
+    --line:#dfe3e9; --line-soft:#eaeef3; --accent:#1f5fd0; --accent-soft:#eaf0fd;
+    --hot:#c2410c; --hot-soft:#fdeee6; --ok:#0f7b52;
+    --serif:"Songti SC","STSong","SimSun",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#0e1218; --surface:#161c24; --ink:#e8ecf1; --ink-2:#c3ccd7; --muted:#8b95a3;
+      --line:#28313d; --line-soft:#1e2630; --accent:#79a6f6; --accent-soft:#182338;
+      --hot:#f08a5c; --hot-soft:#2c1d16; --ok:#4ec191;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0e1218; --surface:#161c24; --ink:#e8ecf1; --ink-2:#c3ccd7; --muted:#8b95a3;
+    --line:#28313d; --line-soft:#1e2630; --accent:#79a6f6; --accent-soft:#182338;
+    --hot:#f08a5c; --hot-soft:#2c1d16; --ok:#4ec191;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;
+    -webkit-font-smoothing:antialiased;padding:0 0 5rem}
+  .wrap{max-width:46rem;margin:0 auto;padding:0 1.15rem}
+
+  header.top{padding:2.6rem 0 1.5rem}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--muted);display:block;margin-bottom:.7rem}
+  h1{font-family:var(--serif);font-weight:700;font-size:1.95rem;line-height:1.3;margin:0 0 .7rem;
+    text-wrap:balance;letter-spacing:-.01em}
+  .lede{color:var(--ink-2);font-size:1.02rem;margin:0 0 1.3rem;max-width:34em}
+  .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:.1rem 1.4rem;
+    border-top:1px solid var(--line);padding-top:.9rem}
+  .fact dt{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .fact dd{margin:.15rem 0 .8rem;font-size:.92rem;color:var(--ink-2)}
+
+  .bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);
+    padding:.6rem 0}
+  .bar-in{display:flex;align-items:center;gap:.85rem;max-width:46rem;margin:0 auto;padding:0 1.15rem}
+  .track{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+  .fill{height:100%;width:0;background:var(--accent);transition:width .25s ease}
+  .count{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .reset{font-family:var(--mono);font-size:.72rem;color:var(--muted);background:none;border:0;
+    cursor:pointer;padding:.2rem .35rem;border-radius:4px}
+  .reset:hover{color:var(--accent);background:var(--accent-soft)}
+
+  h2{font-family:var(--serif);font-weight:600;font-size:1.16rem;margin:0;letter-spacing:-.005em}
+  section.block{margin-top:2.6rem}
+  .head{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.35rem}
+  .tag{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--accent);
+    background:var(--accent-soft);padding:.1rem .4rem;border-radius:3px;letter-spacing:.04em}
+  .tag.crit{color:var(--hot);background:var(--hot-soft)}
+  .sub{color:var(--muted);font-size:.9rem;margin:0 0 1.05rem;max-width:38em}
+
+  ol.method{list-style:none;counter-reset:m;padding:0;margin:0;display:flex;flex-direction:column;gap:.85rem}
+  ol.method li{counter-increment:m;display:grid;grid-template-columns:1.6rem 1fr;gap:.7rem;
+    font-size:.94rem;color:var(--ink-2)}
+  ol.method li::before{content:counter(m,decimal-leading-zero);font-family:var(--mono);font-size:.75rem;
+    color:var(--accent);padding-top:.2rem;font-variant-numeric:tabular-nums}
+  ol.method b{color:var(--ink);font-weight:600}
+  .say{border-left:2px solid var(--line);padding:.15rem 0 .15rem .8rem;margin:.45rem 0 0;
+    font-size:.9rem;color:var(--muted)}
+
+  .qs{border-top:1px solid var(--line);margin-top:.2rem}
+  .q{border-bottom:1px solid var(--line-soft);padding:.95rem 0 .9rem;display:grid;
+    grid-template-columns:1.45rem 1fr;column-gap:.7rem}
+  .q.crit{padding-left:.75rem;border-left:2px solid var(--hot);margin-left:-.75rem}
+  .q input[type=checkbox]{appearance:none;width:1.05rem;height:1.05rem;margin:.3rem 0 0;
+    border:1.5px solid var(--line);border-radius:4px;background:var(--surface);cursor:pointer;
+    display:grid;place-content:center;transition:border-color .15s,background .15s}
+  .q input[type=checkbox]:checked{background:var(--accent);border-color:var(--accent)}
+  .q input[type=checkbox]:checked::after{content:"";width:.28rem;height:.55rem;border:solid var(--surface);
+    border-width:0 2px 2px 0;transform:rotate(42deg) translateY(-1px)}
+  .q input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .qid{font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.05em}
+  .qt{font-size:.99rem;color:var(--ink);margin:.1rem 0 .4rem;line-height:1.55}
+  .q.done .qt{color:var(--muted)}
+  .why{display:grid;grid-template-columns:auto 1fr;gap:.15rem .55rem;font-size:.85rem;color:var(--muted)}
+  .why dt{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+    padding-top:.18rem;white-space:nowrap;opacity:.85}
+  .why dd{margin:0}
+  .note{width:100%;margin-top:.6rem;min-height:2.1rem;resize:vertical;background:var(--surface);
+    border:1px solid var(--line);border-radius:5px;padding:.42rem .6rem;font:inherit;font-size:.9rem;
+    color:var(--ink);line-height:1.5}
+  .note::placeholder{color:var(--muted);opacity:.65}
+  .note:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .note.filled{border-color:var(--accent)}
+
+  .quiet{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:1rem 1.1rem}
+  .quiet p{margin:0;font-size:.9rem;color:var(--muted)}
+  .quiet p + p{margin-top:.55rem}
+  .quiet b{color:var(--ink-2);font-weight:600}
+  ul.plain{margin:0;padding-left:1.05rem;font-size:.92rem;color:var(--ink-2)}
+  ul.plain li{margin-bottom:.4rem}
+  ul.plain li:last-child{margin-bottom:0}
+
+  .exp{display:flex;gap:.6rem;align-items:center;margin-top:.9rem;flex-wrap:wrap}
+  .btn{font-family:var(--mono);font-size:.78rem;font-weight:500;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink);padding:.45rem .8rem;border-radius:5px;cursor:pointer}
+  .btn:hover{border-color:var(--accent);color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hint{font-size:.8rem;color:var(--muted)}
+  #dump{width:100%;margin-top:.8rem;min-height:11rem;background:var(--surface);border:1px solid var(--line);
+    border-radius:6px;padding:.7rem;font-family:var(--mono);font-size:.76rem;line-height:1.6;color:var(--ink-2)}
+  body{margin:0}
+  footer{margin-top:3rem;padding-top:1.1rem;border-top:1px solid var(--line);
+    font-size:.82rem;color:var(--muted)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <span class="count" id="count">0 / 12 已问</span>
+    <button class="reset" id="reset" type="button">清空</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">KA Pilot · 技术请教 · 2026-09-07</span>
+    <h1>内网平台请教清单</h1>
+    <p class="lede">我们在做一个投放经营助手，数据链路和建议链路已经跑通，卡在部署与身份权限。下面是想请教的问题，按卡点轻重排。</p>
+    <dl class="facts">
+      <div class="fact"><dt>产品</dt><dd>把内网数据拉进自有库，算达标与差距，给建议和一键操作，人确认后才写回媒体</dd></div>
+      <div class="fact"><dt>现状</dt><dd>全站页面已铺完、后端接口在接；写回媒体那一段全程关闭</dd></div>
+      <div class="fact"><dt>共</dt><dd>12 问，工作流占 7 条</dd></div>
+      <div class="fact"><dt>最想请教</dt><dd>工作流——我们只做到原型</dd></div>
+    </dl>
+  </header>
+
+
+  <section class="block">
+    <div class="head"><span class="tag crit">重点</span><h2>工作流：怎么从原型做成能用的</h2></div>
+    <p class="sub">我们的工作流现在只是个能跑的样子，你在做这块，想请你带一程。这组占大头。</p>
+    <div class="qs" id="D"></div>
+  </section>
+
+  <section class="block">
+    <div class="head"><h2>部署卡点</h2></div>
+    <p class="sub">整套系统现在只能跑在沙箱里，出不去。</p>
+    <div class="qs" id="A"></div>
+  </section>
+
+  <section class="block">
+    <div class="head"><h2>数据接口</h2></div>
+    <p class="sub">这几条接口是你写的，只问你才知道的。</p>
+    <div class="qs" id="C"></div>
+  </section>
+
+  <section class="block">
+    <div class="head"><h2>上线流程</h2></div>
+    <div class="qs" id="G"></div>
+  </section>
+
+  <section class="block">
+    <div class="head"><h2>我们能提供的</h2></div>
+    <p class="sub">这几样我们系统测过，你要哪个直接说。</p>
+    <ul class="plain">
+      <li>内网能力实测清单：启航双口径、写链路 14 项、FaaS 出网端口、素材 CDN、语音识别格式。</li>
+      <li>快手投放接口出价字段的实测枚举——三个字段不是同一个分类轴，官方文档没说清。</li>
+      <li>一套「契约驱动 + 多 Agent 并行开发」的实践，如果你对这个感兴趣。</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <div class="head"><h2>我们已经实测过的</h2></div>
+    <div class="quiet">
+      <p><b>不用再花时间讲的：</b>启航取数、写链路全链路、大模型通路、语音识别、快手命令行、钉钉出网、素材下载、FaaS 跑前端、三环境域名、ka-data 与启航对平（差千分之一以内）。</p>
+      <p>证据按「真实执行 / 源码实读 / 平台文档 / 推断 / 未证实」五级标着，要哪条随时给。</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="head"><h2>记录</h2></div>
+    <ul class="plain">
+      <li>每题可以勾选，下面能记答案，只存在本机浏览器里。</li>
+    </ul>
+    <div class="exp">
+      <button class="btn" id="mk" type="button">汇总我的记录</button>
+      <span class="hint">生成纯文本，全选复制即可贴回仓库</span>
+    </div>
+    <textarea id="dump" hidden readonly aria-label="记录汇总"></textarea>
+  </section>
+
+  <footer>勾选和记录只存在这台设备的浏览器里，不会上传，也不会被别人看到。</footer>
+</div>
+
+<script>
+const DATA={
+ D:[["1","我们的工作流现在是一张自由画布，上面拖十种节点。你觉得这种做法能撑多久？该不该早点收成更规矩的形式？","怕现在图省事，以后改起来伤筋动骨"],
+    ["2","写操作我们强制走「先出变更单 → 人工点确认 → 才执行」三步，而且发布后版本锁死。你看还缺哪一步？","这几条是我们自己拍的，没跟成熟系统对过"],
+    ["3","一个流程跑到一半，工作流被改了新版——用旧版跑完还是切新版？","跨天的流程很常见，选错以后很难改"],
+    ["4","停在「等人确认」这一步，人一直不点怎么办？超时、找人代点、催办你们怎么设计的？","我们只做了停在那等，没有后续"],
+    ["5","批量改 10 个账户，改到第 9 个失败了，你们怎么收场？","我们现在只有全成功或全失败，太粗"],
+    ["6","用户问「为什么这个流程没跑起来」，怎么让他自己看明白？","这是用户问得最多的一句"],
+    ["7","你现在做的工作流，我们能不能直接用？要接的话大概多少工作量？","能用就不自己维护了，这条最实在"]],
+ A:[["8","FaaS 出网只开 443，连不上任何数据库端口。你们的产品都怎么连库的？","这是我们现在最大的卡点，整套只能跑在沙箱里"],
+    ["9","云账号和 AONE 应用怎么申请？我们 BU 找谁？","建数据库卡在这两个前提"]],
+ C:[["10","启航取数和 ka-data 是你写的——限流实际是多少？后面会不会大改？","我们在裸调，怕哪天被限或接口变了"],
+    ["11","账户归属你们怎么做的？平台字段经常是空的，我们打算靠账户昵称的命名规范解析。有现成的吗？","不想重复造轮子"]],
+ G:[["12","上正式环境要过哪些关？我不是研发，代码评审这关该找谁？","这是唯一必须提前找人的事"]]};
+const KEY="ka-consult-2026-09-07";
+let state={};
+try{state=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){state={}}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let total=0;
+
+for(const [g,rows] of Object.entries(DATA)){
+  const host=document.getElementById(g);
+  host.innerHTML=rows.map(([id,q,why])=>{
+    total++;
+    const st=state[id]||{};
+    const meta=why?`<dl class="why"><dt>为什么</dt><dd>${esc(why)}</dd></dl>`:"";
+    return `<div class="q${g==="A"?" crit":""}${st.done?" done":""}" data-id="${id}">
+      <input type="checkbox" id="c-${id}" ${st.done?"checked":""} aria-label="${esc(id)} 已问">
+      <div><label class="qid" for="c-${id}">${id}</label>
+      <p class="qt">${esc(q)}</p>${meta}
+      <textarea class="note${st.note?" filled":""}" placeholder="对方怎么答的 / 文档 / 人名" rows="1">${esc(st.note||"")}</textarea></div></div>`;
+  }).join("");
+}
+
+const fill=document.getElementById("fill"),count=document.getElementById("count");
+function tick(){
+  const done=Object.values(state).filter(s=>s&&s.done).length;
+  fill.style.width=(done/total*100)+"%";
+  count.textContent=`${done} / ${total} 已问`;
+}
+document.addEventListener("change",e=>{
+  if(e.target.type!=="checkbox")return;
+  const row=e.target.closest(".q"),id=row.dataset.id;
+  state[id]=Object.assign({},state[id],{done:e.target.checked});
+  row.classList.toggle("done",e.target.checked);save();tick();
+});
+document.addEventListener("input",e=>{
+  if(!e.target.classList.contains("note"))return;
+  const id=e.target.closest(".q").dataset.id;
+  state[id]=Object.assign({},state[id],{note:e.target.value});
+  e.target.classList.toggle("filled",!!e.target.value.trim());save();
+});
+document.getElementById("reset").addEventListener("click",()=>{
+  state={};save();
+  document.querySelectorAll(".q").forEach(r=>{r.classList.remove("done");
+    r.querySelector("input").checked=false;
+    const n=r.querySelector(".note");n.value="";n.classList.remove("filled")});
+  tick();
+});
+document.getElementById("mk").addEventListener("click",()=>{
+  const out=["内网平台请教 · 记录 "+new Date().toLocaleString("zh-CN"),""];
+  for(const [g,rows] of Object.entries(DATA)){
+    const lines=rows.filter(([id])=>state[id]&&(state[id].note||state[id].done))
+      .map(([id,q])=>`${id} ${state[id].done?"[已问]":"[未问]"} ${q}\n    → ${(state[id].note||"（无记录）").replace(/\n/g," ")}`);
+    if(lines.length)out.push(`【${g} 组】`,...lines,"");
+  }
+  const un=Object.entries(DATA).flatMap(([,rows])=>rows.filter(([id])=>!(state[id]&&state[id].done)).map(([id])=>id));
+  if(un.length)out.push("未问："+un.join(" "));
+  const d=document.getElementById("dump");
+  d.value=out.join("\n");d.hidden=false;d.focus();d.select();
+});
+tick();
+</script>
+</body>
+</html>

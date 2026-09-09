@@ -1,0 +1,42 @@
+{
+  "documentId": 1983,
+  "documentName": "2.1.3获取广告账户流水信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取广告账户流水信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/daily_flows\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明         | 备注                           |\n| ------------- | ------ | -------- | ------------ | ------------------------------ |\n| advertiser_id | long   | 必填     | 广告主 ID    | 在获取 access_token 的时候返回 |\n| start_date    | string | 可选     | 开始日期     | 默认是当天，格式：yyyy-MM-dd   |\n| end_date      | string | 可选     | 结束日期     | 默认是当天，格式：yyyy-MM-dd   |\n| page          | int    | 可选     | 查询的页码数 | 默认为 1                       |\n| page_size     | int    | 可选     | 单页行数     | 默认为 20，不超过 500          |\n\n### 返回参数\n\n| 字段                           | 类型   | 说明         | 备注                                 |\n| ------------------------------ | ------ | ------------ | ------------------------------------ |\n| code                           | int    | 返回码       |                                      |\n| message                        | string | 返回信息     |                                      |\n| data                           | struct | JSON 返回值  |                                      |\n| advertiser_id                  | long   | 广告主 ID    |                                      |\n| date                           | string | 日期         |                                      |\n| daily_charge                   | double | 实耗总花费   | 单位：元                             |\n| real_charged                   | double | 实耗充值花费 | 广告主的现金消耗和返点消耗，单位：元 |\n| contract_rebate_real_charged   | double | 实耗框返花费 | 年框广告主的框架返点的消耗，单位：元 |\n| direct_rebate_real_charged     | double | 实耗激励花费 | 广告主激励账户中余额的消耗，单位：元 |\n| daily_transfer_in              | double | 转入         | 单位：元                             |\n| daily_transfer_out             | double | 转出         | 单位：元                             |\n| balance                        | double | 日终结余     | 单位：元                             |\n| real_recharged                 | double | 充值转入     | 单位：元                             |\n| contract_rebate_real_recharged | double | 框返转入     | 单位：元                             |\n| direct_rebate_real_recharged   | double | 激励转入     | 单位：元                             |\n| order_total_charged            | double | 订单总花费   | 单位：元                             |\n| order_real_charged             | double | 订单充值花费 | 单位：元                             |\n| order_contract_charged         | double | 订单框返花费 | 单位：元                             |\n| order_direct_charged           | double | 订单激励花费 | 单位：元                             |\n| daily_share_charge           | double | 每日共享总花费 | 单位：元                             |\n| share_real_charge           | double | 共享实耗花费 | 单位：元                             |\n| share_credit_charge           | double | 共享信用花费 | 单位：元                             |\n\n\n### 请求参数\n\n```\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800,\n    \"start_date\":\"2019-09-15\",\n    \"end_date\":\"2019-09-15\",\n    \"page\":1,\n    \"page_size\":20\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/daily_flows\n```\n\n### 返回参数\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"date\": \"2019-09-05\",\n                \"balance\": 0.0,\n                \"advertiser_id\": 20000152,\n                \"daily_charge\": 0.0,\n                \"real_charged\": 0.0,\n                \"contract_rebate_real_charged\": 0.0,\n                \"direct_rebate_real_charged\": 0.0,\n                \"daily_transfer_in\": 0.0,\n                \"real_recharged\": 0.0,\n                \"contract_rebate_real_recharged\": 0.0,\n                \"direct_rebate_real_recharged\": 0.0,\n                \"daily_transfer_out\": 0.0,\n                \"daily_share_charge\": 0.0,\n                \"share_real_charge\": 0.0,\n                \"share_credit_charge\": 0.0\n            }\n        ]\n    }\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1725887435762
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1725887435762,
+  "creator": "yuxun",
+  "fullContext": null
+}

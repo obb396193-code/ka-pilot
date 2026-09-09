@@ -1,0 +1,108 @@
+
+
+**ideaLAB文档中心已全部迁移至钉钉文档，请移步至钉钉文档：**[**https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview**](https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview)
+
+> * 客服工作琐碎又重复？小二劳累，效率低下？
+> * 尝试在AI Studio平台构建智能客服机器人，让您的答疑工作更高效省心！
+
+# 事前准备
+
+* **S****tep1确定目标**：首先，你要明确答疑的内容，服务的产品，比如xx平台、xx领域。
+* **Step2知识库准备**：（十分重要）客服答疑工作常常依赖沉淀的文档，如产品手册、常见QA，你需要将该部分文档[上传AI Studio 知识库](https://aliyuque.antfin.com/aiplus/aistudio/cyev4ggl9vd0z0yg)。
+
+​  
+
+
+# 开始搭建
+
+> flow型应用节点使用指南：
+
+## 新建一个FLOW型IDEAs
+
+## 新增知识库节点
+
+* 知识库节点需要管理查询变量，这里直接关联开始节点的system.question变量
+* 添加知识库，勾选客服应用需要的知识库（如何创建知识库？）
+
+* 注意：高质量的知识库对于应用的效果提升非常明显
+* 样例知识库：
+
+* 点击设置按钮，可以设置[召回配置](https://aliyuque.antfin.com/aiplus/aistudio/dervztqvg3843rsk#jPdBc)
+
+## 添加LLM节点
+
+* 在LLM节点里添加提示词：可复制以下内容，并修改符合自身诉求的内容
+
+* 在system提示词里添加以下内容：
+
+* 在user提示词里添加用户输入变量：system.question
+
+  
+
+
+## 添加回复节点
+
+* 在回复节点里添加LLM节点的输出
+
+  
+
+
+## 功能设置
+
+* 点击右上角“功能”按钮，可以进行全局的应用设置
+* 根据需求设置欢迎语和提示性问题，以及预置QA，全局变量
+
+* 这里只使用了欢迎语功能
+
+## 
+
+# 运行（调试）
+
+可以在节点追踪里查看每个节点的运行情况
+
+  
+
+
+# 发布
+
+* 点击发布按钮，可选择是发布到ideaTalk并设置公开权限，后续可进入[发布管理页](https://aliyuque.antfin.com/aiplus/aistudio/zzndys976agfga40)修改发布的端及权限
+
+* 发布管理页，推荐使用钉钉渠道——[阿里钉个人助理](https://aliyuque.antfin.com/aiplus/aistudio/th9yddh07g1igthi)
+
+**​**  
+
+
+**这样一个简单高效的客服机器人就构建好啦~**
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+# 点击一键引用创建~
+
+1. 点击链接：<https://aistudio.alibaba-inc.com/#/ideaTALK?appCode=LaWoClhOAio>
+2. 点击ideas“关于”：
+3. 点击引用创建：
+
+  
+
+
+  
+
+
+  
+
+
+FLOW型应用构建灵活度非常高，欢迎大家探索~
+

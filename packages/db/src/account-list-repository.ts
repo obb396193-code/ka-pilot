@@ -62,6 +62,13 @@ export interface AccountListRepositoryRow {
   dataAsOf: string | null;
   balance: number | null;
   balanceSyncedAt: string | null;
+  // v1.5.1 ①（S6）：仓储只把事实取出来，组装成 DTO 是服务层的事。
+  poolStatus: string | null;
+  poolStatusSource: string | null;
+  productName: string | null;
+  productRef: string | null;
+  lastAction: { at: string; kind: string; summary: string } | null;
+  nextSuggestion: { workItemId: string; title: string } | null;
 }
 
 export interface AccountListRepositoryResult {
@@ -99,6 +106,15 @@ interface ListRow extends QueryResultRow {
   data_as_of: Date | string | null;
   balance: string | number | null;
   balance_synced_at: Date | string | null;
+  pool_status: string | null;
+  pool_status_source: string | null;
+  product_name: string | null;
+  product_ref: string | null;
+  last_action_at: Date | string | null;
+  last_action_kind: string | null;
+  last_action_summary: string | null;
+  next_suggestion_id: string | null;
+  next_suggestion_title: string | null;
 }
 
 interface NormalizedQuery extends AccountListRequest {
@@ -166,6 +182,9 @@ function normalizeQuery(input: AccountListRepositoryQuery): NormalizedQuery {
     tags: input.tags,
     ownerUserId: input.ownerUserId,
     status: input.status,
+    poolStatus: input.poolStatus,
+    product: input.product,
+    groupBy: input.groupBy,
   });
   const seen = new Set<string>();
   const normalizedScope = input.allowedAccounts.map((account) => {
@@ -208,6 +227,8 @@ function commonValues(query: NormalizedQuery): unknown[] {
     query.tags ?? null,
     query.ownerUserId ?? null,
     query.status ?? null,
+    query.poolStatus ?? null,
+    query.product ?? null,
   ];
 }
 
@@ -235,6 +256,17 @@ function mapListRow(row: ListRow): AccountListRepositoryRow {
       balanceSyncedAt: row.balance === null || row.balance_synced_at === null
         ? null
         : isoTimestamp(row.balance_synced_at),
+      poolStatus: row.pool_status,
+      poolStatusSource: row.pool_status_source,
+      productName: row.product_name,
+      productRef: row.product_ref,
+      // 三段必须齐才算一条动作：缺任何一段都说明查询出了问题，宁可不报也不报半条。
+      lastAction: row.last_action_at === null || row.last_action_kind === null || row.last_action_summary === null
+        ? null
+        : { at: isoTimestamp(row.last_action_at), kind: row.last_action_kind, summary: row.last_action_summary },
+      nextSuggestion: row.next_suggestion_id === null || row.next_suggestion_title === null
+        ? null
+        : { workItemId: row.next_suggestion_id, title: row.next_suggestion_title },
     };
   } catch (error) {
     if (error instanceof AccountListRepositoryContractError) throw error;

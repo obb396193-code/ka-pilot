@@ -1,0 +1,355 @@
+{
+  "documentId": 2658,
+  "documentName": "线索crm意向度/进度/通话状态更新接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "线索crm意向度/进度/通话状态更新接口\n/rest/openapi/v2/gemini/crm/clue/clue_mark/update\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/gemini/crm/clue/clue_mark/update' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cache-Control: no-cache' \\\n--header 'Postman-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n  \"advertiser_id\": 20007234,\n  \"clue_id\": 206866474542123330,\n  \"schedule_id\":2,\n  \"call_stat\": 105,\n  \"child_intention_id\": [1,2],\n  \"bind_account_type\": 1,\n  \"bind_account_id\": 1234,\n  \"app_id\": \"123456\"\n}'\n{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"id\": 206866474542123330\n   },\n   \"request_id\": \"7bb6d3f2ff014b4e9354d0a2aaa9138e\"\n}\nbind_account_id  Long  <p>代理授权时必填，代理子账号的aid 或者uid，与bind_account_type结合使用，</p><ol><li><p>当bind_account_type=1（aid授权）时，传aid账号</p></li><li><p>当bind_account_type=7（uid授权）时，传uid账号</p></li></ol>\nbind_account_type  Integer  <p>代理授权时必填，代理子账号的aid 或者uid类型，与bind_account_id结合使用，</p><ol><li><p>当bind_account_type=1 表示aid授权</p></li><li><p>当bind_account_type=7 表示uid授权</p></li></ol>\napp_id  String  <p>代理授权时必填，代理的 appid </p>\nschedule_id  Long  线索进度ID\nchild_intention_id  Long[]  标签ID\ncall_stat  Integer  线索通话状态\nadvertiser_id  Long  广告主ID\nclue_id  Long  线索ID\nremark  String  <p>线索备注信息</p>\ncode  Integer  返回码\nmessage  String  返回信息\ndata  UpdateReturnData  返回信息\nid  Long  更新线索的ID\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1784875614259
+    }
+  ],
+  "apiId": 127,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/gemini/crm/clue/clue_mark/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 10,
+  "bizName": "CRM",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/gemini/crm/clue/clue_mark/update' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cache-Control: no-cache' \\\n--header 'Postman-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n  \"advertiser_id\": 20007234,\n  \"clue_id\": 206866474542123330,\n  \"schedule_id\":2,\n  \"call_stat\": 105,\n  \"child_intention_id\": [1,2],\n  \"bind_account_type\": 1,\n  \"bind_account_id\": 1234,\n  \"app_id\": \"123456\"\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"id\": 206866474542123330\n   },\n   \"request_id\": \"7bb6d3f2ff014b4e9354d0a2aaa9138e\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 80879,
+      "paramName": "bind_account_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>代理授权时必填，代理子账号的aid 或者uid，与bind_account_type结合使用，</p><ol><li><p>当bind_account_type=1（aid授权）时，传aid账号</p></li><li><p>当bind_account_type=7（uid授权）时，传uid账号</p></li></ol>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80880,
+      "paramName": "bind_account_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>代理授权时必填，代理子账号的aid 或者uid类型，与bind_account_id结合使用，</p><ol><li><p>当bind_account_type=1 表示aid授权</p></li><li><p>当bind_account_type=7 表示uid授权</p></li></ol>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80834,
+      "paramName": "app_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>代理授权时必填，代理的 appid </p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5490,
+      "paramName": "schedule_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "线索进度ID",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "0：待联系；1：电话已建联；2：高意向；3：微信加粉；4：成交；5：待持续跟进；6：用户开口聊天；7：已拨打；8：无意向；9：交定金；11：到店 可为 null",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5491,
+      "paramName": "child_intention_id",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "标签ID",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "1：高意向度-高意愿；2：高意向度-有明确需求；3：潜在客户类标签-有购买力；4：潜在客户类标签-多次建联；5：无意向类标签-无购买能力；6：无意向类标签-非本人提交；7：无意向类标签-非本人接电话；8：无意向类标签-无购买意愿；9：无意向类标签-业务范围不符；10：潜在客户类标签-预约到店；11：无意向类标签-年龄不符；12：无意向类标签-地域不符；13：无意向类标签-多次未建联；14：成交付费 可为空 list",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5492,
+      "paramName": "call_stat",
+      "paramType": "Integer",
+      "example": "",
+      "description": "线索通话状态",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "101：已接通-有效通话 102：已接通-无效通话 103：未接通-拒接 104：未接通-无人接听 105：未接通-忙线 106：未接通-空号 107：未接通-停机 108：未接通 109：未接通-关机  110：未接通-主动挂断 可为空",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5493,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5494,
+      "paramName": "clue_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "线索ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87465,
+      "paramName": "remark",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>线索备注信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 5495,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5496,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5497,
+      "paramName": "data",
+      "paramType": "UpdateReturnData",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 339,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 5456,
+          "paramName": "id",
+          "paramType": "Long",
+          "example": "",
+          "description": "更新线索的ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1784875614259,
+  "creator": "wanglinyu",
+  "fullContext": null
+}

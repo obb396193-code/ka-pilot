@@ -1,0 +1,31 @@
+应用在灰度过程中出现问题，可以直接取消灰度。如果应用在正式发布后出现问题，则可以通过回滚操作将页面内容回滚到需要的版本。
+
+## 操作方式
+
+跨端应用仅支持单页面回滚。可以通过应用详情-回滚来进行回滚操作。
+
+### Step 1
+
+首先进入页面，找到需要回滚的页面，点击“回滚”按钮。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/rf1mrlbae3szr1pv/img3eC886zXwo.png)
+
+
+### Step 2
+
+从页面的所有线上版本中找到需要回滚的版本，点击“回滚”按钮。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/rf1mrlbae3szr1pv/imgSNpCLsq0Dx.png)
+
+
+### Step 3
+
+点击确认后，该版本的页面内容将会直接覆盖到线上。注意：回滚操作仅回滚页面内容，并不会影响代码仓库。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/rf1mrlbae3szr1pv/imgqr6GN9fQp9.png)
+
+
+## 注意事项
+
+- 跨端应用目前仅支持单页面回滚。批量回滚功能我们在规划中。
+- 回滚操作是将页面版本对应的内容覆盖到线上页面，并不会影响代码仓库，代码需要手动进行回滚。

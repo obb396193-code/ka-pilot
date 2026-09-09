@@ -1,0 +1,355 @@
+{
+  "documentId": 2720,
+  "documentName": "直存试玩",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721702603779
+    }
+  ],
+  "apiId": 383,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/playable/uploadAndSave",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST \\\n-H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n-H 'Content-Type: multipart/form-data' \\\n-F \"advertiser_id=200152\" \\\n-F \"file=@/Users/jackchou/Downloads/ad-material/1280.zip\" \\\n-L https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/playable/uploadAndSave"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n   \"code\":0,\n   \"message\":\"OK\",\n   \"data\":{\n       \"playable_id\":5785679425,\n       \"playable_url\":\"https://static.yximgs.com/udata/pkg/KS-AD-MERCHANT/testplayable/tomato/index.html\",\n       \"playable_orientation\":0,\n       \"upload_source\":2,\n       \"upload_fail_tips\":[\n       ]\n     }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 23617,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23618,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "",
+      "description": "试玩上传zip文件",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23620,
+      "paramName": "play_name",
+      "paramType": "String",
+      "example": "试玩名称",
+      "description": "试玩名称",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23621,
+      "paramName": "play_time",
+      "paramType": "Integer",
+      "example": "10",
+      "description": "试玩时长",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23622,
+      "paramName": "file_type",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "试玩包文件类型：0=Zip，1=APK",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 23623,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23624,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "“”",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23625,
+      "paramName": "data",
+      "paramType": "AdGatewayPlayableView",
+      "example": "",
+      "description": "试玩广告结构体",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 30,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 23613,
+          "paramName": "playable_url",
+          "paramType": "String",
+          "example": "“”",
+          "description": "试玩广告的index.html的url",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "上传失败，值为空字符串",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 23614,
+          "paramName": "playable_orientation",
+          "paramType": "Integer",
+          "example": "-1",
+          "description": "试玩广告屏幕方向",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "0:横竖均;1:竖屏;2:横屏",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 23615,
+          "paramName": "upload_fail_tips",
+          "paramType": "String[]",
+          "example": "[]",
+          "description": "试玩广告校验失败的原因",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "上传成功时，值为空列表。1、格式为 zip，大小不超过 3M；2、已接入 playable JS-SDK，并且调用方式为 window.openAppStore()；3、主 html 文件需命名为 index，且位于一级目录中；4、试玩广告播放方向字段应存储于 config.json 文件中，位于一级目录中，取值为 0,1,2；5、文件名称仅支持大小写字母、数字、减号和下划线；6、素材中不允许使用 mraid.js 格式；7、素材不允许通过外部网络加载动态素材；8、素材中不允许包含 JS 重定向；9、素材不允许发出 HTTP 请求\"",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 23616,
+          "paramName": "playable_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "上传成功时返回的试玩素材 ID。",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 23626,
+          "paramName": "upload_source",
+          "paramType": "Integer",
+          "example": "0",
+          "description": "从试玩 zip 包解析出来的试玩包类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "\t1：快手主站；2：快手广告联盟；3：快手主站或快手广告联盟均可",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721702603779,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-view qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-4ICB8hzl\">相关链接：</p><ul data-id=\"u738a58b-9wmBPn1W\"><li data-id=\"ld70c578-XBwiX5Sr\"><a href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710717478927\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">创建动态创意词包</a></li><li data-id=\"ld70c578-MMR6VfDA\"><a href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710718137356\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">查询动态创意词包</a></li><li data-id=\"ld70c578-PcEwaX8h\"><a href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710718730240\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">更新动态创意词包</a></li><li data-id=\"ld70c578-3pwVHvcG\"><a href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710719368207\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">删除动态创意词包</a></li></ul><hr style=\"background-color: rgb(232, 232, 232); border: 1px solid transparent; margin: 18px 0px;\"/><p data-id=\"p838747a-Eu69yJjW\">动态创意词包结合用户内在属性与外在场景，基于丰富的用户数据，精准推送营销内容。 动态词包分类公共词包（后台提供）和自建词包（客户自建）两种类型，其使用场景较为多元化，如：地域属性、产品多元化、私人特征、节日/活动投放等。</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "动态创意词包管理"
+}

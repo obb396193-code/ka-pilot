@@ -1,0 +1,77 @@
+ O2 Space 平台利用 CR（代码评审）数据，打造了代码评审报表功能。该功能可使您可以多方位了解团队及个人的代码评审状况，有助于提升代码质量和协作效率，欢迎大家积极体验！
+
+## 操作入口
+
+[O2 Space 平台](https://space.o2.alibaba-inc.com/)——团队空间——代码评审
+
+## 如何使用
+
+1. 选择想要查看的团队
+1. 报表右上角处，选择时间范围
+1. 查看当前团队下的代码评审数据
+1. 点击表格标题，查看指标含义及排序标准
+## 功能介绍
+
+代码评审目前分为三个部分，分别如下：
+
+- 团队维度：展示团队成员的平均值，两行指标分别表示发起人相关指标、评审人相关指标
+- 成员维度：包含发起人视角、评审人视角、评审人的评论表
+- 明细维度：展示团队成员 CR 单的明细数据，两个表格分别按照 CR 创建时间、CR 通过时间统计
+## 指标总览
+
+### 团队维度
+
+(https://img.alicdn.com/imgextra/i1/O1CN01KEI5qU1L2ss5NTHm5_!!6000000001242-2-tps-2814-1094.png)
+
+
+
+
+注：点击右上角的标注，可查看每个指标的具体含义，如下所示。
+
+(https://o2-img.alistatic.com/i/i09blZ/Xw0S07nArFPYERuR9alqO-f89f942ee1.png)
+
+
+
+
+### 成员维度-发起人视角
+
+| (https://img.alicdn.com/imgextra/i3/O1CN01c1st041ovxLu9Ex9M_!!6000000005288-2-tps-2836-1184.png) | (https://img.alicdn.com/imgextra/i1/O1CN01LcHLdU1DYTGKeH4X6_!!6000000000228-2-tps-2070-812.png) |
+|-|-|
+| (https://img.alicdn.com/imgextra/i1/O1CN0150AP9S1QUtAZqJFpI_!!6000000001980-2-tps-2092-884.png) | (https://img.alicdn.com/imgextra/i2/O1CN012xahNi23NLfBkrI2n_!!6000000007243-2-tps-2788-1150.png) |
+
+
+
+注：点击右上角的标注，可查看每个指标的指标含义、排序标准，如下图所示。
+
+(https://o2-img.alistatic.com/i/i09blZ/Um7dz5BebRZ5nLm4G6X0I-cb081b1511.png)
+
+
+
+
+
+
+### 成员维度-评审人视角
+
+| (https://img.alicdn.com/imgextra/i3/O1CN01FjLWpI1I7yQVwoCwh_!!6000000000847-2-tps-2814-1088.png) | (https://img.alicdn.com/imgextra/i3/O1CN015VrG7Y1FocSVI1PJK_!!6000000000534-2-tps-2072-890.png) |
+|-|-|
+| (https://img.alicdn.com/imgextra/i2/O1CN01afcZli1O3I4TqOq0H_!!6000000001649-2-tps-2098-910.png) | (https://img.alicdn.com/imgextra/i3/O1CN01WQ61n01hiUOgq09M3_!!6000000004311-2-tps-2788-1290.png) |
+| (https://img.alicdn.com/imgextra/i3/O1CN01wUmxOt1C7cQOtpfQr_!!6000000000034-2-tps-2084-954.png) | (https://img.alicdn.com/imgextra/i2/O1CN01HUW1jQ1rzZKKFCbo4_!!6000000005702-2-tps-2022-884.png) |
+
+### 明细维度
+
+| (https://o2-img.alistatic.com/i/i09blZ/ymsaLkt72uZgZ3ppkrVMd-b09ff50f5b.png) | (https://o2-img.alistatic.com/i/i09blZ/OZ3ywV0s9czvUpEF5k42D-9db6f6c384.png) |
+|-|-|
+
+
+
+## 常见问题
+
+1. 如果觉得表中某项数据异常，该如何查证？
+	1. 若认为发起人数据异常，查看“明细维度-按创建时间统计”表格，搜索发起人；若认为评审人数据异常，查看“明细维度-按通过时间统计”表格，搜索评审人
+	1. 查看该成员在当前时间范围内的所有 CR 单
+	1. 点击 CR 单标题，可进行跳转查看详情
+
+
+1. 为什么有的数据和 ATI 不同？
+	1. 时间条件不同：如发起 CR 单数，O2 平台按照 CR 单创建时间统计；ATI 平台按照 CR 完成时间统计
+	1. 统计口径不同：如评审 CR 单数，O2 平台统计发起人指定的 CR 单、热心评审的 CR 单；ATI 平台只统计发起人指定的 CR 单

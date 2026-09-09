@@ -1,0 +1,42 @@
+{
+  "documentId": 2370,
+  "documentName": "获取短剧用户列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取授权的短剧作者列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/auth/user/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/auth/user/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 1 | 必填 | 1 | 1 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | struct[] |  |  |  |\n| &#8195;head_url | String |  | 短剧作者快手号头像 |  |\n| &#8195;user_id | Long |  |短剧作者快手号id |  |\n| &#8195;user_name | String |  | 短剧作者快手号名称 |  |\n| &#8195;user_sex | String |  | 短剧作者快手号性别，男性M，女性F，U未知  |  |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回描述 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 123456\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"user_sex\": \"U\",\n            \"head_url\": \"http://kcdn.staging.kuaishou.com/uhead/A/BMjAyMTTMyOTI1MF8xX2hkMV8w.jpg\",\n            \"user_id\": 1234,\n            \"user_name\": \"test1\"\n        },\n        {\n            \"user_sex\": \"F\",\n            \"head_url\": \"http://kcdn.staging.kuaishou.com/uhead/BMjAyMTA1NzQ5N18xX2hkOTIzXzA=.jpg\",\n            \"user_id\": 23456,\n            \"user_name\": \"test2\"\n        },\n        {\n            \"user_sex\": \"M\",\n            \"head_url\": \"http://kcdn.staging.kuaishou.com/uhead/A/BMjAyMTExMTkxODMyMF8xX2hkMzY1XzA=.jpg\",\n            \"user_id\": 12345,\n            \"user_name\": \"test3\"\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDQ9JiOrAEY3gUg_u7KoqQxKPjT_vgN\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1693919730058
+    }
+  ],
+  "apiId": 844,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1693919730058,
+  "creator": "liumengyun",
+  "fullContext": null
+}

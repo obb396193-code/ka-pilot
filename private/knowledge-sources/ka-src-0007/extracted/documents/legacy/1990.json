@@ -1,0 +1,42 @@
+{
+  "documentId": 1990,
+  "documentName": "1.3scope权限说明",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# scope 权限说明\n\n1）**report_service**（获取广告账户报表信息&建站信息）\n需要在授权 URL 的 scope 参数上添加 report_service，进行授权后才能访问获取广告账户报表信息的接口。\n\n2）**account_service**（获取账户信息、余额、流水）（第三方无需在 scope 参数添加，直接可获取 account_service 除流水之外的任何接口）\n\n3）**ad_query**（获取广告计划、广告组、广告创意信息）\n需要在授权 URL 的 scope 参数上添加 ad_query 进行授权后才能访问搭建广告账户的接口。\n\n4）**ad_manage**（创建&修改广告计划、广告组、广告创意&人群管理）\n需要在授权 URL 的 scope 参数上添加 ad_manage 进行授权后才能访问搭建广告账户的接口。\n\n5）**account_cert**（代理商开通账户，此功能需要加白后使用）\n需要在授权 URL 的 scope 参数上添加 account_certe 进行授权后才能访问搭建广告账户的接口。\n\n6）**ad_series**（短剧业务使用）\n需要在授权 URL 的 scope 参数上添加 ad_series 进行授权后才能访问短剧非投放部分的接口。\n\n授权 url 示例：示例如下：\nhttps://developers.e.kuaishou.com/tools/authorize?app_id=%E5%BA%94%E7%94%A8ID&scope=%E6%9D%83%E9%99%90%E8%8C%83%E5%9B%B4&redirect_uri=%E5%9B%9E%E8%B0%83%E5%9C%B0%E5%9D%80xxx&state=abcd&oauth_type=%E6%8E%88%E6%9D%83%E7%B1%BB%E5%9E%8B",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624598
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624598,
+  "creator": "gaozheng",
+  "fullContext": null
+}

@@ -1,0 +1,8 @@
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">线下跑日结的一些处理点：</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">1、修改结算拉取反作弊的目录、文件</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">2、修改结算文件中的日期字段和当天结算文件一致</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">3、修改结算文件其中的非法字段，日终不允许有负数</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">4、修改用户为正常的线下用户</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">5、如果失败次数过多，无法重试，修改p4p_settle_task中的fail_count为0</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(204, 230, 255);">6、当天美国结算重新做：清理p4p_day_sync_verify p4p_settle_task p4p_day_click p4p_day_cust_cost</font>
+

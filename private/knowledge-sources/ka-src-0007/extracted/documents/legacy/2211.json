@@ -1,0 +1,42 @@
+{
+  "documentId": 2211,
+  "documentName": "报表新增直播数据",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 报表新增直播数据\n\n| 字段         | 说明   |\n| ------------ | ------ |\n| user_id | 主播ID | \n| jingle_bell_id | 小铃铛ID |\n| jingle_bell_name | 小铃铛名称 |\n| auther_id | 小铃铛绑定主播 |\n| live_room_avg_played_seconds | 直播间平均观看时长 |\n| ad_live_share | 直播间分享数 |\n| ad_live_comment | 直播间评论数 |\n| live_played_started | 直播间进人数 |\n| live_played_started_cost | 直播间进入成本 |\n| ad_live_follow | 粉丝关注数 |\n| ad_live_follow_cost | 粉丝关注成本 |\n| simple_live_room_played_started | 简易直播间开始播放数 |\n| standard_live_room_played_started | 标准直播间开始播放数 |\n| conversion_component_impression | 组件展示量 |\n| conversion_component_click | 组件点击量 |\n| conversion_component_rate | 组件点击率 |\n| ad_landing_page_impression | 广告主第三方半屏落地页曝光 |\n| ad_app_download_half_impression | 安卓APP下载类半屏落地页曝光 |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1661157989860
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 12,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1661157989860,
+  "creator": "wb_yuanbowen",
+  "fullContext": null
+}

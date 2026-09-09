@@ -14,7 +14,7 @@
 | 一枚 reader 全渠道可见？ | 文档暗示「读 owner 拥有的全部数据」→ 团队空间可用一枚；**待 OS 二.2d 明确** |
 | 现金 | `SUM(cash_yuan)` 直接用，**团队空间不再施加 channel_coefficients**（否则双算）；null 走三态 missing |
 | 考核价 | `dwd_account_daily.assessment/cash_assessment` 已按 sub_biz×media 富化；SSOT 在 ka-knowledge `assessment_catalog.json`（53 条）→ 团队空间达标直接用列；个人空间仍走 `assessment_price_history` |
-| 8 维 | `dwd_adgroup_daily` 有 `resource_position/bid_tool/plan_tier/operator_name/channel_type/deduction_rate` → **团队空间资源位/出价工具有源**；个人空间（奇航）仍等 OS 二.1 |
+| 8 维 | `dwd_adgroup_daily` 有 `resource_position/bid_tool/plan_tier/operator_name/channel_type/deduction_rate` → **团队空间资源位/出价工具有源**；个人空间（启航）仍等 OS 二.1 |
 | namespace | `dwd_adgroup` 的 account_id ≠ `dwd_account/fact_conv` 的，不可 JOIN；赔付 JOIN 必带 media → 团队空间 8 维透视的 ad 级与账户级**分别查、不 JOIN** |
 | 转化 | 必加 `media=\'KUAISHOU\'`，否则差 12 倍 |
 

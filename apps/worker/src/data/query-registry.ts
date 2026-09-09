@@ -5,6 +5,9 @@ import {
   dataViewModeSchema,
   queryWindowSchema,
   comparisonWindow,
+  dimensionTypeSchema,
+  accountHourlyParamsSchema,
+  accountGapParamsSchema,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -30,12 +33,19 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  groupBy?: "account" | "task" | "biz";
+  hhFrom?: number;
+  hhTo?: number;
+  dimA?: z.infer<typeof dimensionTypeSchema>;
+  dimB?: z.infer<typeof dimensionTypeSchema>;
+  dimensionType?: z.infer<typeof dimensionTypeSchema>;
   dateFrom: string;
   dateTo: string;
   media?: string;
   accountIds?: string[];
   accountId?: string;
   taskId?: string;
+  taskIds?: string[];
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
@@ -92,7 +102,7 @@ interface QueryDefinition {
 
 export class QueryRegistryError extends Error {
   constructor(
-    readonly code: "QUERY_NOT_ALLOWED" | "VIEW_UNSUPPORTED" | "INVALID_REQUEST",
+    readonly code: "QUERY_NOT_ALLOWED" | "VIEW_UNSUPPORTED" | "DIMENSION_UNSUPPORTED" | "INVALID_REQUEST",
     message: string,
   ) {
     super(message);
@@ -132,6 +142,7 @@ const commonDateFields = {
 };
 
 function normalizeDateParams(input: {
+  dimensionType?: z.infer<typeof dimensionTypeSchema>;
   date?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -160,6 +171,7 @@ function normalizeDateParams(input: {
   return {
     dateFrom,
     dateTo,
+    ...(input.dimensionType === undefined ? {} : { dimensionType: input.dimensionType }),
     ...(input.preset === undefined ? {} : { preset: input.preset }),
     ...(input.compare === undefined ? {} : { compare: input.compare }),
     ...(input.media === undefined ? {} : { media: input.media }),
@@ -185,6 +197,11 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
   });
 }
 
+const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
+  window_from: dateInputSchema, window_to: dateInputSchema, media: mediaSchema,
+  taskIds: z.array(taskQueryIdSchema).max(1000).refine(ids => new Set(ids).size === ids.length, "Duplicate task IDs").optional(),
+}).strict().transform(({ window_from, window_to, taskIds, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to,
+  ...(taskIds === undefined ? {} : { taskIds }) }));
 const intervalSchema = normalizedSchema(commonDateFields);
 const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
 const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
@@ -308,6 +325,31 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
+  {
+    queryId: "account.gap", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-gap-v1",
+    metricVersion: "account-gap-v1", authorityPolicy: authority("cross_media_operations", "platform"),
+    paramsSchema: accountGapParamsSchema.transform(({ date_from, date_to, media, accountIds, groupBy }) => ({
+      dateFrom: date_from, dateTo: date_to, media, groupBy, ...(accountIds === undefined ? {} : { accountIds }),
+    })),
+  },
+  {
+    queryId: "account.hourly", supportedViews: ["platform"], maxDateSpanDays: 1, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "account_rows", queryTemplateVersion: "account-hourly-v1",
+    metricVersion: "account-hourly-v1", authorityPolicy: authority("hourly_pacing", "platform"),
+    paramsSchema: accountHourlyParamsSchema.transform(({ date, media, accountIds, hhFrom, hhTo }) => ({ dateFrom: date, dateTo: date, media,
+      ...(accountIds === undefined ? {} : { accountIds }), ...(hhFrom === undefined ? {} : { hhFrom }), ...(hhTo === undefined ? {} : { hhTo }) })),
+  },
+  {
+    queryId: "account.pivot2", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-pivot-window-v1",
+    metricVersion: "account-pivot-v3", authorityPolicy: authority("cross_media_operations", "platform"), paramsSchema: pivotSchema,
+  }, {
+    queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-dimension-window-v1",
+    metricVersion: "account-dimension-v3", authorityPolicy: authority("cross_media_operations", "platform"),
+    paramsSchema: normalizedSchema({ ...commonDateFields, preset: queryWindowSchema.shape.preset.optional(), dimensionType: dimensionTypeSchema }),
+  },
   {
     queryId: "account.anomalies",
     supportedViews: ["platform"],
@@ -458,6 +500,12 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
+    if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !["account", "task", "biz"].includes(dim ?? ""))) {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source");
+    }
+    if (queryId.data === "account.dimension" && !["account", "task", "biz"].includes(parsedParams.data.dimensionType ?? "")) {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source");
+    }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
       (queryId.data === "account.summary" || queryId.data === "account.trend")) {
       throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");

@@ -10,6 +10,7 @@ import { rowsToRawRecords } from "./raw-ingest.js";
 import { replayRequestParams } from "./replay-params.js";
 import { toEtlQueryObservation } from "./query-observation.js";
 import { errorSummary } from "./run-utils.js";
+import { withEtlAttempt } from "./attempt-scope.js";
 import type { AccountMetadataEtlStore, EtlRunStore, QihangQueryPort } from "./types.js";
 
 export interface FullEtlDependencies {
@@ -36,13 +37,13 @@ const OFFLINE_PARTITION_LOOKBACK_DAYS = 3;
 export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHandler {
   return async (job) => {
     const payload = fullEtlPayloadSchema.parse(job.payload);
-    const runId = await dependencies.store.startRun(job.id, "full", {
+    const runId = await dependencies.store.startRun(job.id, "full", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       asOfDate: payload.asOfDate,
       realtimeDays: payload.realtimeDays,
       requestedAccountIds: payload.accountIds,
       resources: ["account", "account_offline", "account_realtime"],
-    });
+    }));
     const progress: FullEtlProgress = { currentStep: "start", rowsIngested: 0 };
 
     try {
@@ -67,7 +68,7 @@ async function discoverAccountIds(
   dependencies: FullEtlDependencies,
   payload: FullEtlPayload,
   progress: FullEtlProgress,
-  runId: number,
+  runId: string,
 ): Promise<string[]> {
   const discovered = new Set(payload.accountIds);
   let pageNum = 1;
@@ -136,7 +137,7 @@ async function ingestAccountMetrics(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
-  runId: number,
+  runId: string,
 ): Promise<string | null> {
   const offlineDate = await ingestLatestAvailableOffline(
     dependencies,
@@ -163,7 +164,7 @@ async function ingestLatestAvailableOffline(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
-  runId: number,
+  runId: string,
 ): Promise<string | null> {
   for (let offset = 1; offset <= OFFLINE_PARTITION_LOOKBACK_DAYS; offset += 1) {
     const ds = shiftIsoDate(payload.asOfDate, -offset);
@@ -185,7 +186,7 @@ async function ingestLatestAvailableOffline(
 async function ingestQuery(
   dependencies: FullEtlDependencies,
   payload: FullEtlPayload,
-  runId: number,
+  runId: string,
   query: QihangQuery,
   fallbackDs: string,
 ): Promise<number> {
@@ -196,7 +197,7 @@ async function ingestQuery(
 
 async function recordObservation(
   store: EtlRunStore,
-  runId: number,
+  runId: string,
   query: QihangQuery,
   observation: Awaited<ReturnType<QihangQueryPort["query"]>>["observation"],
 ): Promise<void> {

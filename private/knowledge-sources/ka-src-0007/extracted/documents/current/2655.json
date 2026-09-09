@@ -1,0 +1,401 @@
+{
+  "documentId": 2655,
+  "documentName": "线索通-批量创建微信小游戏",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095891501
+    }
+  ],
+  "apiId": 382,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/wechat/game/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/wechat/game/create' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  --header 'Content-Type: application/json' \\\n--data-raw '{\n   \"advertiser_id\": 900015068,\n   \"game_param\": [\n       {\n         \"name\": \"批量创建-1000\",\n         \"original_id\": \"901232path-1002\",\n         \"path\": \"wiki.corp.kuaishou.com/page\"\n       }\n   ]\n}'\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"save_game_info\": [\n            {\n                \"path\": \"wiki.corp.kuaishou.com/page\",\n                \"name\": \"批量创建-1000\",\n                \"original_id\": \"901232path-1002\",\n                \"game_id\": \"712838735927681680\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"f6e5ebbbc71f4e3da1e4386a1585b8fc\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 23650,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23651,
+      "paramName": "game_param",
+      "paramType": "WechatGameSaveParam[]",
+      "example": "",
+      "description": "小游戏信息",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 820,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 23628,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "小游戏名称",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 23629,
+          "paramName": "original_id",
+          "paramType": "String",
+          "example": "",
+          "description": "小游戏原始id",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 23630,
+          "paramName": "path",
+          "paramType": "String",
+          "example": "",
+          "description": "小游戏路径",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45106,
+          "paramName": "icon_url",
+          "paramType": "String",
+          "example": "",
+          "description": "小游戏icon url",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "\t加白用户必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 23652,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "错误码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23653,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 23654,
+      "paramName": "data",
+      "paramType": "WechatGameSaveData",
+      "example": "",
+      "description": "data信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 821,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 23689,
+          "paramName": "save_game_info",
+          "paramType": "SaveGameInfo[]",
+          "example": "",
+          "description": "游戏信息",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 824,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 23685,
+              "paramName": "game_id",
+              "paramType": "String",
+              "example": "",
+              "description": "小游戏id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 23686,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "小游戏名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 23687,
+              "paramName": "original_id",
+              "paramType": "String",
+              "example": "",
+              "description": "小游戏原始id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 23688,
+              "paramName": "path",
+              "paramType": "String",
+              "example": "",
+              "description": "小游戏路径",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 45108,
+              "paramName": "icon_url",
+              "paramType": "String",
+              "example": "",
+              "description": "小游戏iconurl",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": "",
+                "max": ""
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095891501,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2068,
+  "documentName": "2.1.1获取广告主资质信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取广告账户信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/info\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明      | 备注                           |\n| ------------- | ---- | -------- | --------- | ------------------------------ |\n| advertiser_id | long | 必填     | 广告主 ID | 在获取 access_token 的时候返回 |\n\n| 返回参数              |        |              |      |\n| --------------------- | ------ | ------------ | ---- |\n| 字段                  | 类型   | 说明         | 备注 |\n| code                  | int    | 返回码       |      |\n| message               | string | 返回信息     |      |\n| data                  | struct | JSON 返回值  |      |\n| user_id               | long   | 账户快手 ID  |      |\n| corporation_name      | string | 公司名称     |      |\n| user_name             | string | 账户名称     |      |\n| industry_id           | long   | 二级行业 id  |      |\n| industry_name         | string | 二级行业名称 |      |\n| primary_industry_id   | long   | 一级行业 id  |      |\n| primary_industry_name | string | 一级行业名称 |      |\n|product_name           | string | 产品名称    |      |\n\n### 请求样例\n\n```\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/info\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"user_id\": 1234,\n        \"user_name\": \"XXXXX\",\n        \"corporation_name\": \"XXXXX\"\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625168
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625168,
+  "creator": "yanghua05",
+  "fullContext": null
+}

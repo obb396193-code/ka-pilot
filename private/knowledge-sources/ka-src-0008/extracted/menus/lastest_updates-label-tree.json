@@ -1,0 +1,45 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "工作台组织维度管理视频素材共享关系",
+          "full_name": "视频素材管理",
+          "hidden": false,
+          "id": 44,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "工作台组织维度管理视频素材上传、共享/推送、创编投出操作",
+          "logo_url": "https://p3-business-sign.byteadimg.com/tos-cn-i-0000c2261/o4NGriVBQEAB6rvifA1qAAB7Elg2dMIxBtsBbB~tplv-obj.image?rk3s=d3394059&x-expires=2102600791&x-signature=SEXiMpIiExNs0dSJAo5HuPguXRI%3D",
+          "name": "视频素材管理",
+          "type": 2
+        },
+        {
+          "children": [],
+          "description": "获取投放账户内可处于投放中状态的计划数量",
+          "full_name": "近期上线-在投计划配额",
+          "hidden": false,
+          "id": 21,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "为提高平台投放探索效率，引导更正确的投放方式，我们鼓励大家新建更有效的计划，在「在投计划配额」机制下，有助于客户更有效地新建优质计划，并能养成及时关停低效计划的好习惯。",
+          "logo_url": "https://p3-business-sign.byteadimg.com/tos-cn-i-0000c2261/2a5f9455a66b430c8f4aca27f4f50ea1~tplv-obj.image?rk3s=d3394059&x-expires=2102600791&x-signature=hqD16VRp9dbMxKAjAuIvNYVOpvU%3D",
+          "name": "在投计划配额",
+          "type": 2
+        },
+        {
+          "children": [],
+          "description": "巨量引擎工作台商品库增删改查能力",
+          "full_name": "近期上线-产品库管理",
+          "hidden": false,
+          "id": 16,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "商品库管理：DPA（动态商品投放）是用于海量商品快速投放的工具，能够解决客户的三大痛点：海量商品投放困难、希望给每个用户展示不同的商品内容、不确定给哪些人推荐哪些商品。",
+          "logo_url": "https://p3-business-sign.byteadimg.com/tos-cn-i-0000c2261/12e3d227d0634565ab4a14e7177e1c00~tplv-obj.image?rk3s=d3394059&x-expires=2102600791&x-signature=zVTkteoDrCMBX%2FWK8AfbZ4o2xL0%3D",
+          "name": "商品库管理",
+          "type": 2
+        }
+      ],
+      "hidden": false
+    }
+  ]
+}

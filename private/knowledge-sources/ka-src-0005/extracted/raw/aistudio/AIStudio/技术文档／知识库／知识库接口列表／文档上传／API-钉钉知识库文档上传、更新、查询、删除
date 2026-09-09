@@ -1,0 +1,253 @@
+
+# 钉钉文档上传
+
+## 接口描述
+
+* 支持钉钉知识库的上传，仅支持上传钉钉知识库里面的钉钉自研文档、PDF、WORD文档。
+* 支持单篇钉钉文档的上传，支持的格式同上。
+
+  
+
+
+## 钉钉限制
+
+简单来说，钉钉知识库需要满足：
+
+* 企业内公开。
+* 公开范围包括阿里巴巴及蚂蚁集团外包。
+* 需要至少有可查看权限。
+
+  
+
+
+组织范围要求，钉钉文档字数，查看ideaLab钉钉上传权限说明文档：
+
+
+
+  
+
+
+进一步，可以查看阿里钉官方的权限说明文档：
+
+<https://alidocs.dingtalk.com/i/nodes/Qnp9zOoBVBDEydnQUNBnpgyB81DK0g6l?utm_scene=team_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc>
+
+  
+
+
+## 接口说明
+
+1. 钉钉文档的读取，依赖阿里钉的能力。阿里钉文档的读取接口，实测稳定性不高（30秒内容读取有超时情况）。
+2. 对于钉钉文档，需要在链接后，增加“?utm_scene=team_space”，这个是标准的读取钉钉文档的链接。
+
+示例：https://alidocs.dingtalk.com/i/nodes/lyQod3RxJKe9QjOMipXRD1gBWkb4Mw9r?utm_scene=team_space
+
+  
+
+
+## 测试的知识库
+
+  
+
+
+## 钉钉文档上传
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/batchUploadDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| documentLoadBaseInfo.repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentLoadBaseInfo.projectId | 项目空间ID | 129372 |
+| documentSource | 数据源类型 | 固定值：DINGDING，表示文件来源 |
+| documentLoadBaseInfo.fileType | 文件的类型 | 固定值：RE，表示参考文档 |
+| documentLoadBaseInfo.empId | 文档上传者的工号 | 319417 |
+| dingDingReaderRequest.linkUrls[0] | 钉钉知识库或钉钉文档的链接 | 链接为钉钉知识库，则只有1个链接（允许有多个知识库链接，考虑到性能原因，建议1个）；链接为钉钉文档，则可以有多个钉钉文档链接 |
+
+  
+
+
+#### request example 1：钉钉知识库
+
+  
+
+
+#### request example 1：多篇钉钉文档上传
+
+  
+
+
+### response
+
+  
+
+
+#### 返回的内容是什么？
+
+**返回的内容，是文档读取任务的id。**
+
+文档是通过异步方式读取的。该接口本质上是提交了一个文档读取任务。
+
+​  
+
+
+#### 文档上传接口返回的任务id可以用来干什么？
+
+根据任务id，可以查看文档的处理进度。
+
+  
+
+
+#### 通过API上传文档后，文档会自动切分吗？
+
+文档会自动切分，默认使用智能切分方式。
+
+​  
+
+
+### 文档上传结果
+
+可以在知识库文档列表页，查看文档的上传结果。
+
+  
+
+
+# 钉钉文档更新
+
+## 怎么实现钉钉文档更新？
+
+对于钉钉文档来说，钉钉的链接是唯一的。
+
+在同一个知识库中，上传钉钉文档时，会通过链接进行唯一性校验。如果钉钉文档存在，则更新内容；如果钉钉文档不存在，则新增。
+
+因此，钉钉文档的更新，和钉钉文档的上传接口一样，上传相同的链接会自动更新。
+
+​  
+
+
+需要注意的是，对于钉钉文档，需要在链接后，增加“?utm_scene=team_space”，这个是标准的读取钉钉文档的链接。否则不加后缀的和加后缀的，会当做两篇文档。
+
+1. 钉钉文档示例：https://alidocs.dingtalk.com/i/nodes/lyQod3RxJKe9QjOMipXRD1gBWkb4Mw9r?utm_scene=team_space
+
+  
+
+
+## 钉钉知识库文档的增删改查
+
+在钉钉知识库中新增文档、修改文档、删除文档，重新上传知识库。
+
+  
+
+
+## 重新上传钉钉知识库
+
+接口参考：[https://aliyuque.antfin.com/aiplus/aistudio/xy1gw1y1e5x1aoki#F31nV](#F31nV)
+
+​  
+
+
+### 文档更新结果
+
+可以在知识库文档列表页，查看文档的上传结果 & 更新结果。
+
+  
+
+
+# 查询钉钉文档
+
+## 根据知识库id和文档类型查看文档
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/queryDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| dataUploadMethod | 知识库文档的类型 | 固定值：DINGDING |
+| documentStructureType | 文档的结构类型 | 固定值：NORMAL_DOC |
+| pageNo | 页号 | 默认为1 |
+| pageSize | 页大小 | 默认为20 |
+
+​  
+
+
+#### request example
+
+  
+
+
+### response
+
+response的参数解释：
+
+  
+
+
+# 钉钉文档删除
+
+## 接口限制
+
+* 同一批删除的文档数量不超过100个
+
+  
+
+
+## 文档删除
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/deleteDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentIds | 知识库文档的id列表 | 查询钉钉文档列表：[https://aliDINGDING.antfin.com/aiplus/aistudio/abbfudzomuqp2ff5#ixhgU](#ixhgU)  查询接口的response中获取id列表 |
+
+​  
+
+
+#### request example
+
+  
+
+
+### response
+
+​  
+
+
+### 前端查看文档删除结果
+
+可以在知识库文档列表页，查看文档的删除结果。
+
+  
+
+
+  
+
+

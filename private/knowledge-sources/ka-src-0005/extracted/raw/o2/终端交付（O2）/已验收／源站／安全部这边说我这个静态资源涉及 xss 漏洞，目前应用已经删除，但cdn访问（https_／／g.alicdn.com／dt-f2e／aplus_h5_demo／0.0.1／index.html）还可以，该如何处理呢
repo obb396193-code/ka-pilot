@@ -1,0 +1,30 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/66134e190002fd0567a3446b/](https://links.alibaba-inc.com/support/conversation/66134e190002fd0567a3446b/)
+
+作者：冠夫
+
+评审人：[@时路](undefined/kangyong.ky)
+
+若遇到安全合规问题需要下线资源，可以进行文件删除。
+
+相关要求如下：
+
+ 历史版本原则上不进行删出，由于删除行为涉及g.alicdn.com链路多条回源链路文件删除，属于高危操作，非必要不进行操作。此外，由于特殊原因需要删除的，所有由于删文件影响带来的线上问题，均由业务发起方自行承担。 
+
+ 删除文件 ** 必要条件 ** ： 
+
+ 1.需要有安全工单，如 ak，sk引起的问题，需要注销ak，无必要不进行回收。若无法及时回收的，邮件说明原因。 
+
+ 2.邮件审批。 
+
++  邮件内容：描述背景，安全工单（截图或添加权限），要删除的文件(迭代)列表及删除的必要性。 
++  接收人：主管， [安全](https://aliyuque.antfin.com/tbair/air/ounphm#)[生产](https://aliyuque.antfin.com/tbair/air/ounphm#) 接口人（或p9/m4），安全工单负责的安全工程师。 ** 邮件需要三名接收人进行同意确认 ** 。 
++  抄送人：冠夫、阿大。 
+
+3.邮件审批同意后， 建通用变更changefree【 [ 样例 ](https://aicf.alibaba-inc.com/aicf/approval/detail/6054503?spm=goc-apm.aicf-_approvalList.0.0.16502388IGrk80) 】，执行人填写冠夫，changefree审批同意后，拿审批截图与CF地址联系冠夫，我方会根据CF中包含的前端资源回收。线上有流量需要灰度下线的需求提前同步，灰度顺序， ** 国内业务方 ** ，优先海外源站回收， ** 海外业务方 ** ，优先国内源站回收，回收期间，协助业务方进行影响观察。 
+
+ 4.回收时间：每天11~12点，17~18点按CF顺序逐一处理。 
+
+
+
+
+

@@ -1,0 +1,267 @@
+{
+  "documentId": 2674,
+  "documentName": "快手网红-网红分类",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094811536
+    }
+  ],
+  "apiId": 117,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/industry/celebrity",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request GET 'https://star-gateway.test.gifshow.com/rest/openapi/gw/dsp/v1/industry/celebrity' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] accessproxy_session=77346b49-7029-4cb1-b1ef-f43f239cf7e2' \\\n--data-raw '{\n    \"advertiser_id\": 20006810\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 4802,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "12345",
+      "description": "账号ID",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 4803,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4804,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "接口返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4805,
+      "paramName": "data",
+      "paramType": "FrontDmpTreeNodeData",
+      "example": "",
+      "description": "接口返回数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 274,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4801,
+          "paramName": "celebrity_tree",
+          "paramType": "FrontDmpTreeNode[]",
+          "example": "",
+          "description": "快手网红标签",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 273,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 4798,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "标签ID",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4799,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "标签名称",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4800,
+              "paramName": "children",
+              "paramType": "FrontDmpTreeNode1[]",
+              "example": "",
+              "description": "子节点",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 272,
+              "sort": 3,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 4796,
+                  "paramName": "id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "标签ID",
+                  "required": 0,
+                  "checkRule": null,
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4797,
+                  "paramName": "name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "标签名称",
+                  "required": 0,
+                  "checkRule": null,
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094811536,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

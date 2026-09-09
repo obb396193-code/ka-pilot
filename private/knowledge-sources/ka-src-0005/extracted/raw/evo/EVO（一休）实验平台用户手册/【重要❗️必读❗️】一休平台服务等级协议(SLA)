@@ -1,0 +1,165 @@
+| 版本 | 修改人 | 时间 | 修改内容 |
+| --- | --- | --- | --- |
+| V1 | 忆敛 | 2020.10.10 | 新增 |
+| V2 | 忆敛 | 2021.06.11 | 服务性能口径校准；规范与限制：新增(8)、(9)，调整(14)；除外情形：新增(10)、(11) |
+| V3 | 一骞 | 2023.03.08 | 新增ACCS中间件依赖，新增规范与限制【15】、【16】 |
+| V4 | 明樵 | 2024.12.09 | 新增实验配置兜底设计要求，客户端相关依赖规范与限制【17】 |
+
+
+
+
+goc官方收录地址：[https://tr.alibaba-inc.com/portal/article/lzozlw/fzg6dy/lzllg1](https://tr.alibaba-inc.com/portal/article/lzozlw/fzg6dy/lzllg1)
+
+
+
+# 1.  定义
+**一休AB实验平台**：为本 SLA 所覆盖的产品名称，下文简称"一休平台"。
+
+**涵盖服务**：由一休平台官方产品文档及研发团队提供的，用于集团生产环境应用接入的服务，主要包括分流SDK、开放平台SDK相关接口。
+
+**<font style="color:black;">服务周期</font>****<font style="color:black;">：</font>**<font style="color:black;">一个服务周期为一个自然月。</font>
+
+**服务周期总时长**：服务周期内的总天数╳24（小时）╳3600（秒）计算。
+
+**<font style="color:black;">时间片</font>**<font style="color:black;">：评价服务质量的最小时间纬度，以</font><font style="color:black;">60s为单位</font><font style="color:black;">。</font>
+
+**下游中间件依赖**：一休平台所依赖的基础设施及中间件。如：Tair、DB、MetaQ、Diamond、Orange、OSS、ACCS。
+
+**下游平台依赖**：一休平台所依赖的下游系统及平台。如：奥格、changefree、bpms。
+
+
+
+# 2. 【服务型】服务可用性
+**<font style="color:black;">失败请求：</font>**<font style="color:black;">失败请求包括下述情形：</font>
+
+<font style="color:black;">（</font><font style="color:black;">1</font><font style="color:black;">）因一休平台系统原因导致的域名返回状态码为</font><font style="color:black;">5XX</font><font style="color:black;">和</font><font style="color:black;">4XX</font><font style="color:black;">请求；</font>
+
+<font style="color:black;">（</font><font style="color:black;">2</font><font style="color:black;">）因一休平台故障导致的正常请求未能到达一休服务端的请求（</font><font style="color:black;">按过故障前</font><font style="color:black;">7</font><font style="color:black;">天服务端域名的平均请求数计算</font><font style="color:black;">）;</font>
+
+**<font style="color:black;">有效的总请求：</font>**<font style="color:black;">使用方某一应用下一休平台服务器端接收到的所有请求视为有效的总请求。</font>
+
+**时间片错误率：**（根据地域及存储类型分别）以每时间片为单位按照如下方式计算：
+
+每时间片错误率=![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/301752/1602320944252-549cdffe-b2ae-4c87-83e7-5bbb2e280866.png)
+
+**<font style="color:black;">服务不可用时长：</font>**<font style="color:black;">在一段时间片内，如果时间片错误率高于某个阈值，则视为该时间片内该一休平台服务不可用。在一个服务周期内一休平台服务不可用时间片累计之和即服务不可用时长。</font>
+
+<font style="color:black;"> </font>
+
+## 2.1.  服务可用性计算公式
+<font style="color:black;">服务可用性以产品某项服务为维度，按照如下方式计算</font><font style="color:black;">：</font>
+
+<font style="color:black;">服务可用性</font><font style="color:black;">=</font>![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/301752/1602320974324-c4133d59-2b6d-43c4-bef3-e54884572557.png)
+
+ 
+
+## 2.2.  服务可用性承诺<font style="color:black;"></font>
+| <font style="color:white;">业务类型</font> | <font style="color:white;">业务场景</font> | <font style="color:white;">SLI</font><font style="color:white;">（指标）</font> | <font style="color:white;">度量方式</font> | <font style="color:white;">SLO</font><font style="color:white;">（承诺目标）</font> |
+| --- | --- | --- | --- | --- |
+| 分流SDK | <font style="color:black;">服务可用性</font> | 接口可用率 | <font style="color:black;">每1min内的错误率小于</font><font style="color:black;"> 0.01%</font><br/><font style="color:black;">(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">-</font><font style="color:black;">服务不可用时长</font><font style="color:black;">)/(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">)*100%</font> | <font style="color:black;">99.9%</font> |
+| <font style="color:black;"> </font> | 分流准确度 | <font style="color:black;">分桶均匀性</font> | (单桶误差量/单桶样本量)*100%<br/>(区分样本量量级-平均效果) | 单桶样本量1W:98.949%<br/>单桶样本量10W:<font style="color:#191F25;">99.7%</font><br/>单桶样本量100W:99.903% |
+| 开放平台SDK | 服务可用性 | 接口可用率 | <font style="color:black;">每1min内的错误率小于</font><font style="color:black;"> 0.01%</font><br/><font style="color:black;">(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">-</font><font style="color:black;">服务不可用时长</font><font style="color:black;">)/(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">)*100%</font> | <font style="color:black;">99.9%</font> |
+
+
+<font style="color:black;"> </font>
+
+<font style="color:black;"> </font>
+
+# 3. 服务性能
+<font style="color:black;"></font>
+
+| <font style="color:white;">业务类型</font> | <font style="color:white;">业务场景</font> | <font style="color:white;">SLI</font><font style="color:white;">（指标）</font> | <font style="color:white;">度量方式</font> | <font style="color:white;">SLO</font><font style="color:white;">（承诺目标）</font> |
+| --- | --- | --- | --- | --- |
+| 分流SDK | <font style="color:black;">服务端分流</font> | <font style="color:black;">接口性能</font> | <font style="color:black;">无人群</font><font style="color:black;">1min内的</font><font style="color:black;">75%rt < 5ms</font><br/><font style="color:black;">有人群</font><font style="color:black;">1min内的</font><font style="color:black;">75%rt < 15ms</font><br/><font style="color:black;">(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">-</font><font style="color:black;">服务不可用时长</font><font style="color:black;">)/(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">)*100%</font> | <font style="color:black;"> 99.99%</font> |
+| | 实验配置拉取 | <font style="color:black;">接口性能</font> | <font style="color:black;">总QPS7W以内，或者符合大促提前申报的预估QPS：</font><br/><font style="color:black;">1min内的</font><font style="color:black;">75%rt < 5ms</font><br/><font style="color:black;">(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">-</font><font style="color:black;">服务不可用时长</font><font style="color:black;">)/(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">)*100%</font> | <font style="color:black;"> 99.99%</font> |
+| | 实验配置推送 | 配置生效时长 | 实验生效时间-实验配置发布成功(区分服务端实验、客户端实验、JS实验) | 服务端实验：平均-90s；最大-180s<br/>客户端实验：平均-20min；最大-60min<br/>JS实验：平均-7min；最大-11min |
+| 实验报表 | 实时指标 | 产出时间 | 指标数据产出时间-实验发布成功时间(指标绑定成功后) | 2分钟内<br/>例外场景：大促期间，平台无法严格保证 |
+| | 离线指标 | 产出时间 | 实验生效后t+1的报表产出时间 | 通用、spm指标每天上午10点，自定义指标依赖用户上游表产出时间<br/>例外场景：大促期间，平台无法严格保证 |
+| 开放平台SDK | 开放平台操作接口 | 接口性能 | <font style="color:black;">不超过全局限流20QPS</font><font style="color:black;">(单服务器实例单应用维度)</font><font style="color:black;">，或者符合大促提前申报的预估QPS：</font><br/><font style="color:black;">1min内的</font><font style="color:black;">75%rt < 3s</font><br/><font style="color:black;">(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">-</font><font style="color:black;">服务不可用时长</font><font style="color:black;">)/(</font><font style="color:black;">服务周期总时长</font><font style="color:black;">)*100%</font> | <font style="color:black;">99.99%</font> |
+
+
+<font style="color:black;"> </font>
+
+<font style="color:black;"></font>
+
+# 4. 故障恢复SLA
+# <font style="color:black;">仅适用于集群面状故障，单功能bug及局部问题，不在【故障恢复SLA】适用范围内</font>
+| <font style="color:white;">业务类型</font> | <font style="color:white;">业务影响</font> | <font style="color:white;">SLI</font><font style="color:white;">（指标）</font> | <font style="color:white;">度量方式</font> | <font style="color:white;">业务恢复</font><font style="color:white;">SLA</font> | <font style="color:white;">前置（免责）条款</font> |
+| --- | --- | --- | --- | --- | --- |
+| <font style="color:black;">实验管理-服务不可用</font> | <font style="color:black;">一休控制台无法操作实验；开放平台接口无法正常响应；业务方实验无法编辑、发布;</font> | <font style="color:black;">从第一个用户工单或者第一个告警电话开始到问题修复</font> | <font style="color:black;">时长</font> | <font style="color:black;"> 15min</font> | <font style="color:black;">由于hsf、tddl等中间件故障和切换等非ikkyu本身问题引起的服务不可用</font> |
+| 配置下发-服务不可用 | 实验配置拉取接口无法正常响应；实验配置推送失败；无法按照最新实验配置分流； | <font style="color:black;">从第一个用户工单或者第一个告警电话开始到问题修复</font> | <font style="color:black;">时长</font> | <font style="color:black;">服务端15min/ </font><br/><font style="color:black;">客户端</font><br/><font style="color:black;">30min</font> | 由于metaq、tair、diamon、orange等<font style="color:black;">中间件故障和切换等非ant本身问题引起的服务不可用</font> |
+| 数据链路-服务不可用 | 实验指标无法正常展示；业务报表无法按时产出; | <font style="color:black;">从第一个用户工单或者第一个告警电话开始到问题修复</font> | <font style="color:black;">时长</font> | <font style="color:black;"> 15min</font> | 由于odps、holo等基础设施故障或切换等非abdata本身问题引起的服务不可用或报表产出延迟 |
+
+
+<font style="color:black;"> </font>
+
+# 5.  规范与限制
+<font style="color:black;">未遵循产品规范与限制所导致的服务不可用的时长不计入服务不可用时间，如：</font>
+
+<font style="color:black;">(1)【</font><font style="color:#F5222D;">场景限制</font><font style="color:black;">】</font>一休平台目前只支持AB实验、定投实验，严禁用作其他目的（如灰度）；
+
+<font style="color:black;">(2)【</font><font style="color:#F5222D;">使用限制</font><font style="color:black;">】</font><font style="color:#F5222D;">禁止私自接入一休平台</font>，由此引发的问题平台不提供技术支持及服务保障。接入请遵守[一休接入规范流程](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ft83pq)；
+
+<font style="color:black;">(3)【</font><font style="color:#F5222D;">使用限制</font><font style="color:black;">】</font><font style="color:#F5222D;">禁止私自使用官网文档未开放或已废弃的接口</font>，由此引发的问题平台不提供技术支持及服务保障；
+
+<font style="color:black;">(4)【</font><font style="color:#F5222D;">使用限制</font><font style="color:black;">】</font><font style="color:#F5222D;">禁止私自披露集团运营数据</font>，相关操作需遵守集团数据安全红线，并获得各方授权；
+
+<font style="color:black;">(5)【</font><font style="color:#F5222D;">功能限制</font><font style="color:black;">】</font>一休保障按照业务配置实施相关实验， 业务方自行保证实验配置、分流配置及实验有效期是否符合预期；
+
+<font style="color:black;">(6)【</font><font style="color:#F5222D;">功能限制</font><font style="color:black;">】</font>人群实验仅适用于服务端实验，仅提供人群分流、指标计算能力，分流后的业务逻辑由业务自行判定人群；
+
+<font style="color:black;">(7)【</font><font style="color:#F5222D;">功能限制</font><font style="color:black;">】</font>基于utdid分流用户更换设备，设备切换账号会导致相关用户串桶<font style="color:black;">；cookie cna分流受用户重装浏览器等影响cookie生命周期的行为影响，业务方需根据具体场景选择合适的分流条件；</font>
+
+<font style="color:black;">(8)【</font><font style="color:#F5222D;">功能限制</font><font style="color:black;">】</font>客户端实验新配置生效依赖用户行为，配置更新时机为App冷启、热启、登入、登出、orange回调，长期不活跃用户偶然启动或高优冷启实验，可能短暂命中老实验配置，业务方需根据具体场景评估业务影响；
+
+<font style="color:black;">(9)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】安全性要求较高场景，如红包、权益类，请使用服务端实验，没有任何一款app可以确保客户端绝对安全</font><font style="color:#191F25;">。</font>
+
+<font style="color:black;">(10)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】业务方</font><font style="color:#191F25;">对接分流服务时</font><font style="color:#F5222D;">必须做兜底处理</font><font style="color:#191F25;">，避免实验过期、流量配比不足等原因引起的故障及资损；</font>
+
+<font style="color:black;">(11)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】业务方</font><font style="color:#191F25;">对接全局空桶时，全局空</font><font style="color:#F5222D;">必须做兜底处理</font><font style="color:#191F25;">，避免流量配比不足等原因引起的故障及资损；</font>
+
+<font style="color:black;">(12)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】实验推全后,建议尽快下线实验，固化业务逻辑，如无法在实验周期内完成，需提前准备好兜底方案；</font>
+
+<font style="color:black;">(13)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】</font>前端实验配置缓存在浏览器Local Storage中，和站点共享，同站点不宜同时接入太多前端实验；
+
+<font style="color:black;">(14)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】</font><font style="color:#F5222D;">本SLA仅适用于日常线上常态，大促期间需业务方提前报备流量、实时性等诉求</font><font style="color:black;">，一休会根据各方报备进行限流、降级等策略预案。</font><font style="color:#52C41A;">联系人：</font><font style="color:#52C41A;">运营-韭幺，PD-明征，研发-鳄神/明樵；</font>
+
+(15)<font style="color:black;">【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】业务方需自行关注实验生命周期（含二方），</font><font style="color:#191F25;">并在实验不命中时</font><font style="color:#F5222D;">做好兜底处理，</font><font style="color:black;">因实验过期引发的一切后果，由业务方自行承担；</font>
+
+<font style="color:black;">(16)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】多链接实验需保证配置的URL均为URL encode后的结果，调试过程中也需留意动态URL的encode情况，未经encode的URL可能会导致输入、输出不一致的情况，详见多链接实验用户手册。</font>
+
+<font style="color:black;">(17)【</font><font style="color:#52C41A;">使用规范</font><font style="color:black;">】客户端实验受限于orange等中间件sla，预期配置全量发布/延期/回滚时长在30min以上详见[8]，业务方</font><font style="color:#191F25;">强依实验时</font><font style="color:#F5222D;">必须做好兜底降级处理</font>，通过switch/orange等配置平台具备实验快速降级的开关能力。
+
+
+
+# 6.  除外情形
+<font style="color:black;">因下述原因导致的服务不可用的时长不计入服务不可用时间：</font>
+
+<font style="color:black;">（</font><font style="color:black;">1</font><font style="color:black;">）预先通知使用方后进行系统维护所引起的，包括割接、维修、升级和模拟故障演练；</font>
+
+<font style="color:black;">（</font><font style="color:black;">2</font><font style="color:black;">）任何一休所属设备以外的网络、设备故障或配置调整引起的；</font>
+
+（3）任何一休所属系统以外的中间件、平台故障或配置调整引起的，如：MetaQ、Tair、奥格、changefree等；
+
+<font style="color:black;">（4）使用方的应用程序或数据信息受到黑客攻击而引起的；</font>
+
+<font style="color:black;">（5）使用方维护不当或保密不当致使数据、口令、密码等丢失或泄漏所引起的；</font>
+
+<font style="color:black;">（6）使用方的疏忽或由使用方授权的操作所引起的；</font>
+
+<font style="color:black;">（7）使用方未遵循</font>[EVO（原一休）平台用户手册](https://yuque.antfin-inc.com/ikkuy/gw2n3b)<font style="color:black;">或使用建议引起的；</font>
+
+<font style="color:black;">（8）使用方未遵循</font>【规范与限制】<font style="color:black;">引起的；</font>
+
+<font style="color:black;">（9）不可抗力引起的；</font>
+
+<font style="color:black;">（10）</font>接入前<font style="color:black;">请确保充分理解本SLA，因SLA误差范围内引起的故障、资损由业务方承担(如人群等)；</font>
+
+<font style="color:black;">（11）实验上线前请充分测试，包括分流、埋点、业务表现，实验未充分测试引发的线上故障，由业务方承担；</font>
+
+<font style="color:black;">（12）请关注一休通过各种渠道推送的sdk升级、风险处理预警，已提前周知但业务方未及时处理的问题，后续产生的故障、资损由业务方承担。</font>
+
+<font style="color:black;"></font>
+
+<font style="color:black;">以上内容，如有疑问请及时联系</font><font style="color:#52C41A;">yixiu@list.alibaba-inc.com</font><font style="color:#000000;">，或钉钉搜索 </font><font style="color:#52C41A;">EVO（一休）。</font>
+

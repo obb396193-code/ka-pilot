@@ -107,6 +107,11 @@
     "actions": {
       "pushDingtalk": true,
       "exportPdf": true
+    },
+    "delivery": {
+      "status": "sent",
+      "at": "2026-09-05T08:05:00.000+08:00",
+      "target": "dingtalk:KA 快手投放群"
     }
   },
   "meta": {
@@ -115,6 +120,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "12 模块；unsupported 模块显空态不显 0"
+    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null}"
   }
 }

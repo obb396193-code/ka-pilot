@@ -44,7 +44,7 @@
 
 我们看到消费者认知团队在 Devix 上跑了 7x24 常驻 Flask + 公网中转 + 钉钉回调的运维 Agent。我们想用类似模式跑值守组件（监控轮询/诊断触发）：
 9. 我们的 Devix 权限能不能建一个常驻 Sandbox 跑长期服务？和跑一次性 agent 任务的区别是什么？申请/配置路径？
-10. Devix Sandbox 里能不能访问 qh.alibaba-inc.com（奇航 get_data）？（大概率能，因为 agent 本来就在调，但请确认常驻服务模式下也一样）
+10. Devix Sandbox 里能不能访问 qh.alibaba-inc.com（启航 get_data）？（大概率能，因为 agent 本来就在调，但请确认常驻服务模式下也一样）
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 五、kuaishou-cli 结构同步（补数据维度）

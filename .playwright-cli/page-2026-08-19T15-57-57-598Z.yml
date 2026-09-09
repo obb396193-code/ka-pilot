@@ -1,0 +1,28 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - text: 01 / AGENT UI
+      - heading "AI Elements" [level=1] [ref=e6]
+    - paragraph [ref=e7]: 实际运行 Conversation 与 Sources：消息滚动、追加结果、来源折叠均可交互。
+  - generic [ref=e8]:
+    - article [ref=e9]:
+      - generic [ref=e10]: CONVERSATION
+      - log [ref=e11]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: 把今天消耗异常的计划找出来。
+          - generic [ref=e15]: 已定位 3 个计划，先按影响排序，并保留数据来源。
+      - button "追加工具结果" [ref=e16]
+    - article [ref=e17]:
+      - generic [ref=e18]: SOURCES
+      - generic [ref=e19]:
+        - paragraph [ref=e20]: 回答先给结论，证据保持可展开，适合投放数据与规则引用。
+        - generic [ref=e21]:
+          - button [expanded] [ref=e22]:
+            - paragraph [ref=e23]: Used 3 sources
+          - generic [ref=e26]:
+            - link "账户小时级消耗表" [ref=e27] [cursor=pointer]:
+              - /url: "#"
+            - link "任务考核价契约" [ref=e31] [cursor=pointer]:
+              - /url: "#"
+            - link "变更审计记录" [ref=e35] [cursor=pointer]:
+              - /url: "#"

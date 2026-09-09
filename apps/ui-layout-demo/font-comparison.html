@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KA Pilot · 跨平台字体对比</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%23171717%22/><text x=%2216%22 y=%2221%22 text-anchor=%22middle%22 font-size=%2214%22 fill=%22white%22>KA</text></svg>"
+    />
+    <link rel="stylesheet" href="/font-comparison/noto/index.css" />
+    <link
+      rel="stylesheet"
+      href="/font-comparison/misans/MiSans-Regular.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/font-comparison/misans/MiSans-Medium.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/font-comparison/misans/MiSans-Semibold.min.css"
+    />
+    <link rel="stylesheet" href="/font-comparison/misans/MiSans-Bold.min.css" />
+    <link
+      rel="stylesheet"
+      href="/font-comparison/misans/MiSans-Heavy.min.css"
+    />
+    <style>
+      @font-face {
+        font-family: "Demo Geist";
+        src: url("/font-comparison/base/geist.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Demo Inter";
+        src: url("/font-comparison/base/inter.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Demo Hanken";
+        src: url("/font-comparison/base/hanken.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Demo Harmony";
+        src: url("/font-comparison/harmony/HarmonyOS_Sans_SC_Regular.ttf")
+          format("truetype");
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Demo Harmony";
+        src: url("/font-comparison/harmony/HarmonyOS_Sans_SC_Medium.ttf")
+          format("truetype");
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Demo Harmony";
+        src: url("/font-comparison/harmony/HarmonyOS_Sans_SC_Bold.ttf")
+          format("truetype");
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+      }
+
+      :root {
+        color-scheme: light;
+        --bg: #f5f5f3;
+        --panel: #ffffff;
+        --ink: #161616;
+        --muted: #71717a;
+        --line: #e4e4e7;
+        --soft: #f7f7f7;
+        --accent: #171717;
+        --success: #138a4b;
+        --warning: #9a6700;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          "Demo Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: grid;
+        grid-template-columns: minmax(240px, 1fr) auto;
+        gap: 24px;
+        align-items: center;
+        padding: 18px 28px;
+        border-bottom: 1px solid var(--line);
+        background: rgb(245 245 243 / 92%);
+        backdrop-filter: blur(18px);
+      }
+
+      .eyebrow {
+        margin: 0 0 5px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.2;
+        letter-spacing: -0.035em;
+      }
+
+      .header-note {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .toolbar button {
+        min-height: 36px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+      }
+
+      .toolbar button[aria-pressed="true"] {
+        border-color: var(--ink);
+        background: var(--ink);
+        color: white;
+      }
+
+      main {
+        width: min(1540px, calc(100% - 48px));
+        margin: 0 auto;
+        padding: 28px 0 64px;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .legend-item {
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+
+      .legend-item strong {
+        display: block;
+        font-size: 13px;
+      }
+      .legend-item span {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .specimen-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      body[data-layout="single"] .specimen-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body[data-filter="stable"] .specimen[data-stable="false"] {
+        display: none;
+      }
+
+      .specimen {
+        overflow: hidden;
+        border: 1px solid #dcdcdf;
+        border-radius: 16px;
+        background: var(--panel);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 3%);
+      }
+
+      .specimen-head {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: start;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--line);
+        background: #fbfbfb;
+      }
+
+      .index {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: var(--ink);
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .specimen-title {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.35;
+      }
+      .font-stack {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: white;
+        color: #4b4b52;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+
+      .badge.ok {
+        border-color: #bce2c9;
+        background: #effaf3;
+        color: var(--success);
+      }
+      .badge.warn {
+        border-color: #efd99d;
+        background: #fff9e8;
+        color: var(--warning);
+      }
+
+      .product {
+        font-family: var(--demo-font);
+        font-synthesis: none;
+      }
+
+      .product-nav {
+        display: flex;
+        align-items: center;
+        min-height: 48px;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--line);
+        gap: 18px;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .product-nav .brand {
+        margin-right: auto;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .product-nav .active {
+        color: var(--ink);
+      }
+      .product-nav span:not(.brand):not(.active) {
+        color: var(--muted);
+      }
+
+      .workspace {
+        padding: 22px 20px 20px;
+      }
+      .workspace-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .workspace h3 {
+        margin: 0;
+        font-size: 23px;
+        line-height: 1.2;
+        font-weight: 650;
+        letter-spacing: -0.035em;
+      }
+
+      .workspace-sub {
+        margin: 7px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .date-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .kpi {
+        min-width: 0;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--soft);
+      }
+
+      .kpi-label {
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .kpi-value {
+        margin-top: 7px;
+        font-size: clamp(18px, 2.1vw, 26px);
+        line-height: 1;
+        font-weight: 660;
+        letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums lining-nums;
+        white-space: nowrap;
+      }
+
+      .kpi-trend {
+        margin-top: 9px;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .kpi-trend.good {
+        color: var(--success);
+      }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(190px, 0.65fr);
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .table-card,
+      .weights {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .card-title {
+        padding: 11px 13px;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+        font-weight: 650;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10px;
+      }
+      th,
+      td {
+        padding: 9px 12px;
+        border-bottom: 1px solid #eeeeef;
+        text-align: left;
+      }
+      th {
+        color: var(--muted);
+        font-weight: 500;
+      }
+      td.num,
+      th.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums lining-nums;
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .weights-body {
+        padding: 7px 13px 10px;
+      }
+      .weight-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 5px 0;
+        font-size: 11px;
+      }
+      .weight-row span:first-child {
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .w400 {
+        font-weight: 400;
+      }
+      .w500 {
+        font-weight: 500;
+      }
+      .w600 {
+        font-weight: 600;
+      }
+      .w700 {
+        font-weight: 700;
+      }
+
+      .runtime {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 20px;
+        border-top: 1px solid var(--line);
+        background: #fbfbfb;
+        color: var(--muted);
+        font-family: "Demo Inter", sans-serif;
+        font-size: 10px;
+      }
+
+      .runtime-status {
+        color: var(--success);
+        font-weight: 700;
+      }
+      .runtime-status.pending {
+        color: var(--warning);
+      }
+
+      .font-geist-system {
+        --demo-font:
+          "Demo Geist", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+      .font-inter-system {
+        --demo-font:
+          "Demo Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+      .font-hanken-noto {
+        --demo-font: "Demo Hanken", "Noto Sans SC Variable", sans-serif;
+      }
+      .font-geist-noto {
+        --demo-font: "Demo Geist", "Noto Sans SC Variable", sans-serif;
+      }
+      .font-noto {
+        --demo-font: "Noto Sans SC Variable", sans-serif;
+      }
+      .font-misans {
+        --demo-font: "MiSans", sans-serif;
+      }
+      .font-harmony {
+        --demo-font: "Demo Harmony", sans-serif;
+      }
+
+      @media (max-width: 1000px) {
+        .page-header {
+          position: static;
+          grid-template-columns: 1fr;
+        }
+        .toolbar {
+          justify-content: flex-start;
+        }
+        .legend,
+        .specimen-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        main {
+          width: min(100% - 24px, 1540px);
+          padding-top: 12px;
+        }
+        .page-header {
+          padding: 16px 12px;
+        }
+        .legend {
+          grid-template-columns: 1fr;
+        }
+        .specimen-head {
+          grid-template-columns: 34px 1fr;
+        }
+        .badges {
+          grid-column: 1 / -1;
+          justify-content: flex-start;
+        }
+        .kpis {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+        .product-nav span:not(.brand) {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body data-layout="grid" data-filter="all">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">KA Pilot / Typography Lab</p>
+        <h1>7 套字体，同一份真实投放界面</h1>
+        <p class="header-note">
+          只改变字体，不改字号、间距、颜色和数据。请重点看中文气质、数字宽度与信息密度。
+        </p>
+      </div>
+      <div class="toolbar" aria-label="字体对比视图">
+        <button type="button" data-layout-button="grid" aria-pressed="true">
+          双列对比
+        </button>
+        <button type="button" data-layout-button="single" aria-pressed="false">
+          单列放大
+        </button>
+        <button type="button" data-filter-button="all" aria-pressed="true">
+          全部 7 组
+        </button>
+        <button type="button" data-filter-button="stable" aria-pressed="false">
+          只看跨平台候选
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="legend" aria-label="对比说明">
+        <div class="legend-item">
+          <strong>参照组 01–02</strong
+          ><span
+            >英文是 Geist / Inter，中文交给操作系统。Mac 与 Windows
+            字形不会完全一样。</span
+          >
+        </div>
+        <div class="legend-item">
+          <strong>固定组 03–07</strong
+          ><span
+            >中文字体随页面加载，Mac 与 Windows
+            可保持一致；代价是要多下载字体资源。</span
+          >
+        </div>
+        <div class="legend-item">
+          <strong>这页不直接定规范</strong
+          ><span>先看效果。选中后再做体积裁剪、许可复核与正式工作台接入。</span>
+        </div>
+      </section>
+
+      <section class="specimen-grid" id="specimen-grid"></section>
+    </main>
+
+    <template id="specimen-template">
+      <article class="specimen">
+        <header class="specimen-head">
+          <div class="index"></div>
+          <div>
+            <h2 class="specimen-title"></h2>
+            <p class="font-stack"></p>
+          </div>
+          <div class="badges"></div>
+        </header>
+
+        <div class="product">
+          <nav class="product-nav" aria-label="演示导航">
+            <span class="brand">KA Pilot</span>
+            <span class="active">工作台</span>
+            <span>投放任务</span>
+            <span>账户池</span>
+            <span>工作项</span>
+          </nav>
+
+          <section class="workspace">
+            <div class="workspace-top">
+              <div>
+                <h3>账户投放经营概览</h3>
+                <p class="workspace-sub">
+                  查看账户健康、消耗节奏与转化成本，及时处理异常工作项。
+                </p>
+              </div>
+              <span class="date-pill">2026年9月5日</span>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi">
+                <div class="kpi-label">今日消耗</div>
+                <div class="kpi-value">¥128,430.60</div>
+                <div class="kpi-trend good">较昨日 +8.4%</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">有效转化</div>
+                <div class="kpi-value">6,842</div>
+                <div class="kpi-trend good">目标达成 86.5%</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">综合 CPA</div>
+                <div class="kpi-value">¥37.42</div>
+                <div class="kpi-trend">考核价 ¥40.00</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">异常工作项</div>
+                <div class="kpi-value">07</div>
+                <div class="kpi-trend">3 项需要复核</div>
+              </div>
+            </div>
+
+            <div class="detail-grid">
+              <div class="table-card">
+                <div class="card-title">重点账户</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>账户</th>
+                      <th>状态</th>
+                      <th class="num">消耗</th>
+                      <th class="num">CPA</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>快手主账户</td>
+                      <td>稳定</td>
+                      <td class="num">¥46,820.00</td>
+                      <td class="num">¥35.18</td>
+                    </tr>
+                    <tr>
+                      <td>AAC 拉新计划</td>
+                      <td>观察</td>
+                      <td class="num">¥31,670.40</td>
+                      <td class="num">¥42.06</td>
+                    </tr>
+                    <tr>
+                      <td>高潜素材测试</td>
+                      <td>放量</td>
+                      <td class="num">¥18,935.20</td>
+                      <td class="num">¥33.72</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="weights">
+                <div class="card-title">字重与数字</div>
+                <div class="weights-body">
+                  <div class="weight-row w400">
+                    <span>400</span><strong>投放经营 0123</strong>
+                  </div>
+                  <div class="weight-row w500">
+                    <span>500</span><strong>投放经营 0123</strong>
+                  </div>
+                  <div class="weight-row w600">
+                    <span>600</span><strong>投放经营 0123</strong>
+                  </div>
+                  <div class="weight-row w700">
+                    <span>700</span><strong>投放经营 0123</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <footer class="runtime">
+          <span class="runtime-detail"></span>
+          <span class="runtime-status pending">正在检测字体…</span>
+        </footer>
+      </article>
+    </template>
+
+    <script>
+      const specimens = [
+        {
+          index: "01",
+          name: "shadcn 参照：Geist + 系统中文",
+          className: "font-geist-system",
+          stack: "英文 Demo Geist；中文由 macOS / Windows 系统决定",
+          badges: [
+            ["参照", ""],
+            ["跨平台不一致", "warn"],
+            ["约 71 KB", ""],
+          ],
+          stable: false,
+          check: '16px "Demo Geist"',
+          runtime: "Geist 已内置；中文会回退",
+        },
+        {
+          index: "02",
+          name: "当前参照：Inter + 系统中文",
+          className: "font-inter-system",
+          stack: "英文 Demo Inter；中文由 macOS / Windows 系统决定",
+          badges: [
+            ["参照", ""],
+            ["跨平台不一致", "warn"],
+            ["约 48 KB", ""],
+          ],
+          stable: false,
+          check: '16px "Demo Inter"',
+          runtime: "Inter 已内置；中文会回退",
+        },
+        {
+          index: "03",
+          name: "ContentRadar 风格：Hanken + Noto Sans SC",
+          className: "font-hanken-noto",
+          stack: "英文 Demo Hanken；中文 Noto Sans SC Variable",
+          badges: [
+            ["产品感", ""],
+            ["跨平台一致", "ok"],
+            ["约 4.7 MB", ""],
+          ],
+          stable: true,
+          check: '16px "Demo Hanken"',
+          checkSecondary: '16px "Noto Sans SC Variable"',
+          runtime: "中英字体均已内置",
+        },
+        {
+          index: "04",
+          name: "shadcn 汉化：Geist + Noto Sans SC",
+          className: "font-geist-noto",
+          stack: "英文 Demo Geist；中文 Noto Sans SC Variable",
+          badges: [
+            ["推荐重点看", "ok"],
+            ["跨平台一致", "ok"],
+            ["约 4.7 MB", ""],
+          ],
+          stable: true,
+          check: '16px "Demo Geist"',
+          checkSecondary: '16px "Noto Sans SC Variable"',
+          runtime: "保留 shadcn 英文气质，固定中文字形",
+        },
+        {
+          index: "05",
+          name: "全套 Noto Sans SC",
+          className: "font-noto",
+          stack: "中文、英文与数字统一使用 Noto Sans SC Variable",
+          badges: [
+            ["最稳妥", "ok"],
+            ["跨平台一致", "ok"],
+            ["约 4.6 MB", ""],
+          ],
+          stable: true,
+          check: '16px "Noto Sans SC Variable"',
+          runtime: "单一字体体系已内置",
+        },
+        {
+          index: "06",
+          name: "全套 MiSans",
+          className: "font-misans",
+          stack: "中文、英文与数字统一使用 MiSans",
+          badges: [
+            ["紧凑现代", ""],
+            ["跨平台一致", "ok"],
+            ["约 11 MB", ""],
+            ["仅本地评估", "warn"],
+          ],
+          stable: true,
+          check: '16px "MiSans"',
+          runtime: "字体已内置；分发许可需单独复核",
+        },
+        {
+          index: "07",
+          name: "全套 HarmonyOS Sans SC",
+          className: "font-harmony",
+          stack: "中文、英文与数字统一使用 HarmonyOS Sans SC",
+          badges: [
+            ["清晰舒展", ""],
+            ["跨平台一致", "ok"],
+            ["约 24 MB", "warn"],
+          ],
+          stable: true,
+          check: '16px "Demo Harmony"',
+          runtime: "400 / 500 / 700 三个字重已内置",
+        },
+      ];
+
+      const grid = document.querySelector("#specimen-grid");
+      const template = document.querySelector("#specimen-template");
+
+      specimens.forEach((item) => {
+        const node = template.content.cloneNode(true);
+        const article = node.querySelector(".specimen");
+        article.classList.add(item.className);
+        article.dataset.stable = String(item.stable);
+        node.querySelector(".index").textContent = item.index;
+        node.querySelector(".specimen-title").textContent = item.name;
+        node.querySelector(".font-stack").textContent = item.stack;
+        node.querySelector(".runtime-detail").textContent = item.runtime;
+
+        const badges = node.querySelector(".badges");
+        item.badges.forEach(([label, className]) => {
+          const badge = document.createElement("span");
+          badge.className = `badge ${className}`.trim();
+          badge.textContent = label;
+          badges.appendChild(badge);
+        });
+
+        article.dataset.check = item.check;
+        if (item.checkSecondary)
+          article.dataset.checkSecondary = item.checkSecondary;
+        grid.appendChild(node);
+      });
+
+      document.fonts.ready.then(() => {
+        document.querySelectorAll(".specimen").forEach((article) => {
+          const primary = document.fonts.check(article.dataset.check);
+          const secondary = article.dataset.checkSecondary
+            ? document.fonts.check(article.dataset.checkSecondary)
+            : true;
+          const status = article.querySelector(".runtime-status");
+          const loaded = primary && secondary;
+          status.textContent = loaded
+            ? "字体文件已加载"
+            : "字体加载失败 / 使用回退";
+          status.classList.toggle("pending", !loaded);
+        });
+      });
+
+      document.querySelectorAll("[data-layout-button]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.body.dataset.layout = button.dataset.layoutButton;
+          document
+            .querySelectorAll("[data-layout-button]")
+            .forEach((item) =>
+              item.setAttribute("aria-pressed", String(item === button)),
+            );
+        });
+      });
+
+      document.querySelectorAll("[data-filter-button]").forEach((button) => {
+        button.addEventListener("click", () => {
+          document.body.dataset.filter = button.dataset.filterButton;
+          document
+            .querySelectorAll("[data-filter-button]")
+            .forEach((item) =>
+              item.setAttribute("aria-pressed", String(item === button)),
+            );
+        });
+      });
+    </script>
+  </body>
+</html>

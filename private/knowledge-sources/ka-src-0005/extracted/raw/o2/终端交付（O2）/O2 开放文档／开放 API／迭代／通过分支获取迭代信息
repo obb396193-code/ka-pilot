@@ -1,0 +1,48 @@
+## 获取迭代基本信息
+
+通过仓库名和分支名获取迭代基本信息
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/apps/iterations/infos |
+| buc login | true |
+
+### Query parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| repo | String | true | - | 仓库名，如：def-work/front |
+| branch | String | true | - | 分支名 |
+
+### Returns
+
+An [Iteration](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6xiuwp43jozm69u9h) Object.
+
+### Example
+
+```
+client.get(`/v1.0/work/apps/iterations/infos`, {
+  repo,
+  branch
+}, {
+  SSO_TICKET
+})
+
+{
+  "id": 14798022,
+  "name": "0.27.2",
+  "description": "",
+  "app_id": 206718,
+  "group": "def-ui",
+  "project": "widget",
+  "branch": "def_releases_2023081815563030_def-ui_widget/0.27.2",
+  "version": "0.27.2",
+  "emp_id": "244744",
+  "status": 2,
+  "endtime": "1970-01-01T00:00:00.000Z",
+  "envstep": null,
+  "gmt_create": "2023-08-18T07:56:30.000Z",
+  "gmt_modified": "2023-08-18T07:56:30.000Z"
+}
+
+```

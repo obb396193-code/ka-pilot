@@ -1,0 +1,16 @@
+用户真实问题链接: https://links.alibaba-inc.com/support/conversation/66209241e7c79f056e53385f/
+
+作者：时路
+
+评审人：上坡
+
+
+
+**原因**：使用的还是老的开放扩展类型，「扩展配置」是新的 Pai App 应用类型才支持的能力
+
+
+
+**解决方案**：
+
++ 请迁移至 Pai App，参考文档：[https://docs.dingtalk.com/i/nodes/93NwLYZXWyxXroNzCmY1XPeQ8kyEqBQm](https://docs.dingtalk.com/i/nodes/93NwLYZXWyxXroNzCmY1XPeQ8kyEqBQm)
+

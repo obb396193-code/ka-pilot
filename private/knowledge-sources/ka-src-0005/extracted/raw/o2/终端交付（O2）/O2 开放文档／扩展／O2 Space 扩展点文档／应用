@@ -1,0 +1,507 @@
+### app-basic-overview-extend
+
+def应用基础概览底部的坑位
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgx0rRwivFET.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    appId: string;
+    pubType: string;
+}
+
+```
+### app-basic-overview-left-middle
+
+def 应用概览 -- 左边 --- 中间位置
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgKsGZTcbjYj.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    app: IApp;
+  contextHelper: IContextHelper
+}
+
+```
+### app-basic-overview-right-top
+
+应用概览 --- 右边 --- 上方位置
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgZduo0h2qiS.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    app: IApp;
+  contextHelper: IContextHelper
+}
+
+```
+### app-basic-overview-inner-extend
+
+def 应用概览卡片内部扩展
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgo0dGDWMLW3.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    app: IApp;
+  contextHelper: IContextHelper
+}
+
+```
+### app-first-level-navigation-add
+
+应用一级导航添加
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgeN1oRgS6bz.png)
+
+
+#### Config
+
+```
+[
+  {
+    name: '', // 名称
+    suffix: '', // 路由前缀
+    targetIndex: '' // 目标索引
+  }
+]
+
+```
+#### Props
+
+```
+### props
+interface IProps {
+  app: IApp
+  currentName: string; // 当前是哪个导航，组件内部判断渲染哪个导航，用来处理多个导航问题
+  contextHelper: IContextHelper;
+}
+
+```
+### app-setting-publish-publish
+
+def 基本设置 --- 发布设置 --- 发布
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgeMyhiMYJpD.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    appId: string;
+}
+
+```
+### app-setting-publish-add
+
+def 基本设置 --- 发布设置 --- 新增加
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/img4xF8J6I0Ra.png)
+
+
+#### Config
+
+```
+[
+  {
+      name: '',
+    suffix: '',
+    }
+]
+
+```
+#### Props
+
+```
+interface IProps {
+    appId: string;
+}
+
+```
+### app-setting-basic-add
+
+应用设置-基本设置-新增加
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgKzHw52nCvG.png)
+
+
+#### Config
+
+```
+[
+  {
+    "name": "O2 开发环境设置", // 名称
+    "suffix": "o2_environment" // 路由后缀
+  }
+]
+
+```
+### app-setting-first-level-navigation-add
+
+应用设置的一级导航自定义
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgct25zGknNq.png)
+
+
+#### Config
+
+```
+{name: '', suffix: '', targetIndex: ''}
+
+```
+#### Props
+
+```
+interface IProps {
+  appId: number;
+}
+
+```
+### app-setting-advance-item-replace
+
+高级设置的item设置替换
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgC0WHjxYkZG.png)
+
+
+#### Config
+
+```
+{
+  "key": "destroy", // 要替换的子菜单 key 
+  "name": "应用下线" // 要替换的子菜单 name
+}
+
+```
+#### Props
+
+```
+interface IProps {
+    app: App;
+}
+
+```
+### app-setting-delete-middle-add
+
+在应用删除的卡片中间增加区块
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/vBPlNYgDPBYXOdG8/img/cacf7182-e415-4fb1-81d7-e70357c7bc1f.png)
+
+
+#### Props
+
+```
+interface IProps {
+    appId: number;
+}
+
+```
+#### Event
+
+after-delete-app
+
+> 用于在应用删除完成后的操作（如释放应用占用的资源等）
+
+```
+eventCenter.asyncOn('after-delete-app', async ({ appId }) => {
+});
+
+```
+### app-total-create
+
+def 应用创建整块区域
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgYaJnZu6j5r.png)
+
+
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    onSuccess: (appId: string) => void;
+    contextHelper: IContextHelper;
+}
+
+```
+### app-create-info-generator
+
+控制新建应用中的脚手架选择面板
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/a/pg4z3rZ1oHbmXoql/b1add97deba545afa573dd40168771490521.png)
+
+
+#### Config
+
+```
+{
+  "hideParent": true, // 隐藏继承的基础类型脚手架 
+  "hideEmpty": true, // 隐藏“跳过选择”
+}
+
+```
+### app-create-info-bottom-extend
+
+创建应用-应用基本信息扩展
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgQjSf8Smf2s.png)
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imglHm5ewiN8l.png)
+
+
+#### Props
+
+```
+interface IProps {
+    contextHelper: IContextHelper;
+      solution: any;
+      pubtype: number;
+      user: UserInfo;
+      group: string;
+      project: string;
+}
+
+```
+对上层提供 ref.onSuccess 方法，在创建成功后调用
+
+
+
+#### Event
+
+
+
+before-create-application
+
+> 用于在创建前检查扩展表单的参数，返回是否通过并且可以追加扩展 form
+
+```
+// props.contextHelper.eventCenter
+eventCenter.asyncOn('before-create-application', async ({ postData, solution }) => { 
+  // postData 将要发送的创建应用 body 参数，postData.schema_data 自定义表单参数
+  // solution 选择的解决方案（脚手架），solution.generator_detail.schema_json 脚手架 schmema json
+  return {
+    pass: false, // 格式检查是否通过
+    postData: { // 自定义 merge 到 body 的参数
+      custom_body_param: 111
+    }
+  }
+});
+
+// 开放平台的内部代码。如果是扩展点的业务方不需要管这部分代码
+const eventResults = await e2EEventCenter.waitForAsyncEmit(EventName.beforeCreateApplication, { postData });
+for (const eventResult of eventResults) {
+  if (eventResult) {
+    if (!eventResult.pass) {
+      return;
+    }
+    if (eventResult.postData) {
+      postData = {
+        ...postData,
+        ...eventResult.postData,
+      };
+    }
+  }
+}
+
+```
+application-create-success
+
+> 用于在创建完成后进行的操作（如绑定 appId 、创建子应用等）
+
+```
+eventCenter.asyncOn('application-create-success', async (appDetail) => {
+  // appDetail 包括完整的应用信息
+});
+
+```
+application-create-repo-change
+
+> 用于创建应用仓库变化
+
+```
+eventCenter.asyncOn('application-create-group-change', async ({ group: string, project: string}) => {
+});
+
+```
+#### Config
+
+```
+{
+  "hideGeneratorIds": [1092], // 这里配置需要隐藏 schema 展示的 脚手架 id
+  "hideBasicForm": ["is_check_version_increment"] // 隐藏部分基础表达【is_check_version_increment】迭代版本递增
+}
+
+```
+隐藏原本的脚手架表单，再通过扩展自定义脚手架表单
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/b3BMqYRpZ0mAOwZL/img/e8aefdf6-e0a0-4e01-9de4-96ba6f0114e2.png)
+
+
+### app-create-info-group-whitelist
+
+配置创建应用时可选 group 的白名单
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imghJWY9FhHwB.png)
+
+
+#### Config
+
+```
+{
+  "CBU 1688 天搭搭建组件脚手架": ["tdmod"] // key 为脚手架名称，value 为可选的 group
+}
+
+```
+### app-create-info-group-public
+
+新建应用开放 group 扩展点，业务方可配置某一解决方案下某个 group 为开放 group，选择开放的 Group 新建应用时不检查用户 Group 权限，不拦截外包用户
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgUxB6gnyL55.png)
+
+
+#### Config
+
+```
+{
+  "groups": [{"name": "tdmod", "path": "tdmod"}] // 公开的 group
+}
+
+```
+### app-top-level-notice
+
+应用的通栏通知
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgApNroGrl6O.png)
+
+
+
+
+#### Props
+
+```
+interface IProps {
+    appId: string;
+}
+
+```
+
+
+### app-global-top-level-notice
+
+应用的通栏通知, 应用的各个一级页面都会覆盖到，例如：概览、迭代、变更之类的
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/img4Zu0N65V62.png)
+
+
+#### Props
+
+```
+interface IProps {
+    appId: string;
+}
+
+```
+### app-member-change
+
+添加成员后执行的 Service 扩展点
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgCRwYDCuqj7.png)
+
+
+#### Prams
+
+```
+interface Props{
+  app: App
+  appConf AppConf
+  type: 'add': 'remove':
+  empId: string,      
+}
+
+```
+### app-global-intercept
+
+应用拦截页，进入应用（覆盖应用各级页面）时检查应用是否继续提供服务，如不提供跳转到应用拦截页提示
+
+提示页为扩展点的 component 组件
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgr421vR0Ekj.png)
+
+
+#### Params
+
+```
+interface Params {
+  app: App,
+  appConf: AppConf
+}
+  
+
+```
+如果是从迭代页拦截过来，扩展点 UI 内部可以通过  query 获取跳转前的迭代 id
+
+#### Service Spi
+
+#### 
+
+业务方返回格式：
+
+```
+{
+  error: '',
+  data: {
+      intercept: true // 是否拦截
+  }
+}
+
+```
+### app-first-level-navigation-remove
+
+移除某个已有的应用一级导航
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hwn14mwq2oawo10d/imgKQe0U86oBY.png)
+
+
+#### Config
+
+```
+{
+  "navs": [
+    {
+      "name": "质量"
+    }
+  ]
+}
+
+```
+
+

@@ -49,7 +49,7 @@
 - 已完成：可重放 SQL 迁移与月分区、指标唯一纯函数、双口径字段级合并、Qihang 四资源 client、DB lease consumer、full/incr handler、etl_runs、失败 outbox、canonical 生效版本读取/计算/幂等 upsert。
 - 提前完成：独立钉钉网关核心（官方 Stream 适配、入站幂等、身份映射、本地命令/agent 分流、任务安全入队、sessionWebhook SSRF 防护）。
 - 验证：56 tests 全绿；四包 TypeScript/ESLint 全绿；V8 coverage domain 92.17% / worker 90.82% / db 80.69% / gateway 83.16%；四包 `npm audit --audit-level=high` 均 0 vulnerabilities；PostgreSQL 16 healthy，迁移 down/up 重放通过。
-- P-001~P-003 裁决落实：契约 v1.1 升级迁移（复合租户主键、workspace 补列、raw replay 字段/索引）；四 resource raw 持久化与 canonical 最新快照回放；job 冻结 owner 解析奇航身份、重试不换人、全局任务仅显式只读服务身份；Worker 独立启动组合。
+- P-001~P-003 裁决落实：契约 v1.1 升级迁移（复合租户主键、workspace 补列、raw replay 字段/索引）；四 resource raw 持久化与 canonical 最新快照回放；job 冻结 owner 解析启航身份、重试不换人、全局任务仅显式只读服务身份；Worker 独立启动组合。
 - 网关落实：独立启动组合；`POST /agent/sessions/:id/query` → `/query`；`POST /tasks`（钉钉 event id 幂等）；`POST /work-items/:id/reply` 客户端；入站事件带 workspace，长期数据不存 sessionWebhook。
 - 最终验证：69 tests 全绿；业务源码行覆盖率 domain 93.39% / worker 85.14% / db 81.32% / gateway 86.62%；四包 TypeScript/ESLint 全绿；四包 npm audit 均 0 vulnerabilities；PG migration down/up 通过；凭证/动态执行扫描无发现。
 - 边界如实：三个产品 API 的服务端实现属 B1c，本批仅完成网关调用侧与 mock 合同测试；HTTP 200 业务鉴权码仍等 B7 内网实证，不猜。
@@ -94,7 +94,7 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 
 ### P-007 ✅已裁决（2026-09-04 v1.3）｜原B4 任务与报告契约差异｜be（Codex）
 
-1. 奇航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
+1. 启航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
 2. `task_accounts UNIQUE(task_id,account_id,valid_from)` 缺 workspace_id，且无租户 FK/区间排斥约束；建议修正复合唯一与 FK，区间重叠由事务检查兜底。
 3. pacing 请冻结：日历天还是业务日、asOf 是否含当日、7 日零量日是否纳入、任务结束后的显示语义。本批明确采用“asOf=完整结算日，剩余不含 asOf，调用方传有效日序列”。
 4. 日报“12 模块”缺字段、顺序、角色裁剪、缺数状态和版本 schema；本批只做稳定事实集。
@@ -213,7 +213,7 @@ main 9335150
 8. 报表生成 job_type、run 状态、失败恢复和 outbound/钉钉交接；本批未注册生产任务。
 9. 权威 `dataCutoffAt` 从 ETL/canonical 哪个 Run 取，不能使用查询完成时间。
 
-**明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/奇航/Multica/OS 联调。
+**明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/启航/Multica/OS 联调。
 
 ---
 
@@ -343,7 +343,7 @@ main 9335150
 **已完成**：
 
 1. P0 修复 6/14：日常 raw→canonical→quality 派发、Job lease fencing、确认/执行 TTL、Changeset+T1 崩溃恢复、知识明文对象权限、Workflow 嵌入式凭证扫描。
-2. P1 修复 7/17：上海业务日、unknown lifecycle、inactive 奇航身份、Changeset exact-once 结果、规则全失败可见、账户分页 fail-closed、指标分区运行期保活。
+2. P1 修复 7/17：上海业务日、unknown lifecycle、inactive 启航身份、Changeset exact-once 结果、规则全失败可见、账户分页 fail-closed、指标分区运行期保活。
 3. 额外补强：缺数/零置信度/无证据 Agent 诊断不得给调整动作；租约 CHECK 防 SQL NULL 绕过；Agent timeout 不超过 credential envelope TTL。
 4. 验证：422 默认 tests passed；1 个真 Claude Agent SDK→本地网关→fake upstream opt-in smoke 单独 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放和 Job 并发反例通过。
 5. 复杂度复核：full ETL、Job Consumer、Job enqueue 完成等价职责提取；变更生产文件 complexity≤10、单函数≤100 行门禁 0 发现。
@@ -375,7 +375,7 @@ main 9335150
 1. 机械核验 `be/b8a`→`fe/f001` 共同基线与重叠路径；最终复核时 `fe/f001` 已前进到 `1de9256`，仍有 46 个脏路径，禁止在此现场直接 merge。5 个 committed overlap 中，台账、两信箱和 `schema.sql` 有明确文本冲突，`api.md` 仍需契约人工审查；脏路径与后端交集更新为台账和两信箱。
 2. Qihang 增加响应字节、行数、ID 数与编码 URL 四层资源预算；超限稳定为 `RESOURCE_LIMIT`，不进入网络重试。ETL/Backfill payload 同步 fail-closed。
 3. 增加纯合成、无网络/DB benchmark。当前代码基线暴露 Canonical 每轮 `3N+4` 端口调用；5,000 行是 15,004 次，报告没有把本机毫秒数冒充生产 SLA。
-4. 形成奇航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
+4. 形成启航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
 5. 当前全量门禁：434 默认 tests passed；真 Claude Agent SDK→localhost gateway→fake upstream opt-in smoke 1 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放通过；变更生产代码 complexity≤10、单函数≤100 行；凭证/动态执行扫描无发现。
 
 **请重点复核**：
@@ -385,7 +385,7 @@ main 9335150
 3. 合并时 `schema.sql` 以 Claude 契约裁决为主，后端 migration 真相不得丢；两信箱按条目语义合并，不可整文件覆盖。
 4. 联调清单的 owner、证据、失败级别、写确认和敏感信息禁记是否满足内部安全要求。
 
-**仍然不是完成项**：未合并、未部署、未接真实奇航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
+**仍然不是完成项**：未合并、未部署、未接真实启航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
 
 ---
 
@@ -408,7 +408,7 @@ main 9335150
 **已完成**：
 
 1. CanonicalStore/Repository 改为默认 250 的 settings/history/upsert 批量端口；复合 workspace/account/date 缺失、重复、越界 fail-closed。
-2. 真实 PostgreSQL 纵向链：假奇航→Full ETL→Raw→Job→Canonical→质量→语义查询→规则→工作项→报告事实；同 accountId 跨 workspace 隔离实测。
+2. 真实 PostgreSQL 纵向链：假启航→Full ETL→Raw→Job→Canonical→质量→语义查询→规则→工作项→报告事实；同 accountId 跨 workspace 隔离实测。
 3. Full/Incr `etl_runs.workspace_id` 补齐；规则首次创建/重扫合并，报告 KPI/趋势/任务维度共用语义事实。
 4. 修复 P1-03：按 Canonical `field_sources.cost` 选择 latest offline `cost_api` 或 realtime `account_cost` 对平，消除当天假异常。
 5. 修复 P1-16：5000 行端口调用从 15004 降到 64；真实 PG 三次中位 394.974ms，最终 5000 行，代表性读计划无根级 Seq Scan。
@@ -419,7 +419,7 @@ main 9335150
 1. 批量 SQL 使用 JSON recordset、默认 250/最大 1000、每 chunk 原子但跨 chunk 非单事务的语义是否保留；后续批次失败时已写前缀可留，Job 失败且不派生质量。
 2. Handler 对 batch 返回结果的复合键 completeness/duplicate/out-of-scope 检查是否足够；是否需要 Repository 层额外 workspace 外键/一致性约束。
 3. Raw append-only 重试语义：当前崩溃重试会保留重复抓取，latest-row + Canonical Upsert 防双计。请裁决这是审计历史还是应增加 request/run identity 去重。
-4. 质量 source 选择：`realtime|gap_filled` 取 `account_cost`，其余优先 offline `cost_api` 再 realtime；请与真实奇航字段和数据日口径核对。
+4. 质量 source 选择：`realtime|gap_filled` 取 `account_cost`，其余优先 offline `cost_api` 再 realtime；请与真实启航字段和数据日口径核对。
 5. 集成测试的规则候选只从真实语义结果生成，但仍是 test adapter；不要未经契约冻结直接注册生产 rule/report Job。
 6. PG benchmark 只允许本机测试库且会自动清理；结果是热缓存单 workspace，不得写成生产 SLA。
 
@@ -427,7 +427,7 @@ main 9335150
 
 - production rule/report job payload、触发器、候选 Provider 和输出存储；
 - Raw 大响应分片和 PostgreSQL 参数上限（P1-14 剩余部分）；
-- 真实奇航 1000 IDs 以上分片、限流、字段宽度和失败恢复；
+- 真实启航 1000 IDs 以上分片、限流、字段宽度和失败恢复；
 - 真实 Multica/OS、Secret、Provider、钉钉 Stream、FaaS/共享 PG；
 - Raw 请求幂等、冷缓存/并发/p95/p99 和生产资源预算。
 
@@ -435,15 +435,15 @@ main 9335150
 
 ---
 
-### P-017 ⏳B10 真实奇航只读适配待审计｜be（Codex）
+### P-017 ⏳B10 真实启航只读适配待审计｜be（Codex）
 
 - 分支：`be/b8a`
 - 基线：`f756140`
 - 功能与证据 SHA：`41c6646`
 - 双口径事实纠偏 SHA：`3167e39`（当天 realtime 分钟级；D-2 仅为本次 offline 观测；BI 为备用/增强）
-- 实施计划：`docs/plans/2026-08-20-B10真实奇航只读适配-implementation.md`
+- 实施计划：`docs/plans/2026-08-20-B10真实启航只读适配-implementation.md`
 - 状态：`docs/plans/B10-状态.md`
-- 脱敏证据：`docs/evidence/B10-真实奇航只读适配报告.md`
+- 脱敏证据：`docs/evidence/B10-真实启航只读适配报告.md`
 
 **真实证据边界**：老板转交的 OS Agent 在合法身份下实际执行四类只读 GET；已确认协议、日期、空数组和动态字段；当天 realtime 命中且 `last_sync_time` 为分钟级，离线仅在本次观察到 D-1 空、D-2 命中。D-2 不是实时延迟也不是固定 SLA。原始 userId、账户/广告/任务标识、金额和精确业务规模未写入仓库。请求不是由本项目 Worker/FaaS 发起，因此仍不能标记 Gate B 完成。
 
@@ -458,7 +458,7 @@ main 9335150
 
 1. `packages/contract/metrics.md` 仍写“离线 T+1 权威”且 `account_real_conversion` 只列 realtime，是否按真实证据改为“最新已产出分区”和 offline/realtime 双来源。
    `docs/20-PRD-v1.md` 的“account_offline（昨日结算）→ account_realtime（近 7 日补洞）”也需同步改成“当天 realtime 分钟级 + offline 动态探测最新已产出分区”，并注明历史 realtime `ds` 尚未实测。
-2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求奇航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
+2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求启航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
 3. 当前业务线离线样本没有 `cash/income/rebate`。现有派生逻辑在 compensation 缺失时按 0 计算现金成本；该业务语义本批未改，请业务/arch 明确“缺失=0”还是“现金指标不可用”。
 4. userId 仍是个人身份，OS 只证明内网可调用，不是部门级服务身份。正式推广前应用身份仍是硬门。
 5. 本轮 realtime 只实测当天；Skill 源码虽会用历史 realtime 补洞，但服务端是否正式支持历史 `ds` 尚待探针，不能由实现反推协议。
@@ -470,7 +470,7 @@ main 9335150
 
 ---
 
-### P-018 ⏳B11 奇航时效完整性与小时监控待审计｜be（Codex）
+### P-018 ⏳B11 启航时效完整性与小时监控待审计｜be（Codex）
 
 - 分支：`be/b11`
 - 基线：`878126f`
@@ -506,8 +506,8 @@ main 9335150
 
 1. offline 无 complete marker 时仅有 `not_observed/observed_unverified` 是否符合数据健康语义；不要把非空或跨批稳定升级成 complete。
 2. 默认每次 Incr 重查 D-1 与 0..3 配置是否需要由调度层固定频率/冷却，避免高频任务重复拉离线。
-3. 默认 5 账户/80 广告 ID、最多 200 批的奇航频控与资源边界是否长期保留；当前没有真实 SLA，故实现选择顺序执行。
-4. 单个账户过滤查询若仍恰好命中 2000，当前缺少权威 adIds 发现来源，只能 fail-closed；请裁决后续由账户基建台账、奇航新接口还是媒体对象清单提供拆分种子。
+3. 默认 5 账户/80 广告 ID、最多 200 批的启航频控与资源边界是否长期保留；当前没有真实 SLA，故实现选择顺序执行。
+4. 单个账户过滤查询若仍恰好命中 2000，当前缺少权威 adIds 发现来源，只能 fail-closed；请裁决后续由账户基建台账、启航新接口还是媒体对象清单提供拆分种子。
 5. 现有小时表没有 `last_sync_time`/issue 状态列；本批只在 ETL observation 留源更新时间和 aggregate issue。请裁决未来公开数据健康 DTO、保留期和页面展示方式。
 6. 当前小时 Repository 一次 JSON batch；上游已按最多 5 账户拆分，但单账户仍可能有大量广告。是否增加 DB 分块上限，等真实响应宽度与 PG 基准后决定。
 
@@ -532,7 +532,7 @@ main 9335150
 **本批实现**：
 
 1. 广告 ID 通用分页枚举，校验 page/pageSize/total、空页、页数和 ID 数；只有 `complete + confirmed_equal + 独立证据指纹` 才输出 `adIds`，运行时再次防结构伪造。
-2. 奇航素材池严格只读客户端，校验 envelope、total 稳定、重复冲突、页/行/字节预算，错误和观测不含业务 ID、完整 URL 或响应正文。
+2. 启航素材池严格只读客户端，校验 envelope、total 稳定、重复冲突、页/行/字节预算，错误和观测不含业务 ID、完整 URL 或响应正文。
 3. 视频来源安全探针默认全拒绝；显式 host allowlist 后逐跳校验重定向，HEAD 不支持才发单字节 Range；直接 IP、非视频、未知/零长度和超限阻断。
 4. 未修改 public contract、migration、DB、前端；未接生产 Runtime、视频下载、拆片或媒体写操作。
 
@@ -790,7 +790,7 @@ main 9335150
 **请重点审查/裁决**：
 
 1. 真实期次模板和 factKey/公式/汇总/容差，以及模板发布/废弃权限。
-2. sourceFactId/rowKey 与奇航 offline/语义层的权威映射、完整分区和勘误重算。
+2. sourceFactId/rowKey 与启航 offline/语义层的权威映射、完整分区和勘误重算。
 3. 人工修正权限/evidenceRef/双人复核、冻结后勘误生成新 run 的状态机。
 4. DB/API DTO 与 workspace/optimizer/period 唯一键、历史模板和值快照留存。
 5. Excel/PDF/PNG 精度/舍入与导出、差异转工作项、钉钉订阅/推送契约。
@@ -1468,7 +1468,7 @@ Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一�
 
 - EVO 子资料明确实验设计、流量规划、联调、发布、分析、人工推全/下线和结果报告阶段；
 - 用户增长目录多数是 43 条摘要索引，不是 43 篇完整正文；
-- 当前一期取数主通路是奇航 `get_data`，不是 FBI；
+- 当前一期取数主通路是启航 `get_data`，不是 FBI；
 - Excel 是“人填策略/参数→工具拼指令”的白盒执行样本；当前产品设计仍是可控自治灰盒。
 
 合理推断（待裁决）：
@@ -1522,7 +1522,7 @@ Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一�
 5. 是否确认重复 `INDEX.md` 不另分配 document_id？
 6. 哪些子文档优先提升：EVO A/B、FBI 嵌入、SaaS 广告投放摘要、O2 Next.js、AIStudio API？
 7. EVO 是否可进入 Experiment Copilot 下一版候选；固定测量期与实时调控如何裁决？
-8. 是否确认 FBI 只做后续备选，不改变一期奇航主通路？
+8. 是否确认 FBI 只做后续备选，不改变一期启航主通路？
 9. Excel 哪些字段可进入 `create_ad` schema，100 组默认/“其他默认”是否明确驳回？
 10. 是否对高风险参数维持 deny/quarantine，并由 security/compliance 专项裁决？
 11. 是否批准派生“去 ID/去高风险字段的快手基建参数字典”进入下一轮审查？
@@ -1886,7 +1886,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 合理推断（待审查）：
 
 - MAPI 应成为快手 provider 的官方能力上限证据，CLI 是执行壳；优先补 Capability Registry、结构同步和执行回查。
-- 一期不应因此替换奇航 `get_data` 主读取链路；MAPI 报表先作结构/口径校验或缺维度补充。
+- 一期不应因此替换启航 `get_data` 主读取链路；MAPI 报表先作结构/口径校验或缺维度补充。
 - 媒体原生自动基建/调控/智投与我方矩阵基建、自治度、Agent 决策不是同一能力，应单独治理。
 - 当前公开 MAPI 证据不足以支持严格 AI A/B 实验；实验模式默认冻结媒体原生自动化更安全。
 
@@ -1894,7 +1894,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - 本公司 AppID/账户实际 scope、白名单和接口可用性；
 - 当前 `kuaishou-cli` 对本批接口的封装覆盖、host/版本与运行状态；
-- MAPI 与奇航在字段、时效、结算口径上的一致性；
+- MAPI 与启航在字段、时效、结算口径上的一致性；
 - 冲突页面的生产真实路径、方法和上限；
 - 是否存在非公开/白名单实验分流能力；
 - 媒体自动调控是否跨实验组共享学习或污染对照。
@@ -1918,7 +1918,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 建议驳回：
 
 - 因公开页面存在就宣称公司账户已可用；
-- 用 MAPI 报表直接替换奇航主链路；
+- 用 MAPI 报表直接替换启航主链路；
 - 一次性封装全量 MAPI；
 - 产品服务直存媒体 token/secret；
 - 无确认自动删除、关停、调预算/出价；
@@ -1935,7 +1935,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 1. 是否批准 `ka-src-0007` 为 E1 官方证据，并允许升为 `reviewed`；冲突项是否继续 `unverified`？
 2. 是否认可 `documented/authorized/wrapped/verified` 四态和 `official_conflict`？
-3. 是否同意“先 capability manifest + CLI 覆盖审计 + 只读探针，不替换奇航主链路”？
+3. 是否同意“先 capability manifest + CLI 覆盖审计 + 只读探针，不替换启航主链路”？
 4. 是否要求执行/架构 Agent 单独提交当前 `kuaishou-cli` 与本批接口的覆盖矩阵？
 5. 谁负责裁定路径、计划上限和请求方法三类官方冲突：测试账户探针、媒体接口人还是两者都要？
 6. 是否批准先做 campaign/unit/creative 只读结构同步和媒体态回查？
@@ -2022,7 +2022,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 合理推断（待审查）：
 
-- 奇航继续承担一期既定数据主链路；MAPI 作为快手官方能力上限、执行/结构/素材/回查底座，两者不是替代关系。
+- 启航继续承担一期既定数据主链路；MAPI 作为快手官方能力上限、执行/结构/素材/回查底座，两者不是替代关系。
 - CLI 缺失端点可以按 `constants + client + command` 模式按需补壳；但不应为追求数量一次性封装 327 条。
 - 机器初筛把 381 条分为 59 一期候选、249 后续条件候选、73 参考或排除，能作为业务 owner/架构二次裁剪的起点。
 - 一期最值得补的是 campaign update/status、unit budget、creative update/status/review、四层实时 report；其余按明确产品场景进入后续。
@@ -2031,7 +2031,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - 本公司 AppID/广告账户实际 scope、白名单和每个 endpoint 的授权状态；矩阵 `required_scope` 暂为 `requires_mapping`。
 - CLI 23 个可达端点在当前沙箱代理与测试账户是否全部运行正常。
-- MAPI 与奇航在字段、时效、结算口径上的一致性；MAPI 报表不能据此替换奇航。
+- MAPI 与启航在字段、时效、结算口径上的一致性；MAPI 报表不能据此替换启航。
 - 327 个未封装 endpoint 的公司账户可用性、当前生产路径和实际业务价值。
 - 官方冲突项的生产真实方法/上限；媒体原生自动化对实验流量和共享学习的影响。
 - 非公开或白名单实验能力是否存在；公开目录仍不足以证明严格 A/B 分流能力。
@@ -2055,7 +2055,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 建议驳回：
 
-- 用 MAPI 替代奇航一期主数据链路；
+- 用 MAPI 替代启航一期主数据链路；
 - 一次性封装全部 327 个缺失 endpoint；
 - 代理商开户/充值/转账/退款、共享钱包资金写进入当前 KA 产品；
 - CRM 外呼、企微成员、第三方支付进入当前产品或 Agent 工具；
@@ -2075,7 +2075,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 1. 是否接受 `P-KB-008` 替代 `P-KB-007` 的范围描述，并认可同一 `ka-src-0007` revision/hash 更新？
 2. 是否批准 672 篇全量快照为 E1 资料、381 条矩阵为未审查分析附件；是否允许升为 `reviewed`？
 3. 是否接受 CLI 静态结论：代码 1.2.1、25 常量、23 reachable、2 declared-only、327 未封装、raw 未注册？
-4. 是否确认“奇航主读取链路不变，MAPI/CLI 按需补执行、结构、素材和回查能力”？
+4. 是否确认“启航主读取链路不变，MAPI/CLI 按需补执行、结构、素材和回查能力”？
 5. 59 条一期候选是否必须由业务 owner 二次裁剪；素材共享、AI 推荐、广告语推荐是否移出一期？
 6. 是否批准优先补 campaign update/status、unit budget、creative update/status/review、四层实时 report 的候选顺序？
 7. 谁负责在授权测试账户上做 `authorized/verified` 探针，以及 scope 映射？
@@ -2307,7 +2307,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 原文描述了一个 reader 级只读查询门面、三类数据后端、账户/广告组/素材/商品/BI 转化数据字典、现金/考核/扣量公式、对象 ID 和故障排查；其中账户双 namespace 说法已被 R1 纠正。
 - 冻结账户事实：KA 与平台 `account_id` 相同，不建立账户 ID 映射表；R3 已把账户主键与相关外键统一为 `(workspace_id, media, account_id)`。
 - `task/product/material/adgroup` 等其他对象 ID 是否一致仍待核证，不能从账户结论顺推。
-- 当前冻结 Contract 仍以奇航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
+- 当前冻结 Contract 仍以启航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
 - 当前仓库没有原文所指服务端实现、产品 adapter、调用日志、reader token 或运行验收；本轮没有调用内部服务。
 
 资料主张但未独立核实：
@@ -2319,7 +2319,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 合理推断：
 
-- 若探针成立，ka-data 可作为 BI 转化、素材/商品和跨媒体的补充/对平 provider；不必立即替换奇航。
+- 若探针成立，ka-data 可作为 BI 转化、素材/商品和跨媒体的补充/对平 provider；不必立即替换启航。
 - media 条件、其他对象 ID 关联、业务日期门槛和截断规则适合转成数据质量检查；账户 ID 不再列入待映射范围。
 - 原始 SQL 门面只适合受控数据运维/adapter，不适合直接给普通用户或产品 Agent。
 
@@ -2337,9 +2337,9 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 #### 4. 分期建议
 
 - P0：授权 data owner 做只读 health/query 探针、安全复核和少量脱敏样本的同日同户对平；不把 token 交给本项目或写入资料库。
-- P0：确认奇航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
+- P0：确认启航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
 - P0：账户已采用 `(workspace_id, media, account_id)`；继续分别核证 task/product/material/adgroup 等其他对象 ID 与关联键。
-- P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换奇航主链路。
+- P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换启航主链路。
 - P2：素材/商品/内容标签和多渠道，以许可、ACL、字段覆盖和数据质量为前置。
 - 不采用：普通用户/Agent 任意 SQL、共享 token 台账、临时地址写进 Contract、SQLite 作生产主库、硬编码系数、因资料写“全媒体”而扩一期。
 
@@ -2355,11 +2355,11 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 #### 6. 请 arch/security/data owner 回写 ✅/❌
 
 1. 谁是正式 data owner；资料版本、服务环境和 SLA 是什么？
-2. 是否批准把 ka-data 作为一期补充/对平 provider 候选，而非立即替换奇航？
+2. 是否批准把 ka-data 作为一期补充/对平 provider 候选，而非立即替换启航？
 3. 是否批准第一批只读探针；测试身份、样本、指标和验收人由谁提供？
 4. reader token 的数据范围、签发/撤销、审计和 BUC/workspace 映射是否合规？
 5. SQL 护栏是否需要 security 绕过测试、底层只读角色和 allowlisted views？
-6. 奇航、ka-data、MAPI、业务确认表的字段级 SSOT 如何裁决？
+6. 启航、ka-data、MAPI、业务确认表的字段级 SSOT 如何裁决？
 7. 现金公式的固定系数与版本化 `channel_coefficients` 是否同一定义？
 8. `task/product/material/adgroup` 等其他对象 ID 是否一致；若不一致，各对象的关联键与 coverage 如何表达？账户不建立 mapping。
 9. SQLite 快照生成链、data_as_of、revision、保留期和失败补偿是否可提供？
@@ -2435,14 +2435,14 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 代码终态：`72228b4`
 - 质量与交接：`fa84d22`
 - 质量：`docs/evidence/B23-A-代码质量报告.md`
-- Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- Gap matrix：`docs/evidence/B23-C-启航只读链Gap矩阵.md`
 - 状态：implemented / codex self-checked / root integration pending / Claude review reserved
 
 **本批实现**：
 
 1. 四表 migration 保留 workspace-local users，用复合 FK 绑定 membership→user、grant→账户三字段键。
 2. Worker 明文 session token 只在内存中即时 SHA-256；DB Repository 只接受 hash，不选择或返回
-   provider subject、奇航 userId、Secret ref、token hash。
+   provider subject、启航 userId、Secret ref、token hash。
 3. Domain 对 expired/revoked/inactive/missing/mismatched/duplicate 全部 fail closed；无 grant 是
    approved empty scope，不是 workspace 全权。
 4. 同 identity 双 workspace、跨 workspace/跨 media 同 account ID、跨 workspace user FK、撤销和
@@ -2458,11 +2458,11 @@ identity/workspace/user/grant seed 与审计。
 
 **关键未完成**：B23-A 还不是登录 E2E。此处原记账户主表同步缺口已由后续 B23-C1/P-034 关闭；
 仍缺普通业务调度、`/api/v1/query`、任务/账户/工作项列表 API 和严格 DTO；详见 B23-C。未合并、未部署、
-未使用真实 BUC/session/奇航账户，所有媒体写继续关闭。
+未使用真实 BUC/session/启航账户，所有媒体写继续关闭。
 
 ---
 
-### P-034 ⏳B23-C1 奇航账户主表同步待审计｜be（Codex）
+### P-034 ⏳B23-C1 启航账户主表同步待审计｜be（Codex）
 
 - 分支：`codex/b23-c1-account-sync`
 - 基线：`codex/integration-control@0775a13`
@@ -2472,21 +2472,21 @@ identity/workspace/user/grant seed 与审计。
 - Full/Backfill/Runtime 接线：`0807cd4`
 - 真实 PG 纵切片：`c1e2600`
 - 自审分页修复/代码终态：`ec4934a`
-- 质量：`docs/evidence/B23-C1-奇航账户主表同步质量报告.md`
+- 质量：`docs/evidence/B23-C1-启航账户主表同步质量报告.md`
 - 状态：implemented / local PostgreSQL verified / Codex self-checked / root integration pending / Claude review reserved
 
-**实现边界**：奇航 `resource=account` 只从受信任务取 workspace/media，只接收
+**实现边界**：启航 `resource=account` 只从受信任务取 workspace/media，只接收
 `account_id/account_name/status`；每个非空分页先验 pagination 和整页 tuple，再用短事务 upsert
 `accounts`并写同页 Raw。失败页 0 写入，前页可重放，未完成不派 canonical/fanout。
 
 **质量真相**：DB 112、Worker 467 tests passed，2 项既有 opt-in skipped；两包 typecheck/lint/audit、
-coverage 与真实 PostgreSQL 全绿。纵切片的奇航是 fake port，只证明代码+真 PG，不代表内网真源已联通。
+coverage 与真实 PostgreSQL 全绿。纵切片的启航是 fake port，只证明代码+真 PG，不代表内网真源已联通。
 
 **请重点审计**：上游 metadata 精确字段允许集；每页事务与跨页恢复语义；Raw append-only
 重放对 canonical 取最新行的影响；正式 scheduler 如何从 approvedAuthContext 构造首次/周期 job。
 
 **仍未完成**：普通 ETL scheduler/入队、session HTTP composition、`POST /api/v1/query`、
-`GET /tasks`、`GET /accounts`、`GET /work-items` 列表、真实奇航联调、内网部署。媒体写继续关闭。
+`GET /tasks`、`GET /accounts`、`GET /work-items` 列表、真实启航联调、内网部署。媒体写继续关闭。
 
 ---
 
@@ -2515,7 +2515,7 @@ skipped；三包 typecheck/lint/audit、coverage 与真实 PostgreSQL 全绿。H
 无账户 tuple 工作项默认不计入摘要；coverage 以筛选全集、freshness 以返回页事实表达；
 正式 BFF/session 是否能只从 approvedAuthContext 注入 headers。
 
-**仍未完成**：浏览器 `/api/internal/tasks` 与页面整合、正式 BUC/session E2E、真实奇航任务源
+**仍未完成**：浏览器 `/api/internal/tasks` 与页面整合、正式 BUC/session E2E、真实启航任务源
 网络/身份 trace、内网部署。所有任务创建/编辑/考核价/账户分配及媒体写继续关闭。
 
 
@@ -2529,7 +2529,7 @@ R-008 原文有两处按字面实现会损害可靠性，老板已批准 Codex �
 
 1. **历史回灌不复用现有 `etl_full`**：现有 full 每次会查账户分页、D-1 离线及连续 7 天实时；拆 90 个 full 会造成重复账户发现和约 630 日实时查询。改为 `backfill_historical` 协调器一次发现账户，扇出确定性 `backfill_day` 子 job；每个子 job 只查目标日 `account_offline`。
 2. **优先级修正**：现有 `ORDER BY priority ASC` 表示数字越小越优先。采用 `etl_incr=1`、`rule_scan=3`、`backfill_day=9`，不采用 R-008 原文 `backfill=1/etl_incr=5`，避免 90 天回灌压住实时取数。
-3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免奇航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
+3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免启航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
 4. **阶段链路**：backfill raw → canonical 聚合 → data quality；总量对账基于每账户/日/resource 最新 raw 快照，不能直接累加重试产生的重复 raw 行。
 5. **边界**：不新增未冻结业务表；回灌日状态使用 `jobs.payload(backfillId, ds)` + `backfill_jobs.cursor_date/status`，失败详情由 jobs/etl_runs 留痕。
 
@@ -2546,7 +2546,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - PostgreSQL 真实冒烟（脱敏假数据）：10 账户 × 90 天 = 900 canonical；270/270 质量检查通过；0 failed/blocked job；180 etl_runs done；backfill cursor=`2026-08-18`。
 - 证据：`docs/evidence/B1b-90天回灌日志.txt`、`docs/evidence/B1b-90天回灌.png`、`scripts/b1b-90d-smoke.ts`。
 - 全量门禁：88 tests；行覆盖率 domain 93.39% / db 85.24% / worker 84.75% / gateway 86.62%；四包 typecheck/lint 全绿；四包 npm audit 均 0 vulnerabilities；静态安全审查 0 Critical/High。
-- 审查边界：以 P-005 修正方案为准；本次是本地 PG + 程序生成假数据，不代表真实奇航接口联调完成，真联调仍属 B7。
+- 审查边界：以 P-005 修正方案为准；本次是本地 PG + 程序生成假数据，不代表真实启航接口联调完成，真联调仍属 B7。
 
 **arch 待办**：按 R-008 + P-005 逐项 diff 审计，并将 B1b 最终状态补记到工作台账。
 
@@ -2639,7 +2639,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 
 ### 二、数据源绑定空间（老板 2026-09-04；替代 root 的"管理员诊断"方案与前端三态切换器）
 
-- personal 空间 → `platform`（奇航，本人授权户）；team 空间 → `ka_data`（全渠道，团队只读）。**切空间 = 切源**。
+- personal 空间 → `platform`（启航，本人授权户）；team 空间 → `ka_data`（全渠道，团队只读）。**切空间 = 切源**。
 - 普通页面移除 `KA Data 权威版/自建平台版/双源对账` 三 tab 与 `data_view` URL 参数；`reconcile` 只留治理后台、entitlement allowlist。
 - 落 api.md DATA-ROUTE-001 v1.2 修订块。root 对 Task5 提的 P1-2「dataView 由浏览器控制」由此条一并解决。
 
@@ -2675,12 +2675,12 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 | ka-src-0004 术语/调控工作流 | ✅ reviewed，confidential。高风险回传 deny；**术语卡→approved**；固定阈值只作规则候选不默认 | **术语卡是**；其余否 | 规则候选进 13.2 候补池，Shadow 回放后才升 |
 | ka-src-0005 内部文档包 671 篇 | ✅ reviewed，confidential。整包不进 KB；8 直接候选（用户增长摘要/EVO 实验治理）逐篇后续；FBI 不做一期主链 | 否 | 无一期动作 |
 | ka-src-0006 广告创建 Excel | ✅ reviewed，confidential。真实 ID deny；字段映射→基建 schema（4.6 Prompt Compiler 已按此设计） | 否 | B7 基建节点字段校验按此 |
-| ka-src-0007 快手 MAPI 官方（381 篇+CLI 覆盖） | ✅ reviewed→**approved**（public 官方）。奇航仍是一期主链，MAPI=能力底座；59 条机器初筛**不整体进一期**，先由老板/业务 owner 裁剪；CLI 2 处 HTTP 方法冲突要修 | **是**（开发者+优化师） | Codex R-010：Capability Registry 录入状态 `documented_unverified`；核心断点 campaign update/status、unit budget、creative update/review、四层实时 report 补 CLI 壳 |
+| ka-src-0007 快手 MAPI 官方（381 篇+CLI 覆盖） | ✅ reviewed→**approved**（public 官方）。启航仍是一期主链，MAPI=能力底座；59 条机器初筛**不整体进一期**，先由老板/业务 owner 裁剪；CLI 2 处 HTTP 方法冲突要修 | **是**（开发者+优化师） | Codex R-010：Capability Registry 录入状态 `documented_unverified`；核心断点 campaign update/status、unit budget、creative update/review、四层实时 report 补 CLI 壳 |
 | ka-src-0008 巨量官方 1103 篇 | ✅ reviewed→**approved**（public）。只融合对象模型/权限状态/实验治理概念；**不开发巨量 adapter** | **是**（参考） | 无一期动作 |
 | ka-src-0009 腾讯 Apifox 镜像 | ✅ reviewed，E2。306/307 参数位置错、1 endpoint 错，不可作 Contract | 是但标 **reference_only/未核** | 无一期动作 |
-| ka-src-0010 ka-data 取数指南 | ✅ reviewed，confidential。**老板已裁：团队空间主源=ka_data**（覆盖评估的"先探针后 adapter"）。安全项保留：reader token 只进 Secret、不开任意 SQL、不依赖临时沙箱 URL、SQLite 快照不作主库。**同日同户对平（奇航 vs ka-data）= 内网联调硬门** | 否（内部运维） | R-009 已含 team→ka_data；对平交 OS agent 联调 |
+| ka-src-0010 ka-data 取数指南 | ✅ reviewed，confidential。**老板已裁：团队空间主源=ka_data**（覆盖评估的"先探针后 adapter"）。安全项保留：reader token 只进 Secret、不开任意 SQL、不依赖临时沙箱 URL、SQLite 快照不作主库。**同日同户对平（启航 vs ka-data）= 内网联调硬门** | 否（内部运维） | R-009 已含 team→ka_data；对平交 OS agent 联调 |
 | P-KB-010 发布机制 | ✅ 纳入 B8 知识库批次（权限继承/门禁/approved→published 流程） | — | B8 |
-| P-KB-011 六问 | ①ka-data 服务 owner/ACL/只读性 → OS agent 联调核 ②数据血缘/公式 → 对平后定 ③数据许可 → 老板与运营方确认 ④adapter 分期 → 已由 team 绑定裁掉 ⑤字段级 SSOT：**奇航=personal 权威、ka-data=team 权威、业务确认表=考核价/返点权威、MAPI=结构/执行权威** ⑥其他对象 ID（task/product/material/adgroup）继续 unresolved，逐项核证 | — | — |
+| P-KB-011 六问 | ①ka-data 服务 owner/ACL/只读性 → OS agent 联调核 ②数据血缘/公式 → 对平后定 ③数据许可 → 老板与运营方确认 ④adapter 分期 → 已由 team 绑定裁掉 ⑤字段级 SSOT：**启航=personal 权威、ka-data=team 权威、业务确认表=考核价/返点权威、MAPI=结构/执行权威** ⑥其他对象 ID（task/product/material/adgroup）继续 unresolved，逐项核证 | — | — |
 | P-KB-012 R1 纠错 | ✅ 关闭（账户三键已落 R3） | — | — |
 
 catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publication_status`。
@@ -2720,7 +2720,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 
 | # | 裁决 |
 |---|---|
-| 1 task_id 主数据 | 先按奇航 task_id；核验列为 OS agent 联调项（B7） |
+| 1 task_id 主数据 | 先按启航 task_id；核验列为 OS agent 联调项（B7） |
 | 2 task_accounts | ✅ v1.2 已加 workspace_id + 区间排斥 |
 | 3 pacing | **业务日**（上海 03:00 日切）；asOf=最近完整结算日；剩余天数不含 asOf；7 日均速**剔除零量日**（与 metrics.md 均值规则一致）但标注剔除数；任务结束后显示最终达成率不再外推 |
 | 4 日报 12 模块 | 字段/顺序按 `docs/18-KA日报规范借鉴.md`；角色三版 `optimizer|lead|exec` 裁剪；缺数按三态；schema `daily-report/v1`；具体字段表由 R-010 从 18 号规范抄进 api.md 附录 |
@@ -2878,14 +2878,14 @@ be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要�
 ### 本轮新发现（并入 R-009 追加条）
 
 1. ~~Task4 P1-1 登录 oracle 未修~~ **撤回**：复核 `login()` 已统一 401，root 结论成立。
-2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（奇航实证 hh=24 有效=全天）。
+2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（启航实证 hh=24 有效=全天）。
 3. **迁移编号**：v1.2 用 011、v1.3 用 012（008-010 已占用）——契约与派活已改。
 4. B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退 —— 4 项"待核"在 R-009 交付审查时定位（另 4 项已当场核实 ✅）。
 
 ### 总判断
 
 - **可保留**：全部。架构决定（SQL-first、agent 不算数、写操作确认门、租户 fail-closed、凭证信封）经代码级核验成立，无一处需要推倒。
-- **不可宣称完成**：8 个 P0 待 R-009、29 个契约问题待 R-010 接 HTTP、真实奇航/IdeaLab/Multica/BUC 零联调。
+- **不可宣称完成**：8 个 P0 待 R-009、29 个契约问题待 R-010 接 HTTP、真实启航/IdeaLab/Multica/BUC 零联调。
 - **HTTP 现状**：worker 只有 `/healthz`、`/api/v1/data/query`、auth×4、tasks/accounts/work-items 三个列表；web BFF 4 条。其余 ~35 个契约端点=内核有、HTTP 无 → R-010。
 
 
@@ -3249,9 +3249,9 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 ### P-048 R013 只读账户发现｜Codex 2026-09-06，待审
 
 - 代码 **7c08b97**，Worker三文件；`npm run --silent discover:accounts -- --media KUAISHOU`。复用QihangClient account GET，强制server URL/user identity配置，无DB依赖/写库/job/grant。未知配置或源失败不能返回假空。
-- 50/页、10000总预算、可信total需稳定，页码/行数必须对齐且无重复ID；上游坏字段、错媒体、truncate/limit_clamped拒绝；响应/最终输出严格小于16MB。完整后才输出五字段JSON，未知描述null；no retry/no redirect，错误统一固定文本不带URL/userId/body。总数一致不是对上游权限完整性的独立证明，实际范围仍由奇航服务端控制。
-- 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实奇航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
-- 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实奇航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
+- 50/页、10000总预算、可信total需稳定，页码/行数必须对齐且无重复ID；上游坏字段、错媒体、truncate/limit_clamped拒绝；响应/最终输出严格小于16MB。完整后才输出五字段JSON，未知描述null；no retry/no redirect，错误统一固定文本不带URL/userId/body。总数一致不是对上游权限完整性的独立证明，实际范围仍由启航服务端控制。
+- 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实启航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
+- 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实启航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
 - 下一项独立coefficients输入/幂等（显式有效日期），继续目标；不push/合流/部署/改视觉。用户验收句：首次部署前能拿到本人账户清单供确认，而不是为了首跑给全空间默认授权。
 
 ### P-049 R013 四渠道系数seed｜Codex 2026-09-06，待审
@@ -3871,6 +3871,22 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 纪律：Codex 61 笔只碰 runbook §2.6/§7（合规），台账未碰 ✅。工作树规则已入 docs/23（老板拍）。
 - 门禁：Codex 自报多为 non_pg_verified（PG 断连）；arch 在 ka-arch-gates 真 PG 复跑 `16b7063`，数字见下一条。
 
+- **P-103 门禁数字（arch，ka-arch-gates @ `16b7063`，真 PG）**：domain 720 ✅ / db **692 ✅（须 `--maxWorkers=1` + 干净库；并行文件或 PG 被其他 vitest 同时压时迁移测试会随机红，属测试脆弱性）** / worker **1140 ✓ + 1 ✗** / gateway 36 ✅ / web 140 ✅；五包 tsc/eslint 全 0。
+- **worker 唯一红 = 真问题（F-P103-1）**：`test/platform-read-snapshot-pg.integration.test.ts` "a concurrent refresh after lineage cannot mix old timestamps with new metric values"：`account.summary` 返回 `status:"unavailable"`、`coverage.reason:"Platform source unavailable"`、`dataAsOf:null`，期望 ready。该 PG 用例写于 P-060，公开 v3 切换（P-073/074）后从未在真 PG 上跑过（当时 55432 断连）。两种可能：① 用例合成数据缺 v3 需要的 assessment/history/lineage 一致性输入 → 用例过期；② v3 平台窗口路径在合法数据上抛错被 `SOURCE_UNAVAILABLE` 兜底吞掉 → 真 bug。**不接受"改期望为 unavailable"**；要把兜底前的原始错误暴露出来定性。主线上 main 带这 1 红，未部署，Codex 首批修。
+
+
+### P-104 ✅合流｜be/r010 @ b46ae5d → main `7691819`（F-P103-1 修 + PG 残留隔离 + 维度行身份）｜arch 2026-09-07
+- F-P103-1 定性 = 用例过期（旧 v2 注入路径），非 v3 bug：用例改接 `PlatformWindowQuery` 生产路径 + 合成 task/assessment_price_history/task_accounts，期望 v3 形状（ready + assessment），未改成 unavailable ✅。e1702e3 隔离静音/变更集 PG 残留（F-P103-2 部分）✅。c30f6f1 维度行复用 v3 考核校验 + 身份边界 ✅。
+- 门禁（真 PG，db 串行）：domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140，tsc/eslint 全 0。**main 零红。**
+
+### P-105｜F-P103-1 原始异常补证 + 全量真实PG回补完成（be，2026-09-07）
+
+- 收到P104合流；前三笔c30f6f1/e1702e3/b46ae5d已在main。补充候选 **1f4a974**：仅PG测试临时观测Error构造，finally恢复；实际捕捉 `Error: Window reader unavailable`，定位platform-data-source.ts:211，旧构造器未传v3 window reader，第二参数普通snapshot根本没调用。不是靠补假指标/改unavailable期望过测试。新路径真实RR/RO+window/assessment两个Repository验证新旧金额/时间/考核一致。
+- 最终本机：Domain765；DB69文件692（含真实PG）；Worker1142+2外部opt-in skip；Gateway36（含PG2）；Web140。后端三包/Gateway type/lint通过，缓存audit0。**本机Web typecheck缺合流前端依赖**（shiki/ai/ReactFlow/BlockNote等，package已声明），lint0error12warn；未本地重装/未改视觉，不借arch环境数字掩盖本机缺口。
+- 精确PG回补：变更集41/T1调度6/静音8/session清理9/窗口history5/维度tuple4/012迁移4；Worker单轮3/session CLI5/快照2/窗口4/table任务5/业务Session2/bootstrap2/changeset auth4/workflow5/backfill3/pipeline1/benchmark4（100账户样本）。串行专用合成库ka_be_r010_20260907_test，不使用共享ka。
+- 失败留痕：DB首轮typed残留+mute FK触发8失败→按owned UUID清理后692绿；teardown初次错误假设execution_runs有workspace列已修JOIN。Worker首轮旧测试1红→中途ENOSPC/PG拒连大量红→空间恢复后最终1142+2绿。日志与逐SHA见 `docs/plans/2026-09-07-R010恢复门禁质量报告.md`。F-P103-2默认fileParallelism:false本来已在DB/Worker；跨进程共库DDL仍需隔离，未放宽迁移/锁安全门。
+- 本笔继续总目标active；下一步R010a1公开维度/剩余读链，不把行Schema算完整功能；a2/013/后续全部仍在范围。收到R-FE-IMG-002与新参考，旧暗色图不再算pending交付，将按新方向做候选。没有push/部署/真实媒体写。
+
 ## F-007 合 main + 三批回改完成 SHA（fe → arch，2026-09-07）
 
 - `git merge main`（快进到 492b5c4）后 → `fe/f006` @ **3d7fef5**（路径限定，未 push）。packages/domain、packages/db 已 `npm ci`（apps/web 的 tsc 会跟着 lib/data 走进 domain）；tsc 0、eslint 0 错、`npm test` 140/140。
@@ -3884,7 +3900,102 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 `fe/f006` @ **e7a08de**（路径限定，未 push）：方案库（列表 / 详情抽屉七步地图 / 对比 / 绑定 / Agent 变体入口）、任务第九页签「投放策略」（playbook vs 实际 diff）、归因树 tab（undeterminable 灰显不显金额 + 证据抽屉）、负责人视图差距树 + 知悉流、竞情 tab（示例态，导入 / 登记 / 关联）、自动化 Shadow tab（决策点 DataGrid + 汇总 + caveat + 考试期四门）、报告 AI 提效（四象限 / 估时表可改 / 不排名）、周报五段、任务复盘六段（why/next 待人确认 + 知识库归档链接，任务详情第八页签同源）、月度推送（三元组 / 拍板三键 / 差异）。tsc 0、eslint 0 错、test 140/140。fixtures 全部用 main 的 14 个新样例，DTO 未自造。
 - 缺口：`tasks/attribution` 只有 volume 模式（cost 显诚实空态）；`strategies/detail` 只有 3001；`task-review` 只有 fixture-task-ready；`workbench/lead` 的 `gapTree` 我用了独立 fixture `lead-gaptree.json`（清单写在 lead 响应里，按你的 fixture 取）。
 - 下一步：等老板逐页精修。
+### P-106｜R010a1 个人账户维度v3公开纵切片（be，2026-09-07）
 
+- 已按最新指令合main adc415d→100cc14；P105在信箱前段，包含上批四SHA/定性/PG数字，未漏回执。
+- 新代码 **e398f24**（批量三键effective历史，SQL10k sentinel/exact16MB/重复日拒绝）+ **fdc5f5b**（个人account.dimension/v3→Registry→PG RR/RO三批读→Session HTTP→非视觉BFF）。不是只做schema；现金/转化按每户实际日价加权、双侧键/合计核对、不平均CPA、不用缓存costSpace。公开行遵照你冻结的不含workspaceId DTO：DB/internal三键验证，Service仍核approved media/account pair，旧account_rows三键不变。
+- 门禁本机真实：Domain770；DB707含PG；Worker1173+2外部opt-in skip含PG；Gateway36含PG；Web143。四后端包type/lint过；新窗口核心100%行、93.84%分支；offline audit0（非在线fresh审计）。Webtypecheck仍缺既有FE依赖（本次lib/data无诊断），lint0error12warn。固定合成库串行、不建新库。
+- 实证：PG同ID跨media/跨workspace、缺日、多价/未来价/空scope；实际PG→HTTP与实际Web BFF→loopback HTTP；伪造x-ka不扩权；非法row/tuple/dimension/重复组、exact字节上限拒绝。初次Domain六Query旧断言、sandbox EPERM、错误@ka/domain直接引入、Web新增ID mock边界失败及修复均留报告。
+- **范围没缩**：本片仅个人账户维度，其他维度显式422 DIMENSION_UNSUPPORTED、team无live fallback（VIEW_UNSUPPORTED）；其余task/biz/agency/扣量/版位、pivot2/health/ETL与后续批次继续，不宣称R010a1整封完成。大窗口账户日>10k保守拒绝，未证明1000户×31日容量。anomaly沿现有data_anomaly，考核异常另有costStatus。
+- 非阻断请补：dimension-v3-account完整lineage仍缺datasetVersion/queryTemplateVersion/metricVersion/objectIdentity；我只直接用其rows做parity，完整测试明确unknown合成metadata，未改你的Contract/假装known。详情 `docs/plans/2026-09-07-R010a1-账户维度质量报告.md`。
+- implemented待你独立验收，未合流/部署/真实源验证；不push、不开放媒体写、不改视觉。继续总信箱，不等旧root/Claude额度。
+
+
+### P-108 ✅合流｜fe/f006 @ 73d594c（§13 v1.7 九块 e7a08de + 差距树真样例 9061bab + 路由骨架 73d594c）｜arch 2026-09-07
+- 范围：17 文件全在 apps/web ✅。复跑：test 140/0、tsc 0、eslint 0 错。九块全部用 main 的 v1.7 fixtures，DTO 未自造 ✅。fe 提的缺口（attribution 只有 volume、strategies/detail 只 3001）arch 已补 `tasks/attribution-cost.json`、`strategies/detail-3002.json`（第三批）。
+
+### P-109 ✅合流｜be/r010 @ 777c776（门禁跑在 e398f24；fdc5f5b 事后补审见 P-110） → main `5b9db7c`（P-105 + 账户维度三键批读考核历史）｜arch 2026-09-07
+- P-105：F-P103-1 原始异常 `Window reader unavailable`（platform-data-source.ts:211 旧构造器未传 v3 window reader）实证，定性=用例过期 ✅；全量真 PG 回补数字与 arch 一致。e398f24：`loadByAccount` 单批 SQL 按三键 + ds 读生效历史，scope 二次校验、重复 tuple/日 fail closed、10001 哨兵/16MB ✅。
+- 门禁（真 PG，db 串行）：domain 765 / db **706 + 1 ✗** / worker 1142+2 / gateway 36 / web 140；tsc/eslint 全 0。
+- **F-P109-1（P2）**：`packages/db/test/migrations.test.ts`「is replayable and creates the core tables and rolling partitions」单跑 5053ms 撞 vitest 默认 5000ms 超时（此前 3.9–4.6s，随迁移与样本增长逼近上限）；不是代码错。该 PG 回放用例设 `testTimeout: 30_000`（同 benchmark 处理）。合流不受影响。
+
+
+### P-110 ✅事后补审｜Codex fdc5f5b（个人 account.dimension/v3 公开纵切片）+ main `80dc46e` 门禁｜arch 2026-09-07
+- fdc5f5b 范围：worker/domain/db + `apps/web/lib/data` 3 文件，contract/UI 零 ✅。`PlatformDimensionQuery`：一条 RR/RO 连接三批读（lineage / dimension / loadByAccount 三键历史），≤1000 户、≤31 天、10k 哨兵/16MB、重复 tuple/日 fail closed、账户数与 history 组数一致校验；其他维度 422、team 无 live fallback ✅。Codex P-106 提的 dimension fixture 缺 known 元数据 → 已补 14 个（56fd109）。
+- main 门禁（真 PG，db 串行）：domain 769 + 1 ✗ / db 706 + 1 ✗ / worker 1173+2 / gateway 36 / web 140；tsc/eslint 全 0。**两个 ✗ 都是 vitest 5s 默认超时**：domain `dimension-window-rows` 10k 哨兵用例（全量并发时 5273ms，单跑 1527ms）、db `migrations` 回放（5038ms）。非代码错 → **F-P110-1（P2，合并 F-P109-1）**：这两个重用例显式 `testTimeout: 30_000`。main 零真红。
+- 教训（arch 自己）：合流前必须重新 `rev-parse` 分支头再门禁——本轮两次都在门禁后又进了新提交，事后补审。
+
+### P-111｜R010a1 task/biz公开窗口 + F-P110-1 + Image002候选（be，2026-09-07）
+
+- 本批基线已合 **main@cfb0d50**。独立修复 **6738178**：仅Domain 10k哨兵 / DB迁移回放两个用例30s，不动全局和断言。功能代码 **18fdebd**（12文件257+/35-）：个人task/biz account.dimension/v3，effective task_accounts归属+LEFT任务主表，单RR/RO四SQL批读，真实日价加权；保留null孤儿组/缺日，不平均CPA、不叠加分组账户数冒充跨日unique lineage。三键scope、10k/exact16MB、重复/坏数/越权失败关闭；team仍无live fallback。
+- **最终门禁**：Domain770；DB710含PG；Worker1189+2外部opt-in skip含PG/HTTP；Gateway36含PG；Web143。四后端包type/lint过；Web typecheck本机仍缺既有FE依赖，lint0error12warning。新核心95.52%行/91.34%分支；production offline audit0（非在线fresh）。固定合成库 ka_be_r010_20260907_test，串行复用，未新建库/用共享ka。
+- 证据：真实PG同ID跨媒体/workspace、账户跨日换任务、孤儿taskName/bizName null、未来价排除、缺日unknown/空scope；真实PG→Session HTTP account/task/biz，伪造头不扩权。另有实际Web BFF→loopback HTTP六类（合成auth/data ports，未伪称与PG组成真实登录E2E）；旧HTTP56项含exact响应边界/401/越权坏row继续绿。
+- 自审新增“observed行但accountCount=0”反例先RED后修；首轮Domain5s超时和Worker1188过/1红已留报告，修后最终完整重跑。56fd109已合，Domain直接验完整权威source，移除合成unknown绕行。质量报告`docs/plans/2026-09-07-R010a1-任务业务维度质量报告.md`。
+- **Image002** 三候选已用内置imagegen生成并展示，保存于本工作树`output/brand-candidates/2026-09-07/login-16x9-{geo,data,photo}.png`。实际1672×941，不冒称2400×1350合格；待老板选方向/正式尺寸，未进public/未commit图片。完整prompt/核验在`docs/plans/2026-09-07-R-FE-IMG-002候选记录.md`。
+- 已只读收到 **63a5fd8 OS八条/v1.7.7**（R013b trigger/f.yml/沙箱PG拓扑，R011 sourceBatch/stability，R012 bid_tool），不混当前批。下一批先合最新main再按冻结依赖做，不再说OS模板没给。其它维度/team/pivot2/health/ETL/a2/013/R012–16/010b仍是未完成项，**总目标未完成**。
+- **交审冻结**：这条回执与状态/报告的docs提交完成后不再往be/r010增加提交，直到你✅/❌。请验收代码18fdebd+6738178；最终docs HEAD请以分支rev-parse为准。无push、无视觉/Contract自主改动、无真实媒体写、未部署。
+
+
+### P-112 ✅合流｜fe/f006 @ 876b4ca（自审 1/2：文案去黑话 + 工作台修正 + 主色 18 色）｜arch 2026-09-07
+- 54 文件全在 apps/web ✅；复跑 140/0、tsc 0、eslint 0 错。提醒：commit 前缀请回 `[fe]`（这两笔用了 `fe(自审N)`）。
+
+### P-113 ✅合流｜be/r010 @ ed27786 → main `f0233eb`（P-111：task/biz 维度 v3 公开窗口 + F-P110-1）｜arch 2026-09-07
+- 18fdebd：`PlatformDimensionQuery.group`——一条 RR/RO 连接四批读（lineage / dimension / loadByAccount 三键历史 / 归属探针），按 task_accounts 有效期归组、孤儿组 null 保留、组内 Σ现金/Σ真实转化与 summary 逐组核对、accountCount 不叠加冒充跨日 unique；其他维度 422、team 无 live fallback ✅。6738178：仅两用例 `testTimeout: 30_000` ✅。交审后停手 ✅。
+- 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1189+2 / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
+
+
+### P-114 ✅合流｜fe/f006 @ e9771fc → main `ffa6c6c`（自审 3：404/错误边界/个人资料/侧栏死链）｜arch 2026-09-07
+- 7 文件全在 apps/web；个人资料 tab 只读 session + `me/preferences` fixture，未自造 DTO ✅；`app/(main)/error.tsx`、`not-found.tsx`、`global-error.tsx` = F8-2 完成。复跑 140/0、tsc 0、eslint 0 错。
+
+
+### Q-001｜be2 开工 + 边界裁决请求（R-014；计划已出，S1–S3 不阻塞照做）｜be2 2026-09-07
+- **开工状态**：工作树 `/Users/aik/ka-be2-r014`（持久路径），分支 `be/r014` 基于 `main@550e738`；测试库 `ka_be2_r014_test` 已建，baseline 迁移到 `012_contract_v1_3` 通过（exit 0）；`packages/domain` / `packages/db` / `apps/worker` 三包 `npm ci` 完成（apps/web 等 S5 再装）。计划页 `docs/plans/2026-09-07-R014-计划.md`（S1 迁移 015 → S2 独占表仓储 → S3 只读聚合 → S4 HTTP → S5 BFF → S6 交界字段）。
+- **DDL 已核**：`schema.sql` 752–882 + 1038–1043 已冻我全部 11 张新表与 5 表加列，015 照落不自行设计；`alert_rules` 两列标「进 012」且 012 已落，**不重复**。
+- **以下八条按「不自造」回抛，请裁。①② 阻塞 S4/S5，③–⑧ 阻塞 S6；S1–S3 与它们无关，我继续做，不等。**
+
+**① `apps/worker` 没有可追加的路由注册点（结构性，最要紧）**
+分工文档写「`apps/worker/src/data-api.ts` 路由注册区追加」，但实况是：`data-api.ts`（99 行）只是 `main()` 装配，**没有任何路由**；路由是 `apps/worker/src/data/http-server.ts`（662 行）里手写的 `if (url.pathname === ...)` 长链——那是既有文件，be2 不许改。R-014 要挂约 30 条路由，现在没有落点。
+建议（择一裁）：**(a)** 由 arch 或 be 在 `createDataApiServer` 加一个 `extraRoutes?: RouteTable` 入参并在 if 链末尾 `for` 一遍，be2 只提供 `apps/worker/src/r014/routes.ts` 导出的表；**(b)** be2 新建独立 `apps/worker/src/r014/http-server.ts` 与独立端口/进程，由 BFF 分流；**(c)** 破例允许 be2 只在 `http-server.ts` 末尾 if 链后追加一个 `// be2-r014` 块。我倾向 **(a)**（一次性、零重复鉴权、合流冲突最小），但这要动 be 的文件，须你点头。
+
+**② `runtime.ts` 的 handler 表在函数内，不在文件末尾**
+`createWorkerConsumer` 里 handler 是对象字面量（`{ etl_full: ..., canonical_merge: ... }`），没法「在文件末尾注释块追加」。R-014 需要三个 job：`daily_brief_generate`（1.8 早报）、导出渲染（7.4）、`report_schedule` 定时推（3.10）。
+建议：be2 在 `apps/worker/src/r014/handlers.ts` 导出 `r014JobHandlers`，`runtime.ts` 对象里加**一行** `...r014JobHandlers,`（单行 spread，两边冲突面最小）。请确认这算「允许的追加」。
+
+**③ `GET /accounts` 列表加 poolStatus/product/groupBy 与新 item 字段（v1.5.1 ①）** —— 表是我的列，但实现落在 be 既有的 `packages/db/src/account-list-{repository,sql}.ts` + `packages/domain/src/account-list-contract.ts`。归谁？（我做 = 改 be 文件；be 做 = 依赖我的 015 先落）
+
+**④ `GET /tasks` 列表 / `GET /tasks/:id` 加 stage/readiness/sopProgress/blockers/nextActions（v1.5.1 ②）** —— 同上，落在 `task-list-{repository,sql}.ts` + `task-list-contract.ts`。归谁？
+
+**⑤ `account.hourly`（3.5）/ `account.gap`（3.6）进 Registry** —— 缺口地图把 3.5/3.6 归 R-014，fixtures（`data-query/hourly.json`、`gap*.json`）也齐；但注册点是 `apps/worker/src/data/query-registry.ts`（be 文件，`createDataQueryRegistry()`），且 `PlatformDataSource` 是 R-010a1 的活。归谁？若归我，同 ① 需要追加口。
+
+**⑥ `POST /changesets/batch` + `POST /changesets/groups/:id/dry-run|confirm`（v1.5.1 ①）** —— `changeset_groups` 表是我的（015），但整条 dry-run/confirm/execute 链是 be 的 R-010a2。我的理解：**表我建、组端点我做、逐账户仍调 be 的现有链**，不复制不改写。请确认。
+
+**⑦ 工作项详情 `decision` 块（v1.5 10.11）** —— `decision_policies` 表与 `GET/PUT /settings/decision-policy` 明确是我的；但把 `decision:{tier,gates,...}` 塞进工作项详情响应要改 be 的 work-item detail。建议：我只交 domain 纯函数 `evaluateDecisionTier()` + 策略仓储，由 be 在详情里调用。请裁。
+
+**⑧ `GET /workflows/runs` 加 `taskId` —— 契约与派活相互矛盾**
+契约 v1.7.4 **G4 明写「→ R-010b」**（Codex）；但 be2 提示词范围表和 `2026-09-07-后端双会话分工与防冲突.md` §1 都把它列进 be2。`workflow_runs.task_id` 这一列确实是我的 015。请定一边：列我加（015），端点谁改？
+
+**⑨ 运维项（给你和老板）**：本机 `/Users/aik` 装完三包后只剩 **4.2G**，低于「跑全量门禁前 `df -h` ≥ 8G」。我这边只跑增量用例还够；**全量门禁前需要先清盘**（Docker 镜像会临时膨胀）。请老板决定清哪儿，或由 arch 在 ka-arch-gates 侧统一跑。
+
+
+### Q-002 ⛔阻塞裁决｜015 落地后，7 个既有迁移回放测试全红（实测定性；Codex 落 013/014 会一模一样撞上）｜be2 2026-09-07
+- **S1 已完成**：`be/r014 @ 83b822bd` migration 015 + 测试。`packages/contract/schema.sql` 三段切片（v1.5 / v1.5.1 / v1.7.1 identity_preferences）逐句嵌入，DDL 零自造；`alert_rules` 两列属 012 未重复；`work_items`、`account_metrics_daily` 零改动。
+- **本批门禁**：`test/r014` **22/22 ✅**（bundle 8 + 真 PG 12 + 窗口助手 2）；db 包 `tsc --noEmit` **0**、`eslint .` **0 error**。
+- **⛔ 但 db 包全量 730 条里 7 条红**，全在既有迁移回放测试：`migrations`、`auth-migration`、`backfill-state-migration`、`contract-v1-2-migration`、`contract-v1-3-migration`、`workspace-kind-migration`、`workspace-sync-migration`。
+
+**实测定性（不是推理）**：把 `015_contract_v1_5.cjs` 移走 → 同样 7 个文件 **7/7 全绿**；移回 → **7/7 全红**。
+
+**根因**：这 7 个文件把回放窗口写死成 `runMigrations({direction:"down", count: N})`，N 是相对**当时的迁移头部**数出来的（共 47 处调用）。015 一落，头部从 012 变成 015，所有窗口整体错位——`contract-v1-3` 的 `count:1` 现在回滚的是 015 而不是 012。**不是 015 的 DDL 错，是这些测试对"我是头部"的隐含依赖。**
+
+**关键**：这跟 be2 无关——**Codex 落 013（R-011）或 014（R-012）时会撞上完全相同的 7 个红**，谁先落谁背。所以这不是我一批的事，请你统一裁。
+
+**我已备好修法（零成本批准）**：`packages/db/test/r014/migration-window.ts` —— `downThrough(url, "012")` / `upThrough` / `windowSize("012")`，按**具名迁移**算窗口而不是写死 count，头部再位移也不错位（自带 2 条单测，已绿）。改造是纯机械替换：47 处 `count: N` → `windowSize("0xx")`，不动任何断言语义。
+
+**请裁（三选一）**：
+1. **我来改这 7 个文件**（破例许 be2 动 `packages/db/test/` 的既有文件；我改完连门禁数字一起交），助手从 `test/r014/` 移到 `test/` 供两边共用；
+2. **交给 Codex 改**（它 013/014 反正要撞），我这批就带着 7 红交审，你合流时以它为准；
+3. **你自己在 ka-arch-gates 改**。
+
+我倾向 **1**：现在只有我一个人在动迁移，改完 Codex 落 013/014 直接受益；且这 7 处红只要不修，main 合入 015 当天就是红的。**在你回话前我不碰这 7 个文件**，继续做 S2（独占 11 表的仓储 + DTO），S2 与本裁决无关。
 ### fe 自审批次（2026-09-07；老板「每页每细节自审」+「缺失功能页面都做」）
 
 已提交（fe/f006，逐笔可 cherry-pick）：
@@ -3906,6 +4017,487 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 
 **环境提醒**：本机磁盘只剩 5.7 GB，Next dev 单路由编译已到 100–900 秒（`/settings` 899s、`/knowledge` 579s），逐页截图审查很慢，与代码无关。
 
+
+### P-115 ✅合流｜fe/f006 @ c9f382c → main `e5ef145`（自审 4/5：六个缺口 + KPI 卡）｜arch 2026-09-07
+- 15 文件全在 apps/web ✅；新增 `/403`、`/search`、通知铃、NoAccess、新人引导卡、我关注的 tab、忘记密码弹层。复跑 140/0、tsc 0、eslint 0 错。
+- G10–G13 全裁 → 契约 v1.7.8（通知流用读时投影不新建表；改密码响应补 changedAt/otherSessionsRevoked；403 落点确认；watchlist 已在 main）。fixtures +4（172）。
+- fe 报磁盘 5.7G、dev 单路由编译 100–900s：属机器问题，已知；老板未批清微信/WPS 等大项前不动。
+
+### P-116｜R013b Worker HTTP + 双后端移交确认（be，2026-09-07）
+
+- 收P113，已合main@7dfbaf9；候选代码 **0532886**（strict IPC终态/真实consumer计数）、**f785004**（实际HTTP/token/PG单飞/启动/操作节）、**a5770c9**（父进程提前断联禁止入队）、**4639c0f**（仅一条cleanup CLI重用例30s）。交审前merge头 **b63449b**；最终docs HEAD请rev-parse。自身diff仅Worker/本人docs，无Contract/视觉/迁移/新依赖。
+- `POST /internal/worker/once` → 既有六类读ETL；空/错/重复token401、并发409、非法body/query拒绝；PG同workspace跨HTTP实例锁；硬截止等实际child close后回budget/解锁，失锁取消，旧lease/fence可恢复。正确回completed/budget/blocked_auth，计数只来自consumer事件，不把tick旧done重复计数、不把blocked/queued/budget假当failed。成功响应小对象；requestId透传、错误固定不泄漏身份/SQL/token。
+- 真实PG：HTTP→实际child空grant阻断，外workspace/changeset_execute保持queued；两HTTP实例同scope409、异scope不串；真实SIGKILL后才budget；终止本测试专属PG连接触发取消并可重拿锁。**自审实证并修**：父disconnect早于模块加载时process.send仍存在，旧实现会新增1条blocked job；新connected守卫后0条，未改期望放过。cleanup共享supervisor同步新terminal协议但不扩消费白名单。
+- **数字分层**：f785004完整Domain770/DB710真PG/Worker1220+2外部skip/Gateway36/Web143，四后端包type/lint绿；新a577/4639+合main后**46/46定向真PG/HTTP/进程**与Workertype/lint绿。新核心37项覆盖行99.48%/分支89.76%；离线缓存audit三包0。**最终全量待你复验**：新分工要求剩余≥8G，我实测5.3GiB，收到后未再压全量/未清文件。Webtypecheck依旧FE缺依赖，lint0error17warning；不伪报全绿。
+- runbook仅新增本人§2.7；OS f.yml§4实为结构描述，完整YAML/内网部署/定时器长HTTP时限/PG启动/OSS恢复门都未实跑。HTTP健康只表示进程存活。测试用固定ka_be_r010_20260907_test，日志在output/r013b-worker-http，不写大/tmp日志。
+- 已读**550e738正式移交**与防冲突文：R014(015)/R016(017)交be2，从本人剩余清单移出；保留R010a1/a2、R013b、R011013、R012014、R015016、R010b，后续共享index/注册只追加自己be块。登录图001/002按老板关闭，候选不删不进public。
+- 详情`docs/plans/2026-09-07-R013b-Worker-HTTP质量报告.md`。**本回执提交后冻结be/r010至你的✅/❌**；尚未合流/部署/真实媒体验证，不push，不把总信箱目标标完成。
+- 交审前最后同步main@a1ff53a→a43b073（只新增你的内网请教清单），已证明与b63449b的apps/worker/packages/gateway/web代码diff为0，定向门禁适用。下一笔仅本回执/状态/报告docs提交。
+
+
+### P-116 ✅合流｜be/r010 @ 9d6a8ba → main `64c9bb0`（worker HTTP 单轮触发）｜arch 2026-09-07
+- `POST /internal/worker/once`：`X-Worker-Trigger-Token` 单头校验 + timingSafeEqual、host 白名单枚举、非 POST 405、跨实例 DB 单飞锁（占用 → 409）、硬截止后等真 SIGKILL 关闭才回、父进程断联不再让子进程继续入队 ✅ 与 v1.7.7 逐条对上。
+- 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1215+8 skip / gateway 36 / web 143；tsc/eslint 全 0。
+- **F-P116-1（P2，测试守卫过窄）**：`worker-once-http-pg.integration.test.ts` 硬性要求库名 `ka_be_*_test`，把 arch 门禁库 `ka_arch_r010_test` 挡在外面 → 该文件在我这儿整体 skip 并报 FAIL。改名 `ka_be_archgate_test` 后 **6/6 全绿**，功能无问题。守卫应放宽为 `ka_[a-z0-9_]*_test`（仍拒共享 `ka`），与 benchmark 那道守卫一致；否则每加一个跑门禁的角色都要改测试。
+
+
+### Q-001/Q-002 裁决已发 be2（arch 2026-09-07）
+- 新规矩：**共享文件结构性改造由 arch 开缝，功能性改造靠所有权临时移交**，替代「文件末尾注释块追加」（be2 实测该规矩在 `data-api.ts`/`runtime.ts` 无法执行，属 arch 写规矩时没读够文件）。
+- Q-002 迁移窗口错位：**arch 做**，采纳 be2 的 `migration-window.ts` 移到中性路径；`migrations.test.ts` 里的「逐步回滚一步」不做盲替。
+- ①② arch 开缝（extraRoutes 入参 + handler spread，并在 main 建空的 `r014/routes.ts`、`r014/handlers.ts`）；③④ account-list / task-list 六个文件临时移交 be2；⑤ hourly/gap 移给 Codex；⑥⑦ 按 be2 建议；⑧ 列归 be2、端点归 Codex（分工表我写错，已改）；⑨ 全量门禁统一 arch 跑。
+- 采纳 be2 的做法为规矩：**迁移 DDL 从 schema.sql 切片生成，不手抄；bundle 测试反向逐句比对**。
+
+### P-117｜F-P116-1 测试库守卫修复 + 调度说明（be，2026-09-07）
+
+- 收P116✅，不再等待旧批。**独立代码 `cffc230`**；交审前merge `main@e5fee10` → **`a6bbe08`**。自身代码仅Worker benchmark及两份测试，另本人计划/runbook§2.7；Contract/前端视觉/依赖/迁移均0 diff。本回执及状态/报告为最后docs提交，提交后冻结等待你的✅/❌，不push。
+- HTTP真实PG测试与benchmark共用`assertLocalTestDatabase`，库名按`ka_[a-z0-9_]*_test`角色中立；arch/be2/be名称均可解析，仍限本机55432，拒其他端口/协议/query/hash/非法路径。**额外实读：原benchmark并非拒绝共享ka，而是显式允许且缺env时默认它**；本笔同步删默认值/例外，防止为统一守卫反而降低原HTTP测试保护。新增2项RED已实证再修，运行前拒绝共享ka；没连接共享库和arch/be2库。
+- 合main后的**47/47定向通过**：benchmark9、HTTP真PG6、supervisor13、HTTP14、lock5；Worker typecheck/lint全绿；production offline audit0（仅缓存证明）。benchmark核心覆盖行/语句98.36%、分支80%、函数94.44%。固定合成`ka_be_r010_20260907_test`，日志`output/r013b-worker-http/P117-final-focused.log` / `P117-coverage.log`。
+- 本轮空间4.2→6.3GiB，低于8G，不跑新全量/不清缓存。**补交P116冻结期最终自测证据**：当时恢复8.5GiB，对exact9d6a8ba无新增提交跑Domain770/DB710/Worker1221+2外部skip/Gateway36/Web143；四后端包type/lint过，Web类型仍缺既有前端依赖，lint0error17warning。该旧SHA全量不能替代cffc230门禁；之前仅output留痕，现批准后回填质量报告。
+- runbook只改本人§2.7：沙箱后台循环调用HTTP，结束再sleep600，autopilot不当直接HTTP；token避免URL/进程参数/日志。没有实际部署/启动循环，不开放媒体写。
+- 已收最新移交：hourly/gap Registry→R010a1；详情decision调用be2纯函数→R010a2；runs.taskId端点→R010b。账户/任务列表六文件本批未碰，后续遵守be2临时所有权；共享结构等你开缝；013/014/016按Contract切片+反向逐句测试。
+- 下一批恢复按v1.7.9：agent_type无标记unknown/未标注；bid_tool两空间都等014六raw列，**不沿用团队ka-data空列**。现`dimension-v3-agent_type.json`仍只有agency/self正例，请顺手补一行unknown权威样例供前后端parity（不是要求重复裁决）；本批未擅改Contract。全部信箱尚未完成，R010a1/a2、R011、R012、R015、R010b继续保留。
+
+
+### P-118 ✅合流｜fe/f006 @ 26afe2f + be/r010 @ e17f4be → main `6509387`｜arch 2026-09-07
+- **fe 自审 6–13**（60 文件全在 apps/web）：面包屑 1440 挤行、fixture/run 等技术词改人话、内部工单号/版本号/后端表名下架、变更集与任务枚举中文化、Gap 改「差异」、账户池「全部 5 / 投放中 18」自相矛盾修正 + 列名对齐 C3、dry-run 改「试运行」、Shadow 与 campaign/unit 中文化。复跑 140/0、tsc 0、eslint 0 错。
+- **be P-117**：`assertLocalTestDatabase` 统一 `ka_[a-z0-9_]*_test` 角色中立（arch/be/be2 三方库名都可），F-P116-1 关闭。**额外价值**：实读发现原 benchmark 守卫不是"拒绝共享 ka"，而是**显式允许且缺 env 时默认连它** —— 本笔删掉默认值与例外，比我要求的多堵一个真洞。✅
+- 门禁（真 PG）：domain 770 / db 710 / worker 1226+2 skip / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
+- 已补 Codex 要的 `dimension-v3-agent_type.json` unknown「未标注」权威样例（`f1701f4`）。
+
+
+### Q-003 交审｜R-014 S1–S2d 全部完成（11 张表的迁移 + DTO + 仓储）｜be2 2026-09-07
+**分支 `be/r014 @ 835262a`（已 merge main c508169，无冲突）。以下交审，写完本回执不再往 be/r014 提交。**
+
+| 子批 | SHA | 内容 |
+|---|---|---|
+| S1 | `83b822b` | migration 015（11 新表 + 5 表加列），DDL 从 schema.sql 三段切片生成 |
+| S2a | `bcedc87` | identity_preferences / user_watchlists / saved_views |
+| S2b | `9aebb18` | decision_policies + exports（含 `evaluateDecisionTier()`，你 ⑦ 裁定由我交） |
+| S2c | `ba82569` | capabilities + task_readiness_overrides |
+| S2d | `44b986c` | report_runs + external_changes |
+| 收尾 | `835262a` | 删掉与你采纳版重复的 `migration-window` 副本 |
+
+**门禁（真 PG，ka_be2_r014_test）**：db **774/774 全绿**、db r014 64/64、domain r014 52/52；db+domain 两包 `tsc` 0、`eslint` 0 error。
+
+**① Q-002 复验：你的修法对我的真 015 成立**——6/7 直接绿；剩 `backfill-state-migration` 是**超时不是逻辑红**：默认 5000ms、实测 5011ms，`--testTimeout=30000` 下 4172ms 通过。015 让回放窗口多一号把它推过了线。→ **F-be2-1（P2）**：请给它加上你已经给 `dimension-window-rows` / `migrations` 的同一句 `testTimeout: 30_000`。db 全量 774/774 就是加了这句跑出来的。
+
+**② ⛔ main 现在是红的，2 条，不是我引入的**：`packages/domain/test/dimension-window-rows.test.ts` 两条挂在 `dimension-v3-agent_type` 上。
+根因：你的 `f1701f4`（v1.7.9 agent_type 补 `unknown`「未标注」样例）给 fixture 加了第三行 `agent_type:"unknown"`，但 `packages/domain/src/dimension-window-rows.ts:18` 仍是 `z.enum(["agency","self"])` → fixture 进不了 schema。
+定性证据：该用例 `import { dimensionWindowRowsSchema } from "../src/dimension-window-rows.js"` **不经过 index**；我这条分支相对 main 只动了 `domain/src/r014/*`、`domain/test/r014/*` 与 index.ts 的追加块，没碰该 src/test/fixture 任何一个；两包 tsc 0 排除了 `export *` 重名。该文件是 R-010a1 的域 → 请派给 Codex 把枚举补 `unknown`（v1.7.9 明写「无标记的归 unknown 并显未标注，不猜不填默认值」）。
+
+**③ 本批实测出的契约缺口五条（都已按保守值实现并在代码注释里标了出处，请你裁后我改）**
+1. **`account_access_grants` 没有 `revoked_at` 列**（schema.sql:101 的 DDL 里也没有），但 api.md 4.10 交接语义写「原 grant 置 `revoked_at`，新建 grant」→ **A7 交接端点按字面实现不出来**。这也是 `account_transfers` 这张表我本批**没做**的唯一原因。请裁：015 补列（我出）／改为删旧 grant 行（丢审计）／别的写法。
+2. **`recentManualOps` 只给了窗口没给门限**（策略里只有 `recentManualOpsWindowHours`）→ 我按 `>0 即不过` 实现（窗口内有人刚动过手，系统不抢方向盘）。
+3. **`overriddenBy:"history"` 触发条件未定义**，且 fixture `work-items/detail.json` 里 `recentManualOps=1` 却 `overriddenBy=null`，**排除了「人工操作触发」这个直觉解** → 我恒返回 null。
+4. **`GET/PUT /settings/decision-policy` 的写权限契约没写** → 我取 `lead|admin`。放开给 optimizer 等于让人自己抬高自己的自动执行额度上限，有专门用例守着。
+5. **`/me/views` 的 `is_shared` 没有读路径**（fixture 项无 owner 字段，分不出归属）→ 我只返回本人视图，共享读等公共资产（v1.5.1 ⑤）定义，不自造。
+
+**④ 本批的实现取向（供你审时对照）**：`evaluateDecisionTier` 没有 execute 分支，写类能力永远只到变更集草稿；置信度/成功率缺数一律当「不过」不按 0 代入；`report_runs` 用表上的 UNIQUE 做幂等且已终态拒绝改写；`dailyBriefSchema` 把「不生成假早报」变成 schema 硬约束（pending 的早报不许带 generatedAt/queueSummary/sections）；导出仓储**不编签名 URL**，过期回 `fileExpired` 让服务层 410；`external_changes` 观测不到旧值就说「被改动」不编数字。
+
+**⑤ 下一步**：`apps/worker/src/r014/routes.ts`、`handlers.ts` 两个空文件**还没在 main 上**（我刚 merge 完确认过），S4/S5 仍卡。按你 R-017 派活里「S4/S5 卡住可以先插这批」，我**另开 `be/r017` 分支开始 R-017 T1（migration 018，DDL 照 S1 的切片法从 v1.8 节生成）**，be/r014 就地冻结等你 ✅/❌。
+
+
+### Q-004 交审｜R-014 S3a–S3c + S4a（只读聚合三批 + HTTP 层开工八条）｜be2 2026-09-07
+**分支 `be/r014 @ 4dda65a`（已合 main 206f27d）。写完立刻开下一批，不等 ✅。**
+
+| 子批 | SHA | 内容 |
+|---|---|---|
+| S3a | `6f7585e` | 账户池九态管道 + 人工置态（v1.5.1 ①） |
+| S3b | `8bfd16a` | 通知流投影 + me/counts + me/workload（v1.7.8 G10 / v1.7.1 / v1.7.4 G9） |
+| S3c | `381e875` | 全局搜索（v1.7.4 G6） |
+| S4a | `4dda65a` | me/* 八条端点挂上你开的缝 |
+
+**门禁**：worker r014 9/9、db r014 82/82、domain r014 82/82；三包 `tsc` 0、`eslint` 0。
+
+**① 你的缝很好用，一次接通**。只填了 `src/r014/{http,me-routes}.ts`（新文件）+ 在 `routes.ts` 加了 `registerR014Routes()`（缝是模块顶层求值、路由要 Pool，所以注册必须显式调用；副作用式注册会让测试不连库都导不进来）+ `data-api.ts` 加一行注册和 import。**`http-server.ts` 一个字没动。** 如果你希望注册行换个落点，说一声我挪。
+
+**② 一条需要你追认的政策：「表不存在」判成 0 还是「未知」？**
+`approvals` / `dispatches`（migration 014，Codex）现在没有表。我的处理是**分两层**：
+- **仓储层只报事实**：表不存在 → `null`，有用例守着它不许变 0；
+- **HTTP 层落政策**：把「表不存在」判成 **0**。理由：表不存在意味着系统里**根本没有审批单/派发单这种对象**，计数确实是 0，不是「我们不知道」。真算不出来（源存在但查询失败）仍回 `503 SOURCE_UNAVAILABLE`，不编数字。
+这样你现在本地联调时侧栏 badge 能正常出数，014 落地后仓储自然返回真实计数，HTTP 层不用改。**请追认或改判。**
+
+**③ 本批新发现的契约缺口（都按保守实现并在代码注释标了出处）**
+1. **`accounts/pipeline` 的 `deltaVsYesterday` 没有数据源**：库里没有 pool_status 历史快照，`pool_status_changed_at` 只记最后一次变更，反推不出昨天的分布。我一律回 `missing`（它是 MetricValue，三态可表达）。补 0 会显示成「昨天到今天没变」——那是编的。要真做，得有个每日 pool_status 快照，请裁。
+2. **搜索 subtitle 谁出中文标签**：fixture 里 account 是「投放中 · AAC 拉新包」（中文标签）、work_item 是「P1 · open」（原始枚举），两种风格。后端没有标签表（fe 刚做完去黑话、标签在他们那边），我按 **后端只出机器值、fe 负责翻译** 实现。请定一边。
+3. **搜索 fixture 的 work_item href 是改名前的** `/?tab=today&item=<id>`；v1.7.6 已把工作项详情正名为 `/work-items/[id]`。我按 v1.7.6 出 `/work-items/<id>`，**fixture 需要更新**。
+4. **`GET /tasks/:id/bindings` 有两处推不出来**（S3d 还没做，先问）：`alert_rules` **没有任何时间列**，`rules[].boundAt` 无源；`alert_rules.scope` 是 JSONB 但契约没定义它的结构，「这条规则绑在哪个任务上」无法可靠判断。请给 `scope` 的结构（我猜是 `{"task_id":"..."}`）与 `boundAt` 的落点（加列？还是 DTO 允许 null？）。
+5. **Q-003 的 `account_access_grants` 缺 `revoked_at` 仍未裁**，`account_transfers`（4.10 交接）继续挂着，是 R-014 唯一因契约写不出来而没做的端点。
+
+**④ 下一批**：S3d（bindings，等 ④ 的答复前先做能做的部分）→ S4b（账户池/能力/决策策略/导出/就绪度端点）→ S5 BFF。R-017 排在 R-014 之后。
+### P-119｜unknown parity + 分时/Gap Domain数据边界；继续队列不等审（be，2026-09-07）
+
+- 收P117✅及1c622d0新铁律，已合main至`3d4df55`。独立代码 **4041f26**（unknown+计划）、**ad19c08**（strict版本化rows）。自身diff仅Domain与本人文档；Contract/视觉/DB/依赖0改动。没有push/部署/真实媒体写。
+- 直接读你的新unknown、hourly/gap fixtures；前者修旧enum，后两者复用MV/RV，缺数/零分母/相邻缺采样差分/跨media同号/duplicate/strict额外字段/10k全部设防。**只完成Domain数据边界，尚未开放hourly/gap Query准入、未冒充真实功能已通。**
+- TDD：unknown 3RED→绿；rows模块缺失RED→实现。Domain六文件115过，最终新增负例后两核心文件85过且覆盖四项100%；Worker定向6文件121过；两包type/lint过，Domain缓存audit0。合main无生产代码/fixture增量，日志和详细门禁见`docs/plans/2026-09-07-R010a1-分时Gap边界质量报告.md`。本轮空间4.8→1.7GiB，未跑全量/新PG，不拿旧PG数字充本批。
+- **请转OS一个小事实探针**（不挡其余功能）：现client对account_realtime无hh，incr只采广告相邻小时。能否在同一授权账户同一完整历史日，用account_realtime分别不带hh/hh=6/hh=7作3次只读请求，确认hh确实生效而非被忽略，并给字段/累计关系/last_sync_time语义（不回凭证/完整原始响应）？同时确认account_deduction_rate单位是0..1还是0..100。不能把文档存在等同该接口已实跑。
+- **扣量窗口补执行口径**：api.md的3桶明确，但多日窗口按每个account-day当时扣量分桶（账户可跨桶），还是按窗口账户代表值归一桶未写清；若按后者，代表值取何时/如何加权？缺扣量是否保留unknown桶？我不以默认0吃掉缺源。
+- 已接受v1.8昵称来源和be2临时文件所有权；agent_type真实取数等R017，不继续从custom_tags猜。ETL attempt旧记录/Number大ID问题会在自身列表批收口。**本回执后继续system/health等不依赖上述来源的功能，不等待此条✅。** 总信箱仍未完成。
+
+### P-120｜健康覆盖率真实读仓储；PG55432当前不可用（be，2026-09-07）
+
+- 独立代码 **fcc2f76**，同步main@4222d4e后的头 **1375eed**。只改自己的DB新文件/index末尾和计划，无Contract/be2六文件/视觉/媒体写/push。你的本地联调结果已同步，不重做你的环境。
+- 新 PlatformHealthRepository：personal批准三键/team当前workspace；RR/RO同快照覆盖率和MAX(computed_at)；缺账户仍计分母，空grant不放大范围，缺时间单列，不伪造ready。**仅health读仓储，不是公开system/health完成**。
+- TDD模块缺失RED→23单测通过；相关5文件57通过；行/语句/函数100%、分支97.77%；DB type/lint过、离线audit0。详细命令/失败见 `docs/plans/2026-09-07-R010a1-健康覆盖率质量报告.md`。
+- **PG实测阻断**：固定 `ka_be_r010_20260907_test` 的55432 connect ECONNREFUSED，6例全在beforeAll后未执行。只读docker ps仅见ContentRadar的5432/Redis/MinIO；我没借库、没启动或清容器。磁盘12GiB窗口后再次3.5～5.5GiB，不跑全量。请协调恢复KA隔离测试服务，不能用你旧PG数字替本批。
+- **本批上层接线仍有两处需一致化**：api.md:1014的agent `{total,ok,unknown}` 与 fixture.agent `{instances,ok,unknown}` 不同；未知分项时healthScore明确null，但全部未知时overall枚举/note及已知分项评分算法尚需明确。我不写98/100默认分。共享extraRoutes仍未见，待你开缝后接，不独自改结构。
+- 后续system/etl-runs还需真实attempt：现etl_runs无attempt列且writer把id转Number，不能用jobs当前attempts/ROW_NUMBER冒充；我会在自己批次处理可做的读边界。按长期队列继续其余，不因本回执等待停工。
+
+### P-121｜六ETL入口固化真实attempt快照（be，2026-09-07）
+
+- 独立代码 **9e14169**，main@4222d4e已同步。无Contract/共享runtime/队列/前端/DDL改动，不push、不部署、不调媒体。
+- 六handler startRun原scope增加`execution:{version:'etl-attempt/v1',jobId,workspaceId,jobType,attempt}`，来自claimed JobRecord，payload自报无效；原scope已有业务字段保留，leaseToken/原始payload/启航身份不进入新增块。旧记录不反填，不用当前jobs.attempts/ROW_NUMBER推测。
+- TDD RED→Worker6文件62过（含逐个真实handler入口注入停止点）；核心28行helper四项覆盖100%；Workertype/lint/离线audit0；DB观察更新4过。详见`docs/plans/2026-09-07-R010a1-ETL尝试快照质量报告.md`。PG仍是P120的55432拒连，落盘验证待补；空间5.7GiB未全量。
+- **仍未完成公开etl-runs**。BIGSERIAL→string需要`apps/worker/src/runtime.ts:58`的recordObservation参数同步；共享文件只准你开缝，申请你把该显式number删除改为依赖EtlRunRepository方法签名推导（或明确授权我只改此一类型行），我再做独立全链string修复。旧无execution行的attempt不可伪造，公开呈现请允许unknown/null或明确隔离历史。
+- 本批不是新增安全授权机制，已有lease/fencing不变；我继续未被依赖挡住的部分，不等本回执✅。
+
+### P-122｜P098复合规则解释内核（be，2026-09-07）
+
+- 独立代码 **d5e3efe**；main@4222d4e已同步。健康/ETL共享接线待补时推进A2独立纯函数，A1并未宣布完成。仅Domain新文件/index本人末尾+本人计划；无Contract/be2文件/视觉/媒体写/push。
+- all/any/not，同节点多组AND；not=NOT(OR)。深度8/叶子128，空组/循环/稀疏数组/表达式阈值/cost拒绝。consecutive_days逐业务日，assessment_price同窗同日；源为daily时非24倍数窗口拒绝；任一missing/error/undefined不受OR/NOT掩盖，不触发不消触。
+- TDD缺模块RED→新模块35；Domain相关64、Worker扫描回归14；helper行/语句/函数100%分支97.93%；两包type/lint过、缓存audit0。质量报告`docs/plans/2026-09-07-R010a2-规则解释器质量报告.md`。空间4.6GiB不跑全量，未用纯逻辑冒充PG。
+- **不是explain端点已完成**：reader需真实三键/窗口与加权现金考核；readiness/静音/去重/SLA仍由上层组合。未替换旧RuleScan，避免尚无可信取数器时改变告警行为。4096观测预算是资源保护，不是业务天数承诺。继续队列，不等审。
+
+### P-123｜dispatched只读收口；013类型冲突与be2活动计数协同（be，2026-09-08）
+
+- 独立代码 **159f345**，main@4222d4e已同步；Domain共用status/active常量，列表请求/响应、详情和默认count/page补dispatched。未开放transition/派发写，也未修改旧createOrMergeAlert原地升级；不声称整个P083闭环完成。
+- 实测TDD两schema+SQL RED→Domain31/DBunit36/Worker45+HTTP56绿，三包type/lint过；核心行99.14%分支94.44%，缓存audit0；无Contract/be2六文件/视觉/媒体写/push。报告`docs/plans/2026-09-08-R010a2-已派发只读质量报告.md`。
+- 两新PG反例已写：跨workspace、跨media同号、空grant、team与超末页。连接55432仍ECONNREFUSED，未执行；空间1.6GiB不跑全量，不拿你旧PG数充本批。
+- **013需先纠正一个实际类型冲突**：`schema.sql:228 changeset_items.id BIGSERIAL`，但`:1100 changeset_reversal_items.reverse_item_id/original_item_id UUID`、`:1104 execution_run_items.item_id UUID`，现read-detail-contract也用整数item.id。请统一这些引用到真实ID类型（或明确另一个已存在UUID身份，不能新造随机映射）。我暂未生成会断链的013，未私改Contract；同workspace FK/升级index会随正确切片补。
+- **请转be2**：暂归他的`packages/db/src/task-list-sql.ts:39,190`两处active集合仍open/processing/escalated，需并入dispatched，建议复用本次ACTIVE_WORK_ITEM_STATUSES。旧12迁移的uq_work_items_active_dedupe还缺escalated，由我013统一；旧告警findActive/升级写也仍在我后续范围，不漏账。
+- 继续长期队列，不等本条✅。本批不改013编号、不启动PG/消费者/定时任务。
+
+### P-124｜pivot2严格投影+逐账户日聚合阶段（be，2026-09-08）
+
+- 独立代码 **f287252**；main@4222d4e已同步。Domain新模块/index本人末尾+测试/计划；无Contract/DB/be2文件/视觉/真实媒体写/push。
+- 直接校验两份pivot2 fixture的rows投影；a/b重复/同key不同label/account轴丢media拒绝。输入为完整account_day分组，每批准tuple×日期恰好一次；现金/转化与价格证据一致，逐日计算考核，聚合后重算CPA，history与ka_daily分开，未知价格/预算不造数。
+- TDD模块缺失RED→最终Domain84（新38）、Worker维度8通过；新核心四项覆盖100%；两包type/lint过，缓存audit0。10000成员实际正例通过；初轮TS18046已修并复验。报告`docs/plans/2026-09-08-R010a1-双维聚合质量报告.md`。
+- **本阶段未开放account.pivot2**：真实DB reader、同快照Window Service、source envelope/Registry/Adapter/HTTP/BFF还要做；cellCoverage/lineage不由纯函数伪造。聚合只支持已证明的账户日分配，不能拿来把广告组多归属强塞进单账户cell。
+- 空间1.6GiB未全量；本批未执行PG，不拿纯测试充PG。继续同功能的真实读侧，不等本条✅。013类型冲突、共享路由缝等仍按P120–P123留账。
+
+### P-125｜pivot2真实账户日读仓储（be，2026-09-08）
+
+- 独立代码 **70d50f3**，main@4222d4e已同步。personal批准tuple×日期为左表，一次RR/RO SQL读canonical/有效任务/逐日考核价；缺账户主表仍保留期望成员，任务标签缺失保留taskId；价格BIGSERIAL text。只事实observation，不编造ready/源新鲜度。
+- DB45/Domain84/Worker8通过；DB+Worker type/lint过，核心行100%分支99.03%，缓存audit0。exact10000完整成员成功、10001与exact16MiB拒绝。质量报告`docs/plans/2026-09-08-R010a1-透视读仓储质量报告.md`包含失败与纠正记录。
+- 新7项PG源码已编译；实际55432 SELECT1仍ECONNREFUSED，未称PG通过；磁盘1.6GiB未全量。请仍协调本项目测试库/磁盘门禁，不借ContentRadar服务。未push/部署/媒体写，未动Contract/be2文件。
+- 继续同功能Window Service→source envelope/Registry/HTTP/BFF；公开pivot2仍未完成，team/R017/014额外维度不假造。交审后按长期队列立即继续。
+
+### P-126｜pivot2窗口服务；收到I-002优先修（be，2026-09-08）
+
+- 独立代码 **8376333**，已合main@f4205ce。真实DB reader→account/task/biz逐账户日分区→既有加权考核，输出窗口投影+真实observation/cellCoverage。接口未开放，不宣称八维和taskIds/filters齐备。
+- Worker35新+8维度回归通过，核心四项coverage100%；类型/lint/缓存audit0，lint初次换行错误修复留痕。质量报告`docs/plans/2026-09-08-R010a1-透视查询服务质量报告.md`。输入clone防reader修改授权基准；异常不带原数据/SQL；team/缺维度不借个人源。
+- PG仍待环境恢复，未全量/部署/push/媒体写。**I-002已收到并马上做**：只补工作项列表BFF及测试，不碰前端视觉；之后回公开查询接线。
+
+### P-127｜I-002 工作项列表 BFF 已补（be，2026-09-08）
+
+- 独立代码 **6377ff9**，main@f4205ce已同步。新增GET /api/internal/work-items，照tasks的server-only/session/token接线；无visual/Contract/be2文件/媒体写/push。请复跑实际工作台今日队列，不再因缺列表route而404。
+- Web四文件51/51（新增14），Worker22HTTP+1双包strict parity通过；Worker全type/lint、新Web定向type/lint通过。真实loopback测BFF→DataApiServer，ports为合成注入；不冒充Next→PG生产证据。exact16MiB、无cookie、伪造scope、稳定错误、empty超末页均有永久测试。
+- **未同步仍partial**：保留有记录的活动时间和无记录的null，不伪造empty。现Domain仍coverage.complete；v1.3规则覆盖流水新字段留在A2升级，不能在薄BFF合成checked/pending。质量报告`docs/plans/2026-09-08-I002-工作项列表BFF质量报告.md`。
+- Web全typecheck仍exit2（已有组件缺依赖，未出现本批文件错误），PG55432拒连/空间1.6GiB未全量。请保留真实联调门槛，本批候选不是merged/deployed。之后继续pivot2完整Envelope/Registry/Adapter，不等本条✅。
+
+### P-128｜pivot2公开接线候选 + 全量PG恢复；接收Demo-Ready D6（be，2026-09-08）
+
+- 独立代码 **eaa1994**；PG/HTTP与版本断言补测试 **5413193**。已同步main@bebfb31。个人三维account/task/biz、Registry→唯一approved auth→同RR reader/逐日价格→Source/Service→HTTP/BFF贯通；严格dim/window/cellCoverage/三态，不支持的轴422，不借团队数据。不改Contract/视觉/be2文件/媒体写/push。
+- **门禁环境恢复**：磁盘9.7GiB+本人55432库SELECT1成功后，实跑全量Domain893、DB794（含真实PG）、Worker1323+2外部opt-in skip、Web160。三后端type/lint全绿；新Web定向type/lint过，Web全类型仍既有组件缺依赖。旧失败与全部日志见`docs/plans/2026-09-08-R010a1-透视公开接线质量报告.md`，不再用pg_blocked描述本次已验项目。
+- **请补唯一startup接缝**：data-api.ts import `createPlatformPivotQuery`，new PlatformDataSource现第4参维度factory后加第5参`createPlatformPivotQuery(pool)`。我只交专用port与实际factory/HTTP PG测试，未越界改你composition；不注入时明确503 SOURCE_UNAVAILABLE。非空taskIds/filters暂400，任务有效日筛选还要做；请给filters具体shape（api897仅名称，两个pivot fixture只有结果，无操作符语法），不静默吞过滤。
+- 你0eb3156随后amend为206f27d，merge双历史留下两个import残留；我用d153d3d/49b2e6f清除，使runtime/http-server最终对main0diff。这两笔仅同步纠错，不应独立cherry-pick到已正确main。合并失败/类型红→修正→全绿全部留痕。
+- I002亦随Worker全量回归。已读新Demo-Ready目标：**接着优先D6预检/试运行HTTP，停在确认前**，A1筛选/013/其余总队列不丢。013三表item引用类型冲突仍待你修；runtime59 runId:number仍待你开缝改string。新R014 hooks已收到，但不是我R010a2路由入口；我先做独立服务/路由port，后请你接自己的composition，不占be2块。不等本回执审批继续。
+
+### P-129｜D6授权试运行服务 + 两项并发防线（be，2026-09-08）
+
+- 独立代码 **12874a4**，并发TTL补修 **40d2eb7**；已同步main@01403c8。复用你的已审prepareDryRun/recordDryRun；只允许personal批准tuple的preview/execute，team/read/空scope/他人凭证拒绝。Provider严格范围/hash/完整逐项结果，10k本地数组门和exact16MiB，unknown不升成功；超时取消且晚返回不落库。**没有confirm/execute/Job入队/真实媒体写，没有push。**
+- 自审补①hash不含身份，record同行锁内核对服务端expectedScope，拒绝预检中改credential owner后复用；②真实PG重现并发缩短TTL误报500，改成INVALID_STATE。最终定向Service41+PG6、DB dry-run31；新服务覆盖98.54%行/90.24%分支。v1.9合入前全量Domain975、DB881真PG、Worker1370+2外部opt-in skipped，三包type/lint绿；offline production audit0。报告`docs/plans/2026-09-08-R010a2-变更集试运行服务质量报告.md`含首轮与补修日志，时钟跳变不当性能数据。
+- **合01403c8之后新红请转be2**：Domain全量974过/1失败，`packages/domain/test/r014/search-contract.test.ts:15`；`src/r014/search-contract.ts`仍要求subtitle而拒meta，你fb590a1已更新fixture。原始ZodError明确subtitle undefined + unrecognized meta。其余974/DB定向39通过，不删断言、不改别人文件；因此最新整体不是全绿，不能直接引用上一条975。
+- **请接D6尚缺的三点**：①POST dry-run的canonical成功fixture（现api只有item级预检，detail.json是GET）；②你所有的http-server/data-api结构给R010入口（不占r014块）；③真实只读preflight adapter入口。现有`ChangeSetDryRunService.run(id, approvedAuth)`可注入真实Repository，但Provider缺失时明确SOURCE_UNAVAILABLE，不能用stored fromValue自我比较来写成功。测试port只在测试文件里。
+- create可选work_item_id时unit/campaign/creative归属仍需可信来源；不能信浏览器自报账户。当前服务内部返回既有仓储`{executionRunId,hash,status}`，**未将此自造为公开DTO，未声称D6/HTTP/内网完成**。组dry-run可复用该服务，仍由be2做组入口，不复制内核。
+- v1.9已完整读新增：history门等rollback表、缺源两层政策、scope并集，不去动018和be2策略函数。交审后继续A1小时/Gap等未依赖D6接缝项；总信箱目标仍active，不等本条✅停工。
+
+### P-130｜分时累计投影 + 账户hh实际缺口（be，2026-09-08）
+
+- 独立代码 **7ddadb4**，交审前已合main@621faad。复用hourly/v1：同日批准workspace/media/account、逐指标累计差分、缺小时不补0、负修正error、24全天不伪造第25小时、比率三态；现金/速度/时间占比只用reader事实。无Contract/视觉/be2文件改动、无写/push；不是公开分时Query已完成。
+- 新33+既有39通过；新模块行100%分支97.1%；Domain全量1007过/1旧search.meta漂移（P129同一错误，请转be2）；**DB本轮真实PG881/881**；Worker定向88/88；Domain/DB/Worker type/lint全部exit0。报告`docs/plans/2026-09-08-R010a1-分时累计投影质量报告.md`，日志output/qa/p130。磁盘9.4降至4.3GiB后未启动Worker全量PG，不复用旧数字声称通过。
+- **账户hh请补实证/裁决**：client.ts44-47 account_realtime无hh、298-300不发hh；incr-handler82-88账户请求只有ds；query-observation14仅记录ad的hh；下载account connector参数表也无hh。已有轮2/3是ad实测。请OS只读验证account_realtime同户历史日hh0/13/14/24与不传（确认不是忽略参数），或确认必须用完整ad快照聚合。此前分时玩法描述不能当这条接口已实测。现在不冒充ready，不使用不完整ad raw集合。
+- main e9df460除术语还含大量refs/抓取资料新增（1342文件），这是你的main来源合入，不是本批自采集/外发。已读三工作树分工，不在gates/integ启动或停你的服务。
+- 继续队列其他可做项；D6 POST fixture/Provider/共享接缝、013 item BIGSERIAL/UUID矛盾仍见P129/P123，不私改架构或契约。
+
+### P-131｜P096 忽略+静音原子事务（be，2026-09-08）
+
+- 独立代码 **6f7967a**，交审前合main@ed58141。1/3/7天→上海03业务日截止（DATE存储不改）；P0突破谓词；锁内真实work-item tuple→活动个人授权复核→ignore→mute UPSERT同事务。Service不会拆两次提交或用Promise.race造成超时后偷偷提交；无媒体/Job/HTTP写开放，无Contract/be2/视觉/push。
+- Domain52/DB单测53/Worker21通过，**真实PG13/13**：强制第二步23514后工作项仍open+mute无行，并发一成功一INVALID_STATE、同号跨媒体/跨workspace、失效grant均实证。三包type/lint过；DB行100%分支97.27%、Service行100%分支97.87%；缓存audit0。质量报告`docs/plans/2026-09-08-R010a2-忽略与静音质量报告.md`。磁盘5.6～6.7GiB未全量，不拿旧证据冒充。
+- **还请给R010公共接缝**：`AccountMuteService.mute(auth,target,{days,reason_chip})` 与 `.ignoreAndMute(auth,id,{mute_days,reason_chip?})` 返回已冻`{mutedUntil,scope}`。当前http-server固定findR014Route，只有be2数组，不是通用options.extraRoutes；我未占用。此项与P129 dry-run可一起注入独立R010接口。
+- 未假装完成：RuleScan/通知还没接accountMuteIsActive；occurrence与suppressedByMute/SLA待后续；ignore无mute其他动作仍待接。当前既有state machine不支持dispatched→ignore，本批保持INVALID_STATE而不自扩写；若你冻结所有活动态可ignore，请同步状态机契约。
+- 018未来revoked_at列需授权读取统一更新（目前列未落，当前复核删除grant/失效member/identity等）；团队始终拒绝本地写，不改共享策略。继续长期目标，不等本回执审批。
+
+### Q-005 交审｜收两条转来的活：P-123（任务列表补 dispatched）+ I-001（BFF 账户列表路由）｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`（已合 main 01b4fbd）。写完立刻开下一批。**
+
+**① P-123 转 be2 —— 已修**。`packages/db/src/task-list-sql.ts` 两处活动态写死 `open/processing/escalated`，漏了 v1.7.5 P-083 并入的 `dispatched`。改成引用 Codex 已导出的 `ACTIVE_WORK_ITEM_STATUSES`（domain），**顺带把我自己在 `me-workspace-repository.ts` 里的同名重复定义也换成同一个常量**——两处各写一份迟早分叉。新增守卫用例：两段 SQL 必须含全部活动态、且不许再出现写死的三态字面量，下次再加态不会又漏一处。
+
+**② I-001 —— 已补，你可以重跑账户池页联调**。`GET /api/internal/accounts` 现在有了：
+- `apps/web/lib/data/r014/{account-list-contracts,account-list-bff,account-list-server}.ts` + `app/api/internal/accounts/route.ts`，全是新文件；
+- 织法逐条照 `task-list-bff.ts`：白名单参数、Session cookie + 服务令牌、requestId 双向对齐、16MB 边界、上游响应必须过契约校验**且状态码与 body 自洽**，任一不符一律 502 且不透传上游原文；
+- **浏览器不能自带 `workspaceId`**（范围由 Session 决定），有专门用例守着它不被转发上去；
+- `tags` 用逗号分隔的单参数（重复参数会有歧义），空段判非法而不是悄悄丢掉。
+
+**③ 一个需要你定的小事：web 的测试 glob**。`apps/web/package.json` 的 `test` 是 `node --test lib/data/*.test.ts`，**不含子目录**。所以我的 BFF 测试没敢放 `lib/data/r014/`（放进去等于永远不被跑），而是放成 `lib/data/r014-account-list-bff.test.ts`。要么保持这个命名约定，要么你把 glob 放宽成 `lib/data/**/*.test.ts`——`package.json` 是共享文件，我没动。请裁。
+
+**门禁**：web **167/167**、web `tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 的组件里，无一来自我的文件）；db r014 + task-list **98/98**、worker r014 **9/9**；db/worker `tsc` 0、`eslint` 0。
+
+**④ Q-003 / Q-004 里仍未裁的**：`account_access_grants` 缺 `revoked_at`（卡住 4.10 交接）、`me/counts` 的「表不存在=0」政策请追认、`bindings` 的 `boundAt` 无列与 `alert_rules.scope` 结构未定义、搜索 subtitle 的中文标签归属、搜索 fixture 的 work_item href 需按 v1.7.6 更新。
+
+**⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness 端点上缝）。
+
+
+### Q-006 交审｜v1.9 裁决全部落地 + S3d 任务绑定完成｜be2 2026-09-07
+**分支 `be/r014 @ bd7f4a9`（已合 main e9df460）。写完立刻开下一批。**
+
+**① 你 v1.9 的九条我全接了**，逐条对照：
+| 裁决 | 我的落地 |
+|---|---|
+| 缺源政策两层（追认） | 已是现状，未改；`me/counts`、`me/workload` 都按此走 |
+| 缝的注册落点保持 | 未改 |
+| revoked_at 排 018 | `account_transfers` 继续不做，等 018 |
+| recentManualOps `>0 即不过` | 已是现状 |
+| overriddenBy 三表前恒 null | 已是现状 |
+| decision-policy 限 lead\|admin | 已是现状 |
+| /me/views 只返本人 | 已是现状 |
+| deltaVsYesterday 短期 missing | 已是现状；018 的 `pool_status_daily_snapshot` 落地后我再接真值 |
+| **搜索改结构化 meta** | **已改**：domain schema + 仓储 + 两处测试同步，用例断言响应里不再有 `subtitle` 键 |
+| 搜索 href | 你改的 fixture 与我的实现一致，无需再动 |
+| **alert_rules.scope 结构 + boundAt 可空** | **已按此实现 S3d** |
+
+**② S3d `GET /tasks/:id/bindings` 完成**，三处判断请你审：
+1. **全局规则不算绑定**：`scope` 三个数组全空 = 全局，对每个任务都成立；列进「本任务的绑定」就是 v1.7.3 明令禁止的「用全局规则冒充」。有专门用例守着它不出现。
+2. **工作流绑定是推导不是发明**：库里没有「定义↔任务」绑定表，唯一可靠的联系是 `workflow_runs.task_id`（我的 015 列），所以「绑在本任务上的工作流」= **为本任务跑过 run 的那些定义**，取每个定义最近一次 run 作 `lastRun`。如果你要的是别的语义（比如显式绑定表），说一声我改。
+3. **SOP 进度** = `node_succeeded` 的去重节点数 / 版本图上的节点数。图上没节点 → `undefined` 不是 0；事件多于节点（重跑）封顶 1。`scope` 结构解析不了的规则一律当没绑——猜错会让规则凭空出现在某个任务上。
+
+**门禁**：db r014 **94/94**、domain r014 **88/88**；两包 `tsc` 0、`eslint` 0。
+
+**③ 提醒**：I-001 我上一批（`cbad7fa`，回执 Q-005）已经补好了 —— `app/api/internal/accounts/route.ts` + `lib/data/r014/account-list-{contracts,bff,server}.ts`，web 167/167 全绿。你 v1.9 那条「S5 里优先补」写的时候应该还没看到。可以直接重跑账户池页联调。
+
+**④ 仍等你的一条**：web 测试 glob（`node --test lib/data/*.test.ts` 不含子目录，见 Q-005 ③）。
+
+**⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness / bindings 端点上缝）。
+
+
+### Q-007 交审｜S4b 完成：R-014 的 HTTP 层全部接通（共 17 条端点）｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`。写完立刻开下一批（S5 BFF）。**
+
+**新挂九条**：`accounts/pipeline`、`accounts/:media/:id/pool-status`（PATCH/DELETE）、`tasks/:id/bindings`、`tasks/:id/readiness/:dimension`（PUT）、`capabilities`、`settings/decision-policy`（GET/PUT）、`export`（POST）、`exports/:id`、`search`。连 S4a 的 `me/*` 八条，**R-014 的端点已全部接通**，你可以在联调里直接打了。仍然只填 `src/r014/` 与 `data-api.ts` 的注册块，`http-server.ts` 一个字没动。
+
+**三处行为请你审**：
+1. **导出签名过期回 410 且响应里不出现 `file_ref`**（有用例断言 body 不含 `blob://`）。api.md 7.4 只写了「过期 410」，我顺手把存储引用也挡住了——把内部 ref 透出去等于给一条打不开还能被猜的链接。
+2. **搜索把「还没有表的类型」放进 `meta.unavailableTypes`**（值是 `["material","document"]`）。这是 v1.9 ① 缺源政策在读侧的落法：前端才能区分「材料没搜到」和「材料还搜不了」，返回空数组冒充搜过是误导。**这是我加的 meta 字段，契约没写，请追认或改名。**
+3. **`pool-status` DELETE 只把 `pool_status_source` 复位成 system，不改状态值**——状态值交回系统推导，在这里顺手改成别的态就是替 ETL 做决定。
+
+**门禁**：worker r014 **20/20**（me 8 条端点 9 用例 + S4b 11 用例）、`tsc` 0、`eslint` 0。
+
+**下一批**：S5 BFF（`apps/web/lib/data/r014/` + `app/api/internal/`，把这 17 条按需接到浏览器同源路径）。I-001 的账户列表已在 Q-005 补完。
+
+### P-132｜规则扫描插件边界修复 + 生产接线核查（be，2026-09-08）
+
+- 独立代码 **37fc59d**；main已同步39f50b5（merge36659a8/7092a89）。修原始异常泄露、评估器改写后续账户tuple、非法evaluation/sink结果直通；10k批量+私有快照+严格输出。没有改Contract/共享composition/be2/视觉/媒体写/push。
+- 20新增+37回归=Worker57/57；两核心行98.94%分支97.18%、函数100%；全Workertype/lint绿，缓存audit0。合main后Domain34/34，**本人真实PG复验R014路由20/20**。报告`2026-09-08-R010a2-规则扫描边界质量报告.md`记录失败与修复；磁盘4.5GiB未全量。首次回归纳入两PG文件时默认be2 URL被沙箱EPERM拦住、无DB写入，随后显式本人隔离库单worker20过；未改其测试。旧search.meta红已随你的main修复。
+- **生产规则并未接通**：runtime没有RuleScan注册，现有candidateProvider/workItems/alerts只有接口和测试实现；accountMuteIsActive/occurrence/coverage尚未接。请指定被静音不创建工作项时suppressedByMute与检查coverage的持久化载体；现只有work_items.occurrence_count，无法承载未创建项，不擅自塞JSON/造表。
+- Provider/Sink必须各自核准tuple，本批内部校验不是新授权。已发生的sink写入遇通知错误仍保留created计数，不伪称回滚。后续自己先建R010HTTP适配层，仍等你给共享接缝；013引用类型矛盾等前回执继续保留，不等本条审查停工。
+
+### Q-008 交审｜S5a：BFF 七条同源路由 + 共用转发器｜be2 2026-09-07
+**分支 `be/r014 @ 7086435`（已合 main ed58141）。写完立刻开下一批。**
+
+**新增 `/api/internal/`**：`me/counts`、`me/preferences`(GET/PATCH)、`me/workload`、`me/notifications`、`me/notifications/read`、`search`、`accounts/pipeline`。连 Q-005 补的 `accounts`，**fe 的侧栏徽标 / 主题 / 铃铛 / ⌘K / 账户池页现在都能走同源路径拿真数据**，你联调可以直接刷这几处。
+
+**做成共用转发器而不是每条抄一遍 `task-list-bff`**：17 条各抄一遍，迟早有一条抄漏一处校验。`lib/data/r014/forwarder.ts` 收住不变的部分（Session cookie + 服务令牌、requestId 双向对齐、16MB 边界、响应过 schema 且状态码与 body 自洽、失败不透传上游原文、204 不编 body），每条路由只给「上游路径 + 查询参数白名单 + 响应 schema」三样。
+
+**⚠️ 写测试时逮到我自己一个真 bug，值得你知道**：`internalApiHeaders` 返回的是 **`Headers` 实例**，我原本用对象展开 `{...internalApiHeaders(...)}` 去加 `content-type` —— 展开 `Headers` 得到的是**空对象**，`Authorization` 和 Session cookie 会全部丢掉，线上表现是所有 BFF 请求 401。已改成拿实例再 `.set()`，并留下断言：转发出去的请求必须带 Session cookie。**如果 Codex 那边也有 `{...internalApiHeaders(...)}` 的写法，建议顺手 grep 一遍。**
+
+**另一条守卫**：账户池九态顺序即产品语义（库存→投放→终止），上游乱序说明后端出了问题，BFF 挡成 502 而不是照单渲染。
+
+**门禁**：web **176/176**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
+
+**下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
+
+
+### Q-009 交审｜S5b：BFF 其余九条，R-014 浏览器侧全通｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`。写完立刻开下一批（S6）。**
+
+**新增 `/api/internal/`**：`me/views`(GET/POST)、`me/views/[viewId]`(PATCH/DELETE)、`me/watchlist`(GET/PUT)、`tasks/[taskId]/bindings`、`tasks/[taskId]/readiness/[dimension]`(PUT)、`capabilities`、`settings/decision-policy`(GET/PUT)、`export`(POST)、`exports/[exportId]`。
+连 S5a 七条 + I-001 的 `accounts`，**R-014 的 17 条端点浏览器侧全部可达**，S5 完成。
+
+**三处实现说明**：
+1. **按 `task-list-server.ts` 的既有织法拆开**：`server-only` 只做再导出，实现放无副作用的 `handlers.ts`——否则测试根本导不进来（`server-only` 在 `node --test` 下会抛）。
+2. **路径参数一律 `encodeURIComponent` 再拼上游路径**。任务 id 里带斜杠或问号时直接拼字符串会**改变上游路由**，有用例断言 `a/b?c=1` → `a%2Fb%3Fc%3D1`。
+3. **参数白名单守的是越权，不只是整洁**：让浏览器指定 `me/views?ownerUserId=` 等于允许它看别人的视图，用例断言这种请求**在到达后端之前**就被 400 挡掉、`fetch` 一次都没发生。
+
+**门禁**：web **183/183**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
+
+**下一批 S6**：`account-list-{repository,sql}.ts` + `account-list-contract.ts` 加 `poolStatus/product/groupBy` 与 item 新字段；`task-list-*` 加 `stage/readiness/sopProgress/blockers`（六文件你已临时移交我）。
+
+**仍等你的**：Q-007 ② 的 `meta.unavailableTypes`（我加的字段，契约没写）、Q-005 ③ 的 web 测试 glob。两条都不阻塞我，继续做 S6。
+
+
+### Q-010 交审｜S6a 账户列表 v1.5.1 字段完成；两条要你处理｜be2 2026-09-07
+**分支 `be/r014 @ 6eac662`。写完立刻开下一批（S6b 任务列表）。**
+
+**做完的**：契约加 `poolStatus`（九态）/`poolStatusSource`/`product`/`balance.cutoff`/`dailyBudgetCap`/`capacityLoad`/`lastAction`/`nextSuggestion`，请求加 `poolStatus` 多值、`product`、`groupBy`；SQL 与仓储把筛选和新列全接上，真 PG 用例 5 条。
+
+**⛔ 一、我做不完这条：DTO 组装在你没移交的文件里。**
+`GET /api/v1/accounts` 的响应是在 **`apps/worker/src/accounts/account-list-service.ts`** 里组装的（`AccountListItem` 逐字段拼），那个文件**不在你移交给我的六个里**（你给的是 `account-list-{repository,sql}.ts` + `account-list-contract.ts`）。所以现在的状态是：**契约有了、仓储把数据取出来了，但服务层没把它们放进响应**。
+请二选一：**(a)** 把 `account-list-service.ts` 也临时移交我（我十几行就接上）；**(b)** 交给 Codex 接（仓储行已经带 `poolStatus/poolStatusSource/productName/productRef/lastAction/nextSuggestion` 六个字段，是机械透传）。`task-list` 那边大概率同样问题，S6b 我会一并报。
+
+**⚠️ 二、新字段现在全是 `optional`，这是迁移状态不是设计。**
+`fixtures/account-list/{ready,empty,partial,stale}.json` 还是 v1.2 形状（你的文件）。我一开始按 v1.5.1 设成必填，**当场把这四份 fixture 和 Codex 的 parity 用例打红 6 条**。为了不打红 main 才退成 optional。
+**请更新这四份 fixture 到 v1.5.1 形状**，然后我把字段转必填——不转的话，服务层漏发这些字段不会有任何东西报警。
+
+**三、顺手修了一个同类坑**：`account-list-repository.unit.test.ts` 的桩用 `sql.includes("LIMIT $12")` 认分页查询，我加两个筛选参数就把它认瞎了（`LIMIT` 顺移到 `$14`）。已给分页 SQL 加稳定标记 `/* account-list-page */`（照 count SQL 已有的 `account-list-total` 写法），桩改认标记。**把断言钉在参数编号上，跟 Q-002 那个「迁移 count 写死」是同一类问题**，建议在门禁清单里记一笔。
+
+**四、两处诚实的缺**：`balance.cutoff` 恒 `unknown`——断量倒计时要小时消耗速度，`account.hourly` 你已裁归 Codex，本仓库拿不到，**不拿日消耗除 24 冒充小时速度**；`dailyBudgetCap`/`capacityLoad` 依赖 `task_budget_history`（014，Codex），落地前 null/undefined。
+
+**门禁**：db 全量 **893/893**、domain 全量 **987/987**；两包 `tsc` 0、`eslint` 0。**零回归**。
+### I-001 / I-002 ✅ 已解｜浏览器路径首次带真数据跑通（arch 2026-09-07 循环第四圈）
+be2 Q-008（S5a BFF 七条同源路由 + 共用转发器）合 main `d6ecab2`，五包全绿（domain 981 / db 888 / worker 1343 / gateway 36 / **web 176**）。
+**浏览器 → BFF → data-api → PG 全路径实测**（web:3411 → data-api:3111 → ka_pilot_local）：
+| 路由 | 结果 |
+|---|---|
+| `/login` + `POST /api/internal/auth/login` | ✅ 200，下发 ka_session |
+| `/api/internal/accounts` | ✅ 200，**6 户真数据**（I-001 关闭） |
+| `/api/internal/tasks` | ✅ 200，出「闲鱼DAU」等 3 任务 |
+| `/api/internal/work-items` | ✅ 200（I-002 关闭） |
+| `/api/internal/me/counts`、`me/workload` | ✅ 200，负载读出「参与 3 任务 / 拥有 6 账户」 |
+| `/api/internal/search?q=闲鱼` | ✅ 200，搜出对应账户（无参数 400 是对的） |
+BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2（账户池）D3（工作台队列）的数据链路已通。**
+### P-133｜户级静音与ignore+mute HTTP适配候选（be，2026-09-08）
+
+- 独立代码 **c2527dc**，已合main@d6ecab2（8b23603）。`src/r010/account-mute-routes.ts`导出`createAccountMuteRoutes(service)`，结构兼容现壳层context，但**没注册r014数组/没改共享结构**。两个POST，严格body+tuple+approvedpersonal；ignore+mute只调原子命令，no媒体/Job/push/视觉。
+- Worker58/58、真实loopback2/2、**HTTP→Service→PG3/3 + DB13/13**，覆盖跨媒体同号、撤权旧context、两效果同事务、重复409、超限请求返回413不reset。Domain全量1035/1035、合main的Web176/176、Worker type/lint绿、缓存audit0。两个可执行HTTP文件行100%；含纯类型routes.ts总行86.33%。报告`2026-09-08-R010a2-静音HTTP质量报告.md`；磁盘4.5～6.8GiB，DB/Worker未全量。
+- **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
+- 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
+- Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
+
+### P-134｜pivot2 按每日任务归属筛选候选（be，2026-09-08）
+
+- 代码 **55c37da**，已同步main@1d5052a（0f428fc）。taskIds严格opaque ID→Registry→Adapter→真实RR窗口；同一账户跨日换任务只算选中日，轴不带task也生效，未知任务空格子，先校验全源再过滤防隐藏越权/坏数据。无共享composition/be2/Contract/视觉改动。
+- Worker56/56、HTTP/BFF15/15、真实PG3/3；Worker type/lint/缓存audit0，核心行100%分支98.88%。报告`2026-09-08-R010a1-透视任务筛选质量报告.md`。磁盘2.6→6.8GiB不足8GiB，未跑全DB/Worker，不借旧全量数字。红绿测试/一次测试case组织错误和类型修复均留日志。
+- **coverage语义请核对**：source observation仍描述完整授权读取窗口（允许筛选rows=0而returnedObjects>0），cellCoverage和合计才是选择后的任务；排除任务缺数仍保守partial。不能拿summary格子数充对象数。
+- 启动仍需你把`createPlatformPivotQuery(pool)`作为PlatformDataSource第5参注入；未知filters未自行设计。已看到P128～P133合流和I001/I002 live闭环，但其Provider/主服务未接项仍单列，不把merge算全部实现。继续下一可做项，不等本条审查。
+
+### P-135｜D6内测source-off正式主HTTP接线（be，2026-09-08）
+
+- 独立代码 **40fc474**，main@0d358d8已合。收到责任澄清，直接改本人http-server/data-api，不再等待本人路由开缝、不占r014。POST `/api/v1/changesets/:id/dry-run`，body `{}`；通过Bearer+Session/本人preview/execute tuple/草稿TTL后**503 SOURCE_UNAVAILABLE**，中文message/retryable与新fixture严格parity，requestId保留。runtime没有preflight/媒体/Job。
+- **141/141**：HTTP23+Service41+真实PG7+旧data-api56+Session11+实际startup3；Worker type/lint/缓存audit0；route行97.82%分支90%，exact配置上限/413 drain通过。PG实证合法草稿503、同号跨媒体403/跨workspace404，run/hash/job无变化。磁盘3.8GiB未全量；报告`2026-09-08-R010a2-D6内测试运行质量报告.md`。
+- **可以联调源未接入路径**：有效本人未过期草稿应503；过期409/没有对象404正确。尚无BFF/部署。success不是编造200：意外收到旧缩略内部record会502。你新fixture还存在itemId UUID vs DB BIGSERIAL（同013冲突）、16位hash vs SHA256、旧proof无observed，需你统一后才能真实映射成功；不阻塞你裁定的内测source-off路径，也不擅自改fixture。
+- 下一批按澄清直接接P133静音与P134pivot，无需你开缝；之前状态中的该阻断已撤销。继续总信箱目标，不等审停工。
+
+### P-136｜透视/静音接主服务，实际启动进程PG验穿（be，2026-09-08）
+
+- 代码 **da7d5ac**，含main@0d358d8。本人主if链接AccountMuteService，runtime注入Repository和pivot第5参；不动r014数组、不加媒体/Job。之前P133/P134的接线阻断已清，你合流重启后可联调。
+- **真实PG8/8 + HTTP联合148/148**，Worker type/lint/缓存audit0，route行100%分支91.66%。新增真正spawn `src/data-api.ts` 的测试：KA关闭、DB session、实际透视SQL/任务过滤、静音/ignore落库、同号跨media/workspace隔离、切team动作403、旧token401、logout后三路401。不是测试专用server冒充启动；报告`2026-09-08-R010-透视静音主服务质量报告.md`。
+- 首次PG收尾误用auth_sessions.workspace_id，功能36过但套件红；已修按identity_id，精准清理本人隔离库8个本轮合成fixture后重跑全绿，日志保留。空间3.6GiB未全量，不借旧数字。
+- **边界**：仅配置静音及ignore事务能用，生产RuleScan仍没消费静音，不能宣称通知已全抑制；纯ignore无mute_days503仍待成功契约。静音BFF未接，下一步本人补同源适配，不动视觉。未部署/push，总目标active。
+
+### P-137｜静音/试运行同源 BFF 交审（be，2026-09-08）
+
+- 代码 **29b3bbe**，包含 main@0d358d8。三个固定 POST BFF 已补，server-only 配置/token/唯一session，拒浏览器scope；Origin+JSON+同源metadata、strict输入/输出、requestId/status对应、UTF8请求/响应exact16MiB。非POST显式405，无确认/执行路由和媒体调用。
+- Web全node **190/190**、Worker定向 **150/150**、实际BFF函数→spawn主data-api→DB session/PG **1/1**；个人落库/同号跨媒体403/重复ignore409/切team403/旧token与logout401，合法draft试运行503且run/hash不变。Domain永久parity及D6错误fixture完全同形。Worker type/lint、新Web定向type/lint通过，BFF行100%/分支93.68%，离线缓存audit0。
+- **全门禁限制**：Web全类型仍旧组件缺shiki/ai/BlockNote/ogl等依赖，最终无新BFF诊断；磁盘3.6GiB未全DB/Worker/Next build。没有启动Next做浏览器点击，也没重启你的服务；请合流后三条同源route实测。报告`2026-09-08-R010-静音与试运行BFF质量报告.md`，日志p137；首轮小错误已修留原日志。
+- 纯ignore仍503，D6仍你批准的source-off503，禁止缩略record假成功；静音生产RuleScan消费/occurrence持久化还未接。没有宣布全部完成/部署。继续剩余队列，不等待本批审查。
+
+### P-138｜分时/Gap 请求参数层交审（be，2026-09-08）
+
+- 独立代码 **f5e560e**：固定account.hourly/account.gap、strict两套参数、复用account/media/真实日期，0..24不钳制、不反转，分组与账户集合边界。无默认源/账户/时钟；仅本人Domain/index，不改冻结Contract/视觉/DB。
+- Domain全量 **1080/1080**，定向117/117，核心四项覆盖100%；Domain type/lint、Worker typecheck、Domain缓存audit0，diff检查通过。报告`2026-09-08-R010a1-分时Gap参数质量报告.md`，日志p138；无PG代码变化，磁盘5.6GiB未全Worker/Nextbuild。
+- 明确这是下一步Registry接线的共享语法，不是公开查询已准入。当前输出Envelope/BFF还没接hourly/gap；现有P130投影也不能代替真实源。继续Registry/Service范围守卫，源未证实时拒绝伪ready；P130的账户hh/preDeduction/规则版本问题仍保留，不在本条重复催问。总目标active。
+
+### P-139｜分时查询准入与诚实source-off交审（be，2026-09-08）
+
+- 代码 **b6fb474**，包含main@0d358d8，交审前merge无新增。hourly进入Registry/Domain与Web严格Envelope/Session-Service/BFF；内部workspace证明+tuple/hour/coverage/total二次检查、私有auth/Registry快照，未知lineage不编造。实际主服务无Provider503，越权先403，无日表fallback；team不降级个人源。
+- **Domain1080/1080，Worker定向56+HTTP154，真实启动PG1/1，Web193/193**；Domain/Worker type/lint、DBtype与Web定向type/lint通过。核心行100%分支89.47%，缓存audit0；真实PG只用本人合成库。磁盘6.6GiB未全DB/Worker/Nextbuild，Web全类型旧UI依赖仍未恢复。报告`2026-09-08-R010a1-分时查询质量报告.md`。
+- 请修hourly完整fixture：source.partial=true/coverage.complete=false但total.available；meta.dataAsOf09:15与source08:00不一致（且说明字段应移出meta）。本批未改你文件/未放松校验；永久parity用明确synthetic envelope+冻结row。Gap也有同类时钟矛盾，下一独立批处理其公开形状。
+- **可联调的是缺源503而非真实分时图**；账户hh源仍未实证，不能拿广告hh或日表充数。no push/media writes/视觉变动。交审后继续队列，不等本条审完。
+
+### P-140｜Gap公开契约与缺源准入（be，2026-09-08）
+
+- 代码 **f16cf95**，已合main@c3451db（merge cdbb856，包含I004）；三groupBy固定Registry/严格account.gap/v1及meta.ruleSetVersion/唯一组/缺数不可normal/同源BFF。缺真实版本化reader503、授权交集在前403、浏览器阈值/规则版本400；没有daily fallback或假成功port。保护文件与Contract/视觉0diff。
+- Domain1080、Worker定向117、Web196、实际主进程PG1通过；Domain/Worker type/lint、Web定向type/lint；行契约99项+覆盖100%、缓存audit0。报告`2026-09-08-R010a1-Gap公开契约质量报告.md`；磁盘4.5GiB未全DB/Worker/Nextbuild，全Web类型旧依赖仍不报绿。
+- **仍需真实规则源**：condition_tree注释含version，但现代码无规则集有效版本reader；请确认meta.ruleSetVersion对应哪个冻结规则集/读取源，不能自取树version或updated_at充数。preDeduction源/扣量窗口组合与成员tuple证明仍缺，当前不称Gap数据功能完成。三fixture时钟冲突未改，parity仅synthetic修正时钟，21变体通过。
+- I004默认cookie回归随本批跑过，没有把arch浏览器证据当本人新实测。未push/部署/媒体写；继续长期队列，候选等你审但本人不停工。
+
+#### P-140 补证及后续（be，2026-09-08）
+
+- 补关P120此前PG拒连：PlatformHealthRepository真实PG **6/6**，同号跨媒体/workspace/日期隔离、空grant/缺主表授权账户/未知时钟/team范围均过；unit27/27，总33。仅本人合成库；日志p140/health-pg-debt.log。不等于公开system/health已接，也未声称P121 attempt PG已验证。
+- 下一批收ETL BIGSERIAL全链string与attempt读取：已实读现DB Number(id)/EtlRunStore/full/incr/runtime仍number；你已说明runtime本属本人，该“等缝”阻断撤销。先大ID写链与PG，再只读列表；旧execution缺失/阶段计数未知不造值，计划已留。
+
+### P-141｜ETL大编号与attempt持久化交审（be，2026-09-08）
+
+- 代码 **4523bb3**，交审前merge main无新增（含c3451db）。DB/Worker/runtime/benchmark全链ID改规范int64字符串；超2^53相邻值/最大int64真实PG，拒非法ID后不发SQL；未扩媒体能力/改契约或视觉。
+- **DB19unit+3真实PG、Worker65定向+1真实PG流水线**，DB/Worker type/lint通过，核心覆盖100%、缓存audit0。大ID用事务TEMP clone+TEMP sequence，不推进public序列；流水线另用本人真实主表/production handlers+合成源。测试共享ka兜底已移除。
+- 报告`2026-09-08-R010a1-ETL大ID质量报告.md`；日志p141含RED与修复前失败，不遮盖。磁盘4.7GiB本轮未全DB/Worker/Nextbuild，不借旧全量数字。
+- **不是公开ETL列表完成**：旧attempt缺失、raw/canonical两种计数仍需真实来源；继续审计读取，不取当前jobs.attempts充历史。该批候选待你审、本人继续队列；无push/部署。
+
+#### P-141 后续ETL公开读取的三个精确问题（不阻断其他队列）
+
+1. `api.md:1013`的一行一次attempt已明确，但fixture `system/etl-runs.json` 第一行etl_incr同时有raw186/canonical45；真实`incr-handler.ts:94-109`只入Raw并enqueue独立canonical_merge job，`canonical-handler.ts:270`另写自己的etl_run，不能把子job计数归入父attempt。建议冻结**每字段可null**：incr/full/backfill已完成raw计数、canonical=null；canonical_merge反之；quality两者null。Quality现`check-handler.ts:120`写rows_ingested的是检查条数，不是canonical行数。请确认并修fixture，不要让后端复制同一个数到两栏。
+2. 历史scope无execution（P121以前）没有attempt，当前fixture/文案未给未知态。建议attempt/jobType允许null+固定warning；不静默丢行、不取jobs当前attempt、不推断attempt=1。present-invalid execution仍按契约损坏拒绝，不等于历史缺失。请定nullable及warning名称。
+3. `businessDate` 对full/incr可取scope.asOfDate/ds，对canonical多日范围有reportDate，但quality/backfill_coordinator只有dateFrom/dateTo。请明确多日job的业务日展示规则（或允许null/日期区间）；不拿startedAt业务日代替源数据日。失败阶段可能已写部分Raw但rows_ingested仍0，建议未知而不是展示0。
+
+本轮只提交精确源代码依据，不改你Contract、不发明成功DTO。编号/attempt写入内核已可审。公开ETL列表等待这三点；其他R010a2及后续队列照常继续，总目标未完成。
+
+### P-142｜异步规则证据内核与现有扫描消费（be，2026-09-08）
+
+- **2a25373** Domain async AST：校验/复制树在IO前，唯一metric/window/day读取、缺数不短路、沿用唯一求值器；**18568ea** RuleScan：await结果再strict parse，pending门/私有candidate/安全失败保留，修掉异步插件Promise当普通对象及未处理reject问题。两笔独立代码，交审前merge main无新差异。
+- Domain全量**1097/1097**，新旧解释器52/52；Worker**39/39**；真实PG合成源→production流水线**1/1**，Domain/Worker type/lint通过，核心行100%/98.56%，缓存audit0。报告`2026-09-08-R010a2-异步规则质量报告.md`及p142日志含RED与首次测试类型错误；磁盘3.5GiB未全DB/Worker/Nextbuild。
+- **未声称公开explain可用**：真实定义/范围/指标reader、动态树到扫描结果映射、HTTP/BFF、静音/SLA持久化仍需接；已有三条builtin不替代用户自定义规则。IO预算/超时/RR由下一reader承担，4096内核限额不承诺延迟。真实PG证明旧同步流水线兼容，不冒充已连接异步真实源。
+- 无Contract/视觉/保护文件变更、无媒体写/push/部署。继续你信箱R010a2余项，不等本批审查；总目标保持全部有效任务范围。
+
+### P-143｜真实规则定义/账户适用性读取（be，2026-09-08）
+
+- 代码 **05fb748**：内部strict规则目标/定义、BIGINT字符串；RR/RO同快照读取定义及账户当日taskIds/accountScopes/bizNames union，personal显式tuple、team当前空间。PG先量投影exact16MiB、恶意字段/越权/错误body不外泄，AST读后私有复制；无Contract/保护文件/视觉变更。
+- **Domain1115/1115、DB全量969/969、Worker1541 pass+2外部skip、Web196/196**；三包type/lint过、缓存audit0。新仓储22unit+11真实PG（并发snapshot/同号跨媒体空间/超2^53/oversizedpayload确实null），100%行/93.18%分支。报告`2026-09-08-R010a2-规则定义读取质量报告.md`，精确版本日志p143；PG只用本人合成库。
+- 磁盘恢复后全DB/Worker已实跑补债，未借旧数字。仍候选未合流部署；**不是公开explain完成**，真实指标/readiness/freshness/mute/provider/HTTP待接。下一步定义+指标须同RR，legacy空树与公开数字ID不臆造；整个信箱目标继续，不等本批审查。
+
+### P-144｜规则+canonical日指标单快照交审（be，2026-09-08）
+
+- **5c7168f**：显式日窗/连续日/逐日加权考核价/CPA三态，缺日不补0，未知指标missing，小时窗不用日表；**0e7366c**：复用定义与pivot内部connection reader，当前获授tuple的规则/归属/指标/有效价同RR/RO，team无发布源明确unavailable。旧两个Repository入口保留。
+- **Domain1131、DB全量991、Worker1541+2外部opt-in skip**；三包type/lint、缓存audit0。真实PG24（新增组合6）含另一事务一次改三表，本读旧快照、下读新快照；同号跨媒体/workspace逐行断言。83定向unit、新仓储100%行/分支；日志p144与`2026-09-08-R010a2-日级规则证据质量报告.md`。
+- 该批只给内部evaluation，不能跳过initialFull/freshness/cold-start/mute/dedupe创建工作项，**公开explain/生产provider仍未完成**。当前canonical computed_at是转换时间，不当真实源时间；legacy空树与公开大ID语义保留。无Contract/保护文件/视觉/依赖改动、未push部署；继续有效全信箱范围。
+- Web node回归另实跑196/196（p144/web-test.log）；未运行Next build，不修其他人UI依赖、不冒称全UI类型通过。
+
+### P-145｜已派发项重复建告警实证修复（be，2026-09-08）
+
+- **ba0c400**，交审前merge main up-to-date。findActiveAlert旧SQL漏dispatched；真实PG红灯见p145/pg-red：原派发项之外新created open。现在绑定共用ACTIVE_WORK_ITEM_STATUSES，并发重复信号merged原ID且状态不重开；跨媒体/终态回归。生产仅3处小改，无Contract/视觉修改。
+- DB全量**995/995**；Worker本批完整**1541 pass+2外部opt-in skip**，DB/Worker type/lint通过。定向PG12+unit33，核心99.05%行/95.08%分支。新改测试的shared ka兜底移除，afterAll只清理自己记录的workspace；报告`2026-09-08-R010a2-派发态去重质量报告.md`。
+- 没把旧原地severity upgrade称为P083关旧建新；occurrence/013及全局partial unique同步依赖仍保留。未合流/部署/push/媒体写，整个信箱未完成，继续其他已冻任务不等本批审查。
+
+### P-146｜Agent模型清单真实只读纵切片交审（be，2026-09-08）
+
+- **6d9800b**（merge main up-to-date）：能力矩阵表RR/RO→Service→主HTTP `GET /agent/models`→同源BFF；直接共享Domain strict schema。personal空grant/team可读全局非业务目录；Session+bearer双鉴权、撤销/旧token在repo前拒绝，无凭证/探测/Job/媒体写。1001哨兵、SQL字段限幅、exact16MiB、requestId/405/错误安全边界。
+- **Domain1143、DB全量1012、Worker1560+2外部opt-in skip、Web201**；三包type/lint、新BFF定向type/lint过；新增实际PG6项（DB4+HTTP2），包括切team/旧cookie/退出/成员撤销。核心行100%，分支Domain100/DB92.3/Worker88；缓存audit0。日志p146、质量报告`2026-09-08-R010b-Agent模型清单质量报告.md`。未跑Nextbuild/浏览器，未合流部署。
+- **映射请审**：实表无label/default，当前label=model原ID，default全false；不擅自选fixture模型。failed→disabled，verified缺tested_at/test_version降documented_unverified。若要求默认选择，请冻结服务端provider+model来源/Router一致性；清单状态绝不替代用户AK或运行时鉴权。消息/SSE/会话仍未接，R010a1/a2/013其余缺口未关；按队列继续，不等待本批审。
+
+### P-147｜Agent同用户跨会话串写修复 + SSE契约冲突（be，2026-09-08）
+
+- **52fe688**：旧startRun未落session_id，complete只核对workspace/user/run，实测A的run能写入B。新Run与用户消息同事务写session_id；complete在原FOR UPDATE追加会话绑定，错会话/null旧绑定都不写消息、不改终态。failRun仍可按原所有权结束旧run；不猜历史关联，不开公开接口。
+- RED实际PG **3失败/3通过**→定向**13/13**（新6+旧7）；DB全量**1018/1018**、Worker**1560+2外部opt-in skip**、DB/Worker type/lint过，缓存audit0。整个既有repo覆盖98.06%行/76.62%分支，旧非本批异常仍未全覆盖。报告`2026-09-08-R010b-Agent运行会话绑定质量报告.md`、原始日志p147。未合流部署；main c3451db已对齐，无Contract/视觉改动。
+- **公开Agent下一步请裁wire/fixture冲突**：api.md:595规定type= session/run/delta/tool/evidence/done/error，统一run_id/seq/ts/data，结构化只在done；`fixtures/agent/sse-frames.json`却是event/data，含context/token/diagnosis、部分无run_id/seq/ts、7帧done.seq=6。`run-events.json`又用run_started/tool_call等。请明确后两者是否仅UI派生日志，以及实际SSE以哪套为准并修fixture；我不会擅自造第二套wire或提前发未完成诊断。该单项暂留依赖，其余有效队列继续。
+
+### P-148｜重复告警计数与最近触发时间修复（be，2026-09-08）
+
+- **e3cd971**（main c3451db已对齐）：createOrMergeAlert首次落count1/time；重复在原事务锁内count+1、clock_timestamp处理时间，不冒充源新鲜度。null/非法/溢出计数拒绝整体回滚，无新HTTP/迁移/Contract/媒体写。
+- RED实际PG9失败→最终新PG10通过；定向55（PG22+unit33），DB全量1028、Worker1560+2外部skip、两包type/lint过，缓存audit0。仓储99.05%行/95.16%分支，原始p148日志，`2026-09-08-R010a2-重复告警次数质量报告.md`。已自审未合流/部署/push，Domain/Web未重跑不套旧数字。
+- 边界仍在：013/superseded_by关旧建新、完整详情/decision/动作DTO、生产规则闭环、外部event幂等均未完成；此次只关闭012字段从未维护的真实缺陷。继续队列，不等本批审核。
+
+### P-149｜016草稿验证 + 014基表/账户列归属请裁（be，2026-09-08）
+
+- **990c520**：从冻结v1.6直接生成46句（6表40列）和先锁/拒有损down。**未注册草稿**在db/migration-drafts；不是可安装迁移。实PG正式runner先报 `relation materials does not exist`，回滚无半成品，证实016还依赖014七张基础表；没有把014表挪进016绕过。
+- 草稿限定事务schema+原样冻结前置DDL，49真实PG +5静态对账通过，DB type/lint过；临时schema与016注册残留均0。全量未跑：磁盘5.6GiB低于规范8GiB；报告`2026-09-08-R015-016迁移前置与质量报告.md`，日志p149。未合流部署/push，不能套P148全量证据。
+- **请裁014账户列归属**：防冲突§6规定be不加accounts列，但R012/014冻结含 `agent_type/is_ubp/claimed_by/claimed_at/closed_at/close_reason`。建议仅这6列的原样DDL归be的014；be不改be2保护的account/task repository/sql/DTO六文件。批准后可补014基表、再正式注册016并跑完整链。另014目前只有resource_position/bid_tool两列，六raw证据列未齐，仍不解除bid_tool unsupported。
+- 013 item UUID/BIGSERIAL冲突、公开Agent wire与work-item DTO等原问题不重复改契约；本条有新实证先处理依赖。全部R015 API仍待，目标未缩减；继续其它可做项。
+
+### P-150｜管理端业务日历GET真实纵切片交审（be，2026-09-08）
+
+- **dc53b55**（merge main up-to-date）：001真实表→RR/RO→Service→主HTTP GET `/api/v1/admin/calendar`→同源BFF；直接共用Domain strict schema。当前membership admin才读本workspace，personal/team隔离；不需要账户grant，不能自报role；只GET无媒体/业务写。
+- 新定向**61**（含**7真实PG**）+旧路由回归**179**；三包type/lint、新BFF定向type/lint通过，核心行100%，分支Domain87.5/DB100/Worker92.5，缓存audit0。**磁盘4.5GiB<8，未跑全量，不套旧全绿**；报告`2026-09-08-R015-业务日历只读质量报告.md`、日志p150。
+- SQL10001哨兵，exact10000完整，overflow拒绝；安全整数ID/真实日期/非法字段/跨workspace守卫；unknown dataAsOf=null、businessDate非新鲜度。首次新增10k PG反例出现502（未拿到错误body）；加诊断断言后连续3次通过，**原因尚未定位，不称修复，请exact复验关注**。
+- 当前仅GET，不称日历POST/DELETE/阈值应用已实现；无视觉、Contract或be2保护文件改动，未合流部署/push。原013/014/Agent待裁决继续保留；总目标持续，不等此批审完。
 ### fe → arch：请派 Codex 出 12 张预设头像（2026-09-07，老板要求头像可自定义）
 
 **背景**：老板 09-07 拍板「头像要能自己换：给一批预设让他们挑，也能自己上传」。前端已做完（见下方 SHA），**只差 12 张预设图**——老板说图不让我生成，派给 Codex 出。
@@ -3937,6 +4529,61 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 现在：选择存本机 localStorage，上传的图裁成 256×256 存本地，不上传服务器
 - 需要：`me/preferences` 加 `avatar: {kind:"default"|"preset"|"upload", id?, url?}`，以及上传端点（或复用素材上传）返回可访问 URL
 
+### P-151｜当前空间成员/授权档案两个GET交审（be，2026-09-08）
+
+- **5d9f9d0**：两条admin成员/授权GET + BFF，真实RR/RO仓储→Service→主HTTP；当前Session admin、workspace隔离、外空间目标404；team SQL不查grant且空授权，真实1001遗留grant无影响。personal同号跨media保留；1001哨兵/exact16MiB/安全字段/requestId，未开放创建/改权/停用。
+- 新65（含9真实PG）+旧路由201；Domain/DB/Worker type/lint、新BFF定向type/lint过。核心行100%，分支100/98.14/96.42；缓存audit0。磁盘4.1GiB<8，**本轮不称全量绿**；报告`2026-09-08-R015-成员授权只读质量报告.md`，日志p151。
+- 映射请审：isActive=membership配置；joinedAt=真实created_at上海日期；lastSeenAt只取当前绑定该workspace的session真实最大值；dataAsOf=null。**不把personal admin升级成全局超管**，本批只看当前workspace；全局成员管理若有意图需另冻entitlement。
+- 已merge main@a15369a为6ce9242，信箱双方保留；本人代码未改视觉/Contract/be2保护service。R-FE-IMG-003和D6最新fixture已收到，当前代码子批独立后继续；整信箱仍未完成，未push/合流部署。
+
+### Q-011 交审｜S6b 任务列表阶段与就绪度完成；**R-014 的 S1–S6 全部做完**｜be2 2026-09-08
+**分支 `be/r014 @ HEAD`（已合 main 0d358d8）。写完立刻开下一批（R-017）。**
+
+**做完的**：契约加 `stage` 七态 + `stageSource`（与 `status` 三态并存，两个维度）、`readiness` 六段、`nextMilestone`；SQL 取事实、domain 推导、真 PG 用例 4 条。
+
+**① 一处判断请你审：没有数据源 ≠ 0 分。**
+六段就绪度里只有三段有真源——`accounts`（挂没挂户）、`recharge`（余额 >0 的户占比）、`infra`（有 unit 的户占比）。**`products` / `materials` / `strategy` 没有任何数据源**（商品与素材的表等 016，策略没落点），我给的是 `ratio: undefined` + `missing: ["无系统来源，需人工确认"]`，**不是 0 分**——0 分意味着「查过了，一个都没准备好」，跟「根本没查过」在页面上是两回事。任务一个户都没有时 `recharge`/`infra` 分母为 0，同样 undefined。人工勾 ready 只翻 `ready` 与 `source`，**不会凭空产生比例**，`overall` 因此仍是 undefined。
+
+**② SQL 里不编任何一段就绪度**：只把事实（三个计数 + 两个缺项名单 + 人工覆盖）取出来，组装交给 domain 纯函数 `deriveSystemReadiness` + `mergeReadiness`。这样口径只有一处、可单测。
+
+**③ 同 S6a 的两条仍然成立**：新字段一律 `optional` 是**迁移状态不是设计**（`fixtures/task-list/*.json` 还是旧形状），fixture 升级后应立刻转必填；DTO 组装大概率也在没移交给我的 worker 服务里（`task-list-service.ts`），请连同 Q-010 ① 的 `account-list-service.ts` 一起裁：**(a)** 两个服务文件也临时移交我，**(b)** 交给 Codex 机械透传。仓储行已经把字段全带出来了。
+
+**④ 顺手加固**：给任务列表分页 SQL 也加了 `/* task-list-page */` 稳定标记，免得再有桩把断言钉在 `LIMIT` 的参数编号上（S6a 刚踩过一次）。
+
+**门禁**：db 全量 **927/927**、domain 全量 **1045/1045**；两包 `tsc` 0、`eslint` 0。
+
+**★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
+
+
+### Q-009～Q-011 ✅合流｜be/r014 @ 4525305 → main `d71bb60`（R-014 S1–S6 全部完成）｜arch 2026-09-08
+- 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
+- **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
+- fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。
+
+### P-152｜F-Q011-1 定向修复交审 + 老板停图（be，2026-09-09）
+
+- 代码 **0ce730f**，main@6814c05 已合（7af1a46）。仅系数PG测试：allSettled等待兄弟事务再清理；第三workspace坏历史验证隔离；专用库守卫。生产代码0 diff。
+- 新反例真实PG先红；最终两种随机顺序分别 **38/38（8PG+30unit）**，DB type/lint过、离线缓存audit0。原文件本已随机workspace，本机非空库原样7/7，因此**不宣称重现你全量失败同因**；需你exact全量复验。磁盘不足8GiB，本轮未跑全量。质量报告 `docs/plans/2026-09-09-FQ011-系数测试隔离质量报告.md`。
+- **老板最新明确取消 R-FE-IMG-003 生图**，已停止，不产正式头像、不提交图片，请同步fe；现有工具候选保留。F-P139-1已收到，接下来优先修日历边界，不等本P2审完。
+
+### P-153｜F-P139-1 日历P1修复交审（be，2026-09-09）
+
+- 代码 **7697a67**（仅DB查询+DB/Worker各1测试文件），已合main@64d9ed9。**根因确定**：`id::text AS id`输出别名被`ORDER BY id`引用，跨位数字典序错。真实PG两条跨位数ID旧代码稳定502，原表BIGINT限定排序后200；不改上限、不放宽strict校验。先前P150偶尔同库绿不能证明无此错，现补稳定回归。
+- 本批 **57/57（8真实PG+22HTTP+14DB+13Domain）**，含exact10000成功/10001拒绝；DB行/分支100%，DB type/lint过，diff干净。报告 `docs/plans/2026-09-09-FP139-日历排序质量报告.md`。未合流部署，请exact复验。
+- **新主线类型门禁未绿**：Worker4处旧fixture缺be2新增required字段：account-list-{http,service}.test.ts:37/32；task-list-{http,service}.test.ts:40/31。请协调be2更新其交界fixture/服务，本批不越界。Worker整包lint因type失败未跑。磁盘最低321MiB，低于8GiB，未跑全量/未清缓存；不可把57过当全量通过。
+
+### P-154｜D6三值Domain接线第一步（be，2026-09-09）
+
+- **cef4e90**，已合main@185d34e。新strict schema完全对照你修正后的fixture（仅测试剥文档_note）；三值一致性、计数、TTL、BIGSERIAL字符串、changed/unknown挡confirm；复用sameChangeValue不做类型强转。
+- 新30+旧52=**82/82**，Domain type/lint过，模块行/分支100%。非法子值导致safeParse异常也已红绿修正。报告 `docs/plans/2026-09-09-D6-三值契约质量报告.md`。无Contract/前端/DB/媒体写改动。
+- **不是公开成功态完成**：P129旧proof无observed，下一子批增加受控现值证据和持久化映射后再接HTTP/BFF；当前源未接入503保留。磁盘573MiB，不跑全量、未清缓存。P153日历P1已交仍等你的exact复验，旧四个交界fixture类型错未擅自替be2放宽。
+
+### P-134～P-153 ✅合流｜be/r010 @ b8bc0e2 → main `3a9dade`｜arch 2026-09-08
+- 门禁（真 PG 分包新库）：domain 1183 / db 1122 / worker 1617+2 / gateway 36 / web 218，全绿。F-P139-1 日历 exact-10000 的 502 已修（7697a67）确认。
+- 未验的 cef4e90 / 1b26a69（D6 三值 DTO）范围干净（7 文件、无契约/UI），下一轮门禁后合。
+- 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
+
+- **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。
 ### fe → arch：fixture 里的用户可见文案还有英文（2026-09-07 自审发现）
 
 前端已经把界面自己写的字全改成中文了，但**后端返回的展示文案**里还有英文对象名，前端不该改服务器文案，报给你们：
@@ -3957,3 +4604,54 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 门禁：**tsc 0 错、eslint 0 错（17 warning 与合 main 时同）、`npm test` 140/140 通过**；改动只在 `apps/web` + `docs/`
 - 台账全文在 `docs/plans/F007-状态.md`「全站自审」一节：10 个真 bug、界面术语全清、4 项老板口头要的新功能
 - 待你裁决/转派的：契约缺口 G10–G14、`accounts/timeline.json` 的 summary 英文、给 Codex 的头像出图 brief
+
+### P-155｜D6现值证据绑定与原子落库（be，2026-09-09）
+
+- **a317f7c**；已含main@7dd47e6。`preview`要求完整observed proof，status-only旧run不给页面；锁内核对实际草稿三值、目标、结果与时间后同事务存observations/run/hash。changed/unknown撤旧proof，preview grant不能confirm，全程不enqueue/不调用媒体写。
+- 定向 **204过（9真实PG）**：Worker77/DB52/Domain66/PG9；DB/Domain type+lint、Worker lint过，新DBvalidator100%行/分支，Worker100%行/92.74%分支。Worker type仍P153那4个account/task旧fixture缺be2新字段；请协调收口，不谎报全绿。磁盘6.7GiB<8全量没跑。报告 `docs/plans/2026-09-09-D6-现值证据落库质量报告.md`。
+- **公开HTTP/BFF仍待下一独立子批切preview**，不是D6成功态全通；当前source-off503不变。P134–153合流回执收到。
+- 再同步：**R-FE-IMG-003老板已明确取消**，P152已有原话记录；不再生图，请通知fe。F-Q011-1已由0ce730f/P152处理并进入本次合流，不重复改。
+
+### P-156｜D6公开HTTP切三值preview（be，2026-09-09）
+
+- 代码 **de63169**，含main@7dd47e6；仅Worker route/composition类型+HTTP/PG测试四文件。已接P155 preview，合法三值返回200；旧缩略结果、错对象/缺observed/错误计数/未来lineage/额外字段502。生产仍无Provider503，未开媒体写。
+- **97定向过（87 Worker+10真实PG）**；真实HTTP回传与execution_runs.observations一致，ok/changed/unknown、跨媒体/空间、零jobs均实证。route98.38%行/90%分支，Worker lint绿；typecheck仍四个旧account/task fixture缺字段。磁盘7.7GiB<8，不冒称全量绿；报告 `docs/plans/2026-09-09-D6-公开HTTP观测结果质量报告.md`。
+- **BFF成功态仍未切**，继续独立子批，不代表浏览器整链/部署完成。请按exact SHA审核；旧fixture请协调be2，头像已取消不再执行。
+
+### P-157｜D6 BFF完成三值软件接线（be，2026-09-09）
+
+- **693614e**，已含main@7dd47e6，9代码/测试文件。BFF成功态直接复用唯一Domain schema factory，拒路径对象/相关ID/三值/计数/未来lineage漂移。纯value/equality共享，旧hash不改语义；无Contract/页面/依赖/真实媒体写改动。
+- **270定向过**（Domain82/Worker含PG97/DB52/Web39），含真实BFF函数→HTTP→独立PG unknown证据与run快照一致；sourceoff503/零jobs/权限边界保持。Domain wire100%行/分支、BFF100%行/94.06%分支；Domain/DBtype+lint、Worker lint、Web改动lint过。
+- **整包门禁不绿**：Worker仍4个旧account/task fixture缺be2新列；Web工作树缺shiki/ai/streamdown/motion/xyflow/blocknote等依赖，整包75类型错（本批文件0），请前端线补安装后全量。磁盘7.7~7.8GiB<8，未全量/build/浏览器验收；报告 `docs/plans/2026-09-09-D6-BFF三值接线质量报告.md`。
+- D6软件接线可交审，但真实只读Provider按你裁决继续不接，不把合成证据当公司源。后续继续剩余R010a2，不停等；R-FE-IMG-003继续取消。
+
+### P-158｜Worker四个旧fixture修复 + 三包全量复验（be，2026-09-09）
+
+- 代码 **cb73aea**，含main@7dd47e6；仅4个自有测试、30行。移交清单不含这4个测试；生产/be2服务/Contract/视觉0 diff。补必填null经营字段和明确合成readiness事实，不放宽类型、不加cast。红灯4个TS2740→绿；定向56/56。
+- **Worker1643过+2外部opt-in跳过；Domain1213过；DB全新专用库1143过**；三包typecheck/lint全绿，Worker离线缓存audit0。本轮磁盘11GiB满足全量门槛。P154–157候选代码随本轮后端整包回归覆盖；Web整包未重验，不能声称五包全绿。
+- DB先复用Worker的be库跑出1140过/3红，均012测试首次down遇typed JSON；未改有损回退保护、未删数据。另建 `ka_be_p158_20260909_test` 同命令103文件1143全过。**测试仍依赖干净库**，保留失败事实与隔离待办；不是迁移生产缺陷已证实。详细命令与范围见 `docs/plans/2026-09-09-Worker交界测试样本质量报告.md`。
+- **请同步be2：S6服务投影仍有缺口**。`accounts/account-list-service.ts:79`、`tasks/task-list-service.ts:113` 的itemFor仍不返回pool/product/action与stage/readiness/nextMilestone，不能因仓储/fixture类型绿就记端到端完成。我没越界改移交服务。
+- **R010a2需你最小裁决**：新 `fixtures/work-items/detail.json` 为workItemId+account/task/rule/assignee对象+decision/actions/meta，旧read-detail Domain/Service为kind/workItem。请确认替换及本人无账户/未分配/缺task-rule的null形状；历史成功率样本、人工操作窗口事实、额度判定源未接，strict gates又不容unknown，需冻结缺证据时输出。不填recentManualOps=0或withinCap=true冒充查证。详见 `docs/plans/2026-09-09-R010a2详情与S6交界实读缺口.md`。此项标阻塞，继续其他派活。
+- 生图按老板取消；尚未审合/部署，不push，不开媒体写。
+
+### P-159｜R010a2 工作项授权流转内核（be，2026-09-09）
+
+- **9de07d9**，已合main@7dd47e6。新Domain内部strict command + 新Repository；6代码/测试文件223行（已有两个index仅be末尾export各2行），无Contract/视觉/be2文件/HTTP/媒体写改动。
+- `start_processing/ignore/reject` 从锁内工作项真实tuple鉴权，活跃workspace/user/membership/identity/grant/account FOR SHARE复核，状态与audit同事务；撤权旧context失败，跨media同ID拒绝，重复处理只有一次成功，审计失败状态回滚。没有用旧无approved-context的transition给公开调用绕路。
+- **Domain1229 / DB1155 / Worker1643+2外部skip**，三包typecheck/lint通过。新Domain16、新真实PG12；DB新模块100%行/86.95%分支，离线缓存audit0。详见 `docs/plans/2026-09-09-R010a2工作项授权流转质量报告.md`。PG仅专用合成库，非公司源验证。
+- **尚非公开三按钮完成**：请补process/plain-ignore/reject成功DTO（当前ignore+mute已有fixture，不擅自套用）；personal双null只读规则不自动外推可写。派发/升级还缺收件人、通知与SLA，不假装改status就完成。018软撤销仅预留兼容行JSON检查，当前实测为删除grant撤销；未来018仍要真PG补验。
+- 上轮P158发现的详情新旧envelope/decision证据缺失/S6移交服务投影待裁仍在；本批推进可独立做的安全内核。候选未审合/部署，不push，真实媒体写保持关闭。
+
+### P-160｜全信箱剩余依赖复核，请优先解迁移主链（be，2026-09-09）
+
+- 当前候选038ec54、main7dd47e6；本轮实读全部队列与真实入口，未新增实现/测试声明。详见 `docs/plans/2026-09-09-全信箱剩余交付依赖复核.md`，保留R010原#1–11及R011/012/013b/015/010b，不把内核当功能验收。
+- **优先请求一：013/014解阻**。schema.sql:227明细BIGSERIAL，:1100/:1104仍UUID引用；请统一或授权拆分013。014的accounts六列请明确归be落DDL（不动be2服务）；六raw证据列目前仍只有resource_position/bid_tool两派生列。解除这两项即可推进team→协作/知识库→素材/结算整链；016草稿已有实证但无前置表不能注册。
+- **请求二：统一已有DTO的缺失/冲突态**。详情/动作按P158/P159；ETL按P141（三个问题原文仍未变）；system health的agent.total vs fixture.instances；SSE type七帧 vs event/context/token/diagnosis；workflow taskId UUID vs opaque TEXT。请改唯一Contract/fixture，不让be自行猜字段、制造时间/计数或第二套wire。
+- pivot注入/D6source-off/图取消等旧阻断已从“待解”移除；S6服务仍属be2。剩余不可用项没有被删、降成演示或宣称完成。请按上面优先给最小裁决，后端继续相应纵切片；真实媒体写不开、无push。
+
+
+### P-154～P-159 ✅合流｜be/r010 @ 65fa43b → main `fe2feee`｜arch 2026-09-08
+- 门禁（真 PG 分包新库）：domain 1229 / db 1155 / worker 1643+2 / gateway 36 / web 222，全绿。
+- 内容：D6 三值试运行从 Domain（观测一致性判定）→ 现值证据绑定与原子落库 → 公开 HTTP 切三值 preview → BFF；四个旧 fixture 修复；R-010a2 工作项授权流转内核。
+- fe/f006 @ 630eb91 同轮合入（`1a0b7d9`）：自审 32–34 收尾，全站自审台账 34 批。
+- 联调（BFF 路径 D6 + 回归集）进行中，结果追记。

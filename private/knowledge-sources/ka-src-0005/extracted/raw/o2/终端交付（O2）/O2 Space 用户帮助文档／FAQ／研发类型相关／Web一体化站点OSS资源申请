@@ -1,0 +1,18 @@
+## 资源准备
+
+### step 1
+
+访问 space o2 工作台：[https://space.o2.alibaba-inc.com/workbench](https://space.o2.alibaba-inc.com/workbench)，进入“团队空间-资源管理”。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgTaLE15rGVJ.png)
+
+
+注意：资源是 BU 级别共用的，如果资源列表中已经有“独立 Assets”或ER 一体化的 OSS 资源，则对应OSS的应用类型都可以使用，可以跳过申请。 如Web 一体化SSR资源，选择ER一体化OSS即可。（Assets plus选独立Assets）
+
+### step 2
+
+进入“资源管理-资源申请”，填写申请表单进行资源申请。提交后及时跟进审批进度，审批通过后系统会自动分配 OSS 资源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/img9kLicDY5bE.png)
+
+

@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "data": {
+    "identityId": "00000000-0000-4000-8000-000000000090",
+    "items": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-3",
+        "accessLevel": "read",
+        "grantedAt": "2026-09-03"
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-4",
+        "accessLevel": "read",
+        "grantedAt": "2026-09-03"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "第二位成员：只读两户"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2337,
+  "documentName": "获取新版应用发布列表【单元创编】",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取新版应用发布列表【单元创编】\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n**此接口适用于创建单元拉取新版应用列表【母包】，获取app_id和package_id。**\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |        |\n| list_type | Integer |  | 可选 | 列表类型 | 不传-全部, 1-我创建的, 2-共享给我的 |\n| platform | String | \"ios\" | 可选 | android或ios |  |\n| app_ids | Long[] |  | 可选 | 批量应用id查询 | 最多支持查询100个 |\n| key_word | String |  | 可选 | 关键词 | 支持应用ID或应用名称搜索 |\n| page | Integer |  | 可选 | 当前页 | 页码，默认1 |\n| page_size | Integer |  | 可选 | 分页大小 | 个数，默认10 |\n\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;current_page | Integer |  | 当前页 |  |\n| &#8195;page_size | Integer |  | 分页大小 |  |\n| &#8195;total_count | Long |  | 总数 |  |\n| &#8195;list | Object[] |  | 应用列表 |  |\n| &#8195;&#8195;account_id | Long |  | 账号ID |  |\n| &#8195;&#8195;app_detail_img | String |  | 应用详情图片 |  |\n| &#8195;&#8195;app_icon_url | String |  | 应用图标链接 |  |\n| &#8195;&#8195;app_id | Long |  | 应用ID |  |\n| &#8195;&#8195;app_privacy_url | String |  | 应用隐私政策链接 |  |\n| &#8195;&#8195;ios_app_id | String |  | 解析出的iosAppID |  |\n| &#8195;&#8195;offline_app_stores | String |  | 下架的应用商店 | \"huawei\",\"oppo\",\"vivo\",\"xiaomi\",\"meizu\",\"smartisan, \"honor\" |\n| &#8195;&#8195;package_id | Long |  | 应用包ID |  |\n| &#8195;&#8195;package_name | String |  | 应用包名 |  |\n| &#8195;&#8195;package_size | Long |  | 应用包大小 |  |\n| &#8195;&#8195;permission_information | String[] |  | 权限信息ID列表 |  |\n| &#8195;&#8195;platform | String |  | android或ios |  |\n| &#8195;&#8195;real_app_name | String |  | 应用名称 |  |\n| &#8195;&#8195;real_app_version | String |  | 应用版本信息 |  |\n| &#8195;&#8195;source_type | Integer |  | 应用来源  |1-我创建的 2-共享给我的  |\n| &#8195;&#8195;update_time | Long |  | 更新时间 |  单位：毫秒 |\n| &#8195;&#8195;url | String |  | 应用下载地址 |  |\n| &#8195;&#8195;use_sdk | Integer |  | 是否接入快手广告监测SDK | 0-未接入，1-已接入 |\n| &#8195;&#8195;version_code | Long |  | 应用版本号 |  |\n\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/list' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"list\": [\n            {\n                \"app_detail_img\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/cfea5ec7dc1a4ccbb29b472eee731a94.png\",\n                \"package_size\": 68118183,\n                \"permission_information\": [\n                    96,\n                    41,\n                    35,\n                    43,\n                    73,\n                    71,\n                    22,\n                    34,\n                    20,\n                    119,\n                    4,\n                    3,\n                    39,\n                    63,\n                    87,\n                    82,\n                    147,\n                    40,\n                    145,\n                    141,\n                    115,\n                    154,\n                    45,\n                    15,\n                    80,\n                    13,\n                    104,\n                    146,\n                    84,\n                    116,\n                    121,\n                    70\n                ],\n                \"version_code\": 220831,\n                \"app_icon_url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/5e258659e38b493ca6449bcc0cc9a665.jpg\",\n                \"source_type\": 1,\n                \"package_id\": 1099611636861,\n                \"ios_app_id\": \"\",\n                \"platform\": \"android\",\n                \"url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-app/e2c9cab1-6872-4803-886b-9f2bfbf3deaf.apk\",\n                \"offline_app_stores\": \"[]\",\n                \"use_sdk\": 1,\n                \"app_privacy_url\": \"https://master--kuaishou-frontend-app-platform.jinx.staging.kuaishou.com/create/android?__accountId__=900015364\",\n                \"update_time\": 1680146534913,\n                \"account_id\": 900015364,\n                \"package_name\": \"com.snda.wifilocating\",\n                \"real_app_version\": \"4.8.81\",\n                \"real_app_name\": \"WiFi万能钥匙\",\n                \"app_id\": 2199123264636,\n                \"md_5\": \"e2d54574453e92df5bed739b828c1cc8\"\n            }\n        ],\n        \"total_count\": 1,\n        \"current_page\": 1,\n        \"page_size\": 10\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMSAgICwgpqOrAEYlgUg7ratlPMwKOLxjZ0G\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1709608026570
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1709608026570,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

@@ -1,0 +1,64 @@
+O2 Space 对不同的 Node 版本升级问题，采用了每个 Node 版本提供一个单独的镜像的模式，随着 Node 大版本更新，镜像也会随之新增、更新、下线。
+
+系统的默认镜像会定期随 Node 官方版本生命周期，发公告切换，当前的默认版本 14。
+
+如果用户希望使用更高版本的 Node，可以参考本文进行 Node 版本自定义。
+
+## 应用定义步骤
+
+1. 在发布流程 - 构建中找到自己应用使用的构建类型：
+(https://img.alicdn.com/imgextra/i4/O1CN01ZO5tD81tZa68bfeUz_!!6000000005916-2-tps-2038-400.png)
+
+
+1. 若为“构建命令”（平台建议迁移到基础构建器，更好的利用平台能力 [文档](https://builder.alibaba-inc.com/document?slug=config-script)），则：
+	1. 检查自己项目中存在的 abc.json 配置，是否有 “nodeVersion” 字段：
+(https://img.alicdn.com/imgextra/i2/O1CN019ta1mg1sR36VAhM9f_!!6000000005762-2-tps-1576-600.png)
+
+
+	1. 增加字段  nodeVersion: <你要升级的 Node 大版本>
+		1. ⚠️ 注意：该字段对使用构建器的应用无效！如果你的构建类型不是构建命令，请看下面的 @ali/builder 部分。
+		1. 仅支持 Node LTS Active 版本。
+	1. 提交代码，重新在 O2 Space 中发布，检查构建面板的镜像版本字段是否变更：
+	1. (https://img.alicdn.com/imgextra/i2/O1CN014O144B1gC8p6msw9d_!!6000000004105-2-tps-2086-802.png)
+
+1. 若为“@ali/builder-<builder-name>”，则你使用的构建类型为“构建器”：
+	1. 点击构建器链接打开构建器详情页。
+	1. 查看构建器的默认镜像和可用 Node 版本
+	1. 可用 Node 版本镜像显示 “不支持”
+		1. 在页面右侧找到负责人，联系他们，发送本文档推动升级。
+	1. 可用 Node 版本有满足需求的版本
+		1. 在 abc.json 增加字段  nodeVersion: <你要升级的 Node 大版本>
+(https://img.alicdn.com/imgextra/i4/O1CN01z3mmTZ25t4L8Qz65o_!!6000000007583-2-tps-3432-578.png)
+
+
+## 构建器定义步骤
+
+1. 打开[云构建构建器列表](https://builder.alibaba-inc.com/builder?type=my)，切换到 “我的” 选项卡，找到要升级的构建器，点击 “查看”：
+(https://img.alicdn.com/imgextra/i2/O1CN01dUm3Vd1DQE967brDP_!!6000000000210-2-tps-2718-672.png)
+
+
+1. 点击 “更新” 选项卡，查看自己构建器使用的镜像版本：
+(https://img.alicdn.com/imgextra/i3/O1CN01Ww5wI21FLlWJIoVFi_!!6000000000471-2-tps-1484-1022.png)
+
+
+1. 首先，尝试更新灰度版本确定构建器能否在新版 Node 下工作：
+(https://img.alicdn.com/imgextra/i1/O1CN01V07PSS1y8crnIYSeE_!!6000000006534-2-tps-1468-726.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01oHOg7U1WlH2wGaBOy_!!6000000002828-2-tps-1080-932.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01lNcP3k22y9tU4yksc_!!6000000007188-2-tps-1138-542.png)
+
+
+	1. 发起构建查看构建是否成功，也可选择更多近期使用本构建器的用户进入灰度，观察是否有异常。
+	1. 确认功能无误后，可将默认镜像升级到对应版本，或启用 支持多镜像运行 选项，勾选对应的 Node 版本支持
+		1. 注：可选 node 版本受平台整体策略控制，已经勾选的版本可能会在后续的镜像升级中下线，用户指定已下线版本镜像时构建将会报错
+(https://img.alicdn.com/imgextra/i4/O1CN010aUJjN1wESgKNf5J0_!!6000000006276-2-tps-1270-1564.png)
+
+
+1. 在灰度通道完成测试，确认无问题后，则以相同步骤操作正式版本上线即可
+## 更多
+
+关于镜像的支持范围，更新周期，内置的软件内容，请查阅 [https://builder.alibaba-inc.com/document?slug=image-intro](https://builder.alibaba-inc.com/document?slug=image-intro)。    
+

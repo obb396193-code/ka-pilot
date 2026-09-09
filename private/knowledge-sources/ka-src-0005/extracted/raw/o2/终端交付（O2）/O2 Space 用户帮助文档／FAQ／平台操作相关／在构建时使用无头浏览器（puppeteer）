@@ -1,0 +1,58 @@
+# 在构建时使用无头浏览器（puppeteer）
+
+> 样例项目：[https://space.o2.alibaba-inc.com/iteration/1180765/task/6152088](https://space.o2.alibaba-inc.com/iteration/1180765/task/6152088)
+
+有些项目，希望在构建时通过 puppeteer 实现构建后预渲染，来优化线上资源的体验。那么，该如何在构建时使用无头浏览器呢？
+
+
+
+我们本次通过一个简单的示例项目，实现在构建时对 Github 截图，并将截图发布到 CDN 的功能。
+
+
+
+> 注：项目接入，初始化步骤略过。
+
+## 构建配置
+
+在项目根目录下创建文件 abc.json，内容如下：
+
+```
+{
+    "assets":{
+        "type":"command",
+        "command":{
+            "cmd":[
+              "tnpm i puppeteer", // 安装 puppeteer
+              "node example.js", // 运行脚本
+              "mkdir $BUILD_DEST", // 创建结果目录
+              "cp example.png $BUILD_DEST/" // 将截图放入结果目录中
+            ]
+        }
+    }
+}
+
+```
+## 编写截图逻辑
+
+在项目根目录下创建文件 example.js，内容如下：
+
+```
+const puppeteer = require('puppeteer');
+
+(async () => {
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] }); // 因云构建以 root 用户运行，需要配置 --no-sandbox
+  const page = await browser.newPage();
+  await page.goto('https://www.github.com');
+  await page.screenshot({ path: 'example.png' });
+
+  await browser.close();
+})();
+
+```
+## 触发发布并查看结果
+
+提交好代码，在工程平台上触发发布，可以看到产物中成功产出了 example.png
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/gok0h1/imgeW5gByumsD.png)
+
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2070,
+  "documentName": "1.1.1授权url",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 授权流程\n\n1. 注册成为开发者后，需要在应用管理中填写应用内容生成对应应用。\n\n2. 需要填写内容：\n\n    - 应用名称：50 个字符限制，便于区分 app_id 及用途\n    - 应用图标：格式为 JPG/PNG，大小不超过 1M，图片比例需为 1:1。\n    - 应用描述：不少于 2 字符，便于描述应用特点。\n    - 回调地址：必须为链接格式，其他无特殊限制，主要为了为授权完成后进行跳转，将 auth_code 等信息通过该地址返回，客户可进行自动授权等操作。\n\n3. 授权链接示例：\n   https://developers.e.kuaishou.com/tools/authorize?app_id=应用ID&scope=权限范围&redirect_uri=回调地址xxx&state=abcd&oauth_type=授权类型\n\n| 参数         | 描述       | 值（示例）                 | 备注                                                                                                                                                                         |\n| ------------ | ---------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| app_id       | 应用 ID    | 1                          | 申请应用后快手返回的 app_id                                                                                                                                                  |\n| scope        | 权限范围   | %5B%22report_service%22%5D | 可在各功能模块文档中获取对应的权限 code，参数值原始格式：\"report_service\",\"xxxxxxx\",\"……\"，使用时需要 UrlEncode 一次\"ad_query\",\"ad_manage\",\"report_service\",\"account_service\" |\n| redirect_uri | 回调地址   | https://e.kuaishou.com     | 申请应用时开发者提供的回调地址，使用时需要 UrlEncode 一次                                                                                                                    |\n| oauth_type    | 授权类型   | oauth_type = advertiser     | 广告主/服务商：advertiser；代理商：agent；聚星：ad_social；   短剧开发者：series                                                                                                              |\n| state        | 自定义参数 | abcd                       | 回调时会原样返回，可用于广告主区分不同投放渠道等用途，广告主可选择性使用                                                                                                     |\n\n-    oauth_type=advertiser，广告主/服务商\n    -   广告主：仅能操作广告主体下广告投放账户，可使用罗盘罗盘账户进行批量授权。\n    -   服务商：可授权平台任何主体账户，但是需要双向授权成功。\n-   oauth_type=agent，代理商\n    -   代理商：仅能操作代理商管辖广告投放账户，可使用 1 个 token 调用管辖所有账户。\n    -   服务商：可授权平台任何代理商主体，但是需要双向授权成功。\n-   oauth_type=ad_social，聚星\n    -   聚星：需要校验聚星的账号是否一致\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625182
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625182,
+  "creator": "wb_zhangyanmin",
+  "fullContext": null
+}

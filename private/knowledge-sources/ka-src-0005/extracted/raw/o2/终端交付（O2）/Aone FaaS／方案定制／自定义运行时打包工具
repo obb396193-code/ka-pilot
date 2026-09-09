@@ -1,0 +1,53 @@
+为简化多语言框架部署到 Aone FaaS，我们提供了通用打包工具，下载地址如下：
+
+本工具只适用于自定义 Runtime `custom.debian10`，不适用于 Rapis 
+
+| Linux X64 | [https://faas.io.alibaba-inc.com/tools/pack.linux-amd64](https://faas.io.alibaba-inc.com/tools/pack.linux-amd64) |
+|-|-|
+| Mac (Intel) | [https://faas.io.alibaba-inc.com/tools/pack.darwin-amd64](https://faas.io.alibaba-inc.com/tools/pack.darwin-amd64) |
+| Mac (Apple Silicon) | [https://faas.io.alibaba-inc.com/tools/pack.darwin-arm64](https://faas.io.alibaba-inc.com/tools/pack.darwin-arm64) |
+
+打包工具默认支持 python/node 应用，启动 server[.ext] 或 dist/server[.ext] 文件，具体逻辑参见：[https://code.alibaba-inc.com/node-harmony/faas-io/blob/master/tools/pack/bootstrap.go#L18](https://code.alibaba-inc.com/node-harmony/faas-io/blob/master/tools/pack/bootstrap.go#L18)
+
+构建脚本示例如下：
+
+```
+#!/usr/bin/env bash
+
+# 执行构建逻辑
+
+echo "------------- build.sh packing at $(date +%Y/%m/%d\ %H:%M:%S) ------------"
+
+curl https://faas.io.alibaba-inc.com/tools/pack.linux-amd64 -o /tmp/pack && \
+  chmod +x /tmp/pack && /tmp/pack
+
+# 压缩 built-functions 目录
+cd .serverless
+zip -rq ../code.zip *
+cd ..
+
+ZIP_SIZE=$(stat -c "%s" code.zip)
+
+# 完成构建
+echo "------------- build.sh end at $(date +%Y/%m/%d\ %H:%M:%S) ------------"
+echo "Built app.zip size: ${ZIP_SIZE}"
+
+```
+如果你需要启动 python/node 的其他文件，可以可以在 `f.yml` 中定义 `package.entry` 字段，例如：
+
+```
+service: [appname]
+
+provider:
+  name: fiber
+
+package:
+  entry: custom-server.js
+```
+
+
+| (https://o2-img.alistatic.com/i/i09blZ/NONNGoiyMJYE3YSvkbYBS-424ade0dd1.webp) | (https://o2-img.alistatic.com/i/i09blZ/fIbtMRAv1k8kAuOes5vPZ-dc10564e67.webp) |
+|-|-|
+
+如果你需要执行一些特殊的初始化操作或启动其他语言的产物，可以自定义 `bootstrap` 文件并放置在项目根路径下。此时，不会注入 `PORT` 变量，请自行在 `9000` 端口启动 HTTP 服务
+

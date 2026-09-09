@@ -1,0 +1,22 @@
+用户真实问题链接: [https://aliyuque.antfin.com/o2/lknd61/nf4b0rh0uleddvsa](https://aliyuque.antfin.com/o2/lknd61/nf4b0rh0uleddvsa)
+
+作者：[@时路](undefined/kangyong.ky)
+
+评审人：[@上坡](undefined/shangpo.zw)
+
+
+
+**问题说明**
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2023/png/239771/1686706864403-082cfffa-326d-48c3-9e3d-42d8ad8090e5.png) 
+
+在 Aone 或 O2 Space 发布流水线中可能会出现合并过程中提示出现冲突，但使用 O2 解决冲突时提示 `分支 xx 与 yy 未检测到冲突`的问题。
+
+
+
+**解决方案**
+
+不论应用在 Aone 或 O2 Space 发布，请尝试_**手动合并一下主干分支**_（取决于你的应用主干分支是哪个，一般是 master）
+
+对于 Aone 新流水线 （既发布流程中第一个节点名叫「代码合并」）的，可以直接点击重新部署即可
+

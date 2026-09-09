@@ -1,0 +1,619 @@
+{
+  "documentId": 2737,
+  "documentName": "获取广告组投放预估曲线",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095218895
+    }
+  ],
+  "apiId": 207,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/unit/bidTrendPredict/detail",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\":12970515,\n    \"bid_type\":10,\n    \"campaign_id\":596467876,\n    \"current_cpa_bid\":298560,\n    \"current_deep_bid\":0,\n    \"deep_conversion_type\":null,\n    \"ocpx_action_type\":53,\n    \"predict_cpa_bid\":0,\n    \"predict_deep_bid\":0,\n    \"unit_id\":1177725596\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"suggest_bid_max\": 0,\n        \"suggest_bid\": 28300,\n        \"suggest_bid_min\": 0,\n        \"predict_impression\": 4000000,\n        \"predict_cost\": null,\n        \"can_predict\": true,\n        \"can_predict_conversion\": true,\n        \"can_predict_delivery\": true,\n        \"bid_conversion\": {\n            \"15987\": 2,\n            \"16828\": 13,\n            \"17669\": 1,\n            \"18511\": 6,\n            \"19352\": 7,\n            \"20194\": 12,\n            \"21035\": 43,\n            \"21876\": 7134083,\n            \"22718\": 12,\n            \"23559\": 54,\n            \"24401\": 34,\n            \"25242\": 135190326,\n            \"26083\": 45,\n            \"26925\": 2,\n            \"27766\": 6,\n            \"28300\": 76,\n            \"29449\": 12,\n            \"30290\": 12,\n            \"31132\": 3,\n            \"31973\": 65,\n            \"32814\": 45,\n            \"33656\": 34,\n            \"34497\": 91,\n            \"35339\": 18,\n            \"36180\": 71,\n            \"37021\": 15,\n            \"37863\": 16,\n            \"38704\": 9,\n            \"39546\": 23,\n            \"40387\": 10\n        },\n        \"tips_id\": null,\n        \"predict_conversion\": 0,\n        \"bid_delivery\": {\n            \"15987\": 3392936,\n            \"16828\": 3394017,\n            \"17669\": 3401989,\n            \"18511\": 3485630,\n            \"19352\": 3674667,\n            \"20194\": 3973018,\n            \"21035\": 4679711,\n            \"21876\": 7134083,\n            \"22718\": 19351626,\n            \"23559\": 48336028,\n            \"24401\": 90073060,\n            \"25242\": 135190326,\n            \"26083\": 186427849,\n            \"26925\": 238921068,\n            \"27766\": 295094631,\n            \"28300\": 352563211,\n            \"29449\": 412123223,\n            \"30290\": 472177245,\n            \"31132\": 532844319,\n            \"31973\": 595022338,\n            \"32814\": 658143514,\n            \"33656\": 722837656,\n            \"34497\": 791546029,\n            \"35339\": 862750663,\n            \"36180\": 936671132,\n            \"37021\": 1011989177,\n            \"37863\": 1087867982,\n            \"38704\": 1164905871,\n            \"39546\": 1243117573,\n            \"40387\": 1322583755\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 18333,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "账户id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18334,
+      "paramName": "bid_type",
+      "paramType": "Long",
+      "example": "",
+      "description": "出价类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "1：CPM，2：CPC，6：OCPC(使用 OCPC 代表 OCPX)，10：OCPM，20：eCPC",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18335,
+      "paramName": "unit_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告单元id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "新建时该值为0，编辑时该值为广告组id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18336,
+      "paramName": "campaign_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告计划id",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18337,
+      "paramName": "predict_cpa_bid",
+      "paramType": "Long",
+      "example": "",
+      "description": "预测cpa出价\t",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "保持和current_cpa_bid一致即可。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18338,
+      "paramName": "current_cpa_bid",
+      "paramType": "Long",
+      "example": "",
+      "description": "当前cpa出价\t",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "新建广告组时，该值为0；编辑广告组时，该值为用户原来填写的浅度出价。单位厘",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18339,
+      "paramName": "ocpx_action_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "ocpx类型\t",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "0：未知，2：点击转化链接，10：曝光，11：点击，31：下载完成，53：提交线索，109：电话卡激活，137：量房，180：激活，190: 付费，191：首日 ROI，348：有效线索，383: 授信，384: 完件 715：微信复制;739:7 日付费次数",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18340,
+      "paramName": "deep_conversion_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "深度转化类型\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "\t3: 付费，7: 次日留存，10: 完件, 11: 授信 ，0：无",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18341,
+      "paramName": "predict_deep_conv_bid",
+      "paramType": "Long",
+      "example": "",
+      "description": "要预估的新深度出价\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "保持和curr_deep_bid一致即可",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18342,
+      "paramName": "curr_deep_bid",
+      "paramType": "Long",
+      "example": "",
+      "description": "老深度出价，单位厘",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "\t新建广告组时，该值为0；编辑广告组时，该值为用户原来填写的深度出价。单位厘",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 18343,
+      "paramName": "data",
+      "paramType": "GateBidTrendPredict",
+      "example": "",
+      "description": "出价参考详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 266,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4748,
+          "paramName": "can_predict",
+          "paramType": "Boolean",
+          "example": "true",
+          "description": "是否可以预测转化",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4749,
+          "paramName": "predict_impression",
+          "paramType": "Long",
+          "example": "4000000",
+          "description": "预估曝光数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "即y轴数值",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4752,
+          "paramName": "suggest_bid",
+          "paramType": "Integer",
+          "example": "28300",
+          "description": "建议值",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "即x轴数值",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4753,
+          "paramName": "suggest_bid_min",
+          "paramType": "Integer",
+          "example": "0",
+          "description": "建议区间最小值",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4754,
+          "paramName": "suggest_bid_max",
+          "paramType": "Integer",
+          "example": "0",
+          "description": "建议区间最大值",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10816,
+          "paramName": "predict_cost",
+          "paramType": "Long",
+          "example": "",
+          "description": "预估每日消费，厘",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10817,
+          "paramName": "tips_id",
+          "paramType": "Integer",
+          "example": "",
+          "description": "给用户的优化提示的id，具体文案前端确定",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10818,
+          "paramName": "bid_delivery",
+          "paramType": "Object",
+          "example": "",
+          "description": "出价-下发, 厘",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 18280,
+          "paramName": "predict_conversion",
+          "paramType": "Long",
+          "example": "",
+          "description": "预估转化数\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "即y轴数值",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 18281,
+          "paramName": "bid_conversion",
+          "paramType": "Object",
+          "example": "",
+          "description": "出价转化数\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 18293,
+          "paramName": "can_predict_conversion",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "是否可以预测转化\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 18294,
+          "paramName": "can_predict_delivery",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "是否可以预测下发（曝光）\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18344,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18345,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "状态描述",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095218895,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

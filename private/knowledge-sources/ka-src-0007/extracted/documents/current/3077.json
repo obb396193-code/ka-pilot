@@ -1,0 +1,333 @@
+{
+  "documentId": 3077,
+  "documentName": "查询短剧付费模板信息接口",
+  "documentType": 2,
+  "description": "<p>通过短剧作者快手ID和短剧，查询支持多付费模版的付费模式</p><p>目前仅直吹付费模式为\"打包\"（即payMode=1）的多付费模板查询</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721718086044
+    }
+  ],
+  "apiId": 990,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/payModeTemplateInfo",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 900015364,\n  \"user_id\": 2196670040,\n  \"series_id\": 384643,\n  \"series_pay_mode\": 1\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": [\n    {\n      \"template_name\": \"基础模版1618\",\n      \"template_status\": 1,\n      \"series_pay_template_id\": 1618,\n      \"series_pay_mode\": 1\n    },\n    {\n      \"template_name\": \"已删除的模版1621\",\n      \"template_status\": 2,\n      \"series_pay_template_id\": 1621,\n      \"series_pay_mode\": 1\n    }\n  ],\n  \"message\": \"OK\",\n  \"request_id\": \"EO60gICQgpGOChipDSCm-Z73uDEo963k4QM=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63111,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52230,
+      "paramName": "series_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "短剧id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52231,
+      "paramName": "series_pay_mode",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>付费模式类型(目前多付费模板只支持“打包“，即payMode=1)</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52232,
+      "paramName": "series_pay_template_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>付费模版id (非必填，填写则代表查询该模板id对应信息）</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52233,
+      "paramName": "user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "短剧作者id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 52238,
+      "paramName": "data",
+      "paramType": "MapiSeriesPayModeTemplateInfoSnake[]",
+      "example": "",
+      "description": "<p>mapi短剧付费模板详情信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3026,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 52234,
+          "paramName": "series_pay_mode",
+          "paramType": "Integer",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52235,
+          "paramName": "series_pay_template_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52236,
+          "paramName": "template_name",
+          "paramType": "String",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52237,
+          "paramName": "template_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>1 有效，2已删除</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52239,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52240,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721718086044,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

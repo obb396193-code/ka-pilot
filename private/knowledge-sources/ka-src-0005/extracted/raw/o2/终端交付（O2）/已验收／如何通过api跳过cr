@@ -1,0 +1,26 @@
+用户真实问题链接:[https://links.alibaba-inc.com/support/conversation/65dec60898d431078355f267/](https://links.alibaba-inc.com/support/conversation/65dec60898d431078355f267/)
+
+
+
+作者：[@悠兔](undefined/dongji.dong)
+
+评审人：[@上坡](undefined/shangpo.zw)
+
+
+
+## 跳过代码评审
+| method | POST |
+| :--- | :--- |
+| url | /work/api/iteration/:iterationId/devbranch/:devbranchId/codereview/skip |
+| buc login | true |
+
+
+
+
+### Path parameters
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+| :--- | :--- | :--- | :--- | :--- |
+| iterationId | Number | true | - | 迭代 ID |
+| devbranchId | Number | true | - | 变更 ID |
+
+

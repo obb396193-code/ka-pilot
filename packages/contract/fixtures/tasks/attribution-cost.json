@@ -1,0 +1,215 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "cost",
+    "root": {
+      "key": "target_gap",
+      "label": "目标差距",
+      "gap": {
+        "value": 8000,
+        "availability": "available"
+      },
+      "gapRate": {
+        "value": 0.0667,
+        "state": "finite"
+      }
+    },
+    "children": [
+      {
+        "key": "cost_gap",
+        "label": "成本差距",
+        "gap": {
+          "value": 3600,
+          "availability": "available"
+        },
+        "share": {
+          "value": 0.45,
+          "state": "finite"
+        },
+        "availability": "available",
+        "children": [
+          {
+            "key": "cpa_over",
+            "label": "CPA 偏高",
+            "gap": {
+              "value": 3600,
+              "availability": "available"
+            },
+            "share": {
+              "value": 0.45,
+              "state": "finite"
+            },
+            "availability": "available",
+            "children": [
+              {
+                "key": "bid_targeting",
+                "label": "出价/定向效率",
+                "gap": {
+                  "value": 2200,
+                  "availability": "available"
+                },
+                "share": {
+                  "value": 0.275,
+                  "state": "finite"
+                },
+                "availability": "available"
+              },
+              {
+                "key": "cost_volatility",
+                "label": "成本波动影响",
+                "gap": {
+                  "value": null,
+                  "availability": "missing"
+                },
+                "share": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "availability": "undeterminable"
+              }
+            ],
+            "evidence": {
+              "accounts": [
+                {
+                  "media": "KUAISHOU",
+                  "accountId": "account-2",
+                  "cashCpa": {
+                    "value": 41.66,
+                    "state": "finite"
+                  },
+                  "price": 38.0
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "key": "volume_gap",
+        "label": "量级差距",
+        "gap": {
+          "value": 2800,
+          "availability": "available"
+        },
+        "share": {
+          "value": 0.35,
+          "state": "finite"
+        },
+        "availability": "available",
+        "children": [
+          {
+            "key": "conversion_short",
+            "label": "转化量不足",
+            "gap": {
+              "value": 2800,
+              "availability": "available"
+            },
+            "share": {
+              "value": 0.35,
+              "state": "finite"
+            },
+            "availability": "available",
+            "children": [
+              {
+                "key": "traffic_opportunity",
+                "label": "流量机会缺口",
+                "gap": {
+                  "value": null,
+                  "availability": "missing"
+                },
+                "share": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "availability": "undeterminable"
+              },
+              {
+                "key": "cvr_room",
+                "label": "转化率优化空间",
+                "gap": {
+                  "value": 1100,
+                  "availability": "available"
+                },
+                "share": {
+                  "value": 0.1375,
+                  "state": "finite"
+                },
+                "availability": "available"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "key": "structure_gap",
+        "label": "结构差距",
+        "gap": {
+          "value": 1600,
+          "availability": "available"
+        },
+        "share": {
+          "value": 0.2,
+          "state": "finite"
+        },
+        "availability": "available",
+        "children": [
+          {
+            "key": "account_contribution",
+            "label": "账户贡献不足",
+            "gap": {
+              "value": 1600,
+              "availability": "available"
+            },
+            "share": {
+              "value": 0.2,
+              "state": "finite"
+            },
+            "availability": "available",
+            "evidence": {
+              "accounts": [
+                {
+                  "media": "KUAISHOU",
+                  "accountId": "account-5",
+                  "costShare": {
+                    "value": 0.0,
+                    "state": "finite"
+                  },
+                  "note": "余额 0"
+                }
+              ]
+            }
+          },
+          {
+            "key": "material_efficiency",
+            "label": "素材效率偏低",
+            "gap": {
+              "value": null,
+              "availability": "missing"
+            },
+            "share": {
+              "value": null,
+              "state": "undefined"
+            },
+            "availability": "undeterminable"
+          }
+        ]
+      }
+    ],
+    "lineage": {
+      "window": {
+        "from": "2026-09-01",
+        "to": "2026-09-05",
+        "preset": "month_to_date"
+      },
+      "adLevelSource": "platform.ad_realtime"
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "归因树 cost 模式（Σ现金成本差拆解）；只算有公式节点，其余 undeterminable 不显金额"
+  }
+}

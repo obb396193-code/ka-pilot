@@ -1,0 +1,211 @@
+{
+  "documentId": 3165,
+  "documentName": "代理商-创建广告主发送验证码",
+  "documentType": 2,
+  "description": "<ol><li><p>创建广告主前，先调用接口发送短信验证码</p></li><li><p>返回true-会下发短信验证码，需要在创建广告主接口提供</p></li><li><p>返回false-不会下发短信验证码，在创建广告主时无需填写验证码</p></li><li><p>检验通过后，同一个agentId+userId当天无需重复检验</p></li></ol>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1730452989336
+    }
+  ],
+  "apiId": 1490,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/sms_code/send",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 66994,
+      "paramName": "advertiser_user_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>快手id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "快手id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66995,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "309",
+      "description": "<p>代理商ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "代理商ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 66998,
+      "paramName": "data",
+      "paramType": "AdAgentSendSmsRespSnake",
+      "example": "result",
+      "description": "<p>result</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3800,
+      "sort": 1,
+      "note": "result",
+      "children": [
+        {
+          "paramId": 66996,
+          "paramName": "check_sms_code",
+          "paramType": "Boolean",
+          "example": "true",
+          "description": "<p>是否需要校验验证码</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "是否需要校验验证码",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 66997,
+          "paramName": "result",
+          "paramType": "Boolean",
+          "example": "true",
+          "description": "<p>是否成功</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "是否成功",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66999,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "success",
+      "description": "<p>响应msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "响应msg",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 67000,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>响应code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "响应code",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1730452989336,
+  "creator": "chenyang11",
+  "fullContext": null
+}

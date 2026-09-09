@@ -14,5 +14,6 @@
   {"input":{"query_type":"summary","queryId":"account.summary"},"expected":null},
   {"input":{"query_type":"health"},"expected":null},
   {"input":{"query_type":"tier"},"expected":null},
-  {"input":{"query_type":"dimension"},"expected":null}
+  {"input":{"query_type":"dimension"},"expected":{"queryId":"account.dimension","params":{}}},
+  {"input":{"query_type":"dimension","dimension_type":"account","date":"2026-09-01"},"expected":{"queryId":"account.dimension","params":{"date":"2026-09-01","dimensionType":"account"}}}
 ]

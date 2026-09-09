@@ -1,0 +1,42 @@
+{
+  "documentId": 2347,
+  "documentName": "人群包数据",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 人群包数据\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dmp/region](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dmp/region)\n\n请求方式：GET\n\n\n### 请求参数\n\n> 无请求参数\n\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| advertiser_id | Long |  | 广告主ID |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | Object |  | 响应结果 |  |\n| &#8195;children | String[] |  | 下一级地区 |  |\n| &#8195;id | Long |  | 地区编号 |  |\n| &#8195;name | String |  | 地区名称 |  |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 状态信息 |  |\n\n### 请求样例\n\n```shell\n# Request\ncurl --location 'https://star-gateway.staging.kuaishou.com/rest/openapi/gw/dsp/dmp/region?advertiser_id=900015366' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]'\n```\n\n### 返回样例\n\n```shell\n# Response 太长了，不贴了，请根据实际响应按需取用。\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1684218759059
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1684218759059,
+  "creator": "zhaolei09",
+  "fullContext": null
+}

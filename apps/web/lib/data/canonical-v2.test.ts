@@ -13,13 +13,25 @@ for (const name of ["ready-lineage", "unknown-lineage", "reconcile-pending", "st
   })
 }
 
-for (const queryId of Object.keys(canonicalQueryRowSchemaById) as (keyof typeof canonicalQueryRowSchemaById)[]) {
+// Hourly/pivot have dedicated source/parity suites. This legacy daily mock is
+// deliberately NOT a producer of hourly snapshots or pivot cells.
+for (const queryId of (Object.keys(canonicalQueryRowSchemaById) as (keyof typeof canonicalQueryRowSchemaById)[]).filter(id => id !== "account.pivot2" && id !== "account.hourly" && id !== "account.gap")) {
   for (const side of ["ka_data", "platform"] as const) {
-    test(`${queryId}/${side} is strict canonical and distinguishes zero/missing/error`, () => {
-      const result = getMockResponse({ queryId, dataView: side, params: {} })
+    test(`${queryId}/${side} is strict canonical and distinguishes zero/missing/error`, async () => {
+      const baseline = getMockResponse({ queryId: queryId === "account.dimension" ? "account.summary" : queryId, dataView: side, params: {} })
+      if (queryId === "account.dimension" && baseline.ok && baseline.data.mode !== "reconcile") {
+        const fixture = JSON.parse(await readFile(new URL("../../../../packages/contract/fixtures/data-query/dimension-v3-account.json", import.meta.url), "utf8"))
+        baseline.data.source = { ...baseline.data.source, queryId, dimension: "account", rowSchemaVersion: "account.dimension/v3",
+          rows: fixture.data.source.rows.map((row: { assessment: { priceSource: string; price: { effectiveDate: string | null } | null } }) => {
+            row.assessment.priceSource = side === "ka_data" ? "ka_daily" : "history"
+            if (side === "ka_data" && row.assessment.price) row.assessment.price.effectiveDate = null
+            return row
+          }), returnedRowCount: fixture.data.source.rows.length }
+      }
+      const result = dataQueryResponseSchema.parse(baseline)
       assert.ok(result.ok && result.data.mode !== "reconcile")
       const source = result.data.source
-      const version = queryId === "account.summary" || queryId === "account.trend" ? "v3" : "v2"
+      const version = queryId === "account.summary" || queryId === "account.trend" || queryId === "account.dimension" ? "v3" : "v2"
       assert.equal(source.rowSchemaVersion, `${queryId}/${version}`)
       const row = structuredClone(source.rows[0])
       const metrics = row.metrics as Record<string, unknown>

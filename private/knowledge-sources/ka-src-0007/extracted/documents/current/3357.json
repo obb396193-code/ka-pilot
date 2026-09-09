@@ -1,0 +1,267 @@
+{
+  "documentId": 3357,
+  "documentName": "子端口向主端口退款",
+  "documentType": 2,
+  "description": "<p>子端口向主端口退款</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780283388427
+    }
+  ],
+  "apiId": 1878,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/transfer/secondary/refund",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 82233,
+      "paramName": "secondary_agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>子端口id（二代代理商id）</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82234,
+      "paramName": "transfer_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>转账类型：1-现金 2-信用</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86461,
+      "paramName": "custom_transfer_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>退款金额，单位厘</p>",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82237,
+      "paramName": "biz_unique_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>唯一交易号(可不填)</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82238,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 82239,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82240,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>message</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82241,
+      "paramName": "data",
+      "paramType": "SecondaryAgentTradeGwResult",
+      "example": "",
+      "description": "<p>转账结果：true-成功，false-失败</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4272,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 75806,
+          "paramName": "data",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p><br>转账结果：true-成功，false-fail</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780283388427,
+  "creator": "zhangzhidong",
+  "fullContext": null
+}

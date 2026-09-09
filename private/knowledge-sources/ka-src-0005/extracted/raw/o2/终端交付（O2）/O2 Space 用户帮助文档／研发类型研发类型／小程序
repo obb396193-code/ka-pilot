@@ -1,0 +1,193 @@
+# 小程序
+
+## 能力介绍
+
+### 基础能力
+
+小程序发布 支持发布各种小程序研发类型（原生小程序，Rax小程序）应用到 淘宝、支付宝、微信、钉钉等各端。
+
+
+
+### 提供的发布环境
+
+小程序仅有一个发布环境，预发阶段和线上阶段仅作为研发阶段的区分。只要选择了发布版本号，都会发布到对应小程序开放平台。
+
+
+
+我们针对不同类型的应用，以及预发/线上发布环境，提供了用户可选择的发布模式，以及版本号选择功能区。
+
+一个迭代可以同时进行多端发布，通过勾选（至少需要选中一项才能发布）来选择本次需要发布的渠道。
+
+目前一共提供了三种发布模式：
+
+1. 指定版本：使用发布者指定的版本号
+1. 不发布版本（仅预览）：不更新小程序的版本号，只生成预览码，此能力在线上发布模式下不可选。
+1. 自动更新版本号：自动读取目前最新的版本号（MAJOR . MINOR . PATCH），并且为修订号（PATCH + 1）。
+### 发布产物说明
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgKGWnas5FOw.png)
+
+
+打包好的小程序产物包，会发布到开放平台，并且根据构建时配置对应生成预览码，或者版本号。
+
+## 接入说明
+
+前往 [应用接入](https://space.o2.alibaba-inc.com/app/new)，选择 小程序 应用类型，进入小程序平台新建 小程序类型的 O2 Space 应用。
+
+接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgrYT7kn5pzd.png)
+
+
+
+
+### 脚手架配置
+
+选择淘宝小程序脚手架，平台会默认生成一个标准的小程序模板。
+
+选择 rax 应用作为项目脚手架时，我们还需要选择应用类型为 miniapp。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgL16DM79JFH.png)
+
+
+### 接入淘宝小程序
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgKgj9xKKSep.png)
+
+
+1. 点击加号新建淘宝小程序配置
+1. 选择开发账号，该列表会拉取和当前 buc 账号有关联关系的淘宝账号
+1. 选择小程序类型
+1. 根据账号和应用类型会筛出一批应用名，选择你想要的应用
+1. 如果要删除当前配置项，点击右侧的减号（➖）
+### 接入钉钉小程序
+
+#### 创建内部应用
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgcZurb7V3CX.png)
+
+
+创建一个企业内部应用，即使您的应用是三方企业应用或者是第三方个人应用，也需要创建，确保存在至少一个企业内部应用。
+
+企业内部应用的 appKey 和 appSecret 是小程序上传到钉钉开放平台的通道。
+
+
+
+#### 配置钉钉小程序
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgH9XDRs66fO.png)
+
+
+按图填入钉钉小程序相关信息。
+
+应用 ID 填入对应应用的 miniAppId，如果是仅借用内部企业应用作为上传通路，实际应用是三方企业应用，需要填入三方企业应用的 miniAppId。
+
+
+
+#### 申请上传权限
+
+由于小程序微平台使用的是钉钉开放接口的上传链路，该链路只提供给内部合作方使用，需要业务单独申请该权限。
+
+根据以下文档
+
+[https://yuque.antfin.com/xiaohe.wp/pl8qw7/gct8go](https://yuque.antfin.com/xiaohe.wp/pl8qw7/gct8go)
+
+的申请接口授权进行操作完成权限申请
+
+
+
+### 接入支付宝小程序
+
+1. 从支付宝小程序后台获取并填入应用 ID
+1. 从支付宝小程序后台获取并填入对该应用有权限的账号
+1. 填入应用类型（不会进行校验，任意填）
+1. 填入应用名（不会进行校验，任意填）
+### 接入微信小程序
+
+#### 获取上传秘钥 & 开放上传 ip 白名单
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/img0wFOZ1qNiU.png)
+
+
+在开发管理面板中获取小程序代码上传秘钥（不是appSecret），并将 ip 白名单保护 关闭
+
+
+
+#### 配置微信小程序
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/img7sSICtv3mZ.png)
+
+
+1. 配置上一步获取的应用ID 和 应用私钥
+1. 选择应用类型（不校验）
+1. 配置应用名（不校验）
+## 发布流程
+
+小程序发布流程主要分为两个部分，先将小程序发布到开放平台，再到对应开放平台进行提审，灰度等操作。
+
+### 发布
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imghNbsOrapyU.png)
+
+
+主要过程有：
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 小程序预构建 & 预发布：根据根目录的 mini.project.json 中的构建 hook 进行预构建，将预构建产物再次进行小程序构建并发布到开放平台。
+- 门神检查：将多平台构建的产物进行合并，给到门神检查节点使用，对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+
+
+### 上线
+
+在[小程序开放平台](https://console.open.taobao.com/)进行提审、灰度发布、正式发布
+
+（下图是淘宝开放平台的管理后台）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/img4GbD4HHpe6.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/img4cYTsLJXhM.png)
+
+
+
+
+## 其他发布说明
+
+### 自定义环境变量注入
+
+开发者在对小程序进行构建时，可能会遇到各种场景，如：测试-使用线上接口场景，测试-使用预发接口场景、预发构建场景等，通常在编译时，会指定不同的构建命令来应对不同的场景。
+
+但是在构建命令的选择上，则不可避免的需要进行一定的硬编码，如指定 npm build 为 build:prepub 等，而构建器透出的环境变量目前只有
+
+```
+process.env.platform: taobao | weixin | dingtalk | alipay
+process.env.DEF_WORK_ENV prepub | prod
+
+```
+小程序研发微平台提供了开发者的自定义环境变量注入，通过平台上配置 + 选择，即可为某次构建注入环境变量。
+
+#### 配置环境变量
+
+在应用 -> 平台配置中 配置你需要的环境变量，以 key-value 的形式提供
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/img8nkCW6XhvE.png)
+
+
+
+
+#### 选择环境变量
+
+配置好的环境变量会出现在 迭代 -> 迭代设置中：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/kv17x9/imgnQrn1YPHBl.png)
+
+
+通过勾选标签来进行选择，勾选的变量 key-value 会被注入到之后的构建环境中。
+
+勾选的环境变量保存在 LocalStorage 中只会在本机上生效。
+
+对于已经勾选的环境变量，在应用的[环境变量配置](https://alidocs.dingtalk.com/i/nodes/a9E05BDRVQRkezKGC1oQYMagJ63zgkYA?utm_scene=team_space&iframeQuery=anchorId%3Duu_lln71cm320a6ybopgmt)中删去时，并不会直接取消勾选，需要手动取消勾选，取消勾选之后就不会再次出现。
+

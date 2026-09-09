@@ -224,3 +224,25 @@
 ## ops（运维输入，非 API DTO）
 
 - `ops/bootstrap-seed.json` — `seed:bootstrap` 输入形状（identities/workspaces/memberships/grants；来自 Codex P-052 提案，arch 落）
+
+## 2026-09-07 第三批（fe TODO）
+
+- `me/workload.json` — v1.7.4 G9 我的负载（计数 + 负载分 not_configured）
+- `reports/daily-v1-not-sent.json` — 日报未推送（delivery.not_sent）
+- `data-query/summary-window-v3-conversion-missing.json` — conversion_missing 例
+- `rules/explain-7.json` / `rules/explain-9.json` — 未触发原因 CONDITION_FALSE / SOURCE_STALE
+- `agent/run-events-1802.json` — 失败 run 事件流
+- `admin/grants-member-2.json` — 第二位成员授权
+- `tasks/attribution-cost.json` — 归因树 cost 模式
+- `strategies/detail-3002.json` — 第二个方案（draft）
+
+## 2026-09-07 第四批（fe G10–G13）
+
+- `me/notifications.json` / `me/notifications-empty.json` — v1.7.8 G10 统一通知流（五 kind + 未读数 + cursor）
+- `auth/password-changed.json` / `auth/password-error.json` — v1.7.6 改密码成功/失败
+
+## D6 变更集试运行（2026-09-07）
+
+- `changesets/dry-run-ok.json` — 逐项 from/to/observed 三值 + ok/changed/unknown 判定；changed 与 unknown 挡 confirm 不挡 dry-run
+- `changesets/dry-run-source-unavailable.json` — 媒体只读通道未接入（本地与内测期的真实形态）
+

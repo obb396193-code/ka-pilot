@@ -1,0 +1,14 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/6603781bb5369707e7cec753/](https://links.alibaba-inc.com/support/conversation/6603781bb5369707e7cec753/)
+
+作者：[@裕新](undefined/yuxin.zxy)
+
+评审人：[@肖焉](undefined/haiyan.tan)
+
+
+
+** 可能原因：问题包的 package.json 的 version 不是 registry 上的 latest 版本 **
+
++ 快速解决：找构建器作者。monorepo 中子包是否参与构建，由构建器逻辑决定
++ 一般构建器中判断某个子包是否参与构建，使用 子包目录中 package.json 的 version 是否等于 registry 上包的 latest 版本。如果相等，则认为该包不需要构建；如果不等，认为该包需要构建
++  可以参考具体原因分析： [ https://links.alibaba-inc.com/support/conversation/6603781bb5369707e7cec753/ ](https://links.alibaba-inc.com/support/conversation/6603781bb5369707e7cec753/)
+

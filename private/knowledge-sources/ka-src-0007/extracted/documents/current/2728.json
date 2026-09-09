@@ -1,0 +1,246 @@
+{
+  "documentId": 2728,
+  "documentName": "获取商品库类目树",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093704706
+    }
+  ],
+  "apiId": 38,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/category/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": xxxxx,\n    \"library_id\": xxxxxx\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"details\": [\n      {\n        \"value\": 21,\n        \"label\": \"居家日用\",\n        \"children\": [\n          {\n            \"value\": 50012514,\n            \"label\": \"防护用品\",\n            \"children\": [\n              {\n                \"value\": 50003458,\n                \"label\": \"口罩\",\n                \"children\": null\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EPGAgIDQhpmOrAEYrQIg3tbSm8owKOyamOsP\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 1140,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "advertiser id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1141,
+      "paramName": "library_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "类目id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 1142,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回结果状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1143,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回结果状态信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1144,
+      "paramName": "data",
+      "paramType": "CategoryListViewData",
+      "example": "",
+      "description": "<p>商品库类目数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 88,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 1139,
+          "paramName": "details",
+          "paramType": "CategoryListView[]",
+          "example": "",
+          "description": "value",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 87,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 1133,
+              "paramName": "value",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>类目ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1134,
+              "paramName": "label",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>类目名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093704706,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

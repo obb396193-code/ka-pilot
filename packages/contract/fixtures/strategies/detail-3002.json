@@ -1,0 +1,236 @@
+{
+  "ok": true,
+  "data": {
+    "id": "00000000-0000-4000-8000-000000003002",
+    "name": "闲鱼潜客·搜索承接",
+    "version": 3,
+    "status": "draft",
+    "owner": null,
+    "applicable": {
+      "stages": [
+        "cold_start",
+        "ramping"
+      ],
+      "biz": [
+        "AAC"
+      ],
+      "objectives": [
+        "拉新"
+      ],
+      "media": [
+        "KUAISHOU"
+      ]
+    },
+    "playbook": {
+      "placement": [
+        "INVENTORY_UNIVERSAL",
+        "KUAI_SHOU_YOU_XUAN"
+      ],
+      "delivery_mode": "standard",
+      "bid": {
+        "tool": "ocpm",
+        "style": "dual_cost",
+        "cpa_hint": "考核价 ×0.95 起"
+      },
+      "rta": {
+        "enabled": true,
+        "audience_packs": [
+          "近7天浏览未购",
+          "加购未购"
+        ]
+      },
+      "budget_rhythm": {
+        "cold_start_days": 3,
+        "split": [
+          {
+            "phase": "cold_start",
+            "share": 0.2
+          },
+          {
+            "phase": "ramping",
+            "share": 0.8
+          }
+        ]
+      },
+      "account_matrix": {
+        "accounts": 1,
+        "campaigns_per_account": 3,
+        "units_per_campaign": 4
+      },
+      "product_material_rules": [
+        "每计划≥4 条候选素材",
+        "同版位保留最优 2 条"
+      ]
+    },
+    "evidence": {
+      "sampleTasks": 12,
+      "window": {
+        "from": "2026-08-01",
+        "to": "2026-08-31"
+      },
+      "metrics": {
+        "cost": {
+          "value": 1235680.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 965313.2,
+          "availability": "available"
+        },
+        "realConversion": {
+          "value": 26400,
+          "availability": "available"
+        },
+        "ratios": {
+          "cashCpa": {
+            "value": 36.56,
+            "state": "finite"
+          },
+          "realCpa": {
+            "value": 46.8,
+            "state": "finite"
+          }
+        }
+      },
+      "pivot2SnapshotRef": "pivot2:2026-08:resource_position×task"
+    },
+    "validations": {
+      "count": 6,
+      "improved": 4,
+      "noChange": 1,
+      "worse": 0,
+      "insufficient": 1
+    },
+    "boundTasks": [
+      {
+        "taskId": "fixture-task-ready",
+        "taskName": "AAC 拉新"
+      }
+    ],
+    "updatedAt": "2026-09-01T10:00:00.000+08:00",
+    "playbookMap": [
+      {
+        "step": 1,
+        "key": "placement",
+        "label": "版位选择",
+        "value": "信息流（推荐）+ 快手优选（补充）"
+      },
+      {
+        "step": 2,
+        "key": "delivery_mode",
+        "label": "投放方式",
+        "value": "标准投放 + 双成本控量"
+      },
+      {
+        "step": 3,
+        "key": "bid",
+        "label": "优化目标/出价",
+        "value": "oCPM 双出价，考核价 ×0.95 起"
+      },
+      {
+        "step": 4,
+        "key": "rta",
+        "label": "RTA 人群",
+        "value": "近7天浏览未购 / 加购未购"
+      },
+      {
+        "step": 5,
+        "key": "budget_rhythm",
+        "label": "预算节奏",
+        "value": "冷启 3 天 20% → 起量 80%"
+      },
+      {
+        "step": 6,
+        "key": "account_matrix",
+        "label": "账户矩阵",
+        "value": "1 户 × 3 计划 × 4 单元"
+      },
+      {
+        "step": 7,
+        "key": "stages",
+        "label": "冷启与起量阶段",
+        "value": "冷启 1-3 天 / 放量 4-7 天 / 稳定 8 天+"
+      }
+    ],
+    "conditions": {
+      "applicable": [
+        "账户历史 ≥50 转化",
+        "近 7 天成本波动 <20%",
+        "预算可稳定 ≥3 天"
+      ],
+      "not_applicable": [
+        "新账户无历史转化",
+        "预算短期频繁调整"
+      ]
+    },
+    "validationsDetail": [
+      {
+        "taskId": "fixture-task-ready",
+        "window": {
+          "from": "2026-08-10",
+          "to": "2026-08-24"
+        },
+        "before": {
+          "cashCpa": {
+            "value": 41.2,
+            "state": "finite"
+          },
+          "volume": {
+            "value": 6200,
+            "availability": "available"
+          },
+          "onTarget": false
+        },
+        "after": {
+          "cashCpa": {
+            "value": 36.8,
+            "state": "finite"
+          },
+          "volume": {
+            "value": 8900,
+            "availability": "available"
+          },
+          "onTarget": true
+        },
+        "status": "improved",
+        "note": "操作后观察结果，非因果"
+      },
+      {
+        "taskId": "fixture-task-nocap",
+        "window": {
+          "from": "2026-08-20",
+          "to": "2026-08-27"
+        },
+        "before": null,
+        "after": null,
+        "status": "insufficient_sample",
+        "note": "样本 <3 户"
+      }
+    ],
+    "versions": [
+      {
+        "version": 3,
+        "at": "2026-09-01",
+        "note": "预算节奏改 20/80"
+      },
+      {
+        "version": 2,
+        "at": "2026-08-15",
+        "note": "加联盟位补充"
+      },
+      {
+        "version": 1,
+        "at": "2026-08-01",
+        "note": "初版"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "第二个方案：draft，无验证记录"
+  }
+}

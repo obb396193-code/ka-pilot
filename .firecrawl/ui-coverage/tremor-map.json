@@ -1,0 +1,255 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://www.tremor.so/docs/ui/tab-navigation",
+        "title": "TabNavigation - Tremor",
+        "description": "Navigation menu with links styled as tabs."
+      },
+      {
+        "url": "https://www.tremor.so/docs/getting-started/installation",
+        "title": "Installation - Tremor",
+        "description": "Everything you need to set up Tremor Raw."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/line-chart",
+        "title": "Line Chart - Tremor",
+        "description": "Graphical representation connecting one or more series of data points with a line."
+      },
+      {
+        "url": "https://www.tremor.so",
+        "title": "Tremor – Copy-and-Paste Tailwind CSS UI Components for Ch...",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards."
+      },
+      {
+        "url": "https://www.tremor.so/docs/getting-started/dashboard-template",
+        "title": "Free Next.js Dashboard Template - Tremor",
+        "description": "Check out our free and open-source dashboard template written in TypeScript and Tailwind CSS."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/area-chart",
+        "title": "Area Chart - Tremor",
+        "description": "Graph with lines connecting data points and shaded areas between the lines and the x-axis."
+      },
+      {
+        "url": "https://tremor.so"
+      },
+      {
+        "url": "https://www.tremor.so/contributors",
+        "title": "Contributors - Tremor",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards."
+      },
+      {
+        "url": "https://www.tremor.so/privacy",
+        "title": "Privacy - Tremor",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards."
+      },
+      {
+        "url": "https://www.tremor.so/charts",
+        "title": "Tailwind CSS Charts - Tremor",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards. Tremor's Charts are based on real-world situations."
+      },
+      {
+        "url": "https://www.tremor.so/terms",
+        "title": "Terms and Conditions - Tremor",
+        "description": "Tremor is an open-source library providing components that you can use to build websites, dashboards, or apps."
+      },
+      {
+        "url": "https://www.tremor.so/changelog",
+        "title": "Changelog - Tremor",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards."
+      },
+      {
+        "url": "https://www.tremor.so/imprint",
+        "title": "Imprint - Tremor",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/button",
+        "title": "Button - Tremor",
+        "description": "To set the button in a loading state, use the isLoading prop. You can also set a custom loading text by passing a string to loadingText. Preview."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/tabs",
+        "title": "Tabs - Tremor",
+        "description": "A collection of content layers called tab panels, shown individually."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/select",
+        "title": "Select - Tremor",
+        "description": "List of user-selectable options, triggered by a button."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/callout",
+        "title": "Callout - Tremor",
+        "description": "Used for hints, disclaimers, tips, warnings, or documentation needs."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/tracker",
+        "title": "Tracker - Tremor",
+        "description": "Component for visualizing data related to monitoring."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/switch",
+        "title": "Switch - Tremor",
+        "description": "A control for toggling between checked and unchecked."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/badge",
+        "title": "Badge - Tremor",
+        "description": "We can use the created badge styles to style any other component like the badges. Here we apply the badgeVariants to an anchor element. Preview. Code. Switch to ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/calendar",
+        "title": "Calendar - Tremor",
+        "description": "The locale used for date formatting. Accepts a date-fns locale object. weekStartsOn. 0 | 2 | 1 | 3 | 4 | 5 | 6. Index ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/table",
+        "title": "Table - Tremor",
+        "description": "Display data efficiently in a column and row format."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/dialog",
+        "title": "Dialog - Tremor",
+        "description": "Add component: Copy and paste the code into your project's component directory. Do not forget to update the import paths. Show more. // Tremor Dialog [ ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/toggle",
+        "title": "Toggle - Tremor",
+        "description": "Add component: Copy and paste the code into your project's component directory. Do not forget to update the import paths. Show more. // Tremor Toggle [ ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/utilities/chartUtils",
+        "title": "chartUtils - Tremor",
+        "description": "Collection of utitlities used in charts."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/slider",
+        "title": "Slider - Tremor",
+        "description": "Add component: Copy and paste the code into your project's component directory. Do not forget to update the import paths. Show more. // Tremor Slider [ ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/accordion",
+        "title": "Accordion - Tremor",
+        "description": "A vertical stack of clickable headings that expand to show content."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/card",
+        "title": "Card - Tremor.so",
+        "description": "The greatest of all time (in tennis). Roger Federer's unparalleled combination of skill, longevity, and versatility has led him to hold numerous records, ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/barlist",
+        "title": "BarList - Tremor",
+        "description": "Horizontal bars with a label inside."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/popover",
+        "title": "Popover - Tremor",
+        "description": "Displays rich content in a portal, triggered by a button."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/toast",
+        "title": "Toast - Tremor",
+        "description": "A lightweight notification component."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/tooltip",
+        "title": "Tooltip - Tremor",
+        "description": "When enabled, the wrapper component is rendered as the first child element and its properties combined. Does not work with icons. Default: false. Footer. Found ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/checkbox",
+        "title": "Checkbox - Tremor",
+        "description": "State indeterminate is used to represent a mixed or partially selected state, typically used when dealing with hierarchical selections, such as selecting ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/input",
+        "title": "Input - Tremor.so",
+        "description": "Example: Input with type \"password\". Clicking on the icon switches the input type from password to text. Preview. Code. Switch to Light Mode. Show password. \" ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/utilities/cx",
+        "title": "cx - Tremor",
+        "description": "A utility for constructing className strings without style conflicts."
+      },
+      {
+        "url": "https://www.tremor.so/docs/ui/divider",
+        "title": "Divider - Tremor",
+        "description": "A Button used as children inside a Divider. Preview. Code. Switch to Light Mode. Show more. import { Button } from \"@/components/Button\"import ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/label",
+        "title": "Label - Tremor",
+        "description": "Example: Label with Checkbox. You can combine the Label with any input element. Preview. Code. Switch to Light Mode. Accept terms and conditions. import { ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/bar-chart",
+        "title": "Bar Chart - Tremor",
+        "description": "Graph with bars to compare values across categories."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/select-native",
+        "title": "Select Native - Tremor",
+        "description": "This component is based on the select element and supports all of its props. hasError. boolean. Style for erroneous input. Default: false. Footer. Found a bug?"
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/category-bar",
+        "title": "Category Bar - Tremor",
+        "description": "Component to indicate progress, performance, or a status."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/combo-chart",
+        "title": "Combo Chart - Tremor",
+        "description": "Add component: Copy and paste the code into your project's component directory. Do not forget to update the import paths. If you have not added the required ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/dropdown-menu",
+        "title": "Dropdown Menu - Tremor",
+        "description": "List of options or actions presented to the user."
+      },
+      {
+        "url": "https://www.tremor.so/docs/visualizations/progress-circle",
+        "title": "Progress Circle - Tremor",
+        "description": "The ProgressCircle accepts input values ranging from 0 to 100, where 100 represents 100 percent. If no data is available or if value is equal to zero, the ..."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/date-picker",
+        "title": "Date Picker - Tremor",
+        "description": "A component for selecting a date."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/date-range-picker",
+        "title": "Date Range Picker - Tremor",
+        "description": "Date Range Picker. A component for selecting a date rage. React Day Picker API Reference GitHub. Preview. Code. Switch to Light Mode. Select date range."
+      },
+      {
+        "url": "https://www.tremor.so/docs/getting-started/installation/vite",
+        "title": "Vite - Tremor",
+        "description": "Everything you need to set up Tremor with Vite."
+      },
+      {
+        "url": "https://www.tremor.so/docs/getting-started/installation/next",
+        "title": "Next.js - Tremor",
+        "description": "Everything you need to set up Tremor with Next.js."
+      },
+      {
+        "url": "https://www.tremor.so/docs/inputs/radio-card-group",
+        "title": "Radio Card Group - Tremor",
+        "description": "A set of radio buttons with a card styling."
+      },
+      {
+        "url": "https://www.tremor.so/docs/getting-started/installation/remix",
+        "title": "Remix - Tremor",
+        "description": "Create a new fonts folder in your public directory. Add the variable font file from the downloaded folder. .├── public│ └── fonts ..."
+      },
+      {
+        "url": "https://www.tremor.so/",
+        "title": "React components to build charts and dashboards - Tremor",
+        "description": "Open-source, accessible React UI components styled with Tailwind CSS to build charts and dashboards."
+      }
+    ]
+  }
+}

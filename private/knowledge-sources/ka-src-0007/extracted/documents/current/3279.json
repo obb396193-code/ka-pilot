@@ -1,0 +1,561 @@
+{
+  "documentId": 3279,
+  "documentName": "智投配置更新接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1765250846218
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1756386527415
+    }
+  ],
+  "apiId": 1714,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/simple/project/config/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "shell",
+      "body": "curl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"advertiser_id\": 12345678,\n  \"account_auto_manage\": 1,\n  \"auto_manage_type\": 1,\n  \"ocpx_action_type_constraint\": [\n    {\n      \"ocpxActionType\": 191,\n      \"value\": 3\n    }\n  ],\n  \"kol_user_info\": {\n    \"kolUserType\": 1,\n    \"kolUserId\": 1234567890\n  }\n}' \n  -L https://ad.e.kuaishou.com/rest/openapi/gw/dsp/simple/project/config/update"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"ocpx_action_type_constraint\": [\n      {\n        \"roi_ratio\": 3,\n        \"ocpx_action_type\": 191\n      }\n    ],\n    \"account_auto_manage\": 1,\n    \"kol_user_type\": 1,\n    \"kol_user_info\": {\n      \"user_id\": 2022036857,\n      \"user_name\": \"饺子好吃\"\n    },\n    \"auto_manage_type\": 1\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"ELaAgIDgtsGcChjdBCDW2KL5jjMo68qvpgI=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79502,
+      "paramName": "auto_campaign_name_rule",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>广告计划命名规则：</p><ul><li><p>目前支持的宏变量为：[序号][日期][时间]</p></li><li><p>自定义填写时必须同时包含[日期]和[序号]宏变量，eg: 系统自动搭建_[日期][序号]</p></li><li><p>若不填写基建默认命名规则为：系统创建_[序号]_[母计划名称]</p></li></ul><p>仅「auto_manage_type=0」或「auto_manage_type不传且账户当前auto_manage_type=0」时生效</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "仅「auto_manage_type=0」或「auto_manage_type不传且账户当前auto_manage_type=0」时生效",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 77377,
+      "paramName": "account_auto_manage",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>智投开关：0-关闭，1-开启</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 77378,
+      "paramName": "auto_manage_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>智投模式：0-标准，1-小说，2-短剧</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 77379,
+      "paramName": "kol_user_info",
+      "paramType": "AuaxUserInfoSnake",
+      "example": "",
+      "description": "<p>授权快手号信息</p><p>仅「auto_manage_type=1」或「auto_manage_type不传且账户当前auto_manage_type=1」时生效</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4378,
+      "sort": 4,
+      "note": "仅「auto_manage_type=1」或「auto_manage_type不传且账户当前auto_manage_type=1」时生效",
+      "children": [
+        {
+          "paramId": 77373,
+          "paramName": "kol_user_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>授权快手号ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 77374,
+          "paramName": "kol_user_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>授权快手号类型：1-普通快手号，2-蓝V服务号，3-聚星达人</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 77380,
+      "paramName": "ocpx_action_type_constraint",
+      "paramType": "AuaxOcpxActionTypeConstraintSnake[]",
+      "example": "",
+      "description": "<p>智投目标成本配置</p><p>仅「auto_manage_type=0/1」或「auto_manage_type不传且账户当前auto_manage_type=0/1」时生效</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4379,
+      "sort": 5,
+      "note": "仅「auto_manage_type=0/1」或「auto_manage_type不传且账户当前auto_manage_type=0/1」时生效",
+      "children": [
+        {
+          "paramId": 77375,
+          "paramName": "ocpx_action_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>转化目标：</p><ul><li><p>auto_manage_type=0时：191 首日ROI（默认24h，游戏是自然日）（0-5] 精确小数点后三位小数精确至0.001；190 付费 (0-8000] 精确小数点后三位小数精确至0.001；180 激活 (0-8000] 精确小数点后三位小数精确至0.001；394 订单提交 (0-8000] 精确小数点后三位小数精确至0.001；53 表单优化 (0-8000] 精确小数点后三位小数精确至0.001；773 关键行为 (0-8000] 精确小数点后三位小数精确至0.001；324 唤端 (0-8000] 精确小数点后三位小数精确至0.001</p></li><li><p>auto_manage_type=1时：191-首日ROI，978-首日变现ROI</p></li></ul>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 77376,
+          "paramName": "value",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>目标成本：</p><ul><li><p>auto_manage_type=0时：单位“元”，精确小数点后三位小数精确至0.001</p></li><li><p>auto_manage_type=1时：ROI系数，合法取值区间为(0, 100]，最多支持到三位小数</p></li></ul>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 77388,
+      "paramName": "data",
+      "paramType": "AuaxAccountConfigQueryRespSnake",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4380,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 79503,
+          "paramName": "auto_campaign_name_rule",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>广告计划命名规则：</p><ul><li><p>目前支持的宏变量为：[序号][日期][时间]</p></li><li><p>自定义填写时必须同时包含[日期]和[序号]宏变量，eg: 系统自动搭建_[日期][序号]</p></li><li><p>若不填写基建默认命名规则为：系统创建_[序号]_[母计划名称]</p></li></ul><p>仅「auto_manage_type=0」或「auto_manage_type不传且账户当前auto_manage_type=0」时生效</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "ADD"
+        },
+        {
+          "paramId": 77383,
+          "paramName": "account_auto_manage",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>智投开关：0-关闭，1-开启</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 77384,
+          "paramName": "auto_manage_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>智投模式：0-标准，1-小说，2-短剧</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 77385,
+          "paramName": "kol_user_info",
+          "paramType": "KolUserInfoSnake",
+          "example": "",
+          "description": "<p>授权快手号信息</p><p>仅「auto_manage_type=1」或「auto_manage_type不传且账户当前auto_manage_type=1」时生效</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4370,
+          "sort": 4,
+          "note": "此字段更新结果生效存在延迟，此返回值非更新后的实际结果",
+          "children": [
+            {
+              "paramId": 77312,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>授权快手号ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "CHANGE"
+            },
+            {
+              "paramId": 77313,
+              "paramName": "user_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>授权快手号名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "CHANGE"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 77386,
+          "paramName": "kol_user_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>授权快手号类型：1-普通快手号，2-蓝V服务号，3-聚星达人</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 77387,
+          "paramName": "ocpx_action_type_constraint",
+          "paramType": "OcpxActionTypeConstraintSnake[]",
+          "example": "",
+          "description": "<p>智投目标成本配置</p><p>仅「auto_manage_type=0/1」或「auto_manage_type不传且账户当前auto_manage_type=0/1」时生效</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4381,
+          "sort": 6,
+          "note": "小说智投模式下，此字段更新结果生效存在延迟，此返回值非更新后的实际结果",
+          "children": [
+            {
+              "paramId": 77381,
+              "paramName": "ocpx_action_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>转化目标：</p><ul><li><p>auto_manage_type=0时：191 首日ROI（默认24h，游戏是自然日）（0-5] 精确小数点后三位小数精确至0.001；190 付费 (0-8000] 精确小数点后三位小数精确至0.001；180 激活 (0-8000] 精确小数点后三位小数精确至0.001；394 订单提交 (0-8000] 精确小数点后三位小数精确至0.001；53 表单优化 (0-8000] 精确小数点后三位小数精确至0.001；773 关键行为 (0-8000] 精确小数点后三位小数精确至0.001；324 唤端 (0-8000] 精确小数点后三位小数精确至0.001</p></li><li><p>auto_manage_type=1时：191-首日ROI，978-首日变现ROI</p></li></ul>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "CHANGE"
+            },
+            {
+              "paramId": 77382,
+              "paramName": "roi_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>目标成本：</p><ul><li><p>auto_manage_type=0时：单位“元”，精确小数点后三位小数精确至0.001</p></li><li><p>auto_manage_type=1时：ROI系数，合法取值区间为(0, 100]，最多支持到三位小数</p></li></ul>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "CHANGE"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 77389,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77390,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1765250846218,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

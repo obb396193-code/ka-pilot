@@ -1,0 +1,42 @@
+{
+  "documentId": 2171,
+  "documentName": "监测链接批量获取接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 批量获取监测链接接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/unit/getMonitorUrls](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/unit/getMonitorUrls)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| unit_ids | Long[] |  | 必填 | 广告组ID |  |\n| advertiser_id | Long |  | 必填 | 广告主ID |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 非1为失败 |  |\n| message | String |  | 错误详情 |  |\n| data | Struct |  | 返回详情 |  |\n| &#8195;unit_monitor_urls | Struct[] |  | 监测链接详情 |  |\n| &#8195;&#8195;unit_id | Long |  | 广告组ID |  |\n| &#8195;&#8195;is_dpa | Boolean |  | 是否是DPA（DPA的监测链接在广告组上） |  |\n| &#8195;&#8195;exist_valid_creative | Boolean |  | 是否存在有效创意 |  |\n| &#8195;&#8195;actionbar_click_url | String |  | actionBar点击监测，命中有效触点白名单表示有效触点监测链接（限：快手主站/极速版场景） |  |\n| &#8195;&#8195;click_url | String |  | 点击监测（排除粉丝直播推广） |  |\n| &#8195;&#8195;impression_url | String |  | 曝光监测 |  |\n| &#8195;&#8195;live_track_url | String |  | 粉丝直播推广点击监测 |  |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1701854673980
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1701854673980,
+  "creator": "fanhuanqing",
+  "fullContext": null
+}

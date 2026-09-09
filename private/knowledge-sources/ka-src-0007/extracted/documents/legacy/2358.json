@@ -1,0 +1,42 @@
+{
+  "documentId": 2358,
+  "documentName": "【应用中心】获取应用已共享主体列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取应用已共享主体列表\n应用的共享类型为：share_type=2【主体共享】才会有数据\n\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/shareCorpList](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/shareCorpList)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必选 | 广告主ID |  |\n| app_id | Long |  | 必选 | 应用id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | PageDataListShareCorpResp90Snake |  | JSON返回值 |  |\n| &#8195;list | ShareCorpResp437Snake[] |  | 主体列表的返回参数 |  |\n| &#8195;&#8195;corp_id | Long |  | 主体ID |  |\n| &#8195;&#8195;corp_name | String |  | 主体名称 |  |\n| &#8195;&#8195;total_account_cnt | Integer |  | 主体共享，挂载的Account数量 |  |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n\n### 请求样例\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/shareCorpList' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 12078245,\n    \"app_id\": 2199123262731\n}'\n\n```\n\n\n### 返回样例\n```js\n{\n    \"code\": 0,\n    \"data\": {\n        \"list\": [\n            {\n                \"total_account_cnt\": 2699,\n                \"corp_name\": \"北京慕远科技有限公司\",\n                \"corp_id\": 15280\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgIDglZy7ChiMAyDDwPvziDEozoTh4AM=\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1685978602188
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1685978602188,
+  "creator": "heran03",
+  "fullContext": null
+}

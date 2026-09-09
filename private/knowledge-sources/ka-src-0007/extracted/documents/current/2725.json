@@ -1,0 +1,234 @@
+{
+  "documentId": 2725,
+  "documentName": "查看共享账户",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093655308
+    }
+  ],
+  "apiId": 109,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/share/sameCertAccounts",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": " curl -H \"Access-Token:[REDACTED_SECRET_EXAMPLE]\" \\\n       -H \"Content-Type:application/json\" \\\n       -d '\n       {\n       \"advertiser_id\": 486\n       }\n       ' https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/share/sameCertAccounts"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "    {\n       \"code\": 0,\n       \"data\": {\n       \"details\": [\n       {\n       \"account_id\": 10787999,\n \"account_name\": \"我在这里搞测试\"\n }\n       ]\n       },\n       \"message\": \"OK\",\n       \"request_id\": \"0ae4094286ab419bad50e559bdb405fe\"\n       }"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 4594,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "\t注：非账户快手 ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4595,
+      "paramName": "same_agent",
+      "paramType": "Boolean",
+      "example": "true",
+      "description": "是否在同一代理下",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 4596,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4597,
+      "paramName": "data",
+      "paramType": "CorpAccountManageViewListData",
+      "example": "{}",
+      "description": "结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 250,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4587,
+          "paramName": "details",
+          "paramType": "CorpAccountManageViewGW[]",
+          "example": "",
+          "description": "返回结果",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 249,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 4582,
+              "paramName": "account_id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "广告主id",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4583,
+              "paramName": "account_name",
+              "paramType": "String",
+              "example": "测试",
+              "description": "广告主name",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4598,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "信息",
+      "description": "信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093655308,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

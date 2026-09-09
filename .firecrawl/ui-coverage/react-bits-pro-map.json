@@ -1,0 +1,2598 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://pro.reactbits.dev/roadmap",
+        "title": "Roadmap: what's coming next in React Bits Pro | React Bit...",
+        "description": "Public roadmap for React Bits Pro: upcoming animated components, UI blocks, landing-page templates, and platform improvements."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/installation",
+        "title": "Installation | React Bits Pro",
+        "description": "Install React Bits Pro into any React 19 / Next.js project with the shadcn CLI and your license key. Set up the registry, auth, and your first component."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/gradient-blob",
+        "title": "Gradient Blob | React Bits Pro",
+        "description": "Morphing 3D blob with gradient colors and cursor interaction"
+      },
+      {
+        "url": "https://pro.reactbits.dev/about",
+        "title": "About | React Bits Pro",
+        "description": "React Bits Pro is a premium React and Next.js library: 134 animated components, 238 page blocks, 300 app UI blocks, 11 templates and an AI Agent Kit."
+      },
+      {
+        "url": "https://pro.reactbits.dev/use-cases/landing-pages",
+        "title": "React Bits Pro for landing pages | React Bits Pro",
+        "description": "Assemble any landing page from 238 React and Tailwind blocks across 21 categories: hero, features, pricing, FAQ, testimonials, footer. Full layout control."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-10",
+        "title": "Contact 10 – Contact | React Bits Pro",
+        "description": "Dark enterprise sales form with consultation benefits and dense fields."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section",
+        "title": "Hero Section | React Bits Pro",
+        "description": "Hero sections with various layouts and styles"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/introduction",
+        "title": "Introduction | React Bits Pro",
+        "description": "What React Bits Pro is: 134 animated React components, 238 page blocks, 300 app UI blocks, 11 templates and an AI Agent Kit, installed via the shadcn CLI."
+      },
+      {
+        "url": "https://pro.reactbits.dev/use-cases/saas-marketing-sites",
+        "title": "React Bits Pro for SaaS marketing sites | React Bits Pro",
+        "description": "Ship a credible SaaS marketing site from 238 React and Tailwind blocks: hero, features, pricing, FAQ, testimonials, plus 300 app UI blocks for the product."
+      },
+      {
+        "url": "https://pro.reactbits.dev",
+        "title": "React Bits Pro | Animated React Components, Blocks & Temp...",
+        "description": "134 animated React components, 238 page blocks, 300 app UI blocks, 11 templates and an AI Agent Kit. One-time payment, lifetime updates."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/rotating-cards",
+        "title": "Rotating Cards | React Bits Pro",
+        "description": "3D circular carousel with draggable rotating cards"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth/auth-3",
+        "title": "Auth 3 – Auth | React Bits Pro",
+        "description": "Centered card with OAuth options and floating brand section over background image"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates",
+        "title": "Templates | React Bits Pro",
+        "description": "11 full landing-page templates for SaaS, agencies and product launches. Ultimate-tier downloads, ready to deploy on Next.js 16 and React 19."
+      },
+      {
+        "url": "https://pro.reactbits.dev/use-cases",
+        "title": "Use cases — what you can build with React Bits Pro",
+        "description": "React Bits Pro is built for the projects developers actually ship. Pick the use case closest to yours and see exactly which components, blocks, and templates to ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/use-cases/agency-portfolios"
+      },
+      {
+        "url": "https://pro.reactbits.dev/use-cases/ai-product-launches"
+      },
+      {
+        "url": "https://pro.reactbits.dev/compare",
+        "title": "Compare to other React UI libraries",
+        "description": "Most React component libraries cover one piece of the puzzle: primitives, or animations, or templates. The most complete animated React toolkit"
+      },
+      {
+        "url": "https://pro.reactbits.dev/compare/react-bits-pro-vs-shadcn"
+      },
+      {
+        "url": "https://pro.reactbits.dev/compare/react-bits-pro-vs-magicui"
+      },
+      {
+        "url": "https://pro.reactbits.dev/compare/react-bits-pro-vs-aceternity-ui"
+      },
+      {
+        "url": "https://pro.reactbits.dev/compare/react-bits-pro-vs-free-react-bits"
+      },
+      {
+        "url": "https://pro.reactbits.dev/alternatives",
+        "title": "React Bits Pro vs the alternatives",
+        "description": "React Bits Pro is the most complete animated React UI toolkit on the market: 134 components, 238 blocks, 300 app UI blocks, 11 landing-page templates, ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/best-for/indie-hackers"
+      },
+      {
+        "url": "https://pro.reactbits.dev/best-for/agencies"
+      },
+      {
+        "url": "https://pro.reactbits.dev/best-for/startup-founders"
+      },
+      {
+        "url": "https://pro.reactbits.dev/best-for/ai-coding-agents"
+      },
+      {
+        "url": "https://pro.reactbits.dev/builder",
+        "title": "Landing Builder (Beta)",
+        "description": "Compose a complete landing page from 238 React Bits blocks, then export it as a ready-to-run Next.js project."
+      },
+      {
+        "url": "https://pro.reactbits.dev/affiliate"
+      },
+      {
+        "url": "https://pro.reactbits.dev/login"
+      },
+      {
+        "url": "https://pro.reactbits.dev/license",
+        "title": "License Agreement",
+        "description": "This License Agreement (\"Agreement\") is a legal contract between React Bits Pro (\"Licensor\") and the purchaser or user (\"Licensee\")."
+      },
+      {
+        "url": "https://pro.reactbits.dev/privacy",
+        "title": "Privacy Policy",
+        "description": "This Privacy Policy describes how React Bits Pro (\"we\", \"us\", or \"our\") collects, uses, and protects your personal information when you use our website"
+      },
+      {
+        "url": "https://pro.reactbits.dev/changelog",
+        "title": "Changelog",
+        "description": "React Bits Pro doubles in scope. 300 themeable App UI blocks, data tables, sidebars, billing, settings, and a full suite of AI and agent surfaces"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/mcp",
+        "title": "MCP Server",
+        "description": "The shadcn MCP server lets your AI assistant read the React Bits Pro registries directly: it can list what is available, search it, and install straight into ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components",
+        "title": "Components",
+        "description": "134 production-ready React components. Browse by category, search by name, or sort to find what you need. Newest A–Z Z–A."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks",
+        "title": "Blocks",
+        "description": "21 categories · 238 variants · 80 new. Pre-built animated page sections. Drop in, customize, ship. Newest A–Z Most variants. Showing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui",
+        "title": "Application UI",
+        "description": "300 application UI blocks across 38 categories: dashboards, sidebars, data tables, settings, dialogs and AI agent surfaces. Built on one design system."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit",
+        "title": "Agent Kit | React Bits Pro",
+        "description": "Corporate Trust. Build enterprise, finance and healthcare pages where credibility is the entire design objective: a conservative palette, a ranked trust ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/agent-skill"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/staggered-text"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glitch-text"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/smooth-cursor"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/text-path",
+        "title": "Text Path",
+        "description": "Animated text that follows an SVG path with GSAP."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/3d-text-reveal"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/particle-text"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/text-scatter"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/3d-letter-swap"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/custom-cursor"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/blur-highlight"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/globe",
+        "title": "Globe",
+        "description": "Interactive 3D globe with animated arcs and location markers."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/draggable-grid"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/comparison-slider",
+        "title": "Comparison Slider",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/shader-reveal"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/device",
+        "title": "Device",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/simple-graph"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/credit-card"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/circle-gallery"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/ai-blob",
+        "title": "AI Blob",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/gradient-carousel"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/circles",
+        "title": "Circles",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/shader-card"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/preloader",
+        "title": "Preloader",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/hover-preview",
+        "title": "Hover Preview",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/modal-cards",
+        "title": "Modal Cards",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/pixelate-hover"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/animated-list",
+        "title": "Animated List",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/neon-reveal",
+        "title": "Neon Reveal",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomePricingTestimonialsFAQsRoadmap ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/depth-card"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/liquid-swap"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/parallax-cards"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/perspective-grid",
+        "title": "Perspective Grid",
+        "description": "Infinite scrolling 3D perspective grid with WebGL shader rendering."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glitter-warp"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/shader-waves",
+        "title": "Shader Waves",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/light-droplets"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/lightspeed",
+        "title": "Lightspeed",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/dither-wave"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/radial-liquid"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/chroma-waves"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/mosaic",
+        "title": "Mosaic",
+        "description": "Mosaic effect with animated wave or video background."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/vortex",
+        "title": "Vortex",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/portal",
+        "title": "Portal",
+        "description": "Circular portal shader with customizable particle effects."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/rising-lines"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/color-loops"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/rotating-stars"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/dither-cursor",
+        "title": "Dither Cursor",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/ascii-cursor"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/ascii-waves"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/synaptic-shift"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/dot-shift",
+        "title": "Dot Shift",
+        "description": "Animation speed multiplier. Default 0.5. scale number. Scale of the dot pattern. Default 0.6."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/star-burst",
+        "title": "Star Burst",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/silk-waves"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/falling-rays"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/liquid-bars"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/aurora-blur",
+        "title": "Aurora Blur",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/chroma-card"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/liquid-lines"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/squircle-shift"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/grain-wave",
+        "title": "Grain Wave",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glass-flow"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/shadow-bars"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/warp-twister"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/center-flow"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glass-cursor",
+        "title": "Glass Cursor",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/agentic-ball"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/black-hole",
+        "title": "Black Hole",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/blurred-rays"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/click-stack",
+        "title": "Click Stack",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/flame-paths"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/frame-border"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/gradient-bars"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/halftone-vortex"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/halftone-wave"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/infinite-gallery",
+        "title": "Infinite Gallery",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/liquid-ascii"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/metallic-swirl"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/retro-lines",
+        "title": "Retro Lines",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/rubber-fluid"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/simple-swirl"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/square-matrix"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/star-swipe"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/swirl-blend"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/text-cube"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/warped-card",
+        "title": "Warped Card",
+        "description": "Image card with mouse-following bulge distortion shader."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/watercolor"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/fog-sphere"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/ascii-tiles",
+        "title": "ASCII Tiles",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/cursor-wave"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/twilight-lines"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/chroma-blinds"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/pixel-reveal",
+        "title": "Pixel Reveal",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/parallax-carousel",
+        "title": "Parallax Carousel",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glass-tiles"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/parallax-pills"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/blinking-squares"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/user-cursor",
+        "title": "User Cursor",
+        "description": "A custom cursor with a little name tag that follows along."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/magic-transform"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/circle-stack"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/particle-image"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/skewed-carousel",
+        "title": "Skewed Carousel",
+        "description": "A skewed marquee of cards that tilts and scales as it scrolls."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/tumble-carousel"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/tilted-tiles"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/squares-terminal",
+        "title": "Squares Terminal",
+        "description": "A terminal-style grid of squares that flicker on and off."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/neural-float",
+        "title": "Neural Float",
+        "description": "Soft neural filaments drifting weightlessly across the canvas."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/wireframe-ball"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/blinking-dots",
+        "title": "Blinking Dots",
+        "description": "A crisp field of dots blinking in and out on a fixed grid."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/specter-orb",
+        "title": "Specter Orb",
+        "description": "A ghostly raymarched orb wrapped in drifting smoke."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/speeding-text"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/pixel-rain",
+        "title": "Pixel Rain",
+        "description": "Pixelated streaks falling in a quiet digital rain."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/mosaic-waves",
+        "title": "Mosaic Waves",
+        "description": "Waves rolling through a mosaic of shifting tiles."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/pixel-magnet"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/rolling-blinds"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/neural-tunnel",
+        "title": "Neural Tunnel",
+        "description": "An endless tunnel of pulsing neural strands."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glowing-wave"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/minimal-ripple"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/glue-dots"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/card-spread"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/page-flip",
+        "title": "Page Flip",
+        "description": "Page Flip. A book-style page flip you can drag through. Preview Code. page-flip-tw. Copy for AI. Glass atrium seen from below Corporate tower against an ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/bending-marquee"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/aura-blob",
+        "title": "Aura Blob",
+        "description": "A soft glowing blob surrounded by a slowly shifting aura."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/aurora-beam",
+        "title": "Aurora Beam",
+        "description": "A sweeping aurora beam built from layered sheets of light."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/thinking-dots"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/rising-particles",
+        "title": "Rising Particles",
+        "description": "Particles glowing softly as they rise and drift upward."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/landscape",
+        "title": "Landscape",
+        "description": "A procedurally generated landscape scrolling toward the horizon."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/tech-wall"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/spectral-clouds"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/reel-gallery"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/grid-rise"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/lenticular-carousel",
+        "title": "Lenticular Carousel",
+        "description": "A gallery whose cards turn over like a lenticular print."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/scroll-stack"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/frame-scrub"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/components/scroll-mask"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-15"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-16"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-17"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-18"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-19"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-20"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-21"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-22"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-23"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/hero-section/hero-24"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features",
+        "title": "Features",
+        "description": "Feature sections with various layouts and presentations."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/features/features-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-15"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/social-proof/social-proof-16"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact",
+        "title": "Contact | React Bits Pro",
+        "description": "Talk to the team that built the quiet way. Send us a note and we will reply within a business day: no sales script, no follow-up drip, just a real conversation."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/contact/contact-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer",
+        "title": "Footer",
+        "description": "Airy five-column sitemap footer with product icon links, brand bar, social row, and fine-print disclaimer. Every moving part.One calm surface ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/footer/footer-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison",
+        "title": "Comparison",
+        "description": "An editorial two-column panel trading the usual stack for the product line by line, with ban/check chips and a footer link. Pricing at scale ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/comparison/comparison-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation",
+        "title": "Navigation",
+        "description": "Full-width mega panel navbar with crossfading sections, a featured spotlight card, and an accordion mobile menu. WorkWorkStudioStudioServicesServices."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/navigation/navigation-15"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth",
+        "title": "Auth",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth/auth-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth/auth-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth/auth-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth/auth-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/auth/auth-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta",
+        "title": "Call To Action",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/cta/cta-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq",
+        "title": "FAQ",
+        "description": "Frequently asked questions sections with accordion layouts."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/faq/faq-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing",
+        "title": "Pricing",
+        "description": "Pay for what you ship, nothing else · Unlimited workflows · Webhooks & API triggers · Run history for 90 days · Priority execution queue · Email & Slack alerts."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/pricing/pricing-15"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats",
+        "title": "Stats",
+        "description": "Statistics and metrics sections with various layouts and styles."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/stats/stats-15"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404",
+        "title": "404",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/404/404-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile",
+        "title": "Profile",
+        "description": "User profile sections with various layouts and information displays."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile/profile-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile/profile-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile/profile-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile/profile-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile/profile-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/profile/profile-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about",
+        "title": "About",
+        "description": "Change sticks when people can see themselves inside the next way of working. We never ship a rhythm a team didn't help set."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/about/about-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist",
+        "title": "Waitlist",
+        "description": "Be the first to know when we launch React Bits Pro. ... Animated components, blocks, and templates for React. Pay once, ship stunning pages forever."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist/waitlist-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist/waitlist-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist/waitlist-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist/waitlist-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist/waitlist-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/waitlist/waitlist-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase",
+        "title": "Showcase",
+        "description": "Showcase sections to highlight products, features, or portfolios."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/showcase/showcase-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/how-it-works/how-it-works-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download",
+        "title": "Download",
+        "description": "Animated components, blocks, and templates for React. Pay once, ship stunning pages forever. pro@reactbits.dev. Site. HomeBuilder (Beta)Pricing ..."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/download/download-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog",
+        "title": "Blog | React Bits Pro",
+        "description": "Blog sections and article layouts for content display."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/blog/blog-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce",
+        "title": "Ecommerce",
+        "description": "Arc Lamp 01. $420. A counterweighted task lamp in powder-coated steel. The dimmer rolls from reading-bright to late-evening amber without a single click."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/blocks/ecommerce/ecommerce-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-chat/ai-chat-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/prompt-input/prompt-input-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-activity/agent-activity-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls/tool-calls-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls/tool-calls-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls/tool-calls-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls/tool-calls-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls/tool-calls-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/tool-calls/tool-calls-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval/agent-approval-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval/agent-approval-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval/agent-approval-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval/agent-approval-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval/agent-approval-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-approval/agent-approval-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/agent-plan/agent-plan-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/ai-usage/ai-usage-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-shell/app-shell-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card",
+        "title": "Cards – Application UI",
+        "description": "Card galleries and standalone cards for people, plans, activity, and files."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/card/card-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/onboarding/onboarding-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban",
+        "title": "Kanban – Application UI",
+        "description": "Drag-and-drop boards: status columns, swimlanes, grouping, sprint capacity, and board detail panels."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban/kanban-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban/kanban-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban/kanban-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban/kanban-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban/kanban-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/kanban/kanban-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/wizard/wizard-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments",
+        "title": "Comments – Application UI",
+        "description": "Threads, annotations, review notes, mention composers, and resolve workflows."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments/comments-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments/comments-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments/comments-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments/comments-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments/comments-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/comments/comments-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling",
+        "title": "Scheduling – Application UI",
+        "description": "Calendars, agendas, availability editors, time pickers, and booking surfaces."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/scheduling/scheduling-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-sidebar/app-sidebar-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu/command-menu-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu/command-menu-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu/command-menu-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu/command-menu-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu/command-menu-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/command-menu/command-menu-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/data-table/data-table-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/dashboard/dashboard-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/app-dialog/app-dialog-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications",
+        "title": "Notifications – Application UI",
+        "description": "Notification centers, toast stacks, activity inboxes, banners, and delivery preferences."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications/notifications-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications/notifications-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications/notifications-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications/notifications-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications/notifications-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/notifications/notifications-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations",
+        "title": "Integrations – Application UI",
+        "description": "Integration marketplaces, connection detail, API keys, webhooks, OAuth consent, and sync status."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations/integrations-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations/integrations-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations/integrations-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations/integrations-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations/integrations-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/integrations/integrations-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/editor",
+        "title": "Editor – Application UI",
+        "description": "Rich text chrome, markdown split views, code editors, review modes, and document outlines."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/editor/editor-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/editor/editor-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/editor/editor-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/editor/editor-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/editor/editor-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form/settings-form-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form/settings-form-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form/settings-form-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form/settings-form-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form/settings-form-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/settings-form/settings-form-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-15"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/analytics/analytics-16"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/list/list-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms",
+        "title": "Forms – Application UI",
+        "description": "Record creation and editing forms with validation, sections, and review states."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/forms/forms-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering",
+        "title": "Filtering – Application UI",
+        "description": "Faceted filtering, query builders, and refinement controls over result sets."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/filtering/filtering-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback/feedback-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback/feedback-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback/feedback-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback/feedback-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback/feedback-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/feedback/feedback-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/support"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/support/support-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/support/support-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/support/support-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/support/support-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/support/support-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing",
+        "title": "Billing – Application UI",
+        "description": "Invoice ledgers, plan managers, invoice builders, dunning queues, and usage meters."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/billing/billing-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat/chat-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat/chat-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat/chat-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat/chat-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat/chat-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/chat/chat-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/file-manager"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/file-manager/file-manager-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/file-manager/file-manager-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/file-manager/file-manager-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/file-manager/file-manager-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/monitoring/monitoring-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar",
+        "title": "Navbar – Application UI",
+        "description": "Application top bars, marketing headers, mega menus, breadcrumb toolbars, and mobile navigation."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/navbar/navbar-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/mobile",
+        "title": "Mobile – Application UI",
+        "description": "Bottom tab bars, floating docks, expanding action buttons, bottom sheets, and full-screen mobile menus."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/mobile/mobile-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/mobile/mobile-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/mobile/mobile-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/mobile/mobile-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/mobile/mobile-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/empty-state"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/empty-state/empty-state-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/empty-state/empty-state-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/empty-state/empty-state-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/empty-state/empty-state-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/empty-state/empty-state-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/paywall/paywall-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication",
+        "title": "Authentication – Application UI",
+        "description": "Sign-in, sign-up, and account recovery screens for web applications."
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-1"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-2"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-3"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-4"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-5"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-6"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-7"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-8"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-9"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-10"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-11"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-12"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-13"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/app-ui/authentication/authentication-14"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/saas-landing"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/minimal-landing"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/agency-site"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/finance-landing"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/ai-saas-landing"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/shader-template"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/wireframe-template"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/portfolio-template"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/8-bit-template"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/ai-app-template"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/templates/security-template"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/apple-minimal"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/corporate-trust"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/editorial"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/luxury-serif"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/neobrutalism"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/playful-motion"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/swiss-grid"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/skills/terminal-dark"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/agency"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/consumer-hardware"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/developer-tool"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/ecommerce-brand"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/fintech"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/fitness"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/real-estate"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/prompts/saas"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/recipes/agency-homepage"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/recipes/product-launch"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/agent-kit/recipes/saas-homepage"
+      },
+      {
+        "url": "https://pro.reactbits.dev/docs/saved",
+        "title": "Animated React Components, Blocks & Templates",
+        "description": "134 animated React components, 238 page blocks, 300 app UI blocks, 11 templates and an AI Agent Kit. One-time payment, lifetime updates."
+      }
+    ]
+  }
+}

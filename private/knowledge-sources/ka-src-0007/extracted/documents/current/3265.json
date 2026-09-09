@@ -1,0 +1,289 @@
+{
+  "documentId": 3265,
+  "documentName": "一代给二代充值",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "一代给二代充值\n/rest/openapi/gw/agent/v1/finance/transfer/secondary/recharge\nbiz_unique_key  String  <p>唯一交易号(可不填）</p>\ncredit_amount  Long  <p>信用，单位厘</p>\namount  Long  <p>现金，单位厘</p>\ntransfer_type  Integer  <p>转账类型：1-现金 2-信用</p>\nsecondary_agent_id  Long  <p>子端口id（二代代理商id）</p>\ndata  SecondaryAgentTradeGwResult  <p>转账结果</p>\ndata  Boolean  <p><br>转账结果：true-成功，false-fail</p>\nmessage  String  <p>message</p>\ncode  Integer  <p>code</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1767001196256
+    }
+  ],
+  "apiId": 1691,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/transfer/secondary/recharge",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79653,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75801,
+      "paramName": "biz_unique_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>唯一交易号(可不填）</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75802,
+      "paramName": "credit_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>信用，单位厘</p>",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75803,
+      "paramName": "amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>现金，单位厘</p>",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75804,
+      "paramName": "transfer_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>转账类型：1-现金 2-信用</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75805,
+      "paramName": "secondary_agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>子端口id（二代代理商id）</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 75807,
+      "paramName": "data",
+      "paramType": "SecondaryAgentTradeGwResult",
+      "example": "",
+      "description": "<p>转账结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4272,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 75806,
+          "paramName": "data",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p><br>转账结果：true-成功，false-fail</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75808,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>message</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75809,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1767001196256,
+  "creator": "zhangzhidong",
+  "fullContext": null
+}

@@ -1,0 +1,54 @@
+{
+  "documentId": 2420,
+  "documentName": "通过短剧作者和短剧id查询短剧下付费模式",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 通过短剧作者和短剧id查询短剧下付费模式\t\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/payModeType](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/payModeType)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 900015364 | 必填 | - | - |\n| series_id | Long | 384643 | 必填 | 短剧id | - |\n| user_id | Long | 2196670040 | 必填 | 短剧作者id | - |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | MapiSeriesPayModeInfoSnake[] |  | mapi短剧付费模式信息 |  |\n| &#8195;pay_mode | Integer |  | 目前仅支持payMode=1，即“打包“ |  |\n| &#8199;pay_mode_desc | String |  | 请补充描述详情 |  |\n| code | Integer |  | 请补充描述详情 |  |\n| message | String |  | 请补充描述详情 |  |\n\n### 请求样例\n\n```js\n{\n  \"advertiser_id\": 900015364,\n  \"user_id\": 2196670040,\n  \"series_id\": 384643\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 0,\n  \"data\": [\n    {\n      \"pay_mode_desc\": \"打包\",\n      \"pay_mode\": 1\n    }\n  ],\n  \"message\": \"OK\",\n  \"request_id\": \"ELmAgIDApJiOrAEY_wUghIrH87gxKNbY_-AD\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698942229020
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698942229020,
+  "creator": "yushiping03",
+  "fullContext": null
+}

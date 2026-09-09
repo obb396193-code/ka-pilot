@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "data": {
+    "ruleId": 9,
+    "accountId": "account-2",
+    "ds": "2026-09-05",
+    "leaves": [
+      {
+        "metric": "ctr",
+        "operator": "<",
+        "threshold": 0.02,
+        "value": null,
+        "availability": "error",
+        "pass": null
+      }
+    ],
+    "notTriggeredReason": "SOURCE_STALE",
+    "fallbackCopy": "数据源超过 30 小时未更新，本轮不判"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "规则 9 未触发：SOURCE_STALE（缺数期抑制 12.8）"
+  }
+}

@@ -1,0 +1,578 @@
+{
+  "documentId": 2727,
+  "documentName": "获取商品库列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093688296
+    }
+  ],
+  "apiId": 492,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/library/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/library/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": ******,\n    \"query_type\": 2\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"data\": [\n            {\n                \"create_time\": 1655383372262,\n                \"library_id\": *****,\n                \"library_desc\": \"***\",\n                \"name\": \"**库\",\n                \"status\": 2\n            }\n        ],\n        \"page_info\": {\n            \"total_count\": 51,\n            \"current_page\": 1,\n            \"page_size\": 10\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EJf0-4CQ1by7Chjy-hIgopiYl8wwKNOZ6NED\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 27278,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "0",
+      "description": "广告主账号ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27279,
+      "paramName": "library_id",
+      "paramType": "Long",
+      "example": "0",
+      "description": "商品库ID",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27280,
+      "paramName": "name",
+      "paramType": "String",
+      "example": "",
+      "description": "商品库名称",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27281,
+      "paramName": "status",
+      "paramType": "Integer",
+      "example": "2",
+      "description": "商品库状态",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "1-审核中, 2-使用中, 3-审核失败, 4-暂停使用, 5-XML初始化中, 6-XML初始化失败",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27282,
+      "paramName": "query_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "商品库权限类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "1-使用权限, 2-编辑权限(含使用权限)",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27283,
+      "paramName": "page_info",
+      "paramType": "PageInfoSneak95",
+      "example": "",
+      "description": "分页信息",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 1048,
+      "sort": 6,
+      "note": "",
+      "children": [
+        {
+          "paramId": 27276,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "20",
+          "description": "页大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27277,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "当前页码",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38661,
+      "paramName": "biz_ids",
+      "paramType": "Integer[]",
+      "example": "[2,3]",
+      "description": "商品库业务标记",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "主站（1）、联盟（2）、通用（3）。未知（0）：创建后还未审核过的商品库",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 27294,
+      "paramName": "data",
+      "paramType": "LibraryQueryResponse113",
+      "example": "",
+      "description": "商品库列表",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 1049,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 27292,
+          "paramName": "data",
+          "paramType": "AdDpaLibraryViewSneak431[]",
+          "example": "",
+          "description": "商品库列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 1050,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 27284,
+              "paramName": "library_id",
+              "paramType": "Long",
+              "example": "0",
+              "description": "商品库ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 27285,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "商品库名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 27286,
+              "paramName": "library_desc",
+              "paramType": "String",
+              "example": "",
+              "description": "商品库描述",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 27287,
+              "paramName": "status",
+              "paramType": "Integer",
+              "example": "2",
+              "description": "商品库状态",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "1-审核中, 2-使用中, 3-审核失败, 4-暂停使用, 5-XML初始化中, 6-XML初始化失败",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 27288,
+              "paramName": "create_time",
+              "paramType": "Long",
+              "example": "0",
+              "description": "商品库创建时间",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "毫秒时间戳",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38663,
+              "paramName": "biz_id",
+              "paramType": "Integer",
+              "example": "2",
+              "description": "商品库业务标记",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "主站（1）、联盟（2）、通用（3）。未知（0）：创建后还未审核过的商品库。",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27293,
+          "paramName": "page_info",
+          "paramType": "PageInfoSneak808862",
+          "example": "",
+          "description": "分页信息",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 1051,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 27289,
+              "paramName": "total_count",
+              "paramType": "Long",
+              "example": "1",
+              "description": "总数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 27290,
+              "paramName": "page_size",
+              "paramType": "Integer",
+              "example": "20",
+              "description": "页大小",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 27291,
+              "paramName": "current_page",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "当前页码",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27295,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "请求返回状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27296,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "请求返回状态信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093688296,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2040,
+  "documentName": "3.4.5修改广告组预算",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改广告组预算\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/update/day_budget\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|        字段         |  类型  | 是否必填 |     说明     |                                                                                                备注                                                                                                |\n| :-----------------: | :----: | :------: | :----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|    advertiser_id    |  long  |   必填   |  广告主 ID   |                                                                                   在获取 access_token 的时候返回                                                                                   |\n|       unit_id       |  long  |   必填   |  广告组 ID   |                                                                                                                                                                                                    |\n|     day_budget      |  long  |   必填   | 单日预算金额 |                      广告组单日预算金额，单位：厘，指定 0 表示预算不限，默认为 0；不小于 100 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于该广告组当日花费的 120% 和修改前预算的较小者.                      |\n| day_budget_schedule | long[] |   必填   |   分日预算   | 单位：厘，指定 0 表示预算不限，默认为 0；每天不小于 100 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于当日广告组最高花费的1.2倍和修改前预算的较小者，与 day_budget 不能同时传，组预算不能低于组出价，优先级高于day_budget |\n\n### 返回参数\n\n|  字段   |  类型  |    说明     | 备注 |\n| :-----: | :----: | :---------: | :--: |\n|  code   |  int   |   返回码    |      |\n| message | string |  返回信息   |      |\n|  data   | struct | JSON 返回值 |      |\n\n### 请求样例\n\n```\ncurl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\":20000800,\n    \"unit_id\":2960079,\n    \"day_budget\":1213312\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/update/day_budget\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {}\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698732337377
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698732337377,
+  "creator": "fanhuanqing",
+  "fullContext": null
+}

@@ -1,0 +1,1188 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - generic [ref=f5e5]:
+        - link "Kibo UI Kibo UI" [ref=f5e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f5e7]:
+            - img "Kibo UI" [ref=f5e8]
+            - generic [ref=f5e11]: Kibo UI
+        - generic [ref=f5e12]:
+          - link "Docs" [ref=f5e13] [cursor=pointer]:
+            - /url: /docs
+          - link "Components 41" [ref=f5e14] [cursor=pointer]:
+            - /url: /components
+            - text: Components
+            - generic [ref=f5e15]: "41"
+          - link "Blocks 28" [ref=f5e16] [cursor=pointer]:
+            - /url: /blocks
+            - text: Blocks
+            - generic [ref=f5e17]: "28"
+          - link "Patterns 1101" [ref=f5e18] [cursor=pointer]:
+            - /url: /patterns
+            - text: Patterns
+            - generic [ref=f5e19]: "1101"
+      - generic [ref=f5e20]:
+        - button [ref=f5e21]:
+          - paragraph [ref=f5e22]: Search...
+          - generic [ref=f5e23]:
+            - generic: ⌘
+            - generic: K
+        - link [ref=f5e24] [cursor=pointer]:
+          - /url: https://www.shadcnblocks.com
+          - img "shadcnblocks" [ref=f5e25]
+          - text: Shadcn UI Blocks
+        - link "GitHub 3.9K" [ref=f5e26] [cursor=pointer]:
+          - /url: https://github.com/shadcnblocks/kibo
+          - img "GitHub"
+          - generic [ref=f5e27]: 3.9K
+    - complementary [ref=f5e28]:
+      - generic [ref=f5e29]:
+        - generic:
+          - link:
+            - /url: /
+      - generic [ref=f5e32]:
+        - paragraph [ref=f5e33]: Collaboration
+        - link "Avatar Stack" [ref=f5e34] [cursor=pointer]:
+          - /url: /components/avatar-stack
+        - link "Cursor" [ref=f5e40] [cursor=pointer]:
+          - /url: /components/cursor
+        - paragraph [ref=f5e43]: Project Management
+        - link "Calendar" [ref=f5e44] [cursor=pointer]:
+          - /url: /components/calendar
+        - link "Gantt" [ref=f5e47] [cursor=pointer]:
+          - /url: /components/gantt
+        - link "Kanban" [ref=f5e50] [cursor=pointer]:
+          - /url: /components/kanban
+        - link "List" [ref=f5e53] [cursor=pointer]:
+          - /url: /components/list
+        - link "Table" [ref=f5e55] [cursor=pointer]:
+          - /url: /components/table
+        - paragraph [ref=f5e58]: Code
+        - link "Code Block" [ref=f5e59] [cursor=pointer]:
+          - /url: /components/code-block
+        - link "Contribution Graph" [ref=f5e63] [cursor=pointer]:
+          - /url: /components/contribution-graph
+        - link "Sandbox" [ref=f5e69] [cursor=pointer]:
+          - /url: /components/sandbox
+        - link "Snippet" [ref=f5e76] [cursor=pointer]:
+          - /url: /components/snippet
+        - paragraph [ref=f5e80]: Forms
+        - link "Choicebox" [ref=f5e81] [cursor=pointer]:
+          - /url: /components/choicebox
+        - link "Combobox" [ref=f5e87] [cursor=pointer]:
+          - /url: /components/combobox
+        - link "Dropzone" [ref=f5e91] [cursor=pointer]:
+          - /url: /components/dropzone
+        - link "Mini Calendar" [ref=f5e96] [cursor=pointer]:
+          - /url: /components/mini-calendar
+        - link "Tags" [ref=f5e99] [cursor=pointer]:
+          - /url: /components/tags
+        - paragraph [ref=f5e104]: Images
+        - link "Image Crop" [ref=f5e105] [cursor=pointer]:
+          - /url: /components/image-crop
+        - link "Image Zoom" [ref=f5e109] [cursor=pointer]:
+          - /url: /components/image-zoom
+        - paragraph [ref=f5e117]: Finance
+        - link "Credit Card" [ref=f5e118] [cursor=pointer]:
+          - /url: /components/credit-card
+        - link "Ticker" [ref=f5e121] [cursor=pointer]:
+          - /url: /components/ticker
+        - paragraph [ref=f5e124]: Social
+        - link "Stories" [ref=f5e125] [cursor=pointer]:
+          - /url: /components/stories
+        - link "Reel" [ref=f5e132] [cursor=pointer]:
+          - /url: /components/reel
+        - link "Video Player" [ref=f5e135] [cursor=pointer]:
+          - /url: /components/video-player
+        - paragraph [ref=f5e138]: Callouts
+        - link "Announcement" [ref=f5e139] [cursor=pointer]:
+          - /url: /components/announcement
+        - link "Banner" [ref=f5e143] [cursor=pointer]:
+          - /url: /components/banner
+        - paragraph [ref=f5e146]: Styling
+        - link "Typography" [ref=f5e147] [cursor=pointer]:
+          - /url: /components/typography
+        - paragraph [ref=f5e150]: Other
+        - link "Color Picker" [ref=f5e151] [cursor=pointer]:
+          - /url: /components/color-picker
+        - link "Comparison" [ref=f5e158] [cursor=pointer]:
+          - /url: /components/comparison
+        - link "Deck" [ref=f5e161] [cursor=pointer]:
+          - /url: /components/deck
+        - link "Dialog Stack" [ref=f5e167] [cursor=pointer]:
+          - /url: /components/dialog-stack
+        - link "Editor" [ref=f5e172] [cursor=pointer]:
+          - /url: /components/editor
+        - link "Glimpse" [ref=f5e176] [cursor=pointer]:
+          - /url: /components/glimpse
+        - link "Marquee" [ref=f5e183] [cursor=pointer]:
+          - /url: /components/marquee
+        - link "Pill" [ref=f5e186] [cursor=pointer]:
+          - /url: /components/pill
+        - link "QR Code" [ref=f5e190] [cursor=pointer]:
+          - /url: /components/qr-code
+        - link "Rating" [ref=f5e197] [cursor=pointer]:
+          - /url: /components/rating
+        - link "Relative Time" [ref=f5e200] [cursor=pointer]:
+          - /url: /components/relative-time
+        - link "Spinner" [ref=f5e204] [cursor=pointer]:
+          - /url: /components/spinner
+        - link "Status" [ref=f5e210] [cursor=pointer]:
+          - /url: /components/status
+        - link "Theme Switcher" [ref=f5e217] [cursor=pointer]:
+          - /url: /components/theme-switcher
+        - link "Tree" [ref=f5e220] [cursor=pointer]:
+          - /url: /components/tree
+        - paragraph [ref=f5e226]: Recommended
+        - link "AI Elements" [ref=f5e227] [cursor=pointer]:
+          - /url: https://ai-sdk.dev/elements/components?ref=kibo
+        - link "React Wheel Picker" [ref=f5e228] [cursor=pointer]:
+          - /url: https://react-wheel-picker.chanhdai.com/?ref=kibo
+    - generic:
+      - button "Collapse Sidebar"
+      - button "Open Search"
+    - article [ref=f5e229]:
+      - heading "Gantt" [level=1] [ref=f5e230]
+      - paragraph [ref=f5e231]: The Gantt chart is a powerful tool for visualizing project schedules and tracking the progress of tasks. It provides a clear, hierarchical view of tasks, allowing you to easily identify manage project timelines.
+      - generic [ref=f5e233]:
+        - tablist [ref=f5e234]:
+          - tab "Code" [ref=f5e235]
+          - tab "Preview" [selected] [ref=f5e236]
+        - tabpanel "Preview" [ref=f5e237]:
+          - generic [ref=f5e238]:
+            - generic [ref=f5e245]:
+              - generic [ref=f5e246]:
+                - generic [ref=f5e247]:
+                  - paragraph: Issues
+                  - paragraph [ref=f5e248]: Duration
+                - generic:
+                  - generic:
+                    - paragraph [ref=f5e249]: Brand next-generation smart contracts
+                    - generic:
+                      - button "Innovate one-to-one large language models 6 months" [ref=f5e250]:
+                        - paragraph: Innovate one-to-one large language models
+                        - paragraph: 6 months
+                      - button "Aggregate intuitive niches 8 months" [ref=f5e251]:
+                        - paragraph: Aggregate intuitive niches
+                        - paragraph: 8 months
+                  - generic:
+                    - paragraph [ref=f5e252]: Drive impactful niches
+                    - generic:
+                      - button "Synthesize visionary systems 5 months" [ref=f5e253]:
+                        - paragraph: Synthesize visionary systems
+                        - paragraph: 5 months
+                      - button "Synthesize integrated networks about 1 month" [ref=f5e254]:
+                        - paragraph: Synthesize integrated networks
+                        - paragraph: about 1 month
+                  - generic:
+                    - paragraph [ref=f5e255]: Drive virtual deliverables
+                    - generic:
+                      - button "Facilitate cross-platform experiences about 2 months" [ref=f5e256]:
+                        - paragraph: Facilitate cross-platform experiences
+                        - paragraph: about 2 months
+                      - button "Syndicate robust applications 8 months" [ref=f5e257]:
+                        - paragraph: Syndicate robust applications
+                        - paragraph: 8 months
+                      - button "Aggregate out-of-the-box synergies 7 months" [ref=f5e258]:
+                        - paragraph: Aggregate out-of-the-box synergies
+                        - paragraph: 7 months
+                      - button "Benchmark cross-media schemas 3 months" [ref=f5e259]:
+                        - paragraph: Benchmark cross-media schemas
+                        - paragraph: 3 months
+                  - generic:
+                    - paragraph [ref=f5e260]: Harness cutting-edge methodologies
+                    - generic:
+                      - button "Strategize integrated methodologies 6 months" [ref=f5e261]:
+                        - paragraph: Strategize integrated methodologies
+                        - paragraph: 6 months
+                      - button "Incentivize world-class schemas 5 months" [ref=f5e262]:
+                        - paragraph: Incentivize world-class schemas
+                        - paragraph: 5 months
+                      - button "Gamify end-to-end e-commerce 5 months" [ref=f5e263]:
+                        - paragraph: Gamify end-to-end e-commerce
+                        - paragraph: 5 months
+                      - button "Strategize value-added users 6 months" [ref=f5e264]:
+                        - paragraph: Strategize value-added users
+                        - paragraph: 6 months
+                      - button "Grow integrated metrics 27 days" [ref=f5e265]:
+                        - paragraph: Grow integrated metrics
+                        - paragraph: 27 days
+                      - button "Productize efficient technologies 22 days" [ref=f5e266]:
+                        - paragraph: Productize efficient technologies
+                        - paragraph: 22 days
+                      - button "Gamify innovative channels 6 months" [ref=f5e267]:
+                        - paragraph: Gamify innovative channels
+                        - paragraph: 6 months
+                      - button "Orchestrate best-of-breed blockchains 6 months" [ref=f5e268]:
+                        - paragraph: Orchestrate best-of-breed blockchains
+                        - paragraph: 6 months
+                  - generic:
+                    - paragraph [ref=f5e269]: Reinvent user-centric solutions
+                    - button "Visualize sustainable supply-chains 5 months" [ref=f5e270]:
+                      - paragraph: Visualize sustainable supply-chains
+                      - paragraph: 5 months
+                  - generic:
+                    - paragraph [ref=f5e271]: Target smart solutions
+                    - generic:
+                      - button "Implement virtual models 5 months" [ref=f5e272]:
+                        - paragraph: Implement virtual models
+                        - paragraph: 5 months
+                      - button "Maximize open-source platforms 5 months" [ref=f5e273]:
+                        - paragraph: Maximize open-source platforms
+                        - paragraph: 5 months
+                      - button "Grow end-to-end relationships 7 months" [ref=f5e274]:
+                        - paragraph: Grow end-to-end relationships
+                        - paragraph: 7 months
+              - generic [ref=f5e275]:
+                - generic [ref=f5e276]:
+                  - generic [ref=f5e278]:
+                    - paragraph [ref=f5e281]: "2025"
+                    - generic [ref=f5e282]:
+                      - paragraph [ref=f5e284]: Jan
+                      - paragraph [ref=f5e286]: Feb
+                      - paragraph [ref=f5e288]: Mar
+                      - paragraph [ref=f5e290]: Apr
+                      - paragraph [ref=f5e292]: May
+                      - paragraph [ref=f5e294]: Jun
+                      - paragraph [ref=f5e296]: Jul
+                      - paragraph [ref=f5e298]: Aug
+                      - paragraph [ref=f5e300]: Sep
+                      - paragraph [ref=f5e302]: Oct
+                      - paragraph [ref=f5e304]: Nov
+                      - paragraph [ref=f5e306]: Dec
+                  - generic [ref=f5e321]:
+                    - paragraph [ref=f5e324]: "2026"
+                    - generic [ref=f5e325]:
+                      - paragraph [ref=f5e327]: Jan
+                      - paragraph [ref=f5e329]: Feb
+                      - paragraph [ref=f5e331]: Mar
+                      - paragraph [ref=f5e333]: Apr
+                      - paragraph [ref=f5e335]: May
+                      - paragraph [ref=f5e337]: Jun
+                      - paragraph [ref=f5e339]: Jul
+                      - paragraph [ref=f5e341]: Aug
+                      - paragraph [ref=f5e343]: Sep
+                      - paragraph [ref=f5e345]: Oct
+                      - paragraph [ref=f5e347]: Nov
+                      - paragraph [ref=f5e349]: Dec
+                  - generic [ref=f5e364]:
+                    - paragraph [ref=f5e367]: "2027"
+                    - generic [ref=f5e368]:
+                      - paragraph [ref=f5e370]: Jan
+                      - paragraph [ref=f5e372]: Feb
+                      - paragraph [ref=f5e374]: Mar
+                      - paragraph [ref=f5e376]: Apr
+                      - paragraph [ref=f5e378]: May
+                      - paragraph [ref=f5e380]: Jun
+                      - paragraph [ref=f5e382]: Jul
+                      - paragraph [ref=f5e384]: Aug
+                      - paragraph [ref=f5e386]: Sep
+                      - paragraph [ref=f5e388]: Oct
+                      - paragraph [ref=f5e390]: Nov
+                      - paragraph [ref=f5e392]: Dec
+                - generic:
+                  - generic:
+                    - generic:
+                      - button "Innovate one-to-one large language models Ia":
+                        - generic [ref=f5e406]:
+                          - button [ref=f5e407]
+                          - button "Innovate one-to-one large language models Ia" [ref=f5e410]:
+                            - paragraph [ref=f5e411]: Innovate one-to-one large language models
+                            - generic [ref=f5e412]: Ia
+                          - button [ref=f5e414]
+                    - generic:
+                      - button "Aggregate intuitive niches Ro":
+                        - generic [ref=f5e416]:
+                          - button [ref=f5e417]
+                          - button "Aggregate intuitive niches Ro" [ref=f5e420]:
+                            - paragraph [ref=f5e421]: Aggregate intuitive niches
+                            - generic [ref=f5e422]: Ro
+                          - button [ref=f5e424]
+                  - generic:
+                    - generic:
+                      - button "Synthesize visionary systems Ro":
+                        - generic [ref=f5e426]:
+                          - button [ref=f5e427]
+                          - button "Synthesize visionary systems Ro" [ref=f5e430]:
+                            - paragraph [ref=f5e431]: Synthesize visionary systems
+                            - generic [ref=f5e432]: Ro
+                          - button [ref=f5e434]
+                    - generic:
+                      - button "Synthesize integrated networks Lu":
+                        - generic [ref=f5e436]:
+                          - button [ref=f5e437]
+                          - button "Synthesize integrated networks Lu" [ref=f5e440]:
+                            - paragraph [ref=f5e441]: Synthesize integrated networks
+                            - generic [ref=f5e442]: Lu
+                          - button [ref=f5e444]
+                  - generic:
+                    - generic:
+                      - button "Facilitate cross-platform experiences Gu":
+                        - generic [ref=f5e446]:
+                          - button [ref=f5e447]
+                          - button "Facilitate cross-platform experiences Gu" [ref=f5e450]:
+                            - paragraph [ref=f5e451]: Facilitate cross-platform experiences
+                            - generic [ref=f5e452]: Gu
+                          - button [ref=f5e454]
+                    - generic:
+                      - button "Syndicate robust applications Ia":
+                        - generic [ref=f5e456]:
+                          - button [ref=f5e457]
+                          - button "Syndicate robust applications Ia" [ref=f5e460]:
+                            - paragraph [ref=f5e461]: Syndicate robust applications
+                            - generic [ref=f5e462]: Ia
+                          - button [ref=f5e464]
+                    - generic:
+                      - button "Aggregate out-of-the-box synergies Ia":
+                        - generic [ref=f5e466]:
+                          - button [ref=f5e467]
+                          - button "Aggregate out-of-the-box synergies Ia" [ref=f5e470]:
+                            - paragraph [ref=f5e471]: Aggregate out-of-the-box synergies
+                            - generic [ref=f5e472]: Ia
+                          - button [ref=f5e474]
+                    - generic:
+                      - button "Benchmark cross-media schemas Lu":
+                        - generic [ref=f5e476]:
+                          - button [ref=f5e477]
+                          - button "Benchmark cross-media schemas Lu" [ref=f5e480]:
+                            - paragraph [ref=f5e481]: Benchmark cross-media schemas
+                            - generic [ref=f5e482]: Lu
+                          - button [ref=f5e484]
+                  - generic:
+                    - generic:
+                      - button "Strategize integrated methodologies Ia":
+                        - generic [ref=f5e486]:
+                          - button [ref=f5e487]
+                          - button "Strategize integrated methodologies Ia" [ref=f5e490]:
+                            - paragraph [ref=f5e491]: Strategize integrated methodologies
+                            - generic [ref=f5e492]: Ia
+                          - button [ref=f5e494]
+                    - generic:
+                      - button "Incentivize world-class schemas Ro":
+                        - generic [ref=f5e496]:
+                          - button [ref=f5e497]
+                          - button "Incentivize world-class schemas Ro" [ref=f5e500]:
+                            - paragraph [ref=f5e501]: Incentivize world-class schemas
+                            - generic [ref=f5e502]: Ro
+                          - button [ref=f5e504]
+                    - generic:
+                      - button "Gamify end-to-end e-commerce Lu":
+                        - generic [ref=f5e506]:
+                          - button [ref=f5e507]
+                          - button "Gamify end-to-end e-commerce Lu" [ref=f5e510]:
+                            - paragraph [ref=f5e511]: Gamify end-to-end e-commerce
+                            - generic [ref=f5e512]: Lu
+                          - button [ref=f5e514]
+                    - generic:
+                      - button "Strategize value-added users Ro":
+                        - generic [ref=f5e516]:
+                          - button [ref=f5e517]
+                          - button "Strategize value-added users Ro" [ref=f5e520]:
+                            - paragraph [ref=f5e521]: Strategize value-added users
+                            - generic [ref=f5e522]: Ro
+                          - button [ref=f5e524]
+                    - generic:
+                      - button "Grow integrated metrics Ro":
+                        - generic [ref=f5e526]:
+                          - button [ref=f5e527]
+                          - button "Grow integrated metrics Ro" [ref=f5e530]:
+                            - paragraph [ref=f5e531]: Grow integrated metrics
+                            - generic [ref=f5e532]: Ro
+                          - button [ref=f5e534]
+                    - generic:
+                      - button "Productize efficient technologies Gu":
+                        - generic [ref=f5e536]:
+                          - button [ref=f5e537]
+                          - button "Productize efficient technologies Gu" [ref=f5e540]:
+                            - paragraph [ref=f5e541]: Productize efficient technologies
+                            - generic [ref=f5e542]: Gu
+                          - button [ref=f5e544]
+                    - generic:
+                      - button "Gamify innovative channels Ia":
+                        - generic [ref=f5e546]:
+                          - button [ref=f5e547]
+                          - button "Gamify innovative channels Ia" [ref=f5e550]:
+                            - paragraph [ref=f5e551]: Gamify innovative channels
+                            - generic [ref=f5e552]: Ia
+                          - button [ref=f5e554]
+                    - generic:
+                      - button "Orchestrate best-of-breed blockchains Ro":
+                        - generic [ref=f5e556]:
+                          - button [ref=f5e557]
+                          - button "Orchestrate best-of-breed blockchains Ro" [ref=f5e560]:
+                            - paragraph [ref=f5e561]: Orchestrate best-of-breed blockchains
+                            - generic [ref=f5e562]: Ro
+                          - button [ref=f5e564]
+                  - generic:
+                    - generic:
+                      - button "Visualize sustainable supply-chains Ia":
+                        - generic [ref=f5e566]:
+                          - button [ref=f5e567]
+                          - button "Visualize sustainable supply-chains Ia" [ref=f5e570]:
+                            - paragraph [ref=f5e571]: Visualize sustainable supply-chains
+                            - generic [ref=f5e572]: Ia
+                          - button [ref=f5e574]
+                  - generic:
+                    - generic:
+                      - button "Implement virtual models Gu":
+                        - generic [ref=f5e576]:
+                          - button [ref=f5e577]
+                          - button "Implement virtual models Gu" [ref=f5e580]:
+                            - paragraph [ref=f5e581]: Implement virtual models
+                            - generic [ref=f5e582]: Gu
+                          - button [ref=f5e584]
+                    - generic:
+                      - button "Maximize open-source platforms Lu":
+                        - generic [ref=f5e586]:
+                          - button [ref=f5e587]
+                          - button "Maximize open-source platforms Lu" [ref=f5e590]:
+                            - paragraph [ref=f5e591]: Maximize open-source platforms
+                            - generic [ref=f5e592]: Lu
+                          - button [ref=f5e594]
+                    - generic:
+                      - button "Grow end-to-end relationships Lu":
+                        - generic [ref=f5e596]:
+                          - button [ref=f5e597]
+                          - button "Grow end-to-end relationships Lu" [ref=f5e600]:
+                            - paragraph [ref=f5e601]: Grow end-to-end relationships
+                            - generic [ref=f5e602]: Lu
+                          - button [ref=f5e604]
+                - generic [ref=f5e606]:
+                  - text: Engineer cutting-edge technologies
+                  - generic: May 07, 2026
+                - generic [ref=f5e607]:
+                  - text: Empower holistic methodologies
+                  - generic: Mar 19, 2026
+                - generic [ref=f5e608]:
+                  - text: Enable sustainable smart contracts
+                  - generic: Jun 18, 2026
+                - generic [ref=f5e609]:
+                  - text: Whiteboard quantum relationships
+                  - generic: Mar 28, 2026
+                - generic [ref=f5e610]:
+                  - text: Simplify real-time schemas
+                  - generic: Mar 10, 2026
+                - generic [ref=f5e611]:
+                  - text: Utilize plug-and-play partnerships
+                  - generic: Jun 26, 2026
+                - generic [ref=f5e612]:
+                  - text: Today
+                  - generic: Aug 19, 2026
+                - generic [ref=f5e613]:
+                  - button [ref=f5e614]
+                  - generic [ref=f5e616]: Jan 01, 2025
+            - separator
+      - heading "Installation" [level=2] [ref=f5e625]
+      - generic [ref=f5e626]:
+        - generic [ref=f5e627]:
+          - tablist [ref=f5e628]:
+            - tab "Kibo UI CLI" [selected] [ref=f5e629]
+            - tab "shadcn CLI" [ref=f5e630]
+          - button [ref=f5e631]
+        - tabpanel "Kibo UI CLI" [ref=f5e632]: npx kibo-ui add gantt
+      - generic [ref=f5e633]:
+        - heading [level=2] [ref=f5e634]:
+          - link "Features" [ref=f5e635] [cursor=pointer]:
+            - /url: "#features"
+        - list [ref=f5e639]:
+          - listitem [ref=f5e640]: Resizable and draggable timeline items
+          - listitem [ref=f5e641]: Markers to highlight important dates
+          - listitem [ref=f5e642]: Today marker to highlight the current date
+          - listitem [ref=f5e643]: Create marker trigger to create a new marker
+          - listitem [ref=f5e644]: Grouping of features
+          - listitem [ref=f5e645]:
+            - strong [ref=f5e646]: Multiple items per row
+            - text: for scenarios like hotel reservations, resource booking, etc.
+        - heading [level=2] [ref=f5e647]:
+          - link "Examples" [ref=f5e648] [cursor=pointer]:
+            - /url: "#examples"
+        - heading [level=3] [ref=f5e652]:
+          - link "Multiple items on one row" [ref=f5e653] [cursor=pointer]:
+            - /url: "#multiple-items-on-one-row"
+        - paragraph [ref=f5e657]: Perfect for hotel reservations, resource scheduling, or any scenario where multiple items share the same category but have different time periods.
+        - generic [ref=f5e659]:
+          - tablist [ref=f5e660]:
+            - tab "Code" [ref=f5e661]
+            - tab "Preview" [selected] [ref=f5e662]
+          - tabpanel "Preview" [ref=f5e663]:
+            - generic [ref=f5e664]:
+              - generic [ref=f5e671]:
+                - generic [ref=f5e672]:
+                  - generic [ref=f5e673]:
+                    - paragraph: Issues
+                    - paragraph [ref=f5e674]: Duration
+                  - generic:
+                    - generic:
+                      - paragraph [ref=f5e675]: Hotel Reservations
+                      - generic:
+                        - button "Room 101 3 months" [ref=f5e676]:
+                          - paragraph: Room 101
+                          - paragraph: 3 months
+                        - button "Room 104 28 days" [ref=f5e677]:
+                          - paragraph: Room 104
+                          - paragraph: 28 days
+                        - button "Room 103 29 days" [ref=f5e678]:
+                          - paragraph: Room 103
+                          - paragraph: 29 days
+                        - button "Room 102 4 days" [ref=f5e679]:
+                          - paragraph: Room 102
+                          - paragraph: 4 days
+                        - button "Room 105 4 days" [ref=f5e680]:
+                          - paragraph: Room 105
+                          - paragraph: 4 days
+                - generic [ref=f5e681]:
+                  - generic [ref=f5e682]:
+                    - generic [ref=f5e684]:
+                      - paragraph [ref=f5e687]: "2025"
+                      - generic [ref=f5e688]:
+                        - paragraph [ref=f5e690]: Jan
+                        - paragraph [ref=f5e692]: Feb
+                        - paragraph [ref=f5e694]: Mar
+                        - paragraph [ref=f5e696]: Apr
+                        - paragraph [ref=f5e698]: May
+                        - paragraph [ref=f5e700]: Jun
+                        - paragraph [ref=f5e702]: Jul
+                        - paragraph [ref=f5e704]: Aug
+                        - paragraph [ref=f5e706]: Sep
+                        - paragraph [ref=f5e708]: Oct
+                        - paragraph [ref=f5e710]: Nov
+                        - paragraph [ref=f5e712]: Dec
+                    - generic [ref=f5e727]:
+                      - paragraph [ref=f5e730]: "2026"
+                      - generic [ref=f5e731]:
+                        - paragraph [ref=f5e733]: Jan
+                        - paragraph [ref=f5e735]: Feb
+                        - paragraph [ref=f5e737]: Mar
+                        - paragraph [ref=f5e739]: Apr
+                        - paragraph [ref=f5e741]: May
+                        - paragraph [ref=f5e743]: Jun
+                        - paragraph [ref=f5e745]: Jul
+                        - paragraph [ref=f5e747]: Aug
+                        - paragraph [ref=f5e749]: Sep
+                        - paragraph [ref=f5e751]: Oct
+                        - paragraph [ref=f5e753]: Nov
+                        - paragraph [ref=f5e755]: Dec
+                    - generic [ref=f5e770]:
+                      - paragraph [ref=f5e773]: "2027"
+                      - generic [ref=f5e774]:
+                        - paragraph [ref=f5e776]: Jan
+                        - paragraph [ref=f5e778]: Feb
+                        - paragraph [ref=f5e780]: Mar
+                        - paragraph [ref=f5e782]: Apr
+                        - paragraph [ref=f5e784]: May
+                        - paragraph [ref=f5e786]: Jun
+                        - paragraph [ref=f5e788]: Jul
+                        - paragraph [ref=f5e790]: Aug
+                        - paragraph [ref=f5e792]: Sep
+                        - paragraph [ref=f5e794]: Oct
+                        - paragraph [ref=f5e796]: Nov
+                        - paragraph [ref=f5e798]: Dec
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic [ref=f5e812]:
+                            - button [ref=f5e813]
+                            - generic [ref=f5e815]:
+                              - button "Mr. Marty Kunze - Vacation Mr":
+                                - generic:
+                                  - paragraph: Mr. Marty Kunze - Vacation
+                                  - generic [ref=f5e816]: Mr
+                            - button [ref=f5e818]
+                          - generic [ref=f5e820]:
+                            - button [ref=f5e821]
+                            - button "Noble Reilly - Weekend Getaway No" [ref=f5e824]:
+                              - generic [ref=f5e825]:
+                                - paragraph: Noble Reilly - Weekend Getaway
+                                - generic [ref=f5e826]: "No"
+                            - button [ref=f5e828]
+                          - generic [ref=f5e830]:
+                            - button [ref=f5e831]
+                            - button "Elbert Bechtelar - Conference El" [ref=f5e834]:
+                              - generic [ref=f5e835]:
+                                - paragraph [ref=f5e836]: Elbert Bechtelar - Conference
+                                - generic [ref=f5e837]: El
+                            - button [ref=f5e839]
+                          - generic [ref=f5e841]:
+                            - button [ref=f5e842]
+                            - button "Freddie Kiehn IV - Conference Fr" [ref=f5e845]:
+                              - generic [ref=f5e846]:
+                                - paragraph [ref=f5e847]: Freddie Kiehn IV - Conference
+                                - generic [ref=f5e848]: Fr
+                            - button [ref=f5e850]
+                          - generic [ref=f5e852]:
+                            - button [ref=f5e853]
+                            - button "Daryl Corwin-Lynch - Conference Da" [ref=f5e856]:
+                              - generic [ref=f5e857]:
+                                - paragraph [ref=f5e858]: Daryl Corwin-Lynch - Conference
+                                - generic [ref=f5e859]: Da
+                            - button [ref=f5e861]
+                      - generic:
+                        - generic:
+                          - generic [ref=f5e863]:
+                            - button [ref=f5e864]
+                            - button "Mr. Marty Kunze - Weekend Getaway Mr" [ref=f5e867]:
+                              - generic [ref=f5e868]:
+                                - paragraph: Mr. Marty Kunze - Weekend Getaway
+                                - generic [ref=f5e869]: Mr
+                            - button [ref=f5e871]
+                          - generic [ref=f5e873]:
+                            - button [ref=f5e874]
+                            - generic [ref=f5e876]:
+                              - button "Daryl Corwin-Lynch - Business Trip Da":
+                                - generic:
+                                  - paragraph: Daryl Corwin-Lynch - Business Trip
+                                  - generic [ref=f5e877]: Da
+                            - button [ref=f5e879]
+                          - generic:
+                            - generic:
+                              - generic:
+                                - button [ref=f5e881]
+                                - generic [ref=f5e883]:
+                                  - button "Elbert Bechtelar - Vacation El":
+                                    - generic:
+                                      - paragraph: Elbert Bechtelar - Vacation
+                                      - generic [ref=f5e884]: El
+                                - button [ref=f5e886]
+                      - generic:
+                        - generic:
+                          - generic [ref=f5e888]:
+                            - button [ref=f5e889]
+                            - button "Fausto Windler - Business Trip Fa" [ref=f5e892]:
+                              - generic [ref=f5e893]:
+                                - paragraph [ref=f5e894]: Fausto Windler - Business Trip
+                                - generic [ref=f5e895]: Fa
+                            - button [ref=f5e897]
+                          - generic [ref=f5e899]:
+                            - button [ref=f5e900]
+                            - button "Marta Ritchie - Business Trip Ma" [ref=f5e903]:
+                              - generic [ref=f5e904]:
+                                - paragraph [ref=f5e905]: Marta Ritchie - Business Trip
+                                - generic [ref=f5e906]: Ma
+                            - button [ref=f5e908]
+                      - generic [ref=f5e910]:
+                        - button [ref=f5e911]
+                        - button "Noble Reilly - Business Trip No" [ref=f5e914]:
+                          - generic [ref=f5e915]:
+                            - paragraph: Noble Reilly - Business Trip
+                            - generic [ref=f5e916]: "No"
+                        - button [ref=f5e918]
+                      - generic [ref=f5e920]:
+                        - button [ref=f5e921]
+                        - button "Noble Reilly - Conference No" [ref=f5e924]:
+                          - generic [ref=f5e925]:
+                            - paragraph: Noble Reilly - Conference
+                            - generic [ref=f5e926]: "No"
+                        - button [ref=f5e928]
+                  - generic [ref=f5e930]:
+                    - text: Conference Week
+                    - generic: Sep 18, 2026
+                  - generic [ref=f5e931]:
+                    - text: Peak Season
+                    - generic: Oct 26, 2026
+                  - generic [ref=f5e932]:
+                    - text: Peak Season
+                    - generic: Sep 20, 2026
+                  - generic [ref=f5e933]:
+                    - text: Today
+                    - generic: Aug 19, 2026
+                  - generic [ref=f5e934]:
+                    - button [ref=f5e935]
+                    - generic [ref=f5e937]: Jan 01, 2025
+              - separator
+        - heading [level=3] [ref=f5e946]:
+          - link "Without a sidebar" [ref=f5e947] [cursor=pointer]:
+            - /url: "#without-a-sidebar"
+        - generic [ref=f5e952]:
+          - tablist [ref=f5e953]:
+            - tab "Code" [ref=f5e954]
+            - tab "Preview" [selected] [ref=f5e955]
+          - tabpanel "Preview" [ref=f5e956]:
+            - generic [ref=f5e957]:
+              - generic [ref=f5e965]:
+                - generic [ref=f5e966]:
+                  - generic [ref=f5e968]:
+                    - paragraph [ref=f5e971]: "2025"
+                    - generic [ref=f5e972]:
+                      - paragraph [ref=f5e974]: Jan
+                      - paragraph [ref=f5e976]: Feb
+                      - paragraph [ref=f5e978]: Mar
+                      - paragraph [ref=f5e980]: Apr
+                      - paragraph [ref=f5e982]: May
+                      - paragraph [ref=f5e984]: Jun
+                      - paragraph [ref=f5e986]: Jul
+                      - paragraph [ref=f5e988]: Aug
+                      - paragraph [ref=f5e990]: Sep
+                      - paragraph [ref=f5e992]: Oct
+                      - paragraph [ref=f5e994]: Nov
+                      - paragraph [ref=f5e996]: Dec
+                  - generic [ref=f5e1011]:
+                    - paragraph [ref=f5e1014]: "2026"
+                    - generic [ref=f5e1015]:
+                      - paragraph [ref=f5e1017]: Jan
+                      - paragraph [ref=f5e1019]: Feb
+                      - paragraph [ref=f5e1021]: Mar
+                      - paragraph [ref=f5e1023]: Apr
+                      - paragraph [ref=f5e1025]: May
+                      - paragraph [ref=f5e1027]: Jun
+                      - paragraph [ref=f5e1029]: Jul
+                      - paragraph [ref=f5e1031]: Aug
+                      - paragraph [ref=f5e1033]: Sep
+                      - paragraph [ref=f5e1035]: Oct
+                      - paragraph [ref=f5e1037]: Nov
+                      - paragraph [ref=f5e1039]: Dec
+                  - generic [ref=f5e1054]:
+                    - paragraph [ref=f5e1057]: "2027"
+                    - generic [ref=f5e1058]:
+                      - paragraph [ref=f5e1060]: Jan
+                      - paragraph [ref=f5e1062]: Feb
+                      - paragraph [ref=f5e1064]: Mar
+                      - paragraph [ref=f5e1066]: Apr
+                      - paragraph [ref=f5e1068]: May
+                      - paragraph [ref=f5e1070]: Jun
+                      - paragraph [ref=f5e1072]: Jul
+                      - paragraph [ref=f5e1074]: Aug
+                      - paragraph [ref=f5e1076]: Sep
+                      - paragraph [ref=f5e1078]: Oct
+                      - paragraph [ref=f5e1080]: Nov
+                      - paragraph [ref=f5e1082]: Dec
+                - generic:
+                  - generic:
+                    - generic:
+                      - button "Engineer killer applications Cr":
+                        - generic [ref=f5e1096]:
+                          - button [ref=f5e1097]
+                          - button "Engineer killer applications Cr" [ref=f5e1100]:
+                            - paragraph [ref=f5e1101]: Engineer killer applications
+                            - generic [ref=f5e1102]: Cr
+                          - button [ref=f5e1104]
+                    - generic:
+                      - button "Engineer B2C communities Se":
+                        - generic [ref=f5e1106]:
+                          - button [ref=f5e1107]
+                          - button "Engineer B2C communities Se" [ref=f5e1110]:
+                            - paragraph [ref=f5e1111]: Engineer B2C communities
+                            - generic [ref=f5e1112]: Se
+                          - button [ref=f5e1114]
+                    - generic:
+                      - button "Scale cross-media smart contracts Cr":
+                        - generic [ref=f5e1116]:
+                          - button [ref=f5e1117]
+                          - button "Scale cross-media smart contracts Cr" [ref=f5e1120]:
+                            - paragraph [ref=f5e1121]: Scale cross-media smart contracts
+                            - generic [ref=f5e1122]: Cr
+                          - button [ref=f5e1124]
+                  - generic:
+                    - generic:
+                      - button "Disintermediate frictionless solutions Mr":
+                        - generic [ref=f5e1126]:
+                          - button [ref=f5e1127]
+                          - button "Disintermediate frictionless solutions Mr" [ref=f5e1130]:
+                            - paragraph [ref=f5e1131]: Disintermediate frictionless solutions
+                            - generic [ref=f5e1132]: Mr
+                          - button [ref=f5e1134]
+                    - generic:
+                      - button "Incentivize rich schemas Se":
+                        - generic [ref=f5e1136]:
+                          - button [ref=f5e1137]
+                          - button "Incentivize rich schemas Se" [ref=f5e1140]:
+                            - paragraph [ref=f5e1141]: Incentivize rich schemas
+                            - generic [ref=f5e1142]: Se
+                          - button [ref=f5e1144]
+                    - generic:
+                      - button "Productize integrated initiatives Se":
+                        - generic [ref=f5e1146]:
+                          - button [ref=f5e1147]
+                          - button "Productize integrated initiatives Se" [ref=f5e1150]:
+                            - paragraph [ref=f5e1151]: Productize integrated initiatives
+                            - generic [ref=f5e1152]: Se
+                          - button [ref=f5e1154]
+                  - generic:
+                    - generic:
+                      - button "Monetize 24/7 users He":
+                        - generic [ref=f5e1156]:
+                          - button [ref=f5e1157]
+                          - button "Monetize 24/7 users He" [ref=f5e1160]:
+                            - paragraph [ref=f5e1161]: Monetize 24/7 users
+                            - generic [ref=f5e1162]: He
+                          - button [ref=f5e1164]
+                    - generic:
+                      - button "Enable immersive models Cr":
+                        - generic [ref=f5e1166]:
+                          - button [ref=f5e1167]
+                          - button "Enable immersive models Cr" [ref=f5e1170]:
+                            - paragraph [ref=f5e1171]: Enable immersive models
+                            - generic [ref=f5e1172]: Cr
+                          - button [ref=f5e1174]
+                    - generic:
+                      - button "Deliver value-added initiatives He":
+                        - generic [ref=f5e1176]:
+                          - button [ref=f5e1177]
+                          - button "Deliver value-added initiatives He" [ref=f5e1180]:
+                            - paragraph [ref=f5e1181]: Deliver value-added initiatives
+                            - generic [ref=f5e1182]: He
+                          - button [ref=f5e1184]
+                  - generic:
+                    - generic:
+                      - button "Iterate open-source communities Se":
+                        - generic [ref=f5e1186]:
+                          - button [ref=f5e1187]
+                          - button "Iterate open-source communities Se" [ref=f5e1190]:
+                            - paragraph [ref=f5e1191]: Iterate open-source communities
+                            - generic [ref=f5e1192]: Se
+                          - button [ref=f5e1194]
+                    - generic:
+                      - button "Embrace AI-driven functionalities Se":
+                        - generic [ref=f5e1196]:
+                          - button [ref=f5e1197]
+                          - button "Embrace AI-driven functionalities Se" [ref=f5e1200]:
+                            - paragraph [ref=f5e1201]: Embrace AI-driven functionalities
+                            - generic [ref=f5e1202]: Se
+                          - button [ref=f5e1204]
+                    - generic:
+                      - button "Leverage bleeding-edge schemas He":
+                        - generic [ref=f5e1206]:
+                          - button [ref=f5e1207]
+                          - button "Leverage bleeding-edge schemas He" [ref=f5e1210]:
+                            - paragraph [ref=f5e1211]: Leverage bleeding-edge schemas
+                            - generic [ref=f5e1212]: He
+                          - button [ref=f5e1214]
+                    - generic:
+                      - button "Architect end-to-end smart contracts Cr":
+                        - generic [ref=f5e1216]:
+                          - button [ref=f5e1217]
+                          - button "Architect end-to-end smart contracts Cr" [ref=f5e1220]:
+                            - paragraph [ref=f5e1221]: Architect end-to-end smart contracts
+                            - generic [ref=f5e1222]: Cr
+                          - button [ref=f5e1224]
+                    - generic:
+                      - button "Integrate cross-platform communities Cr":
+                        - generic [ref=f5e1226]:
+                          - button [ref=f5e1227]
+                          - button "Integrate cross-platform communities Cr" [ref=f5e1230]:
+                            - paragraph [ref=f5e1231]: Integrate cross-platform communities
+                            - generic [ref=f5e1232]: Cr
+                          - button [ref=f5e1234]
+                    - generic:
+                      - button "Facilitate innovative paradigms Cr":
+                        - generic [ref=f5e1236]:
+                          - button [ref=f5e1237]
+                          - button "Facilitate innovative paradigms Cr" [ref=f5e1240]:
+                            - paragraph [ref=f5e1241]: Facilitate innovative paradigms
+                            - generic [ref=f5e1242]: Cr
+                          - button [ref=f5e1244]
+                  - generic:
+                    - generic:
+                      - button "Optimize ubiquitous paradigms He":
+                        - generic [ref=f5e1246]:
+                          - button [ref=f5e1247]
+                          - button "Optimize ubiquitous paradigms He" [ref=f5e1250]:
+                            - paragraph [ref=f5e1251]: Optimize ubiquitous paradigms
+                            - generic [ref=f5e1252]: He
+                          - button [ref=f5e1254]
+                    - generic:
+                      - button "Evolve compelling communities He":
+                        - generic [ref=f5e1256]:
+                          - button [ref=f5e1257]
+                          - button "Evolve compelling communities He" [ref=f5e1260]:
+                            - paragraph [ref=f5e1261]: Evolve compelling communities
+                            - generic [ref=f5e1262]: He
+                          - button [ref=f5e1264]
+                    - generic:
+                      - button "Engage plug-and-play metrics He":
+                        - generic [ref=f5e1266]:
+                          - button [ref=f5e1267]
+                          - button "Engage plug-and-play metrics He" [ref=f5e1270]:
+                            - paragraph [ref=f5e1271]: Engage plug-and-play metrics
+                            - generic [ref=f5e1272]: He
+                          - button [ref=f5e1274]
+                    - generic:
+                      - button "Gamify visionary convergence Mr":
+                        - generic [ref=f5e1276]:
+                          - button [ref=f5e1277]
+                          - button "Gamify visionary convergence Mr" [ref=f5e1280]:
+                            - paragraph [ref=f5e1281]: Gamify visionary convergence
+                            - generic [ref=f5e1282]: Mr
+                          - button [ref=f5e1284]
+                  - generic:
+                    - generic:
+                      - button "Streamline cross-media relationships Mr":
+                        - generic [ref=f5e1286]:
+                          - button [ref=f5e1287]
+                          - button "Streamline cross-media relationships Mr" [ref=f5e1290]:
+                            - paragraph [ref=f5e1291]: Streamline cross-media relationships
+                            - generic [ref=f5e1292]: Mr
+                          - button [ref=f5e1294]
+                - generic [ref=f5e1296]:
+                  - text: Monetize turn-key systems
+                  - generic: Apr 15, 2026
+                - generic [ref=f5e1297]:
+                  - text: Deploy robust interfaces
+                  - generic: Aug 12, 2026
+                - generic [ref=f5e1298]:
+                  - text: Architect killer AI
+                  - generic: Jun 16, 2026
+                - generic [ref=f5e1299]:
+                  - text: Mesh smart blockchains
+                  - generic: Jun 12, 2026
+                - generic [ref=f5e1300]:
+                  - text: Streamline 24/7 initiatives
+                  - generic: Apr 23, 2026
+                - generic [ref=f5e1301]:
+                  - text: Optimize real-time solutions
+                  - generic: Apr 09, 2026
+                - generic [ref=f5e1302]:
+                  - text: Today
+                  - generic: Aug 19, 2026
+                - generic [ref=f5e1303]:
+                  - button [ref=f5e1304]
+                  - generic [ref=f5e1306]: Jan 01, 2025
+              - separator
+        - heading [level=3] [ref=f5e1315]:
+          - link "Read-only version" [ref=f5e1316] [cursor=pointer]:
+            - /url: "#read-only-version"
+        - generic [ref=f5e1321]:
+          - tablist [ref=f5e1322]:
+            - tab "Code" [ref=f5e1323]
+            - tab "Preview" [selected] [ref=f5e1324]
+          - tabpanel "Preview" [ref=f5e1325]:
+            - generic [ref=f5e1326]:
+              - generic [ref=f5e1333]:
+                - generic [ref=f5e1334]:
+                  - generic [ref=f5e1335]:
+                    - paragraph: Issues
+                    - paragraph [ref=f5e1336]: Duration
+                  - generic:
+                    - generic:
+                      - paragraph [ref=f5e1337]: Brand ubiquitous markets
+                      - generic:
+                        - button "Seize transparent markets 6 months" [ref=f5e1338]:
+                          - paragraph: Seize transparent markets
+                          - paragraph: 6 months
+                        - button "Mesh distributed functionalities 2 months" [ref=f5e1339]:
+                          - paragraph: Mesh distributed functionalities
+                          - paragraph: 2 months
+                        - button "Enhance smart paradigms 4 months" [ref=f5e1340]:
+                          - paragraph: Enhance smart paradigms
+                          - paragraph: 4 months
+                    - generic:
+                      - paragraph [ref=f5e1341]: Cultivate user-centric markets
+                      - generic:
+                        - button "Engage immersive functionalities 8 months" [ref=f5e1342]:
+                          - paragraph: Engage immersive functionalities
+                          - paragraph: 8 months
+                        - button "Generate strategic infrastructures 6 months" [ref=f5e1343]:
+                          - paragraph: Generate strategic infrastructures
+                          - paragraph: 6 months
+                        - button "Generate impactful large language models 5 months" [ref=f5e1344]:
+                          - paragraph: Generate impactful large language models
+                          - paragraph: 5 months
+                        - button "Facilitate sticky lifetime value 11 months" [ref=f5e1345]:
+                          - paragraph: Facilitate sticky lifetime value
+                          - paragraph: 11 months
+                        - button "Gamify holistic mindshare about 1 month" [ref=f5e1346]:
+                          - paragraph: Gamify holistic mindshare
+                          - paragraph: about 1 month
+                    - generic:
+                      - paragraph [ref=f5e1347]: Enable revolutionary methodologies
+                      - generic:
+                        - button "Monetize 24/7 users 6 months" [ref=f5e1348]:
+                          - paragraph: Monetize 24/7 users
+                          - paragraph: 6 months
+                        - button "Extend front-end supply-chains 5 months" [ref=f5e1349]:
+                          - paragraph: Extend front-end supply-chains
+                          - paragraph: 5 months
+                        - button "Extend proactive networks 6 months" [ref=f5e1350]:
+                          - paragraph: Extend proactive networks
+                          - paragraph: 6 months
+                        - button "Streamline mission-critical markets 6 months" [ref=f5e1351]:
+                          - paragraph: Streamline mission-critical markets
+                          - paragraph: 6 months
+                    - generic:
+                      - paragraph [ref=f5e1352]: Engage one-to-one markets
+                      - generic:
+                        - button "Implement mission-critical blockchains 8 months" [ref=f5e1353]:
+                          - paragraph: Implement mission-critical blockchains
+                          - paragraph: 8 months
+                        - button "Deliver B2C schemas 7 months" [ref=f5e1354]:
+                          - paragraph: Deliver B2C schemas
+                          - paragraph: 7 months
+                        - button "Incentivize AI-driven markets 6 months" [ref=f5e1355]:
+                          - paragraph: Incentivize AI-driven markets
+                          - paragraph: 6 months
+                        - button "Maximize plug-and-play applications 12 months" [ref=f5e1356]:
+                          - paragraph: Maximize plug-and-play applications
+                          - paragraph: 12 months
+                        - button "Maximize cutting-edge metrics 6 months" [ref=f5e1357]:
+                          - paragraph: Maximize cutting-edge metrics
+                          - paragraph: 6 months
+                    - generic:
+                      - paragraph [ref=f5e1358]: Harness visionary ROI
+                      - generic:
+                        - button "Extend vertical convergence 9 months" [ref=f5e1359]:
+                          - paragraph: Extend vertical convergence
+                          - paragraph: 9 months
+                        - button "Monetize out-of-the-box mindshare 9 months" [ref=f5e1360]:
+                          - paragraph: Monetize out-of-the-box mindshare
+                          - paragraph: 9 months
+                    - generic:
+                      - paragraph [ref=f5e1361]: Incentivize granular solutions
+                      - button "Drive best-of-breed infrastructures 6 months" [ref=f5e1362]:
+                        - paragraph: Drive best-of-breed infrastructures
+                        - paragraph: 6 months
+                - generic [ref=f5e1363]:
+                  - generic [ref=f5e1364]:
+                    - generic [ref=f5e1366]:
+                      - paragraph [ref=f5e1369]: "2025"
+                      - generic [ref=f5e1370]:
+                        - paragraph [ref=f5e1372]: Jan
+                        - paragraph [ref=f5e1374]: Feb
+                        - paragraph [ref=f5e1376]: Mar
+                        - paragraph [ref=f5e1378]: Apr
+                        - paragraph [ref=f5e1380]: May
+                        - paragraph [ref=f5e1382]: Jun
+                        - paragraph [ref=f5e1384]: Jul
+                        - paragraph [ref=f5e1386]: Aug
+                        - paragraph [ref=f5e1388]: Sep
+                        - paragraph [ref=f5e1390]: Oct
+                        - paragraph [ref=f5e1392]: Nov
+                        - paragraph [ref=f5e1394]: Dec
+                    - generic [ref=f5e1409]:
+                      - paragraph [ref=f5e1412]: "2026"
+                      - generic [ref=f5e1413]:
+                        - paragraph [ref=f5e1415]: Jan
+                        - paragraph [ref=f5e1417]: Feb
+                        - paragraph [ref=f5e1419]: Mar
+                        - paragraph [ref=f5e1421]: Apr
+                        - paragraph [ref=f5e1423]: May
+                        - paragraph [ref=f5e1425]: Jun
+                        - paragraph [ref=f5e1427]: Jul
+                        - paragraph [ref=f5e1429]: Aug
+                        - paragraph [ref=f5e1431]: Sep
+                        - paragraph [ref=f5e1433]: Oct
+                        - paragraph [ref=f5e1435]: Nov
+                        - paragraph [ref=f5e1437]: Dec
+                    - generic [ref=f5e1452]:
+                      - paragraph [ref=f5e1455]: "2027"
+                      - generic [ref=f5e1456]:
+                        - paragraph [ref=f5e1458]: Jan
+                        - paragraph [ref=f5e1460]: Feb
+                        - paragraph [ref=f5e1462]: Mar
+                        - paragraph [ref=f5e1464]: Apr
+                        - paragraph [ref=f5e1466]: May
+                        - paragraph [ref=f5e1468]: Jun
+                        - paragraph [ref=f5e1470]: Jul
+                        - paragraph [ref=f5e1472]: Aug
+                        - paragraph [ref=f5e1474]: Sep
+                        - paragraph [ref=f5e1476]: Oct
+                        - paragraph [ref=f5e1478]: Nov
+                        - paragraph [ref=f5e1480]: Dec
+                  - generic:
+                    - generic:
+                      - button [ref=f5e1496]:
+                        - paragraph [ref=f5e1497]: Seize transparent markets
+                      - button [ref=f5e1500]:
+                        - paragraph [ref=f5e1501]: Mesh distributed functionalities
+                      - button [ref=f5e1504]:
+                        - paragraph [ref=f5e1505]: Enhance smart paradigms
+                    - generic:
+                      - button [ref=f5e1508]:
+                        - paragraph [ref=f5e1509]: Engage immersive functionalities
+                      - button [ref=f5e1512]:
+                        - paragraph [ref=f5e1513]: Generate strategic infrastructures
+                      - button [ref=f5e1516]:
+                        - paragraph [ref=f5e1517]: Generate impactful large language models
+                      - button [ref=f5e1520]:
+                        - paragraph [ref=f5e1521]: Facilitate sticky lifetime value
+                      - button [ref=f5e1524]:
+                        - paragraph [ref=f5e1525]: Gamify holistic mindshare
+                    - generic:
+                      - button [ref=f5e1528]:
+                        - paragraph [ref=f5e1529]: Monetize 24/7 users
+                      - button [ref=f5e1532]:
+                        - paragraph [ref=f5e1533]: Extend front-end supply-chains
+                      - button [ref=f5e1536]:
+                        - paragraph [ref=f5e1537]: Extend proactive networks
+                      - button [ref=f5e1540]:
+                        - paragraph [ref=f5e1541]: Streamline mission-critical markets
+                    - generic:
+                      - button [ref=f5e1544]:
+                        - paragraph [ref=f5e1545]: Implement mission-critical blockchains
+                      - button [ref=f5e1548]:
+                        - paragraph [ref=f5e1549]: Deliver B2C schemas
+                      - button [ref=f5e1552]:
+                        - paragraph [ref=f5e1553]: Incentivize AI-driven markets
+                      - button [ref=f5e1556]:
+                        - paragraph [ref=f5e1557]: Maximize plug-and-play applications
+                      - button [ref=f5e1560]:
+                        - paragraph [ref=f5e1561]: Maximize cutting-edge metrics
+                    - generic:
+                      - button [ref=f5e1564]:
+                        - paragraph [ref=f5e1565]: Extend vertical convergence
+                      - button [ref=f5e1568]:
+                        - paragraph [ref=f5e1569]: Monetize out-of-the-box mindshare
+                    - button [ref=f5e1572]:
+                      - paragraph [ref=f5e1573]: Drive best-of-breed infrastructures
+                  - generic [ref=f5e1574]:
+                    - text: Integrate sticky platforms
+                    - generic: Mar 18, 2026
+                  - generic [ref=f5e1575]:
+                    - text: Seize sticky interfaces
+                    - generic: Jun 08, 2026
+                  - generic [ref=f5e1576]:
+                    - text: Unleash granular communities
+                    - generic: Jun 29, 2026
+                  - generic [ref=f5e1577]:
+                    - text: Expedite distributed interfaces
+                    - generic: Jul 15, 2026
+                  - generic [ref=f5e1578]:
+                    - text: Extend integrated web services
+                    - generic: Jul 19, 2026
+                  - generic [ref=f5e1579]:
+                    - text: Harness proactive niches
+                    - generic: Jun 07, 2026
+                  - generic [ref=f5e1580]:
+                    - text: Today
+                    - generic: Aug 19, 2026
+              - separator
+      - generic [ref=f5e1589]:
+        - link [ref=f5e1590] [cursor=pointer]:
+          - /url: /components/calendar
+          - paragraph [ref=f5e1594]: Calendar
+          - paragraph [ref=f5e1595]: The calendar view displays features on a grid calendar. Specifically it shows the end date of each feature, and groups features by day.
+        - link [ref=f5e1596] [cursor=pointer]:
+          - /url: /components/kanban
+          - paragraph [ref=f5e1600]: Kanban
+          - paragraph [ref=f5e1601]: A kanban board is a visual tool that helps you manage and visualize your work. It is a board with columns, and each column represents a status, e.g. "Backlog", "In Progress", "Done".
+    - generic [ref=f5e1602]:
+      - heading "On this page" [level=3] [ref=f5e1603]
+      - generic [ref=f5e1606]:
+        - link "Installation" [ref=f5e1607] [cursor=pointer]:
+          - /url: "#installation"
+        - link "Features" [ref=f5e1609] [cursor=pointer]:
+          - /url: "#features"
+        - link "Examples" [ref=f5e1611] [cursor=pointer]:
+          - /url: "#examples"
+        - link "Multiple items on one row" [ref=f5e1613] [cursor=pointer]:
+          - /url: "#multiple-items-on-one-row"
+        - link "Without a sidebar" [ref=f5e1617] [cursor=pointer]:
+          - /url: "#without-a-sidebar"
+        - link "Read-only version" [ref=f5e1619] [cursor=pointer]:
+          - /url: "#read-only-version"
+      - generic [ref=f5e1621]:
+        - paragraph [ref=f5e1625]: Powered by
+        - generic [ref=f5e1626]:
+          - link "dndkit.com" [ref=f5e1627] [cursor=pointer]:
+            - /url: https://dndkit.com/
+          - link "usehooks.com" [ref=f5e1629] [cursor=pointer]:
+            - /url: https://usehooks.com/
+          - link "date-fns.org" [ref=f5e1631] [cursor=pointer]:
+            - /url: https://date-fns.org/
+          - link "lodash.com" [ref=f5e1633] [cursor=pointer]:
+            - /url: https://lodash.com/docs/latest#throttle
+          - link "lucide.dev" [ref=f5e1635] [cursor=pointer]:
+            - /url: https://lucide.dev/
+          - link "jotai.org" [ref=f5e1637] [cursor=pointer]:
+            - /url: https://jotai.org/
+  - region "Notifications alt+T"

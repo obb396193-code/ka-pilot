@@ -1,0 +1,186 @@
+本文介绍如何在 O2 Space 中使用迭代的测试阶段功能。
+
+
+
+## 测试阶段概述
+
+测试阶段是指迭代研发链路中的 “提测” 环节。若您的应用在线上发布前需要经过测试同学的测试保障，那么可以启用该功能，由 O2 Space 平台为您提供 “提测单审批卡口”、“需求-缺陷关联管理” 等服务。
+
+
+
+## 测试阶段使用
+
+### 1. 开启应用的测试能力
+
+应用的迭代测试阶段能力默认是关闭状态，需要用户手动开启。操作路径：应用设置 -> 基础设置 -> 迭代测试。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imggAjR2OTDGN.png)
+
+
+开启后测试阶段能力后，添加测试人员
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgJSosEI5Ne3.png)
+
+
+> 请注意：在关闭测试阶段能力后，已有迭代的测试阶段不会消失。若想去除迭代的测试阶段，请新建迭代。
+
+### 2. 开发同学如何进行提测
+
+#### 2.1 发起提测
+
+应用开启测试能力后，新创建的迭代会增加一个测试阶段
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgFiscqCygTT.png)
+
+
+同时，线上发布卡口将增加迭代提测卡口
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/img2OLcVLkzx5.png)
+
+
+点击提测按钮，即可对当前迭代集成区内变更关联的需求发起提测。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgxNY26KMEgB.png)
+
+
+迭代提测后的测试阶段效果如下：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imghlBmhnGcll.png)
+
+
+#### 2.2 提测卡口
+
+提测后，线上发布卡口将刷新提测卡口状态：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imghtQVQUxw2w.png)
+
+
+如果在提测后，迭代集成区内变更关联的需求发生了变化（增加了新需求或移除了需求），导致与提测单需求不一致时，请重新提测。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgBn7L4902cr.png)
+
+
+此时尽管提测单通过了，线上卡口也会进行拦截
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgISJWC1F8ay.png)
+
+
+待提测单需求保持不变以及提测单审批通过后，卡口通过。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgRrcjuIpl0I.png)
+
+
+#### 2.3 为需求关联缺陷
+
+为更好得帮助开发和测试同学管理提测时发现的缺陷，平台支持在测试阶段和提测单上直接关联或创建缺陷。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgI4jNFPcMxx.png)
+
+
+点击关联缺陷（从已创建的缺陷中选择并关联）效果：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgg8FIiQ9E9x.png)
+
+
+点击创建缺陷（新建缺陷并关联）效果：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgLgXr4jQFuF.png)
+
+
+关联或创建缺陷后的效果（点击需求可展开关联的缺陷）：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgQXPSGycbtq.png)
+
+
+同时，为方便用户直观查看缺陷，平台提供缺陷视角模式，点击缺陷列表，列表将切换成缺陷内容。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgsqzAJJPuoT.png)
+
+
+#### 2.4 提测后的日常部署提示
+
+在迭代发起提测后，开发同学在日常/预发发布时，平台将提醒本次发布是否是为了修复缺陷。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/img49vw35p7Ss.png)
+
+
+点击否（功能部署）将直接发布，点击是（修复缺陷），将弹出如下内容，开发同学在发布前可以选择要修复的缺陷，待发布成功后，平台将自动扭转缺陷状态为 Fixed，同时推送钉钉通知给测试人员告知缺陷已修复。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgARn43EXOK6.png)
+
+
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01KnLlg41XRrrnz5V7E_!!6000000002921-2-tps-723-154.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01a8Dn5Z1tBJ5ox5CuA_!!6000000005863-2-tps-747-619.png)
+
+
+### 3. 测试同学如何操作
+
+#### 3.1 提测消息通知
+
+在开发同学发起提测后，平台会推送钉钉通知给测试人员。
+
+(https://img.alicdn.com/imgextra/i4/O1CN01dsrxIr20ivTUu1UXD_!!6000000006884-2-tps-718-153.png)
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01CY4Zfb1dKR8SJNOfV_!!6000000003717-2-tps-743-571.png)
+
+
+点击消息，将跳转到平台的提测单详情页：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgz3OsCv6vdy.png)
+
+
+#### 3.2 缺陷修复通知
+
+如果开发同学在日常发布时选择了修复缺陷，那么发布成功后平台将推送缺陷修复的消息给测试同学。效果如下：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01KnLlg41XRrrnz5V7E_!!6000000002921-2-tps-723-154.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01a8Dn5Z1tBJ5ox5CuA_!!6000000005863-2-tps-747-619.png)
+
+
+#### 3.3 需求上线的通知
+
+待开发同学将需求上线后，平台会推送钉钉通知给测试人员，提醒注意回归验证。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01tMsdAg1tPVMuHvwsH_!!6000000005894-2-tps-749-630.png)
+
+
+#### 3.4 管理缺陷（为需求关联缺陷）
+
+在提测单详情页，平台同样提供关联缺陷的功能。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgO5JzHHtmf6.png)
+
+
+点击关联缺陷（从已创建的缺陷中选择并关联）效果：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imguhoSLZ4bHn.png)
+
+
+点击创建缺陷（新建缺陷并关联）效果：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/img7sNiOMs7Oj.png)
+
+
+#### 3.5 如何审批
+
+测试同学在平台提测单上即可进行审批。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgDiJ3ffT0TR.png)
+
+
+#### 3.6 如何在平台上查看待我测试的提测单
+
+[点击跳转](https://space.o2.alibaba-inc.com/testingorders) 或者通过如下操作路径：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/testing/imgChYgZSbzWp.png)
+
+
+
+

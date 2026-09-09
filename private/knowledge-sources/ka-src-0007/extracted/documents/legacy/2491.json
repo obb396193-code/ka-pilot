@@ -1,0 +1,54 @@
+{
+  "documentId": 2491,
+  "documentName": "创建优词提量信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取关键词列表\n\n请求接口： [https://ad.e.kuaishou.com/rest/openapi/gw/dsp/unit/bid_weight/create](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/unit/bid_weight/create)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|必填|广告主账号ID||\n|scope|Long|必填|添加范围|1 - 账户维度，2 - 广告组维度|\n|bid_weight_info|Object[]|必填|优词信息||\n\n\n|bid_weight_info|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|unit_id|Long|非必填|广告组ID||\n|info|Object[]|必填|词信息||\n\n\n|info|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|weight|Double|必填|提量系数|1.1 ～ 2 保留1位小数|\n|word|String|必填|关键词||\n\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|--|--|--|--|\n|code|Integer|返回状态码||\n|message|String|返回状态信息||\n|data|Object|无返回值||\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 139494,\n    \"scope\": 2,\n    \"bid_weight_info\": [\n        {\n            \"unit_id\": 3891211196,\n            \"info\": [\n                {\n                    \"word\": \"yiulld04\",\n                    \"weight\": 1.1\n                },\n              \t{\n                    \"word\": \"yiulld05\",\n                    \"weight\": 1.1\n                }\n            ]\n        }\n    ],\n  \t\"bid_weight_info\": [\n        {\n          \t\"unit_id\": 3891211197,\n          \t\"info\": [\n              \t{\n                \t\"word\": \"yiulld04\",\n                \t\"weight\": 1.1\n              \t}\n            ]\n        }\n    ]\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": \"\",\n    \"message\": \"OK\",\n    \"request_id\": \"EL2BgIDw9pmaChi8ECDb8cSS4zEoxtXzpQg=\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1710300829734
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1710300829734,
+  "creator": "liupeng20",
+  "fullContext": null
+}

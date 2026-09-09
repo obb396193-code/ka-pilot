@@ -1,0 +1,555 @@
+{
+  "documentId": 2921,
+  "documentName": "创建高级创意接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "创建高级创意接口\n/rest/openapi/v1/asset/adv_card/create\n{\n    \"advertiser_id\": 90000446,\n    \"adv_list\": [\n        {\n            \"card_type\": 100,\n            \"url\": \"http://static.yximgs.com/udata/pkg/536fd750628a4cfb97ca82758e6a7ecd.png\",\n            \"width\": 720,\n            \"height\": 408\n        },\n        {\n            \"card_type\": 104,\n            \"content_type\": 2,\n            \"emoji_list\": [\n                {\n                    \"emoji_code\": \"[加油]\",\n                    \"emoji_url\": \"https://js2.a.yximgs.com/bs2/emotion/app_1576120138988_5x756gefzbda399.png\"\n                },\n                {\n                    \"emoji_code\": \"[期待]\",\n                    \"emoji_url\": \"https://js2.a.yximgs.com/bs2/emotion/app_1576120138988_5x78bpjjb5d63ps.png\"\n                },\n                {\n                    \"emoji_code\": \"[红包]\",\n                    \"emoji_url\": \"https://ali2.a.yximgs.com/bs2/emotion/app_1576120138988_5x2vtpwxnm7ikbc.png\"\n                }\n            ],\n            \"title\": \"11221\"\n        }\n    ]\n}\n\nadvertiser_id  Long  广告主 id\nadv_list  Adv[]  卡片\ncard_type  Integer  卡片类型\nurl  String  图片 url\ntitle  String  标题\nsub_title  String  副标题\nprice  Integer  原价格(单位：分)\nsale_price  Integer  售卖价(单位：分)\ncontent_type  Integer  卡片内容类型)\nemoji_list  Emoji[]  emoji 信息\nemoji_code  Integer  <p>emoji 编码</p>\nemoji_url  Integer  <p>emoji_url</p>\ndiscount  Integer  折扣金额\nstyle_type  Integer  高级创意样式类型\nbegin_time  Long  倒计时卡开始时间\nend_time  Long  倒计时卡结束时间\nlibrary_id  Long  商品库ID\nproduct_id  Long  商品ID\ncode  Integer  返回码\nmessage  String  返回信息\ndata  AdvCardCreateData  <p>返回数据</p>\nadv_list  Long[]  <p>卡片 id 数组</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721197694042
+    }
+  ],
+  "apiId": 1291,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/asset/adv_card/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 90000446,\n    \"adv_list\": [\n        {\n            \"card_type\": 100,\n            \"url\": \"http://static.yximgs.com/udata/pkg/536fd750628a4cfb97ca82758e6a7ecd.png\",\n            \"width\": 720,\n            \"height\": 408\n        },\n        {\n            \"card_type\": 104,\n            \"content_type\": 2,\n            \"emoji_list\": [\n                {\n                    \"emoji_code\": \"[加油]\",\n                    \"emoji_url\": \"https://js2.a.yximgs.com/bs2/emotion/app_1576120138988_5x756gefzbda399.png\"\n                },\n                {\n                    \"emoji_code\": \"[期待]\",\n                    \"emoji_url\": \"https://js2.a.yximgs.com/bs2/emotion/app_1576120138988_5x78bpjjb5d63ps.png\"\n                },\n                {\n                    \"emoji_code\": \"[红包]\",\n                    \"emoji_url\": \"https://ali2.a.yximgs.com/bs2/emotion/app_1576120138988_5x2vtpwxnm7ikbc.png\"\n                }\n            ],\n            \"title\": \"11221\"\n        }\n    ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61711,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61712,
+      "paramName": "adv_list",
+      "paramType": "Adv[]",
+      "example": "",
+      "description": "卡片",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3460,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61691,
+          "paramName": "card_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "卡片类型",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "100:图片卡片 101:多利益卡-图文 102：多利益卡-多标签 103：电商促销样式 104：快捷评论卡 107：倒计时卡 108：优惠券卡 125: 价格差卡 131：商品卡-汽车样式 132: 商品卡-电商样式 133: 商品卡-小说样式 134: 商品卡-房产样式 200：推广位",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61692,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "图片 url",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "当 card_type = 100、101、103、125 必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61693,
+          "paramName": "title",
+          "paramType": "String",
+          "example": "",
+          "description": "标题",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "当 card_type = 101、102、103、107、108、125、200 必填, 104时表示文案信息（非必填）",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61694,
+          "paramName": "sub_title",
+          "paramType": "String",
+          "example": "",
+          "description": "副标题",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "当 card_type = 102 必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61695,
+          "paramName": "price",
+          "paramType": "Integer",
+          "example": "",
+          "description": "原价格(单位：分)",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "当 card_type = 103、125 必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61696,
+          "paramName": "sale_price",
+          "paramType": "Integer",
+          "example": "",
+          "description": "售卖价(单位：分)",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "当 card_type = 103、125 必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61697,
+          "paramName": "content_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "卡片内容类型)",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "当 card_type = 104 必填，当创建 emoji 快捷评论卡时，填 2",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61698,
+          "paramName": "emoji_list",
+          "paramType": "Emoji[]",
+          "example": "",
+          "description": "emoji 信息",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3459,
+          "sort": 8,
+          "note": "当 card_type = 104 必填",
+          "children": [
+            {
+              "paramId": 61689,
+              "paramName": "emoji_code",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>emoji 编码</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "当 card_type = 104 必填",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61690,
+              "paramName": "emoji_url",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>emoji_url</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "当 card_type = 104 必填",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61699,
+          "paramName": "discount",
+          "paramType": "Integer",
+          "example": "",
+          "description": "折扣金额",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "当 card_type = 108，即优惠券卡时必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61700,
+          "paramName": "style_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "高级创意样式类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "，1=普通卡片，2=推广位",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61701,
+          "paramName": "begin_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "倒计时卡开始时间",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "当 card_type = 107，即倒计时卡时必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61702,
+          "paramName": "end_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "倒计时卡结束时间",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "当 card_type = 107，即倒计时卡时必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61703,
+          "paramName": "library_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "商品库ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "当 card_type = 131、132、133、134，即SDPA商品卡时必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61704,
+          "paramName": "product_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "商品ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "当 card_type = 131、132、133、134，即SDPA商品卡时必填",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61713,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61714,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61715,
+      "paramName": "data",
+      "paramType": "AdvCardCreateData",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3461,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61705,
+          "paramName": "adv_list",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "<p>卡片 id 数组</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721197694042,
+  "creator": "zhangshucheng",
+  "fullContext": null
+}

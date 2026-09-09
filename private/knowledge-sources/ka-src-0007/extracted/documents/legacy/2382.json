@@ -1,0 +1,42 @@
+{
+  "documentId": 2382,
+  "documentName": "图文音频文件MAPI上传",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 图文音频文件MAPI上传\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/upload/atlasAudioFile](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/upload/atlasAudioFile)\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| file | File |  | 必填 | 占位符，请添加参数 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | FileUploadResponseSnake |  | 请补充描述详情 |  |\n| &#8195;blob_store_key | String |  | 请补充描述详情 |  |\n| &#8195;bucket_name | String |  | 请补充描述详情 |  |\n| message | String |  | 请补充描述详情 |  |\n| code | Integer |  | 请补充描述详情 |  |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/upload/atlasAudioFile' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'file=@\"/Users/heran03/Downloads/图片库/audio_1.mp4\"' \\\n--form 'advertiser_id=\"12078245\"'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"blob_store_key\": \"bbe4752a305d47d5949814d4cebf9445\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELyAgIDg4YmxChjaAiCMitDDsjEorPSUoAM=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1697190793321
+    }
+  ],
+  "apiId": 953,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1697190793321,
+  "creator": "heran03",
+  "fullContext": null
+}

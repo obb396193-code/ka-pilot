@@ -1,0 +1,42 @@
+{
+  "documentId": 2376,
+  "documentName": "批量删除视频\n",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 批量删除视频\n\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/file/ad/video/delete](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/file/ad/video/delete)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 可选 | 广告主id |  |\n| photo_ids | String[] |  | 可选 | 视频id列表 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 返回信息 |  |\n| data | AdMarketVideoIdView |  | 信息 |  |\n| &#8195;photo_ids | String[] |  | 视频id列表 |  |\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1695297903790
+    }
+  ],
+  "apiId": 950,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1695297903790,
+  "creator": "linmenger",
+  "fullContext": null
+}

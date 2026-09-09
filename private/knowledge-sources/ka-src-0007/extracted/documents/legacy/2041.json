@@ -1,0 +1,42 @@
+{
+  "documentId": 2041,
+  "documentName": "10.10.5联盟定向媒体包广告位报表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 联盟定向媒体包广告位报表\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/report/media/ad_pos_report\n\n请求方式：GET/POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明             | 备注                                    |\n| ------------- | ------ | -------- | ---------------- | --------------------------------------- |\n| advertiser_id | long   | 必填     | 广告主 ID        | 在获取 access_token 的时候返回          |\n| start_date    | String | 选填     | 开始时间         | 默认 end_time 前 90 天, 格式 yyyy-MM-dd |\n| end_date      | long   | 选填     | 结束时间         | 默认当天                                |\n| unit_ids      | long[] | 选填     | 广告组 ID 列表   |                                         |\n| campaign_ids  | long[] | 选填     | 广告计划 ID 列表 |                                         |\n| page          | int    | 选填     | 当前页           | 默认 1                                  |\n| page_size     | int    | 选填     | 分页大小         | 默认 20                                 |\n\n### 返回参数\n\n| 字段    | 类型   | 说明        | 备注                           |\n| ------- | ------ | ----------- | ------------------------------ |\n| code    | int    | 返回码      |                                |\n| message | string | 返回信息    |                                |\n| data    | struct | JSON 返回值 | eg: {\"media_relate_units\": []} |\n\n| data        |          |                      |      |\n| ----------- | -------- | -------------------- | ---- |\n| 字段        | 类型     | 说明                 | 备注 |\n| datails     | struct[] | 分广告位数据报表列表 |      |\n| total_count | long     | 总共条数             |      |\n\n| details                           |        |              |          |\n| --------------------------------- | ------ | ------------ | -------- |\n| 字段                              | 类型   | 说明         | 备注     |\n| pos_id                            | string | 广告位 ID    |          |\n| cost_total                        | double | 消耗         | 单位：元 |\n| pos_impression                    | long   | 展示量       |          |\n| pos_click                         | long   | 点击量       |          |\n| ctr                               | string | CTR          |          |\n| cpc                               | double | CPC          |          |\n| cvr                               | string | 浅度 CVR     |          |\n| pos_conversion                    | long   | 激活量       |          |\n| pos_form_submit                   | long   | 表单提交量   |          |\n| pos_conversioncost                | double | 激活成本     | 单位：元 |\n| pos_form_submit_cost              | double | 表单提交成本 | 单位：元 |\n| pos_next_day_stay                 | long   | 次留量       |          |\n| pos_pay                           | long   | 付费量       |          |\n| pos_credit_grant                  | long   | 授信量       |          |\n| pos_jinjian                       | long   | 进件量       |          |\n| pos_register                      | long   | 注册量       |          |\n| pos_next_day_stay_ratio           | string | 次留率       |          |\n| pos_pay_ratio                     | string | 付费率       |          |\n| pos_next_day_stay_cost            | double | 次留成本     |          |\n| pos_pay_cost                      | double | 付费成本     |          |\n| pos_credit_grant_cost             | double | 授信成本     |          |\n| pos_jinjian_cost                  | double | 进件成本     |          |\n| pos_register_cost                 | double | 注册成本     |          |\n| pos_pay_purchase_amount_first_day | double | 首日付费金额 |          |\n| pos_new_user_pay                  | long   | 新增付费人群 |          |\n| pos_pay_first_day_roi             | String | 首日 roi     |          |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624978
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624978,
+  "creator": "linmenger",
+  "fullContext": null
+}

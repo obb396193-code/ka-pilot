@@ -1,0 +1,492 @@
+{
+  "documentId": 2732,
+  "documentName": "获取商品列表(部分信息)",
+  "documentType": 2,
+  "description": "<p>（该接口为旧版接口，不建议再调用）</p>",
+  "summary": "",
+  "remark": "",
+  "content": "获取商品列表(部分信息)\n/rest/openapi/gw/dsp/v1/dpa/product/list\n\n\nadvertiser_id  Long  <p>广告主ID</p>\nlibrary_id  Long  商品库ID\nid_or_name  String  商品第三方ID或名称\ncategories  Long[]  商品类目ID\nouter_id  String  商品第三方ID\nproduct_name  String  商品名称\ndata  ProductPageInfo  商品列表\ndetails  DpaProductView2[]  1\nproduct_id  String  商品ID\nproduct_name  String  商品名称\nproduct_title  String  商品标题\nouter_id  String  外部商品ID\nimage  String  商品主图\nsupply_image  String[]  商品附图\nproduct_price  Double  价格\nvalue  Double  原价\ndiscount  Double  折扣\ncode  Integer  code\nmessage  String  message\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1724665690497
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1720093775321
+    }
+  ],
+  "apiId": 37,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63126,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1125,
+      "paramName": "library_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "商品库ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1126,
+      "paramName": "id_or_name",
+      "paramType": "String",
+      "example": "",
+      "description": "商品第三方ID或名称",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1127,
+      "paramName": "categories",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "商品类目ID",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25479,
+      "paramName": "outer_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>广告主商品编号</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 25480,
+      "paramName": "product_name",
+      "paramType": "String",
+      "example": "",
+      "description": "商品名称",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 1130,
+      "paramName": "data",
+      "paramType": "ProductPageInfo",
+      "example": "",
+      "description": "商品列表",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 86,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 1123,
+          "paramName": "details",
+          "paramType": "DpaProductView2[]",
+          "example": "",
+          "description": "1",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 85,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 1114,
+              "paramName": "product_id",
+              "paramType": "String",
+              "example": "",
+              "description": "商品ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1115,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "",
+              "description": "商品名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1116,
+              "paramName": "product_title",
+              "paramType": "String",
+              "example": "",
+              "description": "商品标题",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1117,
+              "paramName": "outer_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>广告主商品编号</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "CHANGE"
+            },
+            {
+              "paramId": 1118,
+              "paramName": "image",
+              "paramType": "String",
+              "example": "",
+              "description": "商品主图",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1119,
+              "paramName": "supply_image",
+              "paramType": "String[]",
+              "example": "",
+              "description": "商品附图",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1120,
+              "paramName": "product_price",
+              "paramType": "Double",
+              "example": "",
+              "description": "价格",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1121,
+              "paramName": "value",
+              "paramType": "Double",
+              "example": "",
+              "description": "原价",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1122,
+              "paramName": "discount",
+              "paramType": "Double",
+              "example": "",
+              "description": "折扣",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1131,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1132,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "message",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1724665690497,
+  "creator": "kangzijun03",
+  "fullContext": null
+}

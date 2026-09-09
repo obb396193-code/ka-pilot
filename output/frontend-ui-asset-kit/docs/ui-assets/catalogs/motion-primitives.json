@@ -1,0 +1,1772 @@
+{
+  "schema_version": 2,
+  "source": "motion-primitives",
+  "fetched_at": "2026-08-19T15:25:13.093Z",
+  "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+  "source_hash": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+  "coverage": "complete-official-repository-registry",
+  "coverage_note": "The deployed /c/registry.json may rate-limit automated clients; the identical public/c/registry.json in the official repository is the stable complete Registry source.",
+  "variant_matrix": null,
+  "counts": {
+    "total": 33,
+    "by_kind": {
+      "primitive": 33
+    },
+    "by_category": {
+      "motion-primitive": 33
+    },
+    "by_access_status": {
+      "public-source": 33
+    },
+    "by_source_cache_status": {
+      "not-cached": 33
+    },
+    "by_maintenance_status": {
+      "current": 33
+    }
+  },
+  "items": [
+    {
+      "source": "motion-primitives",
+      "upstream_name": "accordion",
+      "display_name": "Accordion",
+      "description": "A collapsible content component with smooth animations for showing and hiding content.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/accordion",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/accordion.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/accordion.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "accordion",
+        "type": "registry:ui",
+        "title": "Accordion",
+        "description": "A collapsible content component with smooth animations for showing and hiding content.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/accordion.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "animated-background",
+      "display_name": "Animated Background",
+      "description": "A component that provides animated background effects for UI elements.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/animated-background",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/animated-background.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/animated-background.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "animated-background",
+        "type": "registry:ui",
+        "title": "Animated Background",
+        "description": "A component that provides animated background effects for UI elements.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/animated-background.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "animated-group",
+      "display_name": "Animated Group",
+      "description": "A container component that applies coordinated animations to a group of child elements.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/animated-group",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/animated-group.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/animated-group.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "animated-group",
+        "type": "registry:ui",
+        "title": "Animated Group",
+        "description": "A container component that applies coordinated animations to a group of child elements.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/animated-group.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "animated-number",
+      "display_name": "Animated Number",
+      "description": "A component that animates number changes with smooth transitions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/animated-number",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/animated-number.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/animated-number.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "animated-number",
+        "type": "registry:ui",
+        "title": "Animated Number",
+        "description": "A component that animates number changes with smooth transitions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/animated-number.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "border-trail",
+      "display_name": "Border Trail",
+      "description": "An effect that creates animated border trails around elements on interaction.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/border-trail",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/border-trail.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/border-trail.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "border-trail",
+        "type": "registry:ui",
+        "title": "Border Trail",
+        "description": "An effect that creates animated border trails around elements on interaction.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/border-trail.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "carousel",
+      "display_name": "Carousel",
+      "description": "A component for cycling through elements with smooth transitions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/carousel",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/carousel.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/carousel.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "carousel",
+        "type": "registry:ui",
+        "title": "Carousel",
+        "description": "A component for cycling through elements with smooth transitions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/carousel.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "cursor",
+      "display_name": "Cursor",
+      "description": "A custom cursor component with animated effects and interactions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/cursor",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/cursor.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/cursor.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "cursor",
+        "type": "registry:ui",
+        "title": "Cursor",
+        "description": "A custom cursor component with animated effects and interactions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/cursor.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "dialog",
+      "display_name": "Dialog",
+      "description": "A modal dialog component with smooth entrance and exit animations.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/dialog",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/dialog.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/dialog.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "dialog",
+        "type": "registry:ui",
+        "title": "Dialog",
+        "description": "A modal dialog component with smooth entrance and exit animations.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/dialog.tsx",
+            "type": "registry:component"
+          },
+          {
+            "path": "hooks/usePreventScroll.tsx",
+            "type": "registry:hook"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "disclosure",
+      "display_name": "Disclosure",
+      "description": "A component that shows and hides content with animated transitions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/disclosure",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/disclosure.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/disclosure.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "disclosure",
+        "type": "registry:ui",
+        "title": "Disclosure",
+        "description": "A component that shows and hides content with animated transitions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/disclosure.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "dock",
+      "display_name": "Dock",
+      "description": "A macOS-style dock component with scaling and movement effects.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/dock",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/dock.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/dock.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "dock",
+        "type": "registry:ui",
+        "title": "Dock",
+        "description": "A macOS-style dock component with scaling and movement effects.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/dock.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "glow-effect",
+      "display_name": "Glow Effect",
+      "description": "A component that creates a glowing effect on elements based on cursor movement.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/glow-effect",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/glow-effect.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/glow-effect.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "glow-effect",
+        "type": "registry:ui",
+        "title": "Glow Effect",
+        "description": "A component that creates a glowing effect on elements based on cursor movement.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/glow-effect.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "image-comparison",
+      "display_name": "Image Comparison",
+      "description": "A component for comparing two images with an interactive slider.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/image-comparison",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/image-comparison.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/image-comparison.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "image-comparison",
+        "type": "registry:ui",
+        "title": "Image Comparison",
+        "description": "A component for comparing two images with an interactive slider.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/image-comparison.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "in-view",
+      "display_name": "In View",
+      "description": "A component that triggers animations when elements enter the viewport.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/in-view",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/in-view.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/in-view.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "in-view",
+        "type": "registry:ui",
+        "title": "In View",
+        "description": "A component that triggers animations when elements enter the viewport.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/in-view.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "infinite-slider",
+      "display_name": "Infinite Slider",
+      "description": "A slider component that loops infinitely through its content.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/infinite-slider",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/infinite-slider.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/infinite-slider.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion",
+        "react-use-measure"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "infinite-slider",
+        "type": "registry:ui",
+        "title": "Infinite Slider",
+        "description": "A slider component that loops infinitely through its content.",
+        "dependencies": [
+          "motion",
+          "react-use-measure"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/infinite-slider.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "magnetic",
+      "display_name": "Magnetic",
+      "description": "A component that creates a magnetic attraction effect on hover.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/magnetic",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/magnetic.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/magnetic.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "magnetic",
+        "type": "registry:ui",
+        "title": "Magnetic",
+        "description": "A component that creates a magnetic attraction effect on hover.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/magnetic.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "morphing-dialog",
+      "display_name": "Morphing Dialog",
+      "description": "A dialog that morphs from its trigger element with smooth transitions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/morphing-dialog",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/morphing-dialog.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/morphing-dialog.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "morphing-dialog",
+        "type": "registry:ui",
+        "title": "Morphing Dialog",
+        "description": "A dialog that morphs from its trigger element with smooth transitions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/morphing-dialog.tsx",
+            "type": "registry:component"
+          },
+          {
+            "path": "hooks/useClickOutside.tsx",
+            "type": "registry:hook"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "morphing-popover",
+      "display_name": "Morphing Popover",
+      "description": "A popover component that morphs from its trigger with fluid animations.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/morphing-popover",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/morphing-popover.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/morphing-popover.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "morphing-popover",
+        "type": "registry:ui",
+        "title": "Morphing Popover",
+        "description": "A popover component that morphs from its trigger with fluid animations.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/morphing-popover.tsx",
+            "type": "registry:component"
+          },
+          {
+            "path": "hooks/useClickOutside.tsx",
+            "type": "registry:hook"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "progressive-blur",
+      "display_name": "Progressive Blur",
+      "description": "A component that applies progressive blur effects to elements.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/progressive-blur",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/progressive-blur.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/progressive-blur.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "progressive-blur",
+        "type": "registry:ui",
+        "title": "Progressive Blur",
+        "description": "A component that applies progressive blur effects to elements.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/progressive-blur.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "scroll-progress",
+      "display_name": "Scroll Progress",
+      "description": "A component that visualizes scroll progress with animated indicators.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/scroll-progress",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/scroll-progress.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/scroll-progress.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "scroll-progress",
+        "type": "registry:ui",
+        "title": "Scroll Progress",
+        "description": "A component that visualizes scroll progress with animated indicators.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/scroll-progress.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "sliding-number",
+      "display_name": "Sliding Number",
+      "description": "A component that transitions between numbers with a sliding animation.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/sliding-number",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/sliding-number.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/sliding-number.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion",
+        "react-use-measure"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "sliding-number",
+        "type": "registry:ui",
+        "title": "Sliding Number",
+        "description": "A component that transitions between numbers with a sliding animation.",
+        "dependencies": [
+          "motion",
+          "react-use-measure"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/sliding-number.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "spinning-text",
+      "display_name": "Spinning Text",
+      "description": "A component that animates text with a spinning rotation effect.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/spinning-text",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/spinning-text.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/spinning-text.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "spinning-text",
+        "type": "registry:ui",
+        "title": "Spinning Text",
+        "description": "A component that animates text with a spinning rotation effect.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/spinning-text.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "spotlight",
+      "display_name": "Spotlight",
+      "description": "A component that creates a spotlight effect following cursor movement.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/spotlight",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/spotlight.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/spotlight.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "spotlight",
+        "type": "registry:ui",
+        "title": "Spotlight",
+        "description": "A component that creates a spotlight effect following cursor movement.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/spotlight.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-effect",
+      "display_name": "Text Effect",
+      "description": "A component that applies animated effects to text content.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-effect",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-effect.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-effect.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-effect",
+        "type": "registry:ui",
+        "title": "Text Effect",
+        "description": "A component that applies animated effects to text content.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-effect.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-loop",
+      "display_name": "Text Loop",
+      "description": "A component that cycles through different text phrases with animations.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-loop",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-loop.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-loop.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-loop",
+        "type": "registry:ui",
+        "title": "Text Loop",
+        "description": "A component that cycles through different text phrases with animations.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-loop.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-morph",
+      "display_name": "Text Morph",
+      "description": "A component that morphs between different text strings with smooth transitions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-morph",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-morph.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-morph.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-morph",
+        "type": "registry:ui",
+        "title": "Text Morph",
+        "description": "A component that morphs between different text strings with smooth transitions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-morph.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-roll",
+      "display_name": "Text Roll",
+      "description": "A component that animates text with a rolling effect.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-roll",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-roll.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-roll.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-roll",
+        "type": "registry:ui",
+        "title": "Text Roll",
+        "description": "A component that animates text with a rolling effect.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-roll.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-scramble",
+      "display_name": "Text Scramble",
+      "description": "A component that creates a scrambling text effect during transitions.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-scramble",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-scramble.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-scramble.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-scramble",
+        "type": "registry:ui",
+        "title": "Text Scramble",
+        "description": "A component that creates a scrambling text effect during transitions.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-scramble.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-shimmer",
+      "display_name": "Text Shimmer",
+      "description": "A component that applies a shimmering effect to text.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-shimmer",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-shimmer.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-shimmer.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-shimmer",
+        "type": "registry:ui",
+        "title": "Text Shimmer",
+        "description": "A component that applies a shimmering effect to text.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-shimmer.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "text-shimmer-wave",
+      "display_name": "Text Shimmer Wave",
+      "description": "A component that creates a wave-like shimmer effect on text.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/text-shimmer-wave",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/text-shimmer-wave.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/text-shimmer-wave.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "text-shimmer-wave",
+        "type": "registry:ui",
+        "title": "Text Shimmer Wave",
+        "description": "A component that creates a wave-like shimmer effect on text.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/text-shimmer-wave.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "tilt",
+      "display_name": "Tilt",
+      "description": "A component that applies 3D tilt effects to elements based on cursor position.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/tilt",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/tilt.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/tilt.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "tilt",
+        "type": "registry:ui",
+        "title": "Tilt",
+        "description": "A component that applies 3D tilt effects to elements based on cursor position.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/tilt.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "toolbar-dynamic",
+      "display_name": "Toolbar Dynamic",
+      "description": "A toolbar component with dynamic appearance based on user interaction.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/toolbar-dynamic",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/toolbar-dynamic.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/toolbar-dynamic.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "toolbar-dynamic",
+        "type": "registry:ui",
+        "title": "Toolbar Dynamic",
+        "description": "A toolbar component with dynamic appearance based on user interaction.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/toolbar-dynamic.tsx",
+            "type": "registry:component"
+          },
+          {
+            "path": "hooks/useClickOutside.tsx",
+            "type": "registry:hook"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "toolbar-expandable",
+      "display_name": "Toolbar Expandable",
+      "description": "An expandable toolbar that reveals additional options with animations.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/toolbar-expandable",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/toolbar-expandable.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/toolbar-expandable.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion",
+        "react-use-measure"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "toolbar-expandable",
+        "type": "registry:ui",
+        "title": "Toolbar Expandable",
+        "description": "An expandable toolbar that reveals additional options with animations.",
+        "dependencies": [
+          "motion",
+          "react-use-measure"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/toolbar-expandable.tsx",
+            "type": "registry:component"
+          },
+          {
+            "path": "hooks/useClickOutside.tsx",
+            "type": "registry:hook"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    },
+    {
+      "source": "motion-primitives",
+      "upstream_name": "transition-panel",
+      "display_name": "Transition Panel",
+      "description": "A panel component with smooth transitions between different states.",
+      "kind": "primitive",
+      "category": "motion-primitive",
+      "preview_url": "https://motion-primitives.com/docs/transition-panel",
+      "source_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/transition-panel.json",
+      "install_command": "npx shadcn@latest add https://motion-primitives.com/c/transition-panel.json --cwd apps/web",
+      "foundation": "React + Tailwind CSS + Motion",
+      "license": "MIT",
+      "dependencies": [
+        "motion"
+      ],
+      "project_fit": "selective-micro-motion",
+      "theme_ready": "yes",
+      "last_verified": "2026-08-19",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "local_status": "catalogued",
+      "local_path": "",
+      "access_status": "public-source",
+      "access_tier": "free",
+      "auth_requirement": "none",
+      "license_scope": "Motion Primitives official repository Registry under MIT",
+      "source_cache_status": "not-cached",
+      "maintenance_status": "current",
+      "related_or_duplicate_of": "",
+      "decision_record": "",
+      "comparison_record": "",
+      "upstream_meta": {
+        "name": "transition-panel",
+        "type": "registry:ui",
+        "title": "Transition Panel",
+        "description": "A panel component with smooth transitions between different states.",
+        "dependencies": [
+          "motion"
+        ],
+        "devDependencies": [],
+        "registryDependencies": [],
+        "files": [
+          {
+            "path": "components/core/transition-panel.tsx",
+            "type": "registry:component"
+          }
+        ],
+        "categories": [
+          "ui",
+          "motion-primitives"
+        ]
+      }
+    }
+  ]
+}

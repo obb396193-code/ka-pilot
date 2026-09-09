@@ -13,6 +13,7 @@ const databaseUrl =
 describe("ChangeSetRepository", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 6 });
   const repository = new ChangeSetRepository(pool);
+  const ownedWorkspaces: string[] = [];
   let workspaceId: string;
   let otherWorkspaceId: string;
   let userId: string;
@@ -20,7 +21,19 @@ describe("ChangeSetRepository", () => {
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
-  afterAll(async () => { await pool.end(); });
+  afterAll(async () => {
+    try {
+      // Typed values intentionally forbid 012 down. Remove only this suite's synthetic
+      // rows so migration tests don't inherit our non-downgradable business state.
+      // execution_runs has no workspace_id; derive its scope through the owning changeset.
+      await pool.query(`DELETE FROM execution_runs AS run USING changesets AS parent
+        WHERE run.changeset_id=parent.id AND parent.workspace_id=ANY($1::uuid[])`, [ownedWorkspaces]);
+      for (const table of ["jobs", "work_items", "changeset_items", "changesets", "accounts", "users"] as const) {
+        await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [ownedWorkspaces]);
+      }
+      await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [ownedWorkspaces]);
+    } finally { await pool.end(); }
+  });
 
   beforeEach(async () => {
     const suffix = randomUUID();
@@ -30,6 +43,7 @@ describe("ChangeSetRepository", () => {
     );
     workspaceId = workspaces.rows[0]!.id;
     otherWorkspaceId = workspaces.rows[1]!.id;
+    ownedWorkspaces.push(workspaceId, otherWorkspaceId);
     const user = await pool.query<{ id: string }>(
       "INSERT INTO users (workspace_id, name) VALUES ($1, 'changeset-owner') RETURNING id",
       [workspaceId],

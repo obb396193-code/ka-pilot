@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Frontend UI Asset Kit · License-safe Showroom</title>
+  <style>
+    :root{font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color-scheme:light dark;--bg:#f5f3ec;--fg:#171717;--card:#fff;--line:#d8d3c5;--muted:#666}@media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#eee;--card:#191919;--line:#3a3a3a;--muted:#aaa}}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg)}main{max-width:1500px;margin:auto;padding:32px}header{max-width:900px;margin-bottom:32px}h1{font-size:clamp(2rem,5vw,4.5rem);line-height:1;text-wrap:balance;margin:.2em 0}p{line-height:1.65}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:20px}.card{border:1px solid var(--line);border-radius:20px;padding:20px;background:var(--card)}.card h2{margin:.5rem 0}.meta{display:flex;gap:8px;flex-wrap:wrap}.meta span{border:1px solid var(--line);border-radius:999px;padding:4px 9px;font-size:12px}.card iframe{display:block;width:100%;height:390px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:16px 0}.card a,aside a{color:inherit;font-weight:650}aside{margin-top:32px;padding:20px;border-left:4px solid #f97316;background:var(--card)}li{margin:.7em 0;line-height:1.5}@media(max-width:600px){main{padding:18px}.card{padding:14px}.card iframe{height:460px}}
+  </style>
+</head>
+<body>
+<main>
+  <header><p>LICENSE-SAFE INTERNAL REUSE EDITION</p><h1>Frontend UI Asset Kit</h1><p>本页只实时渲染许可证白名单内的公开官方源码。所有 17 条产品线的目录和介绍仍保存在 catalogs/guides；受限来源不复制源码。</p></header>
+  <section class="grid">
+        <article class="card">
+          <div class="meta"><span>foundation</span><span>MIT</span></div>
+          <h2>shadcn/ui</h2>
+          <p>克制、中性、结构稳定，是最适合统一全站语言的基础层。</p>
+          <p><strong>适合：</strong>页面壳、基础表单、弹层、筛选器和产品级 primitives</p>
+          <iframe title="shadcn/ui preview" src="live-previews/frames/shadcn.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://ui.shadcn.com/docs/components/calendar" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>foundation</span><span>MIT for apps/ui; repository root AGPL-3.0</span></div>
+          <h2>coss/ui</h2>
+          <p>极简、细密、尺寸与状态处理精确，工具产品感强。</p>
+          <p><strong>适合：</strong>日期、Command、Combobox、Field、Drawer 和表格工具栏</p>
+          <iframe title="coss/ui preview" src="live-previews/frames/coss.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://coss.com/ui/docs/components/date-picker" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>foundation</span><span>MIT for apps/origin; repository root AGPL-3.0</span></div>
+          <h2>coss Origin</h2>
+          <p>覆盖广、案例感强，展示 legacy 粒子库的独立交互写法。</p>
+          <p><strong>适合：</strong>只补 current coss 没有的旧交互，不作为新代码默认底座</p>
+          <iframe title="coss Origin preview" src="live-previews/frames/coss-origin.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://coss.com/origin" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>data</span><span>MIT for Free registry items</span></div>
+          <h2>ReUI</h2>
+          <p>信息密度高、后台感强，复杂状态、列和批量操作成熟。</p>
+          <p><strong>适合：</strong>账户、任务、素材大表，虚拟滚动、筛选与列配置</p>
+          <iframe title="ReUI preview" src="live-previews/frames/reui.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://reui.io/docs/components/data-grid" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>data</span><span>Apache-2.0</span></div>
+          <h2>Tremor</h2>
+          <p>清晰、专业、数据优先，擅长卡片、筛选栏和报告组合。</p>
+          <p><strong>适合：</strong>经营看板、趋势分析、报告页和 KPI 信息层级</p>
+          <iframe title="Tremor preview" src="live-previews/frames/tremor.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://blocks.tremor.so/blocks/kpi-cards" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>data</span><span>Apache-2.0</span></div>
+          <h2>Tremor Legacy</h2>
+          <p>更像早期 SaaS 分析后台，封装度高但维护状态较旧。</p>
+          <p><strong>适合：</strong>只用于比较旧版视觉和 API，不作为新页面首选</p>
+          <iframe title="Tremor Legacy preview" src="live-previews/frames/tremor-legacy.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://npm.tremor.so/docs/ui/card" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>motion</span><span>MIT for public Free registry</span></div>
+          <h2>Magic UI Free</h2>
+          <p>现代、轻盈、偏 SaaS，效果比 Aceternity 更容易局部使用。</p>
+          <p><strong>适合：</strong>KPI 数字、轻量强调、空态和少量品牌细节</p>
+          <iframe title="Magic UI Free preview" src="live-previews/frames/magic-ui.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://magicui.design/docs/components/number-ticker" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>theme</span><span>MIT for official preset source</span></div>
+          <h2>tweakcn</h2>
+          <p>不是另一套组件底层，而是让 shadcn 体系快速切换颜色、圆角和字体。</p>
+          <p><strong>适合：</strong>项目多风格切换、客户主题和图表 token 桥接</p>
+          <iframe title="tweakcn preview" src="live-previews/frames/tweakcn.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://tweakcn.com/" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>agent</span><span>Apache-2.0</span></div>
+          <h2>Vercel AI Elements</h2>
+          <p>克制、产品化、与 Vercel/shadcn 生态接近，专为 AI 交互设计。</p>
+          <p><strong>适合：</strong>内置 Agent 悬浮窗、消息流、推理、工具调用和引用</p>
+          <iframe title="Vercel AI Elements preview" src="live-previews/frames/ai-elements.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://ai-sdk.dev/elements/components/conversation" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>data</span><span>MIT</span></div>
+          <h2>Kibo UI</h2>
+          <p>现代、克制、功能密度高，接近成熟 SaaS 成品。</p>
+          <p><strong>适合：</strong>Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar</p>
+          <iframe title="Kibo UI preview" src="live-previews/frames/kibo-ui.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://www.kibo-ui.com/components/dropzone" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>data</span><span>MIT</span></div>
+          <h2>Dice UI</h2>
+          <p>更偏工程化和可访问性，视觉中性但复杂行为扎实。</p>
+          <p><strong>适合：</strong>Data Grid、文件上传、Kanban 和键盘操作</p>
+          <iframe title="Dice UI preview" src="live-previews/frames/dice-ui.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://diceui.com/docs/components/file-upload" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article>
+
+        <article class="card">
+          <div class="meta"><span>motion</span><span>MIT</span></div>
+          <h2>Motion Primitives</h2>
+          <p>轻量、精致、单一职责，适合在产品界面少量落点。</p>
+          <p><strong>适合：</strong>KPI 数字、说明展开和 Agent 状态文字</p>
+          <iframe title="Motion Primitives preview" src="live-previews/frames/motion-primitives.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          <a href="https://motion-primitives.com/docs/animated-number" target="_blank" rel="noopener noreferrer">打开官网 ↗</a>
+        </article></section>
+  <aside><h2>只保留元数据、未导出源码</h2><ul><li><strong>Aceternity UI</strong>：Free item 仍需逐项核验条款与第三方素材，不导出源码。 <a href="https://ui.aceternity.com/components/bento-grid" target="_blank" rel="noopener noreferrer">官网 ↗</a></li>
+<li><strong>Magic UI Pro / Public Template</strong>：公开样例的具体复用许可证仍需逐仓核验。 <a href="https://github.com/magicuidesign/blog-template" target="_blank" rel="noopener noreferrer">官网 ↗</a></li>
+<li><strong>React Bits Free</strong>：MIT + Commons Clause；不发布可复用组件库镜像，Pro 另受付费许可。 <a href="https://www.reactbits.dev/components/counter" target="_blank" rel="noopener noreferrer">官网 ↗</a></li>
+<li><strong>React Bits Pro</strong>：无可再分发的公开源码或不属于本次许可证白名单。 <a href="https://reactbits.dev/get-pro" target="_blank" rel="noopener noreferrer">官网 ↗</a></li>
+<li><strong>Animate UI</strong>：MIT + Commons Clause；不发布可复用组件库镜像。 <a href="https://animate-ui.com/docs/components/buttons/ripple" target="_blank" rel="noopener noreferrer">官网 ↗</a></li></ul></aside>
+</main>
+</body>
+</html>

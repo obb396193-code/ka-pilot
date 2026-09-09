@@ -295,9 +295,9 @@ export class AgentRepository {
         [input.sessionId, content, input.startedAt],
       );
       const runResult = await client.query<RunRow>(
-        `INSERT INTO agent_runs (workspace_id,kind,initiator,status,started_at)
-         VALUES ($1,$2,$3,'running',$4) RETURNING ${runColumns}`,
-        [input.workspaceId, input.kind, input.userId, input.startedAt],
+        `INSERT INTO agent_runs (workspace_id,kind,initiator,status,started_at,session_id)
+         VALUES ($1,$2,$3,'running',$4,$5) RETURNING ${runColumns}`,
+        [input.workspaceId, input.kind, input.userId, input.startedAt, input.sessionId],
       );
       return {
         message: mapMessage(requireRow(messageResult.rows[0], "Agent message insert failed")),
@@ -320,7 +320,7 @@ export class AgentRepository {
     const content = serializeJson(input.assistantContent);
     return withTransaction(this.pool, async (client) => {
       await getOwnedSession(client, input);
-      const current = await lockOwnedRun(client, input.workspaceId, input.userId, input.runId);
+      const current = await lockOwnedRun(client, input.workspaceId, input.userId, input.runId, input.sessionId);
       assertRunCompletable(current, input.finishedAt);
       await client.query(
         `INSERT INTO agent_messages (session_id,role,content,at)
@@ -381,11 +381,13 @@ async function lockOwnedRun(
   workspaceId: string,
   userId: string,
   runId: string,
+  expectedSessionId: string | null = null,
 ): Promise<AgentRunRecord> {
   const result = await client.query<RunRow>(
     `SELECT ${runColumns} FROM agent_runs
-     WHERE workspace_id=$1 AND initiator=$2 AND id=$3 FOR UPDATE`,
-    [workspaceId, userId, runId],
+     WHERE workspace_id=$1 AND initiator=$2 AND id=$3
+       AND ($4::uuid IS NULL OR session_id=$4) FOR UPDATE`,
+    [workspaceId, userId, runId, expectedSessionId],
   );
   if (result.rows[0] === undefined) throw new Error("Agent run not found for user");
   return mapRun(result.rows[0]);

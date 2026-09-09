@@ -1,0 +1,42 @@
+{
+  "documentId": 1933,
+  "documentName": "10.1.1获取可选的深度优化目标",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取可选的深度优化目标\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/deepTypes\n\n请求方式：POST\n\n数据格式：JSON\n\n门槛标准： 1.应用下载类—— 1)账户维度，相应的 event_type 回传 >=1; 或 2)应用包维度，用转化追踪联调通过相应的 event_type 2.落地页类\n账户维度，相应的 event_type 回传 >=1;\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填             | 说明      | 备注                           |\n| ------------- | ---- | -------------------- | --------- | ------------------------------ |\n| advertiser_id | long | 必填                 | 广告主 ID | 在获取 access_token 的时候返回 |\n| scene_category | int  | 必填                 | 场景分类  | 0=普通创编、1=追踪工具、2=常规托管、3=搜索广告                               |\n| campaign_type        | int | 在scene_category=1即追踪工具时可不填，其他场景必填 | 计划类型   | 2：提升应用安装 3：获取电商下单（提示：该营销目标将于1月4日停止新建计划， 当前阶段投放状态不受影响） 4：推广品牌活动 5：收集销售线索 7：提高应用活跃 9：商品库推广；16：粉丝/直播推广   |\n| scene_ids | int[] | 在scene_category=1即追踪工具时可不填，其他场景必填                 | 投放资源位置 | 1：优选广告位（当账户在联盟优选白名单中且 campaign_type=2/3/5/7 时为主站&联盟优选广告位 ）；5：联盟广告；（对应DSP后台unit层级选择联盟广告位）；6：上下滑大屏广告（计划 campaignType=16 粉丝直播推广时，仅支持填写 6）；10：联盟场景 6、10 可多选;当账户在联盟优选白名单中且 campaign_type = 2/3/5/7，可传 10；当账户不在联盟优选白名单中或 campaign_type 不等于 2/3/5/7 时，不可传 10；（对应DSP后台创意层级选择联盟广告位）；24:激励视频（需要加白后可选）；27：开屏广告位（白名单功能且 splash_ad_switch 为 true 是可选）；39：搜索广告 |\n| traceutil_type | int | 在scene_category=1即追踪工具时必填，其他场景不填                 | 追踪工具的类型 | 1=js、2=xpath、3=sdk、7=api、12=kwai attribution |\n| app_id | long | 可选                 | 应用id | 追踪工具类型时不需要本参数；其他类型时，本参数会决定可拉到的优化目标列表（即会融合追踪工具联调的结果） |\n| ocpx_action_type | int | 在scene_category=1即追踪工具时不填，其他场景可填                 | 深度目标是否可用是关联与浅度目标的（比如深度目标deep_conversion_type为付费roi时，浅度目标要求是付费、激活），所以拉取深度可用目标接口需要传本参数 | 即单元创建时的ocpx_action_type字段 |\n| bid_type | int | 可选                 | 出价方式 | 10 - OCPM, 12 - MCB |\n| hosting_scene | int | 智能托管细分场景 | 0=常规推广、1=测书工具、2=账户预热、5=最大转化 | 当scene_category=2时本字段可用 |\n| site_id | long | 否 | 魔力建站的页面id | 按需传入，如果是收集销售线索（campaign_type=5）这类的落地页并且使用的是魔力建站的页面，可以传入本id。此时如果页面包括了微信小程序，则可用优化目标会包括经由追踪工具的追踪小程序联调通过的小程序的目标。具体功能可见追踪工具-追踪小游戏 |\n| series_pay_mode | int | 否 | 短剧付费模式 | 按需传入，0，\"默认\"：1，\"打包\"：2，\"虚拟币\"：3，\"观看广告解锁\" |\n| plc_biz_type | int | 否 | 快手号营销目标-线索留资-推广目标-组件类型 | 按需传入，\"24\"：\"小钥匙\"，\"44\"：\"快聘组件\"，\"8\"：\"付费课堂\"|\n| schema_uri | string | 否 | 应用直达链接 | 按需传入 |\n| uri | string | 否 | 落地页链接 | 按需传入 |\n| live_component_type | int | 否 | 直播组件类型 | 按需传入 ''0''：\"小铃铛\"，\"1\"：\"房产\"，\"2\"：\"团购\"，\"5\"：\"小程序组件\"，\"6\"：\"小手柄组件\"，\"3\"：\"小钥匙\"，\"14\"\"：\"快聘\"，\"4\"：\"涨粉，不关注组件\"|\n### 返回参数\n\n| 字段                    | 类型   | 说明                         | 备注               |\n| ----------------------- | ------ | ---------------------------- | ------------------ |\n| code                    | int    | 返回码                       |                    |\n| message                 | string | 返回描述                     |                    |\n| data                    | json，见下 | 可用目标                  |                    |\n\n| 字段        | 类型 | 说明         | 备注                                                                               |\n| --------------------------- | ---- | ------------ | ---------------------------------------------------------------------------------- |\n| deep_types   | deepType数组，见下  | 可用目标数组     |            |\n\n| 字段        | 类型 | 说明         | 备注                                                                               |\n| --------------------------- | ---- | ------------ | ---------------------------------------------------------------------------------- |\n| event_type   | int  | 深度优化目标     |            |\n| name   | string  | event_type的中文描述     |            |\n\n### 请求样例\n\n```\n\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/deepTypes' \\\n--header 'Content-Type: application/json;charset=UTF-8' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 20000654,\n    \"scene_category\": 0,\n    \"campaign_type\": 2,\n    \"scene_ids\": [\n        6\n    ],\n    \"app_id\": 0,\n    \"traceutil_type\": 0,\n    \"ocpx_action_type\": 180\n}'\n```\n\n### 返回样例\n\n```\n\n{\n    \"code\": 0,\n    \"data\": {\n        \"deep_types\": [\n            {\n                \"event_type\": 3,\n                \"name\": \"付费\"\n            },\n            {\n                \"event_type\": 7,\n                \"name\": \"自然日次日留存\"\n            },\n            {\n                \"event_type\": 8,\n                \"name\": \"7日留存\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"6ff1c93634d648dfac3c15bcebdb13bf\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1722245770979
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1722245770979,
+  "creator": "guojingwei05",
+  "fullContext": null
+}

@@ -1,0 +1,38 @@
+## 通过跨端项目发布
+
+### 前置准备
+
+#### 使用模板初始化（推荐）
+
+1. 通过 [https://space.o2.alibaba-inc.com/app/new](https://space.o2.alibaba-inc.com/app/new)，创建跨端应用。选择“静态资源”解决方案。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lEkLeE0yRqJbv/img/ebadb76c-74d0-45cd-82f8-a201d4bbf343.png)
+
+1. 根据验证类文件需要生效的域名选择对应需要接入的站点，点击“确定”；脚手架设置无需修改
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lEkLeE0yRqJbv/img/de614c3f-f63a-4e3e-bb9e-4865ab20c680.png)
+
+目前新建应用需要关联预发域名，但 16N 后部分业务可能无法正常完成预发域名接入。如遇此种情况，请在提交预发域名申请后（确认接入流程已经开始运行）联系答疑修改预发域名状态。
+
+#### 手动配置
+
+1. 请建立新的空仓库并接入
+ 
+
+### 文件发布
+
+1. 新建迭代和变更，将所需的验证文件放置在仓库内，提交发布；仓库中的 example.txt 可以删除，abc.json 请勿移动或修改
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lEkLeE0yRqJbv/img/1f452833-a825-4064-ae95-3c8b5b9cd15f.png)
+
+1. 将应用发布线上，记录文件地址
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lEkLeE0yRqJbv/img/42a60fbf-dc33-4b64-b138-f5fe9c9de1ca.png)
+
+1. 访问对应站点的路由配置页面，选择“添加路由”-“添加页面路由”
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lEkLeE0yRqJbv/img/ed8561ef-eb95-473f-97f2-0c4c35e0739d.png)
+
+1. 根据需求填写访问路径，并在资源路径中点击“选择”后根据目录点选对应的文件
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lEkLeE0yRqJbv/img/c4e71f63-0b47-45c7-8a01-3e2a6ad59148.png)
+
+1. 发布路由
+### Content-Type 设置
+
+发布的文件会自动识别 MIME 并设置 Content-Type。如果有特殊需求，请参考 [@ali/builder-gubal-static](https://web.npm.alibaba-inc.com/package/@ali/builder-gubal-static)文档设置 headers
+

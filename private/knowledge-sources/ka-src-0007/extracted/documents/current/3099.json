@@ -1,0 +1,421 @@
+{
+  "documentId": 3099,
+  "documentName": "代理商给广告主账户转账接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "代理商给广告主账户转账接口\n/rest/openapi/gw/agent/v1/finance/transfer/out\n\n\nbiz_unique_key  String  <p>交易号，可用于查询交易状态</p>\nadvertiser_id  Long  广告主ID\namount  Long  <p>现金金额，转现金的时候，金额放在这个字段上</p>\ncredit_amount  Long  <p>信用账户金额，转信用、现金+信用的时候，金额放在这个字段</p>\nextended_amount  Long  预留账户金额\nrebate_amount  Long  后返金额\npre_rebate_amount  Long  前返金额\ntransfer_type  Long  <p>转账类型 1:现金,2:信用,,6: 现金+信用</p>\ncode  Integer  code\nmessage  String  message\ndata  TransferResultGatewayResp  data\ntrade_no  String  转账请求对应的交易号（业务唯一键）\nsuccess  Boolean  转账是否成功（旧逻辑的二值结果，为了兼容历史而留，更准确的状态应该看tradeStatus）\ntrade_status  String  转账交易的目前状态，枚举SUCCESS（交易成功）DOING（交易处理中）FAILED（交易失败）EXCEPTION（交易异常-业务上不应存在的异常失败）IGNORED（无效交易-可忽略不管的交易）\nfail_reason  String  <p>转账失败原因</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1781615767688
+    }
+  ],
+  "apiId": 17,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/transfer/out",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87489,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64547,
+      "paramName": "biz_unique_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>交易号，可用于查询交易状态</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 392,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 393,
+      "paramName": "amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>现金金额，转现金的时候，金额放在这个字段上</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 394,
+      "paramName": "credit_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>信用账户金额，转信用、现金+信用的时候，金额放在这个字段</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 395,
+      "paramName": "extended_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "预留账户金额",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 396,
+      "paramName": "rebate_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "后返金额",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 397,
+      "paramName": "pre_rebate_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "前返金额",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 398,
+      "paramName": "transfer_type",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>转账类型 1:现金,2:信用,,6: 现金+信用</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 399,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 400,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "message",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 401,
+      "paramName": "data",
+      "paramType": "TransferResultGatewayResp",
+      "example": "",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 950,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26259,
+          "paramName": "trade_no",
+          "paramType": "String",
+          "example": "776975954695352320",
+          "description": "转账请求对应的交易号（业务唯一键）",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26260,
+          "paramName": "success",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "转账是否成功（旧逻辑的二值结果，为了兼容历史而留，更准确的状态应该看tradeStatus）",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26261,
+          "paramName": "trade_status",
+          "paramType": "String",
+          "example": "SUCCESS",
+          "description": "转账交易的目前状态，枚举SUCCESS（交易成功）DOING（交易处理中）FAILED（交易失败）EXCEPTION（交易异常-业务上不应存在的异常失败）IGNORED（无效交易-可忽略不管的交易）",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 79662,
+          "paramName": "fail_reason",
+          "paramType": "String",
+          "example": "失败原因",
+          "description": "<p>转账失败原因</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1781615767688,
+  "creator": "zhangzhidong",
+  "fullContext": null
+}

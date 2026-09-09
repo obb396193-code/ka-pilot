@@ -1,0 +1,197 @@
+{
+  "documentId": 2651,
+  "documentName": "魔力建站落地页组删除接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095837309
+    }
+  ],
+  "apiId": 121,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/group/delete",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'http://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/group/update' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  --header 'Content-Type: application/json' \\\n--data-raw {\n  \"advertiser_id\": 123456,\n  \"group_id\":\"123123123123\"\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"message\": \"OK\",\n  \"request_id\": \"d16c5c13738b427788c6df9e1a01db18\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 4862,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123456",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4863,
+      "paramName": "group_id",
+      "paramType": "String",
+      "example": "12342134",
+      "description": "组id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 4864,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "成功/失败 状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4865,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "成功",
+      "description": "成功/失败 的message信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4866,
+      "paramName": "data",
+      "paramType": "GroupIdData",
+      "example": "",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 277,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4823,
+          "paramName": "group_id",
+          "paramType": "String",
+          "example": "2214030995198595",
+          "description": "魔力建站落地页组id",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095837309,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

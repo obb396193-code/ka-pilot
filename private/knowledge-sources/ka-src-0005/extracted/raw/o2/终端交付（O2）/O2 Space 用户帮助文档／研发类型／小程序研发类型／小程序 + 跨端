@@ -1,0 +1,59 @@
+# 小程序 + 跨端
+
+## 能力介绍
+
+为一个 Code 仓库同时发布多端小程序和跨端应用。
+
+
+
+### 产物说明
+
+- 将小程序产物包发布到对应开放平台
+- 跨端应用类型产物
+## 接入说明
+
+### 新建应用
+
+前往小程序研发微平台 [新建应用](https://space.o2.alibaba-inc.com/app/new)，选择 小程序 + 跨端复合应用 类型。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/alabcx/imgFaDPL4DjRk.png)
+
+
+### 应用配置
+
+配置应用信息，包括小程序发布端、PHA 发布站点。
+
+选中rax-miniapp脚手架，新建应用，小程序研发平台会帮助你初始化仓库。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/alabcx/imgvjtES6w7U1.png)
+
+
+
+
+### 项目初始化
+
+目前 研发脚手架暂时缺失 PHA + 小程序类型的，所以选中 rax miniapp 类型应用，是为了做到最小的改动。
+
+当仓库初始化完成，在根目录下的 build.json 中 添加红框内的 pha 构建配置。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/alabcx/imgK4iKqUvMLz.png)
+
+
+## 发布流程
+
+该复合类型发布流程是小程序和跨端应用的结合，会并行发布两种类型。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/alabcx/imgQaA4wEATp3.png)
+
+
+
+
+### 灰度
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/alabcx/imgpUfdSt1K9T.png)
+
+
+该复合类型同时发布了 web 页面，对已经发上线的 web 页面需要进行灰度管控，完成线上发布之后，在灰度步骤中控制灰度比例。
+
+## 
+

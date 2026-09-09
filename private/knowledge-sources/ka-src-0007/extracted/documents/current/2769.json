@@ -1,0 +1,355 @@
+{
+  "documentId": 2769,
+  "documentName": "创建 iOS 应用",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "创建 iOS 应用\n/rest/openapi/gw/dsp/appcenter/app/create/ios\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/ios' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 900015366,\n    \"ios_download_url\": \"https://apps.apple.com/cn/app/%_e5%_a_f%_b_b%_e6%89%_b_e%_e5%_a4%_a9%_e5%_a0%82/id1454750038\"\n}'\n{\n    \"code\": 401000,\n    \"data\": {\n        \"global_app_id\": 4801050,\n        \"privacy_id\": 4801051,\n        \"package_id\": 1099611636564,\n        \"app_id\": 2199123264339\n    },\n    \"message\": \"OK\"\n}\nadvertiser_id  Long  <p>广告主id</p>\napp_icon_url  String  <p>应用图标，可不填，如果填写则覆盖应用解析出的应用图标，可通过通过上传图片 API 获取链接。</p>\napp_id  Long  请补充描述详情\nios_download_url  String  <p><br>App Store 应用下载链接</p>\npackage_id  Long  请补充描述详情\ndata  AddAppResponseSnake  <p><br>JSON 返回值</p>\napp_id  Long  <p><br>应用ID</p>\nglobal_app_id  Long  请补充描述详情\npackage_id  Long  <p>应用包ID【母包ID】</p>\nprivacy_id  Long  <p><br>隐私声明ID</p>\ncode  Integer  <p><br>返回码</p>\nmessage  String  <p><br>返回信息</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1762436164328
+    }
+  ],
+  "apiId": 698,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/ios",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/ios' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 900015366,\n    \"ios_download_url\": \"https://apps.apple.com/cn/app/%_e5%_a_f%_b_b%_e6%89%_b_e%_e5%_a4%_a9%_e5%_a0%82/id1454750038\",\n    \"app_privacy_url\": \"https://www.baiud.com\"\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 401000,\n    \"data\": {\n        \"global_app_id\": 4801050,\n        \"privacy_id\": 4801051,\n        \"package_id\": 1099611636564,\n        \"app_id\": 2199123264339\n    },\n    \"message\": \"OK\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63166,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41972,
+      "paramName": "app_icon_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>应用图标，可不填，如果填写则覆盖应用解析出的应用图标，可通过通过上传图片 API 获取链接。</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41973,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "请补充描述详情",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41974,
+      "paramName": "ios_download_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>App Store 应用下载链接</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41975,
+      "paramName": "package_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "请补充描述详情",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79009,
+      "paramName": "app_privacy_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>隐私政策链接</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 41980,
+      "paramName": "data",
+      "paramType": "AddAppResponseSnake",
+      "example": "",
+      "description": "<p><br>JSON 返回值</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2578,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 41976,
+          "paramName": "app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p><br>应用ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41977,
+          "paramName": "global_app_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41978,
+          "paramName": "package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>应用包ID【母包ID】</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 41979,
+          "paramName": "privacy_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p><br>隐私声明ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41981,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p><br>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41982,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "1",
+      "description": "<p><br>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1762436164328,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

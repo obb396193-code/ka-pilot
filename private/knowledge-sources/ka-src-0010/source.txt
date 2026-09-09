@@ -1,0 +1,230 @@
+ka-data 取数指南（接口用法 + 核心数据怎么取）
+一份自洽文档：怎么调取数接口 + 有哪些核心数据 / 怎么取 / 易错口径。 接口读车程拥有的全部数据：Hologres / ODPS / 本地 sqlite dwd。只读 SQL 透传，持 reader token 即可。
+
+一、接口用法
+1. 先设两个环境变量（设一次，所有 curl 通用）
+1export KA_DATA_BASE="https://c9fa2f-sandbox-session4112318d76d046149d-7105.agent.alibaba-inc.com"
+2export KA_DATA_READER_TOKEN="<你的 reader token>"
+● KA_DATA_BASE（服务地址）：沙箱会话地址，沙箱重启会变。连不上重取： curl -s "http://localhost:58596/api/port-mapping?port=7105" | jq -r .url，更新 KA_DATA_BASE。
+    ● 同沙箱内进程也可直用 http://localhost:7105。
+    ● 端口是 7105，不是 7005（7005 被沙箱端口映射占；7005 返 {"ok":true,"ts":...} 是映射代理，不是本服务）。
+● KA_DATA_READER_TOKEN：reader 及以上 token。取法三选一：
+    a. 已发你的 token（环境变量 KA_DATA_READER_TOKEN）；
+    b. ka-data/token-registry.md（gitignored 台账，含已发 token）；
+    c. 没有就找车程发：python3 ka-data/issue_token.py <名> reader。
+    ● reader=只读；editor/admin 也能调（reader+）。
+2. 调用契约
+POST $KA_DATA_BASE/api/query
+Authorization: Bearer $KA_DATA_READER_TOKEN
+Content-Type: application/json
+
+{
+  "backend": "holo | odps | sqlite",     # 必填
+  "sql":     "<单条 SELECT 或 WITH ...>", # 必填
+  "project": "<odps project>",            # 可选，仅 odps；默认 dt_fbi_public_center_dev
+  "limit":   10000                        # 可选，1~1000000，超 10000 自动截断
+}
+
+成功响应：
+1{"backend":"sqlite","rowCount":5,"rows":[{...}],"truncated":false,"limit_clamped":false}
+● truncated=true＝结果超 10000 行或 16MB 被截断 → 用 WHERE 自分批。
+● limit_clamped=true＝你传的 limit > 10000，被截到 10000。
+● note：附加说明（如有）。
+错误码：400=SQL 被护栏拒/参数错（看 error）｜401=无 token/无效｜500=后端执行错（error+backend）。
+3. 三后端 · 可直接跑的例
+1# sqlite dwd 本地表（毫秒级，最稳）—— 0817 KUAISHOU 各 biz 转化
+2curl -s -X POST "$KA_DATA_BASE/api/query" \
+3  -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+4  -d '{"backend":"sqlite","sql":"SELECT biz, SUM(conv) AS s FROM fact_conv_daily WHERE ds=20260817 AND media=\"KUAISHOU\" GROUP BY biz ORDER BY biz"}'
+5
+6# Hologres（秒级）—— 列 public schema 表
+7curl -s -X POST "$KA_DATA_BASE/api/query" \
+8  -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+9  -d "{\"backend\":\"holo\",\"sql\":\"SELECT table_name FROM information_schema.tables WHERE table_schema='public' LIMIT 10\"}"
+10
+11# ODPS（CTAS，慢，受权限/槽位）—— 真实表行数
+12curl -s -X POST "$KA_DATA_BASE/api/query" \
+13  -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+14  -d "{\"backend\":\"odps\",\"sql\":\"SELECT COUNT(*) AS c FROM dt_fbi_public_center_dev.fact_conv_daily WHERE ds='20260820'\"}"
+4. 不知道有哪些表？用 SQL 自己列
+1# sqlite 本地表
+2... -d '{"backend":"sqlite","sql":"SELECT name FROM sqlite_master WHERE type=\"table\" ORDER BY name"}'
+3# Hologres 表
+4... -d "{\"backend\":\"holo\",\"sql\":\"SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY table_name LIMIT 50\"}"
+5# ODPS：列 project 下表（部分 schema 无 List 权限，列不出=无权限读）
+6... -d "{\"backend\":\"odps\",\"sql\":\"SHOW TABLES IN dt_fbi_public_center_dev\"}"
+7# sqlite 表结构
+8... -d '{"backend":"sqlite","sql":"PRAGMA table_info(\"dwd_account_daily\")"}'
+5. 只读护栏（写不进去，别试）
+● 只接受单条 SELECT 或 WITH(CTE)；拒多语句（分号隔开多条）。
+● 拒一切写/DCL/DDL 关键词：INSERT/UPDATE/DELETE/MERGE/DROP/CREATE/ALTER/TRUNCATE/GRANT/REVOKE/INTO/EXPORT/VACUUM/CALL/SET/COPY/EXEC/PRAGMA/ATTACH/DETACH/REPLACE。
+● 双保险：sqlite 连接 mode=ro、ODPS 走 CTAS（只写自有临时表，不碰用户源表）。SELECT ... INTO 会被拦。
+● 硬上限：行数 10000（env KA_DATA_QUERY_MAX_ROWS）、字节 16MB（env KA_DATA_QUERY_MAX_BYTES）、ODPS 超时 120s、sqlite busy 30s。要更多行用 WHERE/LIMIT ... OFFSET 自分批。
+
+二、核心数据怎么取（sqlite dwd 本地表字典）
+大多数取数用 sqlite 后端即可（毫秒级、口径已对齐）。表在 ka-data/snapshot.db，范围 ds 20260701~20260820 滚动（fact_conv 从 0621）。
+dwd_account_daily —— 账户×天（最常用总览主表）
+粒度 (ds, media, account_id, task_id)。一张表含消耗+赔付+现金+考核+扣量+卡片口径，已富化 account_name/business_name/biz_name/sub_biz/card_id。
+字段
+含义
+cost_yuan
+消耗（元）
+income_yuan / cash_yuan
+赔付(收入) / 现金（公式在 cash_formulas.json，见口径节）
+assessment / cash_assessment
+账面考核 / 现金考核（cash=账面/(1−扣量比) 反推）
+budget / cash_budget
+预算（"不限"为字符串）/ 现金预算
+is_deduction / deduction_ratio
+是否扣量账户 / 扣量比例（如 40 表示 40%）
+conv
+转化（来自 fact_conv JOIN）
+show / click
+展示 / 点击
+media
+KUAISHOU/TOUTIAO/TENCENT/BAIDU
+biz_name / sub_biz / card_id / task_id
+业务/子业务/卡片/任务
+product_name / bound_by / pool_status / custom_tags
+商品/绑定/池状态/自定义标签
+1# 0820 各媒体账户消耗+赔付+现金+考核
+2curl -s -X POST "$KA_DATA_BASE/api/query" -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+3  -d '{"backend":"sqlite","sql":"SELECT media, ROUND(SUM(cost_yuan),2) cost, ROUND(SUM(cash_yuan),2) cash, ROUND(SUM(cash_assessment),2) assess FROM dwd_account_daily WHERE ds=20260820 GROUP BY media ORDER BY cost DESC"}'
+dwd_adgroup_daily —— 广告组×天
+粒度 (ds, media, ad_group_id)。7.3M 行，最细。含 account_id/channel_id/task_id/biz/biz_type_v2/cost/impressions/clicks/ctr/media_conversions/ocpx_conversions/bi_conversions/wake_volume/is_deduction/deduction_rate/budget/assessment/cash_yuan/resource_position/bid_tool/plan_tier/operator_name/ad_group_bid/channel_type 等。
+1# 0820 快手某账户广告组消耗Top
+2curl -s -X POST "$KA_DATA_BASE/api/query" -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+3  -d '{"backend":"sqlite","sql":"SELECT ad_group_name, ROUND(cost,2) cost, clicks, bi_conversions FROM dwd_adgroup_daily WHERE ds=20260820 AND media=\"KUAISHOU\" ORDER BY cost DESC LIMIT 20"}'
+dwd_material_daily —— 素材×天
+粒度 (ds, media, material_key, account_id)。21.8M 行。含 material_name/material_type/material_url/item_id/task_id/cost_yuan/impressions/clicks/ctr + 三个转化列 sw_newaac_uv_attrib(CVR)/sg_newmac_attrib(闪购)/sw_ipvuv_attrib(召回)。
+dwd_product_daily —— 商品×天
+粒度 (ds, media, item_id)。含 item_title/cost_yuan/impressions/clicks/material_count + 三转化列。
+fact_conv_daily —— BI 转化（5 biz）
+粒度 (ds, media, biz, account_id, task_id)。转化权威表，5 个 biz：CVR / CVR_预流失 / 召回_UV / 闪购 / 闲鱼。
+1# 各 biz 最新日期 + 行数
+2curl -s -X POST "$KA_DATA_BASE/api/query" -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+3  -d '{"backend":"sqlite","sql":"SELECT biz, MAX(ds) max_ds, COUNT(*) rows FROM fact_conv_daily GROUP BY biz ORDER BY biz"}'
+维表（无 ds，内容级快照）
+● dim_material：素材内容标签（material_key 主键）。含订单/制片/视频内容类型/AIGC 标记 + 16 个 AI 内容标签（片头核心剧情/口播音色/画面结构/BGM情绪/贴纸/CTA/字幕/时长分档 等，ai_tag_version/ai_tagged_at）。
+● dim_product：商品标签（item_id 主键）。类目/品牌/季节/节日/场景/价格带/卖点/风格/性别年龄/地域。
+● dim_material_product：素材↔商品绑定桥（material_key↔item_id，含 brand/category/leaf_category/price_tier）。
+● dim_adgroup_tag：广告组配置标签（ad_group_id 主键，landing_id/click_url/campaign_id/scene_id/platform_os/item_id/landing_status）。
+snapshot_account_deduction —— 扣量（KS）
+粒度 (ds, media, account_id)。is_deduction/deduction_ratio/deduction_rate/deduction_count。ds 20260712~。
+
+三、核心口径（必读，否则数值会错）
+1. 现金公式（媒体系数，cash_formulas.json）
+cash = (消耗 − 赔付) × 系数：
+媒体
+系数
+KUAISHOU
+(消耗-赔付)*0.7812
+TENCENT
+(消耗-赔付)/1.045
+TOUTIAO
+(消耗-赔付)/1.09
+BAIDU
+(消耗-赔付)/1.51
+dwd 表的 cash_yuan 已按此公式算好（聚合点计算，非 fund 表预存）。直接 SUM(cash_yuan) 即可。BAIDU/TENCENT 赔付≈消耗→现金贡献≈0（rebate 已按赔付处理）。
+2. 转化 fact_conv 5 biz ⚠️ 最易踩的坑
+● 对齐官方 xlsx 必须加 WHERE media='KUAISHOU'：fact_conv 存全媒体（召回/闲鱼 conv 按 ad_space→media 分到 BAIDU/TENCENT/TOUTIAO，致全媒体 SUM 远大于 xlsx）。xlsx 只含媒体KA=KUAISHOU。
+    ● 例：召回 0817 全媒体 614024 vs KUAISHOU-only 49828（对齐 xlsx）。
+● 5 biz conv 列口径（已对齐官方 xlsx 0817 全等）：
+biz
+ODPS 源表
+conv 列
+CVR
+surge_dt.rpt_surge_acc_index_stat_summary_data_1d
+install→newaac_uv_attrib + uninstall→newaac_uv_attrib_wd_1h ⭐(uninstall 用 wd_1h 不是 attrib)
+CVR_预流失
+surge_dt.ads_aac_yls_stat_detail_1d
+install→yls_target_attrib_uv + uninstall→yls_wd_1h_target_attrib_uv
+闪购
+surge_dt.ads_ug_jl_wake_attr_deal_sg_stat_1d_all
+高客单 task 1051807369→sg_newmac_price_getx，其余→sg_newmac_uv
+召回_UV
+surge_dt.ads_ug_jl_wake_swdau_stat_afcid_attri_1d_ltv
+DAC task 1481722132→attri_swdac，其余→attri_ipvuv；人群 date-gate ds≥20260815 新人群
+闲鱼
+fleamarket_data_analysis.ads_idle_3rdgrowth_tb_ad_task_1d
+通用→u3_uv，拉新→u1_uv
+● account_id = ODPS 源 ad_space_id（闪购/CVR/CVR预流失/召回）或 ad_id（闲鱼）。
+3. account_id 两套 namespace ⚠️
+● dwd_adgroup（ODPS 体系）的 account_id ≠ dwd_account/fact_conv（Hologres/ODPS account 体系）的 account_id。
+● 赔付 JOIN 必须带 media（不带则腾讯 0 命中）。
+● 闲鱼 ad_id(7917xxx) 与媒体消耗账户 ID 两套 namespace 不可 JOIN（6 小 task 归并到主 task，总计对得上，低优不修）。
+4. 考核口径
+● 现金考核 cash_assessment，账面成本 = cash/(1−扣量比) 反推。budget = cash_budget/ratio。
+● 考核 SSOT 在 ka-knowledge 仓 catalog/assessment_catalog.json（53 条，sub_biz×media）；本地 business_rules.json 考核段已退役为 skeleton。编辑考核走 ka-knowledge，不走本接口。
+5. "全部"聚合
+● 成本达成率 = Σ成本 / Σ(考核 × 转化)；预算按 card_id 去重、支持"不限"。
+
+四、速查 SQL（按需求，backend=sqlite）
+1# 某账户某日明细
+2... -d '{"backend":"sqlite","sql":"SELECT ds,task_id,ROUND(cost_yuan,2) cost,conv,ROUND(cash_yuan,2) cash FROM dwd_account_daily WHERE account_id=\"<accid>\" AND ds>=20260815 ORDER BY ds"}'
+3
+4# 某媒体某日 sub_biz 消耗达成
+5... -d '{"backend":"sqlite","sql":"SELECT sub_biz,ROUND(SUM(cost_yuan),2) cost,ROUND(SUM(cash_assessment),2) assess,SUM(conv) conv FROM dwd_account_daily WHERE ds=20260820 AND media=\"KUAISHOU\" GROUP BY sub_biz ORDER BY cost DESC"}'
+6
+7# 素材消耗Top（某日某媒体）
+8... -d '{"backend":"sqlite","sql":"SELECT material_name,ROUND(SUM(cost_yuan),2) cost,SUM(clicks) clk FROM dwd_material_daily WHERE ds=20260820 AND media=\"KUAISHOU\" GROUP BY material_key ORDER BY cost DESC LIMIT 20"}'
+9
+10# conv 5 biz 某 ds KUAISHOU 对齐 xlsx
+11... -d '{"backend":"sqlite","sql":"SELECT biz,SUM(conv) FROM fact_conv_daily WHERE ds=20260817 AND media=\"KUAISHOU\" GROUP BY biz ORDER BY biz"}'
+
+五、直查 Hologres / ODPS 源底表
+想取本地 dwd 没缓存的明细或源侧字段，直查源表（backend=holo/odps）。常用源表：
+用途
+表
+后端
+账户消耗（实时小时级）
+qihang_account_report_hour
+holo
+资金/赔付
+wap_dhh.qihang_rta_account_fund_report_d
+holo
+账户消耗+扣量底表
+surge_dt.ads_rta_media_daily_report_base_account
+odps
+广告组消耗底表
+surge_dt.ads_rta_media_daily_report_base_adgroup
+odps
+素材审核
+surge_dt.ads_surge_material_stat_allchain_account_review_submission
+odps
+闪购品牌/类目标签
+tb_erfangyinliu.cp_biz_julang
+odps
+资金底表(ODPS)
+tb_erfangyinliu.qihang_rta_account_fund_report_d
+odps
+转化 5 biz 源
+见第三节 5 biz 表
+odps
+ODPS 直查源表受本账号 SELECT 权限 + 槽位限制，慢且部分表无 List 权限（列不出≠查不了，知道全名可查）。本接口 ODPS 走 CTAS 绕 Download 权限。
+
+六、故障排查
+现象
+原因 / 处理
+连不上 / 404
+沙箱重启致地址变 → 重取 port-mapping URL 更新 KA_DATA_BASE
+401
+token 缺/错 → 设 KA_DATA_READER_TOKEN；reader+ 才行
+400 "only SELECT/WITH"
+写了非 SELECT 或带分号 → 改成单条 SELECT
+400 "forbidden keyword"
+命中写/DDL 词 → 去掉
+400 "multi-statement"
+多条分号 → 拆成一条
+holo "column ... does not exist"
+字符串字面量用了双引号 → 改单引号（'public' 非 "public"）
+转化数偏大 12×
+没加 WHERE media='KUAISHOU' → 加上
+赔付 JOIN 出 0
+没带 media → JOIN 条件加 media
+odps 报权限/超时
+本账号无该表 SELECT 或槽位排队（120s 超时）→ 换有权限的表 / 分批 / 重试
+rowCount=10000 + truncated
+命中行数上限 → 加 WHERE/LIMIT 分批
+
+代码：server_fastapi/query_passthrough.py（护栏+路由）+ server_fastapi/routers/read.py 的 POST /api/query。 运维：沙箱跑 7105（KA_DATA_FASTAPI_PORT=7105 bash run_7005.sh start）；改代码后 bash run_7005.sh stop && bash run_7005.sh start 重启。

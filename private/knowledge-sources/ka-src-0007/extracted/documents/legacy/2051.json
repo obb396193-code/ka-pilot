@@ -1,0 +1,42 @@
+{
+  "documentId": 2051,
+  "documentName": "4.1代理商数据",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 代理商数据（t-1 数据需要第二天 9 点以后获取）\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/agent/report\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段       | 类型   | 描述                                                       |\n| ---------- | ------ | ---------------------------------------------------------- |\n| agent_id   | number | 代理商 ID（注：非账户快手 ID），在获取 accessToken 时返回  |\n| start_date | string | 过滤筛选条件，格式 yyyy-MM-dd 可选时间范围参见文档上方说明 |\n| end_date   | string | 过滤筛选条件，格式 yyyy-MM-dd 可选时间范围参见文档上方说明 |\n| page       | int    | 请求的页码，默认为 1                                       |\n| page_size  | int    | 每页行数，默认为 20，最大支持 1000                         |\n\n### 返回参数\n\n| 字段                                 | 类型   | 描述                       |\n| ------------------------------------ | ------ | -------------------------- |\n| code                                 | int    | 返回码/错误码              |\n| message                              | string | 返回信息/错误信息          |\n| total_count                          | int    | 数据的总行数               |\n| details                              | JSON   | 数据明细信息               |\n| date_time                            | string | 数据日期，格式：YYYY-MM-DD |\n| account_id                           | long   | 广告主 ID                  |\n| user_id                              | long   | 快手 id                    |\n| account_name                         | long   | 广告主名称                 |\n| total_charged_in_yuan                | long   | 总消耗（元）               |\n| total_balance_in_yuan                | long   | 总余额（元）               |\n| real_charged_in_yuan                 | long   | 现金消耗（元）             |\n| total_rebate_real_charged_in_yuan    | long   | 返点消耗（元）             |\n| contract_rebate_real_charged_in_yuan | long   | 框返消耗（元）             |\n| direct_rebate_real_charged_in_yuan   | long   | 激励消耗（元）             |\n| credit_real_charged_in_yuan          | long   | 信用消耗（元）             |\n| charge_day_on_day_percent            | String | 消耗环比                   |\n| played_num                   　　　　 | long　| 播放数                      |\n| ad_photo_impression                  | long   | 封面曝光数                 |\n| ad_photo_click                       | long   | 封面点击数                 |\n| ad_item_impression                   | long   | 素材曝光数                 |\n| ad_item_click                        | long   | 行为数                     |\n| photo_click_ratio                    | String | 封面点击率                 |\n| item_click_ratio                     | String | 行为点击率                 |\n| charged_campaign_count               | long   | 有消费计划数               |\n| product_name                         | string | 产品名                     |\n| corporation_name                     | string | 企业名称                   |\n| first_cost_day                       | long   | 首次消耗日期               |\n| industry                             | string | 一级行业                   |\n| second_industry                      | string | 二级行业                   |\n\n### 请求样例\n\n```\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v1/agent/report' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n   \"agent_id\": 123,\n   \"start_date\": \"2020-07-09\",\n   \"end_date\": \"2020-07-09\",\n   \"page\": 1,\n   \"page_size\": 1000\n}'\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625051
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625051,
+  "creator": "wb_mazhikai",
+  "fullContext": null
+}

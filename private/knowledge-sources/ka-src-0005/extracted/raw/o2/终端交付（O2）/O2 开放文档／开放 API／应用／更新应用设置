@@ -1,0 +1,56 @@
+## 更新应用设置
+
+更新 O2 应用设置
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/conf/update |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名称 |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 参数描述 |
+|-|-|-|-|
+| is_cr | Number | false | 是否开启代码评审 |
+| is_online_build | Number | false | 【适用于 Assets 研发】是否开启线上构建 |
+| is_tnpm_build | Number | false | 【适用于 tnpm 单包研发】是否开启云构建 |
+| is_tnpm_cdn | Number | false | 【适用于 tnpm 单包研发】是否开启 CDN 同步 |
+| is_tnpm_beta | Number | false | 【适用于 tnpm 单包研发】开启日常环境发布 |
+| is_iteration_page_all | Number | false | 【适用于 Weex、WebApp、移动端一体化】迭代页面默认设为全部页面 |
+| performance_check | Number | false | 【适用于 Weex、WebApp、移动端一体化】是否开启性能检测 |
+| air_greypub | Number | false | 【适用于 Weex、WebApp、移动端一体化】线上发布时是否先灰度发布 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| updated | 更新后的属性值，可以基于此判断更新是否成功 |
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/{appIdorName}/conf/update`,
+  {},
+  {
+    is_cr
+  },
+  {
+    SSO_TICKET,
+  }
+)
+
+{
+  "upsert": false,
+  "updated": {
+      "is_cr": false
+  }
+}
+
+```

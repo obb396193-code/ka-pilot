@@ -1,0 +1,23 @@
+用户真实问题链接: [https://docs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLlnNeJ3pmz5aA](https://docs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLlnNeJ3pmz5aA)
+
+作者：心羽
+
+评审人：冠夫
+
+
+
+如果您的域名归属于**云智能**，目前我们无法受理您的接入需求，请您自行到宙斯平台接入域名后，在【站点】-【域名接入】中选择**虚拟集群**接入域名；
+
+如果您的域名归属于**除阿里控股、淘天集团以外**的部门（例如国际商业、优酷、本地生活、菜鸟等），请确认在接入预发域名时选择了对应的接入集群；
+
+如不属于以上情况或已经选择了正确的接入集群，请根据提示记录集群名称，访问 [https://fs.alibaba-inc.com/#/certManage](https://fs.alibaba-inc.com/#/certManage)，在【证书管理】-【证书列表】页面中，选择【证书新增】-【接入证书申请】：  
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/132418/1713512837352-f1ca5bd8-fb9e-4d31-b5e0-967fc3e95cf4.png) 
+
+根据申请接入的域名和提示中的集群填写申请表格。例如，申请的域名为 pre-abc.example.com，则填写接入域名 *.example.com：根据申请接入的域名和提示中的集群填写申请表格。例如，申请的域名为 pre-abc.example.com，则填写接入域名 *.example.com：
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/132418/1713512837395-e626acdf-5519-4a32-9a67-9c10104f1cef.png) 
+
+待接入证书申请完成后，返回域名接入流程页面重试。如果证书申请过程被拒绝，请再次确认您的业务归属或联系源站值班咨询。
+
+
+

@@ -1,0 +1,107 @@
+
+
+### 一、总体原则
++ 需求评审完成后，**必须做设计评审**，设计评审完成后再评估工作量，再进行迭代排期；
+    - 按需求复杂度选择 概要设计和详细设计；
++ 设计阶段核心目标，**复用现有系统能力+沉淀系统能力；**
++ 需求开发自测完成后，**必须进行CodeReview和SQL****Review**，CR准则依据阿里开发规约和广告开发规约；
+
+
+
+
+
+### 二、需求评审
++ 需求评审准入条件：完成产品需求文档-PRD。
+    - PRD内容：需求背景、需求目标、功能流程（主流程+分支流程）、业务规则、界面原型；
++ 减少不必要的需求讨论和需求沟通；
+
+### 三、概要设计
+##### 1、数据库设计（如有）
++ 必须字段：id、gmt_create、gmt_modified；
++ 根据业务场景选用字段：
+    - member_id（含义 ali_id）,cust_id（含义 company_id）,
+    - product_line_id,product_id
++ 字段定义：命名、类型、是否可为空；
++ 索引：业务唯一性索引，普通索引；
+
+##### 2、架构设计：系统模块划分+系统模块交互
++ 系统交互图（数据流图），各模块的交互方式和交互协议；
+
+##### 3、关键模块设计：
+
+
+### 四、详细设计
+##### 1、复杂场景需要接口层次的时序图；
+##### 2、前后端交互接口设计（**复用现有系统能力+沉淀系统能力**）
++ 复用接口：
++ 变更接口：
+    - 变更内容； 
+    - 对原有逻辑的影响评估；
++ 新增接口：
+    - 接口名
+    - 接口入参&出参
+
+##### 3、服务端接口设计
++ 复用接口
++ 变更接口
+    - 变更内容； 
+    - 对原有逻辑的影响评估；
++ 新增接口
+    - 接口名；
+    - 接口入参&出参；
+
+
+
+
+
+### 代码规范和代码精简
+
+
+[阿里经济体开发规约](https://www.atatech.org/articles/50331?spm=ata.13269424.0.0.2d026c41b4Q97D)
+
+[Java代码精简之道](https://www.atatech.org/articles/169920?spm=ata.13269424.0.0.2d026c41b4Q97D)
+
+[Java编码技巧之高效代码50例](https://www.atatech.org/articles/154608?spm=ata.13261165.0.0.7b626ca09kTwIS)
+
+[消灭Java代码的"坏味道"](https://www.atatech.org/articles/148329?spm=a1z2e.12184483.learn.darticletitle1.e2664f9biUUbu0)
+
+
+
+
+
+### 单元测试
+
+
+### 日志规范
+###### <font style="color:#565969;">【强制】应用中不可直接使用日志系统（Log4j、Logback）中的API，而应依赖使用日志框架（SLF4J、JCL--Jakarta Commons Logging）中的API。</font>
+```plain
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+private static final Logger logger = LoggerFactory.getLogger(Test.class);
+```
+
+###### <font style="color:#565969;">【强制】在日志输出时，字符串变量之间的拼接使用占位符的方式。</font>
+###### <font style="color:#565969;">【强制】异常信息应该包括两类信息：案发现场信息和异常堆栈信息。如果不处理，那么往上抛。</font>
+```plain
+logger.debug("Processing trade with id: {} and symbol: {}", id, symbol);
+
+logger.error(各类参数或者对象toString + "_" + e.getMessage(), e);
+```
+
+###### <font style="color:#565969;">【强制】对于</font>`trace`<font style="color:#565969;">/</font>`debug`<font style="color:#565969;">/</font>`info`<font style="color:#565969;">级别的日志输出，必须进行日志级别的开关判断。</font>
+```plain
+// 如果判断为真，那么可以输出trace和debug级别的日志
+if (logger.isDebugEnabled()) { 
+    logger.debug("Current ID is: {} and name is: {}", id, getName()); 
+}
+```
+
+### 错误码规范
+
+
+
+
+### 如何做CR
+
+
+### 发布评审

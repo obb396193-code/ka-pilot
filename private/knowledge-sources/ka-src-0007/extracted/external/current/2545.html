@@ -1,0 +1,573 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no,viewport-fit=cover"/><meta name="theme-color" content="#000000"/><meta property="og:image" content="https://h2.static.yximgs.com/kos/nlav10834/wechat/default.png"/><meta http-equiv="Cache-control" content="no-cache"/><link rel="shortcut icon" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/venders/img/shortcutIcon/doc.png"/><title>轻雀文档</title><script>!function(){try{window.localStorageProxy=window.localStorage}catch(e){const t=new Map;class r{getItem(e){const r=String(e);return t.has(e)?String(t.get(r)):null}setItem(e,r){t.set(String(e),String(r))}removeItem(e){t.delete(e)}clear(){t.clear()}key(e){if(0===arguments.length)throw new TypeError("Failed to execute 'key' on 'Storage': 1 argument required, but only 0 present.");return Array.from(t.keys())[e]}get length(){return t.size}}const n=new r;window.localStorageProxy=new Proxy(n,{set:function(e,t,o){return r.prototype.hasOwnProperty(t)?n[t]=o:n.setItem(t,o),!0},get:function(e,o){return r.prototype.hasOwnProperty(o)?n[o]:t.has(o)?n.getItem(o):void 0}})}}()</script><script>!function(){var n="https://docs.qingque.cn",i=[n,"https://docs2.qingque.cn"],t=location.origin;function c(n){var i=n.match(/^https?:\/\/([^/?#]+)(?:[/?#]|$)/i);return i?i[1]:""}function o(n){var i=n.match(/^(\w+):\/\//);return i?i[1]:""}var r=i.includes&&i.includes(t)||i.indexOf&&i.indexOf(t)>-1?t:n;c(r)||c(n),o(r)||o(n);window.DOCS_GLOBAL_CONFIG={DOMAIN:r,DOMAIN_LIST:i}}()</script><script crossorigin="anonymous" src="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/logger/doc-logger.0.40.1.js"></script><script>!function(){if(!window.DocLogger){var o=function(){};window.DocLogger={getLogger:o,getLocalLog:o,debug:o,log:o,info:o,error:o,warn:o,count:o,statistic:o,timeCost:o,tag:o,getTimeCostSince:o,timeCostSince:o,setDocId:o,setDocName:o,setVersion:o,extendMeta:o,uuid:o,isDebugMode:o,setUserId:o,setProductName:o,setDebugMode:o,sendImmediately:o,collect:o,initVersionCheck:o,onVersionIncompatible:o};var e={};for(var n in window.DocLogger)e[n]=console[n]||console.info;e.getLogger=function(){return e},window.DocLogger=e}}(),~window.location.search.indexOf("res=")||"docs.qingque.cn"!==location.host&&"docs2.qingque.cn"!==location.host||window.DocLogger.setDebugMode(!1),window.DocLogger.setProductName("eta-vodka"),window.DocLogger.setVersion("vodka-101523833"),window.DocLogger.extendMeta({editorVersion:".101523833",frameVersion:"-101523833",buildTime:"2026.08.18-20:12:22"})</script><script>window.isSsr = true;</script>
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/raven/3.26.4/raven.min.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/sdk/js/service.101522638.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/sdk/js/vendors_src-index.101522638.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/sdk/js/src-index.101522638.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/sdk/js/editor.101522638.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/sdk/js/docs-ui.101522638.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/third-lib/react.production.16.8.3.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/third-lib/react-dom.production.16.8.3.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/third-lib/moment.2.24.0.min.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/third-lib/antd-word-need-20210716.min.js">
+<link rel="preload" crossorigin="anonymous" as="style" type="text/css" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/docs-antd/docs-antd.b45adf13.min.css">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/intl/1.2.5/intl.min.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/docs-common/ks-watermark-1.0.9.cdn.es5.min.js">
+<link rel="preload" crossorigin="anonymous" as="script" type="text/javascript" href="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/venders/tkit/1.2.1/ts-polyfill.min.js">
+        <script>
+          
+    window.recordVodkaLCPBySSR = false;
+      function recordVodkaLCP() {
+        if (!window.recordVodkaLCPBySSR) {
+          if (window.DocLogger && window.DocLogger.getTimeCostSince("performance.timing.navigationStart")) {
+            window.DocLogger.timeCostSince(
+              "performance.largest.contentful.paint.switch",
+              "performance.timing.navigationStart"
+            );
+          } 
+          if (!window.Docs || !window.Docs.Word.csrStartRender) {
+            window.DocLogger && window.DocLogger.timeCost("performance.largest.contentful.paint");
+          }
+          window.recordVodkaLCPBySSR = true;
+        }
+      }
+      
+          if (window.DocLogger && window.DocLogger.getTimeCostSince('performance.timing.navigationStart')) {
+            window.DocLogger.timeCostSince(
+              'performance.ssr.render.start',
+              'performance.timing.navigationStart'
+            );
+          } else {
+            window.DocLogger && window.DocLogger.timeCost('performance.ssr.render.start');
+          }
+          requestAnimationFrame(function(){
+            recordVodkaLCP();
+          });
+        </script>
+      <div id="vodka-appview-editor-ssr" style="opacity:1" class="vodka-appview-editor-ssr opacity 
+        
+         
+        
+          "><style type="text/css">.vodka-appview-editor-ssr {
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow-y: auto;
+  font-family: Microsoft Yahei, arial, sans-serif;
+  font-size: 14px;
+  line-height: normal;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+.vodka-appview-editor-ssr.opacity img,
+.vodka-appview-editor-ssr.opacity .ssr-block-entity {
+  opacity: 0;
+}
+
+.docs-skeleton {
+  display: block;
+  background-color: #f8f9fa;
+}
+
+.docs-skeleton-common-header {
+  height: 64px;
+}
+
+.docs-skeleton-toolbar {
+  height: 40px;
+}
+
+.docs-skeleton-body {
+  display: flex;
+  /* background-color: rgba(248, 249, 250, 0.5); */
+  padding-top: 10px;
+  flex-flow: row nowrap;
+  justify-content: start;
+}
+
+.has-toolbar .docs-skeleton-body {
+  padding-top: 0;
+}
+
+.docs-skeleton-content {
+  min-height: 1135px;
+  background-color: #fff;
+  /* padding: 76px; */
+  box-sizing: unset;
+}
+
+.docs-skeleton-left-panel {
+  flex: 1;
+  min-width: 150px;
+}
+
+.has-cover [data-block-type='document'] {
+  padding-top: 46px !important;
+}
+
+.docs-skeleton-right-panel {
+  flex: 1;
+}
+
+.docs-skeleton-catlog {
+  display: none;
+  max-width: 320px;
+  height: 100%;
+  padding-left: 12px;
+  padding-right: 16px;
+
+  /* background-color: #b1b8e0; */
+}
+
+.docs-skeleton-discussion {
+  display: none;
+  max-width: 320px;
+  height: 100%;
+
+  /* background-color: #b1b8e0; */
+}
+
+/* 目录、评论面板的显示隐藏 */
+.docs-skeleton-catlog-show .docs-skeleton-catlog {
+  display: block;
+}
+
+.docs-skeleton-discussion-show .docs-skeleton-discussion {
+  display: block;
+}
+
+.docs-skeleton-mode-wideScreenCompact .docs-skeleton-content {
+  flex-basis: 1125px;
+  max-width: 1125px;
+  flex-shrink: 0;
+}
+
+.docs-skeleton img {
+  vertical-align: baseline;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 高亮块 */
+
+.vodka-highlightblock-basestyle {
+  position: absolute;
+  left: -1px;
+  top: 6px;
+  bottom: 6px;
+  width: 100%;
+  border: 1px solid rgba(170, 131, 252, 0.7);
+  border-radius: 4px;
+}
+.vodka-highlightblock-style2 {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-bottom: 0px;
+  bottom: -0.01px;
+}
+.vodka-highlightblock-style3 {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top: 0px;
+  top: 0px;
+}
+.vodka-highlightblock-emoji {
+  left: 0;
+  position: absolute;
+  margin-top: 9px;
+  margin-left: 9px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1;
+  padding-left: 2px;
+  padding-right: 2px;
+  text-align: center;
+  background: rgba(61, 92, 128, 0);
+  border-radius: 4px;
+}
+@media (any-hover: hover) {
+  .vodka-highlightblock-emoji:hover {
+    background: rgba(61, 92, 128, 0.12);
+  }
+}
+
+.highlight-block-emoji > ul > li {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.highlight-block-color > ul > li {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.vodka-lineview-content-link-cursor a span {
+  color: #0c63fa !important;
+}
+
+.cover-container {
+  overflow: hidden;
+  max-height: 260px;
+}
+
+.goog-inline-block {
+  display: inline-block;
+}
+
+.vodka-appview-editor-ssr a {
+  text-decoration: none;
+}
+
+.docs-skeleton.docs-skeleton-mode-adaptScreen {
+  background: white;
+}
+.docs-skeleton-mode-adaptScreen.docs-skeleton-catlog-hide .docs-skeleton-left-panel {
+  min-width: 0;
+  flex-grow: 0;
+}
+
+.docs-skeleton-mode-adaptScreen.docs-skeleton-discussion-hide .docs-skeleton-right-panel {
+  min-width: 22px;
+  flex-grow: 0;
+}
+
+/* 页面模式适配 - adaptScreen */
+.docs-skeleton-mode-adaptScreen .docs-skeleton-body {
+  justify-content: start;
+  padding-top: 0;
+}
+
+.docs-skeleton-mode-adaptScreen .docs-skeleton-content {
+  flex: 1 1 500px;
+  min-width: 800px;
+  max-width: 1920px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.docs-skeleton-mode-adaptScreen .docs-skeleton-left-panel {
+  flex-basis: 0px;
+  max-width: 320px;
+  min-width: 150px;
+  flex-grow: 1;
+}
+
+.docs-skeleton-mode-adaptScreen .docs-skeleton-right-panel {
+  flex-basis: 0px;
+  max-width: 320px;
+  min-width: 245px;
+  flex-grow: 1;
+}
+
+.docs-skeleton-mode-adaptScreen .vodka-paginateddocumentplugin {
+  border: 1px solid #fff;
+}
+
+.docs-skeleton-mode-adaptScreen #ssr-cover-container {
+  max-height: 260px;
+}
+
+/* chrome下特定flex布局的一个bug
+chrome是从前往后解析渲染内容的，但是骨架屏的flex布局，后面的元素会影响到前面元素的尺寸
+在docs-skeleton-right-panel解析前后，docs-skeleton-content渲染的宽度有所变化 
+表现为内容有一个从右往左的闪烁 */
+
+@media screen and (min-width: 1180px) {
+  .docs-skeleton.docs-skeleton-catlog-hide.docs-skeleton-discussion-show .docs-skeleton-content {
+    max-width: calc(100% - 320px);
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .docs-skeleton.docs-skeleton-mode-adaptScreen .docs-skeleton-content {
+    flex: 1 1 800px;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .docs-skeleton.docs-skeleton-discussion-show.docs-skeleton-catlog-show .docs-skeleton-content {
+    max-width: calc(100% - 640px);
+  }
+}
+</style><div data-view-mode="adaptScreen" class="docs-skeleton k-frame-vodka docs-skeleton-mode-adaptScreen adaptScreen A4 "><script>(function () {
+  if (window.Docs && Docs.Word.csrStartRender) {
+    document.getElementById('vodka-appview-editor-ssr').remove();
+  }
+})();
+</script><script>'use strict';
+(function () {
+  var localStorage = window.localStorageProxy || window.localStorage;
+  if (window.DocLogger) {
+    window.DocLogger.timeCost('performance.js.browserSkeleton');
+  }
+  var docsSkeletonEl = document.querySelector('.docs-skeleton');
+
+  if (!docsSkeletonEl) {
+    return;
+  }
+
+  var initialDiscussionPanelVisible = localStorage.getItem('showDiscussion') !== 'false';
+
+  if (initialDiscussionPanelVisible) {
+    docsSkeletonEl.classList.add('docs-skeleton-discussion-show');
+  } else {
+    docsSkeletonEl.classList.add('docs-skeleton-discussion-hide');
+  }
+
+  var isWiki = location.pathname.startsWith('/k/home');
+
+  var itemName = isWiki ? 'wikiDetail' : 'wordDetail';
+
+  var wordDetail = JSON.parse(localStorage.getItem(itemName));
+  var initialCatPanelVisible = !(wordDetail && wordDetail.showCatalog === 'false');
+
+  if (initialCatPanelVisible) {
+    docsSkeletonEl.classList.add('docs-skeleton-catlog-show');
+  } else {
+    docsSkeletonEl.classList.add('docs-skeleton-catlog-hide');
+  }
+})();
+</script><div class="docs-skeleton-header"><div class="docs-skeleton-common-header k-frame-header"></div></div><div class="docs-skeleton-body"><div class="docs-skeleton-left-panel"><div class="docs-skeleton-catlog"></div></div><div class="docs-skeleton-content"><div class="vodka-paginateddocumentplugin"><div>
+    <style>
+  .ssr-container * { box-sizing: unset; }
+</style>
+    <div class="ssr-container"><div style="padding-top:76px" data-block-type="document" data-reactroot=""><div style="padding-left:68px;padding-right:68px"><div class="page-content-wrapper" data-children-container="true"><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:0;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>为保证开放平台整体接口的稳定性，更高效合理地利用平台资源，MAPI</span><span>&#8203; </span><span>针对开发者接口调用进行频控分级管理。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.5;padding-right:0;padding-top:10px;padding-bottom:8px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:20px;color:#434343;font-weight:bold" data-reactroot=""><span>1、频控类型</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>当前开放平台频控分为三种类型，分别为应用维度、接口维度、账号维度，维度可以叉乘。多个维度同时生效，触发任一维度的频控都会影响开发者当前调用。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>频控多以分钟为单位，即QPM；部分接口存在日限。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;text-decoration:none;background-color:initial;border:none" data-reactroot=""> </span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.5;padding-right:0;padding-top:10px;padding-bottom:8px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:20px;color:#434343;font-weight:bold" data-reactroot=""><span>2、常见频控说明</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:22px;line-height:1.5;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="font-size:16px;font-family:Arial;vertical-align:baseline;height:16px;min-width:16px;padding-right:6px;position:absolute;left:0" class="goog-inline-block vodka-lineview-text-block">●</span><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:17px;color:#434343;font-weight:bold" data-reactroot=""><span>应用维度频控等级</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;font-weight:bold" data-reactroot=""><span>应用维度频控</span></span><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>指开发者AppID粒度下，每分钟可调用的所有接口次数限制。当前共分为五个等级。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>所有AppID默认为第二等级，即QPM=2000，</span></span><span data-block-type="text" style="font-family:&#x27;Microsoft Yahei&#x27;;font-size:15px;color:#434343" data-reactroot=""><span>如有疑问可通过MAPI公共邮箱(MAPI@</span></span><span class="vodka-lineview-content-link-cursor" data-block-type="link" data-reactroot=""><a rel="noopener noreferrer" data-type="link"><span data-children-container="true"><span data-block-type="text" style="font-family:&#x27;Microsoft Yahei&#x27;;font-size:15px;color:#2374d1;text-decoration:underline" data-reactroot=""><span>kuaishou.com</span></span></span></a></span><span data-block-type="text" style="font-family:&#x27;Microsoft Yahei&#x27;;font-size:15px;color:#434343" data-reactroot=""><span>)咨询及调整；</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.62;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>具体分级：一级，QPM为1000；二级，QPM为2000；三级，QPM为3000；四级，QPM为4000；五级，QPM为5000。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;font-weight:bold;text-decoration:underline" data-reactroot=""><span>应用限流提示</span></span><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;text-decoration:underline" data-reactroot=""><span>：该应用请求过于频繁，请稍后再试</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:22px;line-height:1.5;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="font-size:16px;font-family:Arial;vertical-align:baseline;height:16px;min-width:16px;padding-right:6px;position:absolute;left:0" class="goog-inline-block vodka-lineview-text-block">●</span><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:17px;color:#434343;font-weight:bold" data-reactroot=""><span>接口维度频控</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.62;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;font-weight:bold" data-reactroot=""><span>接口维度频控</span></span><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>指使用该接口的所有开发者每分钟调用次数总和的限制。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.62;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>多以”接口维度×应用维度“维度出现，指该AppID、该接口每分钟调用次数限制。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.62;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;font-weight:bold;text-decoration:underline" data-reactroot=""><span>接口×应用维度限流提示</span></span><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;text-decoration:underline" data-reactroot=""><span>：触发接口XXX限流，请稍后再试</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:22px;line-height:1.5;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="font-size:16px;font-family:Arial;vertical-align:baseline;height:16px;min-width:16px;padding-right:6px;position:absolute;left:0" class="goog-inline-block vodka-lineview-text-block">●</span><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:17px;color:#434343;font-weight:bold" data-reactroot=""><span>账号维度频控</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.62;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>账号维度频控指入参广告账户每分钟被请求次数，触发概率较低。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;text-decoration:none;background-color:initial;border:none" data-reactroot=""> </span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.5;padding-right:0;padding-top:10px;padding-bottom:8px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:20px;color:#434343;font-weight:bold" data-reactroot=""><span>3、调用建议</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>调用限流会触发提示，开发者可根据提示，合理调用。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>1）根据实际需要合理安排调用次数，避免资源浪费</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>2）错峰调用，部分接口调用量较大，开发者可选择非整点/非整分时间调用。</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343;text-decoration:none;background-color:initial;border:none" data-reactroot=""> </span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:4px" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#434343" data-reactroot=""><span>落地执行时间：2024年7月1日</span></span></span></span></div></div><div class="vodka-paragraphrenderer" data-type="paragraph" style="text-align:left;position:relative;padding-left:0;line-height:1.74;padding-right:0;padding-top:4px;padding-bottom:0" data-reactroot=""><div style="font-size:0" class="vodka-paragraphrenderer-inner"><span style="white-space:normal;word-break:break-word;display:inline-block;font-size:10px;position:relative" class="goog-inline-block vodka-lineview-text-block"><span data-children-container="true"><span data-block-type="text" style="font-family:Arial,&#x27;Microsoft YaHei&#x27;,&#x27;微软雅黑&#x27;,&#x27;黑体&#x27;,Heiti,sans-serif,SimSun,&#x27;宋体&#x27;,serif;font-size:15px;color:#1f2329;text-decoration:none;background-color:initial;border:none" data-reactroot=""> </span></span></span></div></div></div></div></div></div>
+  </div></div></div><div class="docs-skeleton-right-panel"><div class="docs-skeleton-discussion"></div></div></div><script>(function () {
+  function getImageUrl(path) {
+    if (!path) {
+      return path;
+    }
+    if (path.startsWith('http')) {
+      return path;
+    }
+    const domainList = [
+      'docs.corp.kuaishou.com',
+      'is-docs-stage.corp.kuaishou.com',
+      'is-docs-test.corp.kuaishou.com'
+    ];
+    if (
+      domainList.some(domain => {
+        return domain === location.host;
+      })
+    ) {
+      return `https://storage.${location.host}${path}`;
+    }
+    return path;
+  }
+  if (window.DocLogger) {
+    window.DocLogger.timeCost('performance.js.coverScript');
+  }
+  var editorSSR = document.getElementById('vodka-appview-editor-ssr');
+  if (!editorSSR) {
+    return;
+  }
+  editorSSR.style.opacity = 1;
+  editorSSR.classList.remove('opacity');
+
+  var vodkaEditorContainerWidth = document
+    .querySelector('.page-content-wrapper')
+    .getBoundingClientRect().width;
+
+  function parents(el, selector) {
+    const parents = [];
+    while ((el = el.parentNode) && el !== document) {
+      if (!selector || el.matches(selector)) parents.unshift(el);
+    }
+    return parents;
+  }
+
+  function getContainerWidth(item) {
+    var paragraphInnerNode = parents(item, '.vodka-paragraphrenderer-inner')[0];
+    var paragraphNode = paragraphInnerNode || parents(item, '.vodka-paragraphrenderer')[0];
+    if (paragraphNode) {
+      return paragraphNode.getBoundingClientRect().width;
+    }
+    return vodkaEditorContainerWidth;
+  }
+
+  document.querySelectorAll('.line-width').forEach(function (item) {
+    item.style.width = `${getContainerWidth(item)}px`;
+  });
+  document.querySelectorAll('.max-line-width').forEach(function (item) {
+    item.style.maxWidth = `${getContainerWidth(item) - 4}px`;
+  });
+  document.querySelectorAll('.vodka-tablerenderer-div').forEach(function (item) {
+    var tableEl = item.querySelector('.vodka-tablerenderer');
+    if (tableEl && tableEl.style.width && tableEl.style.width.indexOf('px') > -1) {
+      var tableWidth = parseInt(tableEl.style.width);
+      if (tableWidth > vodkaEditorContainerWidth) {
+        item.style.justifyContent = 'start';
+      }
+    }
+  });
+
+  document.querySelectorAll('img[data-src]').forEach(function (item) {
+    if (!item.src && item.dataset.src) {
+      item.src = getImageUrl(item.dataset.src);
+    }
+  });
+
+  document.querySelectorAll('.adapt-img').forEach(function (item) {
+    const width = parseInt(item.style.width);
+    const height = parseInt(item.style.height);
+    const realWidth = parseInt(window.getComputedStyle(item).width);
+    const realHeight = (height / width) * realWidth;
+    item.style.height = `${realHeight}px`;
+  });
+
+  function isMobile() {
+    return editorSSR.classList.contains('mobile');
+  }
+
+  var maxCoverHeight = isMobile() ? 180 : 260;
+  function getImgHeight(data) {
+    const scaleInfo = getImgScale(data);
+    if (scaleInfo[0] === 'height') {
+      const renderedWidth = data.containerWidth;
+      const imgWidth = data.imgWidth;
+      const imgHeight = data.imgHeight;
+      return (imgHeight * renderedWidth) / imgWidth;
+    }
+    return maxCoverHeight;
+  }
+  function getImgScale(data) {
+    var { imgWidth, imgHeight, containerWidth, containerHeight } = data;
+    if (imgWidth >= containerWidth && imgHeight >= containerHeight) {
+      var res = containerWidth / imgWidth >= containerHeight / imgHeight ? 'width' : 'height';
+      var scale = Math.max(containerWidth / imgWidth, containerHeight / imgHeight);
+      return [res, scale.toFixed(4)];
+    }
+    if (imgWidth >= containerWidth && imgHeight < containerHeight)
+      return ['height', (containerHeight / imgHeight).toFixed(4)];
+    if (imgWidth < containerWidth && imgHeight >= containerHeight)
+      return ['width', (containerWidth / imgWidth).toFixed(4)];
+    if (imgWidth < containerWidth && imgHeight < containerHeight) {
+      var res = containerWidth / imgWidth >= containerHeight / imgHeight ? 'width' : 'height';
+      var scale = Math.max(containerWidth / imgWidth, containerHeight / imgHeight);
+      return [res, scale.toFixed(4)];
+    }
+
+    return ['noscale', 1];
+  }
+
+  function fixImgY(imgInfo, imgScaleInfo) {
+    var imgY = imgInfo.imgY;
+    var currentImgScale = imgScaleInfo[1];
+    var dataImgScale = imgInfo.scale;
+    if (currentImgScale != imgInfo.scale) {
+      const halfHeightOfContainer = (isMobile ? 180 : 260) / 2;
+      let centerY =
+        ((Math.abs(imgY) + halfHeightOfContainer) / dataImgScale) * currentImgScale -
+        halfHeightOfContainer;
+      if (centerY < 0) {
+        centerY = 0;
+      }
+      return -centerY;
+    }
+    return imgY;
+  }
+
+  function fixImgY1(imgInfo, imgScaleInfo) {
+    var imgY = imgInfo.imgY;
+    var currentImgScale = imgScaleInfo[1];
+    var dataImgScale = imgInfo.scale;
+    if (currentImgScale != imgInfo.scale) {
+      const halfHeightOfContainer = (isMobile() ? 180 : 260) / 2;
+      let centerY =
+        ((Math.abs(imgY) + halfHeightOfContainer) / dataImgScale) * currentImgScale -
+        halfHeightOfContainer;
+      if (centerY < 0) {
+        centerY = 0;
+      }
+      return -centerY;
+    }
+    return imgY;
+  }
+
+  var container = document.getElementById('ssr-cover-container');
+  if (container) {
+    var rect = container.getBoundingClientRect();
+    var containerWidth = rect.width;
+    var containerHeight = rect.height || maxCoverHeight;
+    var imgInfo = JSON.parse(container.dataset.cover);
+
+    var imgScaleInfo = getImgScale({
+      imgWidth: imgInfo.imgW,
+      imgHeight: imgInfo.imgH,
+      containerWidth: containerWidth,
+      containerHeight: containerHeight
+    });
+    if (!container.style.height) {
+      container.style.height =
+        // eslint-disable-next-line prefer-template
+        getImgHeight({
+          imgWidth: imgInfo.imgW,
+          imgHeight: imgInfo.imgH,
+          containerWidth: containerWidth,
+          containerHeight: containerHeight
+        }) + 'px';
+    }
+    // var imgScaleType = imgScaleInfo[0];
+
+    if (imgScaleInfo[0] === 'height' && window.vodkaCenterFocusCover === false) {
+      container.querySelector('img').style.height = '100%';
+      container.querySelector('img').style.width = 'auto';
+    }
+    var imgX = imgInfo.imgX;
+
+    var imgY =
+      window.vodkaCenterFocusCover === false
+        ? fixImgY(imgInfo, imgScaleInfo)
+        : fixImgY1(imgInfo, imgScaleInfo);
+
+    container.querySelector('img').style.transform = `matrix(1, 0, 0, 1, 0, ${imgY})`;
+  }
+})();
+</script></div></div>
+    
+        <script>
+        (function(){
+        window.vodkaSSRRenderSuccess = true;
+        recordVodkaLCP();
+        var ssrContainer = document.getElementById('vodka-appview-editor-ssr');
+
+        window.ssrStatInfo = {"isFromCache":false,"isSuccess":true,"perfInfo":[{"name":"getKconf","duration":0.513885498046875},{"name":"render:applyCommands","duration":5.886810302734375},{"name":"render:parser","duration":1.2194633483886719},{"name":"render:renderToString","duration":3.376708984375},{"name":"ssr:loadData","duration":26.803871154785156},{"name":"ssr:renderPending","duration":0.385284423828125},{"name":"ssr:render","duration":11.287200927734375},{"name":"stream:0-start","duration":0.18047332763671875},{"name":"stream:0-assetsEnd","duration":0.33939361572265625},{"name":"stream:0-ssrEnd","duration":39.466278076171875}]};
+        if (window.DocLogger && DocLogger.tag) {
+          DocLogger.tag('performance.ssr.ssr-lcp-start');
+        }
+        if (window.DocLogger && DocLogger.statistic) {
+          window.ssrStatInfo.perfInfo.forEach(function(item) {
+            DocLogger.statistic('performance.ssr.' + item.name, item.duration);
+          })
+        }
+        if (window.DocLogger && DocLogger.count) {
+          var renderSuccess = window.ssrStatInfo.isSuccess;
+          if (renderSuccess) {
+            DocLogger.count('ssr.render.success');
+            var fromCache = window.ssrStatInfo.isFromCache;
+            if (fromCache) {
+              DocLogger.count('ssr.render.cache');
+            }
+            else {
+              DocLogger.count('ssr.render.noncache');
+            }
+          }
+          else {
+            DocLogger.count('ssr.render.fail');
+          }
+        }
+        console.log('ssr render', performance.now());
+      }())
+        </script>
+      
+    <script>function getQueryString(n){const e=window.location.search;if(e){const r=new RegExp("(\\?|&)"+n+"=([^&]*)(&|$)"),t=e.match(r);if(null!==t)return unescape(t[2])}return""}window.etaUrlFrom=getQueryString("from")</script><script>!function(){var o=Math.floor(performance.now());DocLogger.tag("PRE_SDK"),DocLogger.sendImmediately("SHOW",{action:"ETA_WORD_LIFECYCLE",params:{hook_type:"PRE_SDK",duration:o,span_duration:o},urlPage:{page:"ETA_WORD_PAGE"}})}()</script><script src="https://h2.static.yximgs.com/udata/pkg/IS-DOCS/vodka/sdk/docs-word-1.0.0-aplha.101522638.js?userApiWithDocId=true"></script><script>Docs.Word.onReady((function(){DocLogger.tag("SDK_ONREADY"),DocLogger.sendImmediately("SHOW",{action:"ETA_WORD_LIFECYCLE",params:{hook_type:"SDK_ONREADY",duration:Math.floor(performance.now()),span_duration:DocLogger.getTimeCostSince("PRE_SDK")},urlPage:{page:"ETA_WORD_PAGE"}}),Docs.Word.onLoad((function(){DocLogger.tag("SDK_ONLOAD"),DocLogger.sendImmediately("SHOW",{action:"ETA_WORD_LIFECYCLE",params:{hook_type:"SDK_ONLOAD",duration:Math.floor(performance.now()),span_duration:DocLogger.getTimeCostSince("PRE_SDK_RENDER")},urlPage:{page:"ETA_WORD_PAGE"}})}))}))</script><script>if(/MicroMessenger/i.test(window.navigator.userAgent)){var script=document.createElement("script");script.type="text/javascript",script.src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js",document.getElementsByTagName("head")[0].appendChild(script)}</script><script>function _getQueryObject(){var e=location.search,t={};return e.replace(/([^?&=\/]+)=([^?&=\/]*)/g,(function(e,o,a){var c=decodeURIComponent(o),d=decodeURIComponent(a);return d=String(d),/\//.test(d)&&(d=d.replace(/\//g,"")),t[c]=d,e})),t}var _pathRes=/^\/[sd]\/home\/(.*)$/g.exec(window.location.pathname),docId=_pathRes&&_pathRes[1],shortcutId="";docId||(shortcutId=(_pathRes=/^\/k\/home\/(.*)\/(.*)$/.exec(location.pathname))&&_pathRes[1],docId=_pathRes&&_pathRes[2]),docId&&Docs.Word.preloadData(docId,shortcutId)</script><script>!function(){var e,r,n,o,t,i,a,s,c,u={getItem:function(e){return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(e).replace(/[-.+*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null},setItem:function(e,r,n,o,t,i){if(!e||/^(?:expires|max\-age|path|domain|secure)$/i.test(e))return!1;var a="";if(n)switch(n.constructor){case Number:a=n===1/0?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+n;break;case String:a="; expires="+n;break;case Date:a="; expires="+n.toUTCString()}return document.cookie=[REDACTED_SECRET_EXAMPLE]"="+encodeURIComponent(r)+a+(t?"; domain="+t:"")+(o?"; path="+o:"")+(i?"; secure":""),!0},removeItem:function(e,r,n){return!(!e||!this.hasItem(e))&&(document.cookie=[REDACTED_SECRET_EXAMPLE]"=; expires=Thu, 01 Jan 1970 00:00:00 GMT"+(n?"; domain="+n:"")+(r?"; path="+r:""),!0)},hasItem:function(e){return new RegExp("(?:^|;\\s*)"+encodeURIComponent(e).replace(/[-.+*]/g,"\\$&")+"\\s*\\=").test(document.cookie)},keys:function(){for(var e=document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g,"").split(/\s*(?:\=[^;]*)?;\s*/),r=0;r<e.length;r++)e[r]=decodeURIComponent(e[r]);return e}},l="系统已更新，请刷新访问最新版本。",m=!!~window.location.search.indexOf("res=");function p(e){if(r){var o=new XMLHttpRequest;o.open("GET",r,!0),o.onload=()=>{if(o.status<200&&o.status>=300&&304!==o.status)e&&e([]);else{var r;try{r=JSON.parse(o.response)}catch(e){r={}}if(0!==r.code)return void(e&&e([]));var t=r.result;t&&Array.isArray(t)?e&&e(t.filter((function(e){return"general"!==e.type||(e.grayInfo&&e.grayInfo.lastCompatibleVersion&&(n=parseInt(e.grayInfo.lastCompatibleVersion),e.grayInfo.incompatibleTip&&(l=e.grayInfo.incompatibleTip)),!1)}))):e&&e([])}},o.ontimeout=o.onerror=r=>{e&&e([])},o.send(null)}}function d(){if(o&&!m)if(n&&parseInt(o)<parseInt(n)){var e=parseInt(sessionStorage.getItem("versionInCompatibleTime"))||0;sessionStorage.setItem("versionInCompatibleTime",e+1),e<4?t&&t(l):window.DocLogger&&window.DocLogger.error("versionEndLessInCompatible"),window.DocLogger?window.DocLogger.warn("versionInCompatible",{currentVersion:o,lastCompatibleVersion:n,versionInCompatibleTime:e}):console.info("versionInCompatible",{currentVersion:o,lastCompatibleVersion:n,versionInCompatibleTime:e})}else sessionStorage.setItem("versionInCompatibleTime",0),setTimeout((function(){p(d)}),18e5)}function f(){p((function(r){var o,t=u.getItem(e),i=r.filter((function(e){return"creator"===e.type}))[0];if(o=i||r[0],n&&o&&o.grayInfo&&o.grayInfo.html){var a=/(\d+)\.html/.exec(o.grayInfo.html);a&&a[1]<n&&(o=void 0)}if(o&&(o=JSON.stringify(o)),t||o)return!o&&t?(function(){u.removeItem(e,"/"),u.removeItem(e);var r=!u.getItem(e);return r||DocLogger&&DocLogger.info("grayConf.error.clearCookie"),r}()&&window.location.reload(),void d()):void(o&&o!=t?u.setItem(e,o,new Date((new Date).getTime()+6048e5),"/")&&window.location.reload():d());d()}))}function g(e,r,n){return r&&i&&!i.html&&i[e]&&i[e]!==r?n.replace(r,i[e]):n}window.GrayApi={cookieUtils:u,init:function(n,o,t,l){e=n;var p=/^\/[sd]\/home\/(.*)$/g.exec(window.location.pathname),d=p&&p[1];r="/grayscale/api/gray?grayConf="+(window.GrayApi.getQueryString("grayConf")||e),d&&(r=r+"&cosmoId="+d);var y=_getQueryObject().identityId;y&&(r=r+"&identityId="+y),f();try{var I=JSON.parse(u.getItem(e));"[object Object]"!==Object.prototype.toString.call(I)||"[object Object]"!==Object.prototype.toString.call(I.grayInfo)||m||(i=I.grayInfo,window.DocLogger?window.DocLogger.info("grayConf","灰度版本:",I.desc,"灰度信息:",JSON.stringify(I)):console.info("灰度版本:",I.desc,"灰度信息:",JSON.stringify(I)))}catch(e){window.DocLogger?window.DocLogger.error("grayParseError",e):console.error("灰度解析失败",e)}i&&!i.html&&Array.isArray(i.css)&&Array.isArray(i.js)?(o=i.js.map((function(e){return{url:e}})),t=i.css.map((function(e){return{url:e}}))):(Array.isArray(o)&&o.forEach((function(e){e.url=g(e.key,e.version,e.url)})),Array.isArray(t)&&t.forEach((function(e){e.url=g(e.key,e.version,e.url)})),Array.isArray(l)&&l.forEach((function(e){e.url=g(e.key,e.version,e.url)}))),a=o,s=t,c=l},startVersionCheck:function(e,r){o=Math.abs(parseInt(e)||0),t=r,d()},insertHead:function(){s&&s.forEach((function(e){var r=document.createElement("link");r.rel="stylesheet",r.type="text/css",r.href=e.url,document.head.appendChild(r)})),a&&a.forEach((function(e){var r=document.createElement("link");r.rel="preload",r.as="script",r.crossOrigin="anonymous",r.type="text/javascript",r.href=e.url,document.head.appendChild(r)})),c&&c.forEach((function(e){var r=document.createElement("link");r.rel="preload",r.as="script",r.crossOrigin="anonymous",r.type="text/javascript",r.href=e.url,document.head.appendChild(r)}))},insertBody:function(){a&&a.forEach((function(e){var r=document.createElement("script");r.crossOrigin="anonymous",r.type="text/javascript",r.src=e.url,document.head.appendChild(r)}))},getQueryString:function(e){const r=new RegExp("(^|&)"+e+"=([^&]*)(&|$)","i"),n=window.location.search.substr(1).match(r);return null!=n?unescape(n[2]):null}}}()</script><script>!function(){var s=[],t=[],a=null;try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/zh-CN.cd678c14.js".split("/").pop()||"").split(".")}catch(s){a=[]}s.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/zh-CN.cd678c14.js"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css".split("/").pop()||"").split(".")}catch(s){a=[]}t.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/en-US.7dfd5de5.js".split("/").pop()||"").split(".")}catch(s){a=[]}s.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/en-US.7dfd5de5.js"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css".split("/").pop()||"").split(".")}catch(s){a=[]}t.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/vendors.3b7bc54c.js".split("/").pop()||"").split(".")}catch(s){a=[]}s.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/vendors.3b7bc54c.js"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css".split("/").pop()||"").split(".")}catch(s){a=[]}t.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/main.33569b1b.js".split("/").pop()||"").split(".")}catch(s){a=[]}s.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets_eta/js/main.33569b1b.js"});try{a=(a="https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css".split("/").pop()||"").split(".")}catch(s){a=[]}t.push({key:a[0],version:a[1],url:"https://h2.static.yximgs.com/udata/pkg/IS-DOCS-VODKA-FRAME/assets/css/main.1293473bc580fd43b0ce.css"}),GrayApi.init("docs-gray-vodka",s,t,[])}(),GrayApi.insertHead(),Docs.Word.onReady((function(){GrayApi.insertBody()}))</script></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script>function _appendScript_(r,o){var t=document.createElement("script");if(t.src=r,o)for(var e in o)t.setAttribute(e,o[e]);document.body.appendChild(t)}var __IS_MOBILE__=/(iphone|ipod|android|adr)/gi.test(navigator.userAgent),errorCatch={console:function(r){DocLogger&&DocLogger.error(r)},throw:function(r){throw r}};window._EDITOR_VERSION_=".101523833"</script><script>setTimeout((function(){/^Kim(.*)Docs(.*)/.test(window.navigator.userAgent)||__IS_MOBILE__||_appendScript_("https://feedback.corp.kuaishou.com/platform-feedback-form.umd.js",{"data-is-show-feedback-icon":"false","data-product-name":"yiqixie","data-context-path":"https://feedback.corp.kuaishou.com"})}),3e3)</script><script>!function(){if(function(t){for(var e=window.location.search.substring(1).split("&"),a=0;a<e.length;a++){var n=e[a].split("=");if(n[0]==t)return n[1]}return!1}("debugger")){var t=document.createElement("script");t.src="//h2.static.yximgs.com/udata/pkg/IS-DOCS/eruda.min.js",t.type="text/javascript",t.onload=t.onreadystatechange=function(){var e=t.readyState;if(/loaded|complete/.test(e)||void 0===e)try{eruda.init()}finally{t.onload=t.onreadystatechange=null}};var e=document.getElementsByTagName("head")[0];e.insertBefore(t,e.firstChild)}}()</script></body></html>
+  

@@ -333,7 +333,7 @@ test("ka-data guide stays confidential and cannot enter product knowledge before
 
   const assessment = await readFile(path.join(repoRoot, record.assessment_ref), "utf8");
   for (const marker of [
-    "奇航",
+    "启航",
     "SQL",
     "\\(workspace_id, media, account_id\\)",
     "不建立账户 ID 映射表",

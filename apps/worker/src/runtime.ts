@@ -27,6 +27,7 @@ import { createDataQualityHandler } from "./quality/check-handler.js";
 import { QihangClient } from "./qihang/client.js";
 import { createSessionCleanupHandler } from "./auth/session-cleanup-handler.js";
 
+import { r014JobHandlers } from "./r014/handlers.js";
 type DatabasePool = ReturnType<typeof createPool>;
 
 export interface WorkerRuntimeOptions {
@@ -55,7 +56,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     startRun: etlRuns.startRun.bind(etlRuns),
     appendRaw: rawMetrics.appendRaw.bind(rawMetrics),
     syncAccountMetadataAndRaw: rawMetrics.syncAccountMetadataAndRaw.bind(rawMetrics),
-    recordObservation: (runId: number, observation: object) =>
+    recordObservation: (runId: string, observation: object) =>
       etlRuns.recordObservation(runId, { ...observation }),
     finishRun: etlRuns.finishRun.bind(etlRuns),
     failRun: etlRuns.failRun.bind(etlRuns),
@@ -66,6 +67,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   return new JobConsumer(
     jobs,
     {
+      ...r014JobHandlers, // arch 开的缝：be2 在 src/r014/handlers.ts 注册，永不改本文件
       [SESSION_CLEANUP_JOB_TYPE]: createSessionCleanupHandler(new SessionCleanupRepository(options.pool)),
       etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs })),
       etl_incr: identity(

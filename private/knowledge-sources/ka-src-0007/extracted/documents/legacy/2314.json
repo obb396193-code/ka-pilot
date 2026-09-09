@@ -1,0 +1,42 @@
+{
+  "documentId": 2314,
+  "documentName": "【应用中心-开放场景】应用下架",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】应用下架\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/offline](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/offline)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段        | 类型   | 示例值 | 是否必填 | 说明     | 备注 |\n| ----------- | ------ | ------ | -------- | -------- | ---- |\n|         advertiser_id         |  Long  |      |        必填         |            广告主ID          |\n| package_ids | Long[] |        | 必填     | 应用包ID |      |\n\n### 返回参数\n\n| 字段          | 类型    | 示例 | 说明        | 备注 |\n| ------------- | ------- | ---- | ----------- | ---- |\n| data          | Object  |      | JSON 返回值 |      |\n| &#8195;result | Boolean | true | 下架结果    |      |\n| code          | Integer |      | 返回码      |      |\n| message       | String  |      | 返回信息    |      |\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/offline' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 900015366,\n    \"package_ids\": [\n        1099611634749\n    ]\n}'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 0,\n    \"data\": {\n        \"result\": true\n    },\n    \"message\": \"OK\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681106699791
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681106699791,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

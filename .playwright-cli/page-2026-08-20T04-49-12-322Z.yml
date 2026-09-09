@@ -1,0 +1,522 @@
+- generic [ref=e1]:
+  - link "跳到主要内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - complementary "实验室导航" [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: Aa
+        - generic [ref=e7]:
+          - strong [ref=e8]: 前端规范实验室
+          - text: UI SYSTEM PROOF
+      - navigation [ref=e9]:
+        - link "01 文字层级" [ref=e10] [cursor=pointer]:
+          - /url: "#type"
+          - generic [ref=e11]: "01"
+          - text: 文字层级
+        - link "02 数字格式" [ref=e12] [cursor=pointer]:
+          - /url: "#numbers"
+          - generic [ref=e13]: "02"
+          - text: 数字格式
+        - link "03 数据工作台" [ref=e14] [cursor=pointer]:
+          - /url: "#workspace"
+          - generic [ref=e15]: "03"
+          - text: 数据工作台
+        - link "04 布局密度" [ref=e16] [cursor=pointer]:
+          - /url: "#layout"
+          - generic [ref=e17]: "04"
+          - text: 布局密度
+        - link "05 Motion Lab" [ref=e18] [cursor=pointer]:
+          - /url: "#motion"
+          - generic [ref=e19]: "05"
+          - text: Motion Lab
+        - link "06 官方动效" [ref=e20] [cursor=pointer]:
+          - /url: "#official"
+          - generic [ref=e21]: "06"
+          - text: 官方动效
+        - link "07 工具职责" [ref=e22] [cursor=pointer]:
+          - /url: "#tools"
+          - generic [ref=e23]: "07"
+          - text: 工具职责
+        - link "08 即时审核" [ref=e24] [cursor=pointer]:
+          - /url: "#audit"
+          - generic [ref=e25]: "08"
+          - text: 即时审核
+      - generic [ref=e26]: 临时规范实验，不是最终产品皮肤。所有数据均为脱敏假数据，所有参数都可以继续调整。
+    - main [ref=e27]:
+      - region [ref=e28]:
+        - generic [ref=e29]:
+          - paragraph [ref=e30]: TEMPORARY SPECIMEN · 2026
+          - heading [level=1] [ref=e31]:
+            - text: 把规范变成
+            - emphasis [ref=e32]: 看得见的判断
+          - paragraph [ref=e33]: 不是告诉前端“永远必须这样”，而是把字体、数字、留白、密度和动画放进真实数据场景里。你可以现场切换，再判断哪个组合更清晰、更好看。
+        - complementary [ref=e34]:
+          - strong [ref=e35]: 这里验证什么？
+          - paragraph [ref=e36]: 扫一眼能否找到结论；金额和 CPA 是否对齐；移动端是否仍有层级；动画是否帮助理解，而不是抢走注意力。
+      - region "全局规范控制台" [ref=e37]:
+        - generic [ref=e38]:
+          - generic [ref=e39]: 主题 Theme
+          - generic [ref=e40]:
+            - button "纸面" [ref=e41] [cursor=pointer]
+            - button "夜间" [active] [pressed] [ref=e42] [cursor=pointer]
+            - button "信号" [ref=e43] [cursor=pointer]
+        - generic [ref=e44]:
+          - generic [ref=e45]: 密度 Density
+          - generic [ref=e46]:
+            - button "紧凑" [ref=e47] [cursor=pointer]
+            - button "默认" [pressed] [ref=e48] [cursor=pointer]
+            - button "舒展" [ref=e49] [cursor=pointer]
+        - generic [ref=e50]:
+          - generic [ref=e51]: 字号 Font scale
+          - generic [ref=e52]:
+            - slider "字号 Font scale" [ref=e53]: "100"
+            - status [ref=e54]: 100%
+        - generic [ref=e55]:
+          - generic [ref=e56]: 动画 Motion
+          - generic [ref=e57]:
+            - button "正常" [pressed] [ref=e58] [cursor=pointer]
+            - button "减弱" [ref=e59] [cursor=pointer]
+            - button "关闭" [ref=e60] [cursor=pointer]
+        - button "↻ 重播动画" [ref=e61] [cursor=pointer]
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: 01 / TYPE
+          - heading "字体不是一个字号， 而是一套阅读顺序" [level=2] [ref=e65]: 字体不是一个字号，而是一套阅读顺序
+          - paragraph [ref=e66]: 推荐范围只提供起点。真正要看的是：用户能否先找到页面结论，再读指标、证据和限制。
+        - generic [ref=e67]:
+          - article [ref=e68]:
+            - generic [ref=e69]:
+              - generic [ref=e70]: PAGE TITLE
+              - generic [ref=e71]: 账户经营总览
+              - generic [ref=e72]: 24–32 / 600
+            - generic [ref=e73]:
+              - generic [ref=e74]: SECTION
+              - generic [ref=e75]: 今天最需要处理的 3 个异常
+              - generic [ref=e76]: 18–24 / 600
+            - generic [ref=e77]:
+              - generic [ref=e78]: BODY
+              - generic [ref=e79]: 近 24 小时整体消耗稳定，但高消耗账户中有 2 个 CPA 高于考核价。建议先查看数据完整性，再决定是否调整预算。
+              - generic [ref=e80]: 14–16 / 1.5
+            - generic [ref=e81]:
+              - generic [ref=e82]: LABEL
+              - generic [ref=e83]: 目标 CPA · 数据更新时间 · 当前筛选
+              - generic [ref=e84]: 12–14 / 600
+            - generic [ref=e85]:
+              - generic [ref=e86]: HELPER
+              - generic [ref=e87]: 口径：按业务日统计；数据可能存在约 8 分钟延迟。
+              - generic [ref=e88]: 12–13 / muted
+          - complementary [ref=e89]:
+            - paragraph [ref=e90]: STRESS TEST
+            - heading "超长内容不能把布局顶坏" [level=3] [ref=e91]
+            - paragraph [ref=e92]: 华东食品饮料事业群—夏季新品联合推广超长账户名称测试
+            - paragraph [ref=e93]: campaign_summer_launch_2026_extremely_long_identifier_without_spaces_004291
+            - generic [ref=e94]:
+              - generic [ref=e95]: ✓
+              - generic [ref=e96]: 标题自然换行，辅助标识允许断行或截断，并能查看完整值。
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - generic [ref=e99]: 02 / NUMBER
+          - heading "数字不仅要正确， 还要能快速比较" [level=2] [ref=e100]: 数字不仅要正确，还要能快速比较
+          - paragraph [ref=e101]: 总览可以缩写，表格保留精确值；金额、比例、CPA、日期和无值状态必须有统一语义。
+        - generic [ref=e102]:
+          - article [ref=e103]:
+            - text: "01"
+            - heading "今日消耗 · 金额" [level=3] [ref=e104]
+            - status [ref=e105]: ¥12.9万
+            - text: 精确值 ¥128,640.72
+          - article [ref=e106]:
+            - text: "02"
+            - heading "点击率 · 百分比" [level=3] [ref=e107]
+            - status [ref=e108]: 3.78%
+            - text: API 原值 0.03784
+          - article [ref=e109]:
+            - text: "03"
+            - heading "转化成本 · CPA" [level=3] [ref=e110]
+            - status [ref=e111]: ¥61.84
+            - text: 考核价 ¥58.00 · 高 6.6%
+          - article [ref=e112]:
+            - text: "04"
+            - heading "更新时间 · 业务日" [level=3] [ref=e113]
+            - status [ref=e114]: 08/20 10:42
+            - text: Asia/Shanghai · 约 8 分钟延迟
+          - article [ref=e115]:
+            - paragraph [ref=e116]: TABULAR + DECIMAL ALIGN
+            - heading "正确：等宽数字、右对齐、单位稳定" [level=3] [ref=e117]
+            - generic "正确数字对齐示例" [ref=e118]:
+              - generic [ref=e119]: 品牌旗舰店
+              - generic [ref=e120]: 123,456.70
+              - generic [ref=e121]: 元
+              - generic [ref=e122]: 新品测试组
+              - generic [ref=e123]: 9,842.15
+              - generic [ref=e124]: 元
+              - generic [ref=e125]: 低量观察组
+              - generic [ref=e126]: "87.00"
+              - generic [ref=e127]: 元
+              - generic [ref=e128]: 无有效值
+              - generic [ref=e129]: —
+              - generic [ref=e130]: 元
+          - article [ref=e131]:
+            - paragraph [ref=e132]: PROPORTIONAL + MIXED UNIT
+            - heading "错误：比例数字、单位混乱、未知写成 0" [level=3] [ref=e133]
+            - generic "错误数字对齐示例" [ref=e134]:
+              - generic [ref=e135]: 品牌旗舰店
+              - generic [ref=e136]: ¥123456.7
+              - generic [ref=e137]: 新品测试组
+              - generic [ref=e138]: 0.984万
+              - generic [ref=e139]: 低量观察组
+              - generic [ref=e140]: 87元
+              - generic [ref=e141]: 无有效值
+              - generic [ref=e142]: "0"
+              - generic [ref=e143]: 元
+          - article [ref=e144]:
+            - paragraph [ref=e145]: ZERO ≠ NULL ≠ STALE ≠ NO PERMISSION
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - strong [ref=e148]: "0"
+                - text: · 已确认有数据，结果为零
+              - generic [ref=e149]: 有效零值
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - strong [ref=e152]: —
+                - text: · 当前口径不适用或没有有效值
+              - generic [ref=e153]: 无有效值
+            - generic [ref=e154]:
+              - generic [ref=e155]:
+                - strong [ref=e156]: ¥61.84
+                - text: · 最近成功值，但数据已过期
+              - generic [ref=e157]: 18 分钟未更新
+            - generic [ref=e158]:
+              - generic [ref=e159]:
+                - strong [ref=e160]: 隐藏
+                - text: · 当前角色没有查看权限
+              - generic [ref=e161]: 无权限
+      - generic [ref=e162]:
+        - generic [ref=e163]:
+          - generic [ref=e164]: 03 / WORK
+          - heading "把规范放进一个 真实数据工作台" [level=2] [ref=e165]: 把规范放进一个真实数据工作台
+          - paragraph [ref=e166]: 先数据健康与结论，再 KPI、筛选、趋势证据、明细和动作。下面不是产品定稿，而是层级样张。
+        - article [ref=e167]:
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - paragraph [ref=e170]: ACCOUNT HEALTH · DEMO
+              - heading "经营驾驶舱" [level=3] [ref=e171]
+            - button "打开 Agent 诊断" [ref=e172] [cursor=pointer]
+          - generic [ref=e173]:
+            - generic [ref=e174]:
+              - generic [ref=e175]:
+                - strong [ref=e176]: 数据完整，2 个账户需要关注
+                - generic [ref=e177]: 最近更新：08/20 10:42 · Asia/Shanghai · 当前可执行只读诊断
+              - generic [ref=e178]: 健康度 96%
+            - generic [ref=e179]:
+              - article [ref=e180]:
+                - text: 今日消耗
+                - status [ref=e181]: ¥128,640.72
+                - text: ↑ 8.4% 较昨日
+              - article [ref=e182]:
+                - text: 转化成本 CPA
+                - status [ref=e183]: ¥61.84
+                - text: 高于考核价 6.6%
+              - article [ref=e184]:
+                - text: 支付转化数
+                - status [ref=e185]: 2,080
+                - text: ↑ 14.2% 较昨日
+              - article [ref=e186]:
+                - text: 目标达成率
+                - status [ref=e187]: 92.6%
+                - text: 距目标还差 7.4%
+            - generic "演示筛选器" [ref=e188]:
+              - button "今天" [pressed] [ref=e189] [cursor=pointer]
+              - button "全部账户" [ref=e190] [cursor=pointer]
+              - button "高消耗" [ref=e191] [cursor=pointer]
+              - button "CPA 超标" [ref=e192] [cursor=pointer]
+              - button "更多筛选 2" [ref=e193] [cursor=pointer]
+            - generic [ref=e194]:
+              - region [ref=e195]:
+                - generic [ref=e196]:
+                  - generic [ref=e197]:
+                    - heading "消耗平稳上升，CPA 在 14:00 后回落" [level=4] [ref=e198]
+                    - paragraph [ref=e199]: 左轴：消耗（元） · 右轴：CPA（元） · 每小时
+                  - generic [ref=e200]:
+                    - generic [ref=e201]: 消耗
+                    - generic [ref=e203]: 目标 CPA
+                - img "消耗平稳上升，CPA 在 14:00 后回落 脱敏假数据趋势图。消耗随时间上升，目标 CPA 为 58 元。" [ref=e206]:
+                  - generic [ref=e207]: 16万
+                  - generic [ref=e208]: 12万
+                  - generic [ref=e209]: 8万
+                  - generic [ref=e210]: 4万
+                  - generic [ref=e214]: 00:00
+                  - generic [ref=e215]: 06:00
+                  - generic [ref=e216]: 12:00
+                  - generic [ref=e217]: 18:00
+                  - generic [ref=e218]: 24:00
+              - region [ref=e219]:
+                - generic [ref=e220]:
+                  - generic [ref=e221]:
+                    - heading "需要关注的账户" [level=4] [ref=e222]
+                    - paragraph [ref=e223]: 按消耗降序 · 3 条脱敏假数据
+                  - button "查看全部" [ref=e224] [cursor=pointer]
+                - table [ref=e226]:
+                  - rowgroup [ref=e227]:
+                    - row [ref=e228]:
+                      - columnheader "账户" [ref=e229]
+                      - columnheader "消耗" [ref=e230]
+                      - columnheader "CPA" [ref=e231]
+                      - columnheader "状态" [ref=e232]
+                  - rowgroup [ref=e233]:
+                    - row [ref=e234]:
+                      - cell "旗舰店 A" [ref=e235]
+                      - cell "¥48,260.70" [ref=e236]
+                      - cell "¥64.20" [ref=e237]
+                      - cell "高于目标" [ref=e238]
+                    - row [ref=e239]:
+                      - cell "新品组 B" [ref=e240]
+                      - cell "¥31,842.15" [ref=e241]
+                      - cell "¥57.10" [ref=e242]
+                      - cell "正常" [ref=e243]
+                    - row [ref=e244]:
+                      - cell "探索组 C" [ref=e245]
+                      - cell "¥9,842.00" [ref=e246]
+                      - cell "—" [ref=e247]
+                      - cell "数据不足" [ref=e248]
+      - generic [ref=e249]:
+        - generic [ref=e250]:
+          - generic [ref=e251]: 04 / SPACE
+          - heading "密度不是越松越高级， 也不是越挤越专业" [level=2] [ref=e252]: 密度不是越松越高级，也不是越挤越专业
+          - paragraph [ref=e253]: 紧凑适合大表批量扫读，舒展适合决策摘要。用顶部控制器切换，观察整个页面的节奏变化。
+        - generic [ref=e254]:
+          - article [ref=e255]:
+            - paragraph [ref=e256]: DENSITY VARIANTS
+            - generic [ref=e257]:
+              - generic [ref=e258]:
+                - generic [ref=e259]: 紧凑
+                - generic [ref=e260]: 适合高密度表格
+                - strong [ref=e261]: 32px
+              - generic [ref=e262]:
+                - generic [ref=e263]: 默认
+                - generic [ref=e264]: 大部分工作台
+                - strong [ref=e265]: 40px
+              - generic [ref=e266]:
+                - generic [ref=e267]: 舒展
+                - generic [ref=e268]: 摘要与详情
+                - strong [ref=e269]: 48px
+          - article [ref=e270]:
+            - paragraph [ref=e271]: GRID RHYTHM
+            - heading "同层靠近，跨层拉开" [level=3] [ref=e272]
+            - generic "四列布局节奏示意" [ref=e273]
+          - article [ref=e280]:
+            - paragraph [ref=e281]: MOBILE PRIORITY
+            - generic [ref=e283]:
+              - strong [ref=e284]: 经营驾驶舱
+              - generic [ref=e285]:
+                - generic [ref=e286]: 消耗12.8万
+                - generic [ref=e287]: CPA¥61.84
+              - generic [ref=e288]:
+                - generic [ref=e289]: 2 个账户需要关注
+                - generic [ref=e290]: 趋势证据折叠显示
+                - generic [ref=e291]: 主动作保留
+      - generic [ref=e292]:
+        - generic [ref=e293]:
+          - generic [ref=e294]: 05 / MOTION
+          - heading "文字可以动， 但不能妨碍读" [level=2] [ref=e295]: 文字可以动，但不能妨碍读
+          - paragraph [ref=e296]: 下面是规范效果样张，不冒充第三方官方源码。顶部可切正常、减弱、关闭并重播。
+        - generic [ref=e297]:
+          - article [ref=e298]:
+            - generic [ref=e299]:
+              - paragraph [ref=e300]: Typing
+              - generic [ref=e301]: 正在分析异常账户…
+            - generic [ref=e303]:
+              - generic [ref=e304]: ✓
+              - generic [ref=e305]: Agent 流式状态、短句。不要用于长文。
+          - article [ref=e306]:
+            - generic [ref=e307]:
+              - paragraph [ref=e308]: Morph
+              - generic [ref=e309]: 生成建议
+            - generic [ref=e311]:
+              - generic [ref=e312]: ✓
+              - generic [ref=e313]: 同一位置的短状态切换，必须保留稳定语义。
+          - article [ref=e314]:
+            - generic [ref=e315]:
+              - paragraph [ref=e316]: Roll
+              - generic [ref=e317]: 诊断已完成
+            - generic [ref=e319]:
+              - generic [ref=e320]: ✓
+              - generic [ref=e321]: 低频完成反馈，不用于每次轮询。
+          - article [ref=e322]:
+            - generic [ref=e323]:
+              - paragraph [ref=e324]: Scramble
+              - generic [ref=e325]: 生成策略摘要
+            - generic [ref=e327]:
+              - generic [ref=e328]: ✓
+              - generic [ref=e329]: 极少量品牌/生成提示；最终文字必须立即可读。
+          - article [ref=e330]:
+            - generic [ref=e331]:
+              - paragraph [ref=e332]: Shimmer
+              - generic [ref=e333]: 模型正在推理
+            - generic [ref=e335]:
+              - generic [ref=e336]: ✓
+              - generic [ref=e337]: 短暂等待提示；结束后停止，不永久闪烁。
+          - article [ref=e338]:
+            - generic [ref=e339]:
+              - paragraph [ref=e340]: Text Loop
+              - generic [ref=e341]: 生成诊断摘要
+            - generic [ref=e343]:
+              - generic [ref=e344]: ✓
+              - generic [ref=e345]: 有限步骤轮播；提供当前状态而非纯装饰。
+          - article [ref=e346]:
+            - generic [ref=e347]:
+              - paragraph [ref=e348]: Animated Number
+              - status [ref=e350]: ¥128,640.72
+            - generic [ref=e351]:
+              - generic [ref=e352]: ✓
+              - generic [ref=e353]: 低频 KPI 确认性更新，最终值保持可访问。
+          - article [ref=e354]:
+            - generic [ref=e355]:
+              - paragraph [ref=e356]: Sliding Number
+              - status [ref=e358]: 92.6%
+            - generic [ref=e359]:
+              - generic [ref=e360]: ✓
+              - generic [ref=e361]: 短数字状态变化；不能每秒滚动。
+          - article [ref=e362]:
+            - generic [ref=e363]:
+              - paragraph [ref=e364]: Counting Number
+              - status [ref=e366]: 2,080
+            - generic [ref=e367]:
+              - generic [ref=e368]: ✓
+              - generic [ref=e369]: 任务完成计数或一次性摘要，不替代精确表格。
+          - article [ref=e370]:
+            - generic [ref=e371]:
+              - paragraph [ref=e372]: 禁用场景 / ERROR
+              - generic [ref=e373]: 支付失败！立即处理！
+            - generic [ref=e375]:
+              - generic [ref=e376]: ✕
+              - generic [ref=e377]: 错误、权限、关键按钮和表格正文不做炫技动画。
+          - article [ref=e378]:
+            - generic [ref=e379]:
+              - paragraph [ref=e380]: 禁用场景 / TABLE
+              - generic [ref=e381]: ¥61.84
+            - generic [ref=e383]:
+              - generic [ref=e384]: ✕
+              - generic [ref=e385]: 表格轮询数字不停滚动会妨碍比较与复制。
+          - article [ref=e386]:
+            - generic [ref=e387]:
+              - paragraph [ref=e388]: Reduced Motion
+              - generic [ref=e389]: 信息保留，位移关闭
+            - generic [ref=e391]:
+              - generic [ref=e392]: ✓
+              - generic [ref=e393]: 减弱/关闭动画后，状态、焦点和操作都不能丢。
+      - generic [ref=e394]:
+        - generic [ref=e395]:
+          - generic [ref=e396]: 06 / SOURCE
+          - heading "规范样张之外， 再看官方真实源码" [level=2] [ref=e397]: 规范样张之外，再看官方真实源码
+          - paragraph [ref=e398]: 下面两个窗口读取现有离线 sandbox frame：Motion Primitives 与 Animate UI。它们是来源候选，不等于最终全站都要使用。
+        - generic [ref=e399]:
+          - article [ref=e400]:
+            - generic [ref=e401]:
+              - heading "Motion Primitives · 官方缓存代表" [level=3] [ref=e402]
+              - paragraph [ref=e403]: Animated Number / Disclosure · 选择性准入
+            - iframe [ref=e404]
+          - article [ref=e405]:
+            - generic [ref=e406]:
+              - heading "Animate UI · 官方缓存代表" [level=3] [ref=e407]
+              - paragraph [ref=e408]: Counting Number / Ripple · Commons Clause，应用内按需使用
+            - iframe [ref=e409]
+      - generic [ref=e410]:
+        - generic [ref=e411]:
+          - generic [ref=e412]: 07 / TOOL
+          - heading "三个工具， 解决三个不同问题" [level=2] [ref=e413]: 三个工具，解决三个不同问题
+          - paragraph [ref=e414]: 这里做成可视化工作台，避免把 Storybook、ECharts 和 UI 资产展厅混为一件事。
+        - generic [ref=e415]:
+          - article [ref=e416]:
+            - generic [ref=e417]: "01"
+            - heading "Storybook" [level=3] [ref=e418]
+            - paragraph [ref=e419]: 项目自己的组件样板间：同一个组件切换正常、加载、空、错等状态。
+            - generic [ref=e420]:
+              - generic "Storybook 状态演示" [ref=e421]:
+                - button "Normal" [pressed] [ref=e422] [cursor=pointer]
+                - button "Loading" [ref=e423] [cursor=pointer]
+                - button "Empty" [ref=e424] [cursor=pointer]
+              - strong [ref=e426]: KPI 卡 · ¥61.84
+            - generic [ref=e427]: 开发环境使用；stories 不进入生产 bundle。
+          - article [ref=e428]:
+            - generic [ref=e429]: "02"
+            - heading "ECharts" [level=3] [ref=e430]
+            - paragraph [ref=e431]: 产品运行时的图表引擎：负责折线、柱状、散点、漏斗、热力图和交互。
+            - img "ECharts 视觉规范 SVG 样张" [ref=e433]
+            - generic [ref=e436]: 这里是无依赖视觉规范样张；正式产品图表仍由 ECharts 实现。
+          - article [ref=e437]:
+            - generic [ref=e438]: "03"
+            - heading "UI 资产展厅" [level=3] [ref=e439]
+            - paragraph [ref=e440]: 第三方选型商场：比较 17 家官方来源的风格、能力、许可证和源码状态。
+            - generic [ref=e441]:
+              - generic [ref=e442]:
+                - generic [ref=e443]: shadcn/ui
+                - generic [ref=e444]: 底座
+              - generic [ref=e445]:
+                - generic [ref=e446]: coss/ui
+                - generic [ref=e447]: 细节
+              - generic [ref=e448]:
+                - generic [ref=e449]: ReUI / Dice
+                - generic [ref=e450]: 数据
+              - generic [ref=e451]:
+                - generic [ref=e452]: Motion / Animate
+                - generic [ref=e453]: 按需
+            - generic [ref=e454]: 展厅不进入产品；选中的合法源码才按页面复制。
+      - generic [ref=e455]:
+        - generic [ref=e456]:
+          - generic [ref=e457]: 08 / AUDIT
+          - heading "自动检查只能提示， 最终还要看真实页面" [level=2] [ref=e458]: 自动检查只能提示，最终还要看真实页面
+          - paragraph [ref=e459]: 这些项目显示当前 Demo 遵守了什么。美观不能完全自动判定，规范不好看时应调整 token，而不是机械服从。
+        - generic [ref=e460]:
+          - generic [ref=e461]:
+            - generic [ref=e462]:
+              - generic [ref=e463]: ✓
+              - generic [ref=e464]:
+                - strong [ref=e465]: 数字格式与对齐
+                - text: Intl formatter、tabular nums、单位和 null/stale 分开。
+              - code [ref=e466]: PASS
+            - generic [ref=e467]:
+              - generic [ref=e468]: ✓
+              - generic [ref=e469]:
+                - strong [ref=e470]: 响应式与长内容
+                - text: 桌面、移动、超长中文和无空格标识都可测试。
+              - code [ref=e471]: PASS
+            - generic [ref=e472]:
+              - generic [ref=e473]: ✓
+              - generic [ref=e474]:
+                - strong [ref=e475]: 动画克制
+                - text: 提供正常、减弱、关闭；错误与表格列为禁用示例。
+              - code [ref=e476]: PASS
+            - generic [ref=e477]:
+              - generic [ref=e478]: ✓
+              - generic [ref=e479]:
+                - strong [ref=e480]: 键盘与焦点
+                - text: 语义按钮、可见 focus-visible、跳过导航入口。
+              - code [ref=e481]: PASS
+            - generic [ref=e482]:
+              - generic [ref=e483]: ✓
+              - generic [ref=e484]:
+                - strong [ref=e485]: 数据边界
+                - text: 明确全部为脱敏假数据，前端只展示格式，不发明业务口径。
+              - code [ref=e486]: PASS
+            - generic [ref=e487]:
+              - generic [ref=e488]: "?"
+              - generic [ref=e489]:
+                - strong [ref=e490]: 审美是否合适
+                - text: 请实际切换主题、密度和字号后判断；这一项不能由脚本替你拍板。
+              - code [ref=e491]: REVIEW
+          - complementary [ref=e492]:
+            - paragraph [ref=e493]: CURRENT TOKEN STATE
+            - heading "当前实验组合" [level=3] [ref=e494]
+            - generic [ref=e495]:
+              - term [ref=e496]: 主题
+              - definition [ref=e497]: midnight
+              - term [ref=e498]: 密度
+              - definition [ref=e499]: default
+              - term [ref=e500]: 字号
+              - definition [ref=e501]: 100%
+              - term [ref=e502]: 动画
+              - definition [ref=e503]: full
+            - paragraph [ref=e504]: 觉得不好看时，先说清是层级、密度、对比、扫读还是气质问题，再调整全局 token 并跨页面验证。
+      - generic [ref=e505]:
+        - generic [ref=e506]: 前端规范实验室 · 临时 Demo · 脱敏假数据
+        - generic [ref=e507]: 无 CDN · 无 fetch · 可直接 file:// 打开

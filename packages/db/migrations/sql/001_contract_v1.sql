@@ -19,7 +19,7 @@ CREATE TABLE users (
 
 -- ═══ 业务对象 ═══
 CREATE TABLE tasks (
-  task_id TEXT PRIMARY KEY,            -- 奇航 task_id（B7 核验后若不准改自维护主键，字段结构不变）
+  task_id TEXT PRIMARY KEY,            -- 启航 task_id（B7 核验后若不准改自维护主键，字段结构不变）
   workspace_id UUID NOT NULL,
   task_name TEXT, biz_name TEXT,
   rta_flag BOOLEAN, delivery_mode TEXT, placement_pref TEXT, conversion_metric TEXT,

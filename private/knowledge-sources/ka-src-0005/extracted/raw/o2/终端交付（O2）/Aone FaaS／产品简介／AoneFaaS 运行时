@@ -1,0 +1,25 @@
+运行时（runtime）是指函数的实际执行环境，一般会以语言维度进行区分，其提供了管理运行函数所需的系统依赖和其他资源的隔离环境。
+
+Aone FaaS 支持下列 runtime。在大部分情况下，您不需要关心具体的 runtime 差异，只需要在创建应用时选择合适的脚手架和解决方案即可，但在特殊情况下，您可能需要理解各个 runtime 的特点，并对函数的 runtime 进行订正操作：
+
+| runtime | 支持流式返回（HTTP chunked 分块响应） | 支持的 Nodejs 版本 |
+|-|-|-|
+| alinode7 | ❌ | ✅  Node16 |
+| ginkgo-java8 | ❌ | ❌ |
+| custom.debian10 | ✅ | ✅  Node 20 |
+| faas-debian11:java11 | ✅ | ❌ |
+| faas-debian11:python3.12 | ✅ | ❌ |
+
+#### alinode7
+
+支持 nodejs 16， 需要和集团 midway v8 框架配合使用，详情见 [midway serverless 文档](https://midway.alibaba-inc.com/docs/ali_serverless/serverless_intro/)
+
+#### custom.debian10
+
+支持 nodejs 20，可通过 ./bootstrap 文件自定义项目启动命令。
+
+启动命令需要监听 9000 端口，并赋予 ./bootstrap 文件权限：
+
+(https://o2-img.alistatic.com/i/i09blZ/ymyCHT7kSfmO5Mxsy9BQl-9c14ad87c5.png)
+
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2326,
+  "documentName": "【应用中心-开放场景】上传图片",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】上传图片\n```shell\n应用中心的应用图标、应用图片由于投放侧要求，必须使用快手的CDN链接，此接口适用于将广告主的原始图片上传至快手侧，生成快手的CDN下载链接，用于应用中心的创编。\n```\n请求地址：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/pic\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段 | 类型    | 示例值 | 是否必填 | 说明                             | 备注                                                         |\n| ---- | ------- | ------ | -------- | -------------------------------- | ------------------------------------------------------------ |\n|         advertiser_id         |  Long  |      |        必填         |            广告主ID          |                                 |\n| file | File    | file   | 必填     | 图片文件                         |                                                              |\n| type | Integer | 1      | 必填     | 图片类型：1=应用图标；2=应用图片, 5=单机承诺函 | 应用图标：尺寸：450 x 450，小于1MB；格式为 PNG/JPG/JPEG。应用图片：宽高比9:20，宽：大于等于720，高：大于等于1280，小于2 MB；格式为 PNG/JPG/JPEG。单机承诺函：小于10MB；格式为 PNG/JPG/JPEG。  |\n\n### 返回参数\n\n| 字段       | 类型    | 示例 | 说明                    | 备注 |\n| ---------- | ------- | ---- | ----------------------- | ---- |\n| `data`     | Object  |      | 数据                    |      |\n| &#8195;url | String  |      | 所上传图片的快手CDN链接 |      |\n| code       | Integer |      | 状态码                  |      |\n| message    | String  |      | 状态描述信息            |      |\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/pic' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'file=@\"450*450.png\"' \\\n--form 'advertiser_id=\"900015366\"' \\\n--form 'type=\"1\"'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 0,\n    \"data\": {\n        \"url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/3252058c79ec40069cdeafb08cfd3b92.png\"\n    },\n    \"message\": \"OK\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1712717004786
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1712717004786,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

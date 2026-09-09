@@ -8,7 +8,7 @@
 
 - 官方名称：快手磁力引擎开放平台。
 - Marketing API（MAPI）：把快手商业广告投放与分析能力以 API 开放给广告主、代理商和第三方服务商。
-- 我方定位：MAPI 是快手 provider 的官方能力上限证据；`kuaishou-cli` 是其中少量路径的执行壳；奇航仍是一期既定数据主链路。
+- 我方定位：MAPI 是快手 provider 的官方能力上限证据；`kuaishou-cli` 是其中少量路径的执行壳；启航仍是一期既定数据主链路。
 
 官方入口：[快手磁力引擎 DSP/MAPI 文档](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=&menuId=3033)。
 
@@ -56,7 +56,7 @@
 
 | 粒度 | documentId | KA 用途 |
 |---|---:|---|
-| 广告主 | 2606 | 账户监控、奇航/MAPI 口径对照 |
+| 广告主 | 2606 | 账户监控、启航/MAPI 口径对照 |
 | 计划 | 2607 | 计划层树、异常定位 |
 | 广告组 | 2608 | 出价/预算/定向效果回收 |
 | 创意 | 2609 | 素材表现、审核与跑量分析 |
@@ -101,7 +101,7 @@ documented → authorized → white-listed(if required) → wrapped → method a
 - 授权账户/权限健康。
 - campaign/unit/creative 只读结构同步。
 - 审核与媒体态回查。
-- 奇航缺失粒度/字段的小范围补充。
+- 启航缺失粒度/字段的小范围补充。
 - 已批准写操作所需的少量执行端点，仍走确认门。
 
 ### 后续路线图

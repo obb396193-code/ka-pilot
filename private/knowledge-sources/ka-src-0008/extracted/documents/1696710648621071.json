@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-6BfRwNir\">通过在app内嵌入转化SDK<span style=\"color: #000000;\">，您可以将用户app内的关键行为事件回传，将这些数据关联营销投放，以用户关键行为作为转化目标，探索到更优质的用户，使用SDK前您需要申请mobile_appid，不需要注册开发者，具体流程请参考说明及对接准备。</span></p><p data-id=\"p838747a-odUcni1V\"><br/></p><p data-id=\"p838747a-NCAZIXKX\"><span style=\"color: #000000;\">详细流程请参考：</span></p><ul data-id=\"u738a58b-oIQ6N0bL\"><li data-id=\"ld70c578-cAepVIbv\"><a href=\"https://open.oceanengine.com/doc/index.html?key=ad&amp;type=api&amp;id=1708428054592516\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">巨量引擎转化SDK隐私协议</a></li><li data-id=\"ld70c578-QbhE1mOX\"><a href=\"https://open.oceanengine.com/labels/7/docs/1770368088710156?origin=left_nav\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\"><span style=\"color: #1f72ff;\">巨量引擎转化SDK合规规范</span></a></li></ul></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "移动应用SDK上报数据"
+}

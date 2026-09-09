@@ -1,0 +1,245 @@
+{
+  "documentId": 2965,
+  "documentName": "增加屏蔽评论信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094964812
+    }
+  ],
+  "apiId": 1329,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/comment/shield_info/create",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"shield_type\": 1,\n    \"shield_content_list\": [\n        \"test_a688fe31a8c8\"\n    ],\n    \"advertiser_id\": 58\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"shield_info_id_list\": [1, 2, 3]\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62556,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62557,
+      "paramName": "shield_content_list",
+      "paramType": "String[]",
+      "example": "[\"test\"]",
+      "description": "屏蔽信息内容",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "根据 shield_type 类型填写屏蔽信息内容",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62558,
+      "paramName": "shield_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "屏蔽信息类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "1：评论内容关键词（数量上限 100，长度上限 20），5：用户昵称关键词（数量上限 100，长度上限 20），6：快手 ID（数量上限 200）",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62559,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62560,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62561,
+      "paramName": "request_id",
+      "paramType": "String",
+      "example": "",
+      "description": "请求ID",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62562,
+      "paramName": "data",
+      "paramType": "ShieldInfoCreateData",
+      "example": "",
+      "description": "返回结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3524,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62548,
+          "paramName": "shield_info_id_list",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "生成的屏蔽信息id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "仅返回创建成功的屏蔽信息id（超过数量限制返回为空；超过长度限制、屏蔽信息重复的屏蔽信息会被过滤掉）",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094964812,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

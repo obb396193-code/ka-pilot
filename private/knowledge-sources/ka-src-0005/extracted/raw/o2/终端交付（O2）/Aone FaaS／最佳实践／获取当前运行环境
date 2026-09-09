@@ -1,0 +1,50 @@
+####  如何判断当前是预发还是生产环境、如何获得当前应用名：
+
+如果是 nodejs ，可直接调用该包获得：
+
+```
+import { getConfigEnv } from '@ali/harmony-faas-utils';
+```
+如果你是其他语言，可通过环境变量判断：
+
+```
+/**
+ * 获取当前应用名称
+ */
+export function getAppName() {
+  return process.env.SIGMA_APP_NAME;
+}
+
+/**
+ * 获取当前函数名称
+ */
+export function getServiceName() {
+  return process.env.FC_SERVICE_NAME;
+}
+
+/**
+ * 获取当前配置环境
+ */
+export function getConfigEnv() {
+  if (process.env.NODE_ENV === 'development') {
+    return 'local';
+  }
+
+  switch (process.env.FC_SERVER_ENV) {
+    case 'local':
+      return 'local';
+    case 'pre':
+    case 'prepub':
+      return 'pre';
+    case 'daily':
+      return 'daily';
+    default:
+      return 'prod';
+  }
+}
+
+```
+
+
+
+

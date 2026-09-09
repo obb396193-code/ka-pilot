@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-bSLk46Za\">本模块针对搜索关键词进行管理，关键词是搜索流量的主要触发依据，可以作为通配符替换到创意中，详细资料请浏览<a href=\"https://school.oceanengine.com/product_detail/?id=176&amp;type=course\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">巨量学堂-关键词管理</a>。</p><ul data-id=\"u738a58b-I2mDYpUn\"><li data-id=\"ld70c578-j0LtuVmn\">【匹配方式】支持精确匹配、短语匹配、广泛匹配</li><li data-id=\"ld70c578-gngmHHC9\">【出价类型】支持同营销出价、自定义出价，OCPC&amp;OCPM营销只支持同营销出价</li></ul><p data-id=\"p838747a-PPuKDRCt\"><br/></p><p data-id=\"p838747a-jKotE5d1\"><br/></p><p data-id=\"p838747a-zmXiTSAI\">涉及接口：</p><p data-id=\"p838747a-adQA7XMQ\"><a href=\"https://open.oceanengine.com/labels/7/docs/1768010379579407\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">创建关键词</a></p><p data-id=\"p838747a-nS9HoC6Q\"><a href=\"https://open.oceanengine.com/labels/7/docs/1768011243105411\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">更新关键词属性</a></p><p data-id=\"p838747a-UP7GXdaP\"><a href=\"https://open.oceanengine.com/labels/7/docs/1768012737961092\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">删除关键词</a></p><p data-id=\"p838747a-YCXGbCVB\"><a href=\"https://open.oceanengine.com/labels/7/docs/1768012871181443\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">获取关键词列表</a></p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "关键词管理"
+}

@@ -1,0 +1,43 @@
+## O2 Space 研发平台
+
+### 修复
+
+- 修复新建质量插件时样式异常的问题
+- 修复团队空间新增应用规则时表单校验异常导致无法新增的问题
+- 修复 AI 诊断面板在 chrome 93 版本以下展示异常
+- 修复低码研发，通过平台上传源码异常
+- 修复分支模式下，变更原因中含有 emoji 时，提交评审报错
+- 修复部分老板的流水线渲染白屏的问题
+
+
+### 新增
+
+- 团队空间增加发布订阅
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/pLdn5gPgE31wOo83/img/bac89bff-0c0a-4360-b8a9-ffc711700792.png)
+
+
+- 新版集成验证灰度上线
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/pLdn5gPgE31wOo83/img/fb6e7ff8-293b-409e-9ece-0b61ae1351bc.png)
+
+
+- 支持用户提交申请跳过质量插件的卡口检测
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/pLdn5gPgE31wOo83/img/f51decc9-0c48-4312-9476-6b9d1b3c3e60.png)
+
+
+- 构建节点 UI 支持识别新版编译缓存是否开启
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/pLdn5gPgE31wOo83/img/ce8fb1f2-f302-4862-a62b-bdd0d64ffbc4.png)
+
+
+
+
+### 优化
+
+- 复合类型下子类型的应用不进行前置检查
+- 支持仓库 group 的权限为开发者的人可以在平台上新建仓库
+- 支持团队空间质量检测板块补充团队层面加白能力
+- 优化切换团队交互，当前团队可直接切换到同级团队
+- 支持在 O2 space 开放平台设置脚手架/应用类型绑定关系
+- 增加 AI 诊断面板增加用户引导
+- 低代码发布，支持 SOC 安全检测、支持使用日常的构建产物
+- 低码发布不限制同时发布线上
+- 兼容单文件包含较多ISSUE造成卡顿的问题

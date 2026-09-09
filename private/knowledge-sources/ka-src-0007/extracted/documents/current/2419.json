@@ -1,0 +1,249 @@
+{
+  "documentId": 2419,
+  "documentName": "短剧付费模式查询接口",
+  "documentType": 2,
+  "description": "<p>通过短剧作者和短剧id查询短剧下付费模式类型</p><p></p><p>目前只支持“打包”付费模式，即payMode=1</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094563699
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1698933854808
+    }
+  ],
+  "apiId": 991,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/payModeType",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 900015364,\n  \"user_id\": 2196670040,\n  \"series_id\": 384643\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": [\n    {\n      \"pay_mode_desc\": \"打包\",\n      \"pay_mode\": 1\n    }\n  ],\n  \"message\": \"OK\",\n  \"request_id\": \"ELmAgIDApJiOrAEY_wUghIrH87gxKNbY_-AD\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63109,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52223,
+      "paramName": "series_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "短剧id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52224,
+      "paramName": "user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "短剧作者id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 52227,
+      "paramName": "data",
+      "paramType": "MapiSeriesPayModeInfoSnake[]",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3025,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 52225,
+          "paramName": "pay_mode",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>目前仅支持payMode=1，即“打包“</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52226,
+          "paramName": "pay_mode_desc",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>-</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52228,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52229,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>放回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094563699,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

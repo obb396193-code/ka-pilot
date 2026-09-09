@@ -1,0 +1,421 @@
+{
+  "documentId": 2634,
+  "documentName": "上传视频接口 v2",
+  "documentType": 2,
+  "description": "<p><strong>📢 注意：此接口新增 blob_store_key参数。</strong></p>",
+  "summary": "",
+  "remark": "",
+  "content": "上传视频接口 v2\n/rest/openapi/v2/file/ad/video/upload\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/video/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"11311124\"' \\\n--form 'shield_backward_switch=\"false\"' \\\n--form 'type=\"1\"' \\\n--form 'file=@\"/Users/xxx.mp4\"' \\\n--form 'signature=\"36ffe2e21cb5b12bde752021331e2614\"' \\\n--form 'photo_name=\"测试\"' \\\n--form 'photo_tag=\"tag1\"' \\\n--form 'sync=\"0\"' \\\n--form 'shield_backward_switch=\"false\"'\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"signature\": \"36ffe2e21cb5b12bde752021331e2614\",\n        \"photoId\": \"5238249419979025844\",\n        \"photo_id\": \"5238249419979025844\"\n    },\n    \"request_id\": \"9570f23378d9423eb16fbac70e987005\"\n}\nblob_store_key  String  <p><br>视频存储地址令牌</p>\nadvertiser_id  Long  <p><br>广告主 ID</p>\nfile  File  <p>视频文件</p>\nsignature  String  <p><br>视频 md5 值</p>\nphoto_name  String  <p>视频名称，默认是视频 id</p>\nphoto_tag  String  <p>视频标签</p>\nsync  Integer  <p>用同步/异步方式上传视频</p>\nshield_backward_switch  Boolean  <p>上传视频后是否自动同步至快手个人主页</p>\ntype  Integer  <p>上传视频类型</p>\nnative_plc_switch  Boolean  <p>原生投放时视频挂载plc组件（建议设置为true，有机会获得更多流量曝光）</p>\ncode  Integer  <p>返回码</p>\nmessage  String  <p>返回信息</p>\ndata  PhotoV2Data29  <p>返回数据</p>\nphoto_id  String  photo_id加密\nphotoId  String  废弃字段\nsignature  String  md5\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1730345836896
+    }
+  ],
+  "apiId": 1027,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/video/upload",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/video/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"11311124\"' \\\n--form 'shield_backward_switch=\"false\"' \\\n--form 'type=\"1\"' \\\n--form 'file=@\"/Users/xxx.mp4\"' \\\n--form 'signature=\"36ffe2e21cb5b12bde752021331e2614\"' \\\n--form 'photo_name=\"测试\"' \\\n--form 'photo_tag=\"tag1\"' \\\n--form 'sync=\"0\"' \\\n--form 'shield_backward_switch=\"false\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"signature\": \"36ffe2e21cb5b12bde752021331e2614\",\n        \"photoId\": \"5238249419979025844\",\n        \"photo_id\": \"5238249419979025844\"\n    },\n    \"request_id\": \"9570f23378d9423eb16fbac70e987005\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 59286,
+      "paramName": "blob_store_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>视频存储地址令牌</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "填写该字段时需要先使用文件流式上传或分片上传。注意：file文件方式和blob_store_key方式二选一填写",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52935,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><br>广告主 ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52936,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "",
+      "description": "<p>视频文件</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "只支持 mp4 格式，详细要求见附录。 注意：file文件方式和blob_store_key方式二选一填写",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52937,
+      "paramName": "signature",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>视频 md5 值</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "用于服务端校验。注意：保证与所上传视频文件或者blob_store_key对应，请勿重复上传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52938,
+      "paramName": "photo_name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>视频名称</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "\t不超过 150 字符，若不传默认为视频id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52939,
+      "paramName": "photo_tag",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>视频标签</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "单个标签不超过 10 字符，支持一个标签",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52940,
+      "paramName": "sync",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>用同步/异步方式上传视频</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "0:(默认)以异步方式上传，不需要同步等待，上传较快。1:(选填)同步方式上传，上传较慢",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52941,
+      "paramName": "shield_backward_switch",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "<p>上传视频后是否自动同步至快手个人主页</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "false 表示后端屏蔽，视频不可 profile 页可见， true 表示不屏蔽。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52942,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>上传视频类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "1：信息流竖版视频（默认） 2：信息流横版视频 3：后贴片竖版视频（已下线） 4：后贴片横版视频（已下线） 5: 开屏视频-720 1280 6: 开屏视频-720 1440 7: 开屏视频-720 1520 8: 开屏视频-720 1560 9: 开屏视频-720 1280~1080 1920 （加白使用）",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52943,
+      "paramName": "native_plc_switch",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "<p>原生投放时视频挂载plc组件（建议设置为true，有机会获得更多流量曝光）</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "false 表示不挂载plc true表示挂载，非白名单用户必须挂载plc，设置为true，平台将把根据推广目标生成的PLC组件挂载至该次本地上传的视频上。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 52947,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52948,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52949,
+      "paramName": "data",
+      "paramType": "PhotoV2Data29",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3096,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 52944,
+          "paramName": "photo_id",
+          "paramType": "String",
+          "example": "",
+          "description": "photo_id加密",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52945,
+          "paramName": "photoId",
+          "paramType": "String",
+          "example": "",
+          "description": "废弃字段",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52946,
+          "paramName": "signature",
+          "paramType": "String",
+          "example": "",
+          "description": "md5",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1730345836896,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

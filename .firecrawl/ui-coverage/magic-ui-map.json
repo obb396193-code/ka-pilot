@@ -1,0 +1,982 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://magicui.design/docs/templates/codeforge",
+        "title": "Codeforge Template | React Components & Templates",
+        "description": "A professional landing page template designed for developer tools and workflow automation platforms. Showcase your product's capabilities with interactive de..."
+      },
+      {
+        "url": "https://magicui.design/blog/framer-motion-react",
+        "title": "A Guide to Framer Motion React Animation | Magic UI",
+        "description": "Create stunning web animations with this complete Framer Motion React guide. Learn setup, variants, transitions, and advanced gesture-based animations."
+      },
+      {
+        "url": "https://magicui.design/docs/components/shine-border",
+        "title": "Shine Border | React Components & Templates",
+        "description": "Shine border is an animated background border effect."
+      },
+      {
+        "url": "https://magicui.design/docs/components/marquee",
+        "title": "Marquee | React Components & Templates",
+        "description": "An infinite scrolling component that can be used to display text, images, or videos."
+      },
+      {
+        "url": "https://magicui.design/docs/components/meteors",
+        "title": "Meteors | React Components & Templates",
+        "description": "A meteor shower effect."
+      },
+      {
+        "url": "https://magicui.design/blog/what-is-a-component-library",
+        "title": "What Is A Component Library? Why Use Them & Examples | Ma...",
+        "description": "Discover the benefits of using a component library and why it's a must-have for developers or designers. Learn more about what is a component library."
+      },
+      {
+        "url": "https://magicui.design/docs/components/light-rays",
+        "title": "Light Rays | React Components & Templates",
+        "description": "A component with animated light rays which shine down from above."
+      },
+      {
+        "url": "https://magicui.design/docs/templates/devtool",
+        "title": "Dev Tool | React Components & Templates",
+        "description": "The ultimate landing page template for your developer tool."
+      },
+      {
+        "url": "https://magicui.design/docs/components/flickering-grid",
+        "title": "Flickering Grid | React Components & Templates",
+        "description": "A flickering grid background made with SVGs, fully customizable using Tailwind CSS."
+      },
+      {
+        "url": "https://magicui.design/blog/component-library-examples",
+        "title": "27 Component Library Examples Every Designer Must Know | ...",
+        "description": "Looking for design inspiration? Check out these essential component library examples that every designer should know. Elevate your design game now!"
+      },
+      {
+        "url": "https://magicui.design/docs/components",
+        "title": "Components | React Components & Templates",
+        "description": "Here you can find all the components available in the library."
+      },
+      {
+        "url": "https://magicui.design/docs/installation",
+        "title": "Installation | React Components & Templates",
+        "description": "How to install dependencies and structure your app."
+      },
+      {
+        "url": "https://magicui.design/docs/components/iphone",
+        "title": "iPhone | React Components & Templates",
+        "description": "A mockup of the iPhone"
+      },
+      {
+        "url": "https://magicui.design/docs/components/shimmer-button",
+        "title": "Shimmer Button | React Components & Templates",
+        "description": "A button with a shimmering light which travels around the perimeter."
+      },
+      {
+        "url": "https://magicui.design/docs/components/interactive-hover-button",
+        "title": "Interactive Hover Button | React Components & Templates",
+        "description": "A visually engaging button component that responds to hover with dynamic transitions, adapting smoothly between light and dark modes for enhanced user intera..."
+      },
+      {
+        "url": "https://magicui.design/docs/components/word-rotate",
+        "title": "Word Rotate | React Components & Templates",
+        "description": "A vertical rotation of words"
+      },
+      {
+        "url": "https://magicui.design/blog/creating-next-js-app",
+        "title": "Creating Next JS App A Practical Guide | Magic UI",
+        "description": "A practical guide to creating Next JS app projects. Learn to build production-ready applications using TypeScript, Tailwind CSS, and Vercel deployment."
+      },
+      {
+        "url": "https://magicui.design",
+        "title": "Magic UI",
+        "description": "Beautiful UI components and templates to make your landing page look stunning."
+      },
+      {
+        "url": "https://magicui.design/docs/components/particles",
+        "title": "Particles | React Components & Templates",
+        "description": "Particles are a fun way to add some visual flair to your website. They can be used to create a sense of depth, movement, and interactivity."
+      },
+      {
+        "url": "https://magicui.design/docs/components/striped-pattern",
+        "title": "Striped Pattern | React Components & Templates",
+        "description": "A background striped pattern made with SVGs, fully customizable using Tailwind CSS."
+      },
+      {
+        "url": "https://magicui.design/r/interactive-hover-button.json"
+      },
+      {
+        "url": "https://magicui.design/docs/components/dot-pattern",
+        "title": "Dot Pattern | React Components & Templates",
+        "description": "A background dot pattern made with SVGs, fully customizable using Tailwind CSS."
+      },
+      {
+        "url": "https://magicui.design/r/word-rotate.json"
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-grid-pattern",
+        "title": "Animated Grid Pattern | React Components & Templates",
+        "description": "A animated background grid pattern made with SVGs, fully customizable using Tailwind CSS."
+      },
+      {
+        "url": "https://magicui.design/docs/components/orbiting-circles",
+        "title": "Orbiting Circles | React Components & Templates",
+        "description": "A collection of circles which move in orbit along a circular path"
+      },
+      {
+        "url": "https://magicui.design/docs/components/bento-grid",
+        "title": "Bento Grid | React Components & Templates",
+        "description": "Bento grid is a layout used to showcase the features of a product in a simple and elegant way."
+      },
+      {
+        "url": "https://magicui.design/blog/app-landing-page",
+        "title": "20 Best App Landing Page Examples For Design Inspiration ...",
+        "description": "Get inspired with these 20 outstanding app landing page examples that will help you create a visually appealing and effective page for your app."
+      },
+      {
+        "url": "https://magicui.design/docs/components/border-beam",
+        "title": "Border Beam | React Components & Templates",
+        "description": "An animated beam of light which travels along the border of its container."
+      },
+      {
+        "url": "https://magicui.design/docs/components/blur-fade",
+        "title": "Blur Fade | React Components & Templates",
+        "description": "Blur fade in and out animation. Used to smoothly fade in and out content."
+      },
+      {
+        "url": "https://magicui.design/docs/mcp",
+        "title": "Magic UI MCP Server | React Components & Templates",
+        "description": "Learn how to use the Model Context Protocol with Magic UI."
+      },
+      {
+        "url": "https://magicui.design/blog/react-component-best-practices",
+        "title": "13 React Component Best Practices For Optimized Performan...",
+        "description": "Improve the efficiency by following React component's best practices. Enhance your application and impress users with faster loading times."
+      },
+      {
+        "url": "https://magicui.design/blog/create-react-component-library",
+        "title": "How To Create React Component Library With Typescript & P...",
+        "description": "Learn how to create React component library using TypeScript with this guide. Plus, discover the process of publishing it for others to use!"
+      },
+      {
+        "url": "https://magicui.design/docs/templates/startup",
+        "title": "Startup Template | React Components & Templates",
+        "description": "The best landing page template for launching new ideas. Perfect for bootstrappers and pre-PMF VC backed startups."
+      },
+      {
+        "url": "https://magicui.design/blog/next-js-project-structure",
+        "title": "Next js project structure: Master the setup for scalable ...",
+        "description": "Explore next js project structure for scalable, high-performance apps with App Router best practices and real-world examples."
+      },
+      {
+        "url": "https://magicui.design/docs/components/text-animate",
+        "title": "Text Animate | React Components & Templates",
+        "description": "A text animation component that animates text using a variety of different animations."
+      },
+      {
+        "url": "https://magicui.design/r/marquee.json"
+      },
+      {
+        "url": "https://magicui.design/blog/mui-transitions",
+        "title": "How to Create and Use MUI Transitions | Magic UI",
+        "description": "Learn how to create and use MUI transitions effectively. Discover practical tips and examples to enhance your UI with smooth, dynamic animations."
+      },
+      {
+        "url": "https://magicui.design/docs/components/magic-card",
+        "title": "Magic Card | React Components & Templates",
+        "description": "A spotlight effect that follows your mouse cursor and highlights borders on hover."
+      },
+      {
+        "url": "https://magicui.design/docs/components/dotted-map",
+        "title": "Dotted Map | React Components & Templates",
+        "description": "A component with a svg dotted map."
+      },
+      {
+        "url": "https://magicui.design/docs",
+        "title": "Introduction | React Components & Templates",
+        "description": "Magic UI is a collection of re-usable components that you can copy and paste into your web apps. It primarily features components, blocks, and templates"
+      },
+      {
+        "url": "https://magicui.design/docs/legacy",
+        "title": "Legacy Versions | React Components & Templates",
+        "description": "Documentation for older versions of Magic UI. Get 8 production-ready templates and 50+ premium components that your users will love. Trusted by 5,000+ ..."
+      },
+      {
+        "url": "https://magicui.design/docs/story",
+        "title": "Story | React Components & Templates",
+        "description": "I was looking for something like that yesterday. Well done and tks for sharing! commandodev. Ben Ford · @commandodev · Link to tweet. Insta buy! SullyOmarr."
+      },
+      {
+        "url": "https://magicui.design/docs/components/android"
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-beam"
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-circular-progress-bar"
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-gradient-text",
+        "title": "Animated Gradient Text | React Components & Templates",
+        "description": "An animated gradient background which transitions between colors for text."
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-list"
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-shiny-text",
+        "title": "Animated Shiny Text | React Components & Templates",
+        "description": "A light glare effect which pans across text making it appear as if it is shimmering."
+      },
+      {
+        "url": "https://magicui.design/docs/components/animated-theme-toggler"
+      },
+      {
+        "url": "https://magicui.design/docs/components/aurora-text"
+      },
+      {
+        "url": "https://magicui.design/docs/components/avatar-circles"
+      },
+      {
+        "url": "https://magicui.design/docs/components/backlight",
+        "title": "Backlight | React Components & Templates",
+        "description": "Stop building from scratch. Get 8 production-ready templates and 50+ premium components that your users will love."
+      },
+      {
+        "url": "https://magicui.design/docs/components/code-comparison",
+        "title": "Code Comparison | React Components & Templates",
+        "description": "A component which compares two code snippets."
+      },
+      {
+        "url": "https://magicui.design/docs/components/comic-text"
+      },
+      {
+        "url": "https://magicui.design/docs/components/confetti"
+      },
+      {
+        "url": "https://magicui.design/docs/components/cool-mode"
+      },
+      {
+        "url": "https://magicui.design/docs/components/dia-text-reveal"
+      },
+      {
+        "url": "https://magicui.design/docs/components/dock",
+        "title": "Dock | React Components & Templates",
+        "description": "An implementation of the MacOS dock using react + tailwindcss + framer motion."
+      },
+      {
+        "url": "https://magicui.design/docs/components/file-tree",
+        "title": "File Tree | React Components & Templates",
+        "description": "A component used to showcase the folder and file structure of a directory."
+      },
+      {
+        "url": "https://magicui.design/docs/components/glare-hover"
+      },
+      {
+        "url": "https://magicui.design/docs/components/globe"
+      },
+      {
+        "url": "https://magicui.design/docs/components/glyph-matrix"
+      },
+      {
+        "url": "https://magicui.design/docs/components/grid-pattern",
+        "title": "Grid Pattern | React Components & Templates",
+        "description": "A background grid pattern made with SVGs, fully customizable using Tailwind CSS."
+      },
+      {
+        "url": "https://magicui.design/docs/components/hero-video-dialog"
+      },
+      {
+        "url": "https://magicui.design/docs/components/hexagon-pattern",
+        "title": "Hexagon Pattern | React Components & Templates",
+        "description": "A background hexagon pattern made with SVGs, fully customizable using Tailwind CSS."
+      },
+      {
+        "url": "https://magicui.design/docs/components/highlighter",
+        "title": "Text Highlighter | React Components & Templates",
+        "description": "A text highlighter that mimics the effect of a human-drawn marker stroke. Preview Code. Open in. The Magic UI Highlighter makes important text stand out ..."
+      },
+      {
+        "url": "https://magicui.design/docs/components/hyper-text",
+        "title": "Hyper Text | React Components & Templates - magicui.design",
+        "description": "A text animation that scrambles letters before revealing the final text."
+      },
+      {
+        "url": "https://magicui.design/docs/components/icon-cloud"
+      },
+      {
+        "url": "https://magicui.design/docs/components/interactive-grid-pattern"
+      },
+      {
+        "url": "https://magicui.design/docs/components/kinetic-text"
+      },
+      {
+        "url": "https://magicui.design/docs/components/lens"
+      },
+      {
+        "url": "https://magicui.design/docs/components/line-shadow-text"
+      },
+      {
+        "url": "https://magicui.design/docs/components/morphing-text",
+        "title": "Morphing Text | React Components & Templates",
+        "description": "A dynamic text morphing component for Magic UI. This MorphingText component dynamically transitions between an array of text strings, creating a smooth, engaging visual effect. Credits Credit to @luis-code"
+      },
+      {
+        "url": "https://magicui.design/docs/components/neon-gradient-card"
+      },
+      {
+        "url": "https://magicui.design/docs/components/noise-texture"
+      },
+      {
+        "url": "https://magicui.design/docs/components/number-ticker"
+      },
+      {
+        "url": "https://magicui.design/docs/components/pixel-image"
+      },
+      {
+        "url": "https://magicui.design/docs/components/pointer"
+      },
+      {
+        "url": "https://magicui.design/docs/components/progressive-blur"
+      },
+      {
+        "url": "https://magicui.design/docs/components/pulsating-button"
+      },
+      {
+        "url": "https://magicui.design/docs/components/rainbow-button"
+      },
+      {
+        "url": "https://magicui.design/docs/components/retro-grid"
+      },
+      {
+        "url": "https://magicui.design/docs/components/ripple-button"
+      },
+      {
+        "url": "https://magicui.design/docs/components/ripple",
+        "title": "Ripple | React Components & Templates",
+        "description": "An animated ripple effect typically used behind elements to emphasize them."
+      },
+      {
+        "url": "https://magicui.design/docs/components/safari"
+      },
+      {
+        "url": "https://magicui.design/docs/components/scroll-based-velocity"
+      },
+      {
+        "url": "https://magicui.design/docs/components/scroll-progress",
+        "title": "Scroll Progress | React Components & Templates",
+        "description": "Animated Scroll Progress for your pages Stop building from scratch. Get 8 production-ready templates and 50+ premium components that your users will love."
+      },
+      {
+        "url": "https://magicui.design/docs/components/shiny-button"
+      },
+      {
+        "url": "https://magicui.design/docs/components/smooth-cursor",
+        "title": "Smooth Cursor | React Components & Templates",
+        "description": "A customizable, physics-based smooth cursor animation component for React applications."
+      },
+      {
+        "url": "https://magicui.design/docs/components/sparkles-text"
+      },
+      {
+        "url": "https://magicui.design/docs/components/spinning-text",
+        "title": "Spinning Text | React Components & Templates",
+        "description": "Spinning Text · Installation · Examples · Props · Credits. Credit to @AayushBharti · Morphing TextText Highlighter. On This Page. InstallationExamplesReverse ..."
+      },
+      {
+        "url": "https://magicui.design/docs/components/terminal"
+      },
+      {
+        "url": "https://magicui.design/docs/components/text-3d-flip"
+      },
+      {
+        "url": "https://magicui.design/docs/components/text-reveal",
+        "title": "Text Reveal | React Components & Templates",
+        "description": "Fade in text as you scroll down the page."
+      },
+      {
+        "url": "https://magicui.design/docs/components/tweet-card"
+      },
+      {
+        "url": "https://magicui.design/docs/components/typing-animation",
+        "title": "Typing Animation | React Components & Templates",
+        "description": "Characters appearing in typed animation"
+      },
+      {
+        "url": "https://magicui.design/docs/components/video-text"
+      },
+      {
+        "url": "https://magicui.design/docs/components/warp-background"
+      },
+      {
+        "url": "https://magicui.design/docs/templates/agent"
+      },
+      {
+        "url": "https://magicui.design/docs/templates/blog"
+      },
+      {
+        "url": "https://magicui.design/docs/templates/changelog"
+      },
+      {
+        "url": "https://magicui.design/docs/templates/mobile",
+        "title": "Mobile | React Components & Templates",
+        "description": "Who is this for? You are launching a new mobile app and need a professional, eye-catching landing page to showcase your app's features and drive downloads."
+      },
+      {
+        "url": "https://magicui.design/docs/templates/portfolio"
+      },
+      {
+        "url": "https://magicui.design/docs/templates/saas",
+        "title": "SaaS Template",
+        "description": "Who is this for? You are looking to launch a new SaaS product but don't want to spend time on learning frontend or figuring out how to design."
+      },
+      {
+        "url": "https://magicui.design/blog/animated-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/animation-libraries"
+      },
+      {
+        "url": "https://magicui.design/blog/animation-on-scroll-css"
+      },
+      {
+        "url": "https://magicui.design/blog/ant-design-alternatives"
+      },
+      {
+        "url": "https://magicui.design/blog/ant-design-vs-material-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/best-react-component-library"
+      },
+      {
+        "url": "https://magicui.design/blog/best-react-native-ui-library"
+      },
+      {
+        "url": "https://magicui.design/blog/best-react-ui-framework"
+      },
+      {
+        "url": "https://magicui.design/blog/best-saas-landing-pages"
+      },
+      {
+        "url": "https://magicui.design/blog/best-web-design-tools"
+      },
+      {
+        "url": "https://magicui.design/blog/best-web-developer-portfolios"
+      },
+      {
+        "url": "https://magicui.design/blog/bootstrap-vs-react"
+      },
+      {
+        "url": "https://magicui.design/blog/cards-ui-design"
+      },
+      {
+        "url": "https://magicui.design/blog/carousel-user-interface"
+      },
+      {
+        "url": "https://magicui.design/blog/chakra-ui-vs-material-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/color-theory-for-web-design"
+      },
+      {
+        "url": "https://magicui.design/blog/component-libraries"
+      },
+      {
+        "url": "https://magicui.design/blog/cool-css-animations"
+      },
+      {
+        "url": "https://magicui.design/blog/cool-react-components"
+      },
+      {
+        "url": "https://magicui.design/blog/create-next-js-app"
+      },
+      {
+        "url": "https://magicui.design/blog/create-nextjs-app"
+      },
+      {
+        "url": "https://magicui.design/blog/creative-landing-page-design"
+      },
+      {
+        "url": "https://magicui.design/blog/css-animation-on-scroll"
+      },
+      {
+        "url": "https://magicui.design/blog/css-buttons-hover"
+      },
+      {
+        "url": "https://magicui.design/blog/css-loader-animation"
+      },
+      {
+        "url": "https://magicui.design/blog/css-loading-animation"
+      },
+      {
+        "url": "https://magicui.design/blog/cta-design"
+      },
+      {
+        "url": "https://magicui.design/blog/dashboard-design-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/disable-textarea-resize"
+      },
+      {
+        "url": "https://magicui.design/blog/drop-down-menu-in-js"
+      },
+      {
+        "url": "https://magicui.design/blog/dropdown-in-react-js"
+      },
+      {
+        "url": "https://magicui.design/blog/faq-template",
+        "title": "10 Best Practices To Create An FAQ Template & Examples ...",
+        "description": "Level up your FAQs! Use these 10 easy tips and inspiring examples to build a user-friendly FAQ template."
+      },
+      {
+        "url": "https://magicui.design/blog/free-react-components"
+      },
+      {
+        "url": "https://magicui.design/blog/hero-section-design"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-add-animation-to-website"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-build-a-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-choose-tech-stack"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-create-a-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-create-drop-down-menu"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-create-navigation-bar-in-html"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-design-a-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-display-testimonials-on-website"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-improve-website-conversion-rates"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-improve-website-loading-speed"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-improve-website-performance"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-learn-react"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-make-an-animated-website"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-make-an-interactive-website"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-make-backgrounds-for-animation"
+      },
+      {
+        "url": "https://magicui.design/blog/how-to-optimize-images-for-web"
+      },
+      {
+        "url": "https://magicui.design/blog/infinite-scroll-react"
+      },
+      {
+        "url": "https://magicui.design/blog/install-tailwind-css"
+      },
+      {
+        "url": "https://magicui.design/blog/install-tailwind-react"
+      },
+      {
+        "url": "https://magicui.design/blog/installing-tailwind-css"
+      },
+      {
+        "url": "https://magicui.design/blog/interactive-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/landing-page-call-to-action"
+      },
+      {
+        "url": "https://magicui.design/blog/landing-page-copywriting"
+      },
+      {
+        "url": "https://magicui.design/blog/landing-page-design-templates"
+      },
+      {
+        "url": "https://magicui.design/blog/landing-page-examples"
+      },
+      {
+        "url": "https://magicui.design/blog/landing-page-sections"
+      },
+      {
+        "url": "https://magicui.design/blog/landing-page-ui",
+        "title": "How To Design a User-Friendly Landing Page UI & Useful Tips",
+        "description": "Learn essential tips for designing a user-friendly landing page UI that captivates visitors and enhances engagement effectively."
+      },
+      {
+        "url": "https://magicui.design/blog/mantine-vs-chakra"
+      },
+      {
+        "url": "https://magicui.design/blog/material-ui-alternatives"
+      },
+      {
+        "url": "https://magicui.design/blog/material-ui-react"
+      },
+      {
+        "url": "https://magicui.design/blog/material-ui-vs-joy-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/mui-box"
+      },
+      {
+        "url": "https://magicui.design/blog/mui-card",
+        "title": "How To Create A Functional MUI Card",
+        "description": "It's a one-stop solution for developers, providing a comprehensive library of components and tools to create modern user interfaces easily. From ..."
+      },
+      {
+        "url": "https://magicui.design/blog/mui-react",
+        "title": "What Is MUI? How To Access MUI React For Projects",
+        "description": "MagicUI is a free and open-source UI library that we designed specifically for design engineers. It offers a collection of over 20 animated ..."
+      },
+      {
+        "url": "https://magicui.design/blog/mui-table"
+      },
+      {
+        "url": "https://magicui.design/blog/navbar-in-react-js"
+      },
+      {
+        "url": "https://magicui.design/blog/navbar-react-js"
+      },
+      {
+        "url": "https://magicui.design/blog/navigation-bar-for-website"
+      },
+      {
+        "url": "https://magicui.design/blog/next-js-app"
+      },
+      {
+        "url": "https://magicui.design/blog/next-js-create-app"
+      },
+      {
+        "url": "https://magicui.design/blog/next-js-getting-started"
+      },
+      {
+        "url": "https://magicui.design/blog/next-js-layout",
+        "title": "Mastering Next JS Layout for Scalable Web Apps",
+        "description": "At its core, a Next JS layout is just a React component that wraps around your pages. Think of it as a persistent UI shell—things like headers, ..."
+      },
+      {
+        "url": "https://magicui.design/blog/next-js-tailwind"
+      },
+      {
+        "url": "https://magicui.design/blog/next-js"
+      },
+      {
+        "url": "https://magicui.design/blog/nextjs-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/nextjs-portfolio-template"
+      },
+      {
+        "url": "https://magicui.design/blog/nextjs-website-template"
+      },
+      {
+        "url": "https://magicui.design/blog/nextjs",
+        "title": "A Quick & Simple Introduction To NextJS",
+        "description": "New to NextJS? This beginner-friendly guide will help you with the basics of NextJS and get started to creating an efficient web apps."
+      },
+      {
+        "url": "https://magicui.design/blog/portfolio-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/pricing-page-examples"
+      },
+      {
+        "url": "https://magicui.design/blog/react-animation-examples"
+      },
+      {
+        "url": "https://magicui.design/blog/react-animation-libraries"
+      },
+      {
+        "url": "https://magicui.design/blog/react-best-practices"
+      },
+      {
+        "url": "https://magicui.design/blog/react-bootstrap",
+        "title": "How To Integrate Bootstrap With React Using ...",
+        "description": "Discover the easiest way to integrate Bootstrap with React using the React Bootstrap package. Take your web development skills to the next ..."
+      },
+      {
+        "url": "https://magicui.design/blog/react-css-framework"
+      },
+      {
+        "url": "https://magicui.design/blog/react-design-patterns",
+        "title": "8 Popularly Used React Design Patterns & Best Practices",
+        "description": "Improve your React coding efficiency with these widely used React design patterns. Learn to write cleaner and more maintainable React code ..."
+      },
+      {
+        "url": "https://magicui.design/blog/react-frameworks"
+      },
+      {
+        "url": "https://magicui.design/blog/react-header"
+      },
+      {
+        "url": "https://magicui.design/blog/react-hero-component"
+      },
+      {
+        "url": "https://magicui.design/blog/react-infinite-scroll"
+      },
+      {
+        "url": "https://magicui.design/blog/react-js-file-upload"
+      },
+      {
+        "url": "https://magicui.design/blog/react-js-form-validation"
+      },
+      {
+        "url": "https://magicui.design/blog/react-js-navbar"
+      },
+      {
+        "url": "https://magicui.design/blog/react-js-navigation-bar"
+      },
+      {
+        "url": "https://magicui.design/blog/react-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/react-libraries",
+        "title": "Top 24 React Libraries To Consider For Your Project",
+        "description": "From state management to UI components, explore our list of React libraries that can take your project to the next level."
+      },
+      {
+        "url": "https://magicui.design/blog/react-native-libraries"
+      },
+      {
+        "url": "https://magicui.design/blog/react-portfolio-template"
+      },
+      {
+        "url": "https://magicui.design/blog/react-projects-for-beginners"
+      },
+      {
+        "url": "https://magicui.design/blog/react-tips"
+      },
+      {
+        "url": "https://magicui.design/blog/react-ui-framework"
+      },
+      {
+        "url": "https://magicui.design/blog/react-ux",
+        "title": "19 Best React UX Principles For React Native Apps",
+        "description": "React UX enhances user experience by providing fluid interactions and seamless navigation. Imagine effortlessly engaging with an app that ..."
+      },
+      {
+        "url": "https://magicui.design/blog/responsive-web-design-templates"
+      },
+      {
+        "url": "https://magicui.design/blog/saas-landing-page-best-practices"
+      },
+      {
+        "url": "https://magicui.design/blog/search-input-with-icon"
+      },
+      {
+        "url": "https://magicui.design/blog/semantic-ui-vs-material-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/shadcn-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/sidebar-for-website",
+        "title": "Build a Modern Sidebar for Website",
+        "description": "A modern sidebar is a powerful tool for guiding user behavior and boosting engagement. When you get the implementation right, it feels less like ..."
+      },
+      {
+        "url": "https://magicui.design/blog/social-proof-on-website"
+      },
+      {
+        "url": "https://magicui.design/blog/startup-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-border-radius"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-cdn-html"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-button"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-component-library"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-grid"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-install"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-react"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-template"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-templates-free"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-css-themes"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-dark-mode",
+        "title": "Build a Flawless Tailwind Dark Mode",
+        "description": "Implement a seamless Tailwind dark mode with class-based toggling, React/Next.js examples, and persistence. A practical guide for modern web ..."
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-font-size"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-landing-page-templates"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-portfolio-template"
+      },
+      {
+        "url": "https://magicui.design/blog/tailwind-vs-bootstrap"
+      },
+      {
+        "url": "https://magicui.design/blog/text-animation-css"
+      },
+      {
+        "url": "https://magicui.design/blog/text-loading-bar"
+      },
+      {
+        "url": "https://magicui.design/blog/time-and-date-picker"
+      },
+      {
+        "url": "https://magicui.design/blog/typescript-vs-javascript-differences"
+      },
+      {
+        "url": "https://magicui.design/blog/ui-animation"
+      },
+      {
+        "url": "https://magicui.design/blog/ui-card-design"
+      },
+      {
+        "url": "https://magicui.design/blog/ui-framework-for-react"
+      },
+      {
+        "url": "https://magicui.design/blog/ui-frameworks",
+        "title": "9 Best UI Frameworks With Visually Appealing Component ...",
+        "description": "Create beautiful and user-friendly interfaces with these top UI frameworks that offer visually appealing component libraries for your ..."
+      },
+      {
+        "url": "https://magicui.design/blog/ui-libraries",
+        "title": "15 of The Best UI Libraries For Your Web Design Project",
+        "description": "Discover 15 top UI libraries to enhance your web design project. Explore our curated list of essential tools to create a standout user ..."
+      },
+      {
+        "url": "https://magicui.design/blog/user-interface-design-patterns"
+      },
+      {
+        "url": "https://magicui.design/blog/user-interface-themes"
+      },
+      {
+        "url": "https://magicui.design/blog/visual-hierarchy-in-web-design"
+      },
+      {
+        "url": "https://magicui.design/blog/waitlist-landing-page"
+      },
+      {
+        "url": "https://magicui.design/blog/web-animation-tools"
+      },
+      {
+        "url": "https://magicui.design/blog/web-application-design"
+      },
+      {
+        "url": "https://magicui.design/blog/web-design-best-practices"
+      },
+      {
+        "url": "https://magicui.design/blog/web-design-trends"
+      },
+      {
+        "url": "https://magicui.design/blog/website-animation-examples"
+      },
+      {
+        "url": "https://magicui.design/blog/website-footer"
+      },
+      {
+        "url": "https://magicui.design/blog/website-header-examples",
+        "title": "25 Creative Website Header Examples To Inspire Your ...",
+        "description": "Get inspired with 25 creative website header examples to elevate your design and captivate your audience. August 13, 2024 ·17 min read."
+      },
+      {
+        "url": "https://magicui.design/blog/website-logo-examples",
+        "title": "50 Website Logo Examples (2024) - Magic UI",
+        "description": "Need a stunning website logo? Explore 50 website logo examples and create your brand identity. Start with our customizable template!"
+      },
+      {
+        "url": "https://magicui.design/blog/websites-with-great-ui"
+      },
+      {
+        "url": "https://magicui.design/blog/what-are-ui-components"
+      },
+      {
+        "url": "https://magicui.design/blog/what-is-mobile-first-design"
+      },
+      {
+        "url": "https://magicui.design/blog/what-is-nextjs"
+      },
+      {
+        "url": "https://magicui.design/blog",
+        "title": "Blog",
+        "description": "Latest articles about UI components, animations, and web development best practices. Learn to build functional, visually appealing cards that ..."
+      },
+      {
+        "url": "https://magicui.design/showcase",
+        "title": "Showcase",
+        "description": "Beautiful UI components and templates to make your landing page look stunning. 50+ blocks and templates to build beautiful landing pages in minutes"
+      },
+      {
+        "url": "https://magicui.design/showcase/nativeexpress",
+        "title": "native.express",
+        "description": "NativeExpress is the ultimate React Native starting kit."
+      },
+      {
+        "url": "https://magicui.design/showcase/pulpsense",
+        "title": "PulpSense.com",
+        "description": "Grow your business, not your payroll — AI automation for sales, marketing, and operations."
+      },
+      {
+        "url": "https://magicui.design/showcase/lyra",
+        "title": "lyra.marqraft.com",
+        "description": "Lyra is an AI-powered Markdown editor."
+      },
+      {
+        "url": "https://magicui.design/showcase/writora",
+        "title": "writora.xyz",
+        "description": "Create AI-powered blogs with videos, customize content, and export in Markdown—effortless and efficient!"
+      },
+      {
+        "url": "https://magicui.design/showcase/llmreport",
+        "title": "llm.report",
+        "description": "llm.report. llm.report uses Magic UI to build their landing page. llm.report. llm.report. Vercel AI Accelerator 2023, won $120k. Built by dillion."
+      },
+      {
+        "url": "https://magicui.design/showcase/undrstnd",
+        "title": "undrstnd.dev",
+        "description": "undrstnd.dev uses Magic UI to build their landing page. ... Built by dillion. The source code is available on GitHub."
+      },
+      {
+        "url": "https://magicui.design/showcase/gitme",
+        "title": "gitme.live",
+        "description": "Built by dillion. The source code is available on GitHub."
+      },
+      {
+        "url": "https://magicui.design/showcase/aomni",
+        "title": "aomni.com",
+        "description": "Get instant, AI-generated insights on your prospects to close deals faster and smarter."
+      }
+    ]
+  }
+}

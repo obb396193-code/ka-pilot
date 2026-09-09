@@ -1,0 +1,355 @@
+需求文档：
+
+[https://yuque.antfin-inc.com/docs/share/77a34458-91c6-4002-92b4-9fea87e486ca](https://yuque.antfin-inc.com/docs/share/77a34458-91c6-4002-92b4-9fea87e486ca)
+
+
+
+流程图：
+
+![](https://cdn.nlark.com/lark/0/2018/png/5633/1538113413590-5d5e59a7-e4f2-4646-8917-7d350a7ac086.png)
+
+
+
+## [](#2owhdu)详细设计
+# [](#8cq0vb)P4P
+0、新增通用退款账户(adaccount)
+
+##### [](#ls0ozd)<font style="color:rgb(38, 38, 38);background-color:rgb(255, 255, 255);">新增账户（通用退款账户）定义 generalRefund：</font>
+com.alibaba.intl.adaccount.biz.constants.SiteEnum
+
+com.alibaba.intl.adaccount.common.constants.BizType
+
+##### [](#sql:)sql:
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(28, now(), now(), 'generalrefund', 'cash', 1, 0, null, null, -1, 'all', 'spend');
+
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(29,now(), now(), 'generalrefund', 'gift', 1, 0, null, null, -1, 'all', 'spend');
+
+##### [](#客户端：)客户端：
+generalRefundAccountWriteClient
+
+generalRefundAccountReadClient
+
+##### [](#增加收入、支出处理器)增加处理器
+
+
+现金：
+
+冻结，ScP4pCashFrozenProcessor + GeneralRefundCashChargeProcessor
+
+解冻，GeneralRefundCashRefundProcessor + ScP4pCashUnfrozenProcessor
+
+红包：
+
+冻结，ScP4pGiftFrozenProcessor + GeneralRefundGiftChargeProcessor
+
+解冻，GeneralRefundGiftRefundProcessor +  ScP4pGiftUnfrozenProcessor
+
+
+
+财务现金部分退款消息过来时，GeneralRefundCashRefundProcessor
+
+财务红包部分作废消息过来时，GeneralRefundGiftRefundProcessor
+
+
+
+已有processor:
+
+  ScP4pCashFrozenProcessor
+
+  ScP4pCashUnfrozenProcessor
+
+
+
+需要增加：
+
+GeneralRefundCashChargeProcessor
+
+GeneralRefundCashRefundProcessor
+
+ScP4pGiftFrozenProcessor
+
+GeneralRefundGiftChargeProcessor
+
+GeneralRefundGiftRefundProcessor
+
+ScP4pGiftUnfrozenProcessor
+
+==========================================
+
+依赖二方库：
+
+<dependency>
+
+  <groupId>com.alibaba.intl.app</groupId>
+
+  <artifactId>alibaba.intl.p4pservice.client</artifactId>
+
+  <version>1.2.72-SNAPSHOT</version>
+
+</dependency>
+
+使用方法：
+
+com.alibaba.p4pservice.client.api.account.P4pAccountApiService api = 
+
+com.alibaba.p4pservices.client.P4pServicesServiceLocator.getP4pAccountApiService();
+
+
+
+0、查协议，签协议(p4pservice)
+
+api.getAgreementStatusOfUsingP4pFund(Long aliId);
+
+api.acceptAgreementOfUsingP4pFund(Long aliId);
+
+
+
+1、 可用现金余额(p4pservice）
+
+api.findAvailableP4pAccountBalance
+
+2、查询作废红包金额(p4pservice)
+
+api.findNeedInvalidGift
+
+
+
+3、资金冻结接口(adaccount)
+
+4、资金解冻接口(adaccount)
+
+依赖二方库：
+
+<dependency>
+
+  <groupId>com.alibaba.intl.app</groupId>
+
+  <artifactId>alibaba.intl.adaccount.client.sc</artifactId>
+
+  <version>1.1.31-SNAPSHOT</version>
+
+</dependency>
+
+使用方法：
+
+com.alibaba.intl.adaccount.client.sc.ScAccountWriteClient client = 
+
+com.alibaba.intl.adaccount.client.sc.ScAdAccountServicesLocator.getGeneralRefundAccountWriteClient();
+
+冻结：client.frozenFullFund(com.alibaba.intl.adaccount.common.dto.FullFrozenFundDTO FullFrozenFundDTO);
+
+解冻：client.unfrozenFullFund(com.alibaba.intl.adaccount.common.dto.FullFrozenFundDTO FullFrozenFundDTO);
+
+
+
+
+
+5、超时报警。（adaccount）
+
+
+
+6、最终扣款消息过来时，现金退款 和红包作废 消息。 
+
+消息体中applySourceNo必须以 ICBU-GENERALREFUND 打头。
+
+tradeItemType和原来一致
+
+现金 AP/A
+
+红包 AR/IR
+
+
+
+# [](#2onzdq)财务 
+
+
+# [](#mio4uu)CRM
+1、订单信息接口。等@若彬 给出接口
+
+HSF接口：
+
+[http://hsf.alibaba-inc.com/hsfops/testpage/testMethod.htm?envType=pre&service=org.esb.biz.order.EsbOrdOrderService:3.0.1&method=queryOrderInfo~java.util.HashMap](http://hsf.alibaba-inc.com/hsfops/testpage/testMethod.htm?envType=pre&service=org.esb.biz.order.EsbOrdOrderService:3.0.1&method=queryOrderInfo~java.util.HashMap)
+
+查询参数:
+
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">[</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">  {"orderNumber":"P1805315331790521","type":"getOrderItemsByOrderNumber"}</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">]</font>
+
+
+
+返回值：
+
+{  
+  "charsetConverted": null,  
+  "fromCharcode": null,  
+  "exceptionDesc": "unknow exception",  
+  "methodType": "NOT_TCC_STATUS",  
+  "returnValue": [  
+    {  
+      "discountRate": 100,  
+      "orderId": 354805694,  
+      "modifier": "ytest008",  
+      "gmtSign": 1527696000000,  
+      "num": 20000,  
+      "pageSize": null,  
+      "memo": null,  
+      "pageOrderList": null,  
+      "benefitCustomer": "大娘蛋糕店",  
+      "quotedPrice": 20000,  
+      "price": 20000,  
+      "pageStart": null,  
+      "unvoucherAmount": 20000,  
+      "supporterOrgFullid": null,  
+      "id": 419876635,  
+      "bargainId": 44587693,  
+      "bizStatus": "cancel",  
+      "benefitCustomerContactor": 175067084,  
+      "memberId": "huitongh",  
+      "serialNum": "P1805315331790521",  
+      "signSellerCompany": "B65",  
+      "renewSalesId": null,  
+      "gmtActualEnd": null,  
+      "gmtTargetEnd": null,  
+      "ultimatePrice": 20000,  
+      "benefitCustomerId": "2241047693",  
+      "unit": "P",  
+      "pageOrder": null,  
+      "domain": "zeus",  
+      "signSalesId": "ytest008",  
+      "traceChange": true,  
+      "serviceSupplyCompany": "B65",  
+      "gmtModified": 1534901335000,  
+      "lastOperType": "cancel",  
+      "gmtPaymentRemit": null,  
+      "paymentAmount": 0,  
+      "gmtActualBegin": null,  
+      "salesOrgFullid": "/10/2/100000568/110234013/110267877/110267878/200053001/",  
+      "purchaseType": "bought",  
+      "itemNum": "P1805315331790521_1",  
+      "crmBoName": null,  
+      "salesId": "ytest008",  
+      "supporterOrgId": null,  
+      "isDeleted": "n",  
+      "processId": 10174899036,  
+      "unServiceDay": 0,  
+      "attribute": "new",  
+      "class": "com.ali.martini.dal.dataobject.order.OrdOrderItem",  
+      "paymentStatus": "payment_none",  
+      "defaultBiz": true,  
+      "serviceJumpDays": 0,  
+      "creator": "system",  
+      "gmtTargetBegin": null,  
+      "gmtVoucherReceive": null,  
+      "signSalesOrgId": 200053001,  
+      "gmtCreate": 1527753320000,  
+      "supporter": null,  
+      "parentId": 0,  
+      "executeAmount": 20000,  
+      "productCode": "bp010",  
+      "policyId": 10762450,  
+      "voucherStatus": "voucher_none",  
+      "oppId": null,  
+      "signSalesOrgFullId": "/10/2/100000568/110234013/110267877/110267878/200053001/",  
+      "salesOrgId": 200053001  
+    },  
+    {  
+      "discountRate": 0,  
+      "orderId": 354805694,  
+      "modifier": "ytest008",  
+      "gmtSign": 1527696000000,  
+      "num": 200,  
+      "pageSize": null,  
+      "memo": null,  
+      "pageOrderList": null,  
+      "benefitCustomer": "大娘蛋糕店",  
+      "quotedPrice": 200,  
+      "price": 200,  
+      "pageStart": null,  
+      "unvoucherAmount": 0,  
+      "supporterOrgFullid": null,  
+      "id": 419876636,  
+      "bargainId": 44587693,  
+      "bizStatus": "cancel",  
+      "benefitCustomerContactor": 175067085,  
+      "memberId": "huitongh",  
+      "serialNum": "P1805315331790521",  
+      "signSellerCompany": "B65",  
+      "renewSalesId": null,  
+      "gmtActualEnd": null,  
+      "gmtTargetEnd": null,  
+      "ultimatePrice": 0,  
+      "benefitCustomerId": "2241047693",  
+      "unit": "P",  
+      "pageOrder": null,  
+      "domain": "zeus",  
+      "signSalesId": "ytest008",  
+      "traceChange": true,  
+      "serviceSupplyCompany": "B65",  
+      "gmtModified": 1534901335000,  
+      "lastOperType": "cancel",  
+      "gmtPaymentRemit": null,  
+      "paymentAmount": 0,  
+      "gmtActualBegin": null,  
+      "salesOrgFullid": "/10/2/100000568/110234013/110267877/110267878/200053001/",  
+      "purchaseType": "normal_present",  
+      "itemNum": "P1805315331790521_2",  
+      "crmBoName": null,  
+      "salesId": "ytest008",  
+      "supporterOrgId": null,  
+      "isDeleted": "n",  
+      "processId": null,  
+      "unServiceDay": 0,  
+      "attribute": "new",  
+      "class": "com.ali.martini.dal.dataobject.order.OrdOrderItem",  
+      "paymentStatus": "payment_none",  
+      "defaultBiz": true,  
+      "serviceJumpDays": 0,  
+      "creator": "system",  
+      "gmtTargetBegin": null,  
+      "gmtVoucherReceive": null,  
+      "signSalesOrgId": 200053001,  
+      "gmtCreate": 1527753321000,  
+      "supporter": null,  
+      "parentId": 0,  
+      "executeAmount": 0,  
+      "productCode": "bp011",  
+      "policyId": 10762450,  
+      "voucherStatus": "voucher_none",  
+      "oppId": null,  
+      "signSalesOrgFullId": "/10/2/100000568/110234013/110267877/110267878/200053001/",  
+      "salesOrgId": 200053001  
+    }  
+  ],  
+"returnClassName": "java.util.ArrayList",  
+"successed": true,  
+  "msgId": null,  
+  "toCharcode": null,  
+  "class": "org.mule.esb.model.tcc.result.EsbResultModel"  
+}
+
+
+
+[http://hsf.alibaba.net/hsfops/testpage/testMethod.htm?envType=daily&service=org.esb.biz.order.EsbOrdOrderService:3.0.1.daily&method=queryOrderInfo~java.util.HashMap](http://hsf.alibaba.net/hsfops/testpage/testMethod.htm?envType=daily&service=org.esb.biz.order.EsbOrdOrderService:3.0.1.daily&method=queryOrderInfo~java.util.HashMap)
+
+
+
+[  
+  {"orderNumber":"201809070475678","type":"getOrderItemsByOrderNumber"}  
+]
+
+select * from ord_order_item where policy_id in (  
+  
+SELECT policy_id FROM ord_order_item where  product_code = 'bp011' and gmt_create >= to_date('2018-05-31','yyyy-MM-dd')  
+    ) and  product_code = 'bp010' and gmt_create >= to_date('2018-05-31','yyyy-MM-dd') order by  gmt_create asc
+
+测试库：
+
+apollo@crmg-t.db.alipay.net:1521:crmg_t【b2b crm售中测试库】
+
+
+
+现金：bp010,红包：bp011
+
+
+

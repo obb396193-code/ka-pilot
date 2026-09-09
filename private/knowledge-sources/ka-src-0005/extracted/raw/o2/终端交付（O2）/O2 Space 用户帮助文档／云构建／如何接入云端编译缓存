@@ -1,0 +1,212 @@
+编译缓存命中率统计插件已正式上线，简单接入，让云端缓存状态一目了然！[点击文档](https://anpm.alibaba-inc.com/package/@ali/cloudbuild-webpack-plugin)了解详情！
+
+编译缓存支持「构建器」为用户批量开启编译缓存功能，[点击文档](https://builder.alibaba-inc.com/document?slug=cache-config)了解详情。
+
+## 1. 何为编译缓存
+
+「编译缓存」是指由特定构建工具在构建后生成的持久化缓存文件，通过在构建时使用编译缓存，能够实现代码增量编译，有效提升构建速度。而由云构建提供的「编译缓存」，简单来说，即是在云端保存编译缓存，并在下次构建前安装缓存，加速云端构建的功能。
+
+通过开启编译缓存，您将有机会大幅提升构建速度，下面是一个真实项目接入编译缓存的数据，可以看到：当缓存完全未命中时，项目构建耗时为 331 秒，当缓存几乎完全命中编译缓存时（99.93%），项目构建耗时为 184 秒。因此，通过开启编译缓存，该项目能够节省构建耗时 147 秒（2 分多钟），获得约 1.8 倍的性能提升！
+
+(https://o2-img.alistatic.com/i/i09blZ/HoATRE3jOB305wza7PXma-76b2a576cc.jpg)
+
+
+您可以通过本篇文章[《云构建编译缓存：理解，使用，享受》](https://ata.atatech.org/articles/11020296431)掌握编译缓存的核心机制。
+
+## 2. 简单三步，配置编译缓存
+
+若想成功使用云构建编译缓存，您仅需要简单三步配置：
+
+### 2.1. Step 1：框架/构建工具开启持久化缓存
+
+#### 2.1.1. 为框架开启持久化缓存能力
+
+| 框架 | 开启方式 |
+|-|-|
+| umi3 | 参见 [umi3 文档](https://v3.umijs.org/zh-CN/config#mfsu)，在 `mfsu.production.output`中指定缓存目录。 |
+| umi4 | 参见 [umi4 文档](https://umijs.org/blog/webpack-5-prod-cache)，建议在 `config.cache` 对象中添加 `compression: 'gzip'` 压缩缓存大小。 |
+
+#### 2.1.2. 为构建工具开启持久化缓存能力
+
+| 构建工具 | 开启方式 |
+|-|-|
+| webpack@5  | ```module.exports = {  ...  cache: {      type: "filesystem",              // 表示开启持久化缓存      compression: 'gzip',             // 压缩缓存文件      buildDependencies: {          config: [ __filename ],      // 表示缓存强依赖文件，当文件内容发生变化时      },                               // 持久化缓存将强制失效，此处 __filename  },                                   // 默认为 webpack.config.js  ...}```💡 更多 webpack 缓存相关配置详见 [webpack 官方文档](https://webpack.js.org/configuration/cache/#cache)。 |
+| webpack@4 | webpack@4 的持久化能力需要使用 loader 或 plugin 支持，我们建议您优先升级至 webpack@5 以获得更安全高效的缓存能力。若您使用 `babel-loader`，可以开启 `babel-loader`的持久化缓存能力，webpack 配置如下：```module.exports = {  ...  module: {    rules: [      {        test: /\.jsx?$/,        use: { loader: "babel-loader", options: { cacheDirectory: true } },        exclude: /node_modules/,      },    ],  },  ...};````babel-loader@9.x` 版本不支持 webpack@4，需降级至 8.x 版本。 |
+
+#### 2.1.3. 为多包项目开启持久化缓存
+
+您有两种方式为多包项目开启持久化缓存能力：
+
+| 构建工具 | 开启方式 |
+|-|-|
+| lerna | lerna 的持久化缓存能力由底层 nx.js 提供，您需要在项目根目录新增 `nx.json` 文件，并增加如下内容：```{  "tasksRunnerOptions": {    "default": {      "runner": "nx/tasks-runners/default",      "options": {        "cacheableOperations": ["build", "test"]      }    }  }}```更多信息参见 [lerna 缓存部分文档](https://lerna.js.org/docs/features/cache-tasks)。 |
+| 其他构建工具 | 当使用其他构建工具提供的持久化缓存能力时，可以配置对应的持久化缓存，并在「[编写编译缓存配置](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCRMmk4XQV1waOeDk?utm_scene=team_space&iframeQuery=anchorId%3Duu_lu9hc2dw3pw0pdshhcm)」时使用 glob 语法声明缓存目录，云构建时会自动在构建前安装子包缓存至对应位置，下方是多包场景声明持久化缓存示例：```{  "builder": "@ali/builder-package-monorepo",  "builderConfig": {    "version": {      "loose": true    }  },  "cache": {    "build": {      "enable": true,      "cacheDir": ["packages/*/node_modules/.cache/**"], // 子包对应缓存目录      "buildDependencies": ["./webpack.config.js"]    }  }}``` |
+
+### 2.2. Step 2：编写编译缓存配置
+
+当您完成构建工具持久化缓存配置后，接下来您需要通过配置 `abc.json` 文件声明开启云构建编译缓存能力：
+
+```
+{
+ ...
+  "cache": {
+    "build": {
+      "enable": true | false,                                  // 开启编译缓存
+      "cacheDir": ["<your cache directorie path>"],            // 缓存目录
+      "buildDependencies": ["<build dependency file path>"],   // 缓存强依赖文件
+      "onlinePublish": true                                    // 是否在线上环境复用日常环境缓存，默认为 false
+    }
+  }
+  ...
+}}                         
+```
+各配置项说明如下：
+
+| 属性名 | 属性类型 | 属性说明 |
+|-|-|-|
+| `enable` | Boolean | 是否开启编译缓存 |
+| `cacheDir` | Array<String> | 需要缓存的目录，支持 glob 语法，缓存目录将在项目构建前自动安装，构建后自动更新注意：`node_modules/.cache` 只会缓存空目录，是错误的写法，若想缓存 `.cache`下所有目录，正确写法应为：`node_modules/.cache/**` |
+| `buildDependencies` | Array<String> | 构建强依赖文件，当文件内容发生变化时，编译缓存将强制失效，利用该机制能避免无效的缓存安装 平台不支持 `__dirname` 等变量，请以 `./`作为根目录起始路径 |
+| `onlinePublish` | Boolean | 默认为 `false`，线上环境不开启编译缓存，当需要线上发布复用日常环境缓存时，此值为 `true` |
+
+下方是一个基于 webpack@5 持久化缓存的配置示例：
+
+```
+{
+  "assets": {
+    "type": "builder",
+    "builder": {
+      "name": "@ali/builder-package"
+    }
+  },
+  "cache": {
+    "build": {
+      "enable": true,                                      // 开启编译缓存
+      "cacheDir": ["node_modules/.cache/webpack/**"],      // 缓存目录
+      "buildDependencies": ["./webpack.config.js"]         // 缓存强依赖文件
+    }
+  }
+}
+```
+🎉 恭喜，您已经完成开启云构建编译缓存的所有配置！
+
+
+---
+### 2.3. Step 3：接入编译缓存命中率统计插件
+
+⚠️ 注意：编译缓存命中率统计插件当前仅支持 webpack5！
+
+接入编译缓存命中率统插件后，可以在云端构建时输出当前 module 和 chunk 缓存命中情况（如下图）：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01jl5JGY1IxGndm9GD6_!!6000000000959-0-tps-724-270.jpg)
+
+
+从此云端缓存命中情况一目了然，您可以根据缓存命中情况调整您的分包策略，从而提升缓存命中率，接入详情参见[文档](https://anpm.alibaba-inc.com/package/@ali/cloudbuild-webpack-plugin)。
+
+#### 2.3.1. ice3 用户接入
+
+ice3 用户接入插件参见下方代码：
+
+```
+// ...
+import CloudbuildWebpackPlugin from "@ali/cloudbuild-webpack-plugin";
+
+export default defineConfig(() => ({
+  // ...
+  webpack: (webpackConfig) => {
+      webpackConfig.plugins.push(new CloudbuildWebpackPlugin.default());
+      return webpackConfig;
+  },
+}));
+```
+## 3. 常见问题
+
+### 3.1. 如何判断本地持久化缓存已开启？
+
+在本地环境中，您需要检查在构建结束后，是否已经生成对应的缓存目录与缓存文件（例如，对于 webpack@5，默认的缓存目录为 `node_modules/.cache/webpack`），若目录文件均存在则表示本地持久化缓存已开启。
+
+### 3.2. 如何判断云构建编译缓存已生效？
+
+当按照文档有效配置 `abc.json` 文件后，在 O2 Space 执行发布，会在构建节点基础信息面板中看到「编译缓存：已开启」状态提示：
+
+(https://o2-img.alistatic.com/i/i09blZ/QytZehsQbx1uWUis4r9T7-cb7f76e89f.png)
+
+
+在日志面板中，「编译缓存检测」阶段可获取本次编译缓存是否开启，预检是否通过（`buildDependencies` 声明的文件内容是否与上次相同），缓存目录等信息：
+
+(https://o2-img.alistatic.com/i/i09blZ/SETpkeNgr0Py9DGCSVcuZ-03a2603b5b.png)
+
+
+### 3.3. 如何跳过使用上一次缓存，但更新本次构建生成的持久化缓存？
+
+当您发现上一次生成的缓存有误时（可能由于您错误的配置导致），您可以通过修改 `abc.json` 文件中 `buildDependencies` 声明的文件内容来实现跳过缓存安装环节的需求。
+
+### 3.4. 如何关闭云端编译缓存？
+
+您需要配置 `abc.json` 文件，设置 `cache.build.enable` 的值为 `false`。
+
+```
+{
+  "assets": {
+    "type": "builder",
+    "builder": {
+      "name": "@ali/builder-package"
+    }
+  },
+  "cache": {
+    "build": {
+      "enable": false,                                      // 开启编译缓存
+      "cacheDir": ["node_modules/.cache/webpack/**"],      // 缓存目录
+      "buildDependencies": ["./webpack.config.js"]         // 缓存强依赖文件
+    }
+  }
+}
+```
+### 3.5. 新版编译缓存升级了什么内容？
+
+为了更优的构建性能和缓存复用率，我们全新升级了云构建编译缓存方案的整体架构，新版编译缓存方案较老版方案有如下优势：
+
+1. 支持迭代维度与项目维度的两级缓存，除项目初次构建，或缓存完全不可用外，均保障有缓存可用；
+1. 支持通过用户声明的 `buildDependencies`文件进行缓存预检，当文件内容发生变化时，跳过缓存安装逻辑，从而进一步优化构建效率；
+1. 支持构建器统一为用户开启编译缓存，批量项目提速，详情见[《构建器开启编译缓存文档》](https://builder.alibaba-inc.com/document?slug=cache-config)；
+1. 提供更大的缓存存储空间：500MB -> 2GB；
+1. 提供更便捷的多包缓存声明方案，帮助多包应用快速接入编译缓存；
+1. 提供更灵活的缓存配置，例如强制缓存失效，缓存关闭等；
+1.  针对 webpack5 提供缓存命中率统计工具，让缓存复用情况一目了然；
+1. 为构建后存在缓存的项目默认开启编译缓存，进一步降低编译缓存使用成本；
+1. 我们还会持续迭代，提供更多实用功能，敬请期待...
+### 3.6. 如何从老版编译缓存迁移至新版？
+
+删除老版编译缓存配置，并按照[配置编译缓存说明](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCRMmk4XQV1waOeDk?utm_scene=team_space&iframeQuery=anchorId%3Duu_lu9hc2dw3pw0pdshhcm)添加新配置：
+
+#### 3.6.1. 更改前
+
+```
+{
+  // ...
+  "buildCacheConfig": [
+    {
+      "buildCachePath": "node_modules/.cache/webpack",
+      "cacheKeyDependencies": ["./webpack.config.js"]
+    }
+  ]
+}
+```
+#### 3.6.2. 更改后
+
+`node_modules/.cache/webpack` 将缓存空目录，若想缓存 `.cache/webpack`下所有目录，正确写法应为：`node_modules/.cache/webpack/**`
+
+```
+{
+  // ...
+  "cache": {
+    "build": {
+      "enable": true,
+      "cacheDir": ["node_modules/.cache/webpack/**"],
+      "buildDependencies": ["./webpack.config.js"]
+    }
+  }
+}
+```
+
+

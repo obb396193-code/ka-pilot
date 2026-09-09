@@ -1,0 +1,34 @@
+当前FY24 集团CDN keyless证书：1f797e2e521a9d9b5577e6dc04aa1a2bd57717ede8edabc3f124b4cd944173f8
+
+FY25证书更新正式开启时间07.02，预计07.15前全量域名证书更换，如遇keyless域名证书访问异常问题及时联系冠夫报备处理。
+
+
+
+确认是否keyless证书，可根据以下方法进行确认
+
+注：如07.15后还未更新也联系冠夫确认。
+
+## 一、命令行模式
+
+举例：[www.taobao.com证书查看](http://www.taobao.com%E8%AF%81%E4%B9%A6%E6%9F%A5%E7%9C%8B)
+
+```
+openssl s_client -connect www.taobao.com:443 -servername www.taobao.com </dev/null | openssl x509 -noout -text
+
+```
+## 二、浏览器模式
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYm6j4odO8j9/img/6a815697-b87e-48ca-b33e-050936b60df9.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYm6j4odO8j9/img/55176e4d-ec69-48c0-9a44-8880ef3459bb.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYm6j4odO8j9/img/c65ce013-0ced-4c09-8710-e0a6f41a0c48.png)
+
+
+证书id，识别证书标识符
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYm6j4odO8j9/img/495501bd-8f7e-40c5-a544-52d849615206.png)
+
+

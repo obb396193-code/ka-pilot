@@ -1,0 +1,35 @@
+鉴于很多业务方需要在ODPS中调用一休分流接口补数据，一休提供了UDF函数，该UDF支持对特定实验的分桶判定能否命中
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/252755/1612418619208-6a4d66a5-d6f6-4504-9464-1c99dfebad3b.png)
+
+### 申请流程
+#### step1 : 申请udf函数<font style="color:#1DC0C9;">evo_hash</font>
+申请UDF函数（[https://market.dw.alibaba-inc.com/#/detail/138764](https://market.dw.alibaba-inc.com/#/detail/138764)）
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2023/png/236228/1685955131479-70f7f335-376c-47a9-a7d9-9b8f978853fc.png)
+
+#### step2 : 申请udf函数对应资源<font style="color:#1DC0C9;">evo-hash.jar</font>
+[https://guard.alibaba-inc.com/apply/resourceApply.htm](https://guard.alibaba-inc.com/apply/resourceApply.htm)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2023/png/236228/1685955058838-060ba5a7-3a7b-44d7-b8a5-8d0974c1efea.png)
+
+
+
+### 使用参考
+该函数需要传入两个参数：
+
++ 分流因子
++ 一休某个分桶的配置，这个需要咨询一休同学获取。
+
+示例：
+
+```sql
+SELECT utdw.evo_hash('wedsfsgg22er4','[ {"routingAlgorith":"md5","ratioRanges":[[50000,59999]],"randomFactor":"wlrank_adapt_1"}]') AS hit;
+```
+
+返回：
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/252755/1612492003451-1307ea1f-e043-45ce-ae24-4b9a20acdba0.png)
+
+
+

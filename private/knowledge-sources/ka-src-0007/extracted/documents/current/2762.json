@@ -1,0 +1,443 @@
+{
+  "documentId": 2762,
+  "documentName": "投前预估详情",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095420234
+    }
+  ],
+  "apiId": 313,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/details",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 11440033,\n    \"ocpx_action_type\": 180,\n    \"predication_id\": 55101688\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"predication_id\": 55101688,\n        \"content_quality\": 1,\n        \"title\": \"5s-3.mp4\",\n        \"duration\": 5000,\n        \"photo_url\": \"https://alimov2.a.kwimgs.com/upic/2021/12/07/17/BMjAyMTEyMDcxNzQ2MjdfMjE4NjY2NTM4M182MjI5MTQ1MDEwN18wXzM=_b_B5596f2337c208966b88f949cba05e6a8.mp4?tag=1-1644387033-unknown-0-7git4lqns0-e6527f07d1b8c175&clientCacheKey=3x9gg2uwk9jge5c_b.mp4&tt=b&di=247090c5&bp=10000\",\n        \"predication_time\": 1642064018370,\n        \"ocpx_action_type\": 180,\n        \"content_quality_prompt\":\"xxxxx\",\n        \"content_duplicate_prompt\":\"xxxxx\",\n        \"content_duplicate\":false,\n        \"photo_id\": 123456789\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"7a5b7d12d5714695a7b9bc5566746d03\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 16579,
+      "paramName": "predication_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "投前预估任务id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16580,
+      "paramName": "ocpx_action_type",
+      "paramType": "Long",
+      "example": "180",
+      "description": "优化目标",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "\t53：表单提交，180：激活",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16581,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "23",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 16582,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "响应状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16583,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16584,
+      "paramName": "data",
+      "paramType": "AdPredicationTaskDetailSnake",
+      "example": "{}",
+      "description": "投前预估任务详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 654,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 16560,
+          "paramName": "predication_id",
+          "paramType": "Long",
+          "example": "10814878",
+          "description": "预估任务id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16561,
+          "paramName": "predication_time",
+          "paramType": "Long",
+          "example": "0",
+          "description": "预估时间",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "毫秒时间戳",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16562,
+          "paramName": "photo_url",
+          "paramType": "String",
+          "example": "https://txmov2.a.kwimgs.com/up",
+          "description": "视频url链接",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16563,
+          "paramName": "title",
+          "paramType": "String",
+          "example": "VID_20190808_212147.mp4",
+          "description": "视频标题",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16564,
+          "paramName": "duration",
+          "paramType": "Long",
+          "example": "10533",
+          "description": "视频时长",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16565,
+          "paramName": "ocpx_action_type",
+          "paramType": "Long",
+          "example": "180",
+          "description": "优化目标",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16567,
+          "paramName": "content_quality",
+          "paramType": "Long",
+          "example": "0",
+          "description": "内容分",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 19937,
+          "paramName": "photo_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "视频id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24143,
+          "paramName": "content_quality_prompt",
+          "paramType": "String",
+          "example": "test",
+          "description": "内容质量文案",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24144,
+          "paramName": "content_duplicate_prompt",
+          "paramType": "String",
+          "example": "test",
+          "description": "内容重复度文案",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24145,
+          "paramName": "content_duplicate",
+          "paramType": "Boolean",
+          "example": "false",
+          "description": "是否重复",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 21,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095420234,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

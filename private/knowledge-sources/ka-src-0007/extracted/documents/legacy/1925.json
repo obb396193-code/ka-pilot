@@ -1,0 +1,42 @@
+{
+  "documentId": 1925,
+  "documentName": "10.1.3获取可选的应用定向",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取可选的应用定向\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/app/search\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明      | 备注                           |\n| ------------- | ------ | -------- | --------- | ------------------------------ |\n| advertiser_id | long   | 必填     | 广告主 ID | 在获取 access_token 的时候返回 |\n| app_name      | string | 必填     | 应用名称  | 支持模糊匹配                   |\n\n### 返回参数\n\n| 字段     | 类型   | 说明        | 备注 |\n| -------- | ------ | ----------- | ---- |\n| code     | int    | 返回码      |      |\n| message  | string | 返回信息    |      |\n| data     | struct | JSON 返回值 |      |\n| app_id   | long   | 应用 ID     |      |\n| app_name | string | 应用名称    |      |\n\n### 请求样例\n\n```\n\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000152,\n    \"app_name\": \"快手\"\n  }' -L https://ad.e.kuaishou.com/rest/openapi/v1/tool/app/search\n```\n\n### 返回样例\n\n```\n\n{\n  \"code\": 0,\n  \"message\": \"OK\",\n  \"data\": {\n      \"app_id\": 1234567,\n      \"app_name\": \"快手\"\n  }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624121
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624121,
+  "creator": "linmenger",
+  "fullContext": null
+}

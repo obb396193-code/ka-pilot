@@ -1,0 +1,54 @@
+{
+  "documentId": 2995,
+  "documentName": "0.1如何开通快手mapi",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 快速入门\n\n## 1.什么是快手 Marketing API\n\n快手 Marketing API 是一套投放平台功能的接口服务，通过 Marketing API 可以帮助广告客户构建数据闭环，客户可接入 Marketing API 将自有平台与快手广告投放平台整合打通，并且实现广告投放过程中的各项功能。\n\n## 2.注册成为快手 Marketing API 的开发者全流程介绍\n\n感谢您使用快手 Marketing API，如下为快手 Marketing API 的注册授权全流程，帮助您快速成为快手 Marketing API 的开发者，全方位实现快手广告的自动化营销管理能力。\n\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_1.2.png)\n\n## 注册成为开发者流程：\n\n### 1.登陆快手 id\n\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_2.1.png)\n\n### 2.点击页面右上角注册成为开发者\n\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_2.2.png)\n\n### 3.完善联系人资料\n\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_3.1.png)\n\n### 4.完善开发者资质\n\n可以由公司法人 or 代理人注册申请，但是均需要申请人进行实名身份认证。\n\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_4.1.png)\n\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_4.2.png)\n\n**5.开发者角色：**\n\n**广告主：**务必填写与注册成为快手开发者主体资质相同的快手广告投放账户 ID。\n\n**代理商：**务必填写与注册成为快手开发者主体资质相同的代理商主账号的快手 ID。\n\n**服务商：**需要线上签订服务商入驻合同后，将服务商审批通过合同传与此处。\n![img](https://p1-yx.adkwai.com/kos/nlav11947/openapi/assets/images/doc/img_5.1.png)\n\n**6.服务商开发者：** 注册过程中如遇到以下情况，请下载合同后使用如下链接进行注册：\n\nhttps://developers.e.kuaishou.com/register/qualification?role=serviceProvider\n\n下载合同地址：\n\nhttp://e-signature.kuaishou.com/esignature/web/login \n![img](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformd8bc75880914b22797893adaab3ae68a.png)\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1718332677984
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1718332677984,
+  "creator": "wb_liujifeng",
+  "fullContext": null
+}

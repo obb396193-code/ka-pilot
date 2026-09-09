@@ -1,0 +1,42 @@
+{
+  "documentId": 2310,
+  "documentName": "查询 DPA 模板信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 查询 DPA 模板信息\n\n请求地址：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/template/list\n\n请求方式：POST\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id| long   |        |  必填  | 广告主id |  |\n|  page          |PageInfo|        |  选填  | 分页信息 |    |\n|template_types|List<Integer>| \\[1,2\\]|       |模板类型|模板类型:1:竖版图片、2:横版图片3:横版视频、4:竖版视频|\n\n\n### PageInfo\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注          |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n|&#8195;current_page |Integer|1|选填|当前页号|默认 1|\n|&#8195;page_size |  Integer|10|选填|页面大小|默认 10|\n  \n  \n  \n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer|  0| 响应状态码 | 0 表示成功。其它表示业务错误状态码 |\n| data |PaginateTemplateResponse||响应数据||\n|message |String |\"OK\"|响应信息|\"OK\"表示请求成功，其它表示错误信息|\n\n### PaginateTemplateResponse\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- | \n|&#8195;templates |List<AdDpaTemplate>||模板信息列表||\n|&#8195;page |PageInfoResult||分页信息|  |\n \n### AdDpaTemplate  \n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n|&#8195;id |Long||DPA 创意模板 id|    |\n|&#8195;cover_url |String||模板图片url。图片类模板表示图片地址；视频类模板表示视频对应的封面地址|  |\n|&#8195;editable_area_cover_url |String||图片类模板的可编辑区域图片url| |\n|&#8195;video_url |String||视频地址|   |\n|&#8195;video_duration |long||视频播放时长| |\n|&#8195;height |int||衍生物料的高|    |\n|&#8195;width |int||衍生物料的宽|     |\n|&#8195;template_type |Integer||模板类型1:竖版图片、2:横版图片3:横版视频、4:竖版视频|  |\n|&#8195;name |String||模板名称|    |\n  \n### PageInfoResult  \n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n|&#8195;current_page |Integer|1|当前页号| |\n|&#8195;page_size |Integer|10|页面大小| |\n|&#8195;total_count |Long|20|总记录数| |\n  \n\n  \n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/template/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 20000152,\n    \"template_types\": [4]\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"templates\": [\n            {\n                \"editable_area_cover_url\": \"https://tx2.a.yximgs.com/bs2/ad-creativeCenter/image_v_v.jpeg\",\n                \"video_duration\": 5000,\n                \"cover_url\": \"https://tx-ad.a.yximgs.com/bs2/ad-creativeCenter/1b787d3f06d34a00b01ba0cf32271a00.jpg\",\n                \"video_url\": \"https://tx-ad.a.yximgs.com/bs2/ad-creativeCenter/16346e049e8946c1b1f3cfa4d3619738.mp4\",\n                \"name\": \"电商-竖视频1\",\n                \"width\": 1080,\n                \"template_type\": 4,\n                \"id\": 2137982230,\n                \"height\": 1920\n            }\n        ],\n        \"page\": {\n            \"total_count\": 1,\n            \"current_page\": 1,\n            \"page_size\": 10\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMiAgICA0qeyChIKAiDjya656TAoi87jxgE=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677814930039
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677814930039,
+  "creator": "wb_zhangyanmin",
+  "fullContext": null
+}

@@ -1,0 +1,18 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65fcf48f507e46056b3a5b5e/](https://links.alibaba-inc.com/support/conversation/65fcf48f507e46056b3a5b5e/)
+
+作者：月侠
+
+评审人：上坡
+
+
+
+1、检查开放服务的接口的权限是否设置为“通用接口”，平台只允许调用“通用接口”
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1712568904388-97718296-cd45-48a4-a2b4-8bbae63e0fb7.png) 
+
+2、如果不是“通用接口”，需要重新创建一个接口（选择“通用接口”），然后改成使用新接口
+
+3、如果发现该接口是“通用接口”，可以联系平台管理员进一步排查
+
+
+

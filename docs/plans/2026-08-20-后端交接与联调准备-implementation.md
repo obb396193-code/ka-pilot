@@ -118,7 +118,7 @@ Expected: 全绿；资源限制错误只执行一次请求。
 
 ```bash
 git add apps/worker
-git commit -m "[安全] 限制奇航请求与响应资源"
+git commit -m "[安全] 限制启航请求与响应资源"
 ```
 
 ### Task 3: 可复现数据链性能基线
@@ -182,7 +182,7 @@ git commit -m "[性能] 建立数据链合成压测基线"
 
 **Step 1: 写联调矩阵**
 
-逐条覆盖奇航只读、Multica/OS read/preview/execute、Secret 服务、模型网关、钉钉 Stream、PostgreSQL/FaaS。每项记录 owner、所需凭证类型、网络位置、最小探针、成功证据、失败分级、是否允许写、回滚/撤销和禁止记录的敏感信息。
+逐条覆盖启航只读、Multica/OS read/preview/execute、Secret 服务、模型网关、钉钉 Stream、PostgreSQL/FaaS。每项记录 owner、所需凭证类型、网络位置、最小探针、成功证据、失败分级、是否允许写、回滚/撤销和禁止记录的敏感信息。
 
 **Step 2: 写 P-015 审查入口**
 

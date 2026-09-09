@@ -1,0 +1,54 @@
+{
+  "documentId": 3108,
+  "documentName": "修改线索优选开关",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改线索优选开关\n\n请求接口：/rest/openapi/gw/dsp/clueOptimize/ocpxSwitch/mod\n\n请求方式：POST\n\n数据格式：JSON\n\n## 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明         | 备注                          |\n| ------------- | ------ | -------- | ------------ | ----------------------------- |\n| advertiser_id | long   | 必填     | 广告主 ID    |  |\n| clue_optimize_switch_types   | struct   | 必填     | 线索优选开关       |                               |\n\n### clue_optimize_switch_types\n\n| 字段                   | 类型   | 是否必填   | 说明                 | 备注                                                         |\n| ---------------------- | ------ | ---------- | -------------------- | ------------------------------------------------------------ |\n| clue_optimize_type    | int  | 必填       | 目标类型                 | 表单转化-53，线索提交数-786，添加企业微信-763\t |\n| status             | boolean | 必填        | 开关状态             | true-开启，false-关闭\t |\n\n\n## 返回参数\n\n| 字段               | 类型    | 说明         | 备注 |\n| :----------------- | :------ | :----------- | :--- |\n| data               | Struct  | json返回信息 |      |\n| message            | String  | 错误详情     |      |\n| code               | Integer | 返回码       |      |\n\n### data\n\n| 字段                   | 类型   | 是否必填   | 说明                 | 备注                                                         |\n| ---------------------- | ------ | ---------- | -------------------- | ------------------------------------------------------------ |\n| clue_optimize_type    | int  | 选填       | 目标类型                 | 表单转化-53，线索提交数-786，添加企业微信-763\t |\n| status             | boolean | 选填        | 开关状态             | true-开启，false-关闭\t |\n\n\n\n## 请求示例\n\n```json\n{\n  \"advertiser_id\": \"900015364\",\n  \"clue_optimize_switch_types\": [\n    {\n      \"clue_optimize_type\": 53,\n      \"status\": false\n    },\n    {\n      \"clue_optimize_type\": 763,\n      \"status\": false\n    },\n    {\n      \"clue_optimize_type\": 786,\n      \"status\": false\n    }\n  ]\n}\n```\n\n\n\n## 返回示例\n\n```json\n{\n  \"code\": 0,\n  \"data\": {},\n  \"message\": \"OK\",\n  \"request_id\": \"ELiAgIDwkJmOrAEY0QYgg-Tf1Z4yKLqq9ooL\"\n}\n```\n\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1726220594146
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1726220594146,
+  "creator": "liuyixuan11",
+  "fullContext": null
+}

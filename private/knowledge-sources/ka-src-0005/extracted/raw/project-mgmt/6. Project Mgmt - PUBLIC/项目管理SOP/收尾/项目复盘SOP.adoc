@@ -1,0 +1,59 @@
+# 1.背景
+- <span style="color: rgba(25, 26, 31, 0.9);">**组织的需要**</span>
+
+<span style="color: ;">项目复盘是检验资源是否有效利用、项目目标是否有效达成、确定后续怎么优化的重要一环。复盘是一个开放性的活动，对事不对人，不是要刻意去追责或表功，而是提供一个团队一起交流和反思的场合，力求把好的可复制的经验、不好的避免再次踩坑的教训沉淀下来价值化，给予团队和个人长期成长；待改善的东西有落地方案去推进优化。</span>
+- <span style="color: rgba(25, 26, 31, 0.9);">**团队和个人的需要**</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">让业产研团队同学更加关注从整体项目角度进行人、事、资源等的全局思考，让大家能够快速并体系化地提升个人专业能力和成长，以适应组织的需求，也同步提升职场竞争力。</span>
+
+# 2.<span style="color: rgba(25, 26, 31, 0.9);">复盘分类</span>
+
+### **2.1 项目复盘**
+
+根据项目的实际情况，可以采取轻量化和深度复盘两种模式。建议战役型项目或项目人日超过100的项目应该做深度复盘，其他类型的项目根据实际情况决定。
+
+**复盘时间：**
+- 在项目上线后、回收到业务结果和数据后，即可进行复盘；对于上线后观察时间较长的项目，可以根据阶段性结果和数据，进行一轮复盘；一般建议<u>最晚在项目上线后2个月内要完成复盘</u>；
+
+**如何查阅需复盘项目List、即将预期项目List：**
+- <span style="background-color: #FEFF00;">待更新</span>
+
+#### **2.1.1 轻量化复盘**
+
+由**PMO/产品PM/技术PM**收集项目上线后的数据，确认业务目标和技术目标的达成情况，并且维护好复盘信息：
+
+**方式一（复盘文档）：全面切到AiONE上管理复盘前，需录入**[**Lazada项目复盘list**](https://alidocs.dingtalk.com/i/nodes/Y1OQX0akWmzdBowLFE99vpzGVGlDd3mE)**：**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ABmOoWVKJXpd2Oaw/img/6bfebca8-fbb4-4dbb-8a26-2bb1292b036f.png?Expires=1776252777&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+**方式二（线上复盘）：后续逐渐切到AiONE上管理复盘，操作手册：**[线上复盘操作手册 AiOne Postmortem Q&A](https://alidocs.dingtalk.com/i/nodes/QOG9lyrgJPPNL2rXIXAwN4gyJzN67Mw4)
+
+
+#### **2.2.2 深度复盘** 
+1. 由PMO/技术PM/PDM协调组织复盘会议，业务，产品，技术等项目团队同学全员参与，根据复盘文档进行项目深度复盘。
+    1. **复盘模版：**
+
+| <span style="color: #FFFFFF;">**适用场景**</span> | <span style="color: #FFFFFF;">**模板链接**</span> |
+|-----------------------------------------------------|-----------------------------------------------------|
+| 完整版项目复盘模板，包含应复盘回顾的所有重要项目要素和环节，建议中大型、复杂项目采用 | [我的附件] |
+| 简化版项目复盘模板，建议小型、简单项目采用 | [我的附件] |
+| 结项海报，PMO用于立项结项群内通知相关Leader | [我的附件] |
+2. 复盘完成后**，**仍需要在[**Lazada项目复盘list**](https://alidocs.dingtalk.com/i/nodes/Y1OQX0akWmzdBowLFE99vpzGVGlDd3mE)中（全面切到AiONE上管理复盘信息后可不再维护）或AiONE上维护好复盘信息；
+
+### **2.2 业务域阶段性整体复盘**
+
+在战役/重点项目复盘的基础上，可以基于业务域的年度/季度/月度业产技整体目标，进行阶段性的整体复盘，并形成业务域的整体复盘文档记录，模板参考：[FY26Q1_LZD目标策略拆解和达成复盘](https://alidocs.dingtalk.com/i/nodes/Qnp9zOoBVBDEydnQUGLMQAZX81DK0g6l)
+
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ABmOoWVKJXpd2Oaw/img/fbb60dfa-8975-42c5-bbd4-4e89c246906c.png?Expires=1776252777&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# 3.复盘Tips
+1. <span style="color: rgba(25, 26, 31, 0.9);">**不要忘记项目复盘：**</span> <span style="color: rgba(25, 26, 31, 0.9);">很多项目上线之后就没了下文，复盘是项目收尾的重要环节，不一定做的很重，可以选择轻量化或者深度复盘，但是必须要有。</span>
+2. <span style="color: rgba(25, 26, 31, 0.9);">**复盘组织结构化：**</span><span style="color: rgba(25, 26, 31, 0.9);">首先要回答的是这个项目业务目标达成如何，这个是复盘的核心（建议要有阶段性的目标产出）。</span>
+3. <span style="color: rgba(25, 26, 31, 0.9);">**不要没有准备参加复盘：**</span><span style="color: rgba(25, 26, 31, 0.9);">提前总结是复盘达到效果的关键，总结的对象包括项目的价值达成、项目过程、经验教训等。</span>
+4. <span style="color: rgba(25, 26, 31, 0.9);">**复盘不要流于形式：**</span><span style="color: rgba(25, 26, 31, 0.9);">复盘是一个很好的集体思考和脑暴的机会，需要切切实实经过系统性、深度思考的总结，无论是经验还是教训、抑或是接下来工作中需要面对的问题和机会。</span>
+5. <span style="color: rgba(25, 26, 31, 0.9);">**深度复盘最好有复盘会议：**</span><span style="color: rgba(25, 26, 31, 0.9);">复盘最重要的的形式承载之一就是复盘会议，团队成员可以在会议上更好的交流总结，把好的东西沉淀下来，待改善的东西采取行动改善，把下一个项目做的更好。</span>
+
+
+
+

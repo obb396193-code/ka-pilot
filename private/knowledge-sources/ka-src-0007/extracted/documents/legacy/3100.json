@@ -1,0 +1,54 @@
+{
+  "documentId": 3100,
+  "documentName": "代理商给广告主账户转账接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 代理商给广告主账户转账接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/transfer/out](https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/transfer/out)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 1 | 必填 | 广告主ID |  |\n| amount | Long |  | 可选 | 现金金额 |  |\n| credit_amount | Long |  | 可选 | 信用账户金额 |  |\n| extended_amount | Long |  | 可选 | 预留账户金额 |  |\n| rebate_amount | Long |  | 可选 | 后返金额 |  |\n| pre_rebate_amount | Long |  | 可选 | 前返金额 |  |\n| transfer_type | Long |  | 可选 | 转账类型1-现金充值2-信用账户充值 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 1 | code |  |\n| message | String |  | message |  |\n| data | TransferResultGatewayResp |  | data |  |\n| &#8195;trade_no | String | 776975954695352320 | 转账请求对应的交易号（业务唯一键） |  |\n| &#8195;success | Boolean |  | 转账是否成功（旧逻辑的二值结果，为了兼容历史而留，更准确的状态应该看tradeStatus） |  |\n| &#8195;trade_status | String | SUCCESS | 转账交易的目前状态，枚举SUCCESS（交易成功）DOING（交易处理中）FAILED（交易失败）EXCEPTION（交易异常-业务上不应存在的异常失败）IGNORED（无效交易-可忽略不管的交易） |  |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1724058938052
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1724058938052,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

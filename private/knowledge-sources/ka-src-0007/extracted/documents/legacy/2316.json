@@ -1,0 +1,42 @@
+{
+  "documentId": 2316,
+  "documentName": "【应用中心-开放场景】创建 Android 应用",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】创建 Android 应用\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/android](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/android)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段                             | 类型                    | 示例值 | 是否必填 | 说明                                                         | 备注 |\n| -------------------------------- | ----------------------- | ------ | -------- | ------------------------------------------------------------ | ---- |\n|         advertiser_id         |  Long  |      |        必填         |            广告主ID          |\n| app_info                         | Object                  |        | 必填     | 应用数据                                                     |      |\n| &#8195;app_detail_img            | String                  |        | 必填     | 应用详情图片，通过上传图片 API 获取。                        |      |\n| &#8195;app_icon_url              | String                  |        | 必填     | 应用图标，通过上传图片 API 获取。                            |      |\n| &#8195;apply_age                 | Integer                 |        | 必填     | 应用适用年龄： 1：全年龄段 2：未成年人 3：成年人             |      |\n| &#8195;category                  | Integer                 |        | 必填     | 应用分类：1：软件 2：游戏                                    |      |\n| &#8195;contact_email             | String                  |        | 必填     | 联系邮箱                                                     |      |\n| &#8195;contact_name              | String                  |        | 必填     | 联系人                                                       |      |\n| &#8195;contact_tel               | String                  |        | 必填     | 联系电话                                                     |      |\n| &#8195;description               | String                  |        | 选填     | 应用备注                                                     |      |\n| &#8195;developer                 | String                  |        | 必填     | 开发者名称（需与软著保持一致）                               |      |\n| &#8195;location                  | String                  |        | 必填     | 开发者地区：格式必须为：\\[\"北京\",\"北京\",\"东城\"\\] 这种，否则平台回显失败。 |      |\n| &#8195;offline_app_stores        | String                  |        | 选填     | 下线的应用商店，可不填。可选值：\\[\"huawei\", \"oppo\", \"xiaomi\", \"meizu\", \"vivo\", \"smartisan\", \"honor\"\\] |      |\n| &#8195;online_earn_type          | Integer                 |        | 必填     | 是否网赚类型：1：网赚类型 2：非网赚类型                      |      |\n| &#8195;release_type              | Integer                 |        | 必填     | 发布类型：1：手动发布 2：自动发布                            |      |\n| &#8195;use_sdk                   | Integer                 |        | 必填     | 是否已接入快手 SDK：0：未接入 1：已接入                      |      |\n| &#8195;function_introduction     | String\t\t\t\t\t |\t\t  | 必填 \t   | 安卓应用功能介绍 | 字数需要在100~1000字之间。 | \n| &#8195;network_type              | Integer                 |        | 必填     | 网络类型|1-联网，2-单机（单机应用需上传单机承诺函图片，并无须填写备案号）|\n| &#8195;offline_app_letter_url    | String                 |         | 选填     | 单机承诺函图片，通过上传图片 API 获取|network_type = 2时必填|\n| &#8195;record_number             | String                  |        | 必填     | 备案号码 ||\n| &#8195;document_number           | String                  |        | 必填     | 证件号码||\n| &#8195;service_category           | String                  |       | 必填     | 服务类目 |获取APP服务类目详情接口：https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2444&menuId=3114 |\n| app_privacy_info                 | MapiAppPrivacyInfoSnake |        | 必填     | 隐私声明数据                                                 |      |\n| &#8195;url                       | String                  |        | 必填     | 隐私声明链接                                                 |      |\n| package_info                     | MapiPackageInfoSnake    |        | 必填     | 应用包数据                                                   |      |\n| &#8195;app_name                  | String                  |        | 必填     | 应用名称：可不填，如果不填则默认使用上传 APK 时解析出的应用名称。 |      |\n| &#8195;blob_store_key            | String                  |        | 必填     | 应用存储 Key，上传应用 APK 时返回。                          |      |\n| &#8195;sensitive_permission_desc | String                  |        | 必填     | 敏感权限使用说明，可不填，如果 APK 文件使用了敏感权限则必填。 |      |\n\n### 返回参数\n\n| 字段              | 类型    | 示例 | 说明        | 备注 |\n| ----------------- | ------- | ---- | ----------- | ---- |\n| data              | Object  |      | JSON 返回值 |      |\n| &#8195;app_id     | Long    |      | 应用ID      |      |\n| &#8195;package_id | Long    |      | 应用包ID【母包ID】    |      |\n| &#8195;privacy_id | Long    |      | 隐私声明ID  |      |\n| code              | Integer |      | 返回码      |      |\n| message           | String  |      | 返回信息    |      |\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/android' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 900015366,\n    \"app_info\": {\n        \"app_detail_img\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/9983e874ee7843c08d69076cc34fd875.png\",\n        \"app_icon_url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/3252058c79ec40069cdeafb08cfd3b92.png\",\n        \"apply_age\": 1,\n        \"category\": 1,\n        \"contact_email\": \"test@kuaishou.com\",\n        \"contact_name\": \"后端测试联系人\",\n        \"contact_tel\": \"18888888888\",\n        \"description\": \"\",\n        \"developer\": \"后端测试\",\n        \"location\": \"[\\\"北京\\\", \\\"北京\\\", \\\"海淀\\\"]\",\n        \"offline_app_stores\": \"\",\n        \"online_earn_type\": 1,\n        \"release_type\": 1,\n        \"use_sdk\": 0,\n        \"function_introduction\":\"功能介绍\",\n        \"record_number\": \"911823145670\",\n\t\"document_number\": \"563178963123\",\n        \"service_category\": \"[500,21]\"\n        \"network_type\": 2,\n        \"offline_app_letter_url\": \"https://static.yximgs.com/udata/pkg/3ba2fb.png\"\n    },\n    \"app_privacy_info\": {\n        \"url\": \"https://apktest.kuaishou.com/swagger-ui.html\"\n    },\n    \"package_info\": {\n        \"app_name\": \"\",\n        \"blob_store_key\": \"1d8438cd-9b43-4680-a149-7df5be226774.apk\",\n        \"sensitive_permission_desc\": \"string\"\n    }\n}'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 0,\n    \"data\": {\n        \"privacy_id\": 4801049,\n        \"package_id\": 1099611636558,\n        \"app_id\": 2199123264333\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EPaAgIDwtZiOrAEY-wIg3sbHyfAwKPubhuYC\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1712676334884
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1712676334884,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

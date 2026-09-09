@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "data": {
+    "tasks": {
+      "owned": 2,
+      "participating": 1
+    },
+    "accounts": {
+      "owned": 21,
+      "watching": 2
+    },
+    "pending": {
+      "workItems": 12,
+      "approvals": 1,
+      "dispatches": 1,
+      "runsWaitingConfirmation": 1
+    },
+    "oncall": {
+      "today": false,
+      "next": {
+        "at": "2026-09-08",
+        "role": "值守"
+      }
+    },
+    "loadScore": {
+      "value": {
+        "value": null,
+        "state": "undefined"
+      },
+      "source": "not_configured",
+      "formula": null
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.7.4 G9：全部从现有表计数；负载分公式老板未定 → undefined + not_configured，前端显 −"
+  }
+}

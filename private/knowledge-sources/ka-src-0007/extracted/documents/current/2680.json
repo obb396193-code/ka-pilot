@@ -1,0 +1,223 @@
+{
+  "documentId": 2680,
+  "documentName": "评论置顶",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095008895
+    }
+  ],
+  "apiId": 729,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/comment/setTop",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "{\n  \"code\": 1,\n  \"message\": \"succ\",\n  \"data\": {\n    \"comment_id\": 634356637492\n  }\n}",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\":10010,\n  \"comment_id\": 634356637492,\n  \"photo_id\": 5196028089786633607\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 1,\n  \"message\": \"succ\",\n  \"data\": {\n    \"comment_id\": 634356637492\n  }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 42823,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "100",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42824,
+      "paramName": "comment_id",
+      "paramType": "Long",
+      "example": "100",
+      "description": "评论id",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42825,
+      "paramName": "photo_id",
+      "paramType": "Long",
+      "example": "100",
+      "description": "视频id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42827,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42828,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "succ",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42829,
+      "paramName": "data",
+      "paramType": "CommentUpdateStructSnake",
+      "example": "100",
+      "description": "返回结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2630,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42826,
+          "paramName": "comment_id",
+          "paramType": "Long",
+          "example": "100",
+          "description": "评论id",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095008895,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

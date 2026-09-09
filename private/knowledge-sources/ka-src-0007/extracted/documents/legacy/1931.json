@@ -1,0 +1,42 @@
+{
+  "documentId": 1931,
+  "documentName": "10.12.1上传试玩素材",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 上传试玩素材\n\n请求接口:https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/playable/upload\n\n请求方式:POST\n\n请求格式 :formdata\n\n### 请求参数\n\n| 字段          | 类型 | 说明                       | 备注                                             |\n| ------------- | ---- | -------------------------- | ------------------------------------------------ |\n| file          | file | 试玩广告的 zip 包          |                                                  |\n| advertiser_id | long | 广告主 id                  |                                                  |\n| platform      | int  | 试玩素材所应用的范围或平台 | 1：快手主站；2：快手广告联盟。默认为快手广告联盟。  旧主站试玩包，只返回预览url，不存储；旧联盟试玩包，返回预览url 并存储；通用试玩包，platform=1，只返回预览url，不存储；通用试玩包，platform=2，返回预览url，并存储，推荐使用「直存试玩」接口。 |\n\n### 返回参数\n\n| 字段                 | 类型      | 说明               | 备注                                                                                                                                                                                                                                                                                                                                                                                                                                             |\n| -------------------- | --------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| code                 |           |                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                  |\n| message              |           |                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                  |\n| data                 |           |                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                  |\n| playable_orientation | int       | 试玩素材的横竖适配 | 0:横竖均;1:竖屏;2:横屏                                                                                                                                                                                                                                                                                                                                                                                                                           |\n| playable_url         | string    | 试玩的 url         | 上传失败，值为空字符串                                                                                                                                                                                                                                                                                                                                                                                                                           |\n| upload_fail_tips     | string [] | 校验失败原因       | 上传成功时，值为空列表。1、格式为 zip，大小不超过 3M；2、已接入 playable JS-SDK，并且调用方式为 window.openAppStore()；3、主 html 文件需命名为 index，且位于一级目录中；4、试玩广告播放方向字段应存储于 config.json 文件中，位于一级目录中，取值为 0,1,2；5、文件名称仅支持大小写字母、数字、减号和下划线；6、素材中不允许使用 mraid.js 格式；7、素材不允许通过外部网络加载动态素材；8、素材中不允许包含 JS 重定向；9、素材不允许发出 HTTP 请求\" |\n| upload_source        | int       | 试玩素材所适用的范围或平台 | 1：快手主站；2：快手广告联盟；3：快手主站或快手广告联盟均可 |\n| playable_id          | long      | 试玩 ID         |                                                                                                                                                                                                                                                                                                                                                                                                                            |\n\n### 请求样例\n\n```\ncurl -X POST \\\n-H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n-H 'Content-Type: multipart/form-data' \\\n-F \"advertiser_id=200152\" \\\n-F \"file=@/Users/jackchou/Downloads/ad-material/1280.zip\" \\\n-L https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/playable/upload\n\n```\n\n### 返回样例\n\n```\n{\n   \"code\":0,\n   \"message\":\"OK\",\n   \"data\":{\n       \"playable_id\":5785679425,\n       \"playable_url\":\"https://static.yximgs.com/udata/pkg/KS-AD-MERCHANT/testplayable/tomato/index.html\",\n       \"playable_orientation\":0,\n       \"upload_source\":2,\n       \"upload_fail_tips\":[\n       ]\n     }\n}\n\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624171
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624171,
+  "creator": "wb_yuanbowen",
+  "fullContext": null
+}

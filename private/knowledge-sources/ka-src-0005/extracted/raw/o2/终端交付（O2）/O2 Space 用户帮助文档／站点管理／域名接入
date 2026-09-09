@@ -1,0 +1,162 @@
+以下步骤需要在 [O2 Space](https://space.o2.alibaba-inc.com)完成
+
+==== 提示 ==== 
+
+1. 域名需要归属在站点下。如果您没有合适的站点，或您正在为新业务接入域名，请先[创建站点](https://yuque.antfin-inc.com/gubal/site/create)；
+1. 您无需提前修改 IDNS 配置、转移归属应用或上传证书，流程中会引导并帮助您进行相关操作。相关变更亦无需手工提交工单，可以自助完成操作。如有疑问，请通过页面上的悬浮按钮咨询答疑。
+==== 注意 ==== 
+
+1. 标准流程要求接入的必须是新域名，接入过程中需要将域名解析到无效地址（127.0.0.1）进行验证，如果使用线上已有域名会导致服务中断，需由申请人自行承担责任；原则上不承接已有域名接入，如有极特殊需求，请单独对接；
+1. 如果您不了解域名、DNS、证书等概念，请联系组内有经验的同学操作或提前了解相关知识；
+1. 您的域名需要接入 IDNS 进行管控，未接入 IDNS（如托管在阿里云解析）的域名无法接入。如果需要接入，请先迁移至 IDNS。具体操作请[参考文档](https://yuque.antfin-inc.com/adms/te885n/shgdlp)或[咨询 IDNS 值班](dingtalk://dingtalkclient/action/sendmsg?dingtalk_id=alidns)。
+您可以在站点总览中自助接入域名。要进入站点总览页面，您可以在支持站点功能的研发类型下点击左侧的站点功能，选择对应的站点；或在搜索框中搜索已有的站点/域名后点击进入对应的站点。如果没有合适的站点，请先[创建站点](https://yuque.antfin-inc.com/gubal/site/create)。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/2c9590ca-4d6a-40fc-a6d0-9da5c456f0a8.png)
+
+
+不同站点类型支持的域名类型不同。请将指针指向【接入域名】下拉框，选择要接入的域名类型：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/e0f1f6db-6afc-4530-867c-4316a7e2ff61.png)
+
+
+您也可以在接入页面的左上方切换要接入的域名类型
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/de5f3838-29e6-4bbe-99d9-fbb69c7929cc.png)
+
+
+## 接入 CDN 域名
+
+请完整填写接入表单，并阅读页面下方的提示信息：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/5c80934f-15bd-404e-9aa6-ed323d496db0.png)
+
+
+填写完成后，请点击【下一步】。如果域名无法接入，页面上方会弹出提示，请根据提示操作。如有疑问，请咨询答疑。如果信息检查通过，系统会启动流程并进入流程页面：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/b13e57e5-4a01-433e-8bbb-cd770e9c10f8.png)
+
+
+审批单也可以通过研发类型的“概览”页右上角“进行中的流程”进入
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/748e143e-01ab-4412-9b6b-b9a99f6b7dcc.png)
+
+
+流程各节点执行可能需要一定的时间，请耐心等待。执行结束后，各节点会显示相应的状态和提示信息，请根据提示操作。如果相关操作完成后流程状态未更新，请尝试刷新页面或点击对应节点右上方的 (https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/a5f66293-e4b1-45e9-81a8-ab29035d7859.png)
+按钮更新。
+
+## 接入内网劫持/预发域名/多套域名
+
+内网劫持/预发域名/多套域名必须基于已有的线上域名进行申请，申请时会提示可选的申请域名，不支持自定义。
+
+- 预发域名/多套域名接入提交后可自行跟进，流程与 CDN 接入类似，请参考上文；
+- 内网劫持接入请参考文档 [《内网劫持（SPE）接入》](https://alidocs.dingtalk.com/i/nodes/lyQod3RxJKe9QjOMiZlrb9pMWkb4Mw9r)
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/d6b51691-d3d8-403e-959e-1ddef0bd194a.png)
+
+
+## 接入后配置
+
+接入流程执行完毕后，会提示您发布资源关联规则。在完成发布前，新接入的域名无法访问任何资源。相关信息，请查阅文档【站点资源管理】-【路由配置发布】。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/6436da2c-a840-4bb5-af34-8967febac6f5.png)
+
+
+## 常见问题
+
+### 提示“应用不一致”、“无法修改应用”
+
+到 [iDNS](http://idns.alibaba-inc.com/domain_manage/domain_change_index/)查询需要使用的域名，输入域名查询后确认红框位置。
+
+1. 若归属应用为 air-dns 则不需要操作
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/dfbcba19-e718-45b6-983a-1d30f9f516ec.png)
+
+1. 若归属应用为其他任何应用。此时需要到 [Aone](https://app.aone.alibaba-inc.com/appcenter/overview)输入应用名查询应用的 Owner / AppOPs / PE，让其到 [iDNS - 我的域名](http://idns.alibaba-inc.com/domain_manage/domain_belong/mydomain/)中点击“修改域名归属应用”，将域名转移至 air-dns；
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/f112bbb2-03dc-46ac-b194-e31954d42c2a.png)
+
+1. 若没有归属应用，此时需要先绑定到有权限的应用，提交审批通过后再参照上方第二点进行转移。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/fac6579c-9600-4a6c-b05e-c9ad4aa73c05.png)
+
+### IDNS 变更的 ChangeFree 中表单如何填写
+
+如下字段为统一表单，无实际作用。如果没有特殊需求，请直接填写“-”。
+
+**注意：**ChangeFree 单无法直观展现 DNS 变更内容，请务必到 IDNS 变更单中确认变更内容无误且不会引起线上异常。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/c0f68c92-d80a-429f-a4f6-9c885867d72a.png)
+
+
+### 申请的域名无法访问，现象为一直在加载、超时
+
+此问题多发于业务方新注册的域名，请按以下步骤确认（`{domain}` 替换为实际域名）：此问题多发于业务方新注册的域名，请按以下步骤确认（`{domain}` 替换为实际域名）：
+
+1. 在终端中执行 `dig {domain}`，超过 1 秒未返回结果，或提示 no servers could be reached在终端中执行 `dig {domain}`，超过 1 秒未返回结果，或提示 no servers could be reached
+（截图中的 10.65.0.1 服务已废弃，请忽略）
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/ff6af162-7ad0-473c-8ab0-250890b5cc1d.png)
+
+1. 执行 `dig +tcp {domain}`，可以正常返回结果执行 `dig +tcp {domain}`，可以正常返回结果
+（如果提示 connection refused，请使用 `dig +tcp {domain} @30.30.30.30` 测试）（如果提示 connection refused，请使用 `dig +tcp {domain} @30.30.30.30` 测试）
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/e2818827-361c-4859-b6aa-5a5fdbc1b4bd.png)
+
+如符合以上现象，请访问 [https://yida.alibaba-inc.com/s/white_application](https://yida.alibaba-inc.com/s/white_application#/)申请白名单
+
+### 我接入了新域名，需要调用 MTOP 接口
+
+请参见 [https://yuque.antfin.com/mtbsdkdocs/mtopjssdkdocs/el7cvr](https://yuque.antfin.com/mtbsdkdocs/mtopjssdkdocs/el7cvr)
+
+### 申请新域名，法务备案要求提供 IP 地址
+
+阿里云 CDN 不要求备案接入，建议业务方直接使用源站（Aserver） IP 做备案。请注意：
+
+1. 备案请在接入流程前或确认步骤前完成，否则可能导致流程异常；
+1. 备案号下发前，需要将域名解析到申请的 IP，以应对管局检查。此操作与域名接入流程冲突，在备案过程中请暂停接入流程；
+1. 备案期间网站不能提供服务，所以申请过程只需要将 IDNS 解析到对应 IP 即可，无需操作统一接入；
+1. 备案完成后，实操上可以直接修改域名 CNAME 到 CDN，无需更新备案信息。具体请以法务解释为准。
+目前张北接入层 IP 如下（任选其一即可，直接访问应当跳转到淘宝首页）：
+
+```
+203.119.144.26  203.119.144.58  203.119.169.17  203.119.169.240
+203.119.169.39  203.119.169.6   203.119.169.80  203.119.169.89 
+59.82.29.142    59.82.29.204    59.82.31.115    59.82.31.182  
+59.82.60.16
+
+```
+接入层 IP 可能会发生变化，如上述 IP 失效，可执行以下命令查询，或到 IDNS 查询 `na61-na62.wagbridge.alibaba.taobao.com`解析的 IP 地址接入层 IP 可能会发生变化，如上述 IP 失效，可执行以下命令查询，或到 IDNS 查询 `na61-na62.wagbridge.alibaba.taobao.com`解析的 IP 地址
+
+```
+$ dig +short na61-na62.wagbridge.alibaba.taobao.com
+
+```
+### 根域名接入问题
+
+CDN 接入必须使用 CNAME 记录解析。然而单 CNAME 记录会和 MX、NS 等其他记录冲突。此外，基于合规因素考虑，目前不新增根域名接入。如果业务希望让根域名正常访问，建议将 www. 域名接入 CDN，根域名单独部署 Nginx 服务将请求 301 跳转至 www. 域名。
+
+大致步骤如下：
+
+1. 建立 Aone 应用；
+1. 配置 Nginx，可以参考如下配置：
+server {
+ server_name example.com;
+ return 301 [https://www.example.com$request_uri](https://www.example.com$request_uri);
+}
+
+1. 申请统一接入并配置 DNS，请参照下图
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/502b4986-271a-4614-9bc1-ca5af604ec62.png)
+
+
+### 提示需要申请"接入证书"
+
+在接入内网劫持/预发域名时，可能会提示申请接入证书：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/7e4cdeed-d895-4c3d-906d-5816574f0c98.png)
+
+
+请按照提示，访问 [https://fs.alibaba-inc.com/#/certManage](https://fs.alibaba-inc.com/#/certManage)，选择 证书新增 - 接入证书申请：
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/8b33dfe9-d933-43fc-ac04-87cfeac41ce5.png)
+
+
+根据申请接入的域名和提示中的集群填写申请表格。例如，申请的域名为 `pre-abc.example.com`，则填写接入域名 `*.example.com`：根据申请接入的域名和提示中的集群填写申请表格。例如，申请的域名为 `pre-abc.example.com`，则填写接入域名 `*.example.com`：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Lk3lbX5p8ZeJqm96/img/1d9230d5-e1b6-4f8d-9c0e-6f127aac770b.png)
+
+
+提交后，跟进流程审批即可。
+

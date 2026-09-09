@@ -1,0 +1,45 @@
+# 灰度发布(自定义)
+
+接入“Web 一体化”站点的跨端应用和 SSR 应用支持自定义灰度。除默认的灰度分桶规则外，可以自行选择 Header、Cookie、Query 中的参数用于分桶计算，也可以指定部分参数值设置强制命中灰度。
+
+自定义灰度是应用维度的功能，设置页面位于应用页面的 【设置】-【发布设置】-【灰度设置】 中，如下图所示：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lE6o2AzP9nJbv/img/b64c1d7a-8553-4783-8dd2-d211cceb376e.png)
+
+
+如果当前应用未接入“Web 一体化”站点，访问灰度页面时会提示不支持此功能：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lE6o2AzP9nJbv/img/52a75e64-6398-4e1d-9324-204e10c430dd.png)
+
+
+自定义灰度配置的修改在下一次灰度发布或切换灰度比例时生效。如果应用下的页面目前已经在灰度中，在切换灰度比例之前仍使用原先的配置。
+
+## 自定义灰度参数
+
+在传统 Web 链路中，对用户的请求根据 unb（用户 id）、cna 两个 cookie 分桶，以实现按比例灰度发布的能力。默认情况下，Web 一体化站点使用相同的灰度规则。如果业务使用了其他的账号体系，或希望通过其他维度区分用户进行灰度，可以通过“分桶参数”进行修改。
+
+自定义灰度参数支持 header、cookie、query 三种参数来源。您可以在给出的参数中选择，也可以通过底部的选择和输入框添加自定义参数。其中 Header 大小写不敏感，Query 和 Cookie 大小写敏感：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lE6o2AzP9nJbv/img/f7ed75dd-67e6-4aa8-b700-f31adbd1c9e2.png)
+
+
+当用户访问时，会根据分桶参数设置的顺序，从用户请求中提取首个存在的参数，用于计算灰度分桶。如上图配置中，会首先检测 query 中是否存在 id 参数；如果不存在，则检测 cookie 中是否存在 unb 参数。
+
+## 强制命中
+
+自定义灰度配置中支持指定部分参数值强制命中灰度。此功能适用于指定测试账号、测试商品等场景。
+
+强制命中配置会根据分桶参数设置变化，您只能从指定的分桶参数中指定参数值设置强制命中。如下图配置中，携带 `id=654321` 或 cookie `unb=123456`的请求会强制命中灰度。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lE6o2AzP9nJbv/img/7eaf410e-7f69-4342-98fe-4be611f0ee53.png)
+
+
+## 指定灰度
+
+指定灰度为根据特定参数判断是否进入灰度，适用于发布阶段通过不特定的设备、账号对页面进行测试的需求。类似于传统 Web 链路的强制灰度功能。
+
+在“Web 一体化”链路中，默认不开启指定灰度能力，需要手动启用指定灰度功能。启用后将默认使用与传统 Web 链路相同的参数，可以通过将参数指定为 true 或 false 实现命中或不命中灰度
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1X3lE6o2AzP9nJbv/img/f68e1cd4-0799-48c8-a564-32de539ad318.png)
+
+

@@ -5,6 +5,10 @@ import {
   canonicalQueryRowSchemaById,
   canonicalRowSchemaVersionByQueryId,
   dataQueryIdSchema,
+  dimensionTypeSchema,
+  pivotWindowRowsSchema,
+  accountHourlyRowsSchema,
+  accountGapRowsSchema,
   type DataQueryId,
 } from "./canonical-query-rows.ts"
 import { displayMetricValueSchema, dataViewModeSchema } from "./data-view.ts"
@@ -71,7 +75,7 @@ export const sourceLineageSchema = z.object({
 })
 export type BackendSourceLineage = z.infer<typeof sourceLineageSchema>
 
-export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR"])
+export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "DIMENSION_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR"])
 export const requestIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/)
 export const stableDataQueryErrorSchema = z.object({ code: stableDataQueryErrorCodeSchema, message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema }).strict()
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>
@@ -84,6 +88,9 @@ export type CanonicalDataQueryRequest = z.infer<typeof dataQueryRequestSchema>
 
 export const sourceQueryResultSchema = z.object({
   queryId: dataQueryIdSchema,
+  groupBy: z.enum(["account", "task", "biz"]).optional(),
+  dimension: dimensionTypeSchema.optional(),
+  dimA: dimensionTypeSchema.optional(), dimB: dimensionTypeSchema.optional(),
   rowSchemaVersion: z.string().min(1),
   status: z.enum(["ready", "unavailable"]),
   rows: z.array(z.record(z.string(), z.unknown())),
@@ -93,12 +100,32 @@ export const sourceQueryResultSchema = z.object({
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {
-  if ((source.queryId === "account.summary" || source.queryId === "account.trend") && !source.lineage.window) context.addIssue({ code: "custom", message: "Window queries require lineage.window" })
+  if (source.queryId === "account.gap") {
+    if (source.groupBy === undefined || !source.lineage.window || !accountGapRowsSchema.safeParse(source.rows).success)
+      context.addIssue({ code: "custom", message: "Gap requires grouping/window/unique valid rows" })
+  } else if (source.groupBy !== undefined) context.addIssue({ code: "custom", message: "Unexpected Gap grouping" })
+  if (source.queryId === "account.hourly" && (!accountHourlyRowsSchema.safeParse(source.rows).success || !source.lineage.window ||
+    source.lineage.window.from !== source.lineage.window.to)) context.addIssue({ code: "custom", message: "Invalid hourly rows or window" })
+  if (source.queryId === "account.dimension") {
+    if (source.dimension === undefined || !source.lineage.window || new Set(source.rows.map((row) => row.key)).size !== source.rows.length) context.addIssue({ code: "custom", message: "Invalid dimension/window/groups" })
+    for (const row of source.rows) {
+      if ((source.dimension === "account") !== (typeof row.media === "string" && typeof row.accountId === "string") ||
+        (source.dimension === "agent_type") !== (row.agent_type !== undefined) ||
+        (row.assessment as { priceSource?: unknown } | undefined)?.priceSource !== (source.lineage.workspaceKind === "team" ? "ka_daily" : "history")) {
+        context.addIssue({ code: "custom", message: "Invalid dimension identity/source" })
+      }
+    }
+  } else if (source.dimension !== undefined) context.addIssue({ code: "custom", message: "Unexpected dimension" })
+  if (source.queryId === "account.pivot2") {
+    if (!pivotWindowRowsSchema.safeParse({ queryId: source.queryId, rowSchemaVersion: source.rowSchemaVersion,
+      dimA: source.dimA, dimB: source.dimB, rows: source.rows }).success) context.addIssue({ code: "custom", message: "Invalid pivot dimensions/cells" })
+  } else if (source.dimA !== undefined || source.dimB !== undefined) context.addIssue({ code: "custom", message: "Unexpected pivot dimensions" })
+  if ((source.queryId === "account.summary" || source.queryId === "account.trend" || source.queryId === "account.pivot2") && !source.lineage.window) context.addIssue({ code: "custom", message: "Window queries require lineage.window" })
   const expectedVersion = canonicalRowSchemaVersionByQueryId[source.queryId]
   if (source.rowSchemaVersion !== expectedVersion) context.addIssue({ code: "custom", path: ["rowSchemaVersion"], message: `rowSchemaVersion must be ${expectedVersion}` })
   const rowSchema = canonicalQueryRowSchemaById[source.queryId]
   source.rows.forEach((row, index) => {
-    if (source.queryId === "account.summary" && (row.assessment as { priceSource?: unknown } | undefined)?.priceSource !==
+    if ((source.queryId === "account.summary" || source.queryId === "account.pivot2") && (row.assessment as { priceSource?: unknown } | undefined)?.priceSource !==
       (source.lineage.workspaceKind === "team" ? "ka_daily" : "history")) context.addIssue({ code: "custom", path: ["rows", index], message: "Price source/workspace mismatch" })
     if (source.queryId === "account.trend" && source.lineage.window &&
       (typeof row.ds !== "string" || row.ds < source.lineage.window.from || row.ds > source.lineage.window.to)) context.addIssue({ code: "custom", path: ["rows", index], message: "Trend outside window" })
@@ -126,8 +153,39 @@ const reconcileSchema = z.object({
 }).strict()
 
 export const dataQuerySuccessDataSchema = z.discriminatedUnion("mode", [singleSourceSchema, reconcileSchema])
+const hourlyMetaSchema = z.object({ requestId: requestIdSchema, dataAsOf: z.string().datetime({ offset: true }).nullable(),
+  businessDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => {
+    const d = new Date(`${value}T00:00:00Z`)
+    return !Number.isNaN(d.valueOf()) && d.toISOString().slice(0, 10) === value
+  }), workspaceKind: z.literal("personal"), selectedSource: z.literal("platform"),
+}).strict()
+const gapMetaSchema = hourlyMetaSchema.extend({ ruleSetVersion: z.string().min(1).max(256)
+  .refine(value => value.trim() === value && [...value].every(c => c.charCodeAt(0) >= 32 && c.charCodeAt(0) !== 127), "Invalid rule version") }).strict()
 export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
-  z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema }).strict(),
+  z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema,
+    meta: z.union([z.object({ cellCoverage: z.object({ cells: z.number().int().min(0).max(10000), withData: z.number().int().min(0).max(10000),
+      undeterminable: z.number().int().min(0).max(10000) }).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells) }).strict(), hourlyMetaSchema, gapMetaSchema]).optional(),
+  }).strict().superRefine((value, context) => {
+    if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.gap") {
+      const parsed = gapMetaSchema.safeParse(value.meta), source = value.data.source
+      if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" || source.lineage.source === "ka_data" ||
+        parsed.data.dataAsOf !== source.lineage.dataAsOf || parsed.data.businessDate !== source.lineage.window?.to)
+        context.addIssue({ code: "custom", message: "Gap metadata must match source and carry a rule version" })
+      return
+    }
+    if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.hourly") {
+      const parsed = hourlyMetaSchema.safeParse(value.meta), source = value.data.source
+      if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" || source.lineage.source === "ka_data" ||
+        parsed.data.dataAsOf !== source.lineage.dataAsOf || parsed.data.businessDate !== source.lineage.window?.from)
+        context.addIssue({ code: "custom", message: "Hourly metadata must match source" })
+      return
+    }
+    const source = value.data.mode !== "reconcile" && value.data.source.queryId === "account.pivot2" ? value.data.source : null
+    if (!source) { if (value.meta !== undefined) context.addIssue({ code: "custom", message: "Unexpected pivot metadata" }); return }
+    const coverage = value.meta && "cellCoverage" in value.meta ? value.meta.cellCoverage : undefined
+    if (!coverage || coverage.cells !== source.rows.length || coverage.undeterminable !== source.rows.filter(row =>
+      (row.assessment as { onTarget?: unknown } | undefined)?.onTarget === null).length) context.addIssue({ code: "custom", message: "Invalid pivot coverage" })
+  }),
   z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict(),
 ])
 export type DataQueryResponse = z.infer<typeof dataQueryResponseSchema>

@@ -1,0 +1,123 @@
+# 1.背景
+
+在Lazada推动项目效能管理和提升的背景下，需要对Lazada的项目立项过程进行标准化和线上化管理，进而通过AiONE平台进行项目效能数据的呈现和追踪，以数据驱动改进。
+
+# 2.项目准入规则
+- **项目定义：**项目是为创造独特的产品、服务或成果而进行的临时性工作，其中电商项目具有涉及角色多、复杂性、动态性、高风险等特点。开展项目是为了通过可交付成果达成目标，包含并不限于规模增长、体验提升、降本提效等。
+- **立项标准：**<u>研发人力</u><u>投入\>=30人日（含技术设计\+工程开发\+算法开发\+测试\+发布的总投入）</u><u>的项目（可能含1个或多个需求/任务），都需要进行立项管理；无论是单一项目，还是战役项目里的子项目，只要满足该标准，都应进行立项。</u>
+- **立项发起人规则：**
+    - 业务/产品项目 - 产品PDM/技术PM/PMO
+    - 技术项目 - 技术PM/PMO
+- 由上述立项发起人发起Aone立项，并录入【[项目列表](https://alidocs.dingtalk.com/i/nodes/Y1OQX0akWmzdBowLFE99vpzGVGlDd3mE?iframeQuery=utm_source%3Dportal%26utm_medium%3Dportal_recent&rnd=0.5467994225977871)】；
+- **【**[**项目列表**](https://alidocs.dingtalk.com/i/nodes/Y1OQX0akWmzdBowLFE99vpzGVGlDd3mE?iframeQuery=utm_source%3Dportal%26utm_medium%3Dportal_recent&rnd=0.5467994225977871)**】录入时间点：**在待启动（已确定会启动）、BRD阶段，就可以开始登记到项目列表中，计划投入人天可以根据后续评估再更新调整，对最终排期时评估投入人天小于30人天的项目可以从列表中删掉。
+- **Aone立项发起时间点：**建议尽早明确项目核心信息并发起Aone立项，<u>最晚开发排期前需完成Aone立项</u>。
+
+# 3.立项关键字段&模板
+- **负责团队：选择技术PM所在的团队**
+    - ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/4EZlwe8pL2bm9qxA/img/9e98887e-8a46-4428-a73c-70b939a8ed74.png?Expires=1776252772&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+- **项目名称：**
+    - **命名规则如下：**[项目命名规则](https://alidocs.dingtalk.com/i/nodes/EpGBa2Lm8aZxe5myCZn7dO0qWgN7R35y)
+
+
+| <span style="color: #FFFFFF;">**项目类型**</span> | <span style="color: #FFFFFF;">**项目命名方案结构**</span> | <span style="color: #FFFFFF;">**Demo/示例**</span> |
+|-----------------------------------------------------|-----------------------------------------------------------------|----------------------------------------------------|
+| 项目集 | <span style="background-color: #FFF3CE;">财年\+优先级</span>\+项目集名称 | <span style="background-color: #FFF3CE;">【FY26战役】</span>华商战役 <br><span style="color: #C10002;">注：适用战役包含全域战役和域内战役</span><br><span style="background-color: #FFF3CE;">【FY26重点】</span>本地交易平台专项<br><span style="color: #C10002;">注：适用重点项目集, 如果是多个项目组成的，用项目集名称。</span> |
+| 子项目 | <span style="background-color: #FFF3CE;">财年季度</span><span style="background-color: #FFF3CE;">立项时间\+优先级\+</span>项目名称 | <span style="color: ; background-color: #FFF3CE;">FY26Q1</span><span style="background-color: #FFF3CE;">战役</span><span style="color: ; background-color: #FFF3CE;">\_</span>华商战役一期 - 天猫店铺镜像LZD版<br><span style="color: #C10002;">注：全域战役和域内战役对应的子项目</span><br><span style="color: ; background-color: #FFF3CE;">FY26Q1战役\_</span>Onboarding Revamp Project Stage2<br><span style="color: #C10002;">注：全域战役和域内战役related sub-project, aslo use the same format.</span><br><span style="color: ; background-color: #FFF3CE;">FY26Q1</span><span style="background-color: #FFF3CE;">重点</span><span style="color: ; background-color: #FFF3CE;">\_</span>【V0】分人群运营策略 - V0-2<br><span style="color: #C10002;">注：适用重点项目对应的子项目</span><br><span style="color: #C10002;">注：中间的下划线要切换成英文格式才可以</span> |
+
+**注：**<u>项目Aone空间名字，项目列表清单，项目双周报，三者必须保持一致；</u>
+- **年份与季度标识**
+- **年份：**采用阿里财年后两位，如2025财年简写为“FY25”，2026年简写为“FY26”。
+- **季度：**以阿里财年季度定义：“Q1（4-6月）、Q2（7-9月）、Q3（10-12月）、Q4（1-3月）”表示，明确项目的立项时间。
+- **公开性：**TBD
+- **项目级别：**
+
+**1\. 全域战役，简称 “**【**战役**】**”**
+- 定义：跨多业务域的核心战略项目，影响整体业务目标达成，需全公司资源协同攻坚，优先级最高。支持Lazada公司战略目标实现，和CEO OKR有直接关联，需要多个业务域协同参与的项目，全域战役项目里的子项目也属于全域战役项目；
+
+**2\.  域内战役，简称 “**【**战役**】**”**
+- 定义：支持单个业务域或部门团队战略目标实现，和CEO-D OKR有直接关联，需要本业务域业产技资源重点投入的项目，域内战役项目里的子项目也属于域内战役项目；
+
+**3. 重点项目，简称 “**【**重点**】**”**
+- 定义：支持单个业务域或部门团队战略目标实现，重要性和规模稍弱于域内战役、但也需要业产技重点关注的项目；
+
+**4. 日常项目，简称“【日常】”**
+- 定义： 一般不需要单独立项，走迭代管理，利用已有的BAU项目空间。如有特殊事情需要单独立项管理（如阶段性的大促事项），请联系各域PMO。
+- **项目目标：**包含业务目标、技术目标
+- **预估项目人日范围：**不同人日规模的项目会触发不同级别的审批流程
+    - ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/4EZlwe8pL2bm9qxA/img/3e41fbfb-9119-492c-b0d6-23007d862292.png?Expires=1776252772&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+- **项目业务线：**
+    - Lazada的细分业务线:![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/4EZlwe8pL2bm9qxA/img/1c7dfdda-6b7c-4623-943d-a19a499a014c.png?Expires=1776252772&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+    - Miravia
+    - Daraz
+- <span style="color: rgb(58, 60, 65);">**产研战役：**</span><span style="color: rgb(58, 60, 65);">可选项包括全域战役List、域内战役List、其他重点项目、其他日常项目，具体战役list，可参见Aone立项模板选项：</span>![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/4EZlwe8pL2bm9qxA/img/518eeda3-cd95-416d-86de-b759dcf91d92.png?Expires=1776252772&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# 4.立项创建入口及操作
+
+现在Lazada各域的Aone结构是按照全域战役、域内战役、重点项目、BAU项目进行分层管理的，如下图：
+
+[Lazada产研大空间](https://aione.alibaba-inc.com/v2/projects/2068671?spm=a2o8d.projectdomain.0.0.246c38f2jscqbc)
+
+
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/4EZlwe8pL2bm9qxA/img/9cdab48c-2ba8-4973-b884-0a875050656c.png?Expires=1776252772&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+立项时，请首先确认项目级别，然后去对应域的空间目录下进行立项操作。
+
+
+
+例如，在【用户体验战役】下新建一个子战役项目，入口如下：
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2025/png/67256651/1738911561331-e3ccb975-5d66-486a-a8e4-52f4ab95e543.png "")
+
+# 5.审批流程
+
+**审批流：**
+- **全域战役/域内战役/域内重点项目：**
+- 30-100人日：发起人-\>各域PMO-\>各域Howard-D
+- \>100人日：发起人-\>各域PMO-\>各域Howard-D-\>Howard，<span style="color: #0C68CA;">**100人日以上HW需要审批，立项时需要把项目立项信息同步到【Lazada立项复盘群】，立项报备模板：**</span>
+    - [【参考模版】项目立项报备](https://alidocs.dingtalk.com/i/nodes/lyQod3RxJKe9QjOMiyP00ajjWkb4Mw9r)
+
+- **BAU项目：**
+    - 仅需要域PMO审批通过。
+
+**​**
+
+**Aone中配置**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/4EZlwe8pL2bm9qxA/img/0026590a-ed73-4a8b-9b6c-d5fb100fd32e.png?Expires=1776252772&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# 6.全域战役/域内战役/重点项目空间和BAU日常迭代空间的结构关系（Lazada现有流程规范）
+- 为正确统计项目投入的兵力，项目立项成功后，相关的需求需要在独立项目空间内创建（**「归属项目」**）。
+- **团队统一排期：**若团队需要将不同项目的需求汇总到团队内做统一迭代排期，可以将需求上的**「关联项目」选择为各自团队的BAU空间，在BAU空间内进行统一排期操作**，如下图，3个子需求A、B、C分别关联到了3个不同团队的BAU空间内。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2024/jpeg/67256651/1731944336125-dda9ebb5-b972-453e-ab6d-647fec6a858e.jpeg "")
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/81040/1731999646417-d82d6a66-8fb0-484b-807a-0c2763d8f75d.png "")
+
+# 7.附件 - 立项的因素
+
+## 7.1. <span style="color: rgba(25, 26, 31, 0.9);">一个成功的立项申请应该包含那些内容呢？</span>
+
+ <span style="color: rgba(25, 26, 31, 0.9);">**Heilmeier 准则：-**</span><span style="color: rgba(25, 26, 31, 0.9);">美国国防部先进研究计划局(DARPA)所采用的准则 ，是传奇的</span>乔治·海尔迈耶(George Heilmeier)上个世纪70年代在<span style="color: rgba(25, 26, 31, 0.9);">DARPA工作时提出的，并被DARPA沿用至今。</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">1）用浅显的描述来说明要解决的问题是什么？（what problem are your solving, in plain English?）</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">2）这个问题目前是怎么解决的，有什么局限？（How is the problem managed today, and what are the limits?）</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">3）你的解决方案有何不同，一定会成功吗？（What's different about your solution, and which gives you hope that it will succeed?）</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">4）如果你的方案成功了，将会有什么影响，又如何度量呢？（If your solution is successful, what impact will it have? HOw will it be that impact be measured?）</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">5）你将如何组织开展你的方案，又有怎样的成本？（How will the program be organized? and what will it cost?）</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">6）如何度量你的方案在开发过程中的进展？（How will you measure its progress?）</span>
+
+## 7.2.<span style="color: rgba(25, 26, 31, 0.9);">使用What，How和Why来描述：</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">What：什么问题？-\> 什么计划方案？-\> 什么创新（区别）？</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">How：怎样实施？-\> 怎样度量进度？</span>
+
+<span style="color: rgba(25, 26, 31, 0.9);">Why：为何你（们）来做？ -\> 你（们）为何选择这个方向？</span>
+
+

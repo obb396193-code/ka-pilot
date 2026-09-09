@@ -1,0 +1,42 @@
+{
+  "documentId": 2018,
+  "documentName": "10.1.10获取地域定向",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取地域定向\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/region/list\n\n请求方式：GET\n\n数据格式：JSON\n\n### 返回参数\n\n| 字段     | 类型   | 说明        | 备注 |\n| -------- | ------ | ----------- | ---- |\n| code     | int    | 返回码      |      |\n| message  | string | 返回信息    |      |\n| data     | struct | JSON 返回值 |      |\n| id       | long   | 地域 ID     |      |\n| level    | int    | 地域层级    |      |\n| name     | string | 地域名称    |      |\n| parent   | long   | 父级地域    |      |\n| children | long[] | 子级地域    |      |\n\n### 请求样例\n\n```\n\ncurl -X GET \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\":xxxxxxxx\n}'\n```\n\n### 返回样例\n\n```\n\n{\n  \"code\":0,\n  \"message\":\"OK\",\n  \"data\":{\n      \"471038\":{\n          \"id\":471038,\n          \"level\":1,\n          \"name\":\"上海\",\n          \"parent\":0,\n          \"children\":[\n          \t471039,\n          \t471040\n          ]\n      },\n      \"471129\":{\n          \"id\":471129,\n          \"level\":3,\n          \"name\":\"云林\",\n          \"parent\":471128,\n          \"children\":null\n      }\n  }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624801
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624801,
+  "creator": "wb_zhangyanmin",
+  "fullContext": null
+}

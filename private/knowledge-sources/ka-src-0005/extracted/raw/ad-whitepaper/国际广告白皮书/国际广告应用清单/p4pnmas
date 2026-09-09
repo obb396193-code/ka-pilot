@@ -1,0 +1,25 @@
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/6762/1591670425946-c5d9b11f-08c3-475a-861d-96fe1f562e47.png)
+
+
+
+```java
+private void mainProcess(NmasContext context) {
+    saveRecKeywordsNodeNew.process(context); // 保存推荐词
+    computeRecMatchNodeNew.process(context); // 计算rec_match
+    filterAndSaveRecNode.process(context);   // 过滤及保存recMatch
+    solrUpdateCustIdAndKeywordIdNodeForRec.process(context); //更新TSearch
+}
+```
+
+# computeRecMatchNodeNew
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/6762/1591672184132-964d3109-532b-4252-803e-21309d97ac17.png)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/6762/1591672496065-4884a545-2f9b-4b81-b759-96bb7a5369f0.png)
+
+# filterAndSaveRecNode
+# ![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/6762/1591672083748-b3b7eca5-0f02-4b81-a197-c1999355a4fc.png)
+# solrUpdateCustIdAndKeywordIdNodeForRec
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/6762/1591672043416-0b317546-964d-4782-8087-59432c25968a.png)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/6762/1591671789656-8955cd51-2c3d-45ae-a992-1f8c20f048db.png)
+

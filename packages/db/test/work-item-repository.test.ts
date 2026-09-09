@@ -6,20 +6,30 @@ import { Pool } from "pg";
 import { runMigrations } from "../src/migrate.js";
 import { WorkItemRepository } from "../src/work-item-repository.js";
 
-const databaseUrl =
-  process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
+const databaseUrl = process.env.TEST_DATABASE_URL;
+if (!databaseUrl) throw new Error("An explicit dedicated local TEST_DATABASE_URL is required");
+const testDatabase = new URL(databaseUrl);
+if (!["localhost", "127.0.0.1", "[::1]"].includes(testDatabase.hostname) || testDatabase.port !== "55432" ||
+  !/^\/ka_[a-z0-9_]*_test$/.test(testDatabase.pathname)) throw new Error("A dedicated local test database is required");
 
 describe("WorkItemRepository", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 8, connectionTimeoutMillis: 3000 });
   const repository = new WorkItemRepository(pool);
   let workspaceA: string;
   let workspaceB: string;
+  const ownedWorkspaces: string[] = [];
 
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
 
-  afterAll(async () => { await pool.end(); });
+  afterAll(async () => {
+    try {
+      for (const table of ["work_items", "accounts", "workspaces"]) {
+        await pool.query(`DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=ANY($1::uuid[])`, [ownedWorkspaces]);
+      }
+    } finally { await pool.end(); }
+  });
 
   beforeEach(async () => {
     const suffix = randomUUID();
@@ -34,6 +44,7 @@ describe("WorkItemRepository", () => {
     }
     workspaceA = first;
     workspaceB = second;
+    ownedWorkspaces.push(first, second);
     await pool.query(
       `INSERT INTO accounts (workspace_id, media, account_id)
        VALUES ($1, 'KUAISHOU', 'account-1'), ($2, 'KUAISHOU', 'account-1')`,
@@ -84,6 +95,32 @@ describe("WorkItemRepository", () => {
       [workspaceA],
     );
     expect(count.rows[0]?.count).toBe("1");
+  });
+
+  it("merges concurrent repeated signals into a dispatched item without reopening it", async () => {
+    const original = await repository.createOrMergeAlert(input());
+    await pool.query("UPDATE work_items SET status='dispatched' WHERE workspace_id=$1 AND id=$2", [workspaceA, original.workItem.id]);
+    const repeated = await Promise.all([repository.createOrMergeAlert(input()), repository.createOrMergeAlert(input())]);
+    expect(repeated.map(result => [result.disposition, result.workItem.id, result.workItem.status])).toEqual([
+      ["merged", original.workItem.id, "dispatched"], ["merged", original.workItem.id, "dispatched"],
+    ]);
+    expect((await pool.query("SELECT count(*)::int AS count FROM work_items WHERE workspace_id=$1", [workspaceA])).rows[0]?.count).toBe(1);
+  });
+
+  it("a dispatched same-ID account in another medium does not absorb the signal", async () => {
+    const original = await repository.createOrMergeAlert(input());
+    await pool.query("UPDATE work_items SET status='dispatched' WHERE workspace_id=$1 AND id=$2", [workspaceA, original.workItem.id]);
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'TENCENT','account-1')", [workspaceA]);
+    const second = await repository.createOrMergeAlert({ ...input(), media: "TENCENT" });
+    expect(second.disposition).toBe("created"); expect(second.workItem.id).not.toBe(original.workItem.id);
+    expect((await repository.find(workspaceA, original.workItem.id))?.status).toBe("dispatched");
+  });
+
+  it("terminal items are not treated as active by the shared status set", async () => {
+    const original = await repository.createOrMergeAlert(input());
+    await repository.transition({ workspaceId: workspaceA, workItemId: original.workItem.id, action: "ignore" });
+    const next = await repository.createOrMergeAlert(input());
+    expect(next.disposition).toBe("created"); expect(next.workItem.id).not.toBe(original.workItem.id);
   });
 
   it("upgrades severity without creating a duplicate", async () => {

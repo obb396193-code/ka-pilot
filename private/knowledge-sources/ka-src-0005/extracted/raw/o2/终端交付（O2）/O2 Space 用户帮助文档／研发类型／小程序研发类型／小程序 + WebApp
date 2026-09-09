@@ -1,0 +1,81 @@
+# 小程序 + WebApp
+
+## 能力介绍
+
+#### 基础能力
+
+小程序发布 支持发布各种研发类型的小程序应用到 淘宝、支付宝、微信、钉钉等各端的同时发布构建出来的 webapp。
+
+
+
+#### 提供的发布环境
+
+小程序仅有一个发布环境，预发阶段和线上阶段仅作为研发阶段的区分。只要选择了发布版本号，都会发布到对应小程序开放平台。
+
+
+
+我们针对不同类型的应用，以及预发/线上发布环境，提供了用户可选择的发布模式，以及版本号选择功能区。
+
+一个迭代可以同时进行多端发布，通过勾选（至少需要选中一项才能发布）来选择本次需要发布的渠道。
+
+目前一共提供了三种发布模式：
+
+1. 指定版本：使用发布者指定的版本号
+1. 不发布版本（仅预览）：不更新小程序的版本号，只生成预览码，此能力在线上发布模式下不可选。
+1. 自动更新版本号：自动读取目前最新的版本号（MAJOR . MINOR . PATCH），并且为修订号（PATCH + 1）。
+#### 发布产物说明
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zngl85/imgZEVYsltkAV.png)
+
+
+打包好的小程序产物包，会发布到开放平台，并且根据构建时配置对应生成预览码，或者版本号。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zngl85/imgCx9QK3eael.png)
+
+
+assets 资源
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zngl85/imgseGUehzCBt.png)
+
+
+页面
+
+## 接入说明
+
+前往 [应用接入](https://work.def.alibaba-inc.com/app/new)，选择 小程序 应用类型，进入小程序平台新建 小程序类型的 O2 应用。
+
+接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zngl85/img5dkwSSnMcG.png)
+
+
+## 发布流程
+
+发布的流程如下图所示：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zngl85/imgTjTAgoRTQf.png)
+
+
+主要过程有：
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 小程序预构建 & 预发布：根据根目录的 mini.project.json 中的构建 hook 进行预构建，将预构建产物再次进行小程序构建并发布到开放平台。
+- 门神检查：将多平台构建的产物进行合并，给到门神检查节点使用，对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+- assets 部署：把产物中的 Assets 资源部署到 CDN
+- 页面部署：把构建产物中的页面资源部署到 market 页面
+
+
+
+
+发布完成后需要进行 webapp 页面的灰度放量
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zngl85/img8i4pL8rUxV.png)
+
+
+全量后迭代完成。
+
+页面的回滚需要到子应用，目前平台上暂无透出，可以联系管理员指引
+

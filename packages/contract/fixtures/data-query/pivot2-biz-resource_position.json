@@ -383,6 +383,9 @@
       "lineage": {
         "source": "ka_data",
         "workspaceKind": "team",
+        "datasetVersion": "ka-daily-2026-09-04",
+        "queryTemplateVersion": "account-summary-v3",
+        "metricVersion": "account-metrics-v2",
         "dataAsOf": "2026-09-04T00:00:00.000+08:00",
         "timezone": "Asia/Shanghai",
         "dayCut": "business_day_0300",
@@ -397,12 +400,19 @@
           "to": "2026-09-05",
           "preset": "month_to_date"
         },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
         "coverage": {
           "complete": true
         },
         "truncated": false,
-        "partial": false,
-        "datasetVersion": "ka-daily-2026-09-04"
+        "partial": false
       },
       "warnings": []
     }

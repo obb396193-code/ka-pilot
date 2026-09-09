@@ -1,0 +1,54 @@
+{
+  "documentId": 3090,
+  "documentName": "获取AI推荐素材",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取AI推荐素材\n\n【AI视频】功能简介：AI视频是根据您视频库优质视频自动生成更多优质视频，为您提供素材供给，您可自主选择投放。\n\n若您使用该视频，表示您理解并同意，素材推荐作为中立的技术服务平台仅提供自动化功能，您使用本功能仍需遵守国家法律法规，包括但不限于在投放前获得相关内容合法授权或行政许可，否则因使用素材推荐产生的问题，由您自行承担法律责任。\n详情见：[快手广告 Marketing API 开发者服务协议](https://docs.qingque.cn/d/home/eZQD2jgIBNxxUJKbk8Fgwvhnl?identityId=1oEDvgOve3Y)\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/aiRecommend\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|       字段       |   类型   |  是否必填  |     说明     |                             备注                             |\n| :--------------: | :------: | :--------: | :----------: | :----------------------------------------------------------: |\n|  advertiser_id   |   Long   |    必填    |  广告主 ID   |                在获取 accessToken 的时候返回                 |\n| page     | Integer    | 必填 |  |      |\n| page_size |   Integer |    非必填    |  |     分页大小，最大100                                         |\n| dpa_product_id |   Long |    非必填    |  |     sDpaId                                         |\n| series_id |   Long |    非必填    |  |        短剧ID                                      |\n\n\n### 返回参数\n\n| 字段                     | 类型     | 说明             | 备注                                                         |\n| ------------------------ | -------- | ---------------- | ------------------------------------------------------------ |\n| code                     | int      | 返回码           |                                                              |\n| message                  | string   | 返回信息         |                                                              |\n| data.details                     | array   | JSON 返回值      |                                                              |\n| &nbsp;&nbsp;photo_id                 | string   | 视频 ID          |                                                              |\n| &nbsp;&nbsp;width                    | int      | 视频宽度         |                                                              |\n| &nbsp;&nbsp;height                   | int      | 视频高度         |                                                              |\n| &nbsp;&nbsp;url                      | string   | 视频预览链接     |                                                              |\n| &nbsp;&nbsp;cover_url                | string   | 视频首帧图片链接 |                                                              |\n| &nbsp;&nbsp;signature                | string   | 视频 md5 值      |                                                              |\n| &nbsp;&nbsp;upload_time              | string   | 上传时间         |                                                              |\n| &nbsp;&nbsp;photo_name               | string   | 视频名称         | 默认是视频 id                                                |\n| &nbsp;&nbsp;photo_tag                | string[] | 视频标签         |                                                              |\n| &nbsp;&nbsp;new_status               | int      | 视频状态         | 0：视频库删除，1：可用状态，2：转码中，3：审核中，11：转码失败，12：审核失败，13：已屏蔽，14：视频在客户端删除 |\n| &nbsp;&nbsp;duration                 | long     | 视频时长         | 单位毫秒                                                     |\n| &nbsp;&nbsp;source                   | int      | 视频来源         | 0：本地；1：开眼；2：素造；4：mapi；7：聚星视频；8：LA 素材上传；10：个人主页；11:代理商自制 |\n| &nbsp;&nbsp;photo_valuate_info       | Object   | 视频素材评价信息 | \"quality_label\": \"优质 普通 非常低\", // 素材质量  \"is_dup_photo\": false or true, // 素材创新度（这两个字段为旧的素材评价维度，以下面的为准）  |\n| &nbsp;&nbsp;photo_tag_identify_items | Object[] | 视频标签内容     |                                                              |\n| &nbsp;&nbsp;photo_wake_status        | Integer  | 视频唤醒状态     | 已经废弃，\n| &nbsp;&nbsp;outer_loop_native | Integer |   是否是原生视频         |    0或2=非原生视频；1或3=原生视频。  |\n| &nbsp;&nbsp;photo_user_id     | Long    | 视频所属的userId|      ||\n| &nbsp;&nbsp;atlas_pic_ids | String[] | 图集关联的图片ID ||\n| &nbsp;&nbsp;atlas_audio_bs_key | String | 图集关联音频的bs_key ||\n| &nbsp;&nbsp;atlas_audio_url | String | 图集音频播放链接 ||\n| &nbsp;&nbsp;shield_status | Integer | 视频是否已同步个人主页 1否 0是||\n| &nbsp;&nbsp;cursor     | Long    | 游标值|  用于下一次查询游标值的更新    ||\n| &nbsp;&nbsp;photo_dup_status | int | 素材创新度 | 0-原创，1-重复|\n| &nbsp;&nbsp;native_good_type | int | 素材质量 |1-良好，2-优质，0,3-其他|\n\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/aiRecommend' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\": 7869843,\n    \"page\": 1,\n    \"page_size\": 10\n}'\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 53,\n        \"details\": [\n            {\n                \"cursor\": null,\n                \"photo_id\": \"5256263854305552932\",\n                \"photo_name\": \"AI_素材推荐\",\n                \"photo_dup_status\": 0,\n                \"signature\": \"04af5df8e7bdf8a0908cda728f6ae3ae\",\n                \"atlas_pic_ids\": null,\n                \"new_status\": 1,\n                \"source\": 17,\n                \"authorization\": 1,\n                \"duration\": 13100,\n                \"native_good_type\": 0,\n                \"height\": 1280,\n                \"atlas_audio_url\": null,\n                \"cover_url\": \"http://bd2-ot.a.kwimgs.com/upic/2024/08/05/05/BMjAyNDA4MDUwNTU2MzZfMTc0MzI5MTE1M18xMzk4MTQ2MzM5ODhfMF8z_Bbdde18bc0d1f3d45dd07932ef68324f3.jpg?tag=1-1722952119-unknown-0-uvmxtsn3h8-c8c07ddaad8d19cc&clientCacheKey=3xsrr52vjj7bsee.jpg&di=6766cbd5&bp=10000\",\n                \"photo_wake_status\": 0,\n                \"create_time\": \"2024-08-06 12:45:45\",\n                \"photo_tag_identify_items\": null,\n                \"photo_user_id\": 1743291153,\n                \"shield_status\": 1,\n                \"url\": \"http://alimov2.a.kwimgs.com/upic/2024/08/05/05/BMjAyNDA4MDUwNTU2MzZfMTc0MzI5MTE1M18xMzk4MTQ2MzM5ODhfMF8z_b_Bfc9503d7040b29a3d8f77e307a77e522.mp4?tag=1-1722952119-unknown-0-4nffugxbxb-b9ddb944abaf1e90&clientCacheKey=3xsrr52vjj7bsee_b.mp4&tt=b&di=6766cbd5&bp=10000\",\n                \"upload_time\": \"2024-08-05 05:56:51\",\n                \"photo_tag\": null,\n                \"outer_loop_native\": 0,\n                \"width\": 720,\n                \"atlas_audio_bs_key\": null,\n                \"status\": 0\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgIDQxNGIChixCCDS5su_kjIojpSDkgg=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1722952168939
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1722952168939,
+  "creator": "heran03",
+  "fullContext": null
+}

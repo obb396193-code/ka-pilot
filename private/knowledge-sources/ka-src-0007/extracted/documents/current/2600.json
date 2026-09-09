@@ -1,0 +1,465 @@
+{
+  "documentId": 2600,
+  "documentName": "快手号授权接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720092205778
+    }
+  ],
+  "apiId": 468,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/save",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/save' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": xxx,\n    \"kol_user_type\": 1,\n    \"valid_type\": 2,\n    \"batch_user_ids\": [\n        111,222\n    ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"auth_id\": null,\n            \"user_id\": 111,\n            \"message\": \"用户111已存在蓝V服务号授权\"\n        },\n        {\n            \"auth_id\": 3946137070903615,\n            \"user_id\": 222,\n            \"message\": null\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELiAgICQhaayChjEDiCg2o7-kTEo3Ovq3Aw=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 26698,
+      "paramName": "user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "授权对应的的快手号id",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26699,
+      "paramName": "valid_type",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>授权类型，1固定时间，2不限时间。蓝V和普通快手号授权必填</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26700,
+      "paramName": "valid_start_time",
+      "paramType": "Long",
+      "example": "",
+      "description": "授权开始时间，毫秒级时间戳",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26701,
+      "paramName": "valid_end_time",
+      "paramType": "Long",
+      "example": "",
+      "description": "授权结束时间，毫秒级时间戳",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 40255,
+      "paramName": "kol_user_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "1代表普通快手号，2蓝V服务号，备注：不填默认蓝v服务号",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 40254,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45463,
+      "paramName": "batch_user_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p>批量快手号id，一次最多添加10个。普通快手号和蓝V授权时填写</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53271,
+      "paramName": "ad_social_order_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>批量聚星订单，聚星直播达人授权时填写，最多支持10个</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54160,
+      "paramName": "batch_kwai_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>批量自定义快手号id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54161,
+      "paramName": "sync_bind_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>同步授权子号</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 26702,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26703,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26704,
+      "paramName": "data",
+      "paramType": "KwaiUserAuthorizeResultSnake[]",
+      "example": "",
+      "description": "批量授权结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 981,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26697,
+          "paramName": "auth_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "授权成功后的唯一id，授权失败时为空",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45464,
+          "paramName": "user_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "授权对应的的快手号id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45465,
+          "paramName": "message",
+          "paramType": "String",
+          "example": "",
+          "description": "错误信息",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53273,
+          "paramName": "ad_social_order_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>聚星订单ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 54162,
+          "paramName": "kwai_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>当请求参数传递batch_kwai_ids时，该字段返回授权成功自定义快手号，此时注意保存user_id数值，其他接口当前仅支持传递user_id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720092205778,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

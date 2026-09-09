@@ -1,0 +1,58 @@
+## 发布中的机器分组回滚
+
+<span style="color: rgb(223, 42, 63);">其仅仅会回退未发布完成的机器分组</span>，其余的机器分组请按照下面的《已完成发布的机器分组回滚》进行
+
+选择靠上的回退，其对所有机器分组进行操作
+
+<span style="color: rgb(223, 42, 63);">如果有一个机房还没发布，可以执行切流</span>
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/v9kqDej8aBJ2pOVx/img/08d50fbf-2c65-46ef-bbb5-1792999f95d9.png?Expires=1776252779&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## 已完成发布的机器分组回滚
+
+### 进入回滚页面
+
+[https://appstack.aone.alibaba-inc.com/app/139462/env/392/overview](https://appstack.aone.alibaba-inc.com/app/139462/env/392/overview)![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/v9kqDej8aBJ2pOVx/img/8bc484d2-a241-4ee7-95da-e3328a9a0c44.png?Expires=1776252779&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+
+
+### 选择回滚环境，清注意  <span style="color: rgb(223, 42, 63);">云原生生产环境</span>  以及  <span style="color: rgb(223, 42, 63);">云原生安全生产环境</span>  都要分别操作回滚
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/v9kqDej8aBJ2pOVx/img/126e2a43-e838-41c3-b322-73af06e7ce6e.png?Expires=1776252779&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+
+
+### 勾选所有要回滚的分组
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/v9kqDej8aBJ2pOVx/img/fb41985e-5260-49b8-a217-bbd695251be3.png?Expires=1776252779&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+### 选择最近一次无异常的版本，因我们分云上云下发布，选择回滚时，<span style="color: rgb(223, 42, 63);">要选择所有版本号一致的环境基线</span>
+
+![](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/v9kqDej8aBJ2pOVx/img/21bfd469-b922-4118-bb97-e6134eaa93e1.png?Expires=1776252779&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+### 提交回滚
+- 提交回滚的时候，可以适当减少批次
+- 但无需过分关注，因为提交回滚后，依然可以通过点击完成当前批次，来提高回滚效率
+- 紧急情况可以忽略强制忽略Beta批次，第一批次等待等时间
+- 至少要保证1/3的机器在正常运作
+
+
+
+### 验证发布
+- 验证引起回滚的问题是否已经解决
+- 通过Arthas检查是否已回滚到目标基线
+
+
+
+## Appstack异常
+- 启动有零星机器被卡住时，需要及时置换
+- 加入 云原生答疑群\[Cloud Native\] @研小喵 31975214 咨询值班
+- 咨询 明门、乔忆、行禅

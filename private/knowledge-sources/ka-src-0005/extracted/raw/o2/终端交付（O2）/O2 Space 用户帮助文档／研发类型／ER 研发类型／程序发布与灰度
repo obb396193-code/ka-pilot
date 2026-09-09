@@ -1,0 +1,73 @@
+# 程序发布与灰度
+
+### 预发
+
+
+
+预发：ER 程序发布到内网预发环境，发布完成后点击查看结果，可以看到内网预发的地址
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgIrUcifDzp5.png)
+
+
+
+
+### 线上验证
+
+
+
+线上验证：原来的预发发布，把 ER 程序发布到公有云预发环境
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/img2I4LMEV9Lf.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgQJ8c8x6iJJ.png)
+
+
+此预发环境为公有云预发环境，可选取以下 IP 中的几个进行 Host 域名绑定测试。 绑定 Host 的方式是修改测试机本地 Host 文件，加入测试 IP 和域名，例如添加 121.196.0.60 你的域名 ，或者直接使用命令行指定测试环境 IP curl -v '你的域名' -x 42.123.199.100:80 测试。
+
+### 线上
+
+线上：按设置的灰度区域放量，放量完成发布线上
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgcwt3rDg5VT.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgQt4zKtv8RC.png)
+
+
+
+
+### 灰度环境设置
+
+O2 发布 ER，必须要经过灰度放量，不能直接发布线上全量。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgxJu8sGl9re.png)
+
+
+可根据最近一小时的流量占比选择，选择合适的地域作为灰度区域，可对设置的灰度区域做增删，设置的灰度区域在灰度放量阶段必须完整全部区域放量，方可进行线上发布。
+
+
+
+### 灰度发布
+
+灰度发布能力集成线上发布的流水线上。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgu2M5lmEw3q.png)
+
+
+### 灰度放量
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgtkbPWBKIQJ.png)
+
+
+- 可查看当前灰度区域最近1小时的用户流量占比、灰度状态、灰度时长、查看域名流量详情
+- 可取消灰度
+
+
+### 取消灰度
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/raeq5r/imgvEbqSmB4K8.png)
+
+
+- 当存在线上版本时，灰度区域的程序将重新发布上一个历史线上版本
+- 当不存在线上版本时，则提示是否将域名与程序进行解绑，解绑后域名访问，将不再经过此 ER，解除绑定后仍可在应用概览页进行再次绑定

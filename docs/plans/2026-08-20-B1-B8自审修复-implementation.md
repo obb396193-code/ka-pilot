@@ -16,7 +16,7 @@
 
 1. `missing/provisional/error/finite` 是否进入公开指标 DTO。
 2. 一账户日多任务是禁止、主归属还是按比例分摊。
-3. 奇航账户发现结果如何映射到 workspace 的权威来源。
+3. 启航账户发现结果如何映射到 workspace 的权威来源。
 4. 钉钉 durable inbox/ACK/outbox 的公开命令状态和失败可见性。
 5. Workflow Run 是否由 Job 单入口驱动以及公开运行控制 API。
 
@@ -44,7 +44,7 @@
 - offset 不同但时间已过期的 workflow confirmation 必须拒绝。
 - confirmation 收到后到实际执行前过期必须拒绝 execute。
 - 嵌入普通前缀后的 Bearer/token 形态输出必须拒绝持久化。
-- inactive user 不得解析奇航身份。
+- inactive user 不得解析启航身份。
 - Changeset result 重复 itemId、错误 executionRunId 必须失败。
 - 账户分页返回非空页却缺 totalNum 必须显式失败，不能静默截断。
 
@@ -57,7 +57,7 @@ Run the exact affected Vitest files. Expected: each new regression test fails fo
 - Knowledge 使用 all-or-nothing citation authorization。
 - 时间比较统一 `Date.parse` 后比较；execute 前二次检查 expiry。
 - credential-shaped string 扫描整串键值模式，不只匹配开头。
-- 奇航 identity 查询加入 `is_active = true`。
+- 启航 identity 查询加入 `is_active = true`。
 - Changeset 检查结果 ID 数量与唯一性，并验证 execution run 行更新数。
 - 分页元数据缺失时抛可观测错误。
 

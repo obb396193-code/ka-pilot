@@ -1,0 +1,42 @@
+{
+  "documentId": 2145,
+  "documentName": "工具-出价建议-3-获取广告组投放预估曲线",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取广告组投放预估曲线\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/unit/bidTrendPredict/detail\n\n请求方式：POST\n\n数据格式：JSON\n## 请求参数\n| 字段                | 类型    |    示例    | 是否必填 | 说明             | 备注                                                                                                                                                                                                        |\n| --------------------- | ------- | ------ | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| advertiser_id         | long    |    123456    | 必填   | 广告主ID        | 在获取 access_token 的时候返回                                                                                                                                                                        |\n| bid_type              | long    |    1    | 必填   | 出价类型       | 1：CPM，2：CPC，6：OCPC(使用 OCPC 代表 OCPX)，10：OCPM，20：eCPC                                                                                                                                 |\n| unit_id               | long    |    8796798    | 必填   | 广告组 ID       | 新建时该值为0，编辑时该值为广告组id                                                                                                                                                           |\n| campaign_id           | long    |    98890567    | 非必填 | 广告计划 ID    |                                                                                                                                                                                                               |\n| predict_cpa_bid       | long    |    20000    | 必填   | 要预估的新浅度出价 | 保持和current_cpa_bid一致即可。                                                                                                                                                                       |\n| current_cpa_bid       | long    |    10000    | 必填   | 原有的浅度出价 | 新建广告组时，该值为0；编辑广告组时，该值为用户原来填写的浅度出价。单位厘                                                                                                 |\n| ocpx_action_type      | int     |    2    | 必填   | 转化目标       | 0：未知，2：点击转化链接，10：曝光，11：点击，31：下载完成，53：提交线索，109：电话卡激活，137：量房，180：激活，190: 付费，191：首日 ROI，348：有效线索，383: 授信，384: 完件 715：微信复制;739:7 日付费次数 |\n| deep_conversion_type  | int     |    3    | 非必填 | 深度转化目标 | 3: 付费，7: 次日留存，10: 完件, 11: 授信 ，0：无                                                                                                                                               |\n| predict_deep_conv_bid | long    |    30000    | 非必填 | 要预估的新深度出价 | 保持和curr_deep_bid一致即可                                                                                                                                                                            |\n| curr_deep_bid         | long    |    20000    | 非必填 | 原有的深度出价 | 新建广告组时，该值为0；编辑广告组时，该值为用户原来填写的深度出价。单位厘                                                                                                 |\n\n## 返回参数\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int        |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | GateBidTrendPredict |         | 广告组出价参考 | 详情见下方 |\n\n\n| GateBidTrendPredict    |         |            |               |           |\n| ---------------------- | ------- | ---------- |     --------------- | --------- |\n| 字段                 | 类型  |  示例    | 说明                    | 备注    |\n| can_predict            | boolean |    true    | 是否可以预测转化预估 |           |\n| can_predict_conversion | boolean |    true    | 是否可以预测出价-转化曲线 |           |\n| can_predict_delivery   | boolean |    true    | 是否可以预测出价-曝光曲线 |           |\n| predict_impression     | long    |    129    | 预估曝光数           | 即y轴数值 |\n| predict_conversion     | long    |    12    | 预估转化数           | 即y轴数值 |\n| predict_cost           | long    |    3000    | 预估每日消费  |    单位：厘       |\n| suggest_bid            | int     |    200000    | 浅度出价建议值     | 即x轴数值 |\n| suggest_bid_min        | int     |    100000    | 建议区间最小值     |           |\n| suggest_bid_max        | int     |    300000    | 建议区间最大值     |           |\n| tips_id                | int     |     1   | 优化提示              |           |\n| bid_delivery           | Object  |        | 出价-下发       |    单位：厘       |\n| bid_conversion         | Object  |        | 出价-转化数          |           |\n\n## 请求样例\n\n```\n{\n    \"advertiser_id\":12970515,\n    \"bid_type\":10,\n    \"campaign_id\":596467876,\n    \"current_cpa_bid\":298560,\n    \"current_deep_bid\":0,\n    \"deep_conversion_type\":null,\n    \"ocpx_action_type\":53,\n    \"predict_cpa_bid\":0,\n    \"predict_deep_bid\":0,\n    \"unit_id\":1177725596\n}\n```\n## 返回案例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"suggest_bid_max\": 0,\n        \"suggest_bid\": 28300,\n        \"suggest_bid_min\": 0,\n        \"predict_impression\": 4000000,\n        \"predict_cost\": null,\n        \"can_predict\": true,\n        \"can_predict_conversion\": true,\n        \"can_predict_delivery\": true,\n        \"bid_conversion\": {\n            \"15987\": 2,\n            \"16828\": 13,\n            \"17669\": 1,\n            \"18511\": 6,\n            \"19352\": 7,\n            \"20194\": 12,\n            \"21035\": 43,\n            \"21876\": 7134083,\n            \"22718\": 12,\n            \"23559\": 54,\n            \"24401\": 34,\n            \"25242\": 135190326,\n            \"26083\": 45,\n            \"26925\": 2,\n            \"27766\": 6,\n            \"28300\": 76,\n            \"29449\": 12,\n            \"30290\": 12,\n            \"31132\": 3,\n            \"31973\": 65,\n            \"32814\": 45,\n            \"33656\": 34,\n            \"34497\": 91,\n            \"35339\": 18,\n            \"36180\": 71,\n            \"37021\": 15,\n            \"37863\": 16,\n            \"38704\": 9,\n            \"39546\": 23,\n            \"40387\": 10\n        },\n        \"tips_id\": null,\n        \"predict_conversion\": 0,\n        \"bid_delivery\": {\n            \"15987\": 3392936,\n            \"16828\": 3394017,\n            \"17669\": 3401989,\n            \"18511\": 3485630,\n            \"19352\": 3674667,\n            \"20194\": 3973018,\n            \"21035\": 4679711,\n            \"21876\": 7134083,\n            \"22718\": 19351626,\n            \"23559\": 48336028,\n            \"24401\": 90073060,\n            \"25242\": 135190326,\n            \"26083\": 186427849,\n            \"26925\": 238921068,\n            \"27766\": 295094631,\n            \"28300\": 352563211,\n            \"29449\": 412123223,\n            \"30290\": 472177245,\n            \"31132\": 532844319,\n            \"31973\": 595022338,\n            \"32814\": 658143514,\n            \"33656\": 722837656,\n            \"34497\": 791546029,\n            \"35339\": 862750663,\n            \"36180\": 936671132,\n            \"37021\": 1011989177,\n            \"37863\": 1087867982,\n            \"38704\": 1164905871,\n            \"39546\": 1243117573,\n            \"40387\": 1322583755\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1648641145487
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1648641145487,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

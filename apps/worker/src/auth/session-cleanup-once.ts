@@ -58,9 +58,13 @@ export async function executeSessionCleanupOnce(input: unknown): Promise<"comple
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    if (!process.send || process.argv.length !== 2) throw new SessionCleanupError();
-    // No raw driver output or session data sent over IPC. Supervisor observes process close.
+    if (!process.send || !process.connected || process.argv.length !== 2) throw new SessionCleanupError();
+    // Only a round-completion marker, never driver output or session data.
     await executeSessionCleanupOnce(parseSessionCleanupConfig(process.env));
+    await new Promise<void>((resolve, reject) => {
+      if (!process.connected || !process.send) { reject(new SessionCleanupError()); return; }
+      process.send({ kind: "terminal", status: "completed" }, (error) => error ? reject(new SessionCleanupError()) : resolve());
+    });
   } catch { process.exitCode = 1; }
   finally { if (process.connected) process.disconnect(); }
 }

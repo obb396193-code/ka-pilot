@@ -1,0 +1,62 @@
+### 扩展开放控制台
+
+[https://open-space.o2.alibaba-inc.com/](https://open-space.o2.alibaba-inc.com/)，SPI 定制场景下，业务方使用这个控制台完成业务的接入，
+
+另外事件中心的使用目前也在这个平台完成
+
+### 网关
+
+O2 统一开放网关服务：[https://open.o2.alibaba-inc.com/](https://open.o2.alibaba-inc.com/)
+
+SPI 定制场景下，业务方在扩展点内调用的业务接口都需要注册到这个服务
+
+API 集成场景下，O2 开放 API 都通过这个服务提供
+
+### 事件中心
+
+[https://open-space.o2.alibaba-inc.com/connector](https://open-space.o2.alibaba-inc.com/connector)，SPI 定制场景和API 集成场景下，在这个平台完成事件的配置
+
+### 扩展点
+
+O2 Space 平台提供的可供业务定制的最小单元，可以通过扩展点做界面定制和逻辑定制，如在发布界面加一块业务卡片：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/oJGq76PE8j5rnAKe/img/f5bd850e-3c22-4e82-a450-62589cd89026.png)
+
+
+在发布成功后通过扩展点配置的业务接口判断是否进入灰度：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/oJGq76PE8j5rnAKe/img/79d68f1a-09e8-4d86-b069-c15a2276b571.png)
+
+
+### 扩展包
+
+将扩展点集合到扩展包，便于业务消费和管理
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/oJGq76PE8j5rnAKe/img/96f95cdd-e4b5-42e9-b3c6-7dd1173c7502.png)
+
+
+### 发布流水线
+
+迭代发布时，运行的流水线，通过 [flow](https://flow.def.alibaba-inc.com/) 运行
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/oJGq76PE8j5rnAKe/img/f7a8b87a-8fee-4d95-8541-811e53e3ec02.png)
+
+
+### 应用类型 & 研发类型
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/oJGq76PE8j5rnAKe/img/85ba7921-8488-424f-939c-fad7ac0a80d8.png)
+
+
+如上图，每个研发类型可包含一个或多个应用类型，
+
+不同的研发类型 对应 不同的扩展包
+
+不同的应用类型 对应 不同的发布流水线
+
+### Pai App
+
+用于开发、发布扩展包的 O2 Space 应用
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/oJGq76PE8j5rnAKe/img/c799d34b-90e3-48c6-9b50-984073da925c.png)
+
+

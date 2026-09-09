@@ -1,0 +1,1036 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - banner [ref=f1e3]:
+      - generic [ref=f1e4]:
+        - generic [ref=f1e5]:
+          - link "Vercel" [ref=f1e6] [cursor=pointer]:
+            - /url: https://vercel.com/
+            - img "Vercel" [ref=f1e7]
+          - link [ref=f1e11] [cursor=pointer]:
+            - /url: /en
+            - paragraph [ref=f1e13]: AI Elements
+        - navigation "Main" [ref=f1e14]:
+          - list [ref=f1e16]:
+            - listitem [ref=f1e17]:
+              - link "Docs" [ref=f1e18] [cursor=pointer]:
+                - /url: /en/docs
+            - listitem [ref=f1e19]:
+              - link "Components" [ref=f1e20] [cursor=pointer]:
+                - /url: /en/components
+            - listitem [ref=f1e21]:
+              - link "Examples" [ref=f1e22] [cursor=pointer]:
+                - /url: /en/examples
+        - generic [ref=f1e23]:
+          - button "Search... ⌘K" [ref=f1e24] [cursor=pointer]:
+            - generic [ref=f1e25]: Search...
+            - generic: ⌘K
+          - button "Ask AI" [ref=f1e26] [cursor=pointer]
+    - generic [ref=f1e28]:
+      - generic [ref=f1e29]:
+        - link "Chatbot" [ref=f1e30] [cursor=pointer]:
+          - /url: /examples/chatbot
+        - link "IDE" [ref=f1e31] [cursor=pointer]:
+          - /url: /examples/ide
+        - link "v0 clone" [ref=f1e32] [cursor=pointer]:
+          - /url: /examples/v0
+        - link "Workflow" [ref=f1e33] [cursor=pointer]:
+          - /url: /examples/workflow
+      - article [ref=f1e34]:
+        - heading "Chatbot" [level=1] [ref=f1e35]
+        - paragraph [ref=f1e36]: An example of how to use the AI Elements to build a chatbot.
+        - generic [ref=f1e37]:
+          - generic [ref=f1e38]:
+            - tablist [ref=f1e39]:
+              - tab "Preview" [selected] [ref=f1e40] [cursor=pointer]
+              - tab "Code" [ref=f1e42] [cursor=pointer]
+            - tabpanel "Preview" [ref=f1e44]:
+              - generic [ref=f1e45]:
+                - generic [ref=f1e48]:
+                  - log [ref=f1e49]:
+                    - generic [ref=f1e51]:
+                      - paragraph [ref=f1e58]: Can you explain how to use React hooks effectively?
+                      - generic [ref=f1e62]:
+                        - button [ref=f1e64] [cursor=pointer]:
+                          - paragraph [ref=f1e65]: Used 2 sources
+                        - generic [ref=f1e69]:
+                          - heading "React Hooks Best Practices" [level=1] [ref=f1e70]
+                          - paragraph [ref=f1e71]: "React hooks are a powerful feature that let you use state and other React features without writing classes. Here are some tips for using them effectively:"
+                          - heading "Rules of Hooks" [level=2] [ref=f1e72]
+                          - list [ref=f1e73]:
+                            - listitem [ref=f1e74]: Only call hooks at the top level of your component or custom hooks
+                            - listitem [ref=f1e75]: Don't call hooks inside loops, conditions, or nested functions
+                          - heading "Common Hooks" [level=2] [ref=f1e76]
+                          - list [ref=f1e77]:
+                            - listitem [ref=f1e78]: "useState: For local component state"
+                            - listitem [ref=f1e79]: "useEffect: For side effects like data fetching"
+                            - listitem [ref=f1e80]: "useContext: For consuming context"
+                            - listitem [ref=f1e81]: "useReducer: For complex state logic"
+                            - listitem [ref=f1e82]: "useCallback: For memoizing functions"
+                            - listitem [ref=f1e83]: "useMemo: For memoizing values"
+                          - heading "Example of useState and useEffect" [level=2] [ref=f1e84]
+                          - generic [ref=f1e85]:
+                            - generic [ref=f1e86]: jsx
+                            - generic [ref=f1e88]:
+                              - button "Download file" [ref=f1e89] [cursor=pointer]
+                              - button "Copy Code" [ref=f1e92] [cursor=pointer]
+                            - code [ref=f1e97]:
+                              - generic [ref=f1e98]: "function ProfilePage({ userId }) {"
+                              - generic [ref=f1e99]: const [user, setUser] = useState(null);
+                              - generic [ref=f1e101]: "useEffect(() => {"
+                              - generic [ref=f1e102]: // This runs after render and when userId changes
+                              - generic [ref=f1e103]: "fetchUser(userId).then(userData => {"
+                              - generic [ref=f1e104]: setUser(userData);
+                              - generic [ref=f1e105]: "});"
+                              - generic [ref=f1e106]: "}, [userId]);"
+                              - generic [ref=f1e108]: "return user ? <Profile user={user} /> : <Loading />;"
+                              - generic [ref=f1e109]: "}"
+                          - paragraph [ref=f1e110]: Would you like me to explain any specific hook in more detail?
+                      - generic [ref=f1e111]:
+                        - paragraph [ref=f1e117]: Yes, could you explain useCallback and useMemo in more detail? When should I use one over the other?
+                        - group [ref=f1e118]:
+                          - button "Previous branch" [ref=f1e119] [cursor=pointer]
+                          - generic [ref=f1e120]: 1 of 3
+                          - button "Next branch" [ref=f1e121] [cursor=pointer]
+                      - generic [ref=f1e125]:
+                        - button [ref=f1e127] [cursor=pointer]:
+                          - paragraph [ref=f1e136]: Thought for 10 seconds
+                        - generic [ref=f1e140]:
+                          - heading "useCallback vs useMemo" [level=2] [ref=f1e141]
+                          - paragraph [ref=f1e142]: "Both hooks help with performance optimization, but they serve different purposes:"
+                          - heading "useCallback" [level=3] [ref=f1e143]
+                          - paragraph [ref=f1e144]:
+                            - code [ref=f1e145]: useCallback
+                            - text: memoizes functions to prevent unnecessary re-renders of child components that receive functions as props.
+                          - generic [ref=f1e146]:
+                            - generic [ref=f1e147]: jsx
+                            - generic [ref=f1e149]:
+                              - button "Download file" [ref=f1e150] [cursor=pointer]
+                              - button "Copy Code" [ref=f1e153] [cursor=pointer]
+                            - code [ref=f1e158]:
+                              - generic [ref=f1e159]: // Without useCallback - a new function is created on every render
+                              - generic [ref=f1e160]: "const handleClick = () => {"
+                              - generic [ref=f1e161]: console.log(count);
+                              - generic [ref=f1e162]: "};"
+                              - generic [ref=f1e164]: // With useCallback - the function is only recreated when dependencies change
+                              - generic [ref=f1e165]: "const handleClick = useCallback(() => {"
+                              - generic [ref=f1e166]: console.log(count);
+                              - generic [ref=f1e167]: "}, [count]);"
+                          - heading "useMemo" [level=3] [ref=f1e168]
+                          - paragraph [ref=f1e169]:
+                            - code [ref=f1e170]: useMemo
+                            - text: memoizes values to avoid expensive recalculations on every render.
+                          - generic [ref=f1e171]:
+                            - generic [ref=f1e172]: jsx
+                            - generic [ref=f1e174]:
+                              - button "Download file" [ref=f1e175] [cursor=pointer]
+                              - button "Copy Code" [ref=f1e178] [cursor=pointer]
+                            - code [ref=f1e183]:
+                              - generic [ref=f1e184]: // Without useMemo - expensive calculation runs on every render
+                              - generic [ref=f1e185]: const sortedList = expensiveSort(items);
+                              - generic [ref=f1e187]: // With useMemo - calculation only runs when items change
+                              - generic [ref=f1e188]: const sortedList = useMemo(() => expensiveSort(items), [items]);
+                          - heading "When to use which?" [level=3] [ref=f1e189]
+                          - list [ref=f1e190]:
+                            - listitem [ref=f1e191]:
+                              - paragraph [ref=f1e192]: "Use useCallback when:"
+                              - list [ref=f1e193]:
+                                - listitem [ref=f1e194]: Passing callbacks to optimized child components that rely on reference equality
+                                - listitem [ref=f1e195]: Working with event handlers that you pass to child components
+                            - listitem [ref=f1e196]:
+                              - paragraph [ref=f1e197]: "Use useMemo when:"
+                              - list [ref=f1e198]:
+                                - listitem [ref=f1e199]: You have computationally expensive calculations
+                                - listitem [ref=f1e200]: You want to avoid recreating objects that are used as dependencies for other hooks
+                          - heading "Performance Note" [level=3] [ref=f1e201]
+                          - paragraph [ref=f1e202]: Don't overuse these hooks! They come with their own overhead. Only use them when you have identified a genuine performance issue.
+                  - generic [ref=f1e203]:
+                    - generic [ref=f1e207]:
+                      - button "What are the latest trends in AI?" [ref=f1e208] [cursor=pointer]
+                      - button "How does machine learning work?" [ref=f1e209] [cursor=pointer]
+                      - button "Explain quantum computing" [ref=f1e210] [cursor=pointer]
+                      - button "Best practices for React development" [ref=f1e211] [cursor=pointer]
+                      - button "Tell me about TypeScript benefits" [ref=f1e212] [cursor=pointer]
+                      - button "How to optimize database queries?" [ref=f1e213] [cursor=pointer]
+                      - button "What is the difference between SQL and NoSQL?" [ref=f1e214] [cursor=pointer]
+                      - button "Explain cloud computing basics" [ref=f1e215] [cursor=pointer]
+                    - group [ref=f1e218]:
+                      - group [ref=f1e219]
+                      - textbox "What would you like to know?" [ref=f1e221]
+                      - group [ref=f1e222]:
+                        - generic [ref=f1e223]:
+                          - button [ref=f1e224] [cursor=pointer]
+                          - button [ref=f1e226] [cursor=pointer]
+                          - button "Search" [ref=f1e227] [cursor=pointer]
+                          - button "openai logo GPT-4o" [ref=f1e229] [cursor=pointer]:
+                            - img "openai logo" [ref=f1e230]
+                            - generic [ref=f1e231]: GPT-4o
+                        - button "Submit" [ref=f1e232] [cursor=pointer]
+                - separator [ref=f1e233]
+          - heading [level=2] [ref=f1e242]:
+            - link "Tutorial" [ref=f1e243] [cursor=pointer]:
+              - /url: "#tutorial"
+          - paragraph [ref=f1e247]: Let's walk through how to build a chatbot using AI Elements and AI SDK. Our example will include reasoning, web search with citations, and a model picker.
+          - heading [level=3] [ref=f1e248]:
+            - link "Setup" [ref=f1e249] [cursor=pointer]:
+              - /url: "#setup"
+          - paragraph [ref=f1e253]: "First, set up a new Next.js repo and cd into it by running the following command (make sure you choose to use Tailwind the project setup):"
+          - generic [ref=f1e254]:
+            - tablist [ref=f1e255]:
+              - tab "npm" [selected] [ref=f1e256] [cursor=pointer]
+              - tab "pnpm" [ref=f1e258] [cursor=pointer]
+              - tab "yarn" [ref=f1e260] [cursor=pointer]
+              - tab "bun" [ref=f1e262] [cursor=pointer]
+            - tabpanel "npm" [ref=f1e264]:
+              - generic [ref=f1e265]:
+                - code [ref=f1e267]:
+                  - generic [ref=f1e268]: npx create-next-app@latest ai-chatbot && cd ai-chatbot
+                - button [ref=f1e269] [cursor=pointer]
+          - paragraph [ref=f1e270]: "Run the following command to install AI Elements. This will also set up shadcn/ui if you haven't already configured it:"
+          - generic [ref=f1e271]:
+            - tablist [ref=f1e272]:
+              - tab "npm" [selected] [ref=f1e273] [cursor=pointer]
+              - tab "pnpm" [ref=f1e275] [cursor=pointer]
+              - tab "yarn" [ref=f1e277] [cursor=pointer]
+              - tab "bun" [ref=f1e279] [cursor=pointer]
+            - tabpanel "npm" [ref=f1e281]:
+              - generic [ref=f1e282]:
+                - code [ref=f1e284]:
+                  - generic [ref=f1e285]: npx ai-elements@latest
+                - button [ref=f1e286] [cursor=pointer]
+          - paragraph [ref=f1e287]: "Now, install the AI SDK dependencies:"
+          - generic [ref=f1e288]:
+            - tablist [ref=f1e289]:
+              - tab "npm" [selected] [ref=f1e290] [cursor=pointer]
+              - tab "pnpm" [ref=f1e292] [cursor=pointer]
+              - tab "yarn" [ref=f1e294] [cursor=pointer]
+              - tab "bun" [ref=f1e296] [cursor=pointer]
+            - tabpanel "npm" [ref=f1e298]:
+              - generic [ref=f1e299]:
+                - code [ref=f1e301]:
+                  - generic [ref=f1e302]: npm i ai @ai-sdk/react zod
+                - button [ref=f1e303] [cursor=pointer]
+          - paragraph [ref=f1e304]:
+            - text: In order to use the providers, let's configure an AI Gateway API key. Create a
+            - code [ref=f1e305]: .env.local
+            - text: in your root directory and navigate
+            - link "here" [ref=f1e306] [cursor=pointer]:
+              - /url: https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%2Fapi-keys&title=Get%20your%20AI%20Gateway%20key
+            - text: to create a token, then paste it in your
+            - code [ref=f1e307]: .env.local
+            - text: .
+          - paragraph [ref=f1e308]: We're now ready to start building our app!
+          - heading [level=3] [ref=f1e309]:
+            - link "Client" [ref=f1e310] [cursor=pointer]:
+              - /url: "#client"
+          - paragraph [ref=f1e314]:
+            - text: In your
+            - code [ref=f1e315]: app/page.tsx
+            - text: ", replace the code with the file below."
+          - paragraph [ref=f1e316]:
+            - text: Here, we use the
+            - code [ref=f1e317]: PromptInput
+            - text: component with its compound components to build a rich input experience with file attachments, model picker, and action menu. The input component uses the new
+            - code [ref=f1e318]: PromptInputMessage
+            - text: type for handling both text and file attachments.
+          - paragraph [ref=f1e319]:
+            - text: The whole chat lives in a
+            - code [ref=f1e320]: Conversation
+            - text: . We switch on
+            - code [ref=f1e321]: message.parts
+            - text: and render the respective part within
+            - code [ref=f1e322]: Message
+            - text: ","
+            - code [ref=f1e323]: Reasoning
+            - text: ", and"
+            - code [ref=f1e324]: Sources
+            - text: . We also use
+            - code [ref=f1e325]: status
+            - text: from
+            - code [ref=f1e326]: useChat
+            - text: to stream reasoning tokens, as well as render
+            - code [ref=f1e327]: Loader
+            - text: .
+          - generic [ref=f1e328]:
+            - generic [ref=f1e329]:
+              - generic [ref=f1e333]: chatbot.tsx
+              - button [ref=f1e334] [cursor=pointer]
+            - code [ref=f1e339]:
+              - generic [ref=f1e340]: "\"use client\";"
+              - generic [ref=f1e342]: "import {"
+              - generic [ref=f1e343]: Attachment,
+              - generic [ref=f1e344]: AttachmentPreview,
+              - generic [ref=f1e345]: AttachmentRemove,
+              - generic [ref=f1e346]: Attachments,
+              - generic [ref=f1e347]: "} from \"@/components/ai-elements/attachments\";"
+              - generic [ref=f1e348]: "import {"
+              - generic [ref=f1e349]: Conversation,
+              - generic [ref=f1e350]: ConversationContent,
+              - generic [ref=f1e351]: ConversationScrollButton,
+              - generic [ref=f1e352]: "} from \"@/components/ai-elements/conversation\";"
+              - generic [ref=f1e353]: "import {"
+              - generic [ref=f1e354]: Message,
+              - generic [ref=f1e355]: MessageBranch,
+              - generic [ref=f1e356]: MessageBranchContent,
+              - generic [ref=f1e357]: MessageBranchNext,
+              - generic [ref=f1e358]: MessageBranchPage,
+              - generic [ref=f1e359]: MessageBranchPrevious,
+              - generic [ref=f1e360]: MessageBranchSelector,
+              - generic [ref=f1e361]: MessageContent,
+              - generic [ref=f1e362]: MessageResponse,
+              - generic [ref=f1e363]: "} from \"@/components/ai-elements/message\";"
+              - generic [ref=f1e364]: "import {"
+              - generic [ref=f1e365]: ModelSelector,
+              - generic [ref=f1e366]: ModelSelectorContent,
+              - generic [ref=f1e367]: ModelSelectorEmpty,
+              - generic [ref=f1e368]: ModelSelectorGroup,
+              - generic [ref=f1e369]: ModelSelectorInput,
+              - generic [ref=f1e370]: ModelSelectorItem,
+              - generic [ref=f1e371]: ModelSelectorList,
+              - generic [ref=f1e372]: ModelSelectorLogo,
+              - generic [ref=f1e373]: ModelSelectorLogoGroup,
+              - generic [ref=f1e374]: ModelSelectorName,
+              - generic [ref=f1e375]: ModelSelectorTrigger,
+              - generic [ref=f1e376]: "} from \"@/components/ai-elements/model-selector\";"
+              - generic [ref=f1e377]: "import type { PromptInputMessage } from \"@/components/ai-elements/prompt-input\";"
+              - generic [ref=f1e378]: "import {"
+              - generic [ref=f1e379]: PromptInput,
+              - generic [ref=f1e380]: PromptInputActionAddAttachments,
+              - generic [ref=f1e381]: PromptInputActionMenu,
+              - generic [ref=f1e382]: PromptInputActionMenuContent,
+              - generic [ref=f1e383]: PromptInputActionMenuTrigger,
+              - generic [ref=f1e384]: PromptInputBody,
+              - generic [ref=f1e385]: PromptInputButton,
+              - generic [ref=f1e386]: PromptInputFooter,
+              - generic [ref=f1e387]: PromptInputHeader,
+              - generic [ref=f1e388]: PromptInputSubmit,
+              - generic [ref=f1e389]: PromptInputTextarea,
+              - generic [ref=f1e390]: PromptInputTools,
+              - generic [ref=f1e391]: usePromptInputAttachments,
+              - generic [ref=f1e392]: "} from \"@/components/ai-elements/prompt-input\";"
+              - generic [ref=f1e393]: "import {"
+              - generic [ref=f1e394]: Reasoning,
+              - generic [ref=f1e395]: ReasoningContent,
+              - generic [ref=f1e396]: ReasoningTrigger,
+              - generic [ref=f1e397]: "} from \"@/components/ai-elements/reasoning\";"
+              - generic [ref=f1e398]: "import {"
+              - generic [ref=f1e399]: Source,
+              - generic [ref=f1e400]: Sources,
+              - generic [ref=f1e401]: SourcesContent,
+              - generic [ref=f1e402]: SourcesTrigger,
+              - generic [ref=f1e403]: "} from \"@/components/ai-elements/sources\";"
+              - generic [ref=f1e404]: "import { SpeechInput } from \"@/components/ai-elements/speech-input\";"
+              - generic [ref=f1e405]: "import { Suggestion, Suggestions } from \"@/components/ai-elements/suggestion\";"
+              - generic [ref=f1e406]: "import type { ToolUIPart } from \"ai\";"
+              - generic [ref=f1e407]: "import { CheckIcon, GlobeIcon } from \"lucide-react\";"
+              - generic [ref=f1e408]: "import { nanoid } from \"nanoid\";"
+              - generic [ref=f1e409]: "import { useCallback, useMemo, useState } from \"react\";"
+              - generic [ref=f1e410]: "import { toast } from \"sonner\";"
+              - generic [ref=f1e412]: "interface MessageType {"
+              - generic [ref=f1e413]: "key: string;"
+              - generic [ref=f1e414]: "from: \"user\" | \"assistant\";"
+              - generic [ref=f1e415]: "sources?: { href: string; title: string }[];"
+              - generic [ref=f1e416]: "versions: {"
+              - generic [ref=f1e417]: "id: string;"
+              - generic [ref=f1e418]: "content: string;"
+              - generic [ref=f1e419]: "}[];"
+              - generic [ref=f1e420]: "reasoning?: {"
+              - generic [ref=f1e421]: "content: string;"
+              - generic [ref=f1e422]: "duration: number;"
+              - generic [ref=f1e423]: "};"
+              - generic [ref=f1e424]: "tools?: {"
+              - generic [ref=f1e425]: "name: string;"
+              - generic [ref=f1e426]: "description: string;"
+              - generic [ref=f1e427]: "status: ToolUIPart[\"state\"];"
+              - generic [ref=f1e428]: "parameters: Record<string, unknown>;"
+              - generic [ref=f1e429]: "result: string | undefined;"
+              - generic [ref=f1e430]: "error: string | undefined;"
+              - generic [ref=f1e431]: "}[];"
+              - generic [ref=f1e432]: "}"
+              - generic [ref=f1e434]: "const initialMessages: MessageType[] = ["
+              - generic [ref=f1e435]: "{"
+              - generic [ref=f1e436]: "from: \"user\","
+              - generic [ref=f1e437]: "key: nanoid(),"
+              - generic [ref=f1e438]: "versions: ["
+              - generic [ref=f1e439]: "{"
+              - generic [ref=f1e440]: "content: \"Can you explain how to use React hooks effectively?\","
+              - generic [ref=f1e441]: "id: nanoid(),"
+              - generic [ref=f1e442]: "},"
+              - generic [ref=f1e443]: "],"
+              - generic [ref=f1e444]: "},"
+              - generic [ref=f1e445]: "{"
+              - generic [ref=f1e446]: "from: \"assistant\","
+              - generic [ref=f1e447]: "key: nanoid(),"
+              - generic [ref=f1e448]: "sources: ["
+              - generic [ref=f1e449]: "{"
+              - generic [ref=f1e450]: "href: \"https://react.dev/reference/react\","
+              - generic [ref=f1e451]: "title: \"React Documentation\","
+              - generic [ref=f1e452]: "},"
+              - generic [ref=f1e453]: "{"
+              - generic [ref=f1e454]: "href: \"https://react.dev/reference/react-dom\","
+              - generic [ref=f1e455]: "title: \"React DOM Documentation\","
+              - generic [ref=f1e456]: "},"
+              - generic [ref=f1e457]: "],"
+              - generic [ref=f1e458]: "tools: ["
+              - generic [ref=f1e459]: "{"
+              - generic [ref=f1e460]: "description: \"Searching React documentation\","
+              - generic [ref=f1e461]: "error: undefined,"
+              - generic [ref=f1e462]: "name: \"mcp\","
+              - generic [ref=f1e463]: "parameters: {"
+              - generic [ref=f1e464]: "query: \"React hooks best practices\","
+              - generic [ref=f1e465]: "source: \"react.dev\","
+              - generic [ref=f1e466]: "},"
+              - generic [ref=f1e467]: "result: `{"
+              - generic [ref=f1e468]: "\"query\": \"React hooks best practices\","
+              - generic [ref=f1e469]: "\"results\": ["
+              - generic [ref=f1e470]: "{"
+              - generic [ref=f1e471]: "\"title\": \"Rules of Hooks\","
+              - generic [ref=f1e472]: "\"url\": \"https://react.dev/warnings/invalid-hook-call-warning\","
+              - generic [ref=f1e473]: "\"snippet\": \"Hooks must be called at the top level of your React function components or custom hooks. Don't call hooks inside loops, conditions, or nested functions.\""
+              - generic [ref=f1e474]: "},"
+              - generic [ref=f1e475]: "{"
+              - generic [ref=f1e476]: "\"title\": \"useState Hook\","
+              - generic [ref=f1e477]: "\"url\": \"https://react.dev/reference/react/useState\","
+              - generic [ref=f1e478]: "\"snippet\": \"useState is a React Hook that lets you add state to your function components. It returns an array with two values: the current state and a function to update it.\""
+              - generic [ref=f1e479]: "},"
+              - generic [ref=f1e480]: "{"
+              - generic [ref=f1e481]: "\"title\": \"useEffect Hook\","
+              - generic [ref=f1e482]: "\"url\": \"https://react.dev/reference/react/useEffect\","
+              - generic [ref=f1e483]: "\"snippet\": \"useEffect lets you synchronize a component with external systems. It runs after render and can be used to perform side effects like data fetching.\""
+              - generic [ref=f1e484]: "}"
+              - generic [ref=f1e485]: "]"
+              - generic [ref=f1e486]: "}`,"
+              - generic [ref=f1e487]: "status: \"input-available\","
+              - generic [ref=f1e488]: "},"
+              - generic [ref=f1e489]: "],"
+              - generic [ref=f1e490]: "versions: ["
+              - generic [ref=f1e491]: "{"
+              - generic [ref=f1e492]: "content: `# React Hooks Best Practices"
+              - generic [ref=f1e494]: "React hooks are a powerful feature that let you use state and other React features without writing classes. Here are some tips for using them effectively:"
+              - generic [ref=f1e496]: "## Rules of Hooks"
+              - generic [ref=f1e498]: 1. **Only call hooks at the top level** of your component or custom hooks
+              - generic [ref=f1e499]: 2. **Don't call hooks inside loops, conditions, or nested functions**
+              - generic [ref=f1e501]: "## Common Hooks"
+              - generic [ref=f1e503]: "- **useState**: For local component state"
+              - generic [ref=f1e504]: "- **useEffect**: For side effects like data fetching"
+              - generic [ref=f1e505]: "- **useContext**: For consuming context"
+              - generic [ref=f1e506]: "- **useReducer**: For complex state logic"
+              - generic [ref=f1e507]: "- **useCallback**: For memoizing functions"
+              - generic [ref=f1e508]: "- **useMemo**: For memoizing values"
+              - generic [ref=f1e510]: "## Example of useState and useEffect"
+              - generic [ref=f1e512]: "\\`\\`\\`jsx"
+              - generic [ref=f1e513]: "function ProfilePage({ userId }) {"
+              - generic [ref=f1e514]: const [user, setUser] = useState(null);
+              - generic [ref=f1e516]: "useEffect(() => {"
+              - generic [ref=f1e517]: // This runs after render and when userId changes
+              - generic [ref=f1e518]: "fetchUser(userId).then(userData => {"
+              - generic [ref=f1e519]: setUser(userData);
+              - generic [ref=f1e520]: "});"
+              - generic [ref=f1e521]: "}, [userId]);"
+              - generic [ref=f1e523]: "return user ? <Profile user={user} /> : <Loading />;"
+              - generic [ref=f1e524]: "}"
+              - generic [ref=f1e525]: "\\`\\`\\`"
+              - generic [ref=f1e527]: "Would you like me to explain any specific hook in more detail?`,"
+              - generic [ref=f1e528]: "id: nanoid(),"
+              - generic [ref=f1e529]: "},"
+              - generic [ref=f1e530]: "],"
+              - generic [ref=f1e531]: "},"
+              - generic [ref=f1e532]: "{"
+              - generic [ref=f1e533]: "from: \"user\","
+              - generic [ref=f1e534]: "key: nanoid(),"
+              - generic [ref=f1e535]: "versions: ["
+              - generic [ref=f1e536]: "{"
+              - generic [ref=f1e537]: "content:"
+              - generic [ref=f1e538]: "\"Yes, could you explain useCallback and useMemo in more detail? When should I use one over the other?\","
+              - generic [ref=f1e539]: "id: nanoid(),"
+              - generic [ref=f1e540]: "},"
+              - generic [ref=f1e541]: "{"
+              - generic [ref=f1e542]: "content:"
+              - generic [ref=f1e543]: "\"I'm particularly interested in understanding the performance implications of useCallback and useMemo. Could you break down when each is most appropriate?\","
+              - generic [ref=f1e544]: "id: nanoid(),"
+              - generic [ref=f1e545]: "},"
+              - generic [ref=f1e546]: "{"
+              - generic [ref=f1e547]: "content:"
+              - generic [ref=f1e548]: "\"Thanks for the overview! Could you dive deeper into the specific use cases where useCallback and useMemo make the biggest difference in React applications?\","
+              - generic [ref=f1e549]: "id: nanoid(),"
+              - generic [ref=f1e550]: "},"
+              - generic [ref=f1e551]: "],"
+              - generic [ref=f1e552]: "},"
+              - generic [ref=f1e553]: "{"
+              - generic [ref=f1e554]: "from: \"assistant\","
+              - generic [ref=f1e555]: "key: nanoid(),"
+              - generic [ref=f1e556]: "reasoning: {"
+              - generic [ref=f1e557]: "content: `The user is asking for a detailed explanation of useCallback and useMemo. I should provide a clear and concise explanation of each hook's purpose and how they differ."
+              - generic [ref=f1e559]: The useCallback hook is used to memoize functions to prevent unnecessary re-renders of child components that receive functions as props.
+              - generic [ref=f1e561]: The useMemo hook is used to memoize values to avoid expensive recalculations on every render.
+              - generic [ref=f1e563]: "Both hooks help with performance optimization, but they serve different purposes.`,"
+              - generic [ref=f1e564]: "duration: 10,"
+              - generic [ref=f1e565]: "},"
+              - generic [ref=f1e566]: "versions: ["
+              - generic [ref=f1e567]: "{"
+              - generic [ref=f1e568]: "content: `## useCallback vs useMemo"
+              - generic [ref=f1e570]: "Both hooks help with performance optimization, but they serve different purposes:"
+              - generic [ref=f1e572]: "### useCallback"
+              - generic [ref=f1e574]: "\\`useCallback\\` memoizes **functions** to prevent unnecessary re-renders of child components that receive functions as props."
+              - generic [ref=f1e576]: "\\`\\`\\`jsx"
+              - generic [ref=f1e577]: // Without useCallback - a new function is created on every render
+              - generic [ref=f1e578]: "const handleClick = () => {"
+              - generic [ref=f1e579]: console.log(count);
+              - generic [ref=f1e580]: "};"
+              - generic [ref=f1e582]: // With useCallback - the function is only recreated when dependencies change
+              - generic [ref=f1e583]: "const handleClick = useCallback(() => {"
+              - generic [ref=f1e584]: console.log(count);
+              - generic [ref=f1e585]: "}, [count]);"
+              - generic [ref=f1e586]: "\\`\\`\\`"
+              - generic [ref=f1e588]: "### useMemo"
+              - generic [ref=f1e590]: "\\`useMemo\\` memoizes **values** to avoid expensive recalculations on every render."
+              - generic [ref=f1e592]: "\\`\\`\\`jsx"
+              - generic [ref=f1e593]: // Without useMemo - expensive calculation runs on every render
+              - generic [ref=f1e594]: const sortedList = expensiveSort(items);
+              - generic [ref=f1e596]: // With useMemo - calculation only runs when items change
+              - generic [ref=f1e597]: const sortedList = useMemo(() => expensiveSort(items), [items]);
+              - generic [ref=f1e598]: "\\`\\`\\`"
+              - generic [ref=f1e600]: "### When to use which?"
+              - generic [ref=f1e602]: "- Use **useCallback** when:"
+              - generic [ref=f1e603]: "- Passing callbacks to optimized child components that rely on reference equality"
+              - generic [ref=f1e604]: "- Working with event handlers that you pass to child components"
+              - generic [ref=f1e606]: "- Use **useMemo** when:"
+              - generic [ref=f1e607]: "- You have computationally expensive calculations"
+              - generic [ref=f1e608]: "- You want to avoid recreating objects that are used as dependencies for other hooks"
+              - generic [ref=f1e610]: "### Performance Note"
+              - generic [ref=f1e612]: "Don't overuse these hooks! They come with their own overhead. Only use them when you have identified a genuine performance issue.`,"
+              - generic [ref=f1e613]: "id: nanoid(),"
+              - generic [ref=f1e614]: "},"
+              - generic [ref=f1e615]: "],"
+              - generic [ref=f1e616]: "},"
+              - generic [ref=f1e617]: "];"
+              - generic [ref=f1e619]: const models = [
+              - generic [ref=f1e620]: "{"
+              - generic [ref=f1e621]: "chef: \"OpenAI\","
+              - generic [ref=f1e622]: "chefSlug: \"openai\","
+              - generic [ref=f1e623]: "id: \"gpt-4o\","
+              - generic [ref=f1e624]: "name: \"GPT-4o\","
+              - generic [ref=f1e625]: "providers: [\"openai\", \"azure\"],"
+              - generic [ref=f1e626]: "},"
+              - generic [ref=f1e627]: "{"
+              - generic [ref=f1e628]: "chef: \"OpenAI\","
+              - generic [ref=f1e629]: "chefSlug: \"openai\","
+              - generic [ref=f1e630]: "id: \"gpt-4o-mini\","
+              - generic [ref=f1e631]: "name: \"GPT-4o Mini\","
+              - generic [ref=f1e632]: "providers: [\"openai\", \"azure\"],"
+              - generic [ref=f1e633]: "},"
+              - generic [ref=f1e634]: "{"
+              - generic [ref=f1e635]: "chef: \"Anthropic\","
+              - generic [ref=f1e636]: "chefSlug: \"anthropic\","
+              - generic [ref=f1e637]: "id: \"claude-opus-4-20250514\","
+              - generic [ref=f1e638]: "name: \"Claude 4 Opus\","
+              - generic [ref=f1e639]: "providers: [\"anthropic\", \"azure\", \"google\", \"amazon-bedrock\"],"
+              - generic [ref=f1e640]: "},"
+              - generic [ref=f1e641]: "{"
+              - generic [ref=f1e642]: "chef: \"Anthropic\","
+              - generic [ref=f1e643]: "chefSlug: \"anthropic\","
+              - generic [ref=f1e644]: "id: \"claude-sonnet-4-20250514\","
+              - generic [ref=f1e645]: "name: \"Claude 4 Sonnet\","
+              - generic [ref=f1e646]: "providers: [\"anthropic\", \"azure\", \"google\", \"amazon-bedrock\"],"
+              - generic [ref=f1e647]: "},"
+              - generic [ref=f1e648]: "{"
+              - generic [ref=f1e649]: "chef: \"Google\","
+              - generic [ref=f1e650]: "chefSlug: \"google\","
+              - generic [ref=f1e651]: "id: \"gemini-2.0-flash-exp\","
+              - generic [ref=f1e652]: "name: \"Gemini 2.0 Flash\","
+              - generic [ref=f1e653]: "providers: [\"google\"],"
+              - generic [ref=f1e654]: "},"
+              - generic [ref=f1e655]: "];"
+              - generic [ref=f1e657]: const suggestions = [
+              - generic [ref=f1e658]: "\"What are the latest trends in AI?\","
+              - generic [ref=f1e659]: "\"How does machine learning work?\","
+              - generic [ref=f1e660]: "\"Explain quantum computing\","
+              - generic [ref=f1e661]: "\"Best practices for React development\","
+              - generic [ref=f1e662]: "\"Tell me about TypeScript benefits\","
+              - generic [ref=f1e663]: "\"How to optimize database queries?\","
+              - generic [ref=f1e664]: "\"What is the difference between SQL and NoSQL?\","
+              - generic [ref=f1e665]: "\"Explain cloud computing basics\","
+              - generic [ref=f1e666]: "];"
+              - generic [ref=f1e668]: const mockResponses = [
+              - generic [ref=f1e669]: "\"That's a great question! Let me help you understand this concept better. The key thing to remember is that proper implementation requires careful consideration of the underlying principles and best practices in the field.\","
+              - generic [ref=f1e670]: "\"I'd be happy to explain this topic in detail. From my understanding, there are several important factors to consider when approaching this problem. Let me break it down step by step for you.\","
+              - generic [ref=f1e671]: "\"This is an interesting topic that comes up frequently. The solution typically involves understanding the core concepts and applying them in the right context. Here's what I recommend...\","
+              - generic [ref=f1e672]: "\"Great choice of topic! This is something that many developers encounter. The approach I'd suggest is to start with the fundamentals and then build up to more complex scenarios.\","
+              - generic [ref=f1e673]: "\"That's definitely worth exploring. From what I can see, the best way to handle this is to consider both the theoretical aspects and practical implementation details.\","
+              - generic [ref=f1e674]: "];"
+              - generic [ref=f1e676]: "const delay = (ms: number): Promise<void> =>"
+              - generic [ref=f1e677]: // eslint-disable-next-line promise/avoid-new -- setTimeout requires a new Promise
+              - generic [ref=f1e678]: "new Promise((resolve) => {"
+              - generic [ref=f1e679]: setTimeout(resolve, ms);
+              - generic [ref=f1e680]: "});"
+              - generic [ref=f1e682]: const chefs = ["OpenAI", "Anthropic", "Google"];
+              - generic [ref=f1e684]: "const AttachmentItem = ({"
+              - generic [ref=f1e685]: attachment,
+              - generic [ref=f1e686]: onRemove,
+              - generic [ref=f1e687]: "}: {"
+              - generic [ref=f1e688]: "attachment: { id: string; name: string; type: string; url: string };"
+              - generic [ref=f1e689]: "onRemove: (id: string) => void;"
+              - generic [ref=f1e690]: "}) => {"
+              - generic [ref=f1e691]: "const handleRemove = useCallback(() => {"
+              - generic [ref=f1e692]: onRemove(attachment.id);
+              - generic [ref=f1e693]: "}, [onRemove, attachment.id]);"
+              - generic [ref=f1e695]: return (
+              - generic [ref=f1e696]: "<Attachment data={attachment} onRemove={handleRemove}>"
+              - generic [ref=f1e697]: <AttachmentPreview />
+              - generic [ref=f1e698]: <AttachmentRemove />
+              - generic [ref=f1e699]: </Attachment>
+              - generic [ref=f1e700]: );
+              - generic [ref=f1e701]: "};"
+              - generic [ref=f1e703]: "const PromptInputAttachmentsDisplay = () => {"
+              - generic [ref=f1e704]: const attachments = usePromptInputAttachments();
+              - generic [ref=f1e706]: const handleRemove = useCallback(
+              - generic [ref=f1e707]: "(id: string) => {"
+              - generic [ref=f1e708]: attachments.remove(id);
+              - generic [ref=f1e709]: "},"
+              - generic [ref=f1e710]: "[attachments]"
+              - generic [ref=f1e711]: );
+              - generic [ref=f1e713]: "if (attachments.files.length === 0) {"
+              - generic [ref=f1e714]: return null;
+              - generic [ref=f1e715]: "}"
+              - generic [ref=f1e717]: return (
+              - generic [ref=f1e718]: <Attachments variant="inline">
+              - generic [ref=f1e719]: "{attachments.files.map((attachment) => ("
+              - generic [ref=f1e720]: <AttachmentItem
+              - generic [ref=f1e721]: "attachment={attachment}"
+              - generic [ref=f1e722]: "key={attachment.id}"
+              - generic [ref=f1e723]: "onRemove={handleRemove}"
+              - generic [ref=f1e724]: />
+              - generic [ref=f1e725]: "))}"
+              - generic [ref=f1e726]: </Attachments>
+              - generic [ref=f1e727]: );
+              - generic [ref=f1e728]: "};"
+              - generic [ref=f1e730]: "const SuggestionItem = ({"
+              - generic [ref=f1e731]: suggestion,
+              - generic [ref=f1e732]: onClick,
+              - generic [ref=f1e733]: "}: {"
+              - generic [ref=f1e734]: "suggestion: string;"
+              - generic [ref=f1e735]: "onClick: (suggestion: string) => void;"
+              - generic [ref=f1e736]: "}) => {"
+              - generic [ref=f1e737]: "const handleClick = useCallback(() => {"
+              - generic [ref=f1e738]: onClick(suggestion);
+              - generic [ref=f1e739]: "}, [onClick, suggestion]);"
+              - generic [ref=f1e741]: "return <Suggestion onClick={handleClick} suggestion={suggestion} />;"
+              - generic [ref=f1e742]: "};"
+              - generic [ref=f1e744]: "const ModelItem = ({"
+              - generic [ref=f1e745]: m,
+              - generic [ref=f1e746]: isSelected,
+              - generic [ref=f1e747]: onSelect,
+              - generic [ref=f1e748]: "}: {"
+              - generic [ref=f1e749]: "m: (typeof models)[0];"
+              - generic [ref=f1e750]: "isSelected: boolean;"
+              - generic [ref=f1e751]: "onSelect: (id: string) => void;"
+              - generic [ref=f1e752]: "}) => {"
+              - generic [ref=f1e753]: "const handleSelect = useCallback(() => {"
+              - generic [ref=f1e754]: onSelect(m.id);
+              - generic [ref=f1e755]: "}, [onSelect, m.id]);"
+              - generic [ref=f1e757]: return (
+              - generic [ref=f1e758]: "<ModelSelectorItem onSelect={handleSelect} value={m.id}>"
+              - generic [ref=f1e759]: "<ModelSelectorLogo provider={m.chefSlug} />"
+              - generic [ref=f1e760]: "<ModelSelectorName>{m.name}</ModelSelectorName>"
+              - generic [ref=f1e761]: <ModelSelectorLogoGroup>
+              - generic [ref=f1e762]: "{m.providers.map((provider) => ("
+              - generic [ref=f1e763]: "<ModelSelectorLogo key={provider} provider={provider} />"
+              - generic [ref=f1e764]: "))}"
+              - generic [ref=f1e765]: </ModelSelectorLogoGroup>
+              - generic [ref=f1e766]: "{isSelected ? ("
+              - generic [ref=f1e767]: <CheckIcon className="ml-auto size-4" />
+              - generic [ref=f1e768]: ") : ("
+              - generic [ref=f1e769]: <div className="ml-auto size-4" />
+              - generic [ref=f1e770]: ")}"
+              - generic [ref=f1e771]: </ModelSelectorItem>
+              - generic [ref=f1e772]: );
+              - generic [ref=f1e773]: "};"
+              - generic [ref=f1e775]: "const Example = () => {"
+              - generic [ref=f1e776]: const [model, setModel] = useState<string>(models[0].id);
+              - generic [ref=f1e777]: const [modelSelectorOpen, setModelSelectorOpen] = useState(false);
+              - generic [ref=f1e778]: const [text, setText] = useState<string>("");
+              - generic [ref=f1e779]: const [useWebSearch, setUseWebSearch] = useState<boolean>(false);
+              - generic [ref=f1e780]: const [status, setStatus] = useState<
+              - generic [ref=f1e781]: "\"submitted\" | \"streaming\" | \"ready\" | \"error\""
+              - generic [ref=f1e782]: ">(\"ready\");"
+              - generic [ref=f1e783]: const [messages, setMessages] = useState<MessageType[]>(initialMessages);
+              - generic [ref=f1e784]: const [, setStreamingMessageId] = useState<string | null>(null);
+              - generic [ref=f1e786]: const selectedModelData = useMemo(
+              - generic [ref=f1e787]: () => models.find((m) => m.id === model),
+              - generic [ref=f1e788]: "[model]"
+              - generic [ref=f1e789]: );
+              - generic [ref=f1e791]: const updateMessageContent = useCallback(
+              - generic [ref=f1e792]: "(messageId: string, newContent: string) => {"
+              - generic [ref=f1e793]: setMessages((prev) =>
+              - generic [ref=f1e794]: "prev.map((msg) => {"
+              - generic [ref=f1e795]: "if (msg.versions.some((v) => v.id === messageId)) {"
+              - generic [ref=f1e796]: "return {"
+              - generic [ref=f1e797]: ...msg,
+              - generic [ref=f1e798]: "versions: msg.versions.map((v) =>"
+              - generic [ref=f1e799]: "v.id === messageId ? { ...v, content: newContent } : v"
+              - generic [ref=f1e800]: ),
+              - generic [ref=f1e801]: "};"
+              - generic [ref=f1e802]: "}"
+              - generic [ref=f1e803]: return msg;
+              - generic [ref=f1e804]: "})"
+              - generic [ref=f1e805]: );
+              - generic [ref=f1e806]: "},"
+              - generic [ref=f1e807]: "[]"
+              - generic [ref=f1e808]: );
+              - generic [ref=f1e810]: const streamResponse = useCallback(
+              - generic [ref=f1e811]: "async (messageId: string, content: string) => {"
+              - generic [ref=f1e812]: setStatus("streaming");
+              - generic [ref=f1e813]: setStreamingMessageId(messageId);
+              - generic [ref=f1e815]: const words = content.split(" ");
+              - generic [ref=f1e816]: let currentContent = "";
+              - generic [ref=f1e818]: "for (const [i, word] of words.entries()) {"
+              - generic [ref=f1e819]: "currentContent += (i > 0 ? \" \" : \"\") + word;"
+              - generic [ref=f1e820]: updateMessageContent(messageId, currentContent);
+              - generic [ref=f1e821]: await delay(Math.random() * 100 + 50);
+              - generic [ref=f1e822]: "}"
+              - generic [ref=f1e824]: setStatus("ready");
+              - generic [ref=f1e825]: setStreamingMessageId(null);
+              - generic [ref=f1e826]: "},"
+              - generic [ref=f1e827]: "[updateMessageContent]"
+              - generic [ref=f1e828]: );
+              - generic [ref=f1e830]: const addUserMessage = useCallback(
+              - generic [ref=f1e831]: "(content: string) => {"
+              - generic [ref=f1e832]: "const userMessage: MessageType = {"
+              - generic [ref=f1e833]: "from: \"user\","
+              - generic [ref=f1e834]: "key: `user-${Date.now()}`,"
+              - generic [ref=f1e835]: "versions: ["
+              - generic [ref=f1e836]: "{"
+              - generic [ref=f1e837]: content,
+              - generic [ref=f1e838]: "id: `user-${Date.now()}`,"
+              - generic [ref=f1e839]: "},"
+              - generic [ref=f1e840]: "],"
+              - generic [ref=f1e841]: "};"
+              - generic [ref=f1e843]: setMessages((prev) => [...prev, userMessage]);
+              - generic [ref=f1e845]: "setTimeout(() => {"
+              - generic [ref=f1e846]: "const assistantMessageId = `assistant-${Date.now()}`;"
+              - generic [ref=f1e847]: const randomResponse =
+              - generic [ref=f1e848]: mockResponses[Math.floor(Math.random() * mockResponses.length)];
+              - generic [ref=f1e850]: "const assistantMessage: MessageType = {"
+              - generic [ref=f1e851]: "from: \"assistant\","
+              - generic [ref=f1e852]: "key: `assistant-${Date.now()}`,"
+              - generic [ref=f1e853]: "versions: ["
+              - generic [ref=f1e854]: "{"
+              - generic [ref=f1e855]: "content: \"\","
+              - generic [ref=f1e856]: "id: assistantMessageId,"
+              - generic [ref=f1e857]: "},"
+              - generic [ref=f1e858]: "],"
+              - generic [ref=f1e859]: "};"
+              - generic [ref=f1e861]: setMessages((prev) => [...prev, assistantMessage]);
+              - generic [ref=f1e862]: streamResponse(assistantMessageId, randomResponse);
+              - generic [ref=f1e863]: "}, 500);"
+              - generic [ref=f1e864]: "},"
+              - generic [ref=f1e865]: "[streamResponse]"
+              - generic [ref=f1e866]: );
+              - generic [ref=f1e868]: const handleSubmit = useCallback(
+              - generic [ref=f1e869]: "(message: PromptInputMessage) => {"
+              - generic [ref=f1e870]: const hasText = Boolean(message.text);
+              - generic [ref=f1e871]: const hasAttachments = Boolean(message.files?.length);
+              - generic [ref=f1e873]: "if (!(hasText || hasAttachments)) {"
+              - generic [ref=f1e874]: return;
+              - generic [ref=f1e875]: "}"
+              - generic [ref=f1e877]: setStatus("submitted");
+              - generic [ref=f1e879]: "if (message.files?.length) {"
+              - generic [ref=f1e880]: "toast.success(\"Files attached\", {"
+              - generic [ref=f1e881]: "description: `${message.files.length} file(s) attached to message`,"
+              - generic [ref=f1e882]: "});"
+              - generic [ref=f1e883]: "}"
+              - generic [ref=f1e885]: addUserMessage(message.text || "Sent with attachments");
+              - generic [ref=f1e886]: setText("");
+              - generic [ref=f1e887]: "},"
+              - generic [ref=f1e888]: "[addUserMessage]"
+              - generic [ref=f1e889]: );
+              - generic [ref=f1e891]: const handleSuggestionClick = useCallback(
+              - generic [ref=f1e892]: "(suggestion: string) => {"
+              - generic [ref=f1e893]: setStatus("submitted");
+              - generic [ref=f1e894]: addUserMessage(suggestion);
+              - generic [ref=f1e895]: "},"
+              - generic [ref=f1e896]: "[addUserMessage]"
+              - generic [ref=f1e897]: );
+              - generic [ref=f1e899]: "const handleTranscriptionChange = useCallback((transcript: string) => {"
+              - generic [ref=f1e900]: "setText((prev) => (prev ? `${prev} ${transcript}` : transcript));"
+              - generic [ref=f1e901]: "}, []);"
+              - generic [ref=f1e903]: const handleTextChange = useCallback(
+              - generic [ref=f1e904]: "(event: React.ChangeEvent<HTMLTextAreaElement>) => {"
+              - generic [ref=f1e905]: setText(event.target.value);
+              - generic [ref=f1e906]: "},"
+              - generic [ref=f1e907]: "[]"
+              - generic [ref=f1e908]: );
+              - generic [ref=f1e910]: "const toggleWebSearch = useCallback(() => {"
+              - generic [ref=f1e911]: setUseWebSearch((prev) => !prev);
+              - generic [ref=f1e912]: "}, []);"
+              - generic [ref=f1e914]: "const handleModelSelect = useCallback((modelId: string) => {"
+              - generic [ref=f1e915]: setModel(modelId);
+              - generic [ref=f1e916]: setModelSelectorOpen(false);
+              - generic [ref=f1e917]: "}, []);"
+              - generic [ref=f1e919]: const isSubmitDisabled = useMemo(
+              - generic [ref=f1e920]: () => !(text.trim() || status) || status === "streaming",
+              - generic [ref=f1e921]: "[text, status]"
+              - generic [ref=f1e922]: );
+              - generic [ref=f1e924]: return (
+              - generic [ref=f1e925]: <div className="relative flex size-full flex-col divide-y overflow-hidden">
+              - generic [ref=f1e926]: <Conversation>
+              - generic [ref=f1e927]: <ConversationContent>
+              - generic [ref=f1e928]: "{messages.map(({ versions, ...message }) => ("
+              - generic [ref=f1e929]: "<MessageBranch defaultBranch={0} key={message.key}>"
+              - generic [ref=f1e930]: <MessageBranchContent>
+              - generic [ref=f1e931]: "{versions.map((version) => ("
+              - generic [ref=f1e932]: <Message
+              - generic [ref=f1e933]: "from={message.from}"
+              - generic [ref=f1e934]: "key={`${message.key}-${version.id}`}"
+              - generic [ref=f1e935]: ">"
+              - generic [ref=f1e936]: <div>
+              - generic [ref=f1e937]: "{message.sources?.length && ("
+              - generic [ref=f1e938]: <Sources>
+              - generic [ref=f1e939]: "<SourcesTrigger count={message.sources.length} />"
+              - generic [ref=f1e940]: <SourcesContent>
+              - generic [ref=f1e941]: "{message.sources.map((source) => ("
+              - generic [ref=f1e942]: <Source
+              - generic [ref=f1e943]: "href={source.href}"
+              - generic [ref=f1e944]: "key={source.href}"
+              - generic [ref=f1e945]: "title={source.title}"
+              - generic [ref=f1e946]: />
+              - generic [ref=f1e947]: "))}"
+              - generic [ref=f1e948]: </SourcesContent>
+              - generic [ref=f1e949]: </Sources>
+              - generic [ref=f1e950]: ")}"
+              - generic [ref=f1e951]: "{message.reasoning && ("
+              - generic [ref=f1e952]: "<Reasoning duration={message.reasoning.duration}>"
+              - generic [ref=f1e953]: <ReasoningTrigger />
+              - generic [ref=f1e954]: <ReasoningContent>
+              - generic [ref=f1e955]: "{message.reasoning.content}"
+              - generic [ref=f1e956]: </ReasoningContent>
+              - generic [ref=f1e957]: </Reasoning>
+              - generic [ref=f1e958]: ")}"
+              - generic [ref=f1e959]: <MessageContent>
+              - generic [ref=f1e960]: "<MessageResponse>{version.content}</MessageResponse>"
+              - generic [ref=f1e961]: </MessageContent>
+              - generic [ref=f1e962]: </div>
+              - generic [ref=f1e963]: </Message>
+              - generic [ref=f1e964]: "))}"
+              - generic [ref=f1e965]: </MessageBranchContent>
+              - generic [ref=f1e966]: "{versions.length > 1 && ("
+              - generic [ref=f1e967]: <MessageBranchSelector>
+              - generic [ref=f1e968]: <MessageBranchPrevious />
+              - generic [ref=f1e969]: <MessageBranchPage />
+              - generic [ref=f1e970]: <MessageBranchNext />
+              - generic [ref=f1e971]: </MessageBranchSelector>
+              - generic [ref=f1e972]: ")}"
+              - generic [ref=f1e973]: </MessageBranch>
+              - generic [ref=f1e974]: "))}"
+              - generic [ref=f1e975]: </ConversationContent>
+              - generic [ref=f1e976]: <ConversationScrollButton />
+              - generic [ref=f1e977]: </Conversation>
+              - generic [ref=f1e978]: <div className="grid shrink-0 gap-4 pt-4">
+              - generic [ref=f1e979]: <Suggestions className="px-4">
+              - generic [ref=f1e980]: "{suggestions.map((suggestion) => ("
+              - generic [ref=f1e981]: <SuggestionItem
+              - generic [ref=f1e982]: "key={suggestion}"
+              - generic [ref=f1e983]: "onClick={handleSuggestionClick}"
+              - generic [ref=f1e984]: "suggestion={suggestion}"
+              - generic [ref=f1e985]: />
+              - generic [ref=f1e986]: "))}"
+              - generic [ref=f1e987]: </Suggestions>
+              - generic [ref=f1e988]: <div className="w-full px-4 pb-4">
+              - generic [ref=f1e989]: "<PromptInput globalDrop multiple onSubmit={handleSubmit}>"
+              - generic [ref=f1e990]: <PromptInputHeader>
+              - generic [ref=f1e991]: <PromptInputAttachmentsDisplay />
+              - generic [ref=f1e992]: </PromptInputHeader>
+              - generic [ref=f1e993]: <PromptInputBody>
+              - generic [ref=f1e994]: "<PromptInputTextarea onChange={handleTextChange} value={text} />"
+              - generic [ref=f1e995]: </PromptInputBody>
+              - generic [ref=f1e996]: <PromptInputFooter>
+              - generic [ref=f1e997]: <PromptInputTools>
+              - generic [ref=f1e998]: <PromptInputActionMenu>
+              - generic [ref=f1e999]: <PromptInputActionMenuTrigger />
+              - generic [ref=f1e1000]: <PromptInputActionMenuContent>
+              - generic [ref=f1e1001]: <PromptInputActionAddAttachments />
+              - generic [ref=f1e1002]: </PromptInputActionMenuContent>
+              - generic [ref=f1e1003]: </PromptInputActionMenu>
+              - generic [ref=f1e1004]: <SpeechInput
+              - generic [ref=f1e1005]: className="shrink-0"
+              - generic [ref=f1e1006]: "onTranscriptionChange={handleTranscriptionChange}"
+              - generic [ref=f1e1007]: size="icon-sm"
+              - generic [ref=f1e1008]: variant="ghost"
+              - generic [ref=f1e1009]: />
+              - generic [ref=f1e1010]: <PromptInputButton
+              - generic [ref=f1e1011]: "onClick={toggleWebSearch}"
+              - generic [ref=f1e1012]: "variant={useWebSearch ? \"default\" : \"ghost\"}"
+              - generic [ref=f1e1013]: ">"
+              - generic [ref=f1e1014]: "<GlobeIcon size={16} />"
+              - generic [ref=f1e1015]: <span>Search</span>
+              - generic [ref=f1e1016]: </PromptInputButton>
+              - generic [ref=f1e1017]: <ModelSelector
+              - generic [ref=f1e1018]: "onOpenChange={setModelSelectorOpen}"
+              - generic [ref=f1e1019]: "open={modelSelectorOpen}"
+              - generic [ref=f1e1020]: ">"
+              - generic [ref=f1e1021]: <ModelSelectorTrigger asChild>
+              - generic [ref=f1e1022]: <PromptInputButton>
+              - generic [ref=f1e1023]: "{selectedModelData?.chefSlug && ("
+              - generic [ref=f1e1024]: <ModelSelectorLogo
+              - generic [ref=f1e1025]: "provider={selectedModelData.chefSlug}"
+              - generic [ref=f1e1026]: />
+              - generic [ref=f1e1027]: ")}"
+              - generic [ref=f1e1028]: "{selectedModelData?.name && ("
+              - generic [ref=f1e1029]: <ModelSelectorName>
+              - generic [ref=f1e1030]: "{selectedModelData.name}"
+              - generic [ref=f1e1031]: </ModelSelectorName>
+              - generic [ref=f1e1032]: ")}"
+              - generic [ref=f1e1033]: </PromptInputButton>
+              - generic [ref=f1e1034]: </ModelSelectorTrigger>
+              - generic [ref=f1e1035]: <ModelSelectorContent>
+              - generic [ref=f1e1036]: <ModelSelectorInput placeholder="Search models..." />
+              - generic [ref=f1e1037]: <ModelSelectorList>
+              - generic [ref=f1e1038]: <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
+              - generic [ref=f1e1039]: "{chefs.map((chef) => ("
+              - generic [ref=f1e1040]: "<ModelSelectorGroup heading={chef} key={chef}>"
+              - generic [ref=f1e1041]: "{models"
+              - generic [ref=f1e1042]: .filter((m) => m.chef === chef)
+              - generic [ref=f1e1043]: .map((m) => (
+              - generic [ref=f1e1044]: <ModelItem
+              - generic [ref=f1e1045]: "isSelected={model === m.id}"
+              - generic [ref=f1e1046]: "key={m.id}"
+              - generic [ref=f1e1047]: "m={m}"
+              - generic [ref=f1e1048]: "onSelect={handleModelSelect}"
+              - generic [ref=f1e1049]: />
+              - generic [ref=f1e1050]: "))}"
+              - generic [ref=f1e1051]: </ModelSelectorGroup>
+              - generic [ref=f1e1052]: "))}"
+              - generic [ref=f1e1053]: </ModelSelectorList>
+              - generic [ref=f1e1054]: </ModelSelectorContent>
+              - generic [ref=f1e1055]: </ModelSelector>
+              - generic [ref=f1e1056]: </PromptInputTools>
+              - generic [ref=f1e1057]: "<PromptInputSubmit disabled={isSubmitDisabled} status={status} />"
+              - generic [ref=f1e1058]: </PromptInputFooter>
+              - generic [ref=f1e1059]: </PromptInput>
+              - generic [ref=f1e1060]: </div>
+              - generic [ref=f1e1061]: </div>
+              - generic [ref=f1e1062]: </div>
+              - generic [ref=f1e1063]: );
+              - generic [ref=f1e1064]: "};"
+              - generic [ref=f1e1066]: export default Example;
+          - paragraph [ref=f1e1068]:
+            - text: Install Sonner for the toast notification used in
+            - code [ref=f1e1069]: app/page.tsx
+            - text: ":"
+          - generic [ref=f1e1070]:
+            - tablist [ref=f1e1071]:
+              - tab "npm" [selected] [ref=f1e1072] [cursor=pointer]
+              - tab "pnpm" [ref=f1e1074] [cursor=pointer]
+              - tab "yarn" [ref=f1e1076] [cursor=pointer]
+              - tab "bun" [ref=f1e1078] [cursor=pointer]
+            - tabpanel "npm" [ref=f1e1080]:
+              - generic [ref=f1e1081]:
+                - code [ref=f1e1083]:
+                  - generic [ref=f1e1084]: npm i sonner
+                - button [ref=f1e1085] [cursor=pointer]
+          - paragraph [ref=f1e1086]:
+            - text: Add
+            - code [ref=f1e1087]: <Toaster />
+            - text: from
+            - code [ref=f1e1088]: sonner
+            - text: to your
+            - code [ref=f1e1089]: app/layout.tsx
+            - text: so toast notifications are visible.
+          - heading [level=3] [ref=f1e1090]:
+            - link "Server" [ref=f1e1091] [cursor=pointer]:
+              - /url: "#server"
+          - paragraph [ref=f1e1095]:
+            - text: Create a new route handler
+            - code [ref=f1e1096]: app/api/chat/route.ts
+            - text: and paste in the following code. We're using
+            - code [ref=f1e1097]: perplexity/sonar
+            - text: for web search because by default the model returns search results. We also pass
+            - code [ref=f1e1098]: sendSources
+            - text: and
+            - code [ref=f1e1099]: sendReasoning
+            - text: to
+            - code [ref=f1e1100]: toUIMessageStreamResponse
+            - text: in order to receive as parts on the frontend. The handler now also accepts file attachments from the client.
+          - generic [ref=f1e1101]:
+            - generic [ref=f1e1102]:
+              - generic [ref=f1e1106]: app/api/chat/route.ts
+              - button [ref=f1e1107] [cursor=pointer]
+            - code [ref=f1e1110]:
+              - generic [ref=f1e1111]: "import { streamText, UIMessage, convertToModelMessages } from \"ai\";"
+              - generic [ref=f1e1113]: // Allow streaming responses up to 30 seconds
+              - generic [ref=f1e1114]: export const maxDuration = 30;
+              - generic [ref=f1e1116]: "export async function POST(req: Request) {"
+              - generic [ref=f1e1117]: "const {"
+              - generic [ref=f1e1118]: messages,
+              - generic [ref=f1e1119]: model,
+              - generic [ref=f1e1120]: webSearch,
+              - generic [ref=f1e1121]: "}: {"
+              - generic [ref=f1e1122]: "messages: UIMessage[];"
+              - generic [ref=f1e1123]: "model: string;"
+              - generic [ref=f1e1124]: "webSearch: boolean;"
+              - generic [ref=f1e1125]: "} = await req.json();"
+              - generic [ref=f1e1127]: "const result = streamText({"
+              - generic [ref=f1e1128]: "model: webSearch ? \"perplexity/sonar\" : model,"
+              - generic [ref=f1e1129]: "messages: await convertToModelMessages(messages),"
+              - generic [ref=f1e1130]: "system:"
+              - generic [ref=f1e1131]: "\"You are a helpful assistant that can answer questions and help with tasks\","
+              - generic [ref=f1e1132]: "});"
+              - generic [ref=f1e1134]: // send sources and reasoning back to the client
+              - generic [ref=f1e1135]: "return result.toUIMessageStreamResponse({"
+              - generic [ref=f1e1136]: "sendSources: true,"
+              - generic [ref=f1e1137]: "sendReasoning: true,"
+              - generic [ref=f1e1138]: "});"
+              - generic [ref=f1e1139]: "}"
+          - paragraph [ref=f1e1140]:
+            - text: You now have a working chatbot app with file attachment support! The chatbot can handle both text and file inputs through the action menu. Feel free to explore other components like
+            - link [ref=f1e1141] [cursor=pointer]:
+              - /url: /components/tool
+              - code [ref=f1e1142]: Tool
+            - text: or
+            - link [ref=f1e1143] [cursor=pointer]:
+              - /url: /components/task
+              - code [ref=f1e1144]: Task
+            - text: to extend your app, or view the other examples.
+        - link [ref=f1e1146] [cursor=pointer]:
+          - /url: /examples/ide
+          - paragraph [ref=f1e1150]: IDE
+          - paragraph [ref=f1e1151]: An example of how to use the AI Elements to build an AI-powered IDE with file navigation, code display, terminal output, and an integrated chat assistant.
+    - contentinfo [ref=f1e1152]:
+      - generic [ref=f1e1153]:
+        - generic [ref=f1e1154]:
+          - img "Vercel" [ref=f1e1155]
+          - paragraph [ref=f1e1157]: Copyright Vercel 2026. All rights reserved.
+        - generic [ref=f1e1158]:
+          - button "Select language" [ref=f1e1159] [cursor=pointer]
+          - link [ref=f1e1165] [cursor=pointer]:
+            - /url: /rss.xml
+          - link "GitHub" [ref=f1e1166] [cursor=pointer]:
+            - /url: https://github.com/vercel/ai-elements
+            - img "GitHub"
+          - button [ref=f1e1167] [cursor=pointer]
+    - region "Notifications alt+T"
+  - alert [ref=f1e1168]
+  - generic [ref=f1e1170]:
+    - generic [ref=f1e1171]:
+      - heading "Chat" [level=2] [ref=f1e1172]
+      - group [ref=f1e1174]:
+        - button [disabled]
+        - button [disabled]
+        - button [ref=f1e1175] [cursor=pointer]
+    - log [ref=f1e1176]
+    - generic [ref=f1e1179]:
+      - generic [ref=f1e1183]:
+        - button "What is AI Elements?" [ref=f1e1184] [cursor=pointer]
+        - button "What can I build with AI Elements?" [ref=f1e1185] [cursor=pointer]
+        - button "How do I install AI Elements?" [ref=f1e1186] [cursor=pointer]
+        - button "How do I use AI Elements?" [ref=f1e1187] [cursor=pointer]
+      - paragraph [ref=f1e1188]:
+        - text: "Tip: You can open and close chat with"
+        - generic [ref=f1e1189]:
+          - generic: ⌘
+          - generic: I
+      - group [ref=f1e1191]:
+        - group [ref=f1e1192]
+        - textbox "What would you like to know?" [ref=f1e1194]
+        - group [ref=f1e1195]:
+          - paragraph [ref=f1e1196]: 0 / 1000
+          - button "Submit" [ref=f1e1197] [cursor=pointer]

@@ -1,0 +1,1045 @@
+{
+  "documentId": 3361,
+  "documentName": "获取关键词/行业词包列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取关键词/行业词包列表\n/rest/openapi/gw/dsp/v2/word_info/recommend_word/list\n\n\nadvertiser_id  Long  <p>广告主账号ID</p>\npage_info  RecSearchWordPageInfoSnake  <p>分页参数</p>\ncurrent_page  Integer  <p>当前页码，不填默认1</p>\npage_size  Integer  <p>单页多少条，不填默认20，不能超过100</p>\nrecommend_param  RecommendParamSnake80  <p>推荐词查询参数</p>\ntype  Integer  <p>0-以词推词 1-账户推词 2-行业推词；不填默认0</p>\nsearch_word_list  String[]  <p>搜索词集合，仅在type=2时支持填写，上限100个。</p>\ncontains  Boolean  <p>填写searchWordList时，表示是否包含关键词，true-包含，false-不包含；不填默认false</p>\nstart_up  Boolean  <p>填写type=0以词推词且wordBagType=1冷启词包时，传true，其他场景不支持；不填默认false</p>\nthird_industry_name  String[]  <p>填写type=2行业推词时，填写三级行业的名称集合。其他场景不支持填写。</p>\npackage_name  String  <p>推荐词包名，填写当type=2行业推词返回的<u>推荐词包列表中</u>的推荐词包名的名称。</p>\nword_bag_type  Integer  <p>词包类型：1-冷启动词包，2-高关联词包，3-同行都在买词包，4-行业精选词包；不填默认返回全部。</p>\nhigh_word_type  Integer  <p>推荐词类型：0-所有词，1-高相关词，2-高跑量词，3-高转化词；不填默认0</p>\nword_class_id  Long[]  <p>词包id，填写wordBagType=4精选词包时，可填写id单独查询具体词包；其他场景不支持填写。</p>\nfilter_param  FilterParamSnake563  <p>过滤参数</p>\ntype  Integer  <p>去重维度：0-不去重 1-账户，2-计划，3-单元；不填默认0</p>\nid_list  Long[]  <p>去重的id，当type=1时填写广告主账号id，type=2时填写计划id，type=3时填写单元id；其他场景不支持填写。</p>\nrecommend_signature  String[]  <p>推荐标签词，支持多选，可选填范围有：\"冷启词\"、\"黑马词\"、\"蓝海词\"、\"高点击词\"、\"同行买词\"、\"低成本词\"</p>\ncompetition_degree  Integer[]  <p>竞争程度： 1-低 2-中 3-高</p>\nsort  RecSearchWordSort  <p>排序参数</p>\ncolumn  Integer  <p>排序列：0-相关性 1-近7天搜索量 2-词包包含词 3-权重；不填默认1</p>\norder  Integer  <p>0-倒序 1-顺序；不填默认0</p>\ncode  Integer  <p>状态码</p>\nmessage  String  <p>返回信息</p>\ndata  RecSearchWordResponseSnake  <p>数据</p>\npage_info  RecSearchWordPageInfo546Snake  <p>页码信息</p>\ntotal_count  Long  <p>总数</p>\ncurrent_page  Integer  <p>当前页</p>\npage_size  Integer  <p>页码</p>\nwords  KTRecommendWordViewSnake156[]  <p>关键词信息</p>\nsearch_count_7_day  Double  <p>近7日搜索量</p>\nword  String  <p>关键词</p>\nscore  Double  <p>相关性</p>\nsearch_count_detail_list  KTRecommendWordCountDetailViewSnake  <p>搜索数与日期详情</p>\ndate  String  <p>日期</p>\nsearch_count  Long  <p>搜索量</p>\nrecommend_signature  String[]  <p>推荐标签词</p>\ncompetition_degree  Integer  <p>竞争程度：1-低 2-中 3-高</p>\npackages  KTRecommendWordBagViewSnake[]  <p>词包信息字段，当入参 type=2行业推词且不指定word_bag_type词包类型且不传package_name词包名的情况下，会返回以下信息。</p>\nsearch_count_7day  Double  <p>近7日点击量</p>\npackage_name  String  <p>词包名</p>\nexample  String  <p>示例词</p>\nword_count  Integer  <p>词汇量</p>\nstart_up  Boolean  <p>是否冷启词包，true-冷启词包</p>\nproduct_name  String  <p>词包类型为冷启词包才会返回，词包的产品名称</p>\nthird_industry_name  String  <p>非冷启词包会返回，词包的三级行业名称</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780972809063
+    }
+  ],
+  "apiId": 2507,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v2/word_info/recommend_word/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 86726,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主账号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86727,
+      "paramName": "page_info",
+      "paramType": "RecSearchWordPageInfoSnake",
+      "example": "",
+      "description": "<p>分页参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4895,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 86853,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>当前页码，不填默认1</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86854,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>单页多少条，不填默认20，支持20、50、100，不能超过100</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86728,
+      "paramName": "recommend_param",
+      "paramType": "RecommendParamSnake80",
+      "example": "",
+      "description": "<p>推荐词查询参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4896,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 86713,
+          "paramName": "type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>0-以词推词 1-账户推词 2-行业推词；不填默认0</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86714,
+          "paramName": "search_word_list",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>搜索词集合，仅在type=2时支持填写，上限100个。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86715,
+          "paramName": "contains",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>填写searchWordList时，表示是否包含关键词，true-包含，false-不包含；不填默认false</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86716,
+          "paramName": "start_up",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>填写type=0以词推词且wordBagType=1冷启词包时，传true，其他场景不支持；不填默认false</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86717,
+          "paramName": "third_industry_name",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>填写type=2行业推词时，填写三级行业的名称集合。其他场景不支持填写。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86718,
+          "paramName": "package_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>推荐词包名，填写当type=2行业推词返回的<u>推荐词包列表中</u>的推荐词包名的名称。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86719,
+          "paramName": "word_bag_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>词包类型：1-冷启动词包，2-高关联词包，3-同行都在买词包，4-行业精选词包；不填默认返回全部。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86720,
+          "paramName": "high_word_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>推荐词类型：0-所有词，1-高相关词，2-高跑量词，3-高转化词；不填默认0</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86721,
+          "paramName": "word_class_id",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "<p>词包id，填写wordBagType=4精选词包时，可填写id单独查询具体词包；其他场景不支持填写。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86729,
+      "paramName": "filter_param",
+      "paramType": "FilterParamSnake563",
+      "example": "",
+      "description": "<p>过滤参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4897,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 86724,
+          "paramName": "recommend_signature",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>推荐标签词，支持多选，可选填范围有：\"冷启词\"、\"黑马词\"、\"蓝海词\"、\"高点击词\"、\"同行买词\"、\"低成本词\"</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86725,
+          "paramName": "competition_degree",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "<p>竞争程度，支持多选：1-低 2-中 3-高</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86730,
+      "paramName": "sort",
+      "paramType": "RecSearchWordSort",
+      "example": "",
+      "description": "<p>排序参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4889,
+      "sort": 5,
+      "note": "",
+      "children": [
+        {
+          "paramId": 86855,
+          "paramName": "column",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>排序列：0-相关性 1-近7天搜索量 2-词包包含词；不填默认1</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86856,
+          "paramName": "order",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>0-倒序 1-顺序；不填默认0</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 86767,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86768,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86769,
+      "paramName": "data",
+      "paramType": "RecSearchWordResponseSnake",
+      "example": "",
+      "description": "<p>数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4898,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 86760,
+          "paramName": "page_info",
+          "paramType": "RecSearchWordPageInfo546Snake",
+          "example": "",
+          "description": "<p>页码信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4899,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 86731,
+              "paramName": "total_count",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>总数</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86732,
+              "paramName": "current_page",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>当前页</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86733,
+              "paramName": "page_size",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>页码</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86761,
+          "paramName": "words",
+          "paramType": "KTRecommendWordViewSnake156[]",
+          "example": "",
+          "description": "<p>关键词信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4900,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 86736,
+              "paramName": "search_count_7_day",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>近7日搜索量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86737,
+              "paramName": "word",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>关键词</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86738,
+              "paramName": "score",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>相关性</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86739,
+              "paramName": "search_count_detail_list",
+              "paramType": "KTRecommendWordCountDetailViewSnake",
+              "example": "",
+              "description": "<p>搜索数与日期详情</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 4901,
+              "sort": 4,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 86734,
+                  "paramName": "date",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "<p>日期</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 86735,
+                  "paramName": "search_count",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "<p>搜索量</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86740,
+              "paramName": "recommend_signature",
+              "paramType": "String[]",
+              "example": "",
+              "description": "<p>推荐标签词</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86741,
+              "paramName": "competition_degree",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>竞争程度：1-低 2-中 3-高</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86762,
+          "paramName": "packages",
+          "paramType": "KTRecommendWordBagViewSnake[]",
+          "example": "",
+          "description": "<p>词包信息字段，当入参 type=2行业推词且不指定word_bag_type词包类型且不传package_name词包名的情况下，会返回以下信息。</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4903,
+          "sort": 3,
+          "note": "",
+          "children": [
+            {
+              "paramId": 86744,
+              "paramName": "search_count_7day",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>近7日点击量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86745,
+              "paramName": "package_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>词包名</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86746,
+              "paramName": "example",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>示例词</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86747,
+              "paramName": "word_count",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>词汇量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86748,
+              "paramName": "start_up",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p>是否冷启词包，true-冷启词包</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86749,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>词包类型为冷启词包才会返回，词包的产品名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86750,
+              "paramName": "third_industry_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>非冷启词包会返回，词包的三级行业名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780972809063,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

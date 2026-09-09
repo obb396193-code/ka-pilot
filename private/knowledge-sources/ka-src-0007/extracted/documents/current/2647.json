@@ -1,0 +1,444 @@
+{
+  "documentId": 2647,
+  "documentName": "魔力建站预约下载信息查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095783661
+    }
+  ],
+  "apiId": 438,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/lp/appoint/download/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 20007234,\n  \"device_id\":\"DFPEDCB7620EB99470245133253D037E6AB6308BBD866BBE447D8737D705E98F\",\n  \"callback\":\"callback\",\n  \"start_time\":\"2021-03-21 17:01:48\",\n  \"end_time\":\"2021-03-21 17:01:48\"\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"id\": 202824214376713485,\n                \"callback\": \"callback\",\n                \"account_id\": 20007234,\n                \"event_type\": \"EVENT_APPOINT_DOWNLOAD\",\n                \"page_id\": 122023223941398528,\n                \"device_id\": \"DFPEDCB7620EB99470245133253D037E6AB6308BBD866BBE447D8737D705E98F\",\n                \"create_time\": \"2021-03-21 17:01:48\"\n            }\n        ]\n    },\n    \"request_id\": \"792632d3a3f64400a544e2ab9af194a0\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 25979,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID\t",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "\t在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25981,
+      "paramName": "callbacks",
+      "paramType": "String[]",
+      "example": "",
+      "description": "callback 字符串\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25982,
+      "paramName": "start_time",
+      "paramType": "String",
+      "example": "",
+      "description": "起始时间\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "\t格式：yyyy-MM-dd hh:MM:ss",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25983,
+      "paramName": "end_time",
+      "paramType": "String",
+      "example": "",
+      "description": "结束时间\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "\t格式：yyyy-MM-dd hh:MM:ss",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25984,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "请求的页码\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "\t默认为 1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25985,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "每页行数\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "\t默认为 20，上限 500",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 25986,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "code码\t",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25987,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "提示信息\t",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25988,
+      "paramName": "data",
+      "paramType": "AppointDownloadInfoRespGW",
+      "example": "",
+      "description": "列表",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 926,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 25911,
+          "paramName": "total_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "总数\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 25912,
+          "paramName": "details",
+          "paramType": "AppointDownloadInfoGW[]",
+          "example": "",
+          "description": "建站app预约下载信息\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 925,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 25904,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25905,
+              "paramName": "callback",
+              "paramType": "String",
+              "example": "",
+              "description": "callback",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25906,
+              "paramName": "account_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告主账号id\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25907,
+              "paramName": "event_type",
+              "paramType": "String",
+              "example": "",
+              "description": "事件类型\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "\tEVENT_APPOINT_DOWNLOAD",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25908,
+              "paramName": "page_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "落地页ID\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25910,
+              "paramName": "create_time",
+              "paramType": "String",
+              "example": "",
+              "description": "创建时间\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "格式：yyyy-MM-dd hh:MM:ss",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095783661,
+  "creator": "lichenxu03",
+  "fullContext": null
+}
