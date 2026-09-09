@@ -47,6 +47,20 @@ export const namingRuleSchema = z.object({
 });
 export type NamingRule = z.infer<typeof namingRuleSchema>;
 
+/**
+ * 从「带元数据的规范记录」里取出纯规范。
+ * `namingRuleSchema` 是 strict 的，仓储记录多带的 `effectiveFrom/note/createdAt`
+ * 直接传给 `parseAccountName` 会被拒——所以提取这一步必须显式，不能靠调用方记得。
+ */
+export function toNamingRule(record: NamingRule): NamingRule {
+  return namingRuleSchema.parse({
+    media: record.media,
+    version: record.version,
+    segments: record.segments,
+    separators: record.separators,
+  });
+}
+
 export const parseStatusSchema = z.enum(["parsed", "partial", "failed", "conflict", "confirmed", "overridden"]);
 export type ParseStatus = z.infer<typeof parseStatusSchema>;
 
