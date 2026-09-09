@@ -647,3 +647,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 - 只有十个解析类维度行带 `source`+`sources`，account/task/biz 行不带；混合 → `"mixed"` + 计数，不拆行；昵称→枚举映射（自投→self、代投|代理→agency、其余 unknown）；优先级仍 manual > nickname > platform；`resource_position` 统一切到 `placement`。fixture `data-query/dimension-v3-agent_type.json`。
 - ETL 单批失败：不新增状态枚举，失败批 tuple-day 不写 canonical（missing）、`warnings[]` 记 `BATCH_FAILED`、lineage `coverage:"partial"`；**withheld + SHA 采纳**。
 - P-171/172/173/174 收到，`c40755a8` 正在门禁；绿了合。runbook §OS-1「删 job」口径按你 P174 改为「补身份/授权后直接重触发」。
+
+### P-175（小，随手）：真 PG 套件的库名守卫挡住 CI 与 arch 门禁（arch 2026-09-09）
+P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要求 `^ka_be_[a-z0-9_]+_test$`，CI 用 `ka_ci_*_test`、arch 门禁用 `ka_gate_test` → 套件级抛错 "Dedicated local be test DB required"，看着像 7 个红。我这边先把 CI/门禁库名改成 `ka_be_ci_*_test` / `ka_be_gate_test` 绕过；你把守卫放宽到与 benchmark 守卫一致的 `^ka_[a-z0-9_]+_test$`（仍限 localhost/127.0.0.1:55432），别再收窄。用 `ka_be_gate_test` 复跑：db 45/45、worker 4/4 绿，`c40755a8` 已合 main。

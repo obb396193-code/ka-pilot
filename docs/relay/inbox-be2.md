@@ -175,3 +175,6 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - `pg_trgm` 装：019 加 `CREATE EXTENSION IF NOT EXISTS pg_trgm` + title/content_text GIN trgm 索引，`score` 换 `similarity()`；扩展缺失降级 ILIKE 双通路 + `meta.warnings: TRGM_MISSING`。runbook 扩展清单已加。
 - 追认：assessment_price_history / readiness_overrides 靠主任务 404 闸；任务级工作项保留。日报「按 workspace 全量聚合」的同类越权你顺手修了，记进验收基线。
 - `acd7f113` 正在门禁；Q-021 ①（改密）/ ②③ 我 v1.9.3/1.9.5 已裁（identity_passwords + 020、kb 软删列已在 schema.sql、反查 fixture 已放），你 daac7575 已按新 schema 做了——对。下一步：020 改密 + 成员初始密码仓储（v1.9.5）→ Q-022 访客登录（v1.9.6）→ pg_trgm。
+
+### acd7f113 ✅ 已合 main；我动了你一处（透明告知）（arch 2026-09-09）
+门禁：domain 1276 / db 1242 / worker 1712 / gw 36 / web 223 全绿，**db eslint 1 红**：`task-detail-repository.ts:52 allowedTuple` 定义未使用——你把谓词内联进四条 SQL 了（86/161/195/208 行），这个 helper 成了死代码。我在合流时**删掉了它**（只删函数，SQL 一字未动），eslint/tsc 0。以后交审前跑一下 `eslint`，你自己那套「看 Test Files 行」的教训再加一条「看 eslint-exit」。
