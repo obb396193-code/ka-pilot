@@ -3,7 +3,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { runMigrations } from "../src/migrate.js";
-import { PlatformHealthRepository } from "../src/platform-health-repository.js";
+import { PlatformHealthRepository, PlatformHealthContractError, type PlatformHealthClient } from "../src/platform-health-repository.js";
+import { accountScopeClause } from "../src/r014/workspace-authority.js";
 
 // Synthetic fixtures only; never fall back to shared ka or create a new database.
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -16,14 +17,22 @@ describe("PlatformHealthRepository real PG", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 2 });
   const repository = new PlatformHealthRepository(pool);
   const ds = "2026-09-07", early = "2026-09-07T01:00:00.000Z", later = "2026-09-07T02:00:00.000Z";
+  const createdWorkspaceIds: string[] = [];
   let auth: ApprovedWorkspaceAuthContext;
   let otherId: string;
   beforeAll(async () => { await runMigrations({ databaseUrl }); }, 30000);
-  afterAll(async () => { await pool.end(); });
+  afterAll(async () => {
+    try {
+      for (const table of ["account_metrics_daily", "accounts", "workspaces"]) {
+        await pool.query(`DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=ANY($1::uuid[])`, [createdWorkspaceIds]);
+      }
+    } finally { await pool.end(); }
+  });
   beforeEach(async () => {
     const ws = await pool.query<{ id: string }>("INSERT INTO workspaces(name) VALUES($1),($2) RETURNING id",
       [`health-${randomUUID()}`, `health-other-${randomUUID()}`]);
     const workspaceId = ws.rows[0]!.id; otherId = ws.rows[1]!.id;
+    createdWorkspaceIds.push(workspaceId, otherId);
     auth = { workspaceId, userId: randomUUID(), role: "optimizer", workspaceKind: "personal",
       scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "same", accessLevel: "read" }] } };
     await pool.query(`INSERT INTO accounts(workspace_id,media,account_id) VALUES
@@ -35,6 +44,33 @@ describe("PlatformHealthRepository real PG", () => {
   it("excludes newer same-ID cross-media, cross-workspace and other-day observations", async () => {
     expect(await repository.read(auth, ds)).toEqual({ businessDate: ds,
       coverage: { accounts: 1, withData: 1 }, missingSyncTime: 0, dataAsOf: early });
+  });
+  it("removing the shared SQL clause changes real observations; the output guard still rejects the wider denominator", async () => {
+    let removals = 0;
+    const rawObservations: unknown[] = [];
+    const weakened = new PlatformHealthRepository({ connect: async () => {
+      const client = await pool.connect();
+      const wrapper: PlatformHealthClient = {
+        query: async (sql, values) => {
+          if (sql.includes("platform-health-coverage")) {
+            const clause = accountScopeClause("$3", "$4", "candidate.media", "candidate.account_id");
+            expect(sql).toContain(clause);
+            sql = sql.replace(clause, "($3::text IS NOT NULL)");
+            removals++;
+            const result = await client.query(sql, values);
+            rawObservations.push(result.rows[0]);
+            return result;
+          }
+          return client.query(sql, values);
+        },
+        release: () => client.release(),
+      };
+      return wrapper;
+    } });
+    await expect(weakened.read(auth, ds)).rejects.toBeInstanceOf(PlatformHealthContractError);
+    expect(removals).toBe(1);
+    expect(rawObservations).toEqual([{ accounts: "3", with_data: "2", missing_sync_time: "0", data_as_of: new Date(later) }]);
+    expect(await repository.read(auth, ds)).toMatchObject({ coverage: { accounts: 1, withData: 1 }, dataAsOf: early });
   });
   it("includes both media only with both explicit tuple grants", async () => {
     const scoped = { ...auth, scope: { kind: "explicit_accounts", accounts: [

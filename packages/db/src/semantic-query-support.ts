@@ -1,3 +1,4 @@
+import { accountScopeClause } from "./r014/workspace-authority.js";
 import type {
   SemanticQueryScope,
   SemanticSortField,
@@ -116,13 +117,7 @@ export function buildMetricFilter(
       conditions.push("false");
     } else {
       add(
-        (placeholder) => `EXISTS (
-          SELECT 1
-          FROM jsonb_to_recordset(${placeholder}::jsonb)
-            AS allowed(media text, account_id text)
-          WHERE allowed.media = metric.media
-            AND allowed.account_id = metric.account_id
-        )`,
+        (placeholder) => accountScopeClause("'explicit_accounts'", placeholder, "metric.media", "metric.account_id"),
         JSON.stringify(scope.filters.accountScopes.map((account) => ({
           media: account.media,
           account_id: account.accountId,

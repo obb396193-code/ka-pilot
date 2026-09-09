@@ -2,6 +2,44 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-185 F-P179运行记录：先做严格响应，历史证据/重跑请裁｜be（Codex，2026-09-10）
+
+- 响应基础代码 **70187851**已交：38个运行记录测试+19批次warning测试，共57过；新模块覆盖100%，Domain/DB/Worker typecheck/lint过。既有fixture未改，真实barrel导出已测。报告`docs/plans/2026-09-10-P185运行记录响应质量回执.md`。**未接GET、未开rerun**，下面四问仍须裁；不以schema绿代替Runtime完成。
+
+- 已读v1.7.5+v1.9.8和system/etl-runs.json，开始Domain严格响应，不改你fixture。
+- ① 旧etl_runs.scope无execution时没有可信attempt；withEtlAttempt只保证新run快照。不能拿当前jobs.attempts回填历史。是否允许`attempt:null + warning`？若保持正整数，我只能显式拒绝不可验证记录，不能悄悄丢行。
+- ② `rows_ingested`是单run自身阶段计数，full/incr与canonical_merge分别独立job/attempt；不能拼不同run进同一行。目前fixture为`rows:{raw:number,canonical:number}|null`。建议允许**各字段null**：raw任务只知raw，canonical任务只知canonical；没到/未知不填0。若要父链聚合需要另定义关联，不偷推。
+- ③ GET排序/分页未冻结（fixture无page/total），请明确是否先“最近1000次，命中上限拒截断”或正式分页；响应source时间用真实run finished/started，但它是运行观测时间不是canonical数据新鲜度。
+- ④ rerun admin已定，但请定：原job重试还是新job、可重跑状态、credential owner（重试保持原owner）与幂等键。现有通用enqueue不能自动代表已批准的重跑语义，先不开放POST。
+- 可继续做严格Domain和fixture测试；这四项不凭空猜。工作项helper仍待Q-027合main，不复制旧版本。
+
+### P-184 退修已关：旧lineage字面断言｜be（Codex，2026-09-10）
+
+- **3a05c7ce**独立测试修复，先复现1红17绿，再改为从绑定参数定位tuple、断言共享accountScopeClause在预期/实际两侧各一次。
+- 18unit+3独占PG=21通过，DB typecheck/lint过；未改生产。F-P180超时修仍**a0e4c01b**，请连同P180首轮重新验收。
+- 承认前批定向回归漏同步此旧断言。报告`docs/plans/2026-09-10-P184任务lineage退修回执.md`，未push/未部署、未冒报全包。
+
+### P-183 变更集详情共享授权前置候选｜be（Codex，2026-09-10）
+
+- **8db53852**：Service端口第三参必填approved auth，三参find进入RR/RO授权读取；先只读id/workspace/allowed，再共享谓词读取正文/items。跨workspace404、同workspace越权403、team进仓储前拒绝；原Service后置guard保留。
+- 旧后台两参find未伪装成会话授权；显式第三参undefined拒绝，HTTP实际composition始终传入auth，PG包装已透传。未开放媒体写或team变更集。
+- DB63（新PG9、旧PG41、unit13），Worker HTTP57/Service14/Session PG4/bootstrap PG2过；DB/Worker type/lint/cache audit通过；仓储行97.34/分支81.25。初次HTTP EPERM按权限重跑通过。
+- 报告`docs/plans/2026-09-10-P183变更集详情授权质量回执.md`。当前仍candidate、全域P-178未完、未push/部署；等待Q-027合main后接工作项，不复制旧helper。
+
+### P-182 健康读取共享授权候选；已收到v1.9.11｜be（Codex，2026-09-10）
+
+- **58db9dce**：PlatformHealthRepository接accountScopeParams/accountScopeClause，保留获授但主表未到的缺数分母。无公开Contract变化；当前无Worker/public caller，因此不冒称修了线上健康页。
+- DB30（PG7+unit23）红绿过；摘谓词真PG观测由1户变3户、dataAsOf越到未授权媒体，输出guard仍拒绝。原代码是重复实现而非已证数据泄漏；P-178全域尚未完成。
+- DB/Worker typecheck/lint/cache audit0；模块行100/分支97.91%。2000候选EXPLAIN3.925ms但会扫描当前workspace候选，报告披露规模风险，不冒称生产性能或全包门禁。
+- 详见`docs/plans/2026-09-10-P182健康读取授权质量回执.md`。收到main54613184/v1.9.11矩阵与后台job例外，撤销待裁状态；按分工等be2 Q-027 helper合main后再接本人work-item列表/详情，不另写一套。未push、未部署、无真实媒体写。
+
+### P-181 F-P180成员PG超时已修｜be（Codex，2026-09-10）
+
+- 代码 **a0e4c01b**，单文件`apps/worker/test/admin-members-http-pg.integration.test.ts`：suite `{ timeout: 30_000 }`，所有九例继承；未改生产期限/数据上限/截断或任何业务授权。
+- 独占本机合成库`ka_ci_be_r010_p178_test`：真实PG9/9（3.05s），Worker typecheck/lint过，offline production audit0；diff check过。低于8GiB全包磁盘门槛，未冒报全包。
+- 质量回执`docs/plans/2026-09-10-P181成员PG超时质量回执.md`。请求exact SHA审查；未push/部署。收到P179已合及“台账仅arch写”纠偏，后续只写R010状态/信箱。
+- P180两笔`d124cfce/e209e321`首轮授权审计仍不代表全域完成；原已提的task级/纯私人双null及后台job授权边界问题保持待裁。不提前开放team私人项，不因本小修复跳过P-178。
+
 ### P-001 ✅已裁决（B1a 契约缺口 6 条）｜be（Codex）
 
 **裁决已落契约本体** `packages/contract/{schema.sql, api.md}` v1.1，逐条回复：
@@ -5163,6 +5201,21 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 - **请协调be2派生读取接线**：`etlBatchReadableSql(alias)` 位于`packages/db/src/etl-batch-readability.ts`，仅代码alias；物理Canonical WHERE可接，但expected集合必须在LEFT JOIN ON接，不能滤掉缺失分母。账户/任务列表及其详情/日报直接SQL我未越权修改。
 - **暂不能开启单批半成功**：下一批还需canonical写入race guard、readiness/public warning、Full/Incr逐批接线和all-failed处理。历史failure相关扫描性能、Raw保留期与恢复证据协调须明确；本批无大规模基准，不承诺常数时间。
 - 持续按信箱推进，生图已取消，020依赖已解不再空等；P175退修495ea1c9/16679e7a仍请exact复验。
+
+### P-180 授权自查进行中：请裁任务级与私人无账户工作项交叉口径（2026-09-09）
+
+- 已同步您main b0351577→本人95e46310，已知P175–178合流，不再等旧复审。优先遵循您新P-178授权自查→F-P179端点→P176余项的顺序。
+- 找到一处**契约语义冲突，未擅改**：api.md §WORK-ITEM-LIST-001/详情仍写双null只凭assignee/creator；新的§3.3/v1.9.10与workItemScopeClause却按task关联授权，且共享helper的team分支直接TRUE（会包含task也null的私人项），没有旧“team不得看双null私人项”的保护。
+- 当前`work-item-list-sql.ts:24-26`、`read-detail-service.ts:49-56`把所有双null都归personal，不区分taskId。因此本人assignee + 未获授任务也能过旧分支；已获授任务但非本人assignee反而被拒。共享helper若直接替换，又会漏掉纯私人self并向team放开它们。
+- 请明确矩阵：①taskId非null的双null项是否必须任务关联授权、即使assignee是本人也不绕过；②taskId为null纯私人项是否继续仅personal本人；③team是否只允许账户型+任务型，不允许纯私人。建议这三条，但不代裁。收到前保留更早已冻结私人与team边界，不盲目复制helper。
+- 其他Semantic/Window/health正在实跑统一accountScopeClause回归；这条疑问不阻塞其余SQL自查及endpoint准备。没有认定所有workspace查询都是越权；逐个追到Service/runtime入口。
+
+### P-180 首轮代码及逐查询矩阵回执（非全域完结）
+
+- **d124cfce**：Semantic/health两个独立tuple谓词引用您统一accountScopeClause。新PG3项含负对照：摘掉SQL后summary/trend/window混入同号TENCENT，account维度输出guard仍拒绝；不是空库“过测”。原实现有独立谓词保护，**不虚称修了两个实证越权**。
+- DB35+Worker83（含Session→各业务读真实PG）、三包type/lint/offline audit0；行94.27/分支88.11。报告`docs/plans/2026-09-09-P180授权自查首轮质量回执.md`逐文件标已核/剩余统一化/内部维护/冲突，授权自查整体未完成。
+- 另请明确§3.3在**无Session的后台Canonical/quality/执行结果回收维护查询**的适用方式：这些API当前只有workspace/目标tuple/持久化job owner，不能拿管理员或虚构session来套accountScopeParams。本人按真实caller继续核，绝不为满足grep导入伪scope；建议冻结为持久化授权快照+live credential-owner重核或明确维护例外，未代选。
+- 7.6GiB未全包；main同步SHA95e46310；本批不push不改FE，生图保持取消。接着做其余可核项，不因疑问空等。
 
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。

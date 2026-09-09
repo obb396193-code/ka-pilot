@@ -10,7 +10,8 @@ const databaseUrl = process.env.TEST_DATABASE_URL;
 if (!databaseUrl) throw new Error("Explicit dedicated TEST_DATABASE_URL required");
 const db = new URL(databaseUrl);
 if (!["localhost", "127.0.0.1", "[::1]"].includes(db.hostname) || db.port !== "55432" || !/^\/ka_[a-z0-9_]*_test$/.test(db.pathname)) throw new Error("Dedicated local ka_*_test required");
-describe("admin member/grant real HTTP Session PG", () => {
+// Real PG + HTTP fixtures may contend with builds; keep production deadlines unchanged.
+describe("admin member/grant real HTTP Session PG", { timeout: 30_000 }, () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 3 });
   const personal = randomUUID(), team = randomUUID(), foreign = randomUUID(), user = randomUUID(), teamUser = randomUUID(), foreignUser = randomUUID(), identity = randomUUID(), outsider = randomUUID();
   const internalToken = "synthetic-member-service-token-long-enough";

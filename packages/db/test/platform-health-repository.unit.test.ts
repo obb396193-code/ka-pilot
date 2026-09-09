@@ -3,6 +3,7 @@ import type { QueryResult, QueryResultRow } from "pg";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { PlatformHealthRepository, PlatformHealthContractError,
   type PlatformHealthClient } from "../src/platform-health-repository.js";
+import { accountScopeClause } from "../src/r014/workspace-authority.js";
 
 const auth: ApprovedWorkspaceAuthContext = {
   workspaceId: "00000000-0000-4000-8000-000000000001",
@@ -34,15 +35,16 @@ describe("PlatformHealthRepository boundary", () => {
     expect(f.calls.map(c => c.sql.split("\n")[0])).toEqual([
       "BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY", "/* platform-health-coverage */", "COMMIT",
     ]);
-    expect(f.calls[1]?.values).toEqual([auth.workspaceId, date, "personal",
+    expect(f.calls[1]?.values).toEqual([auth.workspaceId, date, "explicit_accounts",
       JSON.stringify([{ media: "KUAISHOU", account_id: "same" }])]);
     expect(f.calls[1]?.sql).not.toContain("same");
+    expect(f.calls[1]?.sql).toContain(accountScopeClause("$3", "$4", "candidate.media", "candidate.account_id"));
     expect(f.client.release).toHaveBeenCalledOnce();
   });
   it("passes no account grants for approved team scope", async () => {
     const f = fake();
     await f.repository.read({ ...auth, workspaceKind: "team", scope: { kind: "team_workspace_readonly" } }, date);
-    expect(f.calls[1]?.values?.slice(2)).toEqual(["team", "[]"]);
+    expect(f.calls[1]?.values?.slice(2)).toEqual(["team_workspace_readonly", "[]"]);
   });
   it("preserves empty scope as zero observations, not ready", async () => {
     const f = fake({ accounts: "0", with_data: "0", missing_sync_time: "0", data_as_of: null });

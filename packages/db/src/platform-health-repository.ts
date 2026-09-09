@@ -1,5 +1,6 @@
 import { approvedWorkspaceAuthContextSchema, calendarDateSchema } from "@ka/domain";
 import type { QueryResult, QueryResultRow } from "pg";
+import { accountScopeClause, accountScopeParams } from "./r014/workspace-authority.js";
 
 export interface PlatformHealthClient {
   query<Row extends QueryResultRow = QueryResultRow>(sql: string, values?: unknown[]): Promise<QueryResult<Row>>;
@@ -20,14 +21,18 @@ export class PlatformHealthContractError extends Error {
 }
 
 const COVERAGE_SQL = `/* platform-health-coverage */
-WITH visible_accounts AS (
-  SELECT approved.media, approved.account_id
-  FROM jsonb_to_recordset($4::jsonb) AS approved(media text, account_id text)
-  WHERE $3::text = 'personal'
-  UNION ALL
+WITH candidates AS (
   SELECT account.media, account.account_id
   FROM accounts AS account
-  WHERE $3::text = 'team' AND account.workspace_id = $1::uuid
+  WHERE account.workspace_id = $1::uuid
+  UNION
+  -- Retain approved accounts absent from the master as missing observations.
+  SELECT approved.media, approved.account_id
+  FROM jsonb_to_recordset($4::jsonb) AS approved(media text, account_id text)
+), visible_accounts AS (
+  SELECT candidate.media, candidate.account_id
+  FROM candidates AS candidate
+  WHERE ${accountScopeClause("$3", "$4", "candidate.media", "candidate.account_id")}
 )
 SELECT count(*)::text AS accounts,
        count(metric.account_id)::text AS with_data,
@@ -73,10 +78,11 @@ export class PlatformHealthRepository {
     if (new Set(accounts.map(a => JSON.stringify([a.media, a.account_id]))).size !== accounts.length) {
       throw new PlatformHealthContractError();
     }
+    const scope = accountScopeParams(auth);
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
-      const result = await client.query(COVERAGE_SQL, [auth.workspaceId, businessDate, auth.workspaceKind, JSON.stringify(accounts)]);
+      const result = await client.query(COVERAGE_SQL, [auth.workspaceId, businessDate, scope.kind, scope.allowed]);
       if (result.rows.length !== 1) throw new PlatformHealthContractError();
       const row = result.rows[0]!;
       const total = count(row.accounts), withData = count(row.with_data), missingSyncTime = count(row.missing_sync_time);
