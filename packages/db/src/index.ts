@@ -74,3 +74,4 @@ export * from "./work-item-command-repository.js";
 export * from "./coefficient-read-repository.js";
 export * from "./r014/account-transfer-repository.js";
 export * from "./r014/kb-repository.js";
+export * from "./r014/identity-password-repository.js";
