@@ -4778,3 +4778,22 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **接下来按你补派的走**：D5 `GET /tasks/:id` 任务详情 → D7 `GET /reports/daily?date=` 日报，**优先于 R-017 剩余**（T5 的接线部分我停在 domain 纯函数，没往下接）。R-017 T1–T4 已经做完的部分不回退。
 
 **教训我记下**：换分支必须在回执标题行写明「合流源 = xxx」，不能只写在正文的 SHA 旁边。
+### P-161 F-P157-1 代理域名命令BFF修复（be，2026-09-09）
+
+- main@fc91bec 已同步；代码 **86ebd17**，只改 `apps/web/lib/data/r010-command-bff{,.test}.ts`。按你方案① Fetch Metadata 存在仅 same-origin通过；缺失严格Origin相等，forwarded/x-forwarded-host永不采信。三类命令 mute/ignore/dry-run 均覆盖，媒体写仍关闭。
+- TDD：代理URL反例先红（18过1红），修后 **19/19**；100%行/94.06%分支，ESLint0，diff--check0。保留session/JSON/requestId/exact16MiB/source-off503。未新增依赖、无视觉/契约变更。
+- 磁盘7.7GiB未达8GiB全量门槛，未重跑全包/build；这是handler传输模拟，不是公网部署实证。请复跑你的 next start 3411 与 port-mapping路径。计划 `docs/plans/2026-09-09-P161命令BFF代理域名修复.md`。
+- 继续独立批处理Node20 loader。F-Q011-1 已在 **0ce730f** 修复并随P134–153合流；头像及其他生图已被老板取消，不按旧提醒恢复。
+
+### P-162 Node20 跨包 TS 子进程入口修复（be，2026-09-09）
+
+- 代码 **43c8f64**：`apps/worker/test/{data-api-http,hourly-public-query,gap-public-query,pivot-public-query,r010-command-bff-parity,r010-production-composition-pg.integration,work-item-list-http,work-item-list-bff-parity}.test.ts` 11处显式注册tsx，导入取 `m.default ?? m`，新增 `web-ts-subprocess-loader.test.ts` 防止Node22门禁掩盖回退。无生产/依赖/前端视觉/Contract改动。
+- 本机Node22.22.2 + `NODE_OPTIONS=--no-experimental-strip-types` 定位2红ERR_UNKNOWN_FILE_EXTENSION；仅加tsx又2红（Web包CJS默认导出），规范后 **9文件124/124**。其中 `r010-production-composition-pg.integration` 真实PG1项，其余跨包Schema/HTTP；hourly21项（包括你报的2 parity）均过。
+- 命令：上述9文件 `npx --no-install vitest run … --maxWorkers=1`，专用库 `ka_be_r010_20260907_test`；Worker全包 `npm run typecheck && npm run lint` 通过。无真实Node20安装，不将禁用原生剥离冒充Node20/沙箱实测，请CI复验。磁盘7.4GiB，不运行全包测试。
+- 计划与红绿细节：`docs/plans/2026-09-09-P162跨包TS子进程兼容.md`。后续复核F-P153-1/2，当前pending状态不删。
+
+### P-163 F-P153-1/2 接线核查：请先补最小源/规则裁决（be，2026-09-09）
+
+- **hourly不能仅装配**：`hourly-public-source.ts:5`只有接口+守卫无reader；`incr-handler.ts:119–172`只对focusAccountIds/adIds拉广告差分；`ad-hourly-metrics-repository.ts:5`显式丢lastSyncTime/dataCorrectionFields，schema.sql:158无源时间/覆盖/累计。把它sum会把广告子集当账户、缺小时当0，违反hourly契约。请给账户hh证据及采样完成/范围/源时间存储冻结（可复用Raw但需明确语义），be随后接client/ETL/reader/factory，不是等R011/012即可解决。
+- **Gap不是必须等某张R012表**：个人canonical已有conversion/real_conversion；缺的是api.md:764要求的当前规则集版本、scope多规则优先级及阈值快照。alert_rules.condition_tree.version不能擅当规则集版本。请冻结生成/存储与多命中规则选择；attribution_volume不在canonical，preDeduction按missing不反推。team数据才依赖013。
+- 详见 `docs/plans/2026-09-09-P163分时与Gap接线事实复核.md` 含具体文件、最小OS只读3探针和后续实施链。两项仍未完成、503保留；没有伪造ready，也没有新测试数字。此前P162的hourly21/gap5是契约/缺源测试不是生产数据证明。
