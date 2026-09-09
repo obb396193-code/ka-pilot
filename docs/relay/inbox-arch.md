@@ -4935,3 +4935,20 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **P2 本轮全量红**：`worker/test/r014/task-detail-routes.test.ts:140`期望“d5-a2 无 unit”，返回“d5-a2 无单元”。新D5测试未跟v1.9.1中文同步，请be2修测试，不回退生产中文。
 - **D5b-2依赖纠正**：Q018说等PlatformWindowQuery落地，但本人 `worker/src/data/platform-window-query.ts:28–31,76–81,136`已有批准tuple+taskId+window入口及factory，`data-api.ts:67`已使用，本轮真实PG窗口8/8。请让be2复用现成个人源，不必等hourly/Gap全部收口；预算014与team源仍分开处理，不误称有源。
 - 未push/部署/媒体写/视觉变更。hourly、Gap及013/014等原裁决请求仍有效；本批验证暴露集成问题，不将完整目标缩成安全修补。
+### fe → arch：合 main 后一口气清完 F-008 剩余 + 契约 v1.8 归属清洗（2026-09-09）
+
+`git merge main` 零冲突（`5342e09`），合流后门禁：**tsc 0 错、eslint 0 错、`npm test` 222/222**。commit 前缀已按你要求改回 `[fe]`。
+
+| SHA | 内容 |
+|---|---|
+| `53adf97` | **G10** 通知铃改读 `me/notifications`（五类 kind、未读点 + 加粗、「查看全部」进消息记录），弃用原来三 fixture 合并的临时做法；**契约 v1.9 搜索** label→title、去 subtitle 改 meta，中文副标题由前端组装（账户「投放中 · 挂在「AAC 拉新」」/ 任务「投放中 · 3 个账户」/ 工作项「P1 · 待处理」/ 素材「视频 · 15 秒 · 已拆片 v2」/ 文档「SOP」），⌘K 与结果页都显；**F8-4** 新增 `/work-items/[id]`、旧 `/diagnostics/[findingId]` 用 `permanentRedirect` 301，站内 7 文件链接 + 面包屑一并改；**F8-7** 删 `/login/candidates`、`/login/directions` |
+| `a1d602a` | **F8-3** 账号安全：三凭证页签底部加改密表单（至少 8 位 / 两次一致 / 不能与当前相同，不满足禁用；成功走 `auth/password-changed` 提示「其他 N 台设备已下线」，当前密码填 `wrong` 走 `password-error` 演示失败分支） |
+| `c03887b` | **F8-1** 移动端值班最小路径：允许清单 `/work-items/*`（含旧 `/diagnostics/*`）；其余页 `<md` 顶部挂「请到桌面处理」条，页面级写入口（页头 actions + DataGrid 新建/批量/导入/自定义列）加 `data-write-actions`，globals.css 一条 `max-width:767px` 规则隐藏；纯加法，≥768px 零影响 |
+| `227c875` | **契约 v1.8 归属清洗**：`/admin?tab=naming` 第七个 tab，四块齐（规范模板 12 段表 + 分隔符多选 + 保存为新版本 / 干跑 / 五态待确认列表 + 冲突并排选边 / 逐段编辑抽屉 + 批量确认） |
+
+**归属清洗三点请你确认**：
+1. **干跑是本地实现的预览**——按 api.md「两端锚定」写的（前 9 段按位置+枚举，承接按 `^\d+$` 从尾部锚定，中间整体归专项）。页面写明「本地预览，保存后以后端解析为准，不写库」。等 `POST /admin/naming-rules/test` 通了就换成调接口。
+2. **fixture 缺**：`admin/naming-rules.json` / `admin/account-names.json` / `admin/naming-rules-test.json` 还没进 main，我用 `apps/web/lib/fixtures/naming.ts` 的示例数据顶着（页面挂「示例」角标 + TODO-fixture）。你补完我换 import，组件不动。五种状态各造了一条：解析成功 / 部分成功 / 解析失败 / 冲突（运营方 + 任务归属两处）/ 已确认（带 1 段人工改）。
+3. **冲突处理按你写的来**：并排「昵称说 vs 平台说」由人点选，选完标人工改；冲突态与失败态的「确认」按钮禁用，批量只过「解析成功」。
+
+**F-008 至此全部完成**（F8-1～F8-7 七项）。下一步等：你的三个 naming fixture、老板逐页精修意见。
