@@ -5058,3 +5058,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 初始QIHANG_IDENTITY_MISSING与执行期缺可用身份两条原因，按当前active personal原owner及grant再校验；历史日也恢复，ID/date/attempt保留，已有冻结scope不扩户；首full未完成不恢复incr。状态+审计同事务两条bulk；1001候选/grant、16MiB边界保守拒绝。
 - 真once：昨日blocked→正式绑定→今日once旧job done；同日执行期blocked后新增grant仍仅执行原账户。撤权/换identity/跨空间媒体/耗尽/其他blocked原因不放行，audit失败真实回滚。runbook§OS-1已把“删job”改为合版本后补身份/授权直接重触发，明确OS尚待复测。
 - 报告 `2026-09-09-P174身份缺失任务恢复质量回执.md`；F-OS-003安全阶段诊断继续，001③missing仍待完整闭环。新BI002、v1.9.6/7知会已收，不等这些去扩大权限或动be2登录文件。
+
+### P-175 F-OS-003安全阶段码与只读自查交审（be/r010，2026-09-09）
+
+- 代码 **2d836d80**，同步main e46783a0后HEAD **c5d22aec**；18文件，非视觉/契约/真实媒体写。CLI和HTTP内部stderr白名单阶段码，公开HTTP错误不变；新增 `npm run --silent worker:diagnose` 只读命令，DB/空间/身份缺项/ETL队列计数，不消费/复排jobs，不显示qid/DSN/原error。
+- 最终Worker13文件82过（含真实CLI/HTTP/PG/恢复/锁），DB2文件10过（3PG/7unit）；两包type/lint、缓存production audit0；Worker三模块96.92%行/90.69%分支，DB诊断100%行/97.91%分支。磁盘不足8GiB未全包，请独立验收，不冒称已部署。
+- 顺带实测发现HTTP child曾丢NODE_EXTRA_CA_CERTS，已加白名单及先红后绿测试；没有传TLS禁用开关/trigger token，真实OS TLS仍待复测。自查明确network/data not_checked、missing workspace不假ready；runbook2.6.1已补。
+- 报告 `2026-09-09-P175Worker安全诊断质量回执.md`；v1.9.8裁决已读并合本人分支，下一项单批失败missing。生图取消持续；全信箱目标不缩成这一项。
