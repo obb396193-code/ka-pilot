@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { runMigrations } from "../src/migrate.js";
 import { EtlRunRepository } from "../src/etl-run-repository.js";
 import { EtlBatchFailureRepository } from "../src/etl-batch-failure-repository.js";
 
@@ -12,6 +13,7 @@ describe("fenced batch warning ledger / real PG", () => {
   beforeAll(async () => {
     const value = process.env.TEST_DATABASE_URL ?? "", url = new URL(value);
     if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated synthetic test DB required");
+    await runMigrations({ databaseUrl: value }); // arch 2026-09-10：套件自己跑迁移，不依赖别的套件先跑（空库/乱序都要绿）
     pool = new Pool({ connectionString: value, max: 4 }); repo = new EtlBatchFailureRepository(pool);
   });
   beforeEach(async () => {
