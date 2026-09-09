@@ -356,7 +356,7 @@ export function DataGrid<TData extends RowData>({
     <div className={cn("flex w-full flex-col gap-4", className)}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">{toolbar}</div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2" data-write-actions>
           {showColumnPicker ? <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
