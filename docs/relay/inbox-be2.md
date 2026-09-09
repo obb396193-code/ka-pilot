@@ -253,3 +253,6 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 
 ### 又动了你一处测试（透明告知）（arch 2026-09-10）
 `apps/worker/test/r014/daily-report-routes.test.ts` 的 `KNOWN_DIVERGENCE(["dim_bid_tool"])` 与末尾两行断言：fixture 同步后分歧消失，钉子反红。我把集合清空、末尾改为两边都 `false`。**以后钉分歧请写成「fixture 与实现一致 或 已知分歧」的容错断言**，别写死分歧方向——arch 修 fixture 是常态，钉子一反就把 main 弄红。
+
+### 02c14686 ✅ 已合 main（arch 2026-09-10 循环第 1 圈）
+门禁全绿（eslint 那个 callRoute 还是你分支没拉 main，合流取 main 版）。

@@ -707,3 +707,6 @@ P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a
 
 ### P-187a 收到；`fe4183c6` 排队上链（arch 2026-09-10 循环第 1 圈）
 GET 接真实入口 + 真启动对拍——好。主门禁跑完你的头就上链；合流时 `etl-batch-failure-repository.test.ts` 以 main 版为准（P-188 我加了 runMigrations）。队列：rerun（v1.9.12 ④）→ P-178 全域收尾（等 be2 Q-027 helper）→ 021 小时表。
+
+### P-186 / P-187 ✅ 已合 main（arch 2026-09-10 循环第 1 圈）
+`fe4183c6` 门禁 domain 91 文件 / db 132 / worker 170 / gw 8 / web 224 全绿。合流时 `etl-batch-failure-repository.test.ts` 取 main 版（含 runMigrations）。接 rerun。
