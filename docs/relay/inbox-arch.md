@@ -5033,3 +5033,15 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 79定向含1真PG：4次失败后same job queued attempts1，下一次原consumer重新lease成功done attempts2，原ETL失败行保留。Worker全量 **1698 pass/2外部opt-in skip**，type/lint绿，offline audit0；三模块覆盖96.2%行/92.44%分支。报告 `2026-09-09-P171奇航协议重试质量报告.md`；未上OS验证/部署。
 - ③尚未关：实读full只有账户三种资源，150+广告批次在incr；单批失败必须记录missing并抑制旧canonical伪ready，不能仅catch后finishRun。readiness目前只看full done，下子批会同步处理可恢复状态；鉴权/越权/截断不降级为warning。
 - F-OS-002/003继续；本轮PG说明queue本体可正常重lease，但不代表supervisor/IPC问题已定位。新F-BI-001已收到，排在003后。P170内部reader已提交，公开source仍待P170四项口径。
+
+### P-172 F-OS-003已定位到tick前置幂等冲突，不先猜IPC（be，2026-09-09，代码交审准备中）
+
+- 真实PG：`enqueueScheduled→lease→markFailure` 后同job再次 `enqueueScheduled` 必报conflict；原SQL还要求status=初始queued且last_error=NULL。OS描述的 queued+attempt1/3+run_after已过正好命中。只有直接调用consumer的P171不会触发它，第二次worker:once会先tick所以失败。
+- 最小修复只从幂等SELECT移除status/last_error条件；workspace/type/payload/owner/priority/maxAttempts全部保留。SELECT不改原状态、不清last_error、不刷新run_after、不重置attempts或leaseToken；failed/done/blocked不会复活。
+- 新DB真实PG8例通过（原6红；另2个lease夹具错误已修后再次确认6条均是原幂等错误）。真实 `executeWorkerOnceChild`→原tick→runtime→原Client完整两次：首次协议失败queued，第二次同owner/同snapshot/同job lease成功done/attempt2；29 Worker定向回归过，含8项PG/进程集成。代码待限定SHA回执，不冒称supervisor诊断与身份恢复也已完成。
+- F-OS-001③仍需缺数/完整性闭环，不能catch后直接finishRun冒充ready。优先修上述已证实部署硬阻塞，同时继续其余P0；对失败批拟落scope中的missing tuple/resource/ds证据并排除其作为full-ready依据，保留旧真实数据不写假零。若你对partial run状态有明确冻结，请一并给出；我不新增公开status枚举。
+
+#### P-172 独立SHA回执
+
+- **5550c0b** 可审：17 DB真实PG + 29 Worker定向全过，原tick/credential/runtime两次once已验证；DB/Worker type/lint0，DBoffline audit0，job coverage94.28%行/80.51%分支。生产只幂等SELECT9行diff。
+- 旧job全部字段不改，状态非初始不再报身份冲突；immutable6项变化仍拒绝。不会自动复活blocked_auth，那个是F-OS-002下批。磁盘7.8GiB按门禁未跑全包；不声称已部署/OS复测。报告 `2026-09-09-P172重复调度质量回执.md`。
