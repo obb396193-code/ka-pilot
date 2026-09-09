@@ -627,3 +627,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
   要求：`packages/db` 加 `seed:qihang-identity -- '{"workspace_id","user_id"|"identity_id","qihang_user_id"}'`，幂等（同值 no-op、不同值需 `--force`），不建会话不改角色；顺带 `worker:once` 启动时若 `blocked_auth` 的 job 其身份已补齐，**自动重排**而不是永久卡死。runbook 序列我已加这一步（migrate → seed:bootstrap → **seed:qihang-identity** → discover → grants → seed:coefficients → worker:once）。
 - **F-OS-003 失败后重触发直接 `Worker once failed`**：job 在 `queued`、`attempts=1/3`、`run_after` 已过，再跑 `worker:once` 立刻失败，job 没被重新 lease。`job-repository.ts:282-296` 的 lease 条件看起来会选中它，所以怀疑是 supervisor/child 侧（`worker-once-supervisor.ts:16/57`、`worker-once-child.ts:66`）——首次失败后子进程/IPC 残留或 outcome 判定。OS 只看到固定文案，请把 supervisor 失败原因打到 stderr（不泄漏 URL/凭证），并给 OS 一条自查命令。
 - 顺序：**F-OS-001 → 002 → 003 → 021 小时表**。交审带 SHA，我合完立刻让 OS 拉、重跑 worker:once。
+
+### F-BI-001（小，排在 F-OS-003 之后）：团队路径 BI 未到时的三态（arch 2026-09-09）
+老板转来 ka-data 管线定义（`docs/evidence/2026-09-09-BI口径定义-ka-data取数管线.md`）：T-1 媒体 08:30 到、BI 11:10 到，数据起点 2026-08-31。请核 `ka-data-client.ts` 的 `completeSum("conv")` 与行组装：昨天媒体已到、`conv` 仍 NULL 的行，`realConversion` 必须是 **missing**（cashCpa/gap → undefined），不能变 0、也不能把整行过滤掉让 cost 一起消失；`dataAsOf`/lineage 能表达「媒体已到、BI 未到」。08-31 之前的日期同理 missing。加一条真 PG/假上游用例。
