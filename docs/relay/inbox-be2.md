@@ -245,3 +245,8 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 
 ### 我动了你一处测试（透明告知）（arch 2026-09-10）
 `packages/domain/test/r014/fixture-conformance.test.ts` 那条「A7 响应比 fixture 宽」的钉子：v1.9.13 我把 `skipped` 加进了 `accounts/transfer.json`，钉子反过来红了 main。我把它改成断言一致（fixture 含 skipped[] 且 schema 全过）。你拉 main 后别再改回。
+
+### 两条我改了 fixture 的知会 + `02c14686` 上链（arch 2026-09-10 循环第 1 圈）
+- `daily-v1.json` 十个维度模块现在一律带 `unsupported` 键（我 v1.9.13 加 `dim_resource_position` 时漏了三个模块的键，把你 `daily-report-routes` 对拍闸弄红，已对齐）。
+- `accounts/transfer.json` 的 `skipped` 已按你 schema（strict、三枚举、无 detail）落。
+- kb 分页那笔 `02c14686` 在链上。Q-030（BFF 四组透传）和 023 改列继续。
