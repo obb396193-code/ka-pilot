@@ -241,3 +241,9 @@
 @media (prefers-reduced-motion: reduce) {
   .kp-orb, .kp-orb::before, .kp-glass::before { animation: none; }
 }
+
+/* F8-1 移动端值班最小路径：非值班页在窄屏隐藏页面级写入口（新建 / 批量 / 导入），只读浏览不受影响。
+   桌面 ≥768px 完全不生效。 */
+@media (max-width: 767px) {
+  [data-mobile-duty="restricted"] [data-write-actions] { display: none !important; }
+}

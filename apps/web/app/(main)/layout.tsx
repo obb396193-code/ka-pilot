@@ -6,6 +6,7 @@ import { SessionProvider, WorkspaceScope } from "@/components/business/session/s
 import { ThemeProvider } from "@/components/business/theme/theme-provider"
 import { AgentLauncher } from "@/components/business/agent/agent-launcher"
 import { CommandPalette } from "@/components/business/command/command-palette"
+import { MobileDutyBanner, MobileDutyScope } from "@/components/business/mobile/duty-guard"
 
 export default function MainLayout({
   children,
@@ -26,9 +27,10 @@ export default function MainLayout({
         <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
+          <MobileDutyBanner />
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
-              <WorkspaceScope>{children}</WorkspaceScope>
+              <MobileDutyScope><WorkspaceScope>{children}</WorkspaceScope></MobileDutyScope>
             </div>
           </div>
         </SidebarInset>
