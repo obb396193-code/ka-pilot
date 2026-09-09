@@ -9,6 +9,7 @@ import {
   candidateBlockedReason,
 } from "@ka/db";
 import {
+  approvedScheduledSyncPayload,
   scheduledSyncAuthorizationSnapshotSchema,
   shanghaiTaskBusinessDate,
   workspaceSyncTickRequestSchema,
@@ -16,6 +17,7 @@ import {
   type WorkspaceSyncBlockedReason,
   type WorkspaceSyncJobType,
   type WorkspaceSyncTickResult,
+  type ScheduledSyncAuthorizationSnapshot,
 } from "@ka/domain";
 
 import { deterministicJobId } from "../jobs/deterministic-id.js";
@@ -26,6 +28,7 @@ export interface WorkspaceSyncSnapshotPort {
 }
 
 export interface WorkspaceSyncJobPort {
+  recoverQihangIdentityBlocked?(snapshot: ScheduledSyncAuthorizationSnapshot, media: string): Promise<string[]>;
   enqueueScheduled(
     job: NewJob,
     initialState: ScheduledJobInitialState,
@@ -99,24 +102,7 @@ function jobPayload(
     role: candidate.membershipRole,
     allowedAccounts,
   });
-  const common = {
-    workspaceId: candidate.workspaceId,
-    media,
-    businessDate,
-    initiatorUserId: candidate.userId,
-    authorizationSnapshot,
-    accountIds: allowedAccounts.map((account) => account.accountId),
-  };
-  if (jobType === "etl_full") {
-    return { ...common, asOfDate: businessDate };
-  }
-  return {
-    ...common,
-    ds: businessDate,
-    offlineReconcileDays: 1,
-    focusAccountIds: [],
-    adIds: [],
-  };
+  return approvedScheduledSyncPayload(authorizationSnapshot, jobType, media, businessDate);
 }
 
 function scheduledJob(
@@ -161,10 +147,17 @@ export class WorkspaceSyncTickService {
         businessDate,
       );
       const job = scheduledJob(candidate, plan.jobType, request.media, businessDate, payload);
+      const recoveredIds = plan.reason === null
+        ? await this.jobs.recoverQihangIdentityBlocked?.(
+          scheduledSyncAuthorizationSnapshotSchema.parse(payload.authorizationSnapshot), request.media,
+        ) ?? [] : [];
       const initialState: ScheduledJobInitialState = plan.reason === null
         ? { status: "queued" }
         : { status: "blocked_auth", reason: plan.reason };
-      const saved = await this.jobs.enqueueScheduled(job, initialState);
+      // A recovered same-day job keeps its original approved scope. Do not try
+      // to replace it with a wider fresh snapshot through ordinary enqueue.
+      const saved = recoveredIds.includes(job.id!) ? { id: job.id!, inserted: false }
+        : await this.jobs.enqueueScheduled(job, initialState);
       jobs.push(plan.reason === null
         ? {
             jobId: saved.id,

@@ -74,3 +74,7 @@ export * from "./work-item-command-repository.js";
 export * from "./coefficient-read-repository.js";
 export * from "./r014/account-transfer-repository.js";
 export * from "./r014/kb-repository.js";
+// be: bounded tuple-scoped nickname/manual provenance, no public grouping policy.
+export * from "./account-dimension-evidence-repository.js";
+// be: operator-only explicit identity binding; no role/session/grant mutation.
+export * from "./qihang-identity-seed-repository.js";

@@ -3,16 +3,19 @@ import {
   qihangEnvelopeSchema,
   rowArraySchema,
 } from "./schemas.js";
+import { ZodError } from "zod";
 import {
   BlockedAuthError,
   QihangBusinessError,
   QihangError,
   QihangHttpError,
+  QihangProtocolError,
   QihangResourceLimitError,
   QihangSuspectedTruncationError,
   RetryExhaustedError,
 } from "./errors.js";
 import { createQihangObservation, type QihangObservation } from "./observation.js";
+import { protocolDiagnostic } from "./protocol-diagnostic.js";
 
 const DEFAULT_BASE_URL =
   "https://qh.alibaba-inc.com/qihang/api/rta_auto/tmp/get_data";
@@ -232,8 +235,13 @@ export class QihangClient {
       assertResponseStatus(response);
       const bodyText = await readBoundedResponse(response, this.maxResponseBytes);
       assertSuccessfulHttpResponse(response, bodyText);
-      const envelope = parseSuccessfulEnvelope(bodyText);
-      const result = this.extractResult(query.resource, envelope);
+      const envelope = parseSuccessfulEnvelope(bodyText, query);
+      let result: QihangQueryResult;
+      try { result = this.extractResult(query.resource, envelope); }
+      catch (error) {
+        if (error instanceof ZodError) throw new QihangProtocolError(protocolDiagnostic(query, "invalid_resource_shape", bodyText));
+        throw error;
+      }
       assertRowBudget(result.rows, this.maxRows);
       this.assertNotSuspectedTruncation(query.resource, result.rows.length);
       return {
@@ -366,6 +374,7 @@ function normalizeResourceLimits(options: QihangClientOptions): QihangResourceLi
 }
 
 function retryableCauseOrThrow(error: unknown): unknown {
+  if (error instanceof QihangProtocolError) return error;
   if (error instanceof QihangHttpError && RETRYABLE_STATUS.has(error.status)) {
     return error;
   }
@@ -391,14 +400,16 @@ function assertSuccessfulHttpResponse(response: Response, bodyText: string): voi
   }
 }
 
-function parseSuccessfulEnvelope(bodyText: string): ReturnType<typeof qihangEnvelopeSchema.parse> {
+function parseSuccessfulEnvelope(bodyText: string, query: QihangQuery): ReturnType<typeof qihangEnvelopeSchema.parse> {
   let parsed: unknown;
   try {
     parsed = JSON.parse(bodyText);
-  } catch (error) {
-    throw new QihangError("Qihang response is not valid JSON", { cause: error });
+  } catch {
+    throw new QihangProtocolError(protocolDiagnostic(query, "invalid_json", bodyText));
   }
-  const envelope = qihangEnvelopeSchema.parse(parsed);
+  const checked = qihangEnvelopeSchema.safeParse(parsed);
+  if (!checked.success) throw new QihangProtocolError(protocolDiagnostic(query, "invalid_envelope", bodyText));
+  const envelope = checked.data;
   if (!envelope.successful) {
     throw new QihangBusinessError(
       envelope.code === undefined ? null : String(envelope.code),
