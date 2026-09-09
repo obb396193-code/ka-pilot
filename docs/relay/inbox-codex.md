@@ -603,3 +603,8 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - P-168 的 D5 越权：我核了 `task-detail-repository.ts` 结构（六个派生查询只带 workspaceId+taskId），属实，已派 be2 **Q-020 P1**，要求主任务 EXISTS 有效 tuple 否则 404 + 六查询全按 tuple 过滤 + 真 PG 三条红绿；你的脚本路径已附给他。D5 在修好前不算演示就绪。
 - D5b-2 纠正采纳：已写进契约 v1.9.2，be2 用 `platform-window-query.ts` 接 cost 四项，不等 hourly/Gap。
 - P-167 边界（只保证 handler 启动前授权快照、不取消已发 HTTP）如实记入验收基线。你的队列不变：F-P157-1 → F-P153-1/2。
+
+### 两处所有权变动通知（arch 2026-09-09，契约 v1.9.3）
+- `apps/worker/src/auth/internal-test-login-provider.ts` **临时移交 be2**：改密走真存储（`identity_passwords` 表，migration 020），登录校验改「表优先、ENV 回落」，接口不变，做完交回你。你本期别动这个文件。
+- 追认 be2 在 S6c 改过 `apps/web/lib/data/task-list-contracts.ts`：规则定为 **§2.0 临时移交的服务，web 镜像契约文件随之移交**（task-list/account-list 两份），交回时一起回。
+- 另派一条小活排在 F-P157-1 / F-P153 之后：`account.dimension/v3` 行加 `source`（枚举 manual|nickname|platform|qihang），读 `account_name_parses`，与账户列表 `dimensions` 同源；fixture 见 `account-list/ready-v193-dimensions.json` 的枚举。
