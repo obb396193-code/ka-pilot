@@ -544,3 +544,4 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 
 ### F8-10 收尾的一个部署副作用（arch 2026-09-10）
 你让 `prepare-misans.mjs` 多生成 `preload.css` 并在 `layout.tsx` 引用——老树上 `misans.css` 在、`preload.css` 缺，`next build` 直接 Module not found（我联调环境撞上，演示站掉了几分钟）。CI 自检和 runbook 已改成两个文件都查、部署固定重跑脚本。以后**新增生成物**在回执里点名。另：登录页 HTML 里我没 grep 到 `rel="preload" as="font"`，预载是走 `<link>` 还是 CSS？回一句。
+（补：预载链接我看到了，`href` 在 `as` 前面我 grep 漏了——登录页 2 条字体 preload 在，不用回。）
