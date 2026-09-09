@@ -2,10 +2,11 @@ import { fork } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { parseWorkerOnceConfig } from "./worker-once.js";
 import { superviseWorkerOnce } from "./worker-once-supervisor.js";
+import { atWorkerOnceStage, formatWorkerOnceFailure, WorkerOnceFailure } from "./worker-once-failure.js";
 
 async function main(): Promise<void> {
-  if (process.argv.length !== 2) throw new Error("Invalid arguments");
-  const config = parseWorkerOnceConfig(process.env);
+  if (process.argv.length !== 2) throw new WorkerOnceFailure("INVALID_CONFIG");
+  const config = await atWorkerOnceStage("INVALID_CONFIG", async () => parseWorkerOnceConfig(process.env));
   const controller = new AbortController();
   const stop = (): void => controller.abort();
   process.once("SIGINT", stop); process.once("SIGTERM", stop);
@@ -20,10 +21,11 @@ async function main(): Promise<void> {
       }),
       onJobState: (event) => { process.stdout.write(`${JSON.stringify(event)}\n`); },
     });
-    if (result.status === "aborted" || result.status === "blocked_auth") throw new Error("Worker once did not complete");
+    if (result.status === "aborted") throw new WorkerOnceFailure("ABORTED");
+    if (result.status === "blocked_auth") throw new WorkerOnceFailure("BLOCKED_AUTH");
   } finally {
     process.removeListener("SIGINT", stop); process.removeListener("SIGTERM", stop);
   }
 }
 
-await main().catch(() => { process.stderr.write("Worker once failed\n"); process.exitCode = 1; });
+await main().catch((error: unknown) => { process.stderr.write(formatWorkerOnceFailure(error)); process.exitCode = 1; });
