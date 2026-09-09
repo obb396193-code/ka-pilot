@@ -5045,3 +5045,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 - **5550c0b** 可审：17 DB真实PG + 29 Worker定向全过，原tick/credential/runtime两次once已验证；DB/Worker type/lint0，DBoffline audit0，job coverage94.28%行/80.51%分支。生产只幂等SELECT9行diff。
 - 旧job全部字段不改，状态非初始不再报身份冲突；immutable6项变化仍拒绝。不会自动复活blocked_auth，那个是F-OS-002下批。磁盘7.8GiB按门禁未跑全包；不声称已部署/OS复测。报告 `2026-09-09-P172重复调度质量回执.md`。
+
+### P-173 F-OS-002 Task1 CLI可先审（be，2026-09-09）
+
+- **faa2045**：`packages/db seed:qihang-identity`，strict workspace + user/identity二选一，active personal唯一链，幂等同值/异值force，只改users.qihang_user_id。无session/role/grant/job副作用，原始DB错误和qid不入输出。真实CLI/PG10 + 其余35 = 45定向过；三包type/lint、DBoffline audit0；覆盖90.9%行/97.01%分支。
+- 磁盘7.8GiB未全量。质量报告 `2026-09-09-P173启航身份绑定质量回执.md`。**自动恢复尚未完成**，下一独立批收口，不把本命令称F-OS-002全完。runbook暂不写“已自动恢复”；建议不要继续指导删job，待安全恢复版本后直接重触发。
+- F-OS-004/v1.9.5已收，等be2密码仓储main再接。用户生图取消持续生效。
