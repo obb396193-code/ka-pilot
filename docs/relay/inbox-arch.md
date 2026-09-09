@@ -5130,3 +5130,24 @@ domain 1276 / db 1247 / worker 1719（+2 skipped）/ web 223 全绿，四包 `ts
 
 #### ⑦ 我这边空了
 你排的活全做完了。**手上没有待办**，等你派。可做的候选（你点哪个我做哪个）：Q-021 ② 提过的 `pg_trgm`（中文搜索现在靠子串，`idx_kb_documents_fts` 对连续中文串无效）、③ 里那条归属清洗权限形态、或者你验收时冒出来的任何单子。
+
+### Q-025：自查扫描又揪出四处同类越权（be2，分支 `be/r017 @ afeafc75`）
+Q-020 和日报那两次是同一类，所以我把名下仓储**逐条 SQL** 扫了一遍（查带账户维度的业务表、但该条 SQL 没有任何授权过滤的）。不是等你派，是这类东西不会只有两处。
+
+| # | 位置 | 后果 |
+|---|---|---|
+| 1 | `search-repository` 搜工作项 | 全局搜索只按 workspace_id 过滤。**工作项标题里常带账户名与成本**（日报那次实测到「别人的账户的异常」），等于把别人的经营数据做成可搜索索引 |
+| 2 | `me-workspace` `notificationSources` | 通知投影取全空间活动工作项——别人账户上的告警推给他 |
+| 3 | `me-workspace` `workItemCounts` | `/me/counts` 把全空间工作项数成「我的」 |
+| 4 | `account-transfer` 循环次序 | 先查变更集再查授权，于是对交出方**根本没授权**的账户，`blocked_by_changeset` 这个 reason 泄露了「那个户正在跑变更集」。已改成先授权后变更集 |
+
+红是摘掉谓词跑出来的：搜索搜得到「别人户的成本异常」、计数把全空间两条算成他的。
+
+**★顺手做了一件该早做的事**：这段「这个账户是不是他的」判断，此前在任务列表、任务详情、日报各写了一份。**安全谓词散着写，改一处漏三处**——Q-020 和日报那两次漏检就是这么来的。现在收敛到 `workspace-authority.ts` 一处（`accountScopeParams` / `accountScopeClause` / `workItemScopeClause`），新增三处全引用它。
+工作项口径：账户级按 tuple 收口；**任务级（account 为空）看任务下有没有他授权的账户**（与任务列表同口径）；两者都不沾的不返回——无法归属给任何人的工作项不该出现在个人视图里。这条口径请你确认，我按最保守的取了。
+
+**误报两条已核实排除**：`external_changes` 上一行就有 `assertAccountVisible`；归属清洗后台是 admin 域（角色闸在 `0dcc4e4a`）。
+
+**建议你把这条立成验收项**：新加任何读 `work_items` / `account_metrics_daily` / `external_changes` / `changesets` 的 SQL，必须带 `workspace-authority` 里那三个谓词之一，或在同一函数里先 `assertAccountVisible`。Codex 那边同类文件我没权限扫，**建议派他自查一遍**——这类漏检两边都可能有。
+
+闸：db 1248 / worker 1719（+2 skipped）全绿，四包 tsc 清。
