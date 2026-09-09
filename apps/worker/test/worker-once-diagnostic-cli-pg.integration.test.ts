@@ -6,7 +6,7 @@ import { runWorkerOnceDiagnosis } from "../src/scheduling/worker-once-diagnose.j
 describe("real CLI -> child -> safe phase IPC", () => {
   it("labels real database failure as tick failure without printing connection details", async () => {
     const source = new URL(process.env.TEST_DATABASE_URL ?? "");
-    if (!["localhost", "127.0.0.1"].includes(source.hostname) || source.port !== "55432" || !/^\/ka_be_[a-z0-9_]+_test$/.test(source.pathname)) throw new Error("Dedicated local be test DB required");
+    if (!["localhost", "127.0.0.1"].includes(source.hostname) || source.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(source.pathname)) throw new Error("Dedicated local test DB required");
     // Nonexistent database: no mutations or source access, real driver error contains this private marker.
     source.pathname = "/ka_be_synthetic_private_missing_db";
     const result = await new Promise<{ code: number | null; stdout: string; stderr: string }>((resolve, reject) => {
@@ -24,7 +24,7 @@ describe("real CLI -> child -> safe phase IPC", () => {
   }, 25000);
   it("diagnose default composition and actual executable only report database presence", async () => {
     const databaseUrl = process.env.TEST_DATABASE_URL ?? "", url = new URL(databaseUrl);
-    if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_be_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated local be test DB required");
+    if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated local test DB required");
     const env = { PATH: process.env.PATH, DATABASE_URL: databaseUrl, WORKER_ONCE_WORKSPACE_ID: randomUUID(), WORKER_ONCE_MEDIA: "KUAISHOU", QIHANG_BASE_URL: "https://synthetic-private.invalid/get_data" };
     let output = ""; await runWorkerOnceDiagnosis({ env, args: [], write: value => { output += value; } });
     const direct = JSON.parse(output);
