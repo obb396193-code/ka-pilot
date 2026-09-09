@@ -224,3 +224,9 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 - 你把 `identity-password-repository.ts` 从 `r014/` 移到 `src/` 根，index.ts 并集把旧导出（`./r014/...`）和新导出都留下了 → TS2307、data-api 起不来。我删了旧的一行（`b6c581c9`），tsc 0、服务起来了。以后**移动文件时在回执里点名**「删了哪条导出」；我合流脚本加了「导出指向的文件必须存在」检查。门禁全绿：domain 1296 / db 1352 / worker 1737 / gw 36 / web 224。
 - 实测：错当前密码 → **401 INVALID_CREDENTIALS「当前密码不正确」retryable true**（F-Q024-1 ✅）；日报 `dim_biz` 出「M运动 / CVR有端 / 闲鱼DAU / 未标注业务」（F-Q023-1 ✅）。
 - 下一批：Q-027（工作项矩阵 helper）→ Q-022 访客登录 → F-Q023-2 四解析维度（已做三个，dim_ubp 保持）→ F-Q026-1（dim_agent 枚举）。
+
+### Q-027 ✅；Q-022 后半改法——不开接缝，演示空间 = team + is_demo（arch 2026-09-10，v1.9.12）
+- 你说的 49（我数 24）处 `kind === "team"` 正是我不加 `demo` 枚举的理由。改法：**023 改成 `ALTER TABLE workspaces ADD is_demo BOOLEAN NOT NULL DEFAULT false`**，不放宽 kind 约束；演示空间建成 `kind='team'`（天然只读全量、scope 复用 `team_workspace_readonly`）+ `is_demo=true`；guest 登录 = 固定 guest identity 的 viewer 会话落到 `GUEST_WORKSPACE_ID`；会话/空间 DTO 加 `isDemo`。fixtures 已改（kind team + isDemo）。`workspaceKindSchema` / bootstrap 类型 / auth context 全不动。
+- pg_trgm 在 022 且可选：**追认**，v1.9.10 撤回作废；schema.sql 已以注释形式记可选 DDL。
+- 灌数脚本建演示空间我来改（`scripts/seed-demo-data.py` v5：建 team+is_demo 空间 + guest identity）。
+- 顺序：Q-022 后半（023 改列 + guest 登录）→ 归属清洗权限放宽（已做）→ F-Q026-1（dim_agent 枚举）。`36e83527` 门禁中。

@@ -9,6 +9,7 @@ CREATE TABLE workspaces (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   kind TEXT NOT NULL DEFAULT 'personal',   -- personal|team；team 一期只读
+  is_demo BOOLEAN NOT NULL DEFAULT false,  -- v1.9.12：演示空间 = team 只读 + 合成数据（访客登录落这里）；migration 023（be2）
   is_active BOOLEAN NOT NULL DEFAULT true,
   CONSTRAINT workspaces_kind_ck CHECK (kind IN ('personal', 'team')),
   created_at TIMESTAMPTZ DEFAULT now()
@@ -704,6 +705,10 @@ CREATE TABLE kb_documents (
   deleted_at TIMESTAMPTZ, deleted_by UUID, -- v1.9.3 软删（DELETE 只置位；列表/搜索/反查默认过滤）
   created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now()
 );
+-- v1.9.12（migration 022，be2）：中文子串搜索加速，扩展可选——装不上不阻塞迁移，搜索降级为纯 ILIKE 并标 meta.warnings TRGM_MISSING
+-- CREATE EXTENSION IF NOT EXISTS pg_trgm;
+-- CREATE INDEX kb_documents_title_trgm ON kb_documents USING gin (title gin_trgm_ops);
+-- CREATE INDEX kb_documents_text_trgm ON kb_documents USING gin (content_text gin_trgm_ops);
 CREATE TABLE kb_revisions (
   id BIGSERIAL PRIMARY KEY, document_id UUID NOT NULL REFERENCES kb_documents(id) ON DELETE CASCADE,
   revision INT NOT NULL, content_json JSONB, edited_by UUID, created_at TIMESTAMPTZ DEFAULT now(),

@@ -1284,3 +1284,18 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 落地：`workspace-authority.ts` 的 `workItemScopeClause` 加「self 分支」与「team 排除纯私人」（be2，helper owner）；Codex 的 `work-item-list-sql.ts` / `read-detail-service.ts` 改为引用该 helper，不再各自判双 null。每类一条真 PG 红绿用例（含 team 空间不出纯私人项）。
 - 后台 job（非 HTTP）读工作项不套此矩阵，但写回必须带原行的 workspace 与所有者，不得跨空间。
 
+## v1.9.12 追加（2026-09-10 arch；裁 be2 Q-027/Q-022 接缝 + Codex P-185 四问）
+
+**访客登录改法：不加 `demo` kind，演示空间 = `team` + `is_demo`**（撤 v1.9.6 的 kind demo）
+- 加 `demo` 枚举要过全仓 24 处 `kind === "team"` 判断 + Codex/域层三处类型，风险大收益零。改为：`workspaces.is_demo BOOLEAN`（schema.sql v1.9.12，**migration 023 改成加这列**，不再放宽 `workspaces_kind_ck`）；演示空间 = `kind:"team"`（天然只读全量、scope `team_workspace_readonly`）+ `is_demo:true` + 合成数据；`GUEST_WORKSPACE_ID` 指向它。
+- 会话/空间 DTO 加 `isDemo: boolean`（默认 false）；fixtures `auth/login-guest.json`、`session-http/guest.json` 已改为 `kind:"team", isDemo:true`。前端只读条按 `isDemo` 显「演示数据」，按 `role=viewer` 藏写入口。
+- 不需要开任何接缝：`workspaceKindSchema`、`bootstrap-seed-repository`、`approvedWorkspaceAuthContextSchema` 全部不动。
+
+**pg_trgm（改口）**：be2 022 的做法追认——扩展**可选**（装不上不阻塞迁移，索引跳过，`meta.warnings: TRGM_MISSING`），匹配一律 ILIKE、score 用 similarity 为 0 时回落启发式。v1.9.10「撤回不装」作废，schema.sql 以注释形式记录（可选 DDL）。
+
+**`GET /system/etl-runs`（Codex P-185 四问）**
+- ① 旧 run 无 execution：`attempt: null` + `warnings[] {code:"LEGACY_NO_ATTEMPT"}`，不拿 jobs.attempts 回填，不丢行。
+- ② `rows: {raw: number|null, canonical: number|null} | null`：各字段可 null，只填本 run 自己知道的；不跨 run 拼。
+- ③ 正式分页：`?page=&pageSize=`（默认 1/50，上限 200），`startedAt` 倒序；响应 `{items, page, pageSize, total}`；`meta.dataAsOf` = 最新 `finished_at`（**运行观测时间**，不是 canonical 新鲜度，字段名不改但 `_note` 标明）。fixture `system/etl-runs-page.json`（含一条 legacy 行）；实现时把 `etl-runs.json` 升成同形状（你的 strict 测试一起改）。
+- ④ `POST /system/etl-runs/:id/rerun`（admin）= **新 job**：复制原 job 的 workspace/type/scope，credential owner 保持原 owner；允许原状态 ∈ done|failed|blocked_auth（queued/leased/running → 409 `INVALID_STATE`）；幂等键 = 原 runId（同 run 已有 queued/running 的重跑 → 409 `CONFLICT` 并返回那个 jobId）；响应 `{jobId, sourceRunId}`；写 timeline 一条。
+

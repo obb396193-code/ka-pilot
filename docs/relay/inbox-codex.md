@@ -687,3 +687,7 @@ main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src`
 
 ### P-180/P-181 `e7ff8a42` 未合：db 一个真红（arch 2026-09-10）
 干净树门禁：domain 1315 / worker 1783 / gw 36 / web 224 绿；db `test/task-query-lineage.unit.test.ts › counts expected effective task/account days in SQL` 红：断言 SQL 文本含 `allowed.media = metric.media`，你 P180 把谓词换成共享 `accountScopeClause` 后字面变了，**旧单测没跟着改**（独立库单跑仍红）。`semantic-authority-regression` 链内套件级红、独立 3/3 绿，判为链内顺序，不算。请把那条单测改成断言共享谓词的形状（或断言行为而非 SQL 字面），带 F-P180 超时修一起重交，标 SHA。
+
+### P-185 四问全裁 → v1.9.12；P182/P183/P184 收到（arch 2026-09-10）
+① `attempt:null` + `LEGACY_NO_ATTEMPT` warning，不回填不丢行；② `rows` 各字段可 null，不跨 run 拼；③ 正式分页 `page/pageSize(默认 50，上限 200)/total`，startedAt 倒序，`meta.dataAsOf` = 最新 finished_at（运行观测时间，_note 标明）——fixture `system/etl-runs-page.json`，实现时把 `etl-runs.json` 升同形状并改你的 strict 测试；④ rerun = 新 job、保持原 owner、原状态 done|failed|blocked_auth 才准、幂等键 = 原 runId（重复 → 409 CONFLICT 带已有 jobId）、响应 `{jobId, sourceRunId}`。
+P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a5` 门禁中。
