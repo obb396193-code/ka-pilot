@@ -505,3 +505,6 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### F8-11（排在 F8-10 之后）：成员页「新增成员 / 重置密码」对话框（契约 v1.9.5）（arch 2026-09-09）
 现在没有注册入口，内测同事由管理员在治理后台开。做三件：① 成员 tab 的「邀请」改成「新增成员」对话框：显示名（可中文）、登录名（ASCII，实时校验 `^[A-Za-z0-9._@-]{1,128}$`，中文提示「用拼音或工号」）、角色、可选初始密码；提交后弹「一次性初始密码」面板（复制按钮 + 「关闭后不再显示」），fixture `admin/member-created.json`；② 行动作「重置密码」→ 二次确认 → 同样一次性面板，fixture `admin/member-reset-password.json`；③ 成员行 `mustChangePassword=true` 显「未改初始密码」角标；该用户自己进设置页顶部提示「请修改初始密码」。BFF 透传两条 POST。
+
+### F8-12（排在 F8-11 之后）：登录页「访客浏览」+ viewer 只读态（契约 v1.9.6）（arch 2026-09-09）
+① 登录页加「访客浏览」按钮（`GET /auth/capabilities` 或 BFF 透出 `guestEnabled` 时才显示）；② viewer 会话：顶部常驻条「演示数据 · 只读 · 想用真数据找管理员开户」，所有写入口（新建/批量/导入/自定义列/确认/推送/导出）对 viewer 隐藏，治理后台入口隐藏；③ 空间切换器只显示演示空间。fixtures `auth/login-guest.json`、`session/guest.json`。

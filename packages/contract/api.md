@@ -1207,3 +1207,22 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members.json` 行加 `mustChangePassword`。
 - 分工：`identity_passwords` 表/仓储/登录回落 = be2（020，Q-021 ①）；`POST /admin/members` 扩展 + reset-password = Codex（r010 admin-members，**等 be2 的 `identity-password-repository.ts` 落 main 后再接**，不各写一套 scrypt）；成员页「新增成员 / 重置密码」对话框 = fe F8-11。
 
+## v1.9.6 追加（2026-09-09 arch；老板：没有 BUC 也要能登录，做访客；内网 M0 底表清单带来的源变化）
+
+**访客登录（guest）**
+- 角色枚举加 **`viewer`**：只读，所有写类 BFF/端点对 viewer 返 `403 READ_ONLY_ROLE`，治理后台不可见，导出/推送不可用；`readOnly:true` 常驻。
+- `POST /auth/login {provider:"guest"}`（无用户名密码）：仅当 `GUEST_ACCESS_ENABLED=1` 时开放；建一条 **匿名会话**（identity 为固定的 `guest` 身份，不建 user 行），`activeWorkspace` 固定为 `GUEST_WORKSPACE_ID` 指向的**演示空间**（kind `demo`，合成数据，由 `scripts/seed-demo-data.py` 灌），角色 `viewer`；TTL 2 小时；按 IP 限速 20 次/小时。**访客看不到真实账户与团队数据**——要给某人看真数据，走治理后台开成员，不走访客。
+- 登录页加「访客浏览」按钮（ENV 开时才显示），进入后顶部常驻条「演示数据 · 只读 · 想用真数据找管理员开户」。
+- `GET /auth/session` 响应对 guest 会话 `identity.provider="guest"`，`workspaces` 只有演示空间。
+- fixtures：`auth/login-guest.json`、`session-http/guest.json`（`activeWorkspace.kind="demo"`, `role="viewer"`, `readOnly=true`）。
+- 分工：be2（provider + viewer 角色 + 写类拦截，`session-http.ts` 在你手上）；fe F8-12（按钮 + 只读条 + 写入口对 viewer 隐藏）；OS（沙箱设 ENV + 灌演示空间）。**BUC**：正式化用，OS 去申请接入（门禁 A24），provider=buc 位置已留。
+
+**内网 M0 底表带来的源变化（先记，待 OS 确认 ka-data 暴露后逐条解禁）**
+- `ubp` 维度：`ads_rta_media_daily_report_base_adgroup.is_ubp` 有源 → ka-data `dwd_adgroup_daily` 加列后，v1.7.5 的「`ubp` 永久 DIM_UNSUPPORTED」作废，改为普通维度（值 1/0 → 「UBP/非UBP」）。
+- 扣量率/扣量前 Gap：`rta_transform_deduction_pv_mm`（分钟级 pv/deduction_pv）或 `base_adgroup.deduction_rate/ocpx_gap`（T+1）→ 不再等 R-012 `attribution_volume`；`preDeductionGap = ocpx_conversions/bi − 1` 语义与 metrics.md 一致（ocpx_conversions 即扣量前回传）。
+- 赔付 `income`、余额：`qihang_rta_account_fund_report_d`；快手缺账户 → missing。
+- `dimensions.agentType.source="platform"` 的真源：`julang_daili_relation`。
+- T+1 动作回收：`qihang_media_operation_log`（不完整 → 对不上标 unverified）。
+- 基建统计（冷启动/空耗/0 曝光）：`ads_rta_media_daily_report_base_account`，校验通过前不接。
+详见 `docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`。
+

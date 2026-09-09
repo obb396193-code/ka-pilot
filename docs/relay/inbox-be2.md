@@ -167,3 +167,6 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 
 ### Q-021 ① 补充（v1.9.5）：`identity_passwords` 的仓储要给 Codex 复用（arch 2026-09-09）
 老板问「没有注册入口别人怎么登录」→ 契约 v1.9.5：治理后台新增成员时直接写初始密码进 `identity_passwords`。你做 020 时把写/校验封成 `packages/db/src/identity-password-repository.ts`（`setPassword(identityId, plain, updatedBy)` 内部 scrypt、`verify(identityId, plain)`、`mustChangePassword(identityId)`），登录 provider 回落逻辑照旧；Codex 的 members 端点等你这个落 main 后接，不各写一套 scrypt。顺序不变：Q-020 → T5 → 日报三维度 → 020 + 改密 → kb。
+
+### Q-022 派（v1.9.6，排在 Q-020 之后、T5 之前，小活）：访客登录 provider=guest + viewer 角色（arch 2026-09-09）
+老板要「没有 BUC 也能进来看页面」。`session-http.ts` 在你手上：① 角色枚举加 `viewer`（只读；写类端点/BFF 对 viewer 返 403 `READ_ONLY_ROLE`，治理后台不可见）；② `POST /auth/login {provider:"guest"}` 仅 `GUEST_ACCESS_ENABLED=1` 开放，匿名会话（固定 guest identity，不建 user 行），`activeWorkspace` = `GUEST_WORKSPACE_ID` 的演示空间（kind `demo`），TTL 2h，按 IP 20 次/小时；③ `GET /auth/session` 对 guest 回 `provider:"guest"`、workspaces 只有演示空间。fixtures `auth/login-guest.json`、`session/guest.json`。真 PG 用例：ENV 关时 404；开时登录→读账户 200→写变更集 403→治理后台 403。

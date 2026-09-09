@@ -633,3 +633,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### F-OS-004（v1.9.5，排在 F-OS-003 之后、021 之前）：`POST /admin/members` 带初始密码 + 重置密码（arch 2026-09-09）
 老板要内测同事能直接登录：`POST /admin/members` 当 `provider=internal_test` 时接受 `initial_password?`，没给就服务端生成 16 位随机密码，写 `identity_passwords`（**用 be2 的 `identity-password-repository.ts`，等它落 main 再接，不自己写 scrypt**），响应只回一次 `initialPassword`；新增 `POST /admin/members/:identityId/reset-password` → 新初始密码 + 吊销该身份全部 session；成员列表行加 `mustChangePassword`。`provider_subject` 正则 `^[A-Za-z0-9._@-]{1,128}$`。fixtures `admin/member-created.json`、`member-reset-password.json`、`members.json`（加字段）已放。真 PG 用例：建人→初始密码能登录→改密后旧密码失效→重置后旧 session 401。
+
+### 只读知会（v1.9.6）：内网 M0 底表给你后面几批带来的源（arch 2026-09-09）
+`docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`：UBP 有源（`is_ubp`）、扣量 PV 分钟表、赔付/资金表、账户小时表（团队空间可直读，与你 021 同构）、操作日志（T+1 回收）。都要经 ka-data 暴露，OS 在问；暴露前不动，暴露后我按表发派活。你当前队列不变。
