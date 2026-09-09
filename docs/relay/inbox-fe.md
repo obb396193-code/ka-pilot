@@ -486,3 +486,16 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 3. **Windows 字体**：`globals.css` 字体栈 Mac 走苹方、Windows 走自带 MiSans（300 个 unicode-range 切片，6.7MB，`font-display: swap`）。经公网代理慢时，Windows 先用微软雅黑排版、切片到了再换 → 行宽变、换行跳（老板说的「变形」）。做两件：① 给最常用切片（常用汉字 + 拉丁数字那几片）加 `<link rel=preload as=font>`；② 正文考虑 `font-display: optional`（慢网直接用雅黑不再跳），标题保留 swap。Mac 本地不受影响（苹方在栈里更前）。
 4. **Windows 缩放**：内网同事多是 1366×768 + 125% 缩放，CSS 视口只有 1093px。用 Chrome 设备工具把宽度拨到 1093 和 1280 各过一遍全站 12 页：侧栏 + 内容不许横向滚动、表格容器自己滚、页头动作不折成两行。发现问题按响应式铁律只往窄处加规则（≥lg 不变）。
 5. 交付时附三张截图：1093 宽登录页、1093 宽账户池、Network 面板里字体请求列表。
+
+### F8-10 修订（P0）：「变形」根因已定位在我们自己的壳——最小宽 1290px（arch 2026-09-09，本地 headless Chrome 实测，证据 `docs/evidence/ui/2026-09-09-1093px/`）
+老板说的不是登录页，是登录后**很多页面**在内网机器上变形。我把本地生产构建缩到 1093px（Windows 1366×768 @125% 的 CSS 视口）实测：**8 个页面全部横向溢出 32～197px**；1280 基本正常；1440 全正常。表在 evidence README，截图三张。
+**根因（一处壳）**：
+- `components/site-header.tsx:45-72`：面包屑 `Breadcrumb className="min-w-0 shrink-0"` + `BreadcrumbList flex-nowrap whitespace-nowrap`，右侧 `ml-auto` 簇 = ThemeSwitch 三个带字按钮（黑白/黑白+彩/全彩）+ 搜索框 + 铃铛 + 头像，全 `whitespace-nowrap`，页头 min-content ≈ **1002px**；侧栏固定 `SIDEBAR_WIDTH = 16rem`（272px + inset 16px）→ 壳最小 **1290px**。
+- `SidebarInset`/`main`（`relative flex w-full flex-1 …`）没有 `min-w-0`，flex 子项默认 `min-width:auto`，被页头的 min-content 撑开，整个 main 右移出视口（实测 main.left=288、width=1002、right=1290）。
+**修法（按顺序，先壳后页）**：
+1. `SidebarInset`/`main` 加 `min-w-0 overflow-x-clip`；`header` 内层 `div.flex.w-full` 加 `min-w-0`；面包屑改 `min-w-0 shrink truncate`（只留末两级，前面省略）；ThemeSwitch **< xl 只显图标**（下拉三选）；搜索框 `< lg` 收成图标按钮；右簇 `gap-1`。目标：页头 min-content ≤ 560px。
+2. 侧栏 `collapsible="icon"`，**< xl（1280）默认折叠成 3rem 图标栏**（`SidebarProvider defaultOpen` 按 `matchMedia('(min-width:1280px)')`，用户手动展开的状态照旧记 cookie）。
+3. 页内：`accounts/pool-views.tsx` 九态卡 `grid-cols-9` → `grid-cols-5 xl:grid-cols-9`（或 `[repeat(auto-fit,minmax(112px,1fr))]`）；`tasks/task-detail-page.tsx` 的 `grid-cols-12` KPI → `md:grid-cols-6 xl:grid-cols-12`；`tasks-page.tsx` 同。表格已在容器内滚，不动。
+4. 仍按响应式铁律：只往窄处加规则，≥1440 一像素不变。
+**验收（硬）**：仓库新加 `scripts/ui/overflow-check.mjs`（headless Chrome + CDP，用法在文件头），跑出 **1093 与 1280 两档 8 页横向溢出全 0px**，把输出表贴回执；再手动过全站 12 页两档宽度，附 1093 账户池、任务详情、工作台三张截图。
+之前那条 F8-10 的 Unsplash 本地图、外链守卫、MiSans 预载/optional 三项照做，排在壳修之后。
