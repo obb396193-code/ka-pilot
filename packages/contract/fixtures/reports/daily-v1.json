@@ -48,50 +48,237 @@
       {
         "key": "dim_task",
         "title": "按任务",
-        "rows": []
+        "rows": [],
+        "_note": "v1.9.2：行同 dim_biz，key=taskId、label=任务名"
       },
       {
         "key": "dim_biz",
         "title": "按业务",
-        "rows": []
+        "rows": [
+          {
+            "key": "CVR有端",
+            "label": "CVR有端",
+            "metrics": {
+              "cost": {
+                "value": 5200.0,
+                "availability": "available"
+              },
+              "cashCost": {
+                "value": 4062.24,
+                "availability": "available"
+              },
+              "exposure": {
+                "value": 41000,
+                "availability": "available"
+              },
+              "click": {
+                "value": 1750,
+                "availability": "available"
+              },
+              "conversion": {
+                "value": 130,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 124,
+                "availability": "available"
+              },
+              "costSpace": {
+                "value": 649.76,
+                "availability": "available"
+              },
+              "wakeUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "potentialUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "ratios": {
+                "ctr": {
+                  "value": 0.0427,
+                  "state": "finite"
+                },
+                "cvr": {
+                  "value": 0.0743,
+                  "state": "finite"
+                },
+                "realCpa": {
+                  "value": 41.94,
+                  "state": "finite"
+                },
+                "cashCpa": {
+                  "value": 32.76,
+                  "state": "finite"
+                },
+                "gap": {
+                  "value": 0.0484,
+                  "state": "finite"
+                },
+                "potentialRate": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "biConversionRate": {
+                  "value": null,
+                  "state": "undefined"
+                }
+              }
+            },
+            "assessment": {
+              "price": {
+                "value": 38.0,
+                "effectiveDate": "2026-09-01"
+              },
+              "priceSource": "history",
+              "onTarget": true,
+              "costStatus": "green",
+              "costStatusReason": "window_ok",
+              "budgetUsageRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "anomaly": false
+          }
+        ],
+        "_note": "v1.9.2：行 = account.dimension/v3 行（去 media/accountId），key=业务名；示例一行"
       },
       {
         "key": "dim_account",
         "title": "按账户",
-        "rows": []
+        "rows": [
+          {
+            "key": "KUAISHOU:account-1",
+            "label": "AAC拉新_快手_01",
+            "media": "KUAISHOU",
+            "accountId": "account-1",
+            "metrics": {
+              "cost": {
+                "value": 5200.0,
+                "availability": "available"
+              },
+              "cashCost": {
+                "value": 4062.24,
+                "availability": "available"
+              },
+              "exposure": {
+                "value": 41000,
+                "availability": "available"
+              },
+              "click": {
+                "value": 1750,
+                "availability": "available"
+              },
+              "conversion": {
+                "value": 130,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 124,
+                "availability": "available"
+              },
+              "costSpace": {
+                "value": 649.76,
+                "availability": "available"
+              },
+              "wakeUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "potentialUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "ratios": {
+                "ctr": {
+                  "value": 0.0427,
+                  "state": "finite"
+                },
+                "cvr": {
+                  "value": 0.0743,
+                  "state": "finite"
+                },
+                "realCpa": {
+                  "value": 41.94,
+                  "state": "finite"
+                },
+                "cashCpa": {
+                  "value": 32.76,
+                  "state": "finite"
+                },
+                "gap": {
+                  "value": 0.0484,
+                  "state": "finite"
+                },
+                "potentialRate": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "biConversionRate": {
+                  "value": null,
+                  "state": "undefined"
+                }
+              }
+            },
+            "assessment": {
+              "price": {
+                "value": 38.0,
+                "effectiveDate": "2026-09-01"
+              },
+              "priceSource": "history",
+              "onTarget": true,
+              "costStatus": "green",
+              "costStatusReason": "window_ok",
+              "budgetUsageRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "anomaly": false
+          }
+        ],
+        "_note": "v1.9.2：行 = account.dimension/v3 行三键形（key=media:accountId）；示例一行"
       },
       {
         "key": "dim_agent",
         "title": "代理/自投",
         "rows": [],
-        "unsupported": false
+        "unsupported": false,
+        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
       },
       {
         "key": "dim_resource_position",
         "title": "资源位",
-        "rows": []
+        "rows": [],
+        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
       },
       {
         "key": "dim_bid_tool",
         "title": "出价工具",
         "rows": [],
-        "unsupported": true
+        "unsupported": true,
+        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
       },
       {
         "key": "dim_ubp",
         "title": "UBP",
         "rows": [],
-        "unsupported": true
+        "unsupported": true,
+        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
       },
       {
         "key": "dim_deduction",
         "title": "扣量区间",
-        "rows": []
+        "rows": [],
+        "_note": "v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
       },
       {
         "key": "deduction_analysis",
         "title": "扣量分析",
-        "rows": []
+        "rows": [],
+        "_note": "v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
       },
       {
         "key": "health",
@@ -101,7 +288,8 @@
       {
         "key": "cost_tiers",
         "title": "消耗分层",
-        "rows": []
+        "rows": [],
+        "_note": "v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
       }
     ],
     "actions": {
@@ -120,6 +308,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null}"
+    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null} | v1.9.2：十个维度模块行结构冻结为 account.dimension/v3 行；delivery 源 = outbound_messages.payload.reportRunId（无 ref 列）"
   }
 }

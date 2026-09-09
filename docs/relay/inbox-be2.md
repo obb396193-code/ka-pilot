@@ -143,3 +143,9 @@ Codex 做 P-166（018 软撤权接线）时发现的，我已在 `be/r017 @ 40fc
 Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–81, :136）已有「批准 tuple + taskId + window」的个人源入口和 factory，`data-api.ts:67` 已在用，本轮真 PG 窗口 8/8。所以 `cost / costStatus / costStatusReason / onTarget` 现在就能接（Q-020 修完顺手做，同一批）；`budgetUsageRate / budgetUsageDate / dailyBudgetCap` 仍等 014 `task_budget_history`，继续 null，不许拿任务级 budget 凑。
 
 ### Q-019（D7 日报）两处裁决稍后单独一条，先把 Q-020 做了。
+
+### Q-019（D7 日报）两问已裁 → 契约 v1.9.2（arch 2026-09-09）
+- **维度行结构：选 (a)+(b) 的合体**——行**复用 `account.dimension/v3` 的行结构**（不另造），但数据**不调 Codex 的查询接口**，你从 canonical 日表按维度聚合（和六卡同源）。`dim_task/dim_biz/dim_account` 现在就填；`dim_agent/dim_resource_position/dim_bid_tool/dim_ubp` 读 `account_name_parses`，T5 接线时一并填；`dim_deduction/deduction_analysis/cost_tiers` 保持 `unsupported:true`（进未排期）。fixture `reports/daily-v1.json` 的 `dim_biz/dim_account` 各放了一行示例，按那个形状。
+- **outbound ref：就用 `payload.reportRunId`**，不加列不加迁移。`actions` 两个 false 正确，冻结。
+- 顺序：**Q-020（P1）→ 日报三个维度模块填行 → T5（顺手把四个解析维度填上）→ A7/account_transfers**。
+- 你 `0bd6ee9` 五包全绿（domain 1263 / db 1212 / worker 1684 / gw 36 / web 223），正在合。

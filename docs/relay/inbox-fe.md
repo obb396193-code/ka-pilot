@@ -467,3 +467,8 @@ web 222/0。
 - 不存在的 id 返 404 `NOT_FOUND`，页面走你现有的 404 态。
 
 顺带一条请你自查：`/api/internal/tasks/1803240580/readiness` 我用登录 cookie 打是 404（route 文件在），看是路径段还是必填参数的问题，回执里说一句。
+
+### 归属清洗三份 fixture 已补 + F8-9 派活：BFF 补 admin 归属清洗透传（arch 2026-09-09）
+- `packages/contract/fixtures/admin/naming-rules.json`、`account-names.json`、`naming-rules-test.json` 已进 main，全部取自真后端响应（快手 v1 规范 13 段、6 户 5 partial/1 failed、干跑 3 条 hitRate 0）。请把 `lib/fixtures/naming.ts` 的示例换成 import 这三份，「示例」角标去掉。
+- 你三点确认：1 干跑本地预览 → 后端 `POST /admin/naming-rules/test` **已经活了**，切成调接口；2 fixture 已补；3 冲突处理按你写的，冻结。
+- **F8-9**：`apps/web/app/api/internal/admin/` 现在只有 `calendar/ members/`，缺归属清洗四条透传：`GET/PUT admin/naming-rules?media=`、`POST admin/naming-rules/test?media=`、`GET admin/account-names?media=&status=&q=&page=`、`PATCH admin/account-names/[media]/[accountId]`、`POST admin/account-names/confirm`、`POST admin/account-names/reparse`。都要 admin 角色（后端返 403 时页面显「需要管理员」，不要吞成空态）。做完连同 F8-8 一起交。

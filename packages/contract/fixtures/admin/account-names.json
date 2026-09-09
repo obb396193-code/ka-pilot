@@ -1,0 +1,429 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "accountName": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
+        "ruleVersion": 1,
+        "status": "partial",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "CVR有端",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "rta": {
+            "key": "rta",
+            "value": "有R",
+            "mapsTo": "rta",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "激活",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "A",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "DAU",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13177",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "单出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "operator": {
+            "key": "operator",
+            "value": "自投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "张三",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "placement": {
+            "key": "placement",
+            "value": "优选",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-2",
+        "accountName": "DAU-CVR有端-自投-张三-单出价-IOS-上下滑-激活-有R-常规-13178-B",
+        "ruleVersion": 1,
+        "status": "partial",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "CVR有端",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "rta": {
+            "key": "rta",
+            "value": "有R",
+            "mapsTo": "rta",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "激活",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "B",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "IOS",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "DAU",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13178",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "单出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "operator": {
+            "key": "operator",
+            "value": "自投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "张三",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "placement": {
+            "key": "placement",
+            "value": "上下滑",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-3",
+        "accountName": "DAU-M运动-代投-某代理-双出价-双端-联盟-付费-非R-一户一品-13179-C",
+        "ruleVersion": 1,
+        "status": "partial",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "M运动",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "rta": {
+            "key": "rta",
+            "value": "非R",
+            "mapsTo": "rta",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "付费",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "C",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "双端",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "DAU",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13179",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "双出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "operator": {
+            "key": "operator",
+            "value": "代投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "某代理",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "placement": {
+            "key": "placement",
+            "value": "联盟",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-4",
+        "accountName": "DAU-M运动-代投-某代理-单出价-安卓-主站-付费-非R-常规-13180-D",
+        "ruleVersion": 1,
+        "status": "partial",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "M运动",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "rta": {
+            "key": "rta",
+            "value": "非R",
+            "mapsTo": "rta",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "付费",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "D",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "DAU",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13180",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "单出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "operator": {
+            "key": "operator",
+            "value": "代投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "某代理",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "placement": {
+            "key": "placement",
+            "value": "主站",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-5",
+        "accountName": "DAU-闲鱼DAU-自投-李四-单出价-安卓-搜索-唤起-有R-常规-13181-E",
+        "ruleVersion": 1,
+        "status": "partial",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "闲鱼DAU",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "rta": {
+            "key": "rta",
+            "value": "有R",
+            "mapsTo": "rta",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "唤起",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "E",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "DAU",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13181",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "单出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "operator": {
+            "key": "operator",
+            "value": "自投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "李四",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "placement": {
+            "key": "placement",
+            "value": "搜索",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-6",
+        "accountName": "没按规范起的名字_测试户",
+        "ruleVersion": 1,
+        "status": "failed",
+        "segments": {},
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null
+      }
+    ],
+    "total": 6
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "GET /admin/account-names?media=KUAISHOU：灌数 6 户实测响应；5 partial（业务段无括号任务 ID、可选段缺）+ 1 failed（account-6 故意乱名）；segments 按段 key 给 value/mapsTo/taskIds；conflicts=null 表示无冲突；override=null 表示未人工改"
+  }
+}

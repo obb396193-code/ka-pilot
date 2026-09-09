@@ -1136,3 +1136,23 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ## v1.9.1 追加（2026-09-08 arch；fe 自审报出）
 
 - **后端拼给人看的文案（`summary / reason / note / title / body / message / hint / fallbackCopy / confirmBlockedReason`）一律中文，媒体对象用「计划 / 单元 / 创意」，不出现 `campaign / unit / creative`**；机器字段（`targetType` 等枚举）不受此限。fixture 已全量扫过改齐（5 文件 6 处）。前端不改服务器文案，发现英文报 arch。
+
+## v1.9.2 追加（2026-09-09 arch；裁 be2 Q-019 两问 + 采 Codex P-168 一条）
+
+**日报十个维度模块的行结构（冻）**
+- `dim_task / dim_biz / dim_account / dim_agent / dim_resource_position / dim_bid_tool / dim_ubp / dim_deduction / deduction_analysis / cost_tiers` 的 `rows[]` **一律复用 `account.dimension/v3` 的行**：`{key, label, metrics{cost,cashCost,exposure,click,conversion,realConversion,costSpace,wakeUv,potentialUv,ratios{ctr,cvr,realCpa,cashCpa,gap,potentialRate,biConversionRate}}, assessment{price,priceSource,onTarget,costStatus,costStatusReason,budgetUsageRate}, anomaly}`；`dim_account` 用三键形（加 `media, accountId`，`key="<media>:<accountId>"`）。三态/比率/assessment 语义与 v1.7.5 同，不另造。
+- `key/label`：`dim_task` = taskId / 任务名；`dim_biz` = 业务名；`dim_agent / dim_resource_position / dim_bid_tool / dim_ubp` = 解析段值（agent_type / placement / bid_mode / ubp），**读 `account_name_parses`（v1.9 T5）**，T5 接线前 `unsupported:true`。
+- `dim_deduction / deduction_analysis / cost_tiers`：扣量源与分层阈值未裁，**保持 `unsupported:true`**，进未排期清单；不许用别的数凑。
+- 数据源：日报的行由 canonical 日表按维度聚合（与 overview 六卡同源），**不调 `account.dimension` 查询接口**（那是交互查询，日报是快照）；fixture `reports/daily-v1.json` 的 `dim_biz`/`dim_account` 各放一行示例。
+- 模块表覆盖自检（be2 加的「不足十个维度直接 500」）保留。
+
+**G8 `delivery` 的源**
+- `outbound_messages` **无 `ref` 列**（实际列 id/workspace_id/channel/target/kind/payload/status/attempts/fail_reason/sent_at/created_at）。G8「ref 指向该 report_run」改为 **`payload.reportRunId`**（JSONB），取最新一条；不加列、不加迁移。量大再议表达式索引。
+- `actions.pushDingtalk / exportPdf` 在推送与 PDF 未接前 **保持 false**（be2 做法正确，冻结）。
+
+**D5b-2（采 Codex P-168）**
+- `cost / costStatus / costStatusReason / onTarget` 的个人源 = `apps/worker/src/data/platform-window-query.ts`（批准 tuple + taskId + window 入口已在，`data-api.ts` 已用），**不等 hourly/Gap**；`budgetUsageRate / budgetUsageDate / dailyBudgetCap` 仍等 014 `task_budget_history`。
+- 任务详情**个人范围**：主任务须 EXISTS 有效授权 tuple 绑定账户（否则 404），六个派生查询全按 tuple 过滤（Q-020）。
+
+**归属清洗 fixture（补 fe 缺的三份）**：`admin/naming-rules.json`、`admin/account-names.json`、`admin/naming-rules-test.json`，均取自联调第十/十一轮真响应（时间戳固定）。
+
