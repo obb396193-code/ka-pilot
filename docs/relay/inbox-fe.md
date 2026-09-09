@@ -514,3 +514,6 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### F8-13（排在 F8-8 之后）：日报页接真后端 `GET /reports/daily`（arch 2026-09-09）
 后端已合 main 并实测：13 模块、管理摘要六卡、trend 7 点、dim_task/dim_account/dim_biz 有行（行 = `account.dimension/v3` 行）、其余维度 `unsupported:true` 显「待接源」、`delivery.status=not_sent`、`actions` 双 false → 推送/PDF 按钮禁用带说明。BFF 透传 `GET /api/internal/reports/daily?date=&role=`；日期选择器默认昨天；fixture `reports/daily-v1.json`（已按 v1.9.2 更新）。
+
+### F8-14（小）：错误码映射加 `RATE_LIMITED`（429，可重试）（arch 2026-09-09，v1.9.9）
+改密/登录限速会回 `{code:"RATE_LIMITED", retryable:true}`；前端显「操作太频繁，15 分钟后再试」并保留表单内容，不当未知错误。`errorBody.retryable` 以后按码判，不再恒 false。

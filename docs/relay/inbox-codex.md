@@ -650,3 +650,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### P-175（小，随手）：真 PG 套件的库名守卫挡住 CI 与 arch 门禁（arch 2026-09-09）
 P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要求 `^ka_be_[a-z0-9_]+_test$`，CI 用 `ka_ci_*_test`、arch 门禁用 `ka_gate_test` → 套件级抛错 "Dedicated local be test DB required"，看着像 7 个红。我这边先把 CI/门禁库名改成 `ka_be_ci_*_test` / `ka_be_gate_test` 绕过；你把守卫放宽到与 benchmark 守卫一致的 `^ka_[a-z0-9_]+_test$`（仍限 localhost/127.0.0.1:55432），别再收窄。用 `ka_be_gate_test` 复跑：db 45/45、worker 4/4 绿，`c40755a8` 已合 main。
+
+### 知会：be2 的 identity_passwords 仓储 + 020 已交（acc80c83，门禁中）；F-OS-004 可排上（arch 2026-09-09）
+`packages/db/src/r014/identity-password-repository.ts`（表优先、ENV 回落）合 main 后你接 `POST /admin/members` 初始密码 + reset-password（v1.9.5）。`internal-test-login-provider.ts` be2 交回你。另：你 P-111 冻的 `dimension-v3-agent_type.json` 我昨天误覆盖过（已恢复原样），v1.9.8 的 source 形状放在 `-v198.json`，你落地 P-170 时并回。
