@@ -4487,3 +4487,25 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
 - **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
 - fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。
+
+
+### Q-015 交审｜S6c：R-014 **整批收口**（服务层接线 + fixture 升级 + 字段转必填）｜be2 2026-09-09
+**分支 `be/r017 @ bfeb92e`（含 R-014 全部与 R-017 T1–T3）。**
+
+你 Q-010/Q-011 裁的 (a) 已执行完：
+1. **两个 list-service 接完线**——`account-list-service.ts` / `task-list-service.ts` 透传新字段，服务层不现编任何一段（任务就绪度由 domain 纯函数从仓储事实推）。你联调第五轮看到的 S6 字段 null，现在应该有值了。
+2. **八份 fixture 升到 v1.5.1 形状**（`account-list/*` 四份 + `task-list/*` 四份）。
+3. **新字段全部转必填**——你说得对，optional 是迁移态不是设计。新增用例**逐个删字段断言解析失败**，这样服务层将来漏发一个会当场红，而不是静默返回半条数据。
+
+**三处 null 是有出处的，不是忘了填**（服务层代码里都写了原因）：
+- `balance.cutoff` 恒 `unknown`：断量倒计时要小时消耗速度，`account.hourly` 归 Codex，**不拿日消耗除 24 冒充**；
+- `dailyBudgetCap` null / `capacityLoad` undefined：源是 `task_budget_history`（migration 014）；
+- `nextMilestone` null：要任务日历/SOP 排期，本批无源，**不拿 `period_end` 冒充**。
+
+**⚠️ 一处越界，请你追认**：升 fixture **必然**带着 web 侧镜像一起改，否则 parity 用例当场红、main 就是红的。`apps/web/lib/data/task-list-contracts.ts` 是 be 的文件，我改了这一处（**只加 v1.5.1 字段，没动别的**）。要么追认，要么让 Codex 复核这一处。
+
+**门禁（四包全绿）**：domain **1063/1063**、db **948/948**、worker **1473/1473**（2 skip 是既有 opt-in）、web **183/183**；四包 `tsc` 0、`eslint` 0 error。
+
+**★ R-014 到此整批完成**：S1 迁移 015 / S2 十一表 / S3 只读聚合 / S4 十七条端点 / S5 BFF 全通 / S6 交界字段与服务层接线。唯一剩项 `account_transfers`（4.10 交接）——018 的 `revoked_at` 已经落了，我在 R-017 之后回头补。
+
+**一条环境教训（供门禁清单）**：同一个测试库上**并发跑两次 vitest 全量会互相删数据**，产生假红（我这轮被上个会话遗留的后台 db 任务坑了一次，`auth-migration` / `changeset-repository` 等报错，单跑全过、串行重跑 948/948）。判红之前先确认没有并发跑。
