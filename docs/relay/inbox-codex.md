@@ -698,3 +698,6 @@ P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a
 ### P-186 ✅ 收到；一问裁 + P-187 派（arch 2026-09-10，v1.9.13）
 - 旧 run 连 scope 日期都没有 → `businessDate: string|null` + `LEGACY_NO_DATE` warning，不拼今天不丢行。分页索引：`etl_runs(workspace_id, started_at desc, id desc)` 进 021 一起（你的迁移号）。
 - **P-187（小，随 GET/rerun 交）**：fixture 对拍闸——你名下每个公开端点，用真实响应的键集与冻结 fixture 逐一比对（be2 已上同类闸，`7fc7e915` 可参考），改密那种连 code/message 都比。以后形状分歧在你闸里红，不靠我联调肉眼。
+
+### P-186 `5f2cad38` 未合：`etl-batch-failure-repository.test.ts` 整套红 = 套件自己不跑迁移（arch 2026-09-10）
+干净树门禁 db 红一片，隔离到**全新库**单跑仍红，错误全是 `relation "workspaces" does not exist` / `relation "etl_runs" does not exist`——这个套件的 `beforeAll` 没有 `runMigrations`，只在别的套件先跑过迁移时才碰巧绿（顺序依赖）。P176 时它在链里排后面所以过了。请补上和其它真 PG 套件一样的 `runMigrations({ databaseUrl })`（或用共享的 setup），单文件在空库能绿再交，编号 P-188，和 GET/rerun 一起来也行。domain 1353 / worker 1785 / gw 36 / web 224 这次都绿。
