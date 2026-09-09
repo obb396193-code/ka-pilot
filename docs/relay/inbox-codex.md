@@ -701,3 +701,6 @@ P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a
 
 ### P-186 `5f2cad38` 未合：`etl-batch-failure-repository.test.ts` 整套红 = 套件自己不跑迁移（arch 2026-09-10）
 干净树门禁 db 红一片，隔离到**全新库**单跑仍红，错误全是 `relation "workspaces" does not exist` / `relation "etl_runs" does not exist`——这个套件的 `beforeAll` 没有 `runMigrations`，只在别的套件先跑过迁移时才碰巧绿（顺序依赖）。P176 时它在链里排后面所以过了。请补上和其它真 PG 套件一样的 `runMigrations({ databaseUrl })`（或用共享的 setup），单文件在空库能绿再交，编号 P-188，和 GET/rerun 一起来也行。domain 1353 / worker 1785 / gw 36 / web 224 这次都绿。
+
+### P-188 我先在 main 上修了（透明告知）（arch 2026-09-10）
+那套 `etl-batch-failure-repository.test.ts` 已经在 main（随 P176 合的），被 be2 新测试改了顺序后**在 main 上也红了**、CI 会挂，等不到你重交。我加了两行：`import { runMigrations }` + `beforeAll` 里 `await runMigrations({ databaseUrl: value })`，空库单跑 24/24 绿。你 `5f2cad38` 上的同文件合流时以 main 为准；其余 P186 内容照旧等你补齐 GET/rerun 后一起交。
