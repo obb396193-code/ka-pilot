@@ -1,3 +1,4 @@
+import { tmpdir } from "node:os";
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
 
@@ -86,6 +87,6 @@ function startInput() {
     envelopeKey: "envelope-key-base64",
     managerKey: "manager-key",
     startupTimeoutMs: 100,
-    baseEnv: { PATH: "/usr/bin:/bin", HOME: "/private/tmp", TMPDIR: "/private/tmp" },
+    baseEnv: { PATH: "/usr/bin:/bin", HOME: tmpdir(), TMPDIR: tmpdir() }, // 跨平台：Linux CI 无 /private/tmp
   };
 }
