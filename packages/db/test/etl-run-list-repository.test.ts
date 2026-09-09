@@ -125,6 +125,13 @@ describe("ETL run pages / synthetic real PG", { timeout: 30_000 }, () => {
     try { await expect(repo.list(auth, {})).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" }); }
     finally { await pool.query("DELETE FROM etl_runs WHERE id=$1 AND workspace_id=$2", [id, workspaceId]); }
   });
+  it("keeps legacy runs lacking scope dates instead of dropping them or inventing today", async () => {
+    const id = await insert(workspaceId, jobId, "incr", {});
+    try {
+      expect((await repo.list(auth, {})).data.items.find(row => row.runId === id)).toMatchObject({ businessDate: null,
+        attempt: null, warnings: [{ code: "LEGACY_NO_ATTEMPT" }, { code: "LEGACY_NO_DATE" }] });
+    } finally { await pool.query("DELETE FROM etl_runs WHERE id=$1 AND workspace_id=$2", [id, workspaceId]); }
+  });
   it("orders adjacent BIGSERIAL IDs beyond JS safe integer without rounding or lexical sort", async () => {
     const base = 9007199254740992n + BigInt(Math.floor(Math.random() * 1000000)) * 2n;
     const ids: string[] = [];

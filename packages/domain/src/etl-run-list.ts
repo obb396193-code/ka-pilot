@@ -6,6 +6,7 @@ import { etlBatchFailureWarningSchema } from "./etl-batch-failure.js";
 const timestamp = z.string().datetime({ offset: true })
   .refine(value => calendarDateSchema.safeParse(value.slice(0, 10)).success);
 const count = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER);
+export const ETL_RUN_OBSERVATION_NOTE = "运行观测时间，非 canonical 数据新鲜度";
 
 /** Frozen attempt identity: do not coerce BIGSERIAL into a JS number. */
 export const etlRunIdSchema = z.string().regex(/^[1-9][0-9]{0,18}$/)
@@ -13,6 +14,7 @@ export const etlRunIdSchema = z.string().regex(/^[1-9][0-9]{0,18}$/)
 
 /** Only approved public warnings; private failure evidence/error bodies are not this DTO. */
 export const etlRunWarningSchema = z.union([z.literal("BLOCKED_AUTH"), etlBatchFailureWarningSchema,
+  z.object({ code: z.literal("LEGACY_NO_DATE") }).strict(),
   z.object({ code: z.literal("LEGACY_NO_ATTEMPT"),
     message: z.literal("旧 run 无 execution 记录，attempt 不可验证").optional() }).strict()]);
 
@@ -26,7 +28,7 @@ export const etlRunListRowSchema = z.object({
   attempt: z.number().int().min(1).max(Number.MAX_SAFE_INTEGER).nullable(),
   jobType: z.enum(["etl_full", "etl_incr", "backfill_historical", "backfill_day", "canonical_merge", "data_quality_check"]),
   status: z.enum(["running", "done", "failed"]),
-  businessDate: calendarDateSchema,
+  businessDate: calendarDateSchema.nullable(),
   startedAt: timestamp,
   finishedAt: timestamp.nullable(),
   // No stage inference or coercion here. Missing evidence stays null.
@@ -38,7 +40,9 @@ export const etlRunListRowSchema = z.object({
   : row.status !== "running" && Date.parse(row.finishedAt) >= Date.parse(row.startedAt), "Inconsistent run lifecycle")
   .refine(row => row.failedStage === undefined || row.status === "failed", "Failed stage requires failed run")
   .refine(row => (row.attempt === null) === row.warnings.some(warning =>
-    typeof warning === "object" && warning.code === "LEGACY_NO_ATTEMPT"), "Legacy attempt evidence mismatch");
+    typeof warning === "object" && warning.code === "LEGACY_NO_ATTEMPT"), "Legacy attempt evidence mismatch")
+  .refine(row => (row.businessDate === null) === row.warnings.some(warning =>
+    typeof warning === "object" && warning.code === "LEGACY_NO_DATE"), "Legacy date evidence mismatch");
 
 export const etlRunListDataSchema = z.object({ items: z.array(etlRunListRowSchema).max(200),
   page: count.min(1), pageSize: count.min(1).max(200), total: count }).strict()
@@ -51,7 +55,8 @@ export const etlRunListDataSchema = z.object({ items: z.array(etlRunListRowSchem
 export const etlRunListResponseSchema = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(true), data: etlRunListDataSchema,
     meta: z.object({ requestId: requestIdSchema, dataAsOf: timestamp.nullable(), businessDate: calendarDateSchema,
-      workspaceKind: z.enum(["personal", "team"]), selectedSource: z.literal("platform") }).strict(),
+      workspaceKind: z.enum(["personal", "team"]), selectedSource: z.literal("platform"),
+      _note: z.literal(ETL_RUN_OBSERVATION_NOTE).optional() }).strict(),
   }).strict(),
   z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict(),
 ]);

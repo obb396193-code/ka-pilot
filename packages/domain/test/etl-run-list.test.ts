@@ -92,6 +92,13 @@ describe("frozen ETL attempt list response", () => {
       expect(etlRunListRequestSchema.safeParse(value).success).toBe(false);
     }
   });
+  it("keeps a missing legacy business date only with explicit warning, never accepts invalid dates", () => {
+    const value = fixture(); const row = value.data.items[0]; row.businessDate = null;
+    expect(etlRunListResponseSchema.safeParse(value).success).toBe(false);
+    row.warnings = [{ code: "LEGACY_NO_DATE" }]; expect(etlRunListResponseSchema.parse(value)).toEqual(value);
+    row.businessDate = "2026-09-08"; expect(etlRunListResponseSchema.safeParse(value).success).toBe(false);
+    row.businessDate = "2026-02-31"; expect(etlRunListResponseSchema.safeParse(value).success).toBe(false);
+  });
   it("preserves genuine zero counts and disallows failed-stage text on a successful run", () => {
     const value = fixture(); value.data.items[0].rows = { raw: 0, canonical: 0 };
     expect(etlRunListResponseSchema.parse(value)).toMatchObject({ data: { items: [{ rows: { raw: 0, canonical: 0 } }, {}] } });

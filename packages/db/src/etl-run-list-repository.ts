@@ -31,7 +31,9 @@ function mapRow(row: Record<string, unknown>, workspaceId: string): EtlRunListRo
   if (typeof row.has_execution !== "boolean" || !Array.isArray(row.warnings)) return invalid();
   if (row.has_execution && (row.execution_version !== "etl-attempt/v1" || row.execution_workspace !== workspaceId ||
     row.execution_job !== row.job_id || row.execution_type !== jobType || row.execution_attempt === null)) return invalid();
-  const warnings = row.has_execution ? row.warnings : [...row.warnings, { code: "LEGACY_NO_ATTEMPT" }];
+  const warnings = [...row.warnings];
+  if (!row.has_execution) warnings.push({ code: "LEGACY_NO_ATTEMPT", message: "旧 run 无 execution 记录，attempt 不可验证" });
+  if (row.business_date === null) warnings.push({ code: "LEGACY_NO_DATE" });
   // failRun does not persist progressive counts; its initial zero is not observed success.
   const rows = row.status !== "done" || row.run_kind === "quality" ? null : row.run_kind === "canonical"
     ? { raw: null, canonical: row.rows_ingested } : { raw: row.rows_ingested, canonical: null };
