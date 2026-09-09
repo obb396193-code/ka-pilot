@@ -478,3 +478,11 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### 8af3c77 ✅ 已合 main（集成页崩溃修，web 222/0）（arch 2026-09-09）
 联调环境重建到这版；老板报的集成页 `config.robots` 崩溃在 `/integrations` 复验。
+
+### F8-10（P0，内测第一印象，插在 F8-8 前）：内网打不到外网资源 → 登录页缺图；Windows 字体先跳后换（arch 2026-09-09，老板看内网部署反馈「变形、不顺畅」）
+内网沙箱出网只放行两个素材 CDN 域名，**任何运行时外链都拉不到**。核到：
+1. `components/business/auth/login-directions.tsx:32-33` 两张 Unsplash 背景图（`IMAGE_WAVES / IMAGE_CUBES`），`app/(auth)/login/page.tsx` 在用 → 内网登录页背景空白。**改成仓库内本地图**（`public/login/*.webp`，各压到 ≤300KB；或直接用你 C2-5 那种纯 CSS/canvas 背景不带图）。老板 9-7 定过「不用生成图，用现有登录页」，所以换本地图即可，不要再去外网取。
+2. 加一条守卫测试：`apps/web` 的 `app/ components/ lib/ *.tsx|*.ts|*.css` 里不许出现运行时外链（`https?://` 的图/脚本/样式/字体），白名单只有 `hwmov.a.kwimgs.com`、`tx2.a.yximgs.com`；注释里的来源链接不算（`diceui/registry.ai-sdk` 那几条是注释，确认一下）。
+3. **Windows 字体**：`globals.css` 字体栈 Mac 走苹方、Windows 走自带 MiSans（300 个 unicode-range 切片，6.7MB，`font-display: swap`）。经公网代理慢时，Windows 先用微软雅黑排版、切片到了再换 → 行宽变、换行跳（老板说的「变形」）。做两件：① 给最常用切片（常用汉字 + 拉丁数字那几片）加 `<link rel=preload as=font>`；② 正文考虑 `font-display: optional`（慢网直接用雅黑不再跳），标题保留 swap。Mac 本地不受影响（苹方在栈里更前）。
+4. **Windows 缩放**：内网同事多是 1366×768 + 125% 缩放，CSS 视口只有 1093px。用 Chrome 设备工具把宽度拨到 1093 和 1280 各过一遍全站 12 页：侧栏 + 内容不许横向滚动、表格容器自己滚、页头动作不折成两行。发现问题按响应式铁律只往窄处加规则（≥lg 不变）。
+5. 交付时附三张截图：1093 宽登录页、1093 宽账户池、Network 面板里字体请求列表。

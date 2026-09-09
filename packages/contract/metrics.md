@@ -29,7 +29,7 @@
 | cost_api / cash / income / rebate | account_offline | 离线结算口径（T+1 权威） |
 | account_exposure / account_click | account_realtime | 曝光/点击 |
 | account_conversion | account_realtime | OCPX 回传转化（账面口径） |
-| account_real_conversion | account_realtime | 真实转化（=FBI BI 数，老板已核同源） |
+| account_real_conversion | account_realtime | 真实转化（=FBI BI 数，老板已核同源；上游定义 = ka-data bi_defs 四类 ODPS 表，见 docs/evidence/2026-09-09-BI口径定义-ka-data取数管线.md） |
 | account_cpa | account_realtime | 真实转化成本（有真实转化才返回） |
 | account_budget / account_budget_usage_rate | account_realtime | 预算/使用率 |
 | account_deduction_rate | account_realtime | 扣量比例 |
