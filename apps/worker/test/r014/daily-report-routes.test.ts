@@ -286,18 +286,15 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     }
 
     // fixture 声明了 unsupported 的模块，取值必须和我一致——除了下面这一处已知分歧。
-    const KNOWN_DIVERGENCE = new Set(["dim_bid_tool"]);
+    // arch 2026-09-10：fixture 已按 v1.9.13 同步（bid_tool/resource_position 填行），已知分歧清零。
+    const KNOWN_DIVERGENCE = new Set<string>();
     for (const frozenModule of frozen.data.modules) {
       if (frozenModule.unsupported === undefined || KNOWN_DIVERGENCE.has(String(frozenModule.key))) continue;
       expect(liveModules.find((module) => module.key === frozenModule.key)!.unsupported,
         String(frozenModule.key)).toBe(frozenModule.unsupported);
     }
 
-    // ★daily-v1.json 处在半更新状态：`dim_agent` 已改成 unsupported:false，
-    // 但 F-Q023-2 同一批要我填的 `dim_bid_tool` 还冻着 true、`dim_resource_position`
-    // 干脆没这个键。我按裁决把三个都填了，所以 bid_tool 这一格与 fixture 相反。
-    // 钉在这里，等 arch 同步 fixture；免得下次谁对着 fixture 以为我做错了。
-    expect(frozen.data.modules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(true);
+    expect(frozen.data.modules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(false);
     expect(liveModules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(false);
   });
 });
