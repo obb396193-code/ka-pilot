@@ -16,6 +16,16 @@ const HANDLERS = new URL("../../../../apps/web/lib/data/r014/handlers.ts", impor
 /** 有意只留后端、不给浏览器用的路径，必须写在这里并说明理由。 */
 const BACKEND_ONLY: { path: string; why: string }[] = [];
 
+/**
+ * 由别的路由表（r010，Codex）服务、但透传写在 r014/handlers.ts 里的路径：本绊线只扫 r014 的
+ * 路由文件，扫不到它们，反向检查会把它们误报成「后端不存在」。登记时写清由谁服务；
+ * r010 侧的同类绊线是 P-190。
+ */
+const SERVED_ELSEWHERE: { path: string; by: string }[] = [
+  { path: "/api/v1/admin/members", by: "r010 admin-members-routes（GET 已有；POST 开户 = Codex F-OS-004）" },
+  { path: "/api/v1/admin/members/:p/reset-password", by: "r010 admin-members-routes（Codex F-OS-004）" },
+];
+
 const normalize = (path: string): string => path
   .replace(/\$\{[^}]*\}/g, ":p")            // BFF 的模板插值
   .replace(/\([^)]*\)(\{[^}]*\})?/g, ":p")  // 后端正则里的捕获组
@@ -53,7 +63,8 @@ describe("every backend R-014 route is reachable from the browser", () => {
   it("has no BFF passthrough pointing at a path no backend route claims", () => {
     const backend = new Set(backendPaths());
     // 反向：BFF 指着一个后端不存在的路径，调用方会拿到 404 却以为是数据没有。
-    const orphan = bffPaths().filter((path) => !backend.has(path));
+    const elsewhere = new Set(SERVED_ELSEWHERE.map((entry) => normalize(entry.path)));
+    const orphan = bffPaths().filter((path) => !backend.has(path) && !elsewhere.has(path));
     expect(orphan, "这些透传指向的后端路径不存在").toEqual([]);
   });
 });
