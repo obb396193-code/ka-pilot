@@ -26,7 +26,16 @@ import { requestIdSchema, stableDataQueryErrorSchema } from "../contracts.ts"
  */
 export type R014BffResult = { status: number; body: unknown; requestId: string }
 
-const errorEnvelopeSchema = z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict()
+/**
+ * r014 后端除了那 11 个稳定码，还会返 NOT_FOUND / CONFLICT / RATE_LIMITED
+ * （kb 单读、账户交接、任务详情、改密限速都在用）。共享的 stableDataQueryError 枚举
+ * 认不出它们，于是**合法的 404/409/429 会被判成 502「上游不合契约」**——
+ * 用户看到「上游坏了」，而不是「这篇文档不存在」。这里就地扩，不动共享枚举。
+ */
+const r014ErrorSchema = stableDataQueryErrorSchema.omit({ code: true }).extend({
+  code: z.union([stableDataQueryErrorSchema.shape.code, z.enum(["NOT_FOUND", "CONFLICT", "RATE_LIMITED"])]),
+}).strict()
+const errorEnvelopeSchema = z.object({ ok: z.literal(false), error: r014ErrorSchema }).strict()
 
 /** 成功信封：`data` 交给每条路由自己的 schema，`meta` 只要求带回相关的 requestId。 */
 export function successEnvelope<T extends z.ZodTypeAny>(data: T) {
@@ -55,8 +64,10 @@ function expectedStatus(body: unknown): number | null {
   if (code === "SOURCE_UNAVAILABLE") return 503
   if (code === "UPSTREAM_TIMEOUT") return 504
   if (code === "INTERNAL_ERROR") return 500
-  // 后端把 404/409/410/405 也走稳定 envelope，但错误码复用 INVALID_REQUEST 一类；
-  // 这些状态码由后端决定，BFF 不再二次判定，只要求 body 是合法 envelope。
+  if (code === "NOT_FOUND") return 404
+  if (code === "CONFLICT") return 409
+  if (code === "RATE_LIMITED") return 429
+  // 其余（405/410 等）状态码由后端决定，BFF 不再二次判定，只要求 body 是合法 envelope。
   return null
 }
 
