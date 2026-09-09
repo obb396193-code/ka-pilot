@@ -9,11 +9,13 @@ const REQUEST_ID_HEADER = "x-request-id";
 export type R014ErrorCode =
   | "INVALID_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND" | "CONFLICT"
   | "SOURCE_UNAVAILABLE" | "SOURCE_TRUNCATED" | "INTERNAL_ERROR"
-  /** v1.7.6 改密限速。**新加的稳定错误码，已在回执里请 arch 确认 + 通知 fe 映射。** */
-  | "RATE_LIMITED";
+  /** v1.9.9：改密限速（429，retryable）。 */
+  | "RATE_LIMITED"
+  /** v1.9.9 F-Q024-1：当前密码不正确（401）。fixture `auth/password-error.json` 冻的就是它。 */
+  | "INVALID_CREDENTIALS";
 
 /** 只有「等会儿再来能成」的才是 retryable；限速属于这一类，其余一律 false。 */
-const RETRYABLE_CODES = new Set<R014ErrorCode>(["RATE_LIMITED", "SOURCE_UNAVAILABLE"]);
+const RETRYABLE_CODES = new Set<R014ErrorCode>(["RATE_LIMITED", "SOURCE_UNAVAILABLE", "INVALID_CREDENTIALS"]);
 
 export function errorBody(code: R014ErrorCode, message: string, requestId: string): unknown {
   return { ok: false, error: { code, message, retryable: RETRYABLE_CODES.has(code), requestId } };
@@ -86,6 +88,7 @@ const REPOSITORY_STATUS: Record<string, { status: number; code: R014ErrorCode }>
   INVALID_INPUT: { status: 400, code: "INVALID_REQUEST" },
   NOT_FOUND: { status: 404, code: "NOT_FOUND" },
   CONFLICT: { status: 409, code: "CONFLICT" },
+  INVALID_CREDENTIALS: { status: 401, code: "INVALID_CREDENTIALS" },
   INVALID_RESULT: { status: 500, code: "INTERNAL_ERROR" },
 };
 
@@ -121,6 +124,9 @@ const MESSAGES: Record<R014ErrorCode, string> = {
   SOURCE_TRUNCATED: "Response exceeds the configured limit",
   INTERNAL_ERROR: "The request could not be completed",
   RATE_LIMITED: "Too many attempts, try again later",
+  // 文案照 fixture 冻的原话；**同一句话覆盖「密码错」和「从没设过密码」两种情况**，
+  // 分开说等于告诉外人这个身份有没有设过密码。
+  INVALID_CREDENTIALS: "当前密码不正确",
 };
 
 export function requireMethod(request: IncomingMessage, allowed: readonly string[]): string {

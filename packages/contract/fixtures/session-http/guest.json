@@ -9,17 +9,19 @@
     "activeWorkspace": {
       "id": "00000000-0000-4000-8000-0000000000de",
       "name": "演示空间",
-      "kind": "demo",
+      "kind": "team",
       "role": "viewer",
-      "readOnly": true
+      "readOnly": true,
+      "isDemo": true
     },
     "workspaces": [
       {
         "id": "00000000-0000-4000-8000-0000000000de",
         "name": "演示空间",
-        "kind": "demo",
+        "kind": "team",
         "role": "viewer",
-        "readOnly": true
+        "readOnly": true,
+        "isDemo": true
       }
     ]
   },
@@ -27,8 +29,8 @@
     "requestId": "fixture",
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
-    "workspaceKind": "demo",
+    "workspaceKind": "team",
     "selectedSource": "platform",
-    "_note": "GET /auth/session 访客会话：workspaces 只有演示空间；任何写类请求 403 READ_ONLY_ROLE"
+    "_note": "GET /auth/session 访客会话：workspaces 只有演示空间（kind=team + isDemo）；任何写类请求 403 READ_ONLY_ROLE"
   }
 }

@@ -211,3 +211,22 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 
 ### 7efe272b ✅ 已合 main `210b7458`（arch 2026-09-09）
 门禁 domain 1279 / db 1248 / worker 1722 / gw 36 / web 224 绿（db eslint 那个还是死函数，main 已无）。D5b-2 与日报解析维度联调结果见下一条。
+
+### 第十六轮联调：D5b-2 与日报解析维度（arch 2026-09-09）
+- `GET /tasks/1803240580`：`cost` 已是窗口对象（本月至今 09-01～09-09），四项全 missing——灌数故意缺了几天，按你「窗口缺一天整段 missing」+ 契约「coverage 不完整不得出全量汇总」是对的。演示数据我改成本月整月不缺（只留一户缺数演示三态），不改你的口径。
+- 日报 `dim_agent` 3 行 / `dim_resource_position` 6 行 / `dim_bid_tool` 3 行出来了，`dim_ubp` unsupported 对。**F-Q026-1**：`dim_agent` 行现在 `key:"自投", agent_type:null`——v1.9.8 冻的是 key 用枚举 `self|agency|unknown`（自投→self、代投|代理→agency、其余 unknown）、`label` 中文、`agent_type` 字段必填、unknown 显「未标注」；请对齐（dim_resource_position / dim_bid_tool 的 key 用解析段值即可）。
+- 7efe272b 的 BFF 映射修复我在浏览器路径验（kb 不存在文档 → 应 404 不再 502）。
+
+### Q-027 派（小，优先于访客登录）：`workItemScopeClause` 按 v1.9.11 矩阵补两条分支（arch 2026-09-10）
+Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）和你 Q-025 的任务关联口径打架，我裁成三类矩阵（api.md v1.9.11）：任务型 = 任务关联授权 **或** assignee/creator 本人；纯私人（taskId 也空）= 仅本人；团队空间只认账户型 + 任务型，**纯私人不出现**（你 helper 的 team 分支现在直接 TRUE，要排除 taskId 也为空的行）。改 helper + 三类各一条真 PG 红绿（含 team 不出纯私人）；Codex 等你合 main 后把他两处改成引用你的 helper。`18648efa` 门禁中。
+
+### 18648efa ✅ 已合 main `b455d3fb`；合流时我修了一处；联调实测两条通（arch 2026-09-10）
+- 你把 `identity-password-repository.ts` 从 `r014/` 移到 `src/` 根，index.ts 并集把旧导出（`./r014/...`）和新导出都留下了 → TS2307、data-api 起不来。我删了旧的一行（`b6c581c9`），tsc 0、服务起来了。以后**移动文件时在回执里点名**「删了哪条导出」；我合流脚本加了「导出指向的文件必须存在」检查。门禁全绿：domain 1296 / db 1352 / worker 1737 / gw 36 / web 224。
+- 实测：错当前密码 → **401 INVALID_CREDENTIALS「当前密码不正确」retryable true**（F-Q024-1 ✅）；日报 `dim_biz` 出「M运动 / CVR有端 / 闲鱼DAU / 未标注业务」（F-Q023-1 ✅）。
+- 下一批：Q-027（工作项矩阵 helper）→ Q-022 访客登录 → F-Q023-2 四解析维度（已做三个，dim_ubp 保持）→ F-Q026-1（dim_agent 枚举）。
+
+### Q-027 ✅；Q-022 后半改法——不开接缝，演示空间 = team + is_demo（arch 2026-09-10，v1.9.12）
+- 你说的 49（我数 24）处 `kind === "team"` 正是我不加 `demo` 枚举的理由。改法：**023 改成 `ALTER TABLE workspaces ADD is_demo BOOLEAN NOT NULL DEFAULT false`**，不放宽 kind 约束；演示空间建成 `kind='team'`（天然只读全量、scope 复用 `team_workspace_readonly`）+ `is_demo=true`；guest 登录 = 固定 guest identity 的 viewer 会话落到 `GUEST_WORKSPACE_ID`；会话/空间 DTO 加 `isDemo`。fixtures 已改（kind team + isDemo）。`workspaceKindSchema` / bootstrap 类型 / auth context 全不动。
+- pg_trgm 在 022 且可选：**追认**，v1.9.10 撤回作废；schema.sql 已以注释形式记可选 DDL。
+- 灌数脚本建演示空间我来改（`scripts/seed-demo-data.py` v5：建 team+is_demo 空间 + guest identity）。
+- 顺序：Q-022 后半（023 改列 + guest 登录）→ 归属清洗权限放宽（已做）→ F-Q026-1（dim_agent 枚举）。`36e83527` 门禁中。

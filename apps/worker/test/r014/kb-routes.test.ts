@@ -290,4 +290,40 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
     expect((await callRoute(auth, "/api/v1/kb/documents", "POST",
       { title: "坏 kind", kind: "planet", visibility: "workspace" })).status).toBe(400);
   });
+
+  it("scores with similarity when pg_trgm is installed, and still matches the short Chinese word it scores 0", async () => {
+    await pool.query("CREATE EXTENSION IF NOT EXISTS pg_trgm");
+    await createDocument(auth, "开户流程说明", { content_json: doc([paragraph(text("trgmcase 正文"))]) });
+    // 仓储对扩展只探测一次，所以另起实例走「装好了」的路径。
+    const { KbRepository } = await import("@ka/db");
+    const fresh = new KbRepository(pool);
+
+    const long = await fresh.search(auth as never, "开户流程说明");
+    expect(long.warnings).toEqual([]);
+    expect(long.items[0]!.score).toBeGreaterThan(0);
+
+    // ★短中文词的 trigram 相似度实测是 0（'新任务开户到基建SOP' vs '开户' = 0）。
+    // 匹配靠子串照样命中，分数回落到启发式——否则一屏 0 分等于没有排序。
+    const short = await fresh.search(auth as never, "开户");
+    expect(short.items.map((item) => item.title)).toContain("开户流程说明");
+    expect(short.items[0]!.score).toBeGreaterThan(0);
+  });
+
+  it("degrades to the ILIKE path and flags TRGM_MISSING when the extension is not installed", async () => {
+    // 扩展被 022 建的索引依赖着，删不掉；所以把「探测扩展」这一问拦掉来模拟没装的库。
+    const withoutTrigram = {
+      query: (async (text: unknown, values?: unknown) =>
+        typeof text === "string" && text.includes("pg_extension")
+          ? { rows: [] }
+          : pool.query(text as never, values as never)) as typeof pool.query,
+    };
+    const { KbRepository } = await import("@ka/db");
+    const degraded = new KbRepository(withoutTrigram as never);
+
+    const found = await degraded.search(auth as never, "开户");
+    // 扩展缺失要如实标出来，别让「搜得不准」看起来像搜索本身不行。
+    expect(found.warnings).toEqual(["TRGM_MISSING"]);
+    expect(found.items.map((item) => item.title)).toContain("开户流程说明");
+    expect(found.items[0]!.score).toBeGreaterThan(0);
+  });
 });

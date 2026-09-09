@@ -526,3 +526,6 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### F8-14 扩（v1.9.10）：共享稳定码枚举加 `NOT_FOUND / CONFLICT / RATE_LIMITED`（arch 2026-09-09）
 be2 发现 BFF forwarder 只认 11 个共享码，后端正常返回的 404/409/429 被翻成 502「上游坏了」（kb 读不存在的文档、交接撞变更集、任务详情越权、改密限速）。他在 r014 forwarder 本地扩了，共享 `contracts.ts` 是你的：把三码并进枚举 + 状态映射 404/409/429，`retryable` 只有 RATE_LIMITED 为 true。
+
+### F8-12 改口（v1.9.12）：演示空间不是新 kind（arch 2026-09-10）
+访客会话的空间是 `kind:"team"` + `isDemo:true`（不再有 `demo` kind）。只读条按 `isDemo` 显「演示数据 · 只读」，写入口按 `role === "viewer"` 隐藏；空间切换器照常。fixtures `auth/login-guest.json`、`session-http/guest.json` 已更新。

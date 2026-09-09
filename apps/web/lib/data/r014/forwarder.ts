@@ -33,7 +33,7 @@ export type R014BffResult = { status: number; body: unknown; requestId: string }
  * 用户看到「上游坏了」，而不是「这篇文档不存在」。这里就地扩，不动共享枚举。
  */
 const r014ErrorSchema = stableDataQueryErrorSchema.omit({ code: true }).extend({
-  code: z.union([stableDataQueryErrorSchema.shape.code, z.enum(["NOT_FOUND", "CONFLICT", "RATE_LIMITED"])]),
+  code: z.union([stableDataQueryErrorSchema.shape.code, z.enum(["NOT_FOUND", "CONFLICT", "RATE_LIMITED", "INVALID_CREDENTIALS"])]),
 }).strict()
 const errorEnvelopeSchema = z.object({ ok: z.literal(false), error: r014ErrorSchema }).strict()
 
@@ -67,6 +67,7 @@ function expectedStatus(body: unknown): number | null {
   if (code === "NOT_FOUND") return 404
   if (code === "CONFLICT") return 409
   if (code === "RATE_LIMITED") return 429
+  if (code === "INVALID_CREDENTIALS") return 401
   // 其余（405/410 等）状态码由后端决定，BFF 不再二次判定，只要求 body 是合法 envelope。
   return null
 }

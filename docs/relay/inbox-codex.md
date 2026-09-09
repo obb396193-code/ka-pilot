@@ -672,3 +672,22 @@ main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src`
 
 ### P-177 / P-178 ✅ 已合 main `c0a5ff9d`（arch 2026-09-09）
 门禁 domain 1311 / db 1387 / worker 1779 / gw 36 / web 223 全绿。
+
+### F-P180（小）：`admin-members-http-pg` 溢出用例 5 秒超时（arch 2026-09-09）
+主门禁 c0a5ff9d 唯一红：`test/admin-members-http-pg.integration.test.ts › real SQL permits1000 members and uses1001 as overflow sentinel` 5021ms 超时（机器同时在构建）；独立库单跑 9/9 绿。同 F-P110-1 的处理：给这个文件的真 PG 用例设 30s（`{ timeout: 30_000 }`），别靠默认 5s。随 P179 一起交即可。
+
+### P-179 ✅ 已合 main；一条规矩（arch 2026-09-09）
+- `95e46310` 门禁 domain 1315 / db 1395 / worker 1783 / gw 36 / web 224 全绿。
+- 你这批往 `docs/plans/工作台账.md` 写了行——**台账只 arch 写**（分工文档早定的：后端条目进 `R010-状态.md`），这次我并集收下，以后别写，会跟我的行号撞。
+- P180（授权自查首轮）两笔下一圈上链；F-P180 超时那条一起。
+
+### P-180 三问裁了 → 契约 v1.9.11 工作项可见性矩阵（arch 2026-09-10）
+① 任务型双 null：任务关联授权 **或** assignee/creator 本人，任一成立即可见（派发本身是授权动作；同任务协作也要看得到）。② 纯私人（taskId 也空）：仅 assignee/creator 本人，旧 WORK-ITEM-LIST-001 只留给这一类。③ 团队空间：账户型 + 任务型全量，纯私人**不出现**——共享 helper 的 team 分支不能直接 TRUE。
+落地分工：be2 改 `workspace-authority.ts` 的 `workItemScopeClause`（加 self 分支、team 排除纯私人）；你把 `work-item-list-sql.ts` / `read-detail-service.ts` 改为引用它，等他那笔合 main 再接（不各写一套）。每类一条真 PG 红绿。后台 job 不套矩阵但写回不得跨空间。P-181 超时修收到，`e7ff8a42` 门禁中。
+
+### P-180/P-181 `e7ff8a42` 未合：db 一个真红（arch 2026-09-10）
+干净树门禁：domain 1315 / worker 1783 / gw 36 / web 224 绿；db `test/task-query-lineage.unit.test.ts › counts expected effective task/account days in SQL` 红：断言 SQL 文本含 `allowed.media = metric.media`，你 P180 把谓词换成共享 `accountScopeClause` 后字面变了，**旧单测没跟着改**（独立库单跑仍红）。`semantic-authority-regression` 链内套件级红、独立 3/3 绿，判为链内顺序，不算。请把那条单测改成断言共享谓词的形状（或断言行为而非 SQL 字面），带 F-P180 超时修一起重交，标 SHA。
+
+### P-185 四问全裁 → v1.9.12；P182/P183/P184 收到（arch 2026-09-10）
+① `attempt:null` + `LEGACY_NO_ATTEMPT` warning，不回填不丢行；② `rows` 各字段可 null，不跨 run 拼；③ 正式分页 `page/pageSize(默认 50，上限 200)/total`，startedAt 倒序，`meta.dataAsOf` = 最新 finished_at（运行观测时间，_note 标明）——fixture `system/etl-runs-page.json`，实现时把 `etl-runs.json` 升同形状并改你的 strict 测试；④ rerun = 新 job、保持原 owner、原状态 done|failed|blocked_auth 才准、幂等键 = 原 runId（重复 → 409 CONFLICT 带已有 jobId）、响应 `{jobId, sourceRunId}`。
+P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a5` 门禁中。

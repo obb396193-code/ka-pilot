@@ -133,8 +133,12 @@ describe("POST /auth/password (real PostgreSQL)", () => {
 
   it("refuses a wrong current password without revealing whether one was ever set", async () => {
     const wrong = await change({ currentPassword: "definitely-not-it", newPassword: NEW_PASSWORD });
-    expect(wrong.status).toBe(403);
-    // 措辞统一，不透露这个身份有没有设过密码。
+    // v1.9.9 F-Q024-1：按 fixture 回 401 INVALID_CREDENTIALS，不是 403 FORBIDDEN——
+    // fe 的表单认这一种走「密码错」分支，403 会走成未知错误。
+    expect(wrong.status).toBe(401);
+    expect(errorOf(wrong).code).toBe("INVALID_CREDENTIALS");
+    expect(errorOf(wrong).message).toBe("当前密码不正确");
+    // 同一句话覆盖「密码错」与「从没设过密码」两种，不透露这个身份有没有设过密码。
     expect(String(errorOf(wrong).message)).not.toMatch(/exist|set|found/i);
     expect(await provider.authenticate("synthetic", OLD_PASSWORD)).toBe(identityId);
   });

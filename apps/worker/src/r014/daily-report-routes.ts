@@ -1,7 +1,8 @@
 import { AccountNameParseRepository, DailyReportRepository } from "@ka/db";
 import {
-  DAILY_REPORT_MODULES, dailyReportSchema, divideMetricValues, groupRowsByDimension, metricValue,
-  shanghaiTaskBusinessDate, unsupportedModule, type DailyReportModule,
+  DAILY_REPORT_MODULES, UNLABELLED_DIMENSION, dailyReportSchema, divideMetricValues,
+  groupRowsByDimension, metricValue, shanghaiTaskBusinessDate, unsupportedModule,
+  type DailyReportModule,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -70,6 +71,17 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
         dimensionOf = new Map();
       }
 
+      // F-Q023-1 归属链：绑定任务的 biz_name → 账户昵称解析出的业务段 → 未标注业务。
+      let parsedBiz = new Map<string, string>();
+      try {
+        parsedBiz = await parses.bizFor(
+          context.auth,
+          facts.dimensions.account.map((row) => ({ media: row.media!, accountId: row.accountId! })),
+        );
+      } catch {
+        parsedBiz = new Map();
+      }
+
       const cashCost = metricValue(facts.cards.cashCost);
       const realConversion = metricValue(facts.cards.realConversion);
       const summary: DailyReportModule = {
@@ -110,7 +122,15 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
           return { key: definition.key, title: definition.title, rows: facts.dimensions.task, unsupported: false };
         }
         if (definition.key === "dim_biz") {
-          return { key: definition.key, title: definition.title, rows: facts.dimensions.biz, unsupported: false };
+          // 走归并而不是直接用 SQL 那份：这样任务没填 biz_name 时能回落到昵称解析的业务段，
+          // 且与 dim_account、六卡同源（同一批账户行合并出来的）。
+          const rows = groupRowsByDimension(facts.dimensions.account, (row) =>
+            facts.bizByAccount[row.key] ?? parsedBiz.get(row.key) ?? null);
+          return {
+            key: definition.key, title: definition.title, unsupported: false,
+            rows: rows.map((row) => (row.key === UNLABELLED_DIMENSION
+              ? { ...row, key: "未标注业务", label: "未标注业务" } : row)),
+          };
         }
         if (definition.key === "dim_account") {
           return { key: definition.key, title: definition.title, rows: facts.dimensions.account, unsupported: false };

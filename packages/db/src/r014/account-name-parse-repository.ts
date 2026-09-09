@@ -8,8 +8,7 @@ import {
 import type { Pool } from "pg";
 
 import {
-  R014RepositoryError, approveAuth, inTransaction, lockWorkspaceMembership,
-  requireOwnWorkspace, requireTimestamp,
+  R014RepositoryError, accountScopeClause, accountScopeParams, approveAuth, inTransaction, lockWorkspaceMembership, requireOwnWorkspace, requireTimestamp,
 } from "./workspace-authority.js";
 
 /**
@@ -90,15 +89,30 @@ function mapParse(row: Record<string, unknown>, workspaceId: string): AccountNam
 
 const WRITE_ROLES = new Set(["lead", "admin"]);
 /**
- * 归属清洗后台（六个端点全在 `/api/v1/admin/` 下）一律 lead|admin。
- * 原来只有 `putRule` 挡了角色，`list/patch/confirmBatch/reparseCandidates/upsertParse`
- * 五个是敞开的——个人空间里任何优化师都能列出并改**全空间**账户的昵称解析，
- * 而账户列表本身是按授权收口的。和 Q-020 是同一类：一个入口收口了，旁边的没收。
+ * 归属清洗六端点的权限（契约 v1.9.9 裁定）：
+ * - `putRule` / `reparseCandidates` = lead|admin —— 改规范、批量重解析是全空间动作。
+ * - `list` / `patch` / `upsertParse` / `confirmBatch` = **任何成员，但只作用于会话
+ *   scope 内的账户**（v1.8「归属可人工改」+ 与账户列表同口径）；团队空间只读，写 403。
+ * - `currentRule` 不加闸：账户列表取维度要读规范（`dimensionsFor`），那是普通读路径。
  *
- * `currentRule` 不在此列：账户列表取维度要读规范（`dimensionsFor`），那是普通读路径。
+ * 我上一版把四个也做成了 lead|admin —— 方向对（原来全敞开），但过严；按裁决放宽成
+ * 「成员可用 + 按授权收口」。
  */
 function assertGovernance(role: string): void {
   if (!WRITE_ROLES.has(role)) throw new R014RepositoryError("FORBIDDEN");
+}
+
+/** 成员级归属操作：团队空间只读；个人空间必须是他授权内的账户。 */
+function assertScopedWrite(auth: ApprovedWorkspaceAuthContext): void {
+  if (auth.workspaceKind === "team") throw new R014RepositoryError("FORBIDDEN");
+}
+
+function assertAccountInScope(auth: ApprovedWorkspaceAuthContext, media: string, accountId: string): void {
+  if (auth.scope.kind === "team_workspace_readonly") return;
+  const allowed = auth.scope.accounts.some(
+    (account) => account.media === media && account.accountId === accountId);
+  // 不在授权内 → 404 而不是 403：403 等于确认「这个账户存在」。与账户列表同口径。
+  if (!allowed) throw new R014RepositoryError("NOT_FOUND");
 }
 const MEDIA = /^[A-Z0-9_]{1,32}$/;
 
@@ -167,7 +181,6 @@ export class AccountNameParseRepository {
     options: { status?: string; media?: string; q?: string; page?: number; pageSize?: number } = {},
   ): Promise<{ items: AccountNameParseRecord[]; total: number }> {
     const approved = approveAuth(auth);
-    assertGovernance(approved.role);
     const page = options.page ?? 1;
     const pageSize = options.pageSize ?? 20;
     if (!Number.isInteger(page) || page < 1 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) {
@@ -180,17 +193,21 @@ export class AccountNameParseRepository {
     const like = options.q === undefined || options.q.trim() === ""
       ? null
       : `%${options.q.trim().replace(/[\\%_]/g, (char) => `\\${char}`)}%`;
+    const scope = accountScopeParams(approved);
     const where = `WHERE workspace_id=$1
        AND ($2::text IS NULL OR status=$2)
        AND ($3::text IS NULL OR media=$3)
-       AND ($4::text IS NULL OR account_id ILIKE $4 ESCAPE '\\' OR account_name ILIKE $4 ESCAPE '\\')`;
-    const values = [approved.workspaceId, options.status ?? null, options.media ?? null, like];
+       AND ($4::text IS NULL OR account_id ILIKE $4 ESCAPE '\\' OR account_name ILIKE $4 ESCAPE '\\')
+       -- v1.9.9：成员看得到列表，但只看得到自己授权内的账户。
+       AND ${accountScopeClause("$5", "$6", "media", "account_id")}`;
+    const values = [approved.workspaceId, options.status ?? null, options.media ?? null, like,
+      scope.kind, scope.allowed];
     const total = Number((await this.pool.query(
       `SELECT count(*)::int AS n FROM account_name_parses ${where}`, values,
     )).rows[0].n);
     const result = await this.pool.query(
       `SELECT ${PARSE_COLUMNS} FROM account_name_parses ${where}
-       ORDER BY media, account_id LIMIT $5 OFFSET $6`,
+       ORDER BY media, account_id LIMIT $7 OFFSET $8`,
       [...values, pageSize, (page - 1) * pageSize],
     );
     return {
@@ -212,10 +229,11 @@ export class AccountNameParseRepository {
     },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
-    assertGovernance(approved.role);
+    assertScopedWrite(approved);
     if (!MEDIA.test(input.media) || !parseStatusSchema.safeParse(input.status).success) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
+    assertAccountInScope(approved, input.media, input.accountId);
     const result = await this.pool.query(
       `INSERT INTO account_name_parses
          (workspace_id, media, account_id, account_name, rule_version, status, segments, task_ids, conflicts, parsed_at)
@@ -256,8 +274,9 @@ export class AccountNameParseRepository {
     input: { segments?: unknown; confirm?: boolean },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
-    assertGovernance(approved.role);
+    assertScopedWrite(approved);
     if (!MEDIA.test(media)) throw new R014RepositoryError("INVALID_INPUT");
+    assertAccountInScope(approved, media, accountId);
     const hasOverride = input.segments !== undefined && input.segments !== null;
     const override = hasOverride ? parseOverrideSchema.safeParse(input.segments) : null;
     if (hasOverride && (override === null || !override.success)) throw new R014RepositoryError("INVALID_INPUT");
@@ -289,7 +308,7 @@ export class AccountNameParseRepository {
     items: readonly { media: string; accountId: string }[],
   ): Promise<{ confirmed: number; skipped: { media: string; accountId: string; status: ParseStatus }[] }> {
     const approved = approveAuth(auth);
-    assertGovernance(approved.role);
+    assertScopedWrite(approved);
     if (!Array.isArray(items) || items.length === 0 || items.length > 500) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
@@ -297,6 +316,9 @@ export class AccountNameParseRepository {
       if (!MEDIA.test(item.media) || typeof item.accountId !== "string" || item.accountId.length === 0) {
         throw new R014RepositoryError("INVALID_INPUT");
       }
+      // 整批里只要有一个不在授权内就整批拒，不静默跳过——静默跳过等于告诉他
+      // 「这些确认了那些没确认」，反而把授权边界透出去了。
+      assertAccountInScope(approved, item.media, item.accountId);
     }
     const media = items.map((item) => item.media);
     const ids = items.map((item) => item.accountId);
@@ -415,5 +437,45 @@ export class AccountNameParseRepository {
   /** 列表里没有解析行的账户用它填位，保证十个键恒在。 */
   static emptyDimensions(): AccountDimensionsDto {
     return EMPTY_DIMENSIONS_DTO;
+  }
+
+  /**
+   * 昵称解析出的**业务段**（`mapsTo="biz"`）。它不在十个 DTO 维度里（那十个是投放属性），
+   * 但日报 dim_biz 要用它兜底：任务没填 biz_name 时，账户昵称里往往写着业务。
+   */
+  async bizFor(
+    auth: ApprovedWorkspaceAuthContext,
+    tuples: readonly { media: string; accountId: string }[],
+  ): Promise<Map<string, string>> {
+    const approved = approveAuth(auth);
+    const found = new Map<string, string>();
+    if (tuples.length === 0) return found;
+
+    const rows = (await this.pool.query(
+      `SELECT media, account_id, segments, override FROM account_name_parses
+       WHERE workspace_id=$1 AND (media, account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))`,
+      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId)],
+    )).rows as Record<string, unknown>[];
+
+    const rules = new Map<string, NamingRule | null>();
+    for (const row of rows) {
+      const media = String(row.media);
+      if (!rules.has(media)) {
+        const record = await this.currentRule(approved, media);
+        rules.set(media, record === null ? null : toNamingRule(record));
+      }
+      const rule = rules.get(media) ?? null;
+      if (rule === null) continue;
+      const segments = parsedSegmentsSchema.safeParse(row.segments ?? {});
+      if (!segments.success) continue;
+      const override = parseOverrideSchema.safeParse(row.override ?? {});
+      const applied = applyOverride(
+        { status: "parsed", segments: segments.data, taskIds: [], unmatched: [], leftover: [] },
+        override.success ? override.data : {}, rule,
+      );
+      const biz = Object.values(applied.segments).find((segment) => segment.mapsTo === "biz");
+      if (biz !== undefined && biz.value !== "") found.set(`${media}:${String(row.account_id)}`, biz.value);
+    }
+    return found;
   }
 }
