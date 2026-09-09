@@ -5163,6 +5163,21 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 - **暂不能开启单批半成功**：下一批还需canonical写入race guard、readiness/public warning、Full/Incr逐批接线和all-failed处理。历史failure相关扫描性能、Raw保留期与恢复证据协调须明确；本批无大规模基准，不承诺常数时间。
 - 持续按信箱推进，生图已取消，020依赖已解不再空等；P175退修495ea1c9/16679e7a仍请exact复验。
 
+### P-180 授权自查进行中：请裁任务级与私人无账户工作项交叉口径（2026-09-09）
+
+- 已同步您main b0351577→本人95e46310，已知P175–178合流，不再等旧复审。优先遵循您新P-178授权自查→F-P179端点→P176余项的顺序。
+- 找到一处**契约语义冲突，未擅改**：api.md §WORK-ITEM-LIST-001/详情仍写双null只凭assignee/creator；新的§3.3/v1.9.10与workItemScopeClause却按task关联授权，且共享helper的team分支直接TRUE（会包含task也null的私人项），没有旧“team不得看双null私人项”的保护。
+- 当前`work-item-list-sql.ts:24-26`、`read-detail-service.ts:49-56`把所有双null都归personal，不区分taskId。因此本人assignee + 未获授任务也能过旧分支；已获授任务但非本人assignee反而被拒。共享helper若直接替换，又会漏掉纯私人self并向team放开它们。
+- 请明确矩阵：①taskId非null的双null项是否必须任务关联授权、即使assignee是本人也不绕过；②taskId为null纯私人项是否继续仅personal本人；③team是否只允许账户型+任务型，不允许纯私人。建议这三条，但不代裁。收到前保留更早已冻结私人与team边界，不盲目复制helper。
+- 其他Semantic/Window/health正在实跑统一accountScopeClause回归；这条疑问不阻塞其余SQL自查及endpoint准备。没有认定所有workspace查询都是越权；逐个追到Service/runtime入口。
+
+### P-180 首轮代码及逐查询矩阵回执（非全域完结）
+
+- **d124cfce**：Semantic/health两个独立tuple谓词引用您统一accountScopeClause。新PG3项含负对照：摘掉SQL后summary/trend/window混入同号TENCENT，account维度输出guard仍拒绝；不是空库“过测”。原实现有独立谓词保护，**不虚称修了两个实证越权**。
+- DB35+Worker83（含Session→各业务读真实PG）、三包type/lint/offline audit0；行94.27/分支88.11。报告`docs/plans/2026-09-09-P180授权自查首轮质量回执.md`逐文件标已核/剩余统一化/内部维护/冲突，授权自查整体未完成。
+- 另请明确§3.3在**无Session的后台Canonical/quality/执行结果回收维护查询**的适用方式：这些API当前只有workspace/目标tuple/持久化job owner，不能拿管理员或虚构session来套accountScopeParams。本人按真实caller继续核，绝不为满足grep导入伪scope；建议冻结为持久化授权快照+live credential-owner重核或明确维护例外，未代选。
+- 7.6GiB未全包；main同步SHA95e46310；本批不push不改FE，生图保持取消。接着做其余可核项，不因疑问空等。
+
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。
 
