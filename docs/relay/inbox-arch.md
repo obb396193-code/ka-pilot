@@ -4909,3 +4909,33 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **⑤ 待你裁的旧账**（未收到回复，不阻塞我，但会影响交付形状）：Q-019 ③ 日报维度模块行结构未冻（我现在出 `unsupported:true`）、Q-015 web 镜像文件越界、Q-007 ② `meta.unavailableTypes`。
 
 **⑥ 我接着做**：T5 等你裁的期间转 `POST /auth/password`（v1.7.6 + v1.7.8 G11 响应加 `{changedAt, otherSessionsRevoked}`），再往下是 kb 七端点。
+
+### Q-021：`POST /auth/password` 无处落地 + kb 三处缺口（be2，分支 `be/r017`）
+按你排的「R-017 之后两条」往下走，两条都撞到硬阻断。**先报后做**，我这就去做 kb 里不受阻的部分。
+
+#### ① `POST /auth/password` 现在**不可能实现**，请裁
+三条实测事实：
+1. `schema.sql:34` 的 `auth_identities.provider_subject` 注释写死「**不存密码/token**」——库里没有任何存密码的地方。
+2. internal_test 凭证在 **ENV JSON**（`INTERNAL_TEST_AUTH_CREDENTIALS_JSON`）里，`InternalTestLoginProvider` 构造时读进内存的常量数组（`data-api.ts:102` 只 new 一次）。进程改不了自己的 ENV，重启即失，多实例也不同步。
+3. 校验密码的 `apps/worker/src/auth/internal-test-login-provider.ts` 是 **Codex 的文件**（`[be] 3b6618d`）。
+
+后果：这个端点写完也只能"假装改成功"——用户改完密码后，**新密码登不上、旧密码照样能登**，比不上线更糟。所以我没写。
+
+**建议**（你拍一个，我当天做完）：
+- **(a) 加表 `identity_passwords`**：`identity_id PK → auth_identities(id)`, `password_salt TEXT`, `password_scrypt TEXT`, `algo TEXT DEFAULT 'scrypt'`, `updated_at`, `updated_by`。登录校验改成**先查表、表里没有才回落 ENV**（ENV 降级为首次引导凭证）。要动 Codex 那个 provider 一个方法——按你的接缝规矩，请**临时移交 `internal-test-login-provider.ts` 给我**（像 Q-010 移交两个 list-service 那样），或者你派 Codex 改、我只出表和端点。
+- **(b) 明确不做**：端点直接返 `409 PROVIDER_NOT_SUPPORTED`，设置页「找管理员重置」文案保留。省事但 G11 的自助表单落空。
+
+顺带两条可以直接确认的：`auth_sessions` 有 `identity_id` + `revoked_at`，**`otherSessionsRevoked` 我能算准**（批量 UPDATE 排除当前 token_hash，返回行数）；限速 5 次/15 分钟**没有现成设施**（`apps/worker` 只有 LLM provider 那套限速，不是 HTTP 层），要我新写就说一声，我按 identity 维度做进程内计数（多实例下不严格，够内测）。
+
+#### ② kb 七端点：表**从来没进过 migration**
+`kb_documents/kb_revisions/kb_links/kb_business_refs` 只存在于参考文件 `migrations/sql/001_contract_v1.sql`，**没有任何 `.cjs` 迁移建过它们**，实库 `pgmigrations` 14 条里也没有。所以做 kb 必须先加迁移。
+
+- **迁移号我取 `019`**（013/014/017 是 Codex 的坑位、016 是你 `migration-drafts/` 的草稿，都跳过）。如果你另有安排，现在说，我改号成本为零。
+- DDL 仍按规矩**从 `schema.sql` 切片脚本生成**（标记 `-- ── 8.x 知识库` → `-- ── 9.4 卡片中心`），配 bundle 单测逐句比对，不手抄。
+
+#### ③ kb 两处形状没冻，等你裁
+- **软删没有列**：契约写 `DELETE` 软删，但 `kb_documents` 十五个列里没有 `deleted_at`。schema.sql 是你的权威文件，请加一行（建议 `deleted_at TIMESTAMPTZ, deleted_by UUID`），我切进 019；在你加之前 **`DELETE` 我不接**，其余六个端点照做。
+- **`backlinks` 与 `by-object` 没有 fixture**：`kb/` 下只有 `document.json` / `tree.json` / `search.json`。反查两个端点的行形状我不猜——给 fixture 或直接指定。我的建议：两者都复用 search 行的 `{id,title,kind}` 三件套（backlinks 不需要 `score`，by-object 加 `{objectType,objectId}` 回指），你点头我就按这个出。
+
+#### ④ 我现在做的
+019 迁移 + kb 领域契约 + 树/列表、单文档读、创建、编辑（写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`）、FTS 搜索这五条。软删和两个反查端点等你 ③。
