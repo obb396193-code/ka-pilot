@@ -4,6 +4,7 @@ import "server-only"
 // 实现放在无副作用的 handlers.ts，测试才导得进来。
 export {
   handleAccountPipeline,
+  handleAccountPoolStatus,
   handleAccountTransfer,
   handleAuthPassword,
   handleDailyReport,
@@ -15,6 +16,8 @@ export {
   handleTransferAll,
   handleAdminAccountNamePatch,
   handleAdminAccountNames,
+  handleAdminAccountNamesConfirm,
+  handleAdminAccountNamesReparse,
   handleAdminNamingRules,
   handleAdminNamingRulesTest,
   handleCapabilities,

@@ -21,6 +21,8 @@ import {
   taskBindingsSchema,
   taskDetailSchema,
   watchlistSchema,
+  accountNamesConfirmSchema,
+  accountNamesReparseSchema,
   accountTransferSchema,
   dailyReportSchema,
   kbBacklinksSchema,
@@ -30,6 +32,7 @@ import {
   kbSearchSchema,
   kbTreeSchema,
   passwordChangedSchema,
+  poolStatusRecordSchema,
 } from "./schemas.ts"
 
 type Environment = Record<string, string | undefined>
@@ -289,5 +292,32 @@ export const handleDailyReport = (request: Request, deps: Deps): Promise<R014Bff
     method: "GET",
     allowedQuery: ["date", "role"],
     dataSchema: dailyReportSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAccountPoolStatus = (
+  request: Request, media: string, accountId: string, deps: Deps,
+): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/accounts/${encodeURIComponent(media)}/${encodeURIComponent(accountId)}/pool-status`,
+    method: request.method === "DELETE" ? "DELETE" : "PATCH",
+    dataSchema: poolStatusRecordSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAdminAccountNamesConfirm = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/account-names/confirm",
+    method: "POST",
+    dataSchema: accountNamesConfirmSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAdminAccountNamesReparse = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/account-names/reparse",
+    method: "POST",
+    allowedQuery: ["media"],
+    dataSchema: accountNamesReparseSchema,
     ...withDeps(deps),
   })

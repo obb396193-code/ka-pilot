@@ -487,3 +487,29 @@ export const dailyReportSchema = z.object({
     target: z.string().nullable(),
   }).strict(),
 }).strict()
+
+// ── 补齐三条此前漏掉的透传（BFF 覆盖绊线抓出来的）─────────────────────────────
+
+export const poolStatusRecordSchema = z.object({
+  media: z.string(),
+  accountId: z.string(),
+  poolStatus: z.enum(POOL_STATUS_ORDER),
+  poolStatusSource: z.enum(["system", "manual"]),
+  /** 人工改过才有时间；系统态没有改动时间，是 null 不是 now()。 */
+  poolStatusChangedAt: z.string().nullable(),
+}).strict()
+
+export const accountNamesConfirmSchema = z.object({
+  confirmed: z.number().int().nonnegative(),
+  /** 没确认成的逐条列出——批量确认只放行 parsed，conflict/failed 必须人工看。 */
+  skipped: z.array(z.object({
+    media: z.string(), accountId: z.string(), status: z.string(),
+  }).strict()),
+}).strict()
+
+export const accountNamesReparseSchema = z.object({
+  reparsed: z.number().int().nonnegative(),
+  /** 该 media 没配命名规范 → 跳过；不拿一份默认规范硬解，硬解出来的段全是错的。 */
+  skippedNoRule: z.number().int().nonnegative(),
+  byStatus: z.record(z.string(), z.number().int().nonnegative()),
+}).strict()
