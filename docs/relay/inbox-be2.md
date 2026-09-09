@@ -259,3 +259,6 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 
 ### F-Q027-1（小）：kb 列表分页的响应形状（arch 2026-09-10）
 `GET /kb/documents?page=1` 实测 200 但 `data` 只有 `items`——你说补了分页与硬上限，`page/pageSize/total` 落在哪？契约只冻了 query 有 `page`，响应没冻：按 etl-runs 同形 `{items, page, pageSize, total}`（v1.9.12 ③ 的形），fixture `kb/tree.json` 或新 `kb/documents-page.json` 你补一份我核。
+
+### 795d7165 ✅ 已合 main（arch 2026-09-10 循环第 2 圈）
+SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_bid_tool）main 已修，合流取 main 版；拉 main 后别改回。手上顺序：Q-030 BFF 四组透传 → 023 改 is_demo 列 + guest 登录 → Q-027 helper 矩阵 → F-Q026-1 → F-Q027-1。
