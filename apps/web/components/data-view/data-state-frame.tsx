@@ -37,7 +37,7 @@ function BlockingPanel({ kind, message, requestId, retryable }: { kind: "empty" 
         <span className="rounded-full bg-muted p-3"><Icon className="size-6 text-muted-foreground" /></span>
         <CardTitle className="text-lg">{content.title}</CardTitle>
         <p className="max-w-md text-sm leading-6 text-muted-foreground">{content.description}</p>
-        {requestId ? <p className="font-mono text-xs text-muted-foreground">requestId: {requestId}</p> : null}
+        {requestId ? <p className="text-xs text-muted-foreground">排查编号 <span className="font-mono">{requestId}</span>（找我们排查时报这串）</p> : null}
         {requestId ? <p className="text-xs text-muted-foreground">{retryable ? "可重试；若持续失败请携问题编号排障。" : "请携问题编号联系数据平台排障。"}</p> : null}
       </CardContent>
     </Card>

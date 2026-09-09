@@ -15,14 +15,14 @@ import { cn } from "@/lib/utils"
 // mock 期用 `?state=` 切给老板看；接真数据后由响应 state 驱动，同一个壳。
 export type PageState = "normal" | "loading" | "empty" | "partial" | "stale" | "error" | "forbidden" | "disabled"
 export const pageStates: { value: PageState; label: string }[] = [
-  { value: "normal", label: "normal · 正常" },
-  { value: "loading", label: "loading · 加载中" },
-  { value: "empty", label: "empty · 空" },
-  { value: "partial", label: "partial · 部分" },
-  { value: "stale", label: "stale · 过期" },
-  { value: "error", label: "error · 错误" },
-  { value: "forbidden", label: "forbidden · 无权限" },
-  { value: "disabled", label: "disabled · 示例态" },
+  { value: "normal", label: "正常" },
+  { value: "loading", label: "加载中" },
+  { value: "empty", label: "空" },
+  { value: "partial", label: "覆盖不全" },
+  { value: "stale", label: "数据过期" },
+  { value: "error", label: "查询失败" },
+  { value: "forbidden", label: "无权限" },
+  { value: "disabled", label: "示例态" },
 ]
 
 export function usePageState(): PageState {
@@ -40,7 +40,7 @@ export function StateSwitch() {
   if (process.env.NEXT_PUBLIC_KA_DATA_PROVIDER !== "mock") return null
   return (
     <Select value={state} onValueChange={(value) => { const next = new URLSearchParams(params.toString()); if (value === "normal") next.delete("state"); else next.set("state", value); router.replace(`${pathname}${next.size ? `?${next}` : ""}`) }}>
-      <SelectTrigger size="sm" className="w-44" aria-label="页面状态"><span className="text-muted-foreground">态</span><SelectValue /></SelectTrigger>
+      <SelectTrigger size="sm" className="w-36" aria-label="页面状态"><span className="text-muted-foreground">态</span><SelectValue /></SelectTrigger>
       <SelectContent align="end">{pageStates.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
     </Select>
   )
@@ -71,7 +71,7 @@ function Blocking({ kind, title, description, requestId }: { kind: "empty" | "er
         <span className="rounded-full bg-muted p-3"><Icon className="size-6 text-muted-foreground" /></span>
         <CardTitle className="text-lg">{title}</CardTitle>
         <p className="max-w-md text-sm leading-6 text-muted-foreground">{description}</p>
-        {requestId ? <p className="font-mono text-xs text-muted-foreground">requestId: {requestId}</p> : null}
+        {requestId ? <p className="text-xs text-muted-foreground">排查编号 <span className="font-mono">{requestId}</span>（找我们排查时报这串）</p> : null}
       </CardContent>
     </Card>
   )
@@ -110,7 +110,7 @@ export function StateFrame({ state, children, empty, error, unlock = "对应后�
   if (state === "loading") return <div className={className}><LoadingBlock /></div>
   if (state === "empty") return <div className={className}><Blocking kind="empty" title={empty?.title ?? "当前范围内没有数据"} description={empty?.description ?? "调整筛选或时间范围后重试；系统不会用 0 或旧值填充。"} /></div>
   if (state === "error") return <div className={className}><Blocking kind="error" title="数据查询失败" description={error?.message ?? "请稍后重试；系统不会用旧值或 0 静默替代。"} requestId={error?.requestId ?? "fixture-error"} /></div>
-  if (state === "forbidden") return <div className={className}><Blocking kind="forbidden" title="当前身份无访问权限" description={error?.message ?? "请申请对应账户范围，不会越权展示数据。"} requestId={error?.requestId ?? "fixture-403"} /></div>
+  if (state === "forbidden") return <div className={className}><Blocking kind="forbidden" title="当前身份无访问权限" description={error?.message ?? "这些数据不在你被授权的账户范围内，系统不会越权展示。要开权限：找工作区管理员在「治理后台 · 成员与授权」加授权。"} requestId={error?.requestId ?? "fixture-403"} /></div>
   if (state === "disabled") return <div className={className}><ExampleBlock unlock={unlock}>{children}</ExampleBlock></div>
   return (
     <div className={cn("flex flex-col gap-4", className)}>
