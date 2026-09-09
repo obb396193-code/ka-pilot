@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
+import { resolveErrorMessage } from "@/lib/data/contracts"
 import { passwordChangedFixture, passwordErrorFixture } from "@/lib/fixtures/settings"
 
 // F8-3 账号安全（契约 v1.7.6 `POST /auth/password`）：改密成功后其他设备下线。
@@ -33,7 +34,10 @@ export function PasswordForm() {
     window.setTimeout(() => {
       setPending(false)
       if (failed) {
-        const message = !isOk(passwordErrorFixture) ? passwordErrorFixture.error.message : "当前密码不正确"
+        // 限速（RATE_LIMITED）显「操作太频繁，15 分钟后再试」，其余用后端那句更贴场景的；
+        // 无论哪种都不清空已填的三个框（F8-14）。
+        const error = !isOk(passwordErrorFixture) ? passwordErrorFixture.error : null
+        const message = error ? resolveErrorMessage(error.code, error.message) : "当前密码不正确"
         toast.error("改密码失败", { description: message })
         return
       }

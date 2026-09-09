@@ -2,10 +2,11 @@ import { adminMembersResponseSchema, adminMemberGrantsResponseSchema } from "../
 import { bodyRequestId, createRequestId, hasCorrelatedRequestId, internalApiHeaders, isTimeoutCause,
   resolveInternalApiConfig, resolveSessionCookie, type FetchLike, type InternalApiEnvironment } from "./internal-api-bff.ts"
 import { readBoundedResponseBody } from "./bounded-response.ts"
+import { isRetryableErrorCode } from "./contracts.ts"
 const statuses = { INVALID_REQUEST: 400, UNAUTHORIZED: 401, FORBIDDEN: 403, NOT_FOUND: 404,
   SOURCE_UNAVAILABLE: 503, SOURCE_TRUNCATED: 502, UPSTREAM_INVALID_RESPONSE: 502, UPSTREAM_TIMEOUT: 504, INTERNAL_ERROR: 500 }
 function fail(status: number, code: keyof typeof statuses, requestId: string) {
-  return { status, requestId, body: { ok: false as const, error: { code, message: "Member request could not be completed", retryable: false, requestId } } }
+  return { status, requestId, body: { ok: false as const, error: { code, message: "Member request could not be completed", retryable: isRetryableErrorCode(code), requestId } } }
 }
 export async function handleAdminMembersRequest(request: Request, dependencies: {
   environment: InternalApiEnvironment; fetchImpl?: FetchLike; requestId?: () => string

@@ -4,6 +4,7 @@ import {
   type FetchLike, type InternalApiEnvironment,
 } from "./internal-api-bff.ts"
 import { readBoundedResponseBody } from "./bounded-response.ts"
+import { isRetryableErrorCode } from "./contracts.ts"
 import { workItemListRequestSchema, workItemListResponseSchema,
   type WorkItemListRequest, type WorkItemListResponse } from "./work-item-list-contracts.ts"
 
@@ -12,7 +13,8 @@ const allowed = new Set(["page", "pageSize", "q", "status", "severity", "type", 
 type ErrorCode = Extract<WorkItemListResponse, { ok: false }>["error"]["code"]
 type Dependencies = { environment: InternalApiEnvironment; fetchImpl?: FetchLike; requestId?: () => string }
 type Result = { status: number; body: WorkItemListResponse; requestId: string }
-function fail(status: number, code: ErrorCode, message: string, requestId: string, retryable = false): Result {
+// retryable 不再恒 false：超时 / 数据源不可用 / 限速这类等会儿真能好的，按码判（F8-14）
+function fail(status: number, code: ErrorCode, message: string, requestId: string, retryable = isRetryableErrorCode(code)): Result {
   return { status, body: { ok: false, error: { code, message, retryable, requestId } }, requestId }
 }
 function parse(search: URLSearchParams): WorkItemListRequest {
