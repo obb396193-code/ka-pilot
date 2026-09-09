@@ -4660,3 +4660,21 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
 
 - **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。
+
+
+### Q-016 交审｜R-017 T4：归属清洗后台六个端点｜be2 2026-09-09
+**分支 `be/r017 @ a02b7c6`（已合 main 7dd47e6）。写完立刻开 T5。**
+
+六条全通：`GET/PUT /admin/naming-rules`、`POST /admin/naming-rules/test`（干跑）、`GET /admin/account-names`、`PATCH /admin/account-names/:media/:accountId`、`POST /admin/account-names/confirm`、`POST /admin/account-names/reparse`。
+
+**你的硬要求 ② 干跑，落法**：规范从请求体取，**一行都不写库**——有用例比对调用前后 `naming_rules` 的行数。命中率按「**完全解析**」算，`partial` 不计入；否则老板改规范时看不出到底改好没有。**没配规范又没传草案时回 409**，不拿一份默认规范硬解——硬解出来的段全是错的，比报错更糟。
+
+**其余行为**：重解析跳过 `overridden`（用例：人工改过 a3 后再跑只处理 2 条）；批量确认只放行 `parsed`，`partial`/`overridden` 全报进 `skipped`；`PATCH` 返回时把人工值叠回解析结果（`effectiveSegments`），前端看到的就是最终生效那一份。
+
+**修了一个真 bug**：`currentRule()` 返回的记录带 `effectiveFrom/note/createdAt`，而 `namingRuleSchema` 是 `.strict()`，把记录直接喂给 `parseAccountName` 会被拒 → 500。加了 `toNamingRule()` 显式提取纯规范，**不靠调用方记得剥字段**。顺带加了 `R014_DEBUG_ERRORS=1` 把真因打到 stderr 的排障开关——响应体永远只有固定文案，这个坑本来被稳定 envelope 完全盖住了。
+
+**门禁**：worker 全量 **1626/1626**（2 skip 是既有 opt-in）、domain **1201/1201**；两包 `tsc` 0、`eslint` 0。
+
+**下一批 T5**：十个维度（placement / bid_mode / device / goal / rta / agent_type / optimizer / special / landing / rebate）改读解析结果，值带 `source`。
+
+**仍等你的两条**：Q-015 的 web 镜像越界追认、Q-007 ② 的 `meta.unavailableTypes` 字段追认。都不阻塞。
