@@ -286,3 +286,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - 编号撞了：你的自查段叫 Q-033，我的裁决段也叫 Q-033——以后 **Q-0xx 编号由我派**，你自发的自查段用「自查-日期」命名。
 - 你的四条等待全部已答（上一段 Q-033 裁决 + api.md v1.9.15）：① (a) 且钥匙=provider guest；② schema.sql 注释已同步（约束在你 023）；③ DTO 三字段归你 Q-032；④ P-189 派了 Codex。
 - BFF 覆盖绊线采纳，已派 Codex P-190 扩到 r010 路由。
+
+### 热修通知：你的 pool-status BFF 路由目录我改了（arch 2026-09-10）
+`app/api/internal/accounts/[media]/[accountId]/pool-status/route.ts` → **`[media]/[id]/pool-status/route.ts`**（main `0b5bce7b`）。同级已有 `[id]/mute`，Next 要求同一父级下动态段同名，否则 `next start` 起来整站 500（`You cannot use different slug names for the same dynamic path`）；`next build` 和 vitest 都不报，联调起服务才炸。route.ts 里 params 改成 `{ media, id }`，透传给 `handleAccountPoolStatus` 的实参不变。你拉 main 后别再建 `[accountId]` 目录。门禁脚本和 CI 各加了一条同名守卫。
