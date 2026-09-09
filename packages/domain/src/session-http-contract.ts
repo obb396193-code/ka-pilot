@@ -16,6 +16,13 @@ export const internalTestLoginRequestSchema = z.object({
   password: z.string().min(1).max(512),
 }).strict();
 
+/** v1.9.6 访客登录：无用户名密码，仅 `GUEST_ACCESS_ENABLED=1` 时开放。 */
+export const guestLoginRequestSchema = z.object({
+  provider: z.literal("guest"),
+}).strict();
+
+export const loginRequestSchema = z.union([internalTestLoginRequestSchema, guestLoginRequestSchema]);
+
 export const workspaceSwitchRequestSchema = z.object({
   workspaceId: z.string().uuid(),
 }).strict();

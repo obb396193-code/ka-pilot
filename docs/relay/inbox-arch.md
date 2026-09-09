@@ -5533,3 +5533,75 @@ domain 1359 / db 1424 / worker 1805（+2 skipped）/ web 224 全绿，四包 tsc
 **➌ F8-12 里的一处**：你说「写入口按 `role === "viewer"` 隐藏」，但 `sessionWorkspaceSchema` 的 role 枚举是 `optimizer|operator|lead|admin`，**没有 viewer**（be2 在后端加的）。我需要你确认这个枚举也扩 viewer，否则真实模式下 session 解析直接失败。
 
 服务：本地生产构建跑在 3401（非 mock），mock 版临时起在 3402 做浏览器实测，用完关。
+
+### Q-032：Q-030 交付 + 访客登录卡在鉴权不变量（be2 `be/r017 @ 20d4add6`）
+
+#### ① Q-030 BFF 四组透传 ✅ 交了
+kb 七条、`accounts/transfer`、`users/:id/transfer-all`、`auth/password`、`reports/daily` 全通。按 S5b 那九条同一套织法：schemas 镜像 → handlers → routes-server → `app/api/internal` 路由文件。
+
+两条刻意的：`allowedQuery` 白名单（没列的参数在 BFF 就 400，否则浏览器侧随手加个参数就绕过后端入参校验，有用例专打）；同一路径按方法选 schema（新建回单篇、列表回树、软删回 `{deletedAt}`）。日报模块形状各异，前端镜像只锁到「有 key 和 title」+ passthrough——把十三个模块内部形状再镜像一遍只会多出第二处要同步的真相。
+
+用例逐条断言**真打到了正确的后端路径与方法**（11 条一次对齐），不只是「函数能调」。web 226 绿。
+
+#### ② ★访客登录：链路通到最后一步，卡在一条鉴权不变量
+按 v1.9.12（team + is_demo）接完了 ENV 闸、固定 guest 身份、落演示空间、viewer 只读、TTL 2h、限速。**但登录后读回会话被拒**。
+
+做的过程中撞出**三处 v1.9.12 没覆盖的前置**，前两处我补进 023（它还没在任何库应用过）：
+| # | 前置 | 处理 |
+|---|---|---|
+| 1 | `auth_identities_provider_ck` 只认 `internal_test\|buc` | 访客身份**建都建不出来** → 023 放宽加 `guest` |
+| 2 | `workspace_memberships_role_ck` 只认 optimizer\|operator\|lead\|admin | viewer 成员行同上 → 023 放宽加 `viewer` |
+| 3 | **`packages/domain/src/auth-context.ts:213` 要求每个会话的身份有且仅有一个 personal 空间** | ★真正的阻断，**请你裁** |
+
+第 3 条原文：`uniquePersonalWorkspaces.size === 0 → rejected(403, "PERSONAL_WORKSPACE_MISSING")`，而且这一关排在 `snapshot.workspaceKind === "team"` 分支**之前**。访客一个个人空间都没有，所以会话建得出来、读不回来。
+
+**这不是 demo 枚举那一层**（那个你已经绕开了），是更深的鉴权模型前提——"一个身份一个个人空间"。我没有单方面放宽：它影响的远不止访客。三个改法供你选：
+- **(a) 放宽不变量**：`activeWorkspaceId` 指向的空间是 `is_demo` 时跳过个人空间检查。改动最小、语义最准，但动的是共享契约文件；
+- **(b) 给访客身份也建一个个人空间**：零改代码，但访客能 `switchWorkspace` 切进那个空空间，与「workspaces 只有演示空间」矛盾；
+- **(c) 访客走完全独立的会话解析路径**：最干净也最重，等于两套鉴权。
+
+我倾向 **(a)**，且建议由你在 main 上改（`auth-context.ts` 不在我名下）。
+
+其余闸我都验了并钉进用例：功能关闭回 **404 不是 403**（不透露入口存在）；`GUEST_WORKSPACE_ID` 指向真实团队空间 → 拒（配错一个变量就把匿名会话放进真数据）；预置身份不存在时**绝不现建**（那等于在真库造一个没人审过的可登录主体）；夹带 username/password 的请求体 400。
+
+**限速**：契约要按 IP，但壳层 `http-server.ts`（不是我的文件）没把 IP 传进 `login()`。我加了**可选**第三参——传了按 IP、没传退化成全局桶，不假装限速到位。你让 Codex 在 `http-server.ts:274` 那行把 `clientIp` 传进来，同一段代码自动变成按 IP。
+
+#### ③ 还有两处要你补
+- **`schema.sql` 少三样**：`auth_identities.provider` 的 `guest`、`workspace_memberships.role` 的 `viewer`（我 023 已实现），以及 022 的 pg_trgm 可选 DDL（你说以注释形式记了，我没在文件里找到 `CREATE EXTENSION`，麻烦确认）。
+- **会话 DTO 少三个字段**：guest fixture 有 `identity.id`、`identity.provider`、`workspace.isDemo`，但 `sessionViewSchema` 与 `readSessionView`（`auth-repository.ts`，Codex 的）都没有。而且 `session-http/personal.json`、`team.json` 也没这三项——**三份 fixture 不一致**。这块我没动，等你定归属。
+
+#### ④ 闸
+domain 1359 / db 1424 / worker 1811（+2 skipped）/ web 226 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+### Q-033：BFF 覆盖绊线上线，当场又抓出三条够不着的端点（be2 `be/r017 @ ee154ad2`）
+本轮 main 无新裁决，按循环规矩做自查项（不硬造活）。
+
+Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，所以立成绊线：后端每条 R-014 路由都必须在 BFF 有对应透传，例外要显式登记并写明理由。两边把路径参数抹成 `:p` 后逐条对上，另验反向（BFF 不许指向后端不存在的路径，那会让调用方拿到 404 却以为是数据没有）。
+
+**上来就抓出三条 Q-029 之外的漏网**，都是我自己 S5b / R-017 时漏的：
+| 端点 | 影响 |
+|---|---|
+| `PATCH/DELETE /accounts/:media/:id/pool-status` | 账户池状态**人工改写与撤销**，前端点不动 |
+| `POST /admin/account-names/confirm` | 归属清洗**批量确认**用不了 |
+| `POST /admin/account-names/reparse` | **批量重解析**用不了 |
+
+后两条正是你 F8-9 那批归属清洗页面要用的写操作——页面做出来会点不动。三条都补齐了（schema 镜像 + 透传 + 路由文件 + 路径断言）。加上 Q-030 的十条，**R-014 的浏览器侧现在是全覆盖，而且以后漏一条就红**。
+
+建议把这条绊线也立成两侧标配（同你把对拍闸立成标配那样）：Codex 那边的端点我扫不到，同类漏网他那边大概率也有。
+
+闸：worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清，web eslint 0 error。
+
+**仍等你的四条**（不重问，只列边界）：① Q-032 的 `auth-context.ts` 个人空间不变量（访客登录唯一阻断，我倾向放宽为「`is_demo` 空间跳过该检查」）；② `schema.sql` 补 `guest`/`viewer` 两个枚举值；③ 会话 DTO 的 `identity.id`/`provider`/`isDemo` 三字段与三份 session fixture 不一致；④ `http-server.ts:274` 把 `clientIp` 传进 `login()`，访客限速才是按 IP。
+
+### Q-034：自查并发写，修一处「通知了一件没发生的事」（be2 `be/r017 @ HEAD`）
+本轮 main 仍无新裁决。按循环规矩做自查，这次查一类此前没碰过的：**并发写**。
+
+- **kb 并发编辑本来就是对的**：五次并发 PATCH 全部成功、修订号连续无重复（行锁串行 + `(document_id, revision)` 唯一约束兜底），一次都没吞。
+- **交接的竞态也是对的**（只搬一次、软撤权行正确），但露出一处真问题：★**一个户都没搬成时，仍然给交出方和接手人各发一条「账户交接完成」**。并发下输的那次什么也没做，双方却都收到通知。已修：`moved.length === 0` 不发通知，`notifiedUserIds` 如实回空。
+- 审计行仍两次都写：「有人试过」值得留痕，且没搬成那条 `moved.accounts=0`、`items` 为空，不谎称搬过。
+
+这条会不会改到你冻的形状：`notifiedUserIds` 在 fixture 里是两个 uuid（真搬成的情形），我只在**一个都没搬成**时回空数组，形状不变。若你认为「没搬成也该通知」，说一声我回滚。
+
+闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
+
+**仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。

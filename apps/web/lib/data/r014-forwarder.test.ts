@@ -223,6 +223,31 @@ test("Q-030 handlers hit the right backend path and method for every newly expos
   ])
 })
 
+test("the three passthroughs the coverage tripwire found also hit the right paths", async () => {
+  const { handleAccountPoolStatus, handleAdminAccountNamesConfirm, handleAdminAccountNamesReparse } =
+    await import("./r014/handlers.ts")
+  const seen: string[] = []
+  const spy = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    seen.push(`${(init?.method ?? "GET").toUpperCase()} ${new URL(String(input)).pathname}`)
+    return Response.json({ ok: true, data: {}, meta: { requestId: "req-gap" } },
+      { headers: { "x-request-id": "req-gap" } })
+  }
+  const deps = { environment, requestId: () => "req-gap", fetchImpl: spy }
+
+  await handleAccountPoolStatus(
+    req("http://localhost/x", { method: "PATCH", body: "{}" }), "KUAISHOU", "account-1", deps)
+  await handleAccountPoolStatus(req("http://localhost/x", { method: "DELETE" }), "KUAISHOU", "account-1", deps)
+  await handleAdminAccountNamesConfirm(req("http://localhost/x", { method: "POST", body: "{}" }), deps)
+  await handleAdminAccountNamesReparse(req("http://localhost/x", { method: "POST", body: "{}" }), deps)
+
+  assert.deepEqual(seen, [
+    "PATCH /api/v1/accounts/KUAISHOU/account-1/pool-status",
+    "DELETE /api/v1/accounts/KUAISHOU/account-1/pool-status",
+    "POST /api/v1/admin/account-names/confirm",
+    "POST /api/v1/admin/account-names/reparse",
+  ])
+})
+
 test("Q-030 refuses a query parameter the backend never declared", async () => {
   const { handleKbSearch } = await import("./r014/handlers.ts")
   const result = await handleKbSearch(

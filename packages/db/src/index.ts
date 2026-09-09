@@ -82,3 +82,4 @@ export * from "./qihang-identity-seed-repository.js";
 export * from "./worker-once-diagnostics-repository.js";
 export * from "./etl-batch-failure-repository.js";
 export * from "./identity-password-repository.js";
+export * from "./r014/guest-access-repository.js";

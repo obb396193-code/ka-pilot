@@ -171,7 +171,10 @@ export class AccountTransferRepository {
       )).rows[0] as { id: string };
 
       // 双方各一条出站通知（契约 4.10）。通知只入队，发送由 Worker 负责。
-      for (const userId of [donor, request.toUserId]) {
+      // **一个户都没搬成时不发**：并发下两个交接抢同一个户，输的那次什么也没做，
+      // 再给双方推一条「账户交接完成」，就是通知一件没发生的事。
+      // 审计行仍然写（那是「有人试过」的记录，`moved.accounts=0`、`items` 为空，不谎称搬过）。
+      for (const userId of moved.length === 0 ? [] : [donor, request.toUserId]) {
         await client.query(
           `INSERT INTO outbound_messages(workspace_id, channel, target, kind, payload, status)
            VALUES($1,'inbox',$2,'account_transfer',$3::jsonb,'queued')`,
@@ -184,7 +187,8 @@ export class AccountTransferRepository {
       return accountTransferResultSchema.parse({
         transferId: transfer.id,
         moved: { accounts: moved.length, workItems, dispatches },
-        notifiedUserIds: [donor, request.toUserId],
+        // 没发就如实回空，别让调用方以为通知出去了。
+        notifiedUserIds: moved.length === 0 ? [] : [donor, request.toUserId],
         skipped,
       });
     });
