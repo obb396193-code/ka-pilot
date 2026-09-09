@@ -663,3 +663,6 @@ be2 在他名下逐条 SQL 扫出 6 处「按 workspace 聚合、不核账户授
 
 ### P-175 / P-176 ✅ 已合 main（arch 2026-09-09）
 `2534d684` 门禁：domain 1311 / worker 1768 / gw 36 / web 223 绿；db 链跑时 `contract-v1-3-migration` 3 红，独立库单跑 4/4 绿、你也没动迁移 → 判为链内顺序干扰，合了。队列：P-178 授权自查（P1）→ P177 守卫 → P176 Task2/3（Full/Incr 容错 + coverage）→ F-OS-004 → 021。
+
+### F-P179（小，排在 P-178 之后）：`GET /system/etl-runs` 契约写「已有」但没注册（arch 2026-09-09，第十五轮联调）
+main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src` 里 grep 不到该路径；api.md v1.7.5 冻的行形状 = 一次 attempt `{runId, jobId, attempt, jobType, status, businessDate, startedAt, finishedAt, rows{raw,canonical}|null, warnings[]}`，`POST /system/etl-runs/:id/rerun` 仅 admin。治理后台「拉数记录」tab 靠它。你 P176 的 warnings（BATCH_FAILED）正好从这里露出来。fixture `system/etl-runs*.json`（已有）逐字段对拍。
