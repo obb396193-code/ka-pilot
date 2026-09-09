@@ -19,7 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
-import { cardCallbacksFixture, cardLevelHint, cardLevelLabel, cardsFixture, connectionsFixture, escalateLabel, identityMappingsFixture, messageKindLabel, messageStatusMeta, messagesFixture, policiesFixture, providerLabel, type CardCallback, type CardInstance, type IdentityMapping, type MessageItem } from "@/lib/fixtures/integrations"
+import { cardCallbacksFixture, cardLevelHint, cardLevelLabel, cardsFixture, connectionsFixture, escalateLabel, identityMappingsFixture, messageKindLabel, messageStatusMeta, messagesFixture, policiesFixture, providerLabel, type CardCallback, type CardInstance, type IdentityMapping, type MessageItem, connectionStatusMeta, connectionHealthLabel, connectionIdentity } from "@/lib/fixtures/integrations"
 import { subscriptionKindLabel, subscriptionsFixture, type Subscription } from "@/lib/fixtures/reports"
 import { escalationsFixture, rosterFixture } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -61,12 +61,14 @@ function ConnectionsTab() {
         {items.map((item) => (
           <Card key={item.id} className={cn(item.status !== "connected" && "border-status-critical")}>
             <CardHeader>
-              <div className="flex items-start justify-between gap-2"><CardTitle className="flex items-center gap-2 text-base"><IconBrandDingtalk className="size-5" />{providerLabel[item.provider]}</CardTitle><span className="flex gap-1"><StatusChip tone={item.status === "connected" ? "success" : "critical"}>{item.status === "connected" ? "已连接" : item.status === "pending" ? "待授权" : "断连"}</StatusChip><StatusChip tone={item.health === "ok" ? "success" : item.health === "degraded" ? "warning" : "critical"}>{item.health === "ok" ? "健康" : item.health === "degraded" ? "降级" : "不可用"}</StatusChip></span></div>
-              <CardDescription className="font-mono text-xs">{item.config.clientIdMasked} · 探活 {fmtTime(item.lastCheckedAt)}</CardDescription>
+              <div className="flex items-start justify-between gap-2"><CardTitle className="flex items-center gap-2 text-base"><IconBrandDingtalk className="size-5" />{providerLabel[item.provider]}</CardTitle><span className="flex gap-1"><StatusChip tone={connectionStatusMeta[item.status].tone}>{connectionStatusMeta[item.status].label}</StatusChip><StatusChip tone={item.health === "ok" ? "success" : item.health === "warning" || item.health === "degraded" ? "warning" : "critical"}>{connectionHealthLabel[item.health]}</StatusChip></span></div>
+              <CardDescription className="font-mono text-xs">{connectionIdentity(item.config) ?? "—"} · 探活 {fmtTime(item.lastCheckedAt)}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 text-sm">
-              <div><p className="text-xs text-muted-foreground">机器人</p>{item.config.robots.map((robot) => <p key={robot.robot_id}>{robot.name} <span className="font-mono text-xs text-muted-foreground">{robot.robot_id}</span></p>)}</div>
-              <div><p className="text-xs text-muted-foreground">群</p>{item.config.groups.map((group) => <p key={group.conversation_id}>{group.name} <span className="font-mono text-xs text-muted-foreground">{group.conversation_id}</span></p>)}</div>
+              {item.config.robots?.length ? <div><p className="text-xs text-muted-foreground">机器人</p>{item.config.robots.map((robot) => <p key={robot.robot_id}>{robot.name} <span className="font-mono text-xs text-muted-foreground">{robot.robot_id}</span></p>)}</div> : null}
+              {item.config.groups?.length ? <div><p className="text-xs text-muted-foreground">群</p>{item.config.groups.map((group) => <p key={group.conversation_id}>{group.name} <span className="font-mono text-xs text-muted-foreground">{group.conversation_id}</span></p>)}</div> : null}
+              {item.note ? <p className="text-xs text-status-warning">{item.note}</p> : null}
+              {!item.config.robots?.length && !item.config.groups?.length && !item.note ? <p className="text-xs text-muted-foreground">这类接入没有机器人 / 群，只做数据读取。</p> : null}
             </CardContent>
             <CardFooter className="gap-2">
               <Button size="sm" variant="outline" onClick={() => toast.success("探活通过", { description: "机器人 token 与群可达" })}><IconRefresh />探活</Button>
