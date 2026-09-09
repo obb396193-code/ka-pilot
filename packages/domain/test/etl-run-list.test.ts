@@ -63,7 +63,8 @@ describe("frozen ETL attempt list response", () => {
     expect(etlRunListDataSchema.safeParse({ items: [...items, { ...row, runId: "201" }], page: 1, pageSize: 200, total: 201 }).success).toBe(false);
     expect(etlRunListDataSchema.safeParse({ items: [], page: 2, pageSize: 50, total: 1 }).success).toBe(true);
     for (const data of [{ items: [], page: 1, pageSize: 50, total: 1 },
-      { items: [row], page: 2, pageSize: 50, total: 1 }, { items: [row], page: 1, pageSize: 50, total: 0 }]) {
+      { items: [row], page: 2, pageSize: 50, total: 1 }, { items: [row], page: 1, pageSize: 50, total: 0 },
+      { items: [row], page: 1, pageSize: 50, total: 2 }]) {
       expect(etlRunListDataSchema.safeParse(data).success).toBe(false);
     }
   });
@@ -96,6 +97,15 @@ describe("frozen ETL attempt list response", () => {
     expect(etlRunListResponseSchema.parse(value)).toMatchObject({ data: { items: [{ rows: { raw: 0, canonical: 0 } }, {}] } });
     value.data.items[0].failedStage = "raw";
     expect(etlRunListResponseSchema.safeParse(value).success).toBe(false);
+  });
+  it("accepts internal stage identifiers but not paths, free text or control characters", () => {
+    const value = fixture(); const row = value.data.items[1];
+    for (const stage of ["fetch:account_page_1", "aggregate:upsert", "account_offline_2026-09-09"]) {
+      row.failedStage = stage; expect(etlRunListResponseSchema.safeParse(value).success).toBe(true);
+    }
+    for (const stage of ["Authorization: Bearer private", "line\nbreak", "/tmp/private", "x".repeat(65)]) {
+      row.failedStage = stage; expect(etlRunListResponseSchema.safeParse(value).success).toBe(false);
+    }
   });
   it("checks strict meta, real calendar dates and safe requestId", () => {
     for (const patch of [{ requestId: "line\ninjection" }, { businessDate: "2026-02-31" },

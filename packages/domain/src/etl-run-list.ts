@@ -32,7 +32,7 @@ export const etlRunListRowSchema = z.object({
   // No stage inference or coercion here. Missing evidence stays null.
   rows: z.object({ raw: count.nullable(), canonical: count.nullable() }).strict().nullable(),
   warnings: z.array(etlRunWarningSchema).max(10_000),
-  failedStage: z.string().min(1).max(64).regex(/^[A-Za-z][A-Za-z0-9_]*$/).optional(),
+  failedStage: z.string().min(1).max(64).regex(/^[A-Za-z][A-Za-z0-9_:.-]*$/).optional(),
 }).strict().refine(row => row.finishedAt === null
   ? row.status === "running"
   : row.status !== "running" && Date.parse(row.finishedAt) >= Date.parse(row.startedAt), "Inconsistent run lifecycle")
@@ -45,8 +45,7 @@ export const etlRunListDataSchema = z.object({ items: z.array(etlRunListRowSchem
   .refine(data => new Set(data.items.map(row => row.runId)).size === data.items.length, "Duplicate run ID")
   .refine(data => {
     const offset = (data.page - 1) * data.pageSize;
-    return Number.isSafeInteger(offset) && data.items.length <= data.pageSize &&
-      (data.items.length === 0 ? offset >= data.total : offset + data.items.length <= data.total);
+    return Number.isSafeInteger(offset) && data.items.length === Math.min(data.pageSize, Math.max(0, data.total - offset));
   }, "Inconsistent page");
 
 export const etlRunListResponseSchema = z.discriminatedUnion("ok", [
