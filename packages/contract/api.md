@@ -1268,3 +1268,19 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - D5b-2 cost 四项已接（窗口=本月至业务日，按 scope tuple 收敛；窗口内缺一天整段 missing）；`projectedWindowCashCpa / affordableDailyCashCpa` 窗口源不提供 → undefined；`budget*` 仍等 014。
 - 归属清洗权限形态、工作项任务级口径：按 v1.9.9 / §3.3（已裁，be2 未及看到）。
 
+## v1.9.11 追加（2026-09-10 arch；裁 Codex P-180 工作项可见性矩阵，统一 WORK-ITEM-LIST-001 与 §3.3）
+
+工作项按 (media, account_id, task_id, assignee/creator) 分三类，个人空间可见 = 三条之**并**，团队空间只认前两类：
+
+| 类 | 判定 | 个人空间可见 | 团队空间（只读） |
+|---|---|---|---|
+| 账户型（media+account 非空） | 会话 scope 命中该 tuple | ✅ 命中即可见 | ✅ 全量 |
+| 任务型（账户空、taskId 非空） | 该任务下有会话授权的账户 **或** assignee/creator = 本人 | ✅ 任一成立 | ✅ 全量（任务型是团队对象） |
+| 纯私人（账户空、taskId 空） | assignee/creator = 本人 | ✅ 仅本人 | ❌ 不出现（不是团队对象） |
+
+- ① 任务型且 assignee 是本人：**可见**（派发本身就是授权动作，派给谁谁必须看得到）；任务授权但非本人 assignee：**可见**（同任务协作）。两者都不沾：不可见。
+- ② 纯私人项（agent_question、个人备忘）：只凭 assignee/creator，与授权无关；旧 WORK-ITEM-LIST-001「双 null 只凭 assignee/creator」**只保留给这一类**。
+- ③ 团队空间：账户型 + 任务型全量只读；纯私人项永远不出现（共享 helper 的 team 分支不得直接 TRUE，要排除 taskId 也为空的行）。
+- 落地：`workspace-authority.ts` 的 `workItemScopeClause` 加「self 分支」与「team 排除纯私人」（be2，helper owner）；Codex 的 `work-item-list-sql.ts` / `read-detail-service.ts` 改为引用该 helper，不再各自判双 null。每类一条真 PG 红绿用例（含 team 空间不出纯私人项）。
+- 后台 job（非 HTTP）读工作项不套此矩阵，但写回必须带原行的 workspace 与所有者，不得跨空间。
+

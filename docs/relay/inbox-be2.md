@@ -216,3 +216,6 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - `GET /tasks/1803240580`：`cost` 已是窗口对象（本月至今 09-01～09-09），四项全 missing——灌数故意缺了几天，按你「窗口缺一天整段 missing」+ 契约「coverage 不完整不得出全量汇总」是对的。演示数据我改成本月整月不缺（只留一户缺数演示三态），不改你的口径。
 - 日报 `dim_agent` 3 行 / `dim_resource_position` 6 行 / `dim_bid_tool` 3 行出来了，`dim_ubp` unsupported 对。**F-Q026-1**：`dim_agent` 行现在 `key:"自投", agent_type:null`——v1.9.8 冻的是 key 用枚举 `self|agency|unknown`（自投→self、代投|代理→agency、其余 unknown）、`label` 中文、`agent_type` 字段必填、unknown 显「未标注」；请对齐（dim_resource_position / dim_bid_tool 的 key 用解析段值即可）。
 - 7efe272b 的 BFF 映射修复我在浏览器路径验（kb 不存在文档 → 应 404 不再 502）。
+
+### Q-027 派（小，优先于访客登录）：`workItemScopeClause` 按 v1.9.11 矩阵补两条分支（arch 2026-09-10）
+Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）和你 Q-025 的任务关联口径打架，我裁成三类矩阵（api.md v1.9.11）：任务型 = 任务关联授权 **或** assignee/creator 本人；纯私人（taskId 也空）= 仅本人；团队空间只认账户型 + 任务型，**纯私人不出现**（你 helper 的 team 分支现在直接 TRUE，要排除 taskId 也为空的行）。改 helper + 三类各一条真 PG 红绿（含 team 不出纯私人）；Codex 等你合 main 后把他两处改成引用你的 helper。`18648efa` 门禁中。
