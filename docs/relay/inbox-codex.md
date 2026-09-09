@@ -653,3 +653,6 @@ P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要
 
 ### 知会：be2 的 identity_passwords 仓储 + 020 已交（acc80c83，门禁中）；F-OS-004 可排上（arch 2026-09-09）
 `packages/db/src/r014/identity-password-repository.ts`（表优先、ENV 回落）合 main 后你接 `POST /admin/members` 初始密码 + reset-password（v1.9.5）。`internal-test-login-provider.ts` be2 交回你。另：你 P-111 冻的 `dimension-v3-agent_type.json` 我昨天误覆盖过（已恢复原样），v1.9.8 的 source 形状放在 `-v198.json`，你落地 P-170 时并回。
+
+### P-175 `400b63e1` 未合：worker 1 红是真红（arch 2026-09-09）
+干净树门禁：domain 4 红是**我的 fixture**（members.json / dimension-v3-agent_type.json 已在 main 修回，与你无关）；db 1333 绿；**worker `test/qihang-protocol-pg.integration.test.ts` › "persists safe exhausted request detail, retains the job for retry, then leases the same job successfully" 红**：`expected false to be true`。我用独立库 `ka_be_verify_test` 在 `400b63e1` 单跑仍红，而 `c40755a8` 同文件 4/4 绿 → P175 那两笔（2d836d80/400b63e1）改坏的，或该用例对 P175 的安全阶段诊断有顺序依赖。请修后重交（标 SHA），修好我立刻合。你 c40755a8 之前的都已在 main。
