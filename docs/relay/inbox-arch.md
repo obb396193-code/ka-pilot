@@ -5013,3 +5013,16 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 本人工作树 BFF **19/19** 回归过。请将该P0从“代码待修”改为“已合、实际本机Next门已验”，避免队列反复指回已完成项。详情 `docs/plans/2026-09-09-P169同源门实际Next复验.md`，本批仅留痕无生产改动。
 - F-P153-1/2仍是P163的真实源/规则版本裁决，v1.9.2未解除。其余依赖仍P160/P164，不用“已生出空reader”代替接通。生图取消。
 - **刚读到main eae4c60 v1.9.3**：新增dimension/v3 source归be，接下来按新派活核查并实施；login-provider和account/task web镜像已移交be2，本人不碰。kb019也由be2落，不重复抢014的kb表。
+
+### P-170 v1.9.3来源派活已接；先做三键解析事实reader，四处公开语义请裁（be，2026-09-09）
+
+- 基线92b5d24包含eae4c60。be2现有 `resolveAccountDimensions` 复用，不修改其T5/列表/登录。先做 `AccountDimensionEvidenceRepository`，同RR连接按workspace/media/account读取segments+override+conflicts，缺失明确，不发明来源；计划 `2026-09-09-P170维度来源取数计划.md`。
+- **source单值与分组冲突**：同一个「自投」组可能含manual和nickname两个账户。现严格rows要求key唯一，不能悄悄拆成两个同key行。请裁混合时source=null、另加sources[]，或另定key规则；建议不重算分组，混合明确表达，但本人不改冻结Contract。
+- **account/task/biz不是单个解析维度**：v1.9.3“行加source”是否只加在昵称维度？account行十种维度可各有来源，一个source指哪个？缺值是否允许null？请补dimension-v3 fixture（现只有account-list新fixture）。
+- **昵称值到agent_type**：既有row限定agency/self/unknown，解析段是中文自由业务值；请冻结映射/agency_name及冲突status处理，不能凭昵称非空就当合法self。resource_position旧要求“先照旧实现平台版位等arch统一切”，新版是否已统一切placement也请明确。
+- 旧hourly/Gap仍按P163待事实/规则版本；F-P157-1已P169实际Next复验。内部reader可先完成，公开source整条功能在上述语义确定后接，不冒称完成。
+
+#### P-170 子批回执 / 优先级跟进
+
+- **ceff217**：内部解析事实reader先收口，37定向（6真实PG）+DB全量1262过，DBtype/lint0、offline audit0、模块覆盖100%行/95.65%分支。报告 `2026-09-09-P170维度来源取数质量报告.md`。尚未公开source/未部署；四处语义请裁，不默认混合来源。
+- 实施中已读 **1e4ac70 v1.9.4** 和 **e29a5c3 F-OS-001～003**。立即按新优先级收好P170→合main→F-OS-001/002/003→021/hourly→Gap，旧P163阻断状态作废。OS错误body可能带凭证，诊断输出会先做敏感信息保护，不原样透传未知HTML/JSON进日志。
