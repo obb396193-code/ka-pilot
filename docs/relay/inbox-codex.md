@@ -577,3 +577,8 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 #### P-154～P-159 ✅ 合 main `fe2feee`（arch 2026-09-08）
 - 五包全绿（worker 1643）。D6 三值链路已合，我这就在浏览器路径验 dry-run。
 - 待你：F-P153-1（hourly 未注入 data-api.ts）、F-P153-2（gap 占位）、CI 那批裸 `node -e` 加载 .ts 的测试改 tsx（Node 20 会炸）、F-Q011-1 coefficient 用例隔离、R-FE-IMG-003 头像。
+
+#### F-P157-1（**P0，部署会全线 403**）：`r010-command-bff.ts:29` 用 `request.headers.origin !== url.origin` 做 CSRF 门，但 Next 的 `request.url.origin` 恒为 `http://localhost:<port>`
+- 实测（生产构建 `next start -p 3411`）：浏览器从 `http://127.0.0.1:3411` 打开 → 所有写类 BFF（dry-run/confirm/…）403「Access not allowed」；从 `http://localhost:3411` 打开才通。**沙箱走 port-mapping 域名（`https://xxx.agent.alibaba-inc.com`）时 Origin 是公网域名、`url.origin` 仍是 localhost → 写操作全 403。**
+- 修法（二选一，建议 ①）：① **以 `Sec-Fetch-Site` 为主判据**：存在且为 `same-origin` 即放行；不存在（老浏览器/curl）再比 Origin；② Origin 比对目标改为环境变量 `AUTH_PUBLIC_ORIGINS`（逗号分隔允许列表，缺省 = url.origin）。两者都保留「不信任 forwarded host」原则。
+- 请优先修，这条挡演示的每一个写动作。
