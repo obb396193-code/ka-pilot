@@ -1,6 +1,7 @@
 import type { Pool } from "pg";
 import { describe, expect, it, vi } from "vitest";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
+import { accountScopeClause } from "../src/r014/workspace-authority.js";
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const scope = { workspaceId, dateFrom: "2026-08-01", dateTo: "2026-08-03",
   filters: { taskId: "task-a", accountScopes: [{ media: "KUAISHOU", accountId: "same" }, { media: "TENCENT", accountId: "same" }] } };
@@ -18,7 +19,12 @@ describe("task filtered query lineage", () => {
     expect(sql).toContain("expected_metric"); expect(sql).toContain("expected_account_days");
     expect(sql.match(/filtered_relation\.task_id =/g)).toHaveLength(2);
     expect(values).toContain("task-a"); expect(sql).not.toContain("task-a");
-    expect(sql).toContain("allowed.media = metric.media");
+    const tuples = JSON.stringify(scope.filters.accountScopes.map(({ media, accountId }) => ({ media, account_id: accountId })));
+    const tupleIndex = values.indexOf(tuples);
+    expect(tupleIndex).toBeGreaterThanOrEqual(0);
+    const clause = accountScopeClause("'explicit_accounts'", `$${tupleIndex + 1}`, "metric.media", "metric.account_id");
+    // Both expected task-days and observed metric-days must use the same guard.
+    expect(sql.split(clause)).toHaveLength(3);
   });
   it.each([undefined, null, "NaN", "Infinity", "", "-1", "1.5", "9007199254740992"])("rejects invalid expected-day proof %j", async (value) => {
     await expect(fixture(value).repository.queryLineage(scope)).rejects.toThrow();
