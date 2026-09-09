@@ -45,11 +45,11 @@ describe("v1.5.1 ① account list additions", () => {
   it("keeps cutoff unknown while the hourly velocity source is not ours to read", () => {
     const parsed = accountListItemSchema.parse(BASE_ITEM);
     expect(parsed.balance?.cutoff).toEqual({ hours: { value: null, availability: "missing" }, state: "unknown" });
-    // 迁移期 cutoff 可缺省（旧 fixture 还是 v1.2 形状）；但给了就必须是完整四态之一，
-    // 不允许出现 {hours} 少一半的形状。
+    // fixture 已升级，cutoff 现在必填：balance 在却没有 cutoff 会让前端以为
+    // 「这个户没有断量倒计时这回事」，而真相是「算不出来」。
     expect(() => accountListItemSchema.parse({
       ...BASE_ITEM, balance: { value: 1, syncedAt: "2026-09-05T08:00:00.000+08:00" },
-    })).not.toThrow();
+    })).toThrow();
     expect(() => accountListItemSchema.parse({
       ...BASE_ITEM,
       balance: { value: 1, syncedAt: "2026-09-05T08:00:00.000+08:00", cutoff: { state: "ok" } },
@@ -58,6 +58,14 @@ describe("v1.5.1 ① account list additions", () => {
       ...BASE_ITEM,
       balance: { ...BASE_ITEM.balance, cutoff: { hours: BASE_ITEM.balance.cutoff.hours, state: "stale" } },
     })).toThrow();
+  });
+
+  it("now requires every v1.5.1 field, so a service that forgets one cannot pass silently", () => {
+    for (const key of ["poolStatus", "poolStatusSource", "product", "dailyBudgetCap", "capacityLoad", "lastAction", "nextSuggestion"]) {
+      const withoutKey = { ...BASE_ITEM } as Record<string, unknown>;
+      delete withoutKey[key];
+      expect(() => accountListItemSchema.parse(withoutKey), key).toThrow();
+    }
   });
 
   it("keeps the budget-derived fields empty until migration 014 lands, never zero", () => {

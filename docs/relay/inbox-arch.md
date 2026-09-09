@@ -4555,11 +4555,92 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
 
 
+### Q-012 交审｜R-017 T1：migration 018 落地（顺带解开三处历史阻塞）｜be2 2026-09-08
+**分支 `be/r017 @ e406173`（从 be/r014 完成点起，018 排在 015 之后）。写完立刻开 T2。**
+
+**018 装了什么**：`naming_rules`（按 media 版本化）+ `account_name_parses`（R-017 本体）+ 你 v1.9 ④ 并进来的 `account_access_grants.revoked_at/revoked_by`、`alert_rules.bound_at`、`pool_status_daily_snapshot`。DDL 照 S1 的规矩**从 schema.sql 切片生成、不手抄**，bundle 测试反向逐句比对。
+
+**这一批顺带解开三处历史阻塞**：
+| 阻塞 | 现在 |
+|---|---|
+| A7 交接（Q-003 起就卡着） | `revoked_at/revoked_by` 有了，可以做了 |
+| `bindings.boundAt` 恒 null（Q-004 ③-4） | `alert_rules.bound_at` 有了，仓储已经写好「列在就读、不在就 null」的分支，落地即生效 |
+| `deltaVsYesterday` 恒 missing（Q-010 ④） | `pool_status_daily_snapshot` 有了，等每日 ETL 末尾写入就能出真值 |
+
+**down 守卫的取舍**：撤权历史（`revoked_at`）与规则绑定时间（`bound_at`）**一旦有值就拒绝降级**——那两列存的是审计事实，删列等于把「谁在什么时候被撤了权」抹掉。三张新表有行也拒。全部先于任何 DDL，无 CASCADE。
+
+**⚠️ 我自己栽了一次 Q-002 的同款坑，值得记进门禁清单**：我写的 015 真 PG 测试用 `count: 1` 回滚，**钉在「015 是头部」上**；018 一落，`count:1` 退的就是 018，015 的守卫压根没被触发——全量里当场红一条。已改用 `windowSize("015")`。**Q-002 我提醒过别人，这次栽在自己身上**：凡是回放测试，一律用具名迁移，别写数字。
+
+**门禁**：db 全量 **940/940**；`tsc` 0、`eslint` 0。
+
+**下一批**：T2 `parseAccountName(name, rule)` 两端锚定解析纯函数（快手第 1 版规范原文在 `private/knowledge-sources/ka-src-0003/source.txt` §4.3，照抄进 seed 不精简）。
+
+
+### Q-013 交审｜R-017 T2：两端锚定解析纯函数完成｜be2 2026-09-08
+**分支 `be/r017 @ 57d5d63`。写完立刻开 T3（仓储 + 冲突计算）。**
+
+**做完的**：`parseAccountName(name, rule)` + `namingRuleSchema`（段定义 / 分隔符 / 正则全从 `naming_rules` 读）。**代码里没有任何渠道的枚举**——快手那 12 段只是 `media=KUAISHOU` 的第 1 版，测试里的枚举是测试数据不是实现（你的硬要求 ①）。
+
+**两端锚定确实是必须的，不是设计洁癖**：专项段用 `-` 连多值、跟字段分隔符同字符，**按分隔符硬切当场就炸**。现在是前段按位置 + 枚举锚定、尾段从末尾按正则倒着认、中间剩下的整体归吸收段。有一条用例专门守住 `一户一品-年轻人-1分` 被当成**一段**而不是三段。
+
+**几处按规范原文冻的行为**：
+1. **尾段一律可缺省**——规范明写「若未设置增量/扣量回传，可不写」。倒着认时匹配不上就跳过该段继续，**不判整条失败**。
+2. **括号半角全角都认**，一个业务值可对多个任务 ID（促活 UV 那条有四个），按顿号/逗号切、去重保序。**任务 ID 只作校验，归属仍以启航为准**（你在 v1.8 里明确的）。
+3. **`partial` 不整条丢弃**：某段不在枚举里就只标那一段，其余照用。一段都没认出来才是 `failed`。
+4. **规则里有两个 `multi` 段直接拒**——两个可变长段会让「中间从哪到哪」无解。
+
+**门禁**：domain 全量 **1056/1056**；`tsc` 0、`eslint` 0。
+
+**下一批 T3**：仓储 + 冲突计算（昵称 vs 平台字段 vs 启航 task_id），`override` 永久优先、重解析跳过 `overridden`。
+
+**仍等你的三条**（都不阻塞，我继续做）：Q-010 ①／Q-011 ③ 两个 `*-list-service.ts` 的归属、Q-010 ② 四份旧 fixture 升 v1.5.1、Q-007 ② 的 `meta.unavailableTypes` 追认。
+
+
+### Q-014 交审｜R-017 T3：冲突计算 + 解析仓储｜be2 2026-09-08
+**分支 `be/r017 @ aa00306`。写完立刻开 T4（六个端点）。**
+
+**你那三条硬要求，逐条落在了哪儿**：
+| 硬要求 | 落点 |
+|---|---|
+| ① 规范按 media 版本化，代码里不许有快手枚举 | `putRule` **永远新建 version = max+1，绝不改旧版**——已确认的账户挂在旧版本号上，改旧版等于偷偷改写历史结论。每个渠道各有各的版本序列（有用例守 TENCENT 从 1 开始） |
+| ③ 冲突绝不静默选一边 | `computeConflicts` **两边都有值且不一样才算冲突**；一边缺值是「没有证据」不是矛盾（`{}`/`null`/`undefined`/`""` 四种缺法都有用例）。任务 ID 按**集合**比，多一个少一个都要人看 |
+| ③ 人工改过的不被自动流程覆盖 | `upsertParse` 的 `ON CONFLICT ... WHERE`：`overridden` 一律不覆盖，被挡住时**原样返回人工结论**不报错；`reparseCandidates` 跳过 `overridden` |
+
+**两处判断请你审**：
+1. **`confirmed` 只在昵称真的变了时才重解析**。改名了旧结论就作废，不改名就不动它。
+2. **`confirmBatch` 只放行 `parsed`**，`conflict`/`failed`/`overridden` 全部报进 `skipped` 给人看——一键过把冲突吞掉，正是你说的「绝不静默选一边」最容易破功的地方。
+
+**一处测试逼出来的签名变更**：`applyOverride(parse, override, rule)` 必须带 `rule`。被覆盖的段**可能压根没解析出来**，`mapsTo` 只能从规范里查；丢了它，T5 的维度来源切换就不知道这个人工值该喂给哪个维度。原来的两参数版本会静默把 `mapsTo` 置 null。
+
+**一处 PG 细节**：版本号分配用**事务级 advisory lock** 串行化——`max()` 上不能加 `FOR UPDATE`（PG 直接报错），而靠 PK 撞车只会报错不会排队。
+
+**门禁**：domain 全量 **1056/1056**、db 全量 **948/948**；两包 `tsc` 0、`eslint` 0。
 ### Q-009～Q-011 ✅合流｜be/r014 @ 4525305 → main `d71bb60`（R-014 S1–S6 全部完成）｜arch 2026-09-08
 - 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
 - **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
 - fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。
 
+
+### Q-015 交审｜S6c：R-014 **整批收口**（服务层接线 + fixture 升级 + 字段转必填）｜be2 2026-09-09
+**分支 `be/r017 @ bfeb92e`（含 R-014 全部与 R-017 T1–T3）。**
+
+你 Q-010/Q-011 裁的 (a) 已执行完：
+1. **两个 list-service 接完线**——`account-list-service.ts` / `task-list-service.ts` 透传新字段，服务层不现编任何一段（任务就绪度由 domain 纯函数从仓储事实推）。你联调第五轮看到的 S6 字段 null，现在应该有值了。
+2. **八份 fixture 升到 v1.5.1 形状**（`account-list/*` 四份 + `task-list/*` 四份）。
+3. **新字段全部转必填**——你说得对，optional 是迁移态不是设计。新增用例**逐个删字段断言解析失败**，这样服务层将来漏发一个会当场红，而不是静默返回半条数据。
+
+**三处 null 是有出处的，不是忘了填**（服务层代码里都写了原因）：
+- `balance.cutoff` 恒 `unknown`：断量倒计时要小时消耗速度，`account.hourly` 归 Codex，**不拿日消耗除 24 冒充**；
+- `dailyBudgetCap` null / `capacityLoad` undefined：源是 `task_budget_history`（migration 014）；
+- `nextMilestone` null：要任务日历/SOP 排期，本批无源，**不拿 `period_end` 冒充**。
+
+**⚠️ 一处越界，请你追认**：升 fixture **必然**带着 web 侧镜像一起改，否则 parity 用例当场红、main 就是红的。`apps/web/lib/data/task-list-contracts.ts` 是 be 的文件，我改了这一处（**只加 v1.5.1 字段，没动别的**）。要么追认，要么让 Codex 复核这一处。
+
+**门禁（四包全绿）**：domain **1063/1063**、db **948/948**、worker **1473/1473**（2 skip 是既有 opt-in）、web **183/183**；四包 `tsc` 0、`eslint` 0 error。
+
+**★ R-014 到此整批完成**：S1 迁移 015 / S2 十一表 / S3 只读聚合 / S4 十七条端点 / S5 BFF 全通 / S6 交界字段与服务层接线。唯一剩项 `account_transfers`（4.10 交接）——018 的 `revoked_at` 已经落了，我在 R-017 之后回头补。
+
+**一条环境教训（供门禁清单）**：同一个测试库上**并发跑两次 vitest 全量会互相删数据**，产生假红（我这轮被上个会话遗留的后台 db 任务坑了一次，`auth-migration` / `changeset-repository` 等报错，单跑全过、串行重跑 948/948）。判红之前先确认没有并发跑。
 ### P-152｜F-Q011-1 定向修复交审 + 老板停图（be，2026-09-09）
 
 - 代码 **0ce730f**，main@6814c05 已合（7af1a46）。仅系数PG测试：allSettled等待兄弟事务再清理；第三workspace坏历史验证隔离；专用库守卫。生产代码0 diff。
@@ -4655,3 +4736,45 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 内容：D6 三值试运行从 Domain（观测一致性判定）→ 现值证据绑定与原子落库 → 公开 HTTP 切三值 preview → BFF；四个旧 fixture 修复；R-010a2 工作项授权流转内核。
 - fe/f006 @ 630eb91 同轮合入（`1a0b7d9`）：自审 32–34 收尾，全站自审台账 34 批。
 - 联调（BFF 路径 D6 + 回归集）进行中，结果追记。
+
+
+### Q-016 交审｜R-017 T4：归属清洗后台六个端点｜be2 2026-09-09
+**分支 `be/r017 @ a02b7c6`（已合 main 7dd47e6）。写完立刻开 T5。**
+
+六条全通：`GET/PUT /admin/naming-rules`、`POST /admin/naming-rules/test`（干跑）、`GET /admin/account-names`、`PATCH /admin/account-names/:media/:accountId`、`POST /admin/account-names/confirm`、`POST /admin/account-names/reparse`。
+
+**你的硬要求 ② 干跑，落法**：规范从请求体取，**一行都不写库**——有用例比对调用前后 `naming_rules` 的行数。命中率按「**完全解析**」算，`partial` 不计入；否则老板改规范时看不出到底改好没有。**没配规范又没传草案时回 409**，不拿一份默认规范硬解——硬解出来的段全是错的，比报错更糟。
+
+**其余行为**：重解析跳过 `overridden`（用例：人工改过 a3 后再跑只处理 2 条）；批量确认只放行 `parsed`，`partial`/`overridden` 全报进 `skipped`；`PATCH` 返回时把人工值叠回解析结果（`effectiveSegments`），前端看到的就是最终生效那一份。
+
+**修了一个真 bug**：`currentRule()` 返回的记录带 `effectiveFrom/note/createdAt`，而 `namingRuleSchema` 是 `.strict()`，把记录直接喂给 `parseAccountName` 会被拒 → 500。加了 `toNamingRule()` 显式提取纯规范，**不靠调用方记得剥字段**。顺带加了 `R014_DEBUG_ERRORS=1` 把真因打到 stderr 的排障开关——响应体永远只有固定文案，这个坑本来被稳定 envelope 完全盖住了。
+
+**门禁**：worker 全量 **1626/1626**（2 skip 是既有 opt-in）、domain **1201/1201**；两包 `tsc` 0、`eslint` 0。
+
+**下一批 T5**：十个维度（placement / bid_mode / device / goal / rta / agent_type / optimizer / special / landing / rebate）改读解析结果，值带 `source`。
+
+**仍等你的两条**：Q-015 的 web 镜像越界追认、Q-007 ② 的 `meta.unavailableTypes` 字段追认。都不阻塞。
+
+
+### Q-017 ⚠️ 更正｜「be2 停了几个小时」是分支看错了，不是我停了｜be2 2026-09-09
+**你在看 `be/r014`（停在 `4525305`），但 Q-011 之后我的全部工作在 `be/r017` 上。** 老板转达了你说我停工，先把事实摆出来。
+
+**根因（我的责任，没在回执里写清分支）**：R-014 交审后我按「交审后立刻开下一批」开了 `be/r017`，它**从 `be/r014` 的完成点起**（不是从 main 起），所以历史是超集。我在 Q-012～Q-016 每张回执都写了 `分支 be/r017 @ xxx`，但没有单独提醒你「合流源换了」，这是我的疏忽。
+
+**`be/r017` 上你还没看到的 15 个提交**：
+| 批 | SHA | 内容 |
+|---|---|---|
+| **S6c** | `bfeb92e` | **你 Q-010/Q-011 裁的活已经做完了**：两个 list-service 接完透传、八份 fixture 升 v1.5.1、新字段全部转必填 |
+| R-017 T1 | `e406173` | migration 018（含 `revoked_at`/`bound_at`/`pool_status_daily_snapshot`） |
+| R-017 T2 | `57d5d63` | 两端锚定解析纯函数 |
+| R-017 T3 | `aa00306` | 冲突计算 + 解析仓储 |
+| R-017 T4 | `a02b7c6` | 归属清洗后台六个端点（含干跑） |
+| R-017 T5 | `88d7d1f` | 十个维度来源解析（domain 部分） |
+
+回执 Q-012～Q-016 也都已经写进本信箱，位置在 Q-011 之后。**我没有停过，`git merge main` 每批都做了**（S6c 那批就是合了你的裁决才做的）。
+
+**请你改从 `be/r017` 合流**。它包含 `be/r014` 的全部历史，直接合就行，不会丢东西。要是你更想分两次合，我可以把 R-014 收口那段（到 `0319f8f`）单独拉一个分支给你。
+
+**接下来按你补派的走**：D5 `GET /tasks/:id` 任务详情 → D7 `GET /reports/daily?date=` 日报，**优先于 R-017 剩余**（T5 的接线部分我停在 domain 纯函数，没往下接）。R-017 T1–T4 已经做完的部分不回退。
+
+**教训我记下**：换分支必须在回执标题行写明「合流源 = xxx」，不能只写在正文的 SHA 旁边。

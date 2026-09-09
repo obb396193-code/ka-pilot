@@ -98,6 +98,11 @@ export function sendFailure(response: ServerResponse, error: unknown, requestId:
     sendJson(response, mapped.status, errorBody(mapped.code, MESSAGES[mapped.code], requestId), requestId);
     return;
   }
+  // 稳定 envelope 不透传内部细节；排障时用 R014_DEBUG_ERRORS=1 把真因打到 stderr，
+  // 响应体永远只有固定文案。
+  if (process.env.R014_DEBUG_ERRORS === "1") {
+    process.stderr.write(`R014 debug: ${error instanceof Error ? error.stack ?? error.message : String(error)}\n`);
+  }
   sendJson(response, 500, errorBody("INTERNAL_ERROR", MESSAGES.INTERNAL_ERROR, requestId), requestId);
 }
 
