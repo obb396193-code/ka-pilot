@@ -1311,3 +1311,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - `font-display`：**暂不改 optional**，等预载版上内网 Win 实机复验；仍跳再上 optional（正文），标题保留 swap。
 - fe 顺手修的两处哑功能（拉数记录表 rowId 取 `runId`；`etl-runs-page` 接页）追认。
 
+
+## v1.9.15 追加（2026-09-10 arch；裁 be2 Q-032 访客卡点 + fe F8-11 ➌）
+- **鉴权不变量放宽（方案 a，钥匙是身份不是空间）**：`auth-context` 解析会话时，若 `identity.provider === "guest"`，跳过「有且仅有一个个人空间」检查，改为要求 `activePersonalWorkspaceIds` 为空 **且** 活动空间 `kind="team"` 且 `is_demo=true`，否则 403 `GUEST_SCOPE_INVALID`（新码，只在 ENV/灌数配错时出现，不进前端稳定码表，前端按未知 403 处理）。非 guest 身份的不变量一字不改。会话快照（`readSessionView`）补 `identityProvider`、`activeWorkspaceIsDemo` 两字段。
+- DB 枚举：`auth_identities.provider` 加 `guest`；`workspace_memberships.role` 加 `viewer`（be2 023 已放宽 check；schema.sql 注释同步）。
+- 会话 DTO（`GET /auth/session` 与 `POST /auth/login` 回的会话视图）定形：`identity{ id, provider: internal_test|buc|guest, displayName, mustChangePassword }`；`activeWorkspace` 与 `workspaces[]` 加 `isDemo: boolean`；`role` 枚举 = `optimizer|operator|lead|admin|viewer`。fixture 统一：`session-http/guest.json` 已是目标形；`personal-v1914-must-change-password.json` 改为目标形（personal 示例）；`personal.json`/`team.json` 在 be2 Q-032 落地的同一提交并入目标形（strict 测试同提交改），之后删 v1914 文件。fe 在 F8-12 同步 `sessionViewSchema`/`sessionWorkspaceSchema`（保持 strict）。
+- 访客限速按 IP：`http-server.ts` 把 `clientIp` 传进 `login()` 第三参（Codex P-189）；未传时退化为全局桶（be2 已实现）。

@@ -551,3 +551,7 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 文案取舍**按你的**：RATE_LIMITED / READ_ONLY_ROLE 我们的，其余上游 message，冻结。
 - `font-display: optional` **不做**，等预载版上内网实机复验再定。
 - 两处哑功能修得对；`members-v195.json` 并回时我说。`52f5aee8` 门禁中。接 F8-12 → F8-13。
+
+### F8-11 已合；➌ 裁了 → v1.9.15（arch 2026-09-10 循环第 3 圈）
+- `52f5aee8` 已合 main `068558d6`（web 232 绿）。`handlers.ts`/`schemas.ts` 与 be2 Q-030 是同一文件尾各自追加，两边都留了，你拉 main 看一眼顺序。
+- ➌ **`viewer` 进枚举**：`sessionWorkspaceSchema.role` = optimizer|operator|lead|admin|viewer。同版会话 DTO 加 `identity.id`、`identity.provider`（internal_test|buc|guest）、`workspace.isDemo`；F8-12 一起改 schema，保持 strict。fixture：`session-http/guest.json` 已是目标形，`personal-v1914-must-change-password.json` 也改成目标形；`personal.json`/`team.json` 等 be2 Q-032 落地并入。所以 **F8-12 合并前提 = be2 Q-032 已合 main**（我按序合，你先做不受影响，别等）。

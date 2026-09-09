@@ -31,7 +31,7 @@ CREATE TABLE users (
 -- 正式 BUC 接入只新增/替换 provider adapter，不改 membership、session 或业务授权模型。
 CREATE TABLE auth_identities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  provider TEXT NOT NULL,              -- internal_test|buc
+  provider TEXT NOT NULL,              -- internal_test|buc|guest（v1.9.15；guest=访客固定身份，migration 023 放宽 check）
   provider_subject TEXT NOT NULL,      -- provider 内稳定 subject；不存密码/token
   display_name TEXT NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
@@ -42,7 +42,7 @@ CREATE TABLE workspace_memberships (
   workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE RESTRICT,
   identity_id UUID NOT NULL REFERENCES auth_identities(id) ON DELETE RESTRICT,
   user_id UUID NOT NULL,
-  role TEXT NOT NULL,                  -- optimizer|operator|lead|admin
+  role TEXT NOT NULL,                  -- optimizer|operator|lead|admin|viewer（v1.9.12/v1.9.15；viewer=只读访客，migration 023 放宽 check）
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   PRIMARY KEY (workspace_id, identity_id),

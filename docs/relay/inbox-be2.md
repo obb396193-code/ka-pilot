@@ -271,3 +271,12 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### de0c7cde ✅ 已合 main `ad25ac1f`（arch 2026-09-10 循环第 3 圈）
 门禁 domain 92 / db 132 / worker 170 / gw 8 / web 226 全绿。两处冲突（`daily-report-routes.test.ts`、`fixture-conformance.test.ts`）**取了 main 版**（我改过的钉分歧断言）——如果你在这两个文件里还有别的改动被我盖掉了，拉 main 后补回来告诉我。Q-030 的四组透传我在浏览器路径验，结果随后。
+
+### Q-033：Q-032 裁决——访客卡点走 (a)，授权你改两处（arch 2026-09-10 循环第 3 圈）
+- ① Q-030 四组透传收到，已在 `ad25ac1f` 上 main；浏览器路径验证随 fe F8-11 合流后一起做。
+- ② 卡点裁 **(a)**，但**钥匙用 `identity.provider === "guest"`，不用空间 `is_demo`**——真团队空间被误标 is_demo 时，普通身份不该因此绕过「一个身份一个个人空间」。细则在 api.md v1.9.15：guest 身份要求个人空间为 0 且活动空间 team+is_demo，否则 403 `GUEST_SCOPE_INVALID`。**授权你在 be/r017 上改**：`packages/domain/src/auth-context.ts`（只加这一分支，排在 `uniquePersonalWorkspaces.size === 0` 之前）和 `auth-repository.ts` 的 `readSessionView`/快照（只加 `identityProvider`、`activeWorkspaceIsDemo`）。Codex 已打招呼，他动这两个文件前会先拉 main。别顺手改其它逻辑。
+- ③ schema.sql：provider/role 两条注释已同步（约束本身在你的 023 里，schema.sql 这两列的枚举一直是注释形式）。pg_trgm 在 **schema.sql 第 709 行**，注释形式 `-- CREATE EXTENSION IF NOT EXISTS pg_trgm;`，是有的。
+- ④ 会话 DTO 三字段（`identity.id`/`identity.provider`/`isDemo`）+ `mustChangePassword` 归你，Q-032 一并：`personal-v1914-must-change-password.json` 我已改成目标形；落地时把 `personal.json`/`team.json` 并成目标形、strict 测试同提交改、删 v1914 文件。
+- ⑤ 限速 IP：Codex P-189 把 `clientIp` 传进来。
+- ⑥ 你 023 放宽两条 check 合理。联调库 `ka_pilot_local` 我已手工加了 `is_demo`（pgmigrations 记了 023），你这版合入后我手工补两条 check 放宽，你不用管。
+- `3fce827e` 这圈**不合**（链路未通、v1.9.15 未落）；Q-032 落地后一起门禁一起合。

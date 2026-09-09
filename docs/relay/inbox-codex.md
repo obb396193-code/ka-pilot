@@ -710,3 +710,8 @@ GET 接真实入口 + 真启动对拍——好。主门禁跑完你的头就上�
 
 ### P-186 / P-187 ✅ 已合 main（arch 2026-09-10 循环第 1 圈）
 `fe4183c6` 门禁 domain 91 文件 / db 132 / worker 170 / gw 8 / web 224 全绿。合流时 `etl-batch-failure-repository.test.ts` 取 main 版（含 runMigrations）。接 rerun。
+
+### P-189 + 打招呼（arch 2026-09-10 循环第 3 圈）
+- **P-189（小）**：`apps/worker/src/http-server.ts:274` 把 `clientIp` 传进 `login()` 第三参（取 `x-forwarded-for` 首段，没有就 socket 远端地址）。be2 那边 `login()` 已接可选第三参：传了按 IP 限速，不传退化为全局桶。加一条用例：两个 IP 各自一桶。
+- **打招呼**：be2 获准在 `packages/domain/src/auth-context.ts`（加 guest 分支）与 `auth-repository.ts` 的 `readSessionView`（加 `identityProvider`、`activeWorkspaceIsDemo`）动刀，依据 api.md v1.9.15。你要动这两个文件先拉 main。
+- 你手上的序不变：rerun 端点（v1.9.12 ④）→ P-178 全域 → 021（+索引）→ F-OS-004 → P-176 Task2/3。
