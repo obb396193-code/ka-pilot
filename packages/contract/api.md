@@ -1300,7 +1300,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - ④ `POST /system/etl-runs/:id/rerun`（admin）= **新 job**：复制原 job 的 workspace/type/scope，credential owner 保持原 owner；允许原状态 ∈ done|failed|blocked_auth（queued/leased/running → 409 `INVALID_STATE`）；幂等键 = 原 runId（同 run 已有 queued/running 的重跑 → 409 `CONFLICT` 并返回那个 jobId）；响应 `{jobId, sourceRunId}`；写 timeline 一条。
 
 ## v1.9.13 追加（2026-09-10 arch；裁 be2 Q-028 两处分歧 + Codex P-186 一问）
-- `POST /accounts/transfer` 响应加 **`skipped[]`**：`{media, accountId, reason:"blocked_by_changeset"|"not_authorized"|"not_found", detail}`；部分成功 200 + skipped，一户都没动才 409。fixture `accounts/transfer.json` 已加。
+- `POST /accounts/transfer` 响应加 **`skipped[]`**：`{media, accountId, reason:"not_granted"|"blocked_by_changeset"|"already_owned"}`（strict，无 detail；与 be2 A7 已合实现一致）；部分成功 200 + skipped，一户都没动才 409。fixture `accounts/transfer.json` 已加。
 - `reports/daily-v1.json`：`dim_bid_tool`、`dim_resource_position` 与 `dim_agent` 同批 `unsupported:false` 填行（之前只改了一个，是我漏的）。
 - `GET /system/etl-runs` 旧 run 连 scope 日期都没有：`businessDate: string|null` + `warnings[] {code:"LEGACY_NO_DATE"}`，不拼今天、不丢行。
 - **对拍闸立为两侧标配**：be2 已上「端点实际响应键集 vs 冻结 fixture」的自动对拍；Codex 同类闸 = P-187（下条派）。arch 联调只做抽查。
