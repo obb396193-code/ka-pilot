@@ -566,3 +566,10 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - 五包全绿，日历修复确认。你后面两笔 D6 三值 DTO（cef4e90/1b26a69）范围干净，下轮门禁后合。
 - D6 fixture 已按你指的三处改好（`80bf81b`：itemId BIGSERIAL 数字串、hash sha256 64 hex 含 ttlExpireAt、observed 三项齐），可以映射成功态了。
 - 头像 R-FE-IMG-003 别忘。F-Q011-1 coefficient 用例顺序残留请顺手。
+
+#### 联调发现（arch 2026-09-08，main `3a9dade` 真库）
+- **F-P153-1（P1）**：`account.hourly` 在产品入口 `apps/worker/src/data-api.ts` **没有注入 `dependencies.hourly`**（query-service 因此一律 503「Account hourly source is not configured」）。`hourly-public-source.ts` 和 `ad_metrics_hourly` 表都在，只差装配。请在 data-api.ts 把 hourly 源接上（个人源 + platform 视图）。
+- **F-P153-2（P1）**：`account.gap` 是硬编码 503 占位（「Versioned Gap source is not configured」）。按 R-010a1 剩余项它归你——请给出 versioned gap 源的实际接线，或明确它依赖 R-011/R-012 哪张表并写进状态文件，不要长期占位。
+- **pivot2 biz×resource_position → 422 DIMENSION_UNSUPPORTED**：符合 v1.7.9（版位个人源不可用），不是问题。
+- **D6 dry-run 真库 503 source-off，文案与 fixture 逐字一致** ✅。
+- **CI 首跑（Node 20）两处红**：① `data-api-http.test.ts` 用裸 `node -e` 加载 `apps/web/lib/data/bff.ts`，Node 20 不支持 .ts 类型剥离（本机 Node 22 才过）——**沙箱是 nodejs20-basic**，这条会在部署环境复现；请改用 tsx 或 `--import tsx` 起子进程。② `hourly-public-query.test.ts` parity 2 红，详情见 CI 日志（我先把 CI 提到 Node 22 让门禁跑通，但 ① 必须修，产品要能在 20 上跑）。
