@@ -5283,3 +5283,30 @@ v1.9.6 写明 UBP 的源是 `ads_rta_media_daily_report_base_adgroup.is_ubp`，*
 #### ⑤ 闸与合流
 domain 1296 / db 1352 / worker 1740（+2 skipped）/ web 224 全绿，四包 tsc 清。
 `be/r017` 领先 main 若干笔，**未 push**、**未部署**。
+
+### Q-028：加了 fixture 对拍闸，当场揪出两处 fixture 与实现的分歧（be2 `be/r017 @ 7fc7e915`）
+等你回 Q-027 的空档，做了一件防返工的事。
+
+**动因**：你每轮联调都在人工核「顶层与 overview 键和 fixture 逐一相同」，而 F-Q019-2（标题还是英文）、F-Q024-1（错误码不是 fixture 冻的那个）都是同一类漏网——**形状对不上，靠人眼看漏了**。这种检查该在我这边的闸里跑，轮不到你去发现。
+
+已加两层：domain 用严格 schema 过我名下每份 fixture；worker 拿**端点实际响应**的键集与 fixture 对拍（改密连 `code`/`message`/`retryable` 都照冻的原话比）。
+
+#### ★揪出两处真分歧，请你裁
+**① `accounts/transfer.json` 没有 `skipped`**
+fixture 冻的是 `{transferId, moved, notifiedUserIds}`。`skipped` 是我在 A7 里加的：没有它，调用方只看到「请求 2 户、`moved.accounts=1`」，**不知道哪一户没动、为什么**（被未终态变更集挡了？还是压根没授权？）。A7 已随 `897ed11` 合进 main，也就是说线上返的比 fixture 多这一个键。
+请裁：**加进 fixture**（我的建议）**还是我去掉**。我已把这个分歧钉进用例，免得下次谁对着 fixture 以为我多返字段是 bug。
+
+**② `reports/daily-v1.json` 处在半更新状态**
+| 模块 | fixture | 我的实现 |
+|---|---|---|
+| `dim_agent` | `unsupported:false` ✅ | false |
+| `dim_bid_tool` | **`unsupported:true`** ❌ | false（按 F-Q023-2 填了行）|
+| `dim_resource_position` | **没有这个键** ❌ | false（同上）|
+F-Q023-2 是你让我把这三个一起填的，但 fixture 只改了 `dim_agent` 一个。同样钉进用例了，请你同步另外两个。
+
+#### 顺带
+修了一处测试间耦合：改密限速器是进程内按 identity 计数、跨用例累积，新用例先重注册路由拿干净窗口。
+
+闸：domain 1302 / db 1352 / worker 1744（+2 skipped）/ web 224 全绿，四包 tsc 清。
+
+**我这边仍在等你**：Q-027 的 demo 接缝（guest 登录的唯一阻断）、pg_trgm 的 similarity 落法确认、以及上面两处 fixture。这期间我继续找同类可自查的项。
