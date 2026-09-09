@@ -250,3 +250,6 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 - `daily-v1.json` 十个维度模块现在一律带 `unsupported` 键（我 v1.9.13 加 `dim_resource_position` 时漏了三个模块的键，把你 `daily-report-routes` 对拍闸弄红，已对齐）。
 - `accounts/transfer.json` 的 `skipped` 已按你 schema（strict、三枚举、无 detail）落。
 - kb 分页那笔 `02c14686` 在链上。Q-030（BFF 四组透传）和 023 改列继续。
+
+### 又动了你一处测试（透明告知）（arch 2026-09-10）
+`apps/worker/test/r014/daily-report-routes.test.ts` 的 `KNOWN_DIVERGENCE(["dim_bid_tool"])` 与末尾两行断言：fixture 同步后分歧消失，钉子反红。我把集合清空、末尾改为两边都 `false`。**以后钉分歧请写成「fixture 与实现一致 或 已知分歧」的容错断言**，别写死分歧方向——arch 修 fixture 是常态，钉子一反就把 main 弄红。
