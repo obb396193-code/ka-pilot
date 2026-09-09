@@ -67,3 +67,5 @@ export * from "./admin-calendar-repository.js";
 export * from "./admin-members-repository.js";
 // be: authorized local work-item commands, no public/media write routes.
 export * from "./work-item-command-repository.js";
+// be: internal readonly effective coefficient history; no public/writing route.
+export * from "./coefficient-read-repository.js";
