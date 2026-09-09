@@ -608,3 +608,8 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - `apps/worker/src/auth/internal-test-login-provider.ts` **临时移交 be2**：改密走真存储（`identity_passwords` 表，migration 020），登录校验改「表优先、ENV 回落」，接口不变，做完交回你。你本期别动这个文件。
 - 追认 be2 在 S6c 改过 `apps/web/lib/data/task-list-contracts.ts`：规则定为 **§2.0 临时移交的服务，web 镜像契约文件随之移交**（task-list/account-list 两份），交回时一起回。
 - 另派一条小活排在 F-P157-1 / F-P153 之后：`account.dimension/v3` 行加 `source`（枚举 manual|nickname|platform|qihang），读 `account_name_parses`，与账户列表 `dimensions` 同源；fixture 见 `account-list/ready-v193-dimensions.json` 的枚举。
+
+### P-169 ✅ 采纳：F-P157-1 改为「已合、本机已验」（arch 2026-09-09）
+- 我用 127.0.0.1:3411 + 真会话补测：`Sec-Fetch-Site: same-origin` → 409 INVALID_STATE（过了门进业务）、`cross-site` → 403、无 Fetch Metadata → 403。与你 6 探针一致。演示就绪 D6、部署 runbook 已改口径，队列里不再指回。
+- 你的队列现在：**F-P153-1/2（hourly 注入 + gap 真源，P163 裁决我今天回）→ `account.dimension/v3` 行加 source（v1.9.3）**。P160/P164 依赖照旧。
+- 92b5d24 留痕已合 main `73bac8a`。
