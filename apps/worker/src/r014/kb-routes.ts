@@ -56,10 +56,12 @@ export function createKbRoutes(pool: Pool): R014Route[] {
       requireMethod(context.request, ["GET"]);
       const query = context.url.searchParams.get("q");
       if (query === null) throw new R014HttpError(400, "INVALID_REQUEST", "q is required");
+      const found = await repository.search(
+        context.auth, query, context.url.searchParams.get("kind") ?? undefined);
       sendData(
-        context.response,
-        await repository.search(context.auth, query, context.url.searchParams.get("kind") ?? undefined),
-        context.requestId, context.maxResponseBytes,
+        context.response, { items: found.items }, context.requestId, context.maxResponseBytes,
+        // v1.9.8：扩展缺失时如实标出来，别让「搜得不准」看起来像搜索本身不行。
+        found.warnings.length === 0 ? {} : { warnings: found.warnings },
       );
     }),
 

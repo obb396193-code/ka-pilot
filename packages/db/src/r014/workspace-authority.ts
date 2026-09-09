@@ -3,7 +3,10 @@ import type { Pool, PoolClient } from "pg";
 
 // be2-r014 自用的权限回查件。刻意复制而不是改 be 的共享 helper：
 // 所有权边界要求 be2 需要不同行为时自带一份（分工文档 §2）。
-export type R014ErrorCode = "FORBIDDEN" | "INVALID_INPUT" | "INVALID_RESULT" | "NOT_FOUND" | "CONFLICT";
+export type R014ErrorCode =
+  | "FORBIDDEN" | "INVALID_INPUT" | "INVALID_RESULT" | "NOT_FOUND" | "CONFLICT"
+  /** 当前密码不正确（v1.9.9 F-Q024-1）。与 FORBIDDEN 分开，是因为前端要认这一种走「密码错」分支。 */
+  | "INVALID_CREDENTIALS";
 
 export class R014RepositoryError extends Error {
   constructor(readonly code: R014ErrorCode) {
