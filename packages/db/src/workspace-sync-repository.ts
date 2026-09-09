@@ -183,6 +183,7 @@ export class WorkspaceSyncRepository {
            ON access_grant.workspace_id = membership.workspace_id
           AND access_grant.identity_id = membership.identity_id
           AND access_grant.media = $2
+          AND (to_jsonb(access_grant)->>'revoked_at') IS NULL
          WHERE actor.workspace_id = $1
          GROUP BY
            actor.workspace_id,

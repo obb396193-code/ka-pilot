@@ -180,6 +180,8 @@ export class AuthSessionRepository {
          ON workspace.kind = 'personal'
         AND access_grant.workspace_id = membership.workspace_id
         AND access_grant.identity_id = membership.identity_id
+        -- Before018 no marker exists; after018 retained audit rows are not grants.
+        AND (to_jsonb(access_grant)->>'revoked_at') IS NULL
        WHERE session.token_hash = $1
        GROUP BY
          session.id,
