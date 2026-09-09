@@ -11,7 +11,7 @@ import { callRoute, type Captured } from "./fake-http.js";
 const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka_be2_r014_test";
 
 interface AuthContext {
-  workspaceId: string; userId: string; role: "lead"; workspaceKind: "personal";
+  workspaceId: string; userId: string; role: "lead" | "optimizer"; workspaceKind: "personal";
   scope: { kind: "explicit_accounts"; accounts: never[] };
 }
 
@@ -172,5 +172,24 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
       { media: "KUAISHOU", sample_names: [] }]) {
       expect((await call("/api/v1/admin/naming-rules/test", "POST", body)).status).toBe(400);
     }
+  });
+
+  it("keeps an optimizer out of the whole governance backend, not just the rule writer", async () => {
+    const optimizer = { ...auth, role: "optimizer" as const };
+    // 六个端点都在 /api/v1/admin/ 下；原来只有 PUT naming-rules 挡了角色，
+    // 列表/改单条/确认/重解析四个是敞开的——任何优化师都能读改**全空间**账户昵称，
+    // 而账户列表本身是按授权收口的。和 Q-020 同一类：一个入口收口了，旁边的没收。
+    for (const [path, method, body] of [
+      ["/api/v1/admin/account-names", "GET", undefined],
+      ["/api/v1/admin/account-names/confirm", "POST", { items: [{ media: "KUAISHOU", accountId: "n1" }] }],
+      ["/api/v1/admin/account-names/reparse", "POST", {}],
+      [`/api/v1/admin/account-names/KUAISHOU/n1`, "PATCH", { segments: { biz: "改一下" } }],
+    ] as const) {
+      const result = await callRoute(optimizer, path, method, body, path.includes("?") ? "" : "?media=KUAISHOU");
+      expect(result.status, `${method} ${path}`).toBe(403);
+    }
+    // 规范本身仍读得到：账户列表取维度要用它（dimensionsFor），那是普通读路径。
+    expect((await callRoute(optimizer, "/api/v1/admin/naming-rules", "GET", undefined, "?media=KUAISHOU")).status)
+      .toBe(200);
   });
 });
