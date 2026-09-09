@@ -4952,3 +4952,56 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 3. **冲突处理按你写的来**：并排「昵称说 vs 平台说」由人点选，选完标人工改；冲突态与失败态的「确认」按钮禁用，批量只过「解析成功」。
 
 **F-008 至此全部完成**（F8-1～F8-7 七项）。下一步等：你的三个 naming fixture、老板逐页精修意见。
+### Q-020 回执：A7 账户交接接通（be2，合流源 = `be/r017 @ 0bd6ee9`）
+**分支**：`be/r017`（origin/main @ 0811de6 已全含，无待合上游）
+
+**① A7 做完了**（Q-003 起卡 `revoked_at`，018 落地后解锁）：`POST /api/v1/accounts/transfer`、`POST /api/v1/users/:id/transfer-all`。
+| 点 | 实现 |
+|---|---|
+| 软撤权 | 原 grant 置 `revoked_at`/`revoked_by` 保留审计行，新 grant 另起一行；目标已有被撤行走 `ON CONFLICT DO UPDATE` 复活。**全程不删行** |
+| 变更集闸 | 账户有 `confirmed`/`executing` 变更集 → 拒绝并进 `skipped.reason=blocked_by_changeset` |
+| 409 边界 | **只有一户都没动成才 409**；部分成功仍 200，没动的逐条列在 `skipped` 里。部分成功当失败会让调用方重试已成功的那批 |
+| 离职交接 | `transferAll` 仅 admin；交出方用**显式参数 `fromUserId`**，不伪造 auth 上下文冒充离职者 |
+| `dispatches` | 表（你派 Codex 的 014）不在 → 恒 0。这是「系统里没有派发单这种对象」，按 v1.9 §一属 0 不属 `missing` |
+
+**为什么不伪装身份**（值得记一笔）：我第一版是 `this.transfer({...approved, userId: fromUserId}, ...)`，测试直接 403 ——`lockWorkspaceMembership` 会拿 `auth.role` 去核实时成员行，管理员的 role 跟离职者对不上，当场露馅。这个红是对的：**伪装上下文顺带绕掉了一次真实权限校验**，就算校验放过也是隐患。改成 admin 以自己身份执行 + 交出方显式传入，`account_transfers` 里 `from_user_id`=交出方、`initiated_by`=实际操作人，审计能分清「谁被交接」和「谁操作的」。
+
+**② 顺带修一处合流撞车**：你 `5dce113`（v1.9.1 文案改中文对象名）改了 `task-readiness-contract.ts` 的「无 unit」→「无单元」并同步了 5 处期望，但我的 D5 测试（`9e132f8`）写在旧文案上、时间上晚于你的修，合并后期望值成了孤儿 —— 全量跑才露出来（单跑 A7 是绿的）。已把测试改到「无单元」跟上契约。**教训**：你改我文件后我 merge，不能只看 tsc，得跑一遍全量对拍。
+
+**③ 闸**：domain 1263 / db 1212 / worker 1684（+2 skipped）全绿，三包 `tsc --noEmit` 清；串行跑的，无并发假红。路径限定提交 `0bd6ee9`，未 push。
+
+**④ 请裁一条（R-017 T5 卡这里）**：`resolveAccountDimensions`（人工 > 昵称解析 > 平台，都没有则 `{value:null,source:null}`）领域层已就绪并有用例，但**没有 fixture 定义 `dimensions` 挂在账户列表行的哪个位置**（是 `item.dimensions` 还是并进现有 `item.meta`？字段名用 `value/source` 还是展开成 `bizName/bizNameSource`？）。我不猜结构 —— 猜错就是给 fe 一个要返工的形状。给个 fixture 或直接指定形状，我当天接。
+
+**⑤ 待你裁的旧账**（未收到回复，不阻塞我，但会影响交付形状）：Q-019 ③ 日报维度模块行结构未冻（我现在出 `unsupported:true`）、Q-015 web 镜像文件越界、Q-007 ② `meta.unavailableTypes`。
+
+**⑥ 我接着做**：T5 等你裁的期间转 `POST /auth/password`（v1.7.6 + v1.7.8 G11 响应加 `{changedAt, otherSessionsRevoked}`），再往下是 kb 七端点。
+
+### Q-021：`POST /auth/password` 无处落地 + kb 三处缺口（be2，分支 `be/r017`）
+按你排的「R-017 之后两条」往下走，两条都撞到硬阻断。**先报后做**，我这就去做 kb 里不受阻的部分。
+
+#### ① `POST /auth/password` 现在**不可能实现**，请裁
+三条实测事实：
+1. `schema.sql:34` 的 `auth_identities.provider_subject` 注释写死「**不存密码/token**」——库里没有任何存密码的地方。
+2. internal_test 凭证在 **ENV JSON**（`INTERNAL_TEST_AUTH_CREDENTIALS_JSON`）里，`InternalTestLoginProvider` 构造时读进内存的常量数组（`data-api.ts:102` 只 new 一次）。进程改不了自己的 ENV，重启即失，多实例也不同步。
+3. 校验密码的 `apps/worker/src/auth/internal-test-login-provider.ts` 是 **Codex 的文件**（`[be] 3b6618d`）。
+
+后果：这个端点写完也只能"假装改成功"——用户改完密码后，**新密码登不上、旧密码照样能登**，比不上线更糟。所以我没写。
+
+**建议**（你拍一个，我当天做完）：
+- **(a) 加表 `identity_passwords`**：`identity_id PK → auth_identities(id)`, `password_salt TEXT`, `password_scrypt TEXT`, `algo TEXT DEFAULT 'scrypt'`, `updated_at`, `updated_by`。登录校验改成**先查表、表里没有才回落 ENV**（ENV 降级为首次引导凭证）。要动 Codex 那个 provider 一个方法——按你的接缝规矩，请**临时移交 `internal-test-login-provider.ts` 给我**（像 Q-010 移交两个 list-service 那样），或者你派 Codex 改、我只出表和端点。
+- **(b) 明确不做**：端点直接返 `409 PROVIDER_NOT_SUPPORTED`，设置页「找管理员重置」文案保留。省事但 G11 的自助表单落空。
+
+顺带两条可以直接确认的：`auth_sessions` 有 `identity_id` + `revoked_at`，**`otherSessionsRevoked` 我能算准**（批量 UPDATE 排除当前 token_hash，返回行数）；限速 5 次/15 分钟**没有现成设施**（`apps/worker` 只有 LLM provider 那套限速，不是 HTTP 层），要我新写就说一声，我按 identity 维度做进程内计数（多实例下不严格，够内测）。
+
+#### ② kb 七端点：表**从来没进过 migration**
+`kb_documents/kb_revisions/kb_links/kb_business_refs` 只存在于参考文件 `migrations/sql/001_contract_v1.sql`，**没有任何 `.cjs` 迁移建过它们**，实库 `pgmigrations` 14 条里也没有。所以做 kb 必须先加迁移。
+
+- **迁移号我取 `019`**（013/014/017 是 Codex 的坑位、016 是你 `migration-drafts/` 的草稿，都跳过）。如果你另有安排，现在说，我改号成本为零。
+- DDL 仍按规矩**从 `schema.sql` 切片脚本生成**（标记 `-- ── 8.x 知识库` → `-- ── 9.4 卡片中心`），配 bundle 单测逐句比对，不手抄。
+
+#### ③ kb 两处形状没冻，等你裁
+- **软删没有列**：契约写 `DELETE` 软删，但 `kb_documents` 十五个列里没有 `deleted_at`。schema.sql 是你的权威文件，请加一行（建议 `deleted_at TIMESTAMPTZ, deleted_by UUID`），我切进 019；在你加之前 **`DELETE` 我不接**，其余六个端点照做。
+- **`backlinks` 与 `by-object` 没有 fixture**：`kb/` 下只有 `document.json` / `tree.json` / `search.json`。反查两个端点的行形状我不猜——给 fixture 或直接指定。我的建议：两者都复用 search 行的 `{id,title,kind}` 三件套（backlinks 不需要 `score`，by-object 加 `{objectType,objectId}` 回指），你点头我就按这个出。
+
+#### ④ 我现在做的
+019 迁移 + kb 领域契约 + 树/列表、单文档读、创建、编辑（写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`）、FTS 搜索这五条。软删和两个反查端点等你 ③。
