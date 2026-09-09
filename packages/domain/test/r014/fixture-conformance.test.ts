@@ -42,14 +42,11 @@ describe("my fixtures still fit my schemas (drift detector)", () => {
     });
   }
 
-  it("records the one place my A7 response is wider than the frozen fixture", () => {
+  it("A7 response and the frozen fixture agree (arch v1.9.13 added skipped to the fixture)", () => {
     const frozen = fixture("accounts/transfer.json").data as Record<string, unknown>;
-    // fixture 冻的是 {transferId, moved, notifiedUserIds}；`skipped` 是我在 A7 里加的——
-    // 没有它，调用方只看到「请求 2 户、moved.accounts=1」，不知道哪一户没动、为什么。
-    // 已请 arch 裁「加进 fixture 还是我去掉」；在他回话之前，把分歧钉在这里，
-    // 免得下次谁看到 fixture 就以为我多返了字段是 bug。
-    expect(frozen.skipped, "fixture 仍未包含 skipped").toBeUndefined();
-    expect(accountTransferResultSchema.omit({ skipped: true }).safeParse(frozen).success).toBe(true);
+    // v1.9.13（2026-09-10）：arch 裁「skipped 加进 fixture」，分歧已消——此处改为断言一致。
+    expect(Array.isArray(frozen.skipped), "fixture 应含 skipped[]").toBe(true);
+    expect(accountTransferResultSchema.safeParse(frozen).success).toBe(true);
     // 反过来：我的响应必须是 fixture 的超集，键一个都不能少。
     for (const key of Object.keys(frozen)) {
       expect(Object.keys(accountTransferResultSchema.shape)).toContain(key);
