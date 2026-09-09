@@ -1238,3 +1238,20 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 验收（照教程）：无痕窗口从每个入口域名登录都回到原入口；未加入 ACL 的 403；`/api/me` 200；退出后全局登出。
 - 实现归 Codex（`internal-test-login-provider.ts` 交回后同目录加 `buc-login-provider.ts`）；**开工条件 = OS 拿到日常 AppCode**。
 
+## v1.9.8 追加（2026-09-09 arch；裁 Codex P-170 四问 + P-171/172 两问 + be2 Q-022 pg_trgm）
+
+**`account.dimension/v3` 的来源（P-170）**
+1. **哪些维度带 `source`**：只有十个解析类维度（`placement / bid_mode(bid_tool) / device / goal / rta / agent_type / optimizer / special / landing / rebate`）的行带 `source` + `sources`；`dimension=account|task|biz` 的行**不带**（account 行以后可挂 `dimensions{}` 同列表，本批不做）。
+2. **混合来源**：`source ∈ manual|nickname|platform|qihang|mixed|null`；一组内所有成员账户来源相同 → 该值；不同 → `"mixed"`；`sources` 恒带计数 `{manual?:n, nickname?:n, platform?:n, qihang?:n}`。**不拆行、不重算分组**。`null` 只用于「整组都没有来源」（都没解析出来）。
+3. **昵称值 → 枚举**：`agent_type`：`自投→self`、`代投|代理→agency`、其它/冲突/缺 → `unknown`；`label` 保留原中文值（unknown 时显「未知」）。平台源 `julang_daili_relation.type`（自投/代理）走同一映射。**优先级仍是 manual > nickname > platform**（老板：昵称为主）；昵称与平台不一致 → 该账户在归属清洗页为 `conflict`（v1.8 机制），维度行按优先级取值不等人。
+4. **`resource_position` 统一切到 `placement`**：值 = 解析段 `placement`（nickname）或平台版位（`platform`，ka-data `dwd_adgroup_daily.resource_position`）按优先级；旧「平台版位照旧」作废。
+- fixture：`data-query/dimension-v3-agent_type.json`（自投 nickname / 代投 mixed / 未知）。
+
+**ETL 单批失败的语义（P-171 ③ / P-172）**
+- 不新增 run 状态枚举。单批失败：该批的 `(media, account_id, ds)` **不写 canonical**（= 缺数 missing），`etl-runs` 行 `warnings[]` 加 `{code:"BATCH_FAILED", resource, ds, accountIds[], fingerprint}`，run 仍 `done`；`account.summary/table` 的 lineage `coverage:"partial"`（现有三态）。**不许**把旧 canonical 当 ready，也不许写 0。
+- 错误体：**采纳 withheld + SHA**（上游 body 可能含凭证，不落日志）；`last_error` 带 resource/date/hour/page/批次指纹/bodyBytes/SHA 足够定位。
+
+**中文搜索（be2 Q-022 ③）**
+- 装 **`pg_trgm`**：migration 019 加 `CREATE EXTENSION IF NOT EXISTS pg_trgm` + `kb_documents(title, content_text)` GIN trgm 索引，`score` = `similarity()` 真值；全局搜索（v1.9）同法。RDS 申请勾 pg_trgm（runbook A1 扩展清单 pgcrypto / btree_gist / pg_trgm）；扩展缺失时降级 ILIKE 双通路并在 `meta.warnings` 标 `TRGM_MISSING`。
+- Q-023 两条备注追认：`assessment_price_history / task_readiness_overrides` 无账户维度，靠主任务 404 闸；任务级工作项（无账户）保留。
+
