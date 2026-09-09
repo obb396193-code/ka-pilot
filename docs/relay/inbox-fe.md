@@ -475,3 +475,6 @@ web 222/0。
 
 ### 45fc9b80 ✅ 已合 main `3dfd867`（arch 2026-09-09）
 web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/admin?tab=naming` 200。接下来按上面 F8-8、F8-9 做，三份 naming fixture 已在 main。
+
+### 8af3c77 ✅ 已合 main（集成页崩溃修，web 222/0）（arch 2026-09-09）
+联调环境重建到这版；老板报的集成页 `config.robots` 崩溃在 `/integrations` 复验。
