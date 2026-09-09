@@ -2,6 +2,7 @@ import {
   AccountListRepository,
   AccountMuteRepository,
   AccountNameParseRepository,
+  GuestAccessRepository,
   IdentityPasswordRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
@@ -116,7 +117,18 @@ async function main(): Promise<void> {
     sessionHttpService: new SessionHttpService(
       sessionAuthService,
       internalTestLoginProvider,
-      { ttlSeconds: config.sessionTtlSeconds },
+      {
+        ttlSeconds: config.sessionTtlSeconds,
+        // v1.9.6 访客登录。这两个 ENV 还没进 data-api-config.ts 的解析器（那是共用文件），
+        // 先在这里读；已在回执请 arch 把它们并进去。
+        guest: {
+          enabled: process.env.GUEST_ACCESS_ENABLED === "1",
+          workspaceId: process.env.GUEST_WORKSPACE_ID ?? null,
+          findGuestIdentity: (workspaceId) => new GuestAccessRepository(pool).findGuestIdentity(workspaceId),
+          issueSession: (workspaceId, identityId, token, expiresAt) =>
+            new GuestAccessRepository(pool).issueGuestSession(workspaceId, identityId, token, expiresAt),
+        },
+      },
     ),
     sessionAuthService,
     internalToken: config.internalToken,
