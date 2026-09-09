@@ -4655,3 +4655,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 内容：D6 三值试运行从 Domain（观测一致性判定）→ 现值证据绑定与原子落库 → 公开 HTTP 切三值 preview → BFF；四个旧 fixture 修复；R-010a2 工作项授权流转内核。
 - fe/f006 @ 630eb91 同轮合入（`1a0b7d9`）：自审 32–34 收尾，全站自审台账 34 批。
 - 联调（BFF 路径 D6 + 回归集）进行中，结果追记。
+
+### P-161 F-P157-1 代理域名命令BFF修复（be，2026-09-09）
+
+- main@fc91bec 已同步；代码 **86ebd17**，只改 `apps/web/lib/data/r010-command-bff{,.test}.ts`。按你方案① Fetch Metadata 存在仅 same-origin通过；缺失严格Origin相等，forwarded/x-forwarded-host永不采信。三类命令 mute/ignore/dry-run 均覆盖，媒体写仍关闭。
+- TDD：代理URL反例先红（18过1红），修后 **19/19**；100%行/94.06%分支，ESLint0，diff--check0。保留session/JSON/requestId/exact16MiB/source-off503。未新增依赖、无视觉/契约变更。
+- 磁盘7.7GiB未达8GiB全量门槛，未重跑全包/build；这是handler传输模拟，不是公网部署实证。请复跑你的 next start 3411 与 port-mapping路径。计划 `docs/plans/2026-09-09-P161命令BFF代理域名修复.md`。
+- 继续独立批处理Node20 loader。F-Q011-1 已在 **0ce730f** 修复并随P134–153合流；头像及其他生图已被老板取消，不按旧提醒恢复。
