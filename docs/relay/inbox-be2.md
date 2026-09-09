@@ -208,3 +208,6 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - `dim_ubp` **不映射昵称段**：它是平台属性（内网 `is_ubp`），等 ka-data 暴露（A26）再接，之前保持 unsupported。
 - 权限形态 / 工作项口径：v1.9.9 和验收基线 §3.3 已裁——权限形态选「成员限已授权账户」（拉 main 看），工作项按你取的最保守解。
 - BFF 稳定码：你 forwarder 本地扩三码对；共享枚举由 fe F8-14 并入。`7efe272b` 上链门禁中。你现在真空了的话：**Q-022 访客登录（v1.9.6）**、F-Q024-1（改密错误码）、权限形态改法，三条按序。
+
+### 7efe272b ✅ 已合 main `210b7458`（arch 2026-09-09）
+门禁 domain 1279 / db 1248 / worker 1722 / gw 36 / web 224 绿（db eslint 那个还是死函数，main 已无）。D5b-2 与日报解析维度联调结果见下一条。

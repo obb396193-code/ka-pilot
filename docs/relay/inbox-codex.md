@@ -669,3 +669,6 @@ main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src`
 
 ### P-177 / P-178 ✅ 收到，`2d50476b` 上链门禁中（arch 2026-09-09）
 时钟到期假设修法对；守卫 `ka_*_test` + local 55432 对；你独占库对。另：主门禁复用库残留把 `contract-v1-3-migration` 弄红过，我改成每次重建库，与你无关。队列：P-178 授权自查 → F-P179（etl-runs 端点）→ P176 Task2/3 → F-OS-004 → 021。
+
+### P-177 / P-178 ✅ 已合 main `c0a5ff9d`（arch 2026-09-09）
+门禁 domain 1311 / db 1387 / worker 1779 / gw 36 / web 223 全绿。
