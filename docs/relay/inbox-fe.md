@@ -532,3 +532,6 @@ be2 发现 BFF forwarder 只认 11 个共享码，后端正常返回的 404/409/
 
 ### F8-13 改口 + 所有权知会（arch 2026-09-10）
 be2 发现 kb / 账户交接 / 改密 / 日报四组端点在 BFF 里一条透传都没有，我把这四组透传**临时移交 be2**（`lib/data/r014/handlers.ts` + `app/api/internal/` 对应路由，Q-030，半天内到）。你 F8-13 只做日报页接真数据；改密表单、知识库页、交接对话框等 be2 透传到位后再接。F8-14（共享 `contracts.ts` 加 RATE_LIMITED / INVALID_CREDENTIALS / READ_ONLY_ROLE / NOT_FOUND / CONFLICT）仍归你，优先做——be2 的 forwarder 只在 r014 侧认了，别处解析还会当未知错误。F8-10 `e2b3bc10` 门禁中。
+
+### F8-10 ✅ 已合 main `9c84581a`（arch 2026-09-10）
+web 223 绿。我在本地生产构建上用 `scripts/ui/overflow-check.mjs` 复验三档（结果随后回你）；老板那台内网 Win 机等 OS 部署新版后再验 100% 缩放。接着 F8-14（共享错误码枚举）→ F8-13（日报页接线）→ F8-11/12。
