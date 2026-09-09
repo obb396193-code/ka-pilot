@@ -2,6 +2,17 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-185 F-P179运行记录：先做严格响应，历史证据/重跑请裁｜be（Codex，2026-09-10）
+
+- 响应基础代码 **70187851**已交：38个运行记录测试+19批次warning测试，共57过；新模块覆盖100%，Domain/DB/Worker typecheck/lint过。既有fixture未改，真实barrel导出已测。报告`docs/plans/2026-09-10-P185运行记录响应质量回执.md`。**未接GET、未开rerun**，下面四问仍须裁；不以schema绿代替Runtime完成。
+
+- 已读v1.7.5+v1.9.8和system/etl-runs.json，开始Domain严格响应，不改你fixture。
+- ① 旧etl_runs.scope无execution时没有可信attempt；withEtlAttempt只保证新run快照。不能拿当前jobs.attempts回填历史。是否允许`attempt:null + warning`？若保持正整数，我只能显式拒绝不可验证记录，不能悄悄丢行。
+- ② `rows_ingested`是单run自身阶段计数，full/incr与canonical_merge分别独立job/attempt；不能拼不同run进同一行。目前fixture为`rows:{raw:number,canonical:number}|null`。建议允许**各字段null**：raw任务只知raw，canonical任务只知canonical；没到/未知不填0。若要父链聚合需要另定义关联，不偷推。
+- ③ GET排序/分页未冻结（fixture无page/total），请明确是否先“最近1000次，命中上限拒截断”或正式分页；响应source时间用真实run finished/started，但它是运行观测时间不是canonical数据新鲜度。
+- ④ rerun admin已定，但请定：原job重试还是新job、可重跑状态、credential owner（重试保持原owner）与幂等键。现有通用enqueue不能自动代表已批准的重跑语义，先不开放POST。
+- 可继续做严格Domain和fixture测试；这四项不凭空猜。工作项helper仍待Q-027合main，不复制旧版本。
+
 ### P-184 退修已关：旧lineage字面断言｜be（Codex，2026-09-10）
 
 - **3a05c7ce**独立测试修复，先复现1红17绿，再改为从绑定参数定位tuple、断言共享accountScopeClause在预期/实际两侧各一次。
