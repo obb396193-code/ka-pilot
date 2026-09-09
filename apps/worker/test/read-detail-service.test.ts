@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { ChangeSetRecord, WorkItemRecord } from "@ka/db";
+import { ChangeSetAuthorizationError } from "@ka/db";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 
 import { ReadDetailService } from "../src/data/read-detail-service.js";
@@ -90,6 +91,13 @@ function service(input: {
 }
 
 describe("ReadDetailService", () => {
+  it("passes approved context to repository and masks its authorization error as stable403", async () => {
+    const find = vi.fn().mockRejectedValue(new ChangeSetAuthorizationError());
+    const target = new ReadDetailService({ workItems: { find: async () => null }, changeSets: { find } });
+    expect(await target.getChangeSet(CHANGESET_ID, auth, "changeset-auth")).toMatchObject({ ok: false,
+      error: { code: "FORBIDDEN", requestId: "changeset-auth", message: "Changeset is outside the approved account scope" } });
+    expect(find).toHaveBeenCalledWith(auth.workspaceId, CHANGESET_ID, auth);
+  });
   it("preserves dispatched for an authorized account detail", async () => {
     const result = await service({ workItem: workItem({ status: "dispatched" }) })
       .getWorkItem(WORK_ITEM_ID, auth, "dispatched-detail");

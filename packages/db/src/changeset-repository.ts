@@ -1,5 +1,6 @@
 import {
   aggregateExecutionResult,
+  approvedWorkspaceAuthContextSchema,
   assertChangeSetConfirmable,
   executionDirective,
   transitionChangeSet,
@@ -21,6 +22,8 @@ import { claimReconciliation, finishReconciliationClaim, type ReconciliationClai
 import { assertExecutionRunBinding, enqueueConfirmedExecution, findConfirmedExecution, startConfirmedExecution, type ConfirmedExecutionRun } from "./changeset-execution-queue.js";
 import { JobRepository } from "./job-repository.js";
 import { validateDryRunObservations } from "./changeset-observations.js";
+import { accountScopeClause, accountScopeParams } from "./r014/workspace-authority.js";
+import { withSemanticReadSnapshot, type SemanticReadConnection } from "./semantic-read-snapshot.js";
 export { ChangeSetPreconditionError } from "./changeset-dry-run.js";
 
 export interface NewChangeSetItem {
@@ -157,7 +160,7 @@ async function assertActiveActors(client: PoolClient, workspaceId: string, initi
   if (actors.rowCount !== actorIds.length) throw new ChangeSetAuthorizationError();
 }
 
-async function loadItems(client: Pool | PoolClient, header: HeaderRow): Promise<ChangeSetItemSnapshot[]> {
+async function loadItems(client: SemanticReadConnection, header: HeaderRow): Promise<ChangeSetItemSnapshot[]> {
   const result = await client.query<ItemRow>(
     `SELECT id, workspace_id, media, account_id, target_type, target_id, field, from_value, to_value, item_status, fail_reason
      FROM changeset_items WHERE changeset_id=$1 ORDER BY id`,
@@ -169,7 +172,7 @@ async function loadItems(client: Pool | PoolClient, header: HeaderRow): Promise<
   return result.rows.map(itemRecord);
 }
 
-async function assemble(client: Pool | PoolClient, header: HeaderRow): Promise<ChangeSetRecord> {
+async function assemble(client: SemanticReadConnection, header: HeaderRow): Promise<ChangeSetRecord> {
   return {
     id: header.id,
     workspaceId: header.workspace_id,
@@ -369,12 +372,44 @@ export class ChangeSetRepository {
     return record;
   }
 
-  async find(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord | null> {
+  /** Two arguments are the internal job path; HTTP callers must provide approved auth. */
+  async find(workspaceId: string, changeSetId: string, authInput?: unknown): Promise<ChangeSetRecord | null> {
+    // Explicit undefined is invalid auth, not permission to enter the internal path.
+    if (arguments.length >= 3) return this.findForSession(workspaceId, changeSetId, authInput);
     const result = await this.pool.query<HeaderRow>(
       `SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2`,
       [workspaceId, changeSetId],
     );
     return result.rows[0] === undefined ? null : assemble(this.pool, result.rows[0]);
+  }
+
+  private async findForSession(workspaceId: string, changeSetId: string, authInput: unknown): Promise<ChangeSetRecord | null> {
+    const parsed = approvedWorkspaceAuthContextSchema.safeParse(authInput);
+    if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.workspaceId !== workspaceId) {
+      throw new ChangeSetAuthorizationError();
+    }
+    const scope = accountScopeParams(parsed.data);
+    const clause = accountScopeClause("$3", "$4", "changesets.media", "changesets.account_id");
+    const values = [workspaceId, changeSetId, scope.kind, scope.allowed];
+    return withSemanticReadSnapshot(this.pool, async client => {
+      // Only existence + authorization are read here; no title/simulation/items.
+      // This preserves the frozen 404 (absent) vs403 (own-workspace denied) distinction.
+      const authorization = await client.query(`/* changeset-detail-authorization */
+        SELECT id,workspace_id,${clause} AS allowed FROM changesets WHERE workspace_id=$1 AND id=$2`, values);
+      if (authorization.rows.length === 0) return null;
+      const row = authorization.rows[0];
+      if (authorization.rows.length !== 1 || row.id !== changeSetId || row.workspace_id !== workspaceId || typeof row.allowed !== "boolean") {
+        throw new Error("Invalid changeset detail authorization result");
+      }
+      if (!row.allowed) throw new ChangeSetAuthorizationError();
+      const result = await client.query<HeaderRow>(`/* changeset-detail-content */
+        SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 AND ${clause}`, values);
+      const header = result.rows[0];
+      if (result.rows.length !== 1 || !header || header.id !== changeSetId || header.workspace_id !== workspaceId) {
+        throw new Error("Invalid changeset detail content identity");
+      }
+      return assemble(client, header);
+    });
   }
 
   async load(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord> {

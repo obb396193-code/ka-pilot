@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { guardedRoute } from "../../src/r014/http.js";
-import { callRoute, fakeRequest, fakeResponse } from "./fake-http.js";
+import { fakeRequest, fakeResponse } from "./fake-http.js";
 
 /**
  * v1.9.6 Q-022：访客（`viewer`）只读。写请求在**路由层统一挡**——

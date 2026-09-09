@@ -1,4 +1,5 @@
 import type { ChangeSetRecord, WorkItemRecord } from "@ka/db";
+import { ChangeSetAuthorizationError } from "@ka/db";
 import {
   readDetailResponseSchema,
   type ChangeSetDetail,
@@ -21,7 +22,7 @@ export interface WorkItemDetailPort {
 }
 
 export interface ChangeSetDetailPort {
-  find(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord | null>;
+  find(workspaceId: string, changeSetId: string, auth: BusinessReadAuth): Promise<ChangeSetRecord | null>;
 }
 
 export interface ReadDetailServiceDependencies {
@@ -152,7 +153,7 @@ export class ReadDetailService {
       return error("FORBIDDEN", "Changesets are not available in a read-only team workspace", requestId);
     }
     try {
-      const record = await this.dependencies.changeSets.find(auth.workspaceId, id);
+      const record = await this.dependencies.changeSets.find(auth.workspaceId, id, auth);
       if (record === null) return error("NOT_FOUND", "Changeset was not found", requestId);
       if (record.id !== id || record.workspaceId !== auth.workspaceId) {
         return error("INTERNAL_ERROR", "Changeset detail identity could not be verified", requestId);
@@ -164,7 +165,8 @@ export class ReadDetailService {
         ok: true,
         data: { kind: "changeset", changeset: changeSetDetail(record) },
       });
-    } catch {
+    } catch (cause) {
+      if (cause instanceof ChangeSetAuthorizationError) return error("FORBIDDEN", "Changeset is outside the approved account scope", requestId);
       return error("INTERNAL_ERROR", "Changeset detail could not be loaded", requestId);
     }
   }

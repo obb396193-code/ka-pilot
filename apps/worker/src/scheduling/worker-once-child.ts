@@ -11,6 +11,7 @@ import { QihangClient } from "../qihang/client.js";
 import { createWorkerConsumer } from "../runtime.js";
 import { WorkspaceSyncTickService } from "./workspace-sync-service.js";
 import { parseWorkerOnceConfig, runWorkerOnceIteration, workerOnceJobTypes, type WorkerOnceConfig } from "./worker-once.js";
+import { atWorkerOnceStage, safeWorkerOnceFailure, WorkerOnceFailure } from "./worker-once-failure.js";
 
 /** No migrations, global recovery, daemon timers, or service-identity fallback here. */
 export async function executeWorkerOnceChild(
@@ -28,27 +29,29 @@ export async function executeWorkerOnceChild(
     dependencies.onJobState?.(event, phase);
   };
   try {
+    const tick = new WorkspaceSyncTickService(new WorkspaceSyncRepository(pool), jobs);
+    const consumer = await atWorkerOnceStage("BOOTSTRAP_FAILED", async () => createWorkerConsumer({
+      pool, leaseScope, leaseSeconds: config.leaseSeconds, serviceQihangUserId: null,
+      qihang: dependencies.qihang ?? new QihangClient({ baseUrl: config.qihangBaseUrl }),
+      onJobState: (event) => emit(event, "consumer"),
+    }));
     const result = await runWorkerOnceIteration({
       workspaceId: config.workspaceId, media: config.media, mode: config.mode, triggeredAt,
     }, {
-      tick: new WorkspaceSyncTickService(new WorkspaceSyncRepository(pool), jobs),
+      tick: { execute: input => atWorkerOnceStage("TICK_FAILED", () => tick.execute(input)) },
       onJobState: (event) => emit(event, "tick"),
-      prepare: async () => {
+      prepare: () => atWorkerOnceStage("PREPARE_FAILED", async () => {
         await ensureMetricPartitions(pool);
         const recovered = await jobs.recoverStaleLeases(1);
         for (const job of recovered.failed) {
           await refreshBackfillJobProgress(batches, job);
           await notifyFailure(job, { kind: "failed", message: "Lease expired after maximum attempts" });
         }
-      },
-      consumer: createWorkerConsumer({
-        pool, leaseScope, leaseSeconds: config.leaseSeconds, serviceQihangUserId: null,
-        qihang: dependencies.qihang ?? new QihangClient({ baseUrl: config.qihangBaseUrl }),
-        onJobState: (event) => emit(event, "consumer"),
       }),
+      consumer: { processOnce: () => atWorkerOnceStage("CONSUMER_FAILED", () => consumer.processOnce()) },
     });
     return blocked ? { ...result, status: "blocked_auth" as const } : result;
-  } finally { await pool.end(); }
+  } finally { await atWorkerOnceStage("CLEANUP_FAILED", () => pool.end()); }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -56,17 +59,24 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const orphaned = (): never => process.exit(1);
   process.once("disconnect", orphaned);
   try {
-    if (!process.send || !process.connected || process.argv.length !== 3) throw new Error("Invalid child invocation");
-    const result = await executeWorkerOnceChild(parseWorkerOnceConfig(process.env), process.argv[2]!, {
+    if (!process.send || !process.connected || process.argv.length !== 3) throw new WorkerOnceFailure("BOOTSTRAP_FAILED");
+    const config = await atWorkerOnceStage("INVALID_CONFIG", async () => parseWorkerOnceConfig(process.env));
+    const result = await executeWorkerOnceChild(config, process.argv[2]!, {
       onJobState: (event, phase) => {
         if (process.connected) process.send?.({ ...event, kind: "job_state", phase }, () => { /* No private error forwarding. */ });
       },
     });
     await new Promise<void>((resolve, reject) => {
-      if (!process.connected || !process.send) { reject(new Error("Worker once failed")); return; }
+      if (!process.connected || !process.send) { reject(new WorkerOnceFailure("IPC_SEND_FAILED")); return; }
       process.send({ kind: "terminal", status: result.status === "blocked_auth" ? "blocked_auth" : "completed" },
-        (error) => error ? reject(new Error("Worker once failed")) : resolve());
+        (error) => error ? reject(new WorkerOnceFailure("IPC_SEND_FAILED")) : resolve());
     });
-  } catch { process.exitCode = 1; }
+  } catch (error) {
+    process.exitCode = 1;
+    if (process.connected && process.send) {
+      try { await new Promise<void>(resolve => process.send!({ kind: "failure", code: safeWorkerOnceFailure(error, "BOOTSTRAP_FAILED").code }, () => resolve())); }
+      catch { /* No raw error fallback; parent can still report nonzero exit. */ }
+    }
+  }
   finally { process.removeListener("disconnect", orphaned); if (process.connected) process.disconnect(); }
 }

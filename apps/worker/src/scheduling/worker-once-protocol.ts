@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { workerOnceJobTypes } from "./worker-once.js";
+import { workerOnceFailureCodeSchema } from "./worker-once-failure.js";
 
 export const workerOnceMessageSchema = z.discriminatedUnion("kind", [
   z.object({
@@ -8,6 +9,7 @@ export const workerOnceMessageSchema = z.discriminatedUnion("kind", [
     status: z.enum(["leased", "running", "done", "queued", "failed", "blocked_auth"]),
   }).strict(),
   z.object({ kind: z.literal("terminal"), status: z.enum(["completed", "blocked_auth"]) }).strict(),
+  z.object({ kind: z.literal("failure"), code: workerOnceFailureCodeSchema }).strict(),
 ]);
 
 export const workerOnceResponseSchema = z.object({

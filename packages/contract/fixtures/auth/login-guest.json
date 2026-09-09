@@ -9,17 +9,19 @@
     "activeWorkspace": {
       "id": "00000000-0000-4000-8000-0000000000de",
       "name": "演示空间",
-      "kind": "demo",
+      "kind": "team",
       "role": "viewer",
-      "readOnly": true
+      "readOnly": true,
+      "isDemo": true
     },
     "workspaces": [
       {
         "id": "00000000-0000-4000-8000-0000000000de",
         "name": "演示空间",
-        "kind": "demo",
+        "kind": "team",
         "role": "viewer",
-        "readOnly": true
+        "readOnly": true,
+        "isDemo": true
       }
     ],
     "expiresAt": "2026-09-05T11:15:00.000+08:00"
@@ -28,8 +30,8 @@
     "requestId": "fixture",
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
-    "workspaceKind": "demo",
+    "workspaceKind": "team",
     "selectedSource": "platform",
-    "_note": "POST /auth/login {provider:'guest'}：仅 GUEST_ACCESS_ENABLED=1 时开放；匿名会话，只有演示空间，viewer 只读，TTL 2h"
+    "_note": "POST /auth/login {provider:'guest'}：仅 GUEST_ACCESS_ENABLED=1 时开放；匿名会话，只有演示空间（kind=team + isDemo），viewer 只读，TTL 2h"
   }
 }

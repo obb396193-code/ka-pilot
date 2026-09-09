@@ -194,3 +194,48 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 ### bb0d981a ✅ 已合 main `e9e45530`；改密实测一处对不上 fixture（arch 2026-09-09）
 - 联调（main @ 69b1582b，库升 020 = 16 迁移）：`POST /auth/password` 新密码=当前 → 400、太短 → 400，对；**当前密码错 → 403 `FORBIDDEN`「The caller is not allowed…」**，而 fixture `auth/password-error.json` 冻的是 `INVALID_CREDENTIALS`「当前密码不正确」`retryable:true`。**F-Q024-1**：按 fixture 回（HTTP 401），同一句话不透露是否设过密码；fe 的表单已按 fixture 写了「当前密码不正确」分支，403 会走成未知错误。
 - 归属清洗角色闸、020、identity_passwords 仓储都在 main 了；Codex 接 F-OS-004。你的下一批见上一条（pg_trgm → F-Q023-1/2 → Q-022 访客 → 权限形态）。
+
+### Q-025 ✅ 口径确认 + 立为验收项（arch 2026-09-09）
+- 工作项口径**按你取的**：账户级按 tuple 收口；任务级（account 为空）看该任务下有没有他授权的账户；两者都不沾的不进个人视图。团队空间只读全量不收口。写进验收基线 §3.3「授权谓词铁律」。
+- 谓词收敛到 `workspace-authority.ts` 一处——对。以后新 SQL 读 `work_items / account_metrics_daily / external_changes / changesets / account_metrics_hourly` 必须带那三个谓词之一或先 `assertAccountVisible`，我在验收时 grep。
+- Codex 那边我派自查（P-178）。`1a58b084` 等主门禁跑完就上链。
+
+### 1a58b084 ✅ 已合 main（arch 2026-09-09）
+门禁 domain 1276 / db 1248 / worker 1719 / gw 36 / web 223 全绿；db eslint 那个红还是 `allowedTuple` 死函数（你分支上没拉我的删除），合流后 main 已无。下一批不变：pg_trgm → F-Q023-1/2 → F-Q024-1（改密错误码）→ Q-022 访客 → 权限形态。
+
+### Q-026 三问裁了 → 契约 v1.9.10（arch 2026-09-09）
+- pg_trgm **不装，采纳你的实测**；v1.9.8 那条作废，双通路保持。
+- `dim_ubp` **不映射昵称段**：它是平台属性（内网 `is_ubp`），等 ka-data 暴露（A26）再接，之前保持 unsupported。
+- 权限形态 / 工作项口径：v1.9.9 和验收基线 §3.3 已裁——权限形态选「成员限已授权账户」（拉 main 看），工作项按你取的最保守解。
+- BFF 稳定码：你 forwarder 本地扩三码对；共享枚举由 fe F8-14 并入。`7efe272b` 上链门禁中。你现在真空了的话：**Q-022 访客登录（v1.9.6）**、F-Q024-1（改密错误码）、权限形态改法，三条按序。
+
+### 7efe272b ✅ 已合 main `210b7458`（arch 2026-09-09）
+门禁 domain 1279 / db 1248 / worker 1722 / gw 36 / web 224 绿（db eslint 那个还是死函数，main 已无）。D5b-2 与日报解析维度联调结果见下一条。
+
+### 第十六轮联调：D5b-2 与日报解析维度（arch 2026-09-09）
+- `GET /tasks/1803240580`：`cost` 已是窗口对象（本月至今 09-01～09-09），四项全 missing——灌数故意缺了几天，按你「窗口缺一天整段 missing」+ 契约「coverage 不完整不得出全量汇总」是对的。演示数据我改成本月整月不缺（只留一户缺数演示三态），不改你的口径。
+- 日报 `dim_agent` 3 行 / `dim_resource_position` 6 行 / `dim_bid_tool` 3 行出来了，`dim_ubp` unsupported 对。**F-Q026-1**：`dim_agent` 行现在 `key:"自投", agent_type:null`——v1.9.8 冻的是 key 用枚举 `self|agency|unknown`（自投→self、代投|代理→agency、其余 unknown）、`label` 中文、`agent_type` 字段必填、unknown 显「未标注」；请对齐（dim_resource_position / dim_bid_tool 的 key 用解析段值即可）。
+- 7efe272b 的 BFF 映射修复我在浏览器路径验（kb 不存在文档 → 应 404 不再 502）。
+
+### Q-027 派（小，优先于访客登录）：`workItemScopeClause` 按 v1.9.11 矩阵补两条分支（arch 2026-09-10）
+Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）和你 Q-025 的任务关联口径打架，我裁成三类矩阵（api.md v1.9.11）：任务型 = 任务关联授权 **或** assignee/creator 本人；纯私人（taskId 也空）= 仅本人；团队空间只认账户型 + 任务型，**纯私人不出现**（你 helper 的 team 分支现在直接 TRUE，要排除 taskId 也为空的行）。改 helper + 三类各一条真 PG 红绿（含 team 不出纯私人）；Codex 等你合 main 后把他两处改成引用你的 helper。`18648efa` 门禁中。
+
+### 18648efa ✅ 已合 main `b455d3fb`；合流时我修了一处；联调实测两条通（arch 2026-09-10）
+- 你把 `identity-password-repository.ts` 从 `r014/` 移到 `src/` 根，index.ts 并集把旧导出（`./r014/...`）和新导出都留下了 → TS2307、data-api 起不来。我删了旧的一行（`b6c581c9`），tsc 0、服务起来了。以后**移动文件时在回执里点名**「删了哪条导出」；我合流脚本加了「导出指向的文件必须存在」检查。门禁全绿：domain 1296 / db 1352 / worker 1737 / gw 36 / web 224。
+- 实测：错当前密码 → **401 INVALID_CREDENTIALS「当前密码不正确」retryable true**（F-Q024-1 ✅）；日报 `dim_biz` 出「M运动 / CVR有端 / 闲鱼DAU / 未标注业务」（F-Q023-1 ✅）。
+- 下一批：Q-027（工作项矩阵 helper）→ Q-022 访客登录 → F-Q023-2 四解析维度（已做三个，dim_ubp 保持）→ F-Q026-1（dim_agent 枚举）。
+
+### Q-027 ✅；Q-022 后半改法——不开接缝，演示空间 = team + is_demo（arch 2026-09-10，v1.9.12）
+- 你说的 49（我数 24）处 `kind === "team"` 正是我不加 `demo` 枚举的理由。改法：**023 改成 `ALTER TABLE workspaces ADD is_demo BOOLEAN NOT NULL DEFAULT false`**，不放宽 kind 约束；演示空间建成 `kind='team'`（天然只读全量、scope 复用 `team_workspace_readonly`）+ `is_demo=true`；guest 登录 = 固定 guest identity 的 viewer 会话落到 `GUEST_WORKSPACE_ID`；会话/空间 DTO 加 `isDemo`。fixtures 已改（kind team + isDemo）。`workspaceKindSchema` / bootstrap 类型 / auth context 全不动。
+- pg_trgm 在 022 且可选：**追认**，v1.9.10 撤回作废；schema.sql 已以注释形式记可选 DDL。
+- 灌数脚本建演示空间我来改（`scripts/seed-demo-data.py` v5：建 team+is_demo 空间 + guest identity）。
+- 顺序：Q-022 后半（023 改列 + guest 登录）→ 归属清洗权限放宽（已做）→ F-Q026-1（dim_agent 枚举）。`36e83527` 门禁中。
+
+### 36e83527 ✅ 已合 main `e82f2cd4`；两件事（arch 2026-09-10）
+- 门禁 domain 1296 / db 1352 / worker 1740 / gw 36 / web 224 绿，**worker eslint 1 红** = `test/r014/viewer-readonly.test.ts:4 callRoute` 导入未用，我合流时删了（只删 import）。交审前 `eslint .` 跑一下，这是第二次了。
+- **023 改法**：它还**没在任何库应用过**（我联调库停在 020，022/023 都没跑），所以你**直接改 023 的内容**成 `ALTER TABLE workspaces ADD COLUMN is_demo BOOLEAN NOT NULL DEFAULT false`，不放宽 kind 约束，不用另起 024。改完我再升联调库。guest 登录按 v1.9.12（team + is_demo）接。
+
+### Q-028 两处 ✅ 裁了；Q-029 归你（临时移交）；Q-030 派（arch 2026-09-10，v1.9.13）
+- Q-028 ①：`skipped[]` **加进 fixture**（`accounts/transfer.json`，reason 枚举 blocked_by_changeset|not_authorized|not_found）；② `daily-v1.json` 的 `dim_bid_tool`/`dim_resource_position` 已同步成填行——漏的是我。你那个对拍闸立为两侧标配，Codex 同类 = P-187。
+- **Q-029 → Q-030：BFF 透传归你补**：`apps/web/lib/data/r014/handlers.ts` + `apps/web/app/api/internal/` 下对应路由**临时移交你**（kb 七条、`accounts/transfer`、`users/:id/transfer-all`、`auth/password`、`reports/daily` 四组），按 S5b 那九条同一套写法，半天内交；fe 的 F8-13 改成只做日报页接线。共享 `contracts.ts` 枚举加三码归 fe F8-14，你别动。
+- 其它：pg_trgm similarity 落法已追认（v1.9.12）；demo 接缝已改为 team + is_demo（v1.9.12，不用开缝）；023 直接改列（上一条）。`822962c2` 门禁中。
