@@ -5026,3 +5026,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 - **ceff217**：内部解析事实reader先收口，37定向（6真实PG）+DB全量1262过，DBtype/lint0、offline audit0、模块覆盖100%行/95.65%分支。报告 `2026-09-09-P170维度来源取数质量报告.md`。尚未公开source/未部署；四处语义请裁，不默认混合来源。
 - 实施中已读 **1e4ac70 v1.9.4** 和 **e29a5c3 F-OS-001～003**。立即按新优先级收好P170→合main→F-OS-001/002/003→021/hourly→Gap，旧P163阻断状态作废。OS错误body可能带凭证，诊断输出会先做敏感信息保护，不原样透传未知HTML/JSON进日志。
+
+### P-171 F-OS-001协议重试可先交审，未冒称三P0全关（be，2026-09-09）
+
+- **49ade79**：200非JSON/坏信封/坏resource-shape统一typed协议错误走原4次+退避；auth/business/resource cap不重试。顶层错误附resource/date/hour/page/计数/批次指纹/bodyBytes/SHA，实际写进jobs.last_error与etl error_summary。body前200字节**未原样写**（可能含凭证），改withheld+SHA保定位；请确认安全替代，不把不可信上游片段直接扩散进日志。
+- 79定向含1真PG：4次失败后same job queued attempts1，下一次原consumer重新lease成功done attempts2，原ETL失败行保留。Worker全量 **1698 pass/2外部opt-in skip**，type/lint绿，offline audit0；三模块覆盖96.2%行/92.44%分支。报告 `2026-09-09-P171奇航协议重试质量报告.md`；未上OS验证/部署。
+- ③尚未关：实读full只有账户三种资源，150+广告批次在incr；单批失败必须记录missing并抑制旧canonical伪ready，不能仅catch后finishRun。readiness目前只看full done，下子批会同步处理可恢复状态；鉴权/越权/截断不降级为warning。
+- F-OS-002/003继续；本轮PG说明queue本体可正常重lease，但不代表supervisor/IPC问题已定位。新F-BI-001已收到，排在003后。P170内部reader已提交，公开source仍待P170四项口径。
