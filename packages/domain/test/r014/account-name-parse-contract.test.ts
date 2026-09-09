@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  applyOverride, computeConflicts, extractTaskIds, namingRuleSchema, parseAccountName,
-  statusWithConflicts, type NamingRule,
+  PARSED_DIMENSIONS, accountDimensionsSchema, applyOverride, computeConflicts, extractTaskIds,
+  namingRuleSchema, parseAccountName, resolveAccountDimensions, statusWithConflicts,
+  type NamingRule,
 } from "../../src/r014/account-name-parse-contract.js";
 
 /**
@@ -185,5 +186,59 @@ describe("v1.8 conflicts and manual override", () => {
 
   it("leaves the parse untouched when the override is empty", () => {
     expect(applyOverride(parsed, {}, KUAISHOU)).toEqual(parsed);
+  });
+});
+
+describe("v1.8 T5 dimension source switch", () => {
+  const parsed = parseAccountName(
+    "DAU-CVR有端(1803240580)-自投-张三-单出价-安卓-优选-订单-有R-常规-KK70-13177", KUAISHOU,
+  );
+
+  it("prefers the nickname over the platform for all ten dimensions", () => {
+    const dimensions = resolveAccountDimensions({
+      segments: parsed.segments,
+      overriddenKeys: [],
+      // 平台说联盟、昵称说优选 —— v1.8 主源改昵称，所以取优选。
+      platform: { placement: "联盟", device: "IOS" },
+    });
+    expect(dimensions.placement).toEqual({ value: "优选", source: "nickname" });
+    expect(dimensions.device).toEqual({ value: "安卓", source: "nickname" });
+    expect(dimensions.agent_type).toEqual({ value: "自投", source: "nickname" });
+    expect(PARSED_DIMENSIONS).toHaveLength(10);
+  });
+
+  it("falls back to the platform only where the nickname said nothing", () => {
+    const withoutPlacement = parseAccountName(
+      "DAU-通投-自投-张三-单出价-安卓-未知版位-订单-非R-常规-KK70-13177", KUAISHOU,
+    );
+    const dimensions = resolveAccountDimensions({
+      segments: withoutPlacement.segments, overriddenKeys: [], platform: { placement: "联盟" },
+    });
+    expect(dimensions.placement).toEqual({ value: "联盟", source: "platform" });
+    expect(dimensions.device).toEqual({ value: "安卓", source: "nickname" });
+  });
+
+  it("marks a human-edited segment as manual, outranking the nickname", () => {
+    const overridden = applyOverride(parsed, { placement: "主站" }, KUAISHOU);
+    const dimensions = resolveAccountDimensions({
+      segments: overridden.segments, overriddenKeys: ["placement"], platform: { placement: "联盟" },
+    });
+    // 优先级：人工 > 昵称 > 平台。
+    expect(dimensions.placement).toEqual({ value: "主站", source: "manual" });
+  });
+
+  it("leaves a dimension null rather than writing 'unknown' as a value", () => {
+    const dimensions = resolveAccountDimensions({ segments: {}, overriddenKeys: [], platform: {} });
+    for (const key of PARSED_DIMENSIONS) {
+      // 写 "unknown" 当值会让「没标注」和「标注为未知」在页面上分不出来（v1.7.9 agent_type 那条踩过）。
+      expect(dimensions[key], key).toEqual({ value: null, source: null });
+    }
+  });
+
+  it("refuses a half-filled dimension entry", () => {
+    expect(() => accountDimensionsSchema.parse({
+      ...resolveAccountDimensions({ segments: {}, overriddenKeys: [], platform: {} }),
+      placement: { value: "优选", source: null },
+    })).toThrow(/both be present or both be null/);
   });
 });

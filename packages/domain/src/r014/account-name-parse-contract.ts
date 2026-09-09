@@ -297,3 +297,73 @@ export function applyOverride(
     unmatched: parse.unmatched.filter((key) => !keys.includes(key)),
   };
 }
+
+/* ── T5：维度来源切换 ──────────────────────────────────────────────── */
+
+/**
+ * v1.8：这十个维度的**主源改成昵称解析**，平台字段降为对照。
+ * 原因见 api.md v1.8「为什么改主源」：平台的 `resource_position` 是广告组级的平台版位，
+ * 业务口径的「优选」是把两三个平台版位合成一个，两者对不上；业务版位只有昵称里有。
+ */
+export const PARSED_DIMENSIONS = [
+  "placement", "bid_mode", "device", "goal", "rta",
+  "agent_type", "optimizer", "special", "landing", "rebate",
+] as const;
+export type ParsedDimension = typeof PARSED_DIMENSIONS[number];
+
+export const dimensionSourceSchema = z.enum(["nickname", "platform", "manual", "qihang"]);
+export type DimensionSource = z.infer<typeof dimensionSourceSchema>;
+
+export const dimensionValueSchema = z.object({
+  value: z.string().min(1).nullable(),
+  /** 值为 null 时来源也是 null——「不知道」没有来源可言。 */
+  source: dimensionSourceSchema.nullable(),
+}).strict().superRefine((entry, context) => {
+  if ((entry.value === null) !== (entry.source === null)) {
+    context.addIssue({ code: "custom", message: "value and source must both be present or both be null" });
+  }
+});
+export type DimensionValue = z.infer<typeof dimensionValueSchema>;
+
+export const accountDimensionsSchema = z.object(
+  Object.fromEntries(PARSED_DIMENSIONS.map((key) => [key, dimensionValueSchema])) as
+    Record<ParsedDimension, typeof dimensionValueSchema>,
+).strict();
+export type AccountDimensions = z.infer<typeof accountDimensionsSchema>;
+
+export interface DimensionInputs {
+  /** 解析出的段（已叠加 override）；键是段 key，带 mapsTo。 */
+  segments: Readonly<Record<string, ParsedSegment>>;
+  /** 人工改过的段 key 集合——这些的来源是 manual 而不是 nickname。 */
+  overriddenKeys: readonly string[];
+  /** 平台侧同维度现值，作对照与兜底。取不到就别放进来。 */
+  platform: Readonly<Record<string, string | null | undefined>>;
+}
+
+/**
+ * 十个维度逐个定值与来源。优先级：**人工 > 昵称 > 平台**。
+ *
+ * 三者都没有 → `{value: null, source: null}`：**不写 "unknown" 当值**，
+ * 那会让「没标注」和「标注为未知」在页面上分不出来（v1.7.9 agent_type 那条踩过）。
+ */
+export function resolveAccountDimensions(inputs: DimensionInputs): AccountDimensions {
+  const overridden = new Set(inputs.overriddenKeys);
+  const byDimension = new Map<string, { value: string; source: DimensionSource }>();
+  for (const segment of Object.values(inputs.segments)) {
+    if (segment.mapsTo === null || segment.value === "") continue;
+    byDimension.set(segment.mapsTo, {
+      value: segment.value,
+      source: overridden.has(segment.key) ? "manual" : "nickname",
+    });
+  }
+  const resolved = Object.fromEntries(PARSED_DIMENSIONS.map((dimension) => {
+    const fromName = byDimension.get(dimension);
+    if (fromName !== undefined) return [dimension, fromName];
+    const platform = inputs.platform[dimension];
+    if (typeof platform === "string" && platform !== "") {
+      return [dimension, { value: platform, source: "platform" as const }];
+    }
+    return [dimension, { value: null, source: null }];
+  }));
+  return accountDimensionsSchema.parse(resolved);
+}
