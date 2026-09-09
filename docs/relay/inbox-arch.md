@@ -4778,6 +4778,55 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **接下来按你补派的走**：D5 `GET /tasks/:id` 任务详情 → D7 `GET /reports/daily?date=` 日报，**优先于 R-017 剩余**（T5 的接线部分我停在 domain 纯函数，没往下接）。R-017 T1–T4 已经做完的部分不回退。
 
 **教训我记下**：换分支必须在回执标题行写明「合流源 = xxx」，不能只写在正文的 SHA 旁边。
+
+
+### Q-018 交审｜D5 `GET /tasks/:id` 任务详情接通（演示 P0）｜be2 2026-09-09
+**合流源 = `be/r017 @ 9e132f8`**（见 Q-017：Q-011 之后全部工作在这个分支上）。写完立刻开 D7 日报。
+
+按你补派的顺序，D5/D7 优先于 R-017 剩余；T5 我停在 domain 纯函数没往下接线。
+
+**overview 里每一项的取值都有据可查，几处专门写了用例**：
+| 行为 | 为什么这么定 |
+|---|---|
+| 异常摘要只数 `open` 工作项 | 已办的不该计入「异常」 |
+| 展示价取业务日当天生效的最新一版 | 用例里特意放了一条 2099 生效的未来价，**它不许参与展示** |
+| `overall` 有一段算不出来就是 undefined | **不拿有源的几段平均一下冒充**——那会让「六段里三段没数据」看起来像「整体六成就绪」 |
+| `blockers` 只来自真实 open 工作项 + 就绪缺项；`nextActions` 是 blockers 前几条 | v1.5.1 ② 明写「不生成」。**不是另外生成的一套建议** |
+| 无绑定 run 时按 stage 推 SOP 六步，**每步 `at` 一律 null** | 按 stage 能推出「到哪一步了」，推不出「什么时候到的」 |
+| 没有周期的任务 `pacing` 返回 null | 不造一段进度 |
+
+**七项恒 null，有用例逐个断言**：`cost`/`costStatus`/`costStatusReason`/`onTarget` 要 `PlatformWindowQuery`（R-010a1，Codex）；`budgetUsageRate`/`budgetUsageDate`/`dailyBudgetCap` 要 `task_budget_history`（014）。**不拿任务级 `budget` 或日消耗凑一个出来。** 这两块接上就是 D5b-2，等 Codex 的两个源落地我随时补。
+
+**顺带一处收紧**：`stage` 的类型从 domain 导出（`TaskStage`/`TaskStageSource`），仓储不再返回裸 `string` 让调用方二次断言。
+
+**门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
+
+
+### Q-019 交审｜D7 `GET /reports/daily?date=` 日报接通｜be2 2026-09-09
+**合流源 = `be/r017 @ 335d8bc`。演示 P0 两条（D5 任务详情 + D7 日报）都通了。**
+
+**能算的照实算**：
+| 项 | 取值方式 |
+|---|---|
+| 大盘六张卡 | canonical 聚合；现金 CPA 走 `divideMetricValues`，分母 0 是 infinite/undefined **不是 0** |
+| **达标率分母** | **当日可判定的账户日**（有现金消耗且有考核价），不是全部行。用例里放了一条缺考核价的，断言 **1/2 而不是 1/3**；一条都判不了时是 undefined 不是 0 |
+| 异常清单 | 直接用 open 工作项标题，**不另外生成措辞**；已办的不出现 |
+| 健康度 | 按未处理工作项的**最高等级**定档，没有未处理项才是 `ok`，**不默认健康** |
+
+**⚠️ 一处要你裁：十个维度模块的行结构没冻，我一律 `unsupported: true`。**
+`reports/daily-v1.json` 把 `dim_task`/`dim_biz`/`dim_account`/`dim_agent`/`dim_resource_position`/`dim_bid_tool`/`dim_ubp`/`dim_deduction`/`deduction_analysis`/`cost_tiers` 的 `rows` **全冻成空数组**——只冻了模块的 key 与 title，没冻行长什么样。我没编：编一套出来，等你冻了要推倒重来，而且前端会先按错的形状写。
+请二选一：**(a)** 补 fixture 冻行结构（我按你冻的填）；**(b)** 直接复用 `account.dimension/v3` 的行（那是 Codex 的域，得他先出）。
+另外我加了一道自检：模块表没覆盖到十个维度就直接 500，防常量表和 fixture 以后悄悄脱节。
+
+**两处「不谎称」**：`actions.pushDingtalk/exportPdf` **都是 false**——PDF 渲染与钉钉推送本批没接，报 true 会让前端画出点了没反应的按钮。`delivery` 按 G8 取指向该 `report_run` 的最新出站消息，没有消息就是 `not_sent`，**不拿「早报已生成」当「已送达」**。
+
+**一处实测更正**：`outbound_messages` **没有 `ref` 列**（实际列是 id/workspace_id/channel/target/kind/payload/status/attempts/fail_reason/sent_at/created_at）。G8 说的「ref 指向该 report_run」我落在 `payload.reportRunId` 上。要是你希望它是独立列，018 之后我补迁移。
+
+**门禁**：worker 全量 **1646/1646**（2 skip 是既有 opt-in）、domain **1217/1217**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：回到 R-017 T5 接线（十个维度改读解析结果），然后 `account_transfers`（018 的 `revoked_at` 已落）。
 ### P-161 F-P157-1 代理域名命令BFF修复（be，2026-09-09）
 
 - main@fc91bec 已同步；代码 **86ebd17**，只改 `apps/web/lib/data/r010-command-bff{,.test}.ts`。按你方案① Fetch Metadata 存在仅 same-origin通过；缺失严格Origin相等，forwarded/x-forwarded-host永不采信。三类命令 mute/ignore/dry-run 均覆盖，媒体写仍关闭。
@@ -4848,3 +4897,19 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
 - **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
 - 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
+### Q-019 已修｜六处授权读补软撤权过滤｜be2 2026-09-09
+**合流源 = `be/r017 @ c1c1fe7`。**
+
+**根因在我，不是遗漏检查而是没收尾**：Q-003 时我报过「`account_access_grants` 没有 `revoked_at`」，018 我把列加上了，**却没回头把读侧的过滤补上**。列加了、读没跟上——这类跨批次的半程改动最容易掉，谢谢 Codex 逮到。
+
+**七处全部加了 `AND grant_row.revoked_at IS NULL`**（你列的六处，`account-pipeline` 与 `me-workspace` 各有两处）。位置**贴在 `grant_row` 自己的连接条件旁边**，不放到远处的 WHERE——跟着 JOIN 走，下次谁改查询才不会又漏。按你说的直接引用列名，没用 `to_jsonb(...)->>` 的绕法。
+
+**红绿都实测了，不是只跑绿的**：
+- 临时 `git stash` 掉五个源文件的补丁 → **六个入口全红**（漏洞属实，撤权后确实读得到）；
+- 恢复补丁 → **7/7 绿**。
+
+第七条用例守的是软撤权语义本身：**行保留、`revoked_at` 有值**，审计查得到「谁在什么时候被撤了权」——撤权不能变成删行。另外 `me/workload` 的「参与任务」是通过账户授权推出来的，撤权后也不该再算参与，一并守住了。
+
+**门禁**：db 全量 **1212/1212**；`tsc` 0、`eslint` 0。
+
+**下一批**：R-017 T5 接线（十个维度改读解析结果）→ `account_transfers`（4.10 交接，018 的 `revoked_at` 已落，正好用得上软撤权语义）。

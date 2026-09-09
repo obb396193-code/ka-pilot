@@ -24,6 +24,7 @@ function visibleAccountsSql(auth: ApprovedWorkspaceAuthContext): { sql: string; 
       sql: `FROM accounts AS account
             JOIN account_access_grants AS grant_row ON grant_row.workspace_id=account.workspace_id
               AND grant_row.media=account.media AND grant_row.account_id=account.account_id
+              AND grant_row.revoked_at IS NULL
             JOIN workspace_memberships AS member ON member.workspace_id=grant_row.workspace_id
               AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$2
             WHERE account.workspace_id=$1`,
@@ -105,7 +106,8 @@ export class AccountPipelineRepository {
           `SELECT true AS allowed FROM account_access_grants AS grant_row
            JOIN workspace_memberships AS member ON member.workspace_id=grant_row.workspace_id
              AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$2
-           WHERE grant_row.workspace_id=$1 AND grant_row.media=$3 AND grant_row.account_id=$4 LIMIT 1`,
+           WHERE grant_row.workspace_id=$1 AND grant_row.media=$3 AND grant_row.account_id=$4
+             AND grant_row.revoked_at IS NULL LIMIT 1`,
           [auth.workspaceId, auth.userId, fixed.media, fixed.accountId],
         );
         if (granted.rows.length !== 1) throw new R014RepositoryError("FORBIDDEN");

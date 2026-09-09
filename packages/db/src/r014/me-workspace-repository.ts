@@ -92,6 +92,7 @@ export class MeWorkspaceRepository {
       `SELECT count(DISTINCT task_link.task_id)::int AS n FROM task_accounts AS task_link
        JOIN account_access_grants AS grant_row ON grant_row.workspace_id=task_link.workspace_id
          AND grant_row.media=task_link.media AND grant_row.account_id=task_link.account_id
+         AND grant_row.revoked_at IS NULL
        JOIN workspace_memberships AS member ON member.workspace_id=grant_row.workspace_id
          AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$2
        LEFT JOIN tasks AS task ON task.workspace_id=task_link.workspace_id AND task.task_id=task_link.task_id
@@ -103,7 +104,7 @@ export class MeWorkspaceRepository {
        FROM account_access_grants AS grant_row
        JOIN workspace_memberships AS member ON member.workspace_id=grant_row.workspace_id
          AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$2
-       WHERE grant_row.workspace_id=$1`,
+       WHERE grant_row.workspace_id=$1 AND grant_row.revoked_at IS NULL`,
       [approved.workspaceId, approved.userId],
     ));
     const watching = count(await this.pool.query(

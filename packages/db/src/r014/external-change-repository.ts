@@ -55,7 +55,8 @@ async function assertAccountVisible(
       `SELECT true AS allowed FROM account_access_grants AS grant_row
        JOIN workspace_memberships AS member ON member.workspace_id=grant_row.workspace_id
          AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$2
-       WHERE grant_row.workspace_id=$1 AND grant_row.media=$3 AND grant_row.account_id=$4 LIMIT 1`,
+       WHERE grant_row.workspace_id=$1 AND grant_row.media=$3 AND grant_row.account_id=$4
+         AND grant_row.revoked_at IS NULL LIMIT 1`,
       [auth.workspaceId, auth.userId, media, accountId],
     )
     : await client.query(

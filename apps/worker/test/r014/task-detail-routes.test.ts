@@ -137,7 +137,7 @@ describe("D5 task detail route (real PostgreSQL)", () => {
     const readiness = overview.readiness as Record<string, { ratio: unknown; ready: boolean; missing: string[] }>;
     expect(readiness.recharge!.ratio).toEqual({ value: 0.5, state: "finite" });
     expect(readiness.recharge!.missing).toEqual(["d5-a2 余额不足"]);
-    expect(readiness.infra!.missing).toEqual(["d5-a2 无 unit"]);
+    expect(readiness.infra!.missing).toEqual(["d5-a2 无单元"]);
     expect(readiness.strategy!.ratio).toEqual({ value: null, state: "undefined" });
     // 有段算不出来，overall 就是 undefined，不拿有源的那几段平均一下冒充。
     expect(readiness.overall).toEqual({ value: null, state: "undefined" });

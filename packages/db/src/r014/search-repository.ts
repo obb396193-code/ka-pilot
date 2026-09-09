@@ -67,6 +67,7 @@ export class SearchRepository {
        FROM accounts AS account
        ${personal ? `JOIN account_access_grants AS grant_row ON grant_row.workspace_id=account.workspace_id
          AND grant_row.media=account.media AND grant_row.account_id=account.account_id
+         AND grant_row.revoked_at IS NULL
        JOIN workspace_memberships AS member ON member.workspace_id=grant_row.workspace_id
          AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$3` : ""}
        WHERE account.workspace_id=$1
