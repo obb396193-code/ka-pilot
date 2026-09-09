@@ -128,15 +128,60 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     await pool.query("DELETE FROM work_items WHERE workspace_id=$1 AND severity='P0'", [workspaceId]);
   });
 
-  it("marks every dimension module unsupported instead of inventing rows", async () => {
+  it("separates the three sourced dimensions from the seven that have no source", async () => {
     const data = dataOf(await call());
     const dimensions = (data.modules as Record<string, unknown>[]).filter((module) => "unsupported" in module);
     expect(dimensions).toHaveLength(10);
-    // fixture 把行结构冻成了空数组，行结构没定义；编一套出来等 arch 冻了就要推倒重来。
+    const sourced = dimensions.filter((module) => module.unsupported === false).map((module) => module.key);
+    // v1.9.2：这三个从 canonical 日表聚出来（与六卡同源）；其余七个源没接。
+    expect(sourced.sort()).toEqual(["dim_account", "dim_biz", "dim_task"]);
     for (const module of dimensions) {
+      if (module.unsupported === false) continue;
+      // 「源没接」和「查过了没有数据」在页面上必须分得开。
       expect(module.unsupported, String(module.key)).toBe(true);
       expect(module.rows).toEqual([]);
     }
+  });
+
+  it("aggregates the sourced dimension rows from the same canonical day as the cards", async () => {
+    const modules = dataOf(await call()).modules as Record<string, unknown>[];
+    const account = modules.find((module) => module.key === "dim_account")!;
+    const rows = account.rows as { key: string; label: string; media: string; accountId: string;
+      metrics: Record<string, number | null> }[];
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows[0]!.key).toBe(`${rows[0]!.media}:${rows[0]!.accountId}`);
+    expect(rows[0]!.metrics.cost).not.toBeUndefined();
+
+    // 维度行加总必须等于大盘卡——不同源就说明两处口径已经分叉。
+    const summary = modules.find((module) => module.key === "executive_summary")!;
+    const cardCost = (summary.cards as { cost: { value: number | null } }).cost.value;
+    const rowSum = rows.reduce((total, row) => total + (row.metrics.cost ?? 0), 0);
+    expect(rowSum).toBeCloseTo(cardCost ?? 0, 6);
+  });
+
+  it("returns seven trend points and leaves a day with no data null instead of skipping it", async () => {
+    const modules = dataOf(await call()).modules as Record<string, unknown>[];
+    const overview = modules.find((module) => module.key === "overview")!;
+    const trend = overview.trend as { ds: string; metrics: { cost: number | null } }[];
+    expect(trend).toHaveLength(7);
+    expect(trend[6]!.ds).toBe(DATE);
+    // 缺数日出 null 不跳日：跳日会把两个不相邻的日子连成一段，看着像"那天有量"。
+    expect(trend.some((point) => point.metrics.cost === null)).toBe(true);
+    for (let index = 1; index < trend.length; index += 1) {
+      expect(trend[index]!.ds > trend[index - 1]!.ds).toBe(true);
+    }
+  });
+
+  it("echoes the requested role rather than the identity role, and rejects an unknown one", async () => {
+    // F-Q019-1：role 是请求参数，不是身份角色。
+    expect(dataOf(await call()).role).toBe("optimizer");
+    expect(dataOf(await call(`?date=${DATE}&role=exec`)).role).toBe("exec");
+    expect((await call(`?date=${DATE}&role=ceo`)).status).toBe(400);
+  });
+
+  it("titles the summary in Chinese (v1.9.1 文案规则)", async () => {
+    const modules = dataOf(await call()).modules as Record<string, unknown>[];
+    expect(modules.find((module) => module.key === "executive_summary")!.title).toBe("管理摘要");
   });
 
   it("says not_sent until a real outbound message points at the run", async () => {

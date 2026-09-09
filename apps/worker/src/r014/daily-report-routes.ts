@@ -11,13 +11,25 @@ import type { R014Route } from "./routes.js";
 /**
  * v1.5 1.8 `GET /reports/daily?date=`（D7）。渲染先只出 JSON，PDF/推送后续。
  *
- * 十个维度模块**当前一律 `unsupported: true`**：fixture 把它们的 `rows` 冻成了空数组，
- * 行结构没定义。编一套出来等 arch 冻了就要推倒重来，前端还会先按错的形状写。已回抛 arch。
+ * v1.9.2 裁决后：`dim_task/dim_biz/dim_account` 从 canonical 日表按维度聚合出行
+ * （与六卡同源）。其余七个模块仍 `unsupported: true` —— 那是「源没接」，
+ * 不是「查过了没有数据」，两者在页面上必须分得开。
  */
-const DIMENSION_MODULES = [
-  "dim_task", "dim_biz", "dim_account", "dim_agent", "dim_resource_position",
-  "dim_bid_tool", "dim_ubp", "dim_deduction", "deduction_analysis", "cost_tiers",
+const SOURCED_DIMENSIONS = ["dim_task", "dim_biz", "dim_account"] as const;
+const UNSUPPORTED_DIMENSIONS = [
+  "dim_agent", "dim_resource_position", "dim_bid_tool", "dim_ubp",
+  "dim_deduction", "deduction_analysis", "cost_tiers",
 ] as const;
+
+/** F-Q019-1：回显**请求的** role，不是身份角色。缺省 optimizer。 */
+const REPORT_ROLES = ["optimizer", "lead", "exec"] as const;
+function requestedRole(raw: string | null): (typeof REPORT_ROLES)[number] {
+  if (raw === null) return "optimizer";
+  const found = REPORT_ROLES.find((role) => role === raw);
+  // 认不出的 role 直接拒，不悄悄当 optimizer —— 那会让调用方以为自己拿到的是 exec 视图。
+  if (found === undefined) throw new R014HttpError(400, "INVALID_REQUEST", "role must be optimizer, lead or exec");
+  return found;
+}
 
 export function createDailyReportRoutes(pool: Pool): R014Route[] {
   const repository = new DailyReportRepository(pool);
@@ -30,6 +42,7 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
         throw new R014HttpError(400, "INVALID_REQUEST", "date must be YYYY-MM-DD");
       }
+      const role = requestedRole(context.url.searchParams.get("role"));
       const facts = await repository.facts(context.auth, date);
 
       const cashCost = metricValue(facts.cards.cashCost);
@@ -64,11 +77,27 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
       const modules: DailyReportModule[] = DAILY_REPORT_MODULES.map((definition) => {
         if (definition.key === "executive_summary") return summary;
         if (definition.key === "health") return health;
-        if (definition.key === "overview") return { key: "overview", title: definition.title, trend: [] };
+        if (definition.key === "overview") {
+          // F-Q019-3：截至 date 的 7 个点，缺数日 null 不跳日不补 0。
+          return { key: "overview", title: definition.title, trend: facts.trend };
+        }
+        if (definition.key === "dim_task") {
+          return { key: definition.key, title: definition.title, rows: facts.dimensions.task, unsupported: false };
+        }
+        if (definition.key === "dim_biz") {
+          return { key: definition.key, title: definition.title, rows: facts.dimensions.biz, unsupported: false };
+        }
+        if (definition.key === "dim_account") {
+          return { key: definition.key, title: definition.title, rows: facts.dimensions.account, unsupported: false };
+        }
         return unsupportedModule(definition.key);
       });
-      // 上面那句必须覆盖十个维度模块；漏一个就说明常量表和 fixture 对不上了。
-      if (modules.filter((module) => "unsupported" in module).length !== DIMENSION_MODULES.length) {
+      // 有源的三个必须出行、其余七个必须还是 unsupported；数字对不上就是常量表和 fixture 脱节了。
+      if (modules.filter((module) => "unsupported" in module && module.unsupported === true).length
+        !== UNSUPPORTED_DIMENSIONS.length) {
+        throw new R014HttpError(500, "INTERNAL_ERROR", "daily report module table is inconsistent");
+      }
+      if (SOURCED_DIMENSIONS.some((key) => !modules.some((module) => module.key === key))) {
         throw new R014HttpError(500, "INTERNAL_ERROR", "daily report module table is inconsistent");
       }
 
@@ -77,7 +106,7 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
         dailyReportSchema.parse({
           schema: "daily-report/v1",
           date,
-          role: context.auth.role,
+          role,
           dataAsOf: facts.dataAsOf,
           modules,
           // 布尔只表示「这个动作可用」，不表示已经做过（v1.7.4 G8）。

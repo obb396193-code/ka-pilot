@@ -24,7 +24,49 @@
           "state": "undefined"
         },
         "lastAction": null,
-        "nextSuggestion": null
+        "nextSuggestion": null,
+        "dimensions": {
+          "placement": {
+            "value": null,
+            "source": null
+          },
+          "bidMode": {
+            "value": null,
+            "source": null
+          },
+          "device": {
+            "value": null,
+            "source": null
+          },
+          "goal": {
+            "value": null,
+            "source": null
+          },
+          "rta": {
+            "value": null,
+            "source": null
+          },
+          "agentType": {
+            "value": null,
+            "source": null
+          },
+          "optimizer": {
+            "value": null,
+            "source": null
+          },
+          "special": {
+            "value": null,
+            "source": null
+          },
+          "landing": {
+            "value": null,
+            "source": null
+          },
+          "rebate": {
+            "value": null,
+            "source": null
+          }
+        }
       }
     ],
     "page": 1,

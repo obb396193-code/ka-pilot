@@ -1,6 +1,7 @@
 import {
   AccountListRepository,
   AccountMuteRepository,
+  AccountNameParseRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
   AdminMembersRepository,
@@ -42,6 +43,7 @@ import { createMeRoutes } from "./r014/me-routes.js";
 import { createNamingRoutes } from "./r014/naming-routes.js";
 import { createDailyReportRoutes } from "./r014/daily-report-routes.js";
 import { createTaskDetailRoutes } from "./r014/task-detail-routes.js";
+import { createKbRoutes } from "./r014/kb-routes.js";
 import { createTransferRoutes } from "./r014/transfer-routes.js";
 import { createTaskRoutes } from "./r014/task-routes.js";
 import { createWorkspaceRoutes } from "./r014/workspace-routes.js";
@@ -59,6 +61,7 @@ async function main(): Promise<void> {
     ...createTaskDetailRoutes(pool),
     ...createDailyReportRoutes(pool),
     ...createTransferRoutes(pool),
+    ...createKbRoutes(pool),
   ]);
   const authRepository = new AuthSessionRepository(pool);
   const sessionAuthService = new SessionAuthService(authRepository);
@@ -93,6 +96,8 @@ async function main(): Promise<void> {
     }),
     accountListService: new AccountListService({
       repository: new AccountListRepository(pool),
+      // R-017 T5：十个归属维度来自 account_name_parses（be2）。
+      dimensions: new AccountNameParseRepository(pool),
     }),
     workItemListService: new WorkItemListService({
       repository: new WorkItemListRepository(pool),

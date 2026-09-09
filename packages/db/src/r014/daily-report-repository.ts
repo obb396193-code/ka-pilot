@@ -6,10 +6,30 @@ import { R014RepositoryError, approveAuth, requireTimestamp } from "./workspace-
 /**
  * v1.5 1.8 日报（D7）的读侧。
  *
- * 只算 canonical 里真有的：大盘六张卡、异常清单、健康度、送达态。
- * 维度模块的**行结构 fixture 没有冻**（rows 全是 []），本仓储不产出行——
- * 编一套行结构出来，等 arch 冻了就得推倒重来，而且前端会先按错的形状写。已回抛 arch。
+ * 只算 canonical 里真有的：大盘六张卡、异常清单、七日趋势、三个维度模块的行、
+ * 健康度、送达态。
+ *
+ * **一切读都按会话账户 scope 收口**（与任务详情 Q-020、任务列表同一个谓词）：
+ * 个人空间只算自己有效授权的账户，团队空间只读全量不收口。原来这里是按 workspace
+ * 全量聚的——那等于把整个空间的消耗摊给每个优化师看，和 Q-020 是同一类漏检。
  */
+/** 维度行 = `account.dimension/v3` 行结构（v1.9.2 裁决：复用不另造）。 */
+export interface DailyDimensionRow {
+  key: string;
+  label: string;
+  media?: string;
+  accountId?: string;
+  metrics: {
+    cost: number | null; cashCost: number | null; exposure: number | null; click: number | null;
+    conversion: number | null; realConversion: number | null; costSpace: number | null;
+  };
+}
+
+export interface DailyTrendPoint {
+  ds: string;
+  metrics: { cost: number | null; cashCost: number | null; realConversion: number | null };
+}
+
 export interface DailyReportFacts {
   cards: {
     cost: number | null;
@@ -21,18 +41,144 @@ export interface DailyReportFacts {
     determinableAccounts: number;
   };
   anomalies: string[];
+  /** 截至 date 的 7 个点（v1.9.2 F-Q019-3）：**缺数日出 null，不跳日也不补 0**。 */
+  trend: DailyTrendPoint[];
+  /** 三个有源的维度模块的行；其余维度另有源或未接。 */
+  dimensions: { task: DailyDimensionRow[]; biz: DailyDimensionRow[]; account: DailyDimensionRow[] };
   /** 未处理工作项的最高等级，用来给健康度定档；没有未处理项就是 ok。 */
   highestOpenSeverity: "P0" | "P1" | "P2" | null;
   dataAsOf: string | null;
   delivery: { status: "not_sent" | "queued" | "sent" | "failed"; at: string | null; target: string | null };
 }
 
+/** 与 `task-list-sql.ts` / 任务详情同源的授权谓词。$3=scope kind，$4=allowed tuples。 */
+const SCOPED_METRIC = `($3::text = 'team_workspace_readonly' OR EXISTS (
+  SELECT 1 FROM jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
+  WHERE allowed.media=metric.media AND allowed.account_id=metric.account_id))`;
+
+const SCOPED_WORK_ITEM = `($2::text = 'team_workspace_readonly' OR account_id IS NULL OR EXISTS (
+  SELECT 1 FROM jsonb_to_recordset($3::jsonb) AS allowed(media text, account_id text)
+  WHERE allowed.media=work_items.media AND allowed.account_id=work_items.account_id))`;
+
+interface DailyScope { kind: string; allowed: string }
+
 export class DailyReportRepository {
   constructor(private readonly pool: Pool) {}
+
+  /**
+   * F-Q019-3：截至 date 的 7 个点。**缺数日出 null 不跳日**——
+   * 跳日会让折线把两个不相邻的日子连成一段，看着像"那天有量"。
+   */
+  private async trend(workspaceId: string, date: string, scope: DailyScope): Promise<DailyTrendPoint[]> {
+    const rows = (await this.pool.query(
+      `SELECT to_char(day.ds, 'YYYY-MM-DD') AS ds,
+              sum(metric.cost) AS cost, sum(metric.cash_cost) AS cash_cost,
+              sum(metric.real_conversion) AS real_conversion
+       FROM generate_series($2::date - INTERVAL '6 days', $2::date, INTERVAL '1 day') AS day(ds)
+       LEFT JOIN account_metrics_daily AS metric
+         ON metric.workspace_id=$1 AND metric.ds=day.ds AND ${SCOPED_METRIC}
+       GROUP BY day.ds ORDER BY day.ds`,
+      [workspaceId, date, scope.kind, scope.allowed],
+    )).rows as Record<string, unknown>[];
+    return rows.map((row) => ({
+      ds: String(row.ds),
+      metrics: {
+        cost: row.cost === null ? null : Number(row.cost),
+        cashCost: row.cash_cost === null ? null : Number(row.cash_cost),
+        realConversion: row.real_conversion === null ? null : Number(row.real_conversion),
+      },
+    }));
+  }
+
+  /**
+   * v1.9.2：三个有源的维度模块从 canonical 日表按维度聚合（与六卡同源），
+   * **不调 Codex 的查询接口**。任务名/业务名/账户名取不到时用 key 兜底，不留空 label。
+   */
+  private async dimensionRows(
+    workspaceId: string, date: string, scope: DailyScope,
+  ): Promise<DailyReportFacts["dimensions"]> {
+    const metricColumns = `sum(metric.cost) AS cost, sum(metric.cash_cost) AS cash_cost,
+      sum(metric.exposure) AS exposure, sum(metric.click) AS click,
+      sum(metric.conversion) AS conversion, sum(metric.real_conversion) AS real_conversion,
+      sum(metric.cost_space) AS cost_space`;
+    const params = [workspaceId, date, scope.kind, scope.allowed];
+
+    const account = (await this.pool.query(
+      `SELECT metric.media, metric.account_id, COALESCE(account.account_name, metric.account_id) AS label,
+              ${metricColumns}
+       FROM account_metrics_daily AS metric
+       LEFT JOIN accounts AS account ON account.workspace_id=metric.workspace_id
+         AND account.media=metric.media AND account.account_id=metric.account_id
+       WHERE metric.workspace_id=$1 AND metric.ds=$2::date AND ${SCOPED_METRIC}
+       GROUP BY metric.media, metric.account_id, account.account_name
+       ORDER BY sum(metric.cost) DESC NULLS LAST, metric.account_id`,
+      params,
+    )).rows as Record<string, unknown>[];
+
+    // 任务与业务都经 task_accounts 归集：一个账户当日可能挂在某个任务下。
+    const byTask = (await this.pool.query(
+      `SELECT link.task_id, COALESCE(task.task_name, link.task_id) AS label, ${metricColumns}
+       FROM account_metrics_daily AS metric
+       JOIN task_accounts AS link ON link.workspace_id=metric.workspace_id
+         AND link.media=metric.media AND link.account_id=metric.account_id
+         AND link.valid_from <= metric.ds AND (link.valid_to IS NULL OR link.valid_to >= metric.ds)
+       LEFT JOIN tasks AS task ON task.workspace_id=link.workspace_id AND task.task_id=link.task_id
+       WHERE metric.workspace_id=$1 AND metric.ds=$2::date AND ${SCOPED_METRIC}
+       GROUP BY link.task_id, task.task_name
+       ORDER BY sum(metric.cost) DESC NULLS LAST, link.task_id`,
+      params,
+    )).rows as Record<string, unknown>[];
+
+    const byBiz = (await this.pool.query(
+      `SELECT COALESCE(task.biz_name, '未标注业务') AS biz, ${metricColumns}
+       FROM account_metrics_daily AS metric
+       JOIN task_accounts AS link ON link.workspace_id=metric.workspace_id
+         AND link.media=metric.media AND link.account_id=metric.account_id
+         AND link.valid_from <= metric.ds AND (link.valid_to IS NULL OR link.valid_to >= metric.ds)
+       LEFT JOIN tasks AS task ON task.workspace_id=link.workspace_id AND task.task_id=link.task_id
+       WHERE metric.workspace_id=$1 AND metric.ds=$2::date AND ${SCOPED_METRIC}
+       GROUP BY COALESCE(task.biz_name, '未标注业务')
+       ORDER BY sum(metric.cost) DESC NULLS LAST, 1`,
+      params,
+    )).rows as Record<string, unknown>[];
+
+    const metricsOf = (row: Record<string, unknown>): DailyDimensionRow["metrics"] => ({
+      cost: row.cost === null ? null : Number(row.cost),
+      cashCost: row.cash_cost === null ? null : Number(row.cash_cost),
+      exposure: row.exposure === null ? null : Number(row.exposure),
+      click: row.click === null ? null : Number(row.click),
+      conversion: row.conversion === null ? null : Number(row.conversion),
+      realConversion: row.real_conversion === null ? null : Number(row.real_conversion),
+      costSpace: row.cost_space === null ? null : Number(row.cost_space),
+    });
+
+    return {
+      account: account.map((row) => ({
+        key: `${String(row.media)}:${String(row.account_id)}`,
+        label: String(row.label),
+        media: String(row.media),
+        accountId: String(row.account_id),
+        metrics: metricsOf(row),
+      })),
+      task: byTask.map((row) => ({
+        key: String(row.task_id), label: String(row.label), metrics: metricsOf(row),
+      })),
+      biz: byBiz.map((row) => ({
+        key: String(row.biz), label: String(row.biz), metrics: metricsOf(row),
+      })),
+    };
+  }
 
   async facts(auth: ApprovedWorkspaceAuthContext, date: string): Promise<DailyReportFacts> {
     const approved = approveAuth(auth);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new R014RepositoryError("INVALID_INPUT");
+
+    const scope = {
+      kind: approved.scope.kind,
+      allowed: JSON.stringify(approved.scope.kind === "explicit_accounts"
+        ? approved.scope.accounts.map((account) => ({ media: account.media, account_id: account.accountId }))
+        : []),
+    };
 
     const cards = (await this.pool.query(
       `SELECT
@@ -48,17 +194,17 @@ export class DailyReportRepository {
              AND cash_cost <= assessment_price_snapshot * real_conversion
          )::int AS on_target,
          max(computed_at) AS data_as_of
-       FROM account_metrics_daily
-       WHERE workspace_id=$1 AND ds=$2::date`,
-      [approved.workspaceId, date],
+       FROM account_metrics_daily AS metric
+       WHERE metric.workspace_id=$1 AND metric.ds=$2::date AND ${SCOPED_METRIC}`,
+      [approved.workspaceId, date, scope.kind, scope.allowed],
     )).rows[0] as Record<string, unknown>;
 
     const anomalies = await this.pool.query(
       `SELECT COALESCE(title, '工作项') AS title, severity FROM work_items
-       WHERE workspace_id=$1 AND status='open'
+       WHERE workspace_id=$1 AND status='open' AND ${SCOPED_WORK_ITEM}
        ORDER BY CASE severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END, created_at DESC
        LIMIT 10`,
-      [approved.workspaceId],
+      [approved.workspaceId, scope.kind, scope.allowed],
     );
 
     const determinable = Number(cards.determinable);
@@ -77,6 +223,8 @@ export class DailyReportRepository {
         row.severity === null ? String(row.title) : `${String(row.title)}（${String(row.severity)}）`),
       highestOpenSeverity: ((anomalies.rows[0] as Record<string, unknown> | undefined)?.severity ?? null) as
         DailyReportFacts["highestOpenSeverity"],
+      trend: await this.trend(approved.workspaceId, date, scope),
+      dimensions: await this.dimensionRows(approved.workspaceId, date, scope),
       dataAsOf: cards.data_as_of === null ? null : requireTimestamp(cards.data_as_of).toISOString(),
       delivery: await this.delivery(approved, date),
     };

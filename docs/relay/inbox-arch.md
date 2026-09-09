@@ -5006,6 +5006,46 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 #### ④ 我现在做的
 019 迁移 + kb 领域契约 + 树/列表、单文档读、创建、编辑（写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`）、FTS 搜索这五条。软删和两个反查端点等你 ③。
 
+### Q-022 回执：kb 五条端点 + migration 019 已交（be2，分支 `be/r017`）
+接 Q-021 ④ 说的范围做完了。**未收到你对 Q-021 的回复，所以其中三条仍原样挂着**（见文末对账）。
+
+**① migration 019**（切片自 `schema.sql` `-- ── 8.x 知识库` → `-- ── 9.4 卡片中心`，bundle 单测逐句比对）：四张 kb 表 + FTS 索引。真库用例覆盖建表、唯一约束、有数据时拒回滚、down/up 回放；**回滚只动 019，018 的表不受牵连**（有断言）。
+
+**② 五条端点**：`GET/POST /kb/documents`、`GET/PATCH /kb/documents/:id`、`GET /kb/search`。
+| 点 | 实现 |
+|---|---|
+| PATCH 三件事 | 按契约原文做全：写 `kb_revisions` + 重算 `content_text`/`content_fingerprint` + 重建 `kb_links`/`kb_business_refs` |
+| 正文是真相源 | 引用从正文删掉 → 链接表跟着空（有用例）。链接表只是正文的投影，不留残影 |
+| `[[标题]]` 找不到 | **不建链接，也不新建空文档去凑**——那是往知识库里塞垃圾 |
+| private | 只有 owner 可见；**看不见和不存在都回 404**，分开等于告诉外人「这 id 存在但你没权限」 |
+| team 空间 | 整体只读，写全 403，DTO `readOnly=true` 给 fe 收编辑器 |
+| 移动节点 | 禁止挂到自己后代下（递归查祖先 → 409），否则造出谁都读不到的孤环 |
+
+投影函数拿 fixture 反着验过：`projectContentText(document.json 的 contentJson)` 与 fixture 的 `contentText` **逐字相同**，`businessRefs` 也正好从那个 mention 节点推出来——形状理解没跑偏。
+
+**③ ★一条超出 kb 的实测发现：`idx_kb_documents_fts` 对中文基本是废的**
+```
+to_tsvector('simple','新任务开户到基建 SOP')  →  '新任务开户到基建':1  'sop':2
+```
+PG 的 `simple` 分词把**连续中文串整个当一个词**。所以搜「开户」匹配不到这篇文档——**而标题恰恰都是连续串**（"新任务开户到基建SOP"、"账户交接SOP"…）。中间带空格的中文能命中，那是空格分的词，不是分词器的功劳。
+
+我的处理：搜索走「子串 ILIKE **OR** FTS」双通路，`score` 用一个**可解释的排序启发式**（标题命中 > 正文命中，命中越靠前分越高），函数注释写明**这不是相似度也不是概率**，免得后人当概率用。用例锁死了子串通路，防止哪天被"优化"成纯 FTS。
+
+**这条影响的不止 kb**：任何打算用 `to_tsvector('simple', …)` 搜中文的地方（全局搜索、日报检索）都是同一个坑。建议装 `pg_trgm`（本机 `pg_available_extensions` 里有，未安装；无 `zhparser`/`pg_jieba`）+ GIN trgm 索引，`score` 换成 `similarity()` 的真值。**要不要装是部署决定（内网 RDS 上装扩展要权限），请你拍。**
+
+**④ 逐条对账 —— 没做的三条，都是等你裁，不是漏**
+| 项 | 状态 | 卡在哪 |
+|---|---|---|
+| `DELETE` 软删 | **未接** | `kb_documents` 没有 `deleted_at` 列。schema.sql 是你的权威文件，你加一行我切进 019 |
+| `GET /kb/documents/:id/backlinks` | **未接** | `kb/` 下无 fixture，行形状没冻。我不猜 |
+| `GET /kb/by-object/:type/:id` | **未接** | 同上 |
+| `POST /auth/password` | **未接** | Q-021 ①：库里没有存密码的地方，写了也只能假装成功 |
+
+**⑤ 闸**：domain 1273 / db 1225 / worker 1693（+2 skipped）全绿，三包 `tsc --noEmit` 清，串行跑无并发假红。
+
+**⑥ 一条自查教训**：worker 全量跑出「1693 用例全过、但 1 个测试**文件**失败」——是我 `afterAll` 清理写错表（`kb_links` 没有 `document_id` 列），而我上一轮用 `grep "×|→|Tests "` 过滤输出，**把套件级红过滤掉了**。以后判绿看 `Test Files` 那一行，不只看用例数。
+
+**⑦ 下一步**：你不裁 Q-021 的话我这边 kb 和 auth 都到顶了。等你期间我去核 R-017 T5 之外还有没有能干的；有活直接派，我随时接。
 ### P-169 F-P157-1不是待修代码：实际Next同源门6探针通过（be，2026-09-09）
 
 - 已FF到main **a192c28**；收到P166–P168合流回执及Q020派修。最新仍要求F-P157-1优先，但代码 **86ebd17/P161** 早已在main，`r010-command-bff.ts:89–90`已经Fetch Metadata优先，未回退。
@@ -5013,3 +5053,40 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 本人工作树 BFF **19/19** 回归过。请将该P0从“代码待修”改为“已合、实际本机Next门已验”，避免队列反复指回已完成项。详情 `docs/plans/2026-09-09-P169同源门实际Next复验.md`，本批仅留痕无生产改动。
 - F-P153-1/2仍是P163的真实源/规则版本裁决，v1.9.2未解除。其余依赖仍P160/P164，不用“已生出空reader”代替接通。生图取消。
 - **刚读到main eae4c60 v1.9.3**：新增dimension/v3 source归be，接下来按新派活核查并实施；login-provider和account/task web镜像已移交be2，本人不碰。kb019也由be2落，不重复抢014的kb表。
+
+### Q-023 回执：Q-020 越权已修 + kb 七端点齐 + T5 维度接完（be2，分支 `be/r017`）
+按你 v1.9.3 的顺序走完前三档。合流源 = `be/r017 @ 8426aa2`（origin/main @ 0811de6 已合进来）。
+
+#### ① Q-020（P1 越权）✅ 修完，红绿用**真实旧版本**验的
+主任务 + 六个派生查询原来只带 `(workspace_id, task_id)`。现在口径与任务列表**同源**（`task-list-sql.ts` 的 allowed_scope 谓词）：团队空间只读全量不收口，个人空间必须命中会话 scope 的 tuple。
+| 你要求的 | 落地 |
+|---|---|
+| 主任务 EXISTS 有效授权否则 404 | ✅ 404 不是 403 |
+| 六个派生按 tuple 过滤 | ✅ 达成量/近 7 日/异常/工作项/就绪度分母全收口 |
+| 三条真 PG 红绿 | ✅ 见下 |
+
+**红是拿 git 里的修前版本跑出来的，与 Codex 复现逐条对上**：未授权任务返 200（该 404）、混合媒体任务 `achieved=8`（该 4）、撤权后仍 200。换回修复版 3/3 绿。
+（我第一次图快用「谓词恒真」模拟修前状态，结果占位符没被引用、PG 直接 500 —— 那是退化红，证明不了任何东西，所以换成真实旧版本重验。**模拟出来的红不算红。**）
+
+两个诚实备注：
+- `assessment_price_history` 与 `task_readiness_overrides` **没有账户维度**（真库核过列），无处可过滤；它们的保护来自主任务那道 404 闸。你列的「六个派生全部过滤」里这两个是靠闸不是靠过滤，说明一下免得验收时对不上。
+- 任务级工作项（`media/account_id` 为空）我保留了：任务本身已经过闸，它不属于任何账户。若你要连它一起挡，说一声我改。
+
+#### ② kb 七端点齐 ✅（019 已按你更新的 schema.sql 重生成）
+软删按你裁的做：置位不删行，修订历史/双链/反查行全留着。读侧一律过滤（列表、搜索、单读、双链目标端、`[[标题]]` 解析目标）。`backlinks` 在目标文档不可见时 404 而不是空列表——返空列表等于确认它存在。`by-object` 无关联返 `items:[]`，枚举外的 type 400。
+
+★**019 重生成时我踩了自己一脚**：切片脚本按标记找边界，结果匹配到了**文件头注释里**的同名标记（不是 SQL 体），把 `exports.up` 一起吃掉了 —— bundle 单测当场抓到。已整篇重写并把标记词从注释里去掉。**这条值得记进规矩：切片标记不能同时出现在注释里。**
+
+#### ③ T5 维度 ✅ 按你冻的 `ready-v193-dimensions.json` 接完
+十个维度、camelCase、必填不 optional；四份 fixture + web 镜像 + 两处老用例一并升。`ready.json` 的值与你那份**逐字对齐**（两者本就是同一个 account-1，只差这个字段）。
+
+★**一条要你知道的缺口：`source:"platform"` 现在产不出来。** `accounts` 表里没有任何平台侧维度列，v1.7.9 说的 `custom_tags` 代投/自投也还没入库。所以我只接了昵称 + 人工两路，平台传空。你 fixture 里 `rebate:{value:"常规",source:"platform"}` 那条是示例——**我不会为了凑上它去编一个来源**。平台侧要真出值，得先有列（谁来加、加在哪，请裁）。
+
+另：`dim_agent/dim_resource_position/dim_bid_tool/dim_ubp` 四个日报维度模块你说 T5 时一并填——它们读的正是这份解析结果，**但同样只有昵称一路**，平台对照列没有。我下一批填行时按「昵称有则出、没有则 missing」处理，不补 0 也不写 unknown。
+
+#### ④ 闸
+domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `tsc --noEmit` 清。
+（web 是 `node --test` 不是 vitest，我先跑错工具报了 36 个假红，已更正。）
+
+#### ⑤ 下一步（按你的序）
+日报三个维度模块填行 + F-Q019-1～3 三条小修 → 改密 020（`identity_passwords` + login-provider 表优先 ENV 回落）。**改密那条我确认收到移交**，做完把 `internal-test-login-provider.ts` 交回。

@@ -1,8 +1,10 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
-  PARSED_DIMENSIONS, accountDimensionsSchema, applyOverride, computeConflicts, extractTaskIds,
-  namingRuleSchema, parseAccountName, resolveAccountDimensions, statusWithConflicts,
+  EMPTY_DIMENSIONS_DTO, PARSED_DIMENSIONS, accountDimensionsDtoSchema, accountDimensionsSchema,
+  applyOverride, computeConflicts, extractTaskIds, namingRuleSchema, parseAccountName,
+  resolveAccountDimensions, statusWithConflicts, toDimensionsDto,
   type NamingRule,
 } from "../../src/r014/account-name-parse-contract.js";
 
@@ -240,5 +242,42 @@ describe("v1.8 T5 dimension source switch", () => {
       ...resolveAccountDimensions({ segments: {}, overriddenKeys: [], platform: {} }),
       placement: { value: "优选", source: null },
     })).toThrow(/both be present or both be null/);
+  });
+});
+
+describe("R-017 T5 dimensions DTO (v1.9.3)", () => {
+  it("maps the snake_case internal keys to the frozen camelCase DTO keys", () => {
+    const resolved = resolveAccountDimensions({
+      segments: {
+        s1: { key: "s1", value: "优选", mapsTo: "placement", taskIds: [] },
+        s2: { key: "s2", value: "单出价", mapsTo: "bid_mode", taskIds: [] },
+        s3: { key: "s3", value: "自投", mapsTo: "agent_type", taskIds: [] },
+      },
+      overriddenKeys: [],
+      platform: {},
+    });
+    const dto = toDimensionsDto(resolved);
+    expect(dto.placement).toEqual({ value: "优选", source: "nickname" });
+    expect(dto.bidMode).toEqual({ value: "单出价", source: "nickname" });
+    expect(dto.agentType).toEqual({ value: "自投", source: "nickname" });
+    // 没解析到的维度两个字段都是 null——不写 "unknown"。
+    expect(dto.special).toEqual({ value: null, source: null });
+    expect(Object.keys(dto)).toHaveLength(10);
+  });
+
+  it("matches the frozen fixture's dimension keys exactly", () => {
+    const fixture = JSON.parse(readFileSync(
+      new URL("../../../contract/fixtures/account-list/ready-v193-dimensions.json", import.meta.url), "utf8",
+    )) as { data: { items: { dimensions: Record<string, unknown> }[] } };
+    const frozen = Object.keys(fixture.data.items[0]!.dimensions).sort();
+    expect(Object.keys(EMPTY_DIMENSIONS_DTO).sort()).toEqual(frozen);
+    // fixture 里那行也必须过 schema：形状对不上就是我理解错了契约。
+    expect(() => accountDimensionsDtoSchema.parse(fixture.data.items[0]!.dimensions)).not.toThrow();
+  });
+
+  it("keeps the empty DTO free of invented values", () => {
+    for (const entry of Object.values(EMPTY_DIMENSIONS_DTO)) {
+      expect(entry).toEqual({ value: null, source: null });
+    }
   });
 });

@@ -91,6 +91,14 @@ export const accountListItemSchema = z.object({
     workItemId: z.string().uuid(),
     title: z.string().min(1),
   }).strict().nullable(),
+  // v1.9.3 R-017 T5：十个归属维度，人工 > 昵称 > 平台；三者都没有则两个字段都是 null。
+  dimensions: z.object(Object.fromEntries(
+    ["placement", "bidMode", "device", "goal", "rta",
+      "agentType", "optimizer", "special", "landing", "rebate"].map((key) => [key, z.object({
+      value: z.string().min(1).nullable(),
+      source: z.enum(["nickname", "platform", "manual", "qihang"]).nullable(),
+    }).strict()]),
+  )).strict(),
 }).strict().superRefine((item, context) => {
   if (new Set(item.tags).size !== item.tags.length) {
     context.addIssue({ code: "custom", path: ["tags"], message: "tags must be unique" })
