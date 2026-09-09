@@ -57,6 +57,7 @@ async function lockAuthority(client: PoolClient, auth: PersonalAuth, target: Acc
      JOIN account_access_grants AS grant_row ON grant_row.workspace_id=workspace.id
        AND grant_row.identity_id=identity.id AND grant_row.media=$3 AND grant_row.account_id=$4
        AND grant_row.access_level IN ('read','preview','execute')
+       AND (to_jsonb(grant_row)->>'revoked_at') IS NULL
      JOIN accounts AS account ON account.workspace_id=workspace.id
        AND account.media=grant_row.media AND account.account_id=grant_row.account_id
      WHERE workspace.id=$1 AND workspace.kind = 'personal' AND workspace.is_active=true

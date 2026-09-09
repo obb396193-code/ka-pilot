@@ -185,7 +185,7 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
       { authenticate: async () => identityId },
       {
         now: () => now,
-        token: () => tokens.shift() ?? teamToken,
+        token: () => tokens.shift() ?? randomUUID(),
         ttlSeconds: 3_600,
       },
     );
@@ -580,5 +580,32 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
       expect(afterLogout.headers.get("x-request-id")).toBe(`task5-after-logout-${index}`);
     }
     expect(sourceCalls).toEqual(callsAfterLogout);
+  });
+
+  it("re-resolves soft-revoked grants for the same live cookie on the next HTTP read", async () => {
+    const login = await fetch(`${baseUrl}${AUTH_LOGIN_HTTP_PATH}`, {
+      method: "POST", headers: headers(),
+      body: JSON.stringify({ provider: "internal_test", username: "task5.user", password: "task5.password" }),
+    });
+    expect(login.status).toBe(200);
+    const cookie = login.headers.get("set-cookie")!.split(";")[0]!;
+    const before = await fetch(`${baseUrl}/api/v1/accounts`, { headers: headers(cookie) });
+    expect(before.status).toBe(200);
+    expect(await before.json()).toMatchObject({ data: { total: 1 } });
+    try {
+      await pool.query("UPDATE account_access_grants SET revoked_at=now() WHERE workspace_id=$1 AND identity_id=$2", [personalWorkspaceId, identityId]);
+      for (const [index, path] of ["/api/v1/accounts", "/api/v1/tasks"].entries()) {
+        const response = await fetch(`${baseUrl}${path}`, { headers: {
+          ...headers(cookie, `soft-revoke-${index}`),
+          "x-ka-account-scope": JSON.stringify([{ media: "KUAISHOU", accountId: "personal-approved" }]),
+        } });
+        expect(response.status).toBe(200);
+        expect(response.headers.get("x-request-id")).toBe(`soft-revoke-${index}`);
+        expect(await response.json()).toMatchObject({ ok: true, data: { total: 0, items: [] } });
+      }
+    } finally {
+      // Restore only the synthetic grant created by this suite; never a real grant.
+      await pool.query("UPDATE account_access_grants SET revoked_at=NULL WHERE workspace_id=$1 AND identity_id=$2", [personalWorkspaceId, identityId]);
+    }
   });
 });

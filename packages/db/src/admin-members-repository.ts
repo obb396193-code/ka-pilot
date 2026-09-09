@@ -26,7 +26,9 @@ export class AdminMembersRepository {
             CASE WHEN octet_length(account_id)<=128 THEN account_id END AS account_id,
             CASE WHEN octet_length(access_level)<=16 THEN access_level END AS access_level,
             to_char(created_at AT TIME ZONE 'Asia/Shanghai','YYYY-MM-DD') AS granted_at
-            FROM account_access_grants WHERE workspace_id=$1 AND identity_id=$2 ORDER BY media COLLATE "C",account_id COLLATE "C" LIMIT 1001`, [auth.workspaceId, identityId])).rows;
+            FROM account_access_grants AS grant_row WHERE workspace_id=$1 AND identity_id=$2
+              AND (to_jsonb(grant_row)->>'revoked_at') IS NULL
+            ORDER BY media COLLATE "C",account_id COLLATE "C" LIMIT 1001`, [auth.workspaceId, identityId])).rows;
           if (rows.length > 1000) throw new AdminMembersError("SOURCE_TRUNCATED");
           const items = rows.map(r => { if (r.workspace_id !== auth.workspaceId || r.identity_id !== identityId) return invalid();
             return { media: r.media, accountId: r.account_id, accessLevel: r.access_level, grantedAt: r.granted_at }; });
@@ -34,7 +36,7 @@ export class AdminMembersRepository {
           return { workspaceId: auth.workspaceId, data: data.data };
         }
         // Team scope must not depend on legacy grants, including their validity or count.
-        const grants = auth.workspaceKind === "team" ? "'0'::text" : `(SELECT count(*)::text FROM account_access_grants g WHERE g.workspace_id=m.workspace_id AND g.identity_id=m.identity_id)`;
+        const grants = auth.workspaceKind === "team" ? "'0'::text" : `(SELECT count(*)::text FROM account_access_grants g WHERE g.workspace_id=m.workspace_id AND g.identity_id=m.identity_id AND (to_jsonb(g)->>'revoked_at') IS NULL)`;
         const { rows } = await c.query(`/* admin-members */ SELECT m.workspace_id,m.identity_id,m.user_id,m.role,m.is_active,
           CASE WHEN octet_length(i.display_name)<=1024 THEN i.display_name END AS display_name,
           CASE WHEN octet_length(i.provider)<=32 THEN i.provider END AS provider,
