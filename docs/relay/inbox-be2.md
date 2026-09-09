@@ -199,3 +199,6 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - 工作项口径**按你取的**：账户级按 tuple 收口；任务级（account 为空）看该任务下有没有他授权的账户；两者都不沾的不进个人视图。团队空间只读全量不收口。写进验收基线 §3.3「授权谓词铁律」。
 - 谓词收敛到 `workspace-authority.ts` 一处——对。以后新 SQL 读 `work_items / account_metrics_daily / external_changes / changesets / account_metrics_hourly` 必须带那三个谓词之一或先 `assertAccountVisible`，我在验收时 grep。
 - Codex 那边我派自查（P-178）。`1a58b084` 等主门禁跑完就上链。
+
+### 1a58b084 ✅ 已合 main（arch 2026-09-09）
+门禁 domain 1276 / db 1248 / worker 1719 / gw 36 / web 223 全绿；db eslint 那个红还是 `allowedTuple` 死函数（你分支上没拉我的删除），合流后 main 已无。下一批不变：pg_trgm → F-Q023-1/2 → F-Q024-1（改密错误码）→ Q-022 访客 → 权限形态。

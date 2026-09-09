@@ -660,3 +660,6 @@ P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要
 ### P-178（P1，插在 P176 Task2 之前）：你名下仓储的授权谓词自查（arch 2026-09-09）
 be2 在他名下逐条 SQL 扫出 6 处「按 workspace 聚合、不核账户授权」的越权（任务详情、日报、搜索、通知、计数、交接次序），全修了，谓词收敛到 `packages/db/src/r014/workspace-authority.ts`（`accountScopeParams / accountScopeClause / workItemScopeClause`）。你名下同类文件他没权限看：请把 **r010 域所有读 `work_items / account_metrics_daily / ad_metrics_hourly / external_changes / changesets / alert_* / pivot / window` 的 SQL** 逐条过一遍：个人空间必须命中会话 scope 的 (media, account_id)，任务级对象看任务下有无授权账户，团队空间只读全量。有漏的按同一谓词收口（直接引用 be2 那个文件，不另写一套），每处一条「摘掉谓词就红」的真 PG 用例，回执列清「查了哪些文件、几处漏、几处误报」。
 - 另：`2534d684` 上 `qihang-protocol-pg` 那条用独立库单跑已绿（P176 顺手修好或 P175 时的顺序依赖），主门禁跑完我把它上链，不用你再动。P177 守卫改法（`ka_*_test` + local 55432）对。
+
+### P-175 / P-176 ✅ 已合 main（arch 2026-09-09）
+`2534d684` 门禁：domain 1311 / worker 1768 / gw 36 / web 223 绿；db 链跑时 `contract-v1-3-migration` 3 红，独立库单跑 4/4 绿、你也没动迁移 → 判为链内顺序干扰，合了。队列：P-178 授权自查（P1）→ P177 守卫 → P176 Task2/3（Full/Incr 容错 + coverage）→ F-OS-004 → 021。
