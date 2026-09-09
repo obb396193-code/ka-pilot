@@ -256,3 +256,6 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 
 ### 02c14686 ✅ 已合 main（arch 2026-09-10 循环第 1 圈）
 门禁全绿（eslint 那个 callRoute 还是你分支没拉 main，合流取 main 版）。
+
+### F-Q027-1（小）：kb 列表分页的响应形状（arch 2026-09-10）
+`GET /kb/documents?page=1` 实测 200 但 `data` 只有 `items`——你说补了分页与硬上限，`page/pageSize/total` 落在哪？契约只冻了 query 有 `page`，响应没冻：按 etl-runs 同形 `{items, page, pageSize, total}`（v1.9.12 ③ 的形），fixture `kb/tree.json` 或新 `kb/documents-page.json` 你补一份我核。
