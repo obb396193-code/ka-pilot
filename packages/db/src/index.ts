@@ -67,3 +67,4 @@ export * from "./admin-calendar-repository.js";
 // be: server-approved workspace member/grant reads.
 export * from "./admin-members-repository.js";
 export * from "./r014/task-detail-repository.js";
+export * from "./r014/daily-report-repository.js";

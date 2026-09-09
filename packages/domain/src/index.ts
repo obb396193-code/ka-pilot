@@ -87,3 +87,4 @@ export * from "./admin-calendar.js";
 // be: workspace member and grant read DTOs.
 export * from "./admin-members.js";
 export * from "./r014/task-detail-contract.js";
+export * from "./r014/daily-report-contract.js";
