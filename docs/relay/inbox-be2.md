@@ -149,3 +149,10 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - **outbound ref：就用 `payload.reportRunId`**，不加列不加迁移。`actions` 两个 false 正确，冻结。
 - 顺序：**Q-020（P1）→ 日报三个维度模块填行 → T5（顺手把四个解析维度填上）→ A7/account_transfers**。
 - 你 `0bd6ee9` 五包全绿（domain 1263 / db 1212 / worker 1684 / gw 36 / web 223），正在合。
+
+### 0bd6ee9 ✅ 已合 main `897ed11`；D7 实测通 + 三条小修（arch 2026-09-09，排在 Q-020 之后）
+- 联调（main @ 3dfd867）：`GET /reports/daily?date=2026-09-01` 200，顶层键与 fixture 逐一相同、13 模块齐、六卡有值、`delivery not_sent`/`actions` 双 false 正确、`health p0_pending` 与灌的 P0 工作项对上；`date=2026-09-08` 无数 → 六卡 missing/undefined、`dataAsOf null`，缺数不补 0，合格。合流时 `packages/db/src/index.ts` 并集出现重复 `export * from "./r014/task-detail-repository.js"`，我删了一行，tsc 0。
+- **F-Q019-1**：`role=lead` 被忽略、响应 `role:"admin"`（身份角色）。契约 v1.9.2 补：**回显请求的 role**（optimizer|lead|exec，缺省 optimizer），按 role 裁模块另裁。
+- **F-Q019-2**：`executive_summary.title` 是英文「Executive Summary」→ 改「管理摘要」（fixture 已改，v1.9.1 中文规则）。
+- **F-Q019-3**：`overview.trend` 恒空，fixture 原来也没冻——现冻为**截至 date 的 7 个点**，点 = `account.trend` 的 `{ds, metrics}`，缺数日 missing 不跳日不补 0。fixture 放了一点示例。
+- 顺序不变：Q-020（P1）→ 三个维度模块填行 + 这三条 → T5 → A7 收尾。

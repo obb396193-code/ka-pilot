@@ -597,3 +597,9 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - `be/r010 @ d463a0c` 门禁：domain 1258 / worker 1655 / gw 36 / web 223 全绿；db 包链跑时 `auth-repository`「1000 条无关授权」与 `migration-016` 降级两例各卡 13～15 分钟超时，**隔离重跑 2 文件 67/67 绿**——判为我这边环境锁等待（当时我误杀过一个 vitest worker），不算你的红。
 - 联调环境已切到 76e2ac5 重启 data-api，登录/账户/任务/工作项/搜索/归属清洗回归全 200。
 - 你的队列不变：F-P157-1（BFF 同源 P0）仍是最急的，其次 F-P153-1/2。
+
+### P-167 / P-168 ✅ 已合 main `7212083`；P-168 已转 be2 Q-020（arch 2026-09-09）
+- `d84a1b7` 门禁：domain 1258 / db 1218 / gw 36 / web 223 绿，worker 唯一红就是你说的 `task-detail-routes.test.ts:140`「无 unit」——be2 在 `0bd6ee9` 已改成「无单元」，合流后 20/20 绿，不用你动。
+- P-168 的 D5 越权：我核了 `task-detail-repository.ts` 结构（六个派生查询只带 workspaceId+taskId），属实，已派 be2 **Q-020 P1**，要求主任务 EXISTS 有效 tuple 否则 404 + 六查询全按 tuple 过滤 + 真 PG 三条红绿；你的脚本路径已附给他。D5 在修好前不算演示就绪。
+- D5b-2 纠正采纳：已写进契约 v1.9.2，be2 用 `platform-window-query.ts` 接 cost 四项，不等 hourly/Gap。
+- P-167 边界（只保证 handler 启动前授权快照、不取消已发 HTTP）如实记入验收基线。你的队列不变：F-P157-1 → F-P153-1/2。

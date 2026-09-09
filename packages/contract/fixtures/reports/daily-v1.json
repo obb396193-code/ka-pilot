@@ -3,12 +3,12 @@
   "data": {
     "schema": "daily-report/v1",
     "date": "2026-09-05",
-    "role": "optimizer",
+    "role": "lead",
     "dataAsOf": "2026-09-05T08:00:00.000+08:00",
     "modules": [
       {
         "key": "executive_summary",
-        "title": "Executive Summary",
+        "title": "管理摘要",
         "cards": {
           "cost": {
             "value": 14200.0,
@@ -43,7 +43,80 @@
       {
         "key": "overview",
         "title": "大盘",
-        "trend": []
+        "trend": [
+          {
+            "ds": "2026-09-01",
+            "metrics": {
+              "cost": {
+                "value": 147000.0,
+                "availability": "available"
+              },
+              "cashCost": {
+                "value": 114836.40000000001,
+                "availability": "available"
+              },
+              "exposure": {
+                "value": 1120000,
+                "availability": "available"
+              },
+              "click": {
+                "value": 46666,
+                "availability": "available"
+              },
+              "conversion": {
+                "value": 3605,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 3433,
+                "availability": "available"
+              },
+              "costSpace": {
+                "value": 15617.6,
+                "availability": "available"
+              },
+              "wakeUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "potentialUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "ratios": {
+                "ctr": {
+                  "value": 0.0417,
+                  "state": "finite"
+                },
+                "cvr": {
+                  "value": 0.0773,
+                  "state": "finite"
+                },
+                "realCpa": {
+                  "value": 42.82,
+                  "state": "finite"
+                },
+                "cashCpa": {
+                  "value": 33.45,
+                  "state": "finite"
+                },
+                "gap": {
+                  "value": 0.0501,
+                  "state": "finite"
+                },
+                "potentialRate": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "biConversionRate": {
+                  "value": null,
+                  "state": "undefined"
+                }
+              }
+            }
+          }
+        ],
+        "_note": "v1.9.2：trend = 截至 date 的 7 个点，点形状 = account.trend（{ds, metrics 同 summary}）；示例一点"
       },
       {
         "key": "dim_task",
@@ -308,6 +381,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null} | v1.9.2：十个维度模块行结构冻结为 account.dimension/v3 行；delivery 源 = outbound_messages.payload.reportRunId（无 ref 列）"
+    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null} | v1.9.2：十个维度模块行结构冻结为 account.dimension/v3 行；delivery 源 = outbound_messages.payload.reportRunId（无 ref 列） | v1.9.2：role 回显请求的 role（optimizer|lead|exec），不是身份角色；executive_summary.title=管理摘要"
   }
 }

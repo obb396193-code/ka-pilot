@@ -1156,3 +1156,8 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 **归属清洗 fixture（补 fe 缺的三份）**：`admin/naming-rules.json`、`admin/account-names.json`、`admin/naming-rules-test.json`，均取自联调第十/十一轮真响应（时间戳固定）。
 
+**v1.9.2 补（联调第十二轮实测 D7 后追加，2026-09-09）**
+- `GET /reports/daily` 的 `role` **回显请求参数**（`optimizer|lead|exec`，缺省 `optimizer`），不是当前身份的角色；后续按 role 裁模块（exec 只出 executive_summary/overview/health）——本批先回显，裁模块另裁。
+- `executive_summary.title` = **管理摘要**（v1.9.1 中文对象名规则；fixture 已改）。
+- `overview.trend` = **截至 `date` 的 7 个点**，点 = `account.trend` 的点（`{ds, metrics}`，metrics 与 summary 同构、三态）；缺数日照缺（三态 missing），不补 0、不跳日。fixture 放一点示例。
+
