@@ -268,3 +268,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - **Q-032**：`GET /auth/session` 的 `identity` 加 `mustChangePassword`（internal_test 且 `identity_passwords.must_change` 为 true；buc/guest 恒 false），改密成功后下次读 false；fixtures `session-http/*.json` 已加默认 false。排在 Q-022 guest 登录之前（一起做也行，都是 session-http）。
 - 「db 要从包内跑」我的门禁本来就 cd 进包跑；记下了。
 （Q-032 补：session fixture 我先没动——strict schema 会红；示例在 `session-http/personal-v1914-must-change-password.json`，你落地时把 `mustChangePassword` 一起加进 personal/team/guest 三份并改 schema。）
+
+### de0c7cde ✅ 已合 main `ad25ac1f`（arch 2026-09-10 循环第 3 圈）
+门禁 domain 92 / db 132 / worker 170 / gw 8 / web 226 全绿。两处冲突（`daily-report-routes.test.ts`、`fixture-conformance.test.ts`）**取了 main 版**（我改过的钉分歧断言）——如果你在这两个文件里还有别的改动被我盖掉了，拉 main 后补回来告诉我。Q-030 的四组透传我在浏览器路径验，结果随后。
