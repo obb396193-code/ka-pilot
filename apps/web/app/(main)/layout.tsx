@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { SidebarInset } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/sonner"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/business/theme/theme-provider"
 import { AgentLauncher } from "@/components/business/agent/agent-launcher"
 import { CommandPalette } from "@/components/business/command/command-palette"
 import { MobileDutyBanner, MobileDutyScope } from "@/components/business/mobile/duty-guard"
+import { AppSidebarProvider } from "@/components/business/layout/app-sidebar-provider"
 
 export default function MainLayout({
   children,
@@ -16,7 +17,7 @@ export default function MainLayout({
   return (
     <SessionProvider>
       <ThemeProvider>
-      <SidebarProvider
+      <AppSidebarProvider
         style={
           {
             "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -34,7 +35,7 @@ export default function MainLayout({
             </div>
           </div>
         </SidebarInset>
-      </SidebarProvider>
+      </AppSidebarProvider>
       <CommandPalette />
       <AgentLauncher />
       <Toaster position="top-center" />

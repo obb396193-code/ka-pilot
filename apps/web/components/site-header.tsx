@@ -43,11 +43,11 @@ export function SiteHeader() {
   return (
     <>
       <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-        <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+        <div className="flex w-full min-w-0 items-center gap-1 px-4 lg:gap-2 lg:px-6">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
-          <Breadcrumb className="min-w-0 shrink-0">
-            <BreadcrumbList className="flex-nowrap text-base whitespace-nowrap">
+          <Breadcrumb className="min-w-0 shrink">
+            <BreadcrumbList className="flex-nowrap text-base whitespace-nowrap [&>li]:min-w-0 [&_a]:truncate [&_span]:truncate">
               {crumbs.map((crumb, index) => {
                 const last = index === crumbs.length - 1
                 // Separator 是独立 <li>，必须和 BreadcrumbItem 平级（嵌套 <li> 会 hydration 失败）
@@ -66,7 +66,7 @@ export function SiteHeader() {
               })}
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="ml-auto flex min-w-0 items-center gap-1 lg:gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-1">
             <DataHealthPill />
             <NotificationBell />
             <ThemeSwitch />

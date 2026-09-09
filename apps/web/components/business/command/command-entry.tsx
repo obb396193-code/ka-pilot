@@ -12,11 +12,12 @@ export function CommandEntry() {
         type="button"
         onClick={openCommandPalette}
         aria-label="搜索账户、任务、异常（⌘K）"
-        className="inline-flex h-8 items-center gap-2 rounded-md border bg-muted/40 px-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none md:w-60"
+        className="inline-flex h-8 items-center gap-2 rounded-md border bg-muted/40 px-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none xl:w-60 xl:px-2.5"
       >
         <IconSearch className="size-4 shrink-0" />
-        <span className="hidden truncate md:inline">搜索账户、任务、异常…</span>
-        <kbd className="ml-auto hidden rounded border bg-background px-1.5 font-mono text-[10px] text-muted-foreground md:inline">⌘K</kbd>
+        {/* F8-10：<1280 只留放大镜，1093px 页头才放得下 */}
+        <span className="hidden truncate xl:inline">搜索账户、任务、异常…</span>
+        <kbd className="ml-auto hidden rounded border bg-background px-1.5 font-mono text-[10px] text-muted-foreground xl:inline">⌘K</kbd>
       </button>
     </div>
   )
