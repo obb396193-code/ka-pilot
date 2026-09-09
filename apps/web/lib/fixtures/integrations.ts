@@ -7,9 +7,29 @@ import messages from "@contract/fixtures/integrations/messages.json"
 import policies from "@contract/fixtures/alerts/policies.json"
 
 // 集成与通知（F-007 §7，契约 v1.4 9.4/9.5 · v1.5 9.1/9.6）fixture 读取层。不算数。
-export type Connection = { id: string; provider: "dingtalk" | "feishu" | "wecom"; status: "connected" | "disconnected" | "pending"; health: "ok" | "degraded" | "down"; lastCheckedAt: string; config: { clientIdMasked: string; robots: { robot_id: string; name: string }[]; groups: { conversation_id: string; name: string }[] } }
+// 三类接入的 config 形状不同（钉钉有机器人/群，启航与 KA Data 只有地址与账号），一律按可选处理，缺字段就不渲染那一段
+export type Connection = {
+  id: string
+  provider: "dingtalk" | "feishu" | "wecom" | "qihang" | "ka_data" | "multica" | "idealab"
+  status: "connected" | "degraded" | "disconnected" | "pending"
+  health: "ok" | "warning" | "degraded" | "critical" | "down"
+  lastCheckedAt: string
+  note?: string | null
+  config: {
+    clientIdMasked?: string
+    baseUrlMasked?: string
+    userIdMasked?: string
+    readerMasked?: string
+    robots?: { robot_id: string; name: string }[]
+    groups?: { conversation_id: string; name: string }[]
+  }
+}
 export const connectionsFixture = connections as unknown as Fixture<{ items: Connection[] }>
-export const providerLabel: Record<Connection["provider"], string> = { dingtalk: "钉钉", feishu: "飞书", wecom: "企业微信" }
+export const providerLabel: Record<Connection["provider"], string> = { dingtalk: "钉钉", feishu: "飞书", wecom: "企业微信", qihang: "启航", ka_data: "KA Data", multica: "Multica", idealab: "IdeaLab" }
+export const connectionStatusMeta: Record<Connection["status"], { label: string; tone: "success" | "warning" | "critical" | "pending" }> = { connected: { label: "已连接", tone: "success" }, degraded: { label: "不稳定", tone: "warning" }, disconnected: { label: "已断开", tone: "critical" }, pending: { label: "待接入", tone: "pending" } }
+export const connectionHealthLabel: Record<Connection["health"], string> = { ok: "正常", warning: "有告警", degraded: "降级", critical: "严重", down: "不可用" }
+/** 接入卡上显示哪一行「身份/地址」——各家字段不同，取第一个有值的 */
+export const connectionIdentity = (config: Connection["config"]) => config.clientIdMasked ?? config.baseUrlMasked ?? config.userIdMasked ?? config.readerMasked ?? null
 export type IdentityMapping = { externalUserId: string; provider: string; userId: string; displayName: string; verifiedAt: string | null }
 export const identityMappingsFixture = identityMappings as unknown as Fixture<{ items: IdentityMapping[] }>
 
