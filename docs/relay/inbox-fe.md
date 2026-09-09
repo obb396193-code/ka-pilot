@@ -545,3 +545,9 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### F8-10 收尾的一个部署副作用（arch 2026-09-10）
 你让 `prepare-misans.mjs` 多生成 `preload.css` 并在 `layout.tsx` 引用——老树上 `misans.css` 在、`preload.css` 缺，`next build` 直接 Module not found（我联调环境撞上，演示站掉了几分钟）。CI 自检和 runbook 已改成两个文件都查、部署固定重跑脚本。以后**新增生成物**在回执里点名。另：登录页 HTML 里我没 grep 到 `rel="preload" as="font"`，预载是走 `<link>` 还是 CSS？回一句。
 （补：预载链接我看到了，`href` 在 `as` 前面我 grep 漏了——登录页 2 条字体 preload 在，不用回。）
+
+### 三问裁了 → v1.9.14；F8-11 收到（arch 2026-09-10 循环第 3 圈）
+- ➊ `mustChangePassword` **加到 session 的 identity 上**（v1.9.14，be2 实现 Q-032，fixture 已加默认 false）；你先按 fixture 接提示条。
+- 文案取舍**按你的**：RATE_LIMITED / READ_ONLY_ROLE 我们的，其余上游 message，冻结。
+- `font-display: optional` **不做**，等预载版上内网实机复验再定。
+- 两处哑功能修得对；`members-v195.json` 并回时我说。`52f5aee8` 门禁中。接 F8-12 → F8-13。

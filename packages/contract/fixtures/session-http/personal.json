@@ -1,7 +1,10 @@
 {
   "ok": true,
   "data": {
-    "identity": {"displayName": "内测用户甲"},
+    "identity": {
+      "displayName": "内测用户甲",
+      "mustChangePassword": false
+    },
     "activeWorkspace": {
       "id": "00000000-0000-4000-8000-000000000801",
       "name": "我的工作台",
@@ -26,5 +29,7 @@
       }
     ]
   },
-  "meta": {"requestId": "fixture-session-personal-001"}
+  "meta": {
+    "requestId": "fixture-session-personal-001"
+  }
 }

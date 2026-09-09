@@ -1305,3 +1305,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - `GET /system/etl-runs` 旧 run 连 scope 日期都没有：`businessDate: string|null` + `warnings[] {code:"LEGACY_NO_DATE"}`，不拼今天、不丢行。
 - **对拍闸立为两侧标配**：be2 已上「端点实际响应键集 vs 冻结 fixture」的自动对拍；Codex 同类闸 = P-187（下条派）。arch 联调只做抽查。
 
+## v1.9.14 追加（2026-09-10 arch；裁 fe 三问）
+- `GET /auth/session` 的 `identity` 加 **`mustChangePassword: boolean`**（internal_test 且 `identity_passwords.must_change` 为 true 时 true；buc/guest 恒 false）。设置页顶部据此提示「请修改初始密码」；改密成功后下一次 session 读回 false。fixture `session-http/*.json` 的 identity 加该字段（默认 false）。be2 实现（session-http 在他手上）。
+- 错误文案取舍：**`RATE_LIMITED`、`READ_ONLY_ROLE` 以前端文案为准**（说清等多久/找谁开），其余以上游 `message` 为准（同一码在不同页面语义不同）。冻结。
+- `font-display`：**暂不改 optional**，等预载版上内网 Win 实机复验；仍跳再上 optional（正文），标题保留 swap。
+- fe 顺手修的两处哑功能（拉数记录表 rowId 取 `runId`；`etl-runs-page` 接页）追认。
+

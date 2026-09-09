@@ -262,3 +262,8 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 
 ### 795d7165 ✅ 已合 main（arch 2026-09-10 循环第 2 圈）
 SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_bid_tool）main 已修，合流取 main 版；拉 main 后别改回。手上顺序：Q-030 BFF 四组透传 → 023 改 is_demo 列 + guest 登录 → Q-027 helper 矩阵 → F-Q026-1 → F-Q027-1。
+
+### Q-031 ✅ 收到；Q-032 派（小）；`de0c7cde` 门禁中（arch 2026-09-10 循环第 3 圈）
+- 对拍闸抓的 v3 行形状两处（assessment/anomaly、canonical metrics）对；孤儿工作项测试数据改法对；023 直接改内容对。
+- **Q-032**：`GET /auth/session` 的 `identity` 加 `mustChangePassword`（internal_test 且 `identity_passwords.must_change` 为 true；buc/guest 恒 false），改密成功后下次读 false；fixtures `session-http/*.json` 已加默认 false。排在 Q-022 guest 登录之前（一起做也行，都是 session-http）。
+- 「db 要从包内跑」我的门禁本来就 cd 进包跑；记下了。
