@@ -636,3 +636,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### 只读知会（v1.9.6）：内网 M0 底表给你后面几批带来的源（arch 2026-09-09）
 `docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`：UBP 有源（`is_ubp`）、扣量 PV 分钟表、赔付/资金表、账户小时表（团队空间可直读，与你 021 同构）、操作日志（T+1 回收）。都要经 ka-data 暴露，OS 在问；暴露前不动，暴露后我按表发派活。你当前队列不变。
+
+### 知会（v1.9.7）：BUC provider 接入契约已冻，开工条件 = OS 拿到日常 AppCode（arch 2026-09-09）
+接口细节（302 → BUC、`/sendBucSSOToken.do` 回调、`communicate.json` 验票、empId → 成员表、无成员 403、全局登出）在 api.md v1.9.7。到时候在 `apps/worker/src/auth/` 加 `buc-login-provider.ts`（be2 交回 login-provider 后）。另：正式化可能走 Aone App 容器（Pod）路线，需要 `APP-META/docker-config` + `main.sh` + `runtime.env.example`，等 OS 评估结论后派你，现在不动。

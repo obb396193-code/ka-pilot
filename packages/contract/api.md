@@ -1226,3 +1226,15 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 基建统计（冷启动/空耗/0 曝光）：`ads_rta_media_daily_report_base_account`，校验通过前不接。
 详见 `docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`。
 
+## v1.9.7 追加（2026-09-09 arch；按内网 BUC 教程冻 provider=buc 接入契约，落地等 AppCode）
+
+- 环境变量：`BUC_ENV=daily|prod`、`BUC_APP_CODE`（日常与正式各一）、`BUC_BASE_URL`、`AUTH_ALLOWED_ORIGINS`（允许的前端入口，含 io 默认域名与自定义域名，两者都开放就都登记）。
+- `GET /api/v1/auth/login?provider=buc`（BFF `GET /api/internal/auth/login/buc`）：生成签名 `state`（5 分钟有效，HttpOnly cookie 存 nonce），302 到 BUC，`BACK_URL` 指向 **API 回调**（不是页面）。
+- `GET /sendBucSSOToken.do`（**固定路径**，web 与 data-api 均需可达；BFF 转发）：服务端 `POST <BUC_BASE_URL>/rpc/sso/communicate.json`，form `SSO_TOKEN / APP_CODE / RETURN_USER=true`；`content` 是 JSON 字符串需二次解析；**只有拿到非空 `empId` 才继续**；无 token → 400（不重定向，防死循环）。
+- 身份映射：`auth_identities(provider='buc', provider_subject=empId)`；**没有 membership 的 empId → 403 `NOT_A_MEMBER`**（BUC 只证明是员工，能不能进由我们成员表决定，ACL 登录包再挡一层）；有成员行则建会话（同 internal_test），`session.identity.provider="buc"`。
+- `GET /auth/logout`：清本地 cookie + 302 到 BUC 全局登出。
+- 治理后台新增成员时 `provider="buc"` 只填 `provider_subject=工号`，不设密码（v1.9.5 已定）；`POST /auth/password` 对 buc 身份 409（v1.7.6 已定）。
+- 会话 cookie：HttpOnly、Secure、SameSite=Lax；写操作沿用 Sec-Fetch-Site + CSRF（F-P157-1）。
+- 验收（照教程）：无痕窗口从每个入口域名登录都回到原入口；未加入 ACL 的 403；`/api/me` 200；退出后全局登出。
+- 实现归 Codex（`internal-test-login-provider.ts` 交回后同目录加 `buc-login-provider.ts`）；**开工条件 = OS 拿到日常 AppCode**。
+
