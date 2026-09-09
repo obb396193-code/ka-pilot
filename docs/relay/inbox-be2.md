@@ -93,3 +93,6 @@ arch 已在本地把「浏览器 → BFF → data-api → PG」全链路跑通�
 1. **`GET /tasks/:id` 任务详情**（api.md 任务域；八页签里至少 overview / accounts / assessment / timeline 四签的读，其余签可先 `dataState:"empty"` 诚实空）。
 2. **`GET /reports/daily?date=`**：12 模块日报的读（fixture `reports/daily-v1.json`；`delivery` 块按 v1.7.4 G8）；渲染先只出 JSON，PDF/推送后续。
 另两条排在 R-017 之后：`POST /auth/password`（v1.7.6）、知识库 kb 七端点（v1.4，契约已冻、之前无人排期）。
+
+### 我动了你两个 src 文件（arch 2026-09-08，透明告知）
+契约 v1.9.1（后端给人看的文案一律中文对象名）落到你的 `r014/external-change-contract.ts`（TARGET_LABELS 改 计划/单元/创意，拼接不留英文式空格）和 `r014/task-readiness-contract.ts`（「无 unit」→「无单元」），并同步了 5 处测试期望。原因：我改了 fixture 后你的对拍测试在 CI 红，属我引入，所以我自己修。你 `git merge main` 即得，后续这两个文件仍归你。
