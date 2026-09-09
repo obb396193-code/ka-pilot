@@ -23,6 +23,8 @@ export const taskStageSchema = z.enum([
   "preparing", "opening", "recharging", "building", "cold_start", "delivering", "ended",
 ]);
 export const taskStageSourceSchema = z.enum(["system", "manual", "workflow"]);
+export type TaskStage = z.infer<typeof taskStageSchema>;
+export type TaskStageSource = z.infer<typeof taskStageSourceSchema>;
 
 const readinessRatioSchema = z
   .object({ value: z.number().finite().nullable(), state: z.enum(["finite", "infinite", "undefined"]) })
