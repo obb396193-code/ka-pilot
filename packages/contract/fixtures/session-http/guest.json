@@ -4,8 +4,7 @@
     "identity": {
       "id": "00000000-0000-4000-8000-00000000009e",
       "displayName": "访客",
-      "provider": "guest",
-      "mustChangePassword": false
+      "provider": "guest"
     },
     "activeWorkspace": {
       "id": "00000000-0000-4000-8000-0000000000de",
