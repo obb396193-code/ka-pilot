@@ -61,9 +61,11 @@ describe("D7 daily report route (real PostgreSQL)", () => {
       );
     }
     await pool.query(
-      `INSERT INTO work_items(workspace_id,type,severity,title,status)
-       VALUES($1,'diagnosis','P1','account-2 成本超考核','open'),
-              ($1,'diagnosis','P2','早处理完了','done')`,
+      // v1.9.11：工作项必须归得到某处——挂账户（账户型）、挂任务（任务型）或有 assignee（私人）。
+      // 三者皆空的行不归任何人，按矩阵谁都看不到，那种数据本来就不该存在。
+      `INSERT INTO work_items(workspace_id,type,severity,title,status,media,account_id)
+       VALUES($1,'diagnosis','P1','account-2 成本超考核','open','KUAISHOU','d7-a1'),
+              ($1,'diagnosis','P2','早处理完了','done','KUAISHOU','d7-a1')`,
       [workspaceId],
     );
     runId = (await pool.query(
@@ -122,8 +124,8 @@ describe("D7 daily report route (real PostgreSQL)", () => {
   it("grades health by the highest open severity instead of defaulting to healthy", async () => {
     expect(moduleOf(dataOf(await call()), "health").status).toBe("p1_pending");
     await pool.query(
-      `INSERT INTO work_items(workspace_id,type,severity,title,status)
-       VALUES($1,'diagnosis','P0','更严重的','open')`, [workspaceId],
+      `INSERT INTO work_items(workspace_id,type,severity,title,status,media,account_id)
+       VALUES($1,'diagnosis','P0','更严重的','open','KUAISHOU','d7-a1')`, [workspaceId],
     );
     expect(moduleOf(dataOf(await call()), "health").status).toBe("p0_pending");
     await pool.query("DELETE FROM work_items WHERE workspace_id=$1 AND severity='P0'", [workspaceId]);
@@ -285,19 +287,13 @@ describe("D7 daily report route (real PostgreSQL)", () => {
       }
     }
 
-    // fixture 声明了 unsupported 的模块，取值必须和我一致——除了下面这一处已知分歧。
-    const KNOWN_DIVERGENCE = new Set(["dim_bid_tool"]);
+    // fixture 声明了 unsupported 的模块，取值必须和我一致。
+    // （v1.9.13 起 arch 已把 dim_bid_tool / dim_resource_position 同步成填行，
+    //  我上一轮钉的「已知分歧」到此作废，改成直接严格比对。）
     for (const frozenModule of frozen.data.modules) {
-      if (frozenModule.unsupported === undefined || KNOWN_DIVERGENCE.has(String(frozenModule.key))) continue;
+      if (frozenModule.unsupported === undefined) continue;
       expect(liveModules.find((module) => module.key === frozenModule.key)!.unsupported,
         String(frozenModule.key)).toBe(frozenModule.unsupported);
     }
-
-    // ★daily-v1.json 处在半更新状态：`dim_agent` 已改成 unsupported:false，
-    // 但 F-Q023-2 同一批要我填的 `dim_bid_tool` 还冻着 true、`dim_resource_position`
-    // 干脆没这个键。我按裁决把三个都填了，所以 bid_tool 这一格与 fixture 相反。
-    // 钉在这里，等 arch 同步 fixture；免得下次谁对着 fixture 以为我做错了。
-    expect(frozen.data.modules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(true);
-    expect(liveModules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(false);
   });
 });

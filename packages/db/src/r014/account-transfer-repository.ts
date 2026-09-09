@@ -77,7 +77,14 @@ export class AccountTransferRepository {
           [approved.workspaceId, fromIdentityId, item.media, item.accountId],
         )).rows.length === 1;
         if (!granted) {
-          skipped.push({ ...item, reason: "not_granted" });
+          // 账户压根不存在 vs 存在但交出方没授权：v1.9.13 分成两个 reason。
+          const exists = (await client.query(
+            "SELECT 1 FROM accounts WHERE workspace_id=$1 AND media=$2 AND account_id=$3",
+            [approved.workspaceId, item.media, item.accountId],
+          )).rows.length === 1;
+          skipped.push(exists
+            ? { ...item, reason: "not_authorized", detail: "交出方没有这个账户的有效授权" }
+            : { ...item, reason: "not_found", detail: "本空间没有这个账户" });
           continue;
         }
         // 有未终态变更集的账户不许交接：执行到一半换人会让「谁发起、谁负责」对不上。
@@ -88,7 +95,9 @@ export class AccountTransferRepository {
           [approved.workspaceId, item.media, item.accountId],
         )).rows.length > 0;
         if (running) {
-          skipped.push({ ...item, reason: "blocked_by_changeset" });
+          skipped.push({
+            ...item, reason: "blocked_by_changeset", detail: "有未终态变更集，交接后再试",
+          });
           continue;
         }
         const revoked = await client.query(
@@ -98,7 +107,8 @@ export class AccountTransferRepository {
           [approved.workspaceId, fromIdentityId, item.media, item.accountId, approved.userId],
         );
         if (revoked.rows.length !== 1) {
-          skipped.push({ ...item, reason: "not_granted" });
+          // 上面刚查过有授权，这里却撤不到——说明并发里被别人撤了；按未授权报，不假装成功。
+          skipped.push({ ...item, reason: "not_authorized", detail: "交出方没有这个账户的有效授权" });
           continue;
         }
         const accessLevel = String((revoked.rows[0] as { access_level: unknown }).access_level);

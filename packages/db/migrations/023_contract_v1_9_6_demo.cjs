@@ -1,18 +1,16 @@
-// Contract v1.9.6 (Q-022 访客登录): the demo workspace guests land in.
+// Contract v1.9.12 (Q-022 访客登录): the demo workspace guests land in.
 //
-// `workspaces_kind_ck` 目前只允许 personal|team，所以 kind='demo' 的演示空间**建不出来**
-// —— 灌数脚本会被约束挡回去。schema.sql 里这一行还没改（那是 arch 的权威文件），
-// 已在回执请他同步；这里的依据是 api.md v1.9.6。
+// arch 裁定**不加 `demo` 这个 workspaceKind**（全仓 20 多处 `kind === "team"` 判断都要跟着过一遍，
+// 不值当）。改法：演示空间就是 `kind='team'`（天然只读全量、scope 复用 team_workspace_readonly）
+// 外加一个标记列 `is_demo`。DDL 逐字取自 schema.sql 第 12 行。
 //
-// 只放宽约束、不动任何数据：现有 personal/team 行不受影响。
+// 只加列不动数据：现有空间全部默认 false。
 exports.up = (pgm) => {
   pgm.sql(`
     SET LOCAL lock_timeout = '5s';
     SET LOCAL statement_timeout = '5min';
 
-    ALTER TABLE workspaces DROP CONSTRAINT workspaces_kind_ck;
-    ALTER TABLE workspaces ADD CONSTRAINT workspaces_kind_ck
-      CHECK (kind IN ('personal', 'team', 'demo'));
+    ALTER TABLE workspaces ADD COLUMN is_demo BOOLEAN NOT NULL DEFAULT false;
   `);
 };
 
@@ -22,16 +20,14 @@ exports.down = (pgm) => {
     SET LOCAL statement_timeout = '5min';
     DO $$
     BEGIN
-      -- 有演示空间时不许收窄：收窄会让那条 workspaces 行违反约束，回滚当场失败，
-      -- 更糟的是把访客体系打回「登录后无处可去」。先清演示空间再回滚。
-      IF EXISTS (SELECT 1 FROM workspaces WHERE kind = 'demo') THEN
-        RAISE EXCEPTION 'demo workspaces still exist; cannot narrow workspaces_kind_ck';
+      -- 还有演示空间时不许回滚：丢了这个标记，那个空间就变成一个普通团队空间，
+      -- 访客会话会落到「看起来是真数据」的地方。先把演示空间清掉再回滚。
+      IF EXISTS (SELECT 1 FROM workspaces WHERE is_demo) THEN
+        RAISE EXCEPTION 'demo workspaces still exist; cannot drop workspaces.is_demo';
       END IF;
     END;
     $$;
 
-    ALTER TABLE workspaces DROP CONSTRAINT workspaces_kind_ck;
-    ALTER TABLE workspaces ADD CONSTRAINT workspaces_kind_ck
-      CHECK (kind IN ('personal', 'team'));
+    ALTER TABLE workspaces DROP COLUMN is_demo;
   `);
 };

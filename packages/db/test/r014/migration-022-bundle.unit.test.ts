@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const require = createRequire(import.meta.url);
@@ -51,4 +51,36 @@ describe("022 trigram package (not PostgreSQL SQL execution)", () => {
       expect(sqlFor(direction)).toContain("SET LOCAL lock_timeout = '5s'");
     }
   });
+
+describe("023 demo-workspace marker (not PostgreSQL SQL execution)", () => {
+  const require023 = createRequire(import.meta.url);
+  const sql023 = (direction: "up" | "down"): string => {
+    const migration = require023("../../migrations/023_contract_v1_9_6_demo.cjs") as Migration;
+    const statements: string[] = [];
+    migration[direction]({ sql: (sql) => { statements.push(sql); } });
+    return statements.join("\n");
+  };
+
+  it("adds only the marker column, transcribed from schema.sql", () => {
+    const contract = readFileSync(new URL("../../../contract/schema.sql", import.meta.url), "utf8");
+    expect(contract).toContain("is_demo BOOLEAN NOT NULL DEFAULT false");
+    expect(sql023("up")).toContain("ALTER TABLE workspaces ADD COLUMN is_demo BOOLEAN NOT NULL DEFAULT false");
+    // v1.9.12 撤回了「放宽 kind 约束」那一版：不加 demo kind，就不该动这个约束。
+    expect(sql023("up")).not.toContain("workspaces_kind_ck");
+    expect(sql023("up")).not.toContain("CREATE TABLE");
+  });
+
+  it("refuses to drop the marker while a demo workspace still exists", () => {
+    const down = sql023("down");
+    // 丢了标记，演示空间就变成一个看起来是真数据的团队空间，访客会落进去。
+    expect(down).toContain("demo workspaces still exist");
+    expect(down.indexOf("still exist")).toBeLessThan(down.indexOf("DROP COLUMN"));
+  });
+
+  it("never deletes or rewrites rows", () => {
+    for (const direction of ["up", "down"] as const) {
+      expect(sql023(direction)).not.toMatch(/DELETE FROM|TRUNCATE|UPDATE /);
+    }
+  });
+});
 });

@@ -1,7 +1,9 @@
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import type { Pool } from "pg";
 
-import { R014RepositoryError, approveAuth, requireTimestamp } from "./workspace-authority.js";
+import {
+  R014RepositoryError, approveAuth, requireTimestamp, workItemScopeClause,
+} from "./workspace-authority.js";
 
 /**
  * v1.5 1.8 日报（D7）的读侧。
@@ -57,10 +59,6 @@ export interface DailyReportFacts {
 const SCOPED_METRIC = `($3::text = 'team_workspace_readonly' OR EXISTS (
   SELECT 1 FROM jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
   WHERE allowed.media=metric.media AND allowed.account_id=metric.account_id))`;
-
-const SCOPED_WORK_ITEM = `($2::text = 'team_workspace_readonly' OR account_id IS NULL OR EXISTS (
-  SELECT 1 FROM jsonb_to_recordset($3::jsonb) AS allowed(media text, account_id text)
-  WHERE allowed.media=work_items.media AND allowed.account_id=work_items.account_id))`;
 
 interface DailyScope { kind: string; allowed: string }
 
@@ -225,10 +223,11 @@ export class DailyReportRepository {
 
     const anomalies = await this.pool.query(
       `SELECT COALESCE(title, '工作项') AS title, severity FROM work_items
-       WHERE workspace_id=$1 AND status='open' AND ${SCOPED_WORK_ITEM}
+       WHERE workspace_id=$1 AND status='open'
+         AND ${workItemScopeClause("$2", "$3", "work_items", "$4")}
        ORDER BY CASE severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END, created_at DESC
        LIMIT 10`,
-      [approved.workspaceId, scope.kind, scope.allowed],
+      [approved.workspaceId, scope.kind, scope.allowed, approved.userId],
     );
 
     const determinable = Number(cards.determinable);

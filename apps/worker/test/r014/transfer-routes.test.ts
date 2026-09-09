@@ -178,7 +178,8 @@ describe("A7 account transfer routes (real PostgreSQL)", () => {
     expect(result.status).toBe(200);
     expect((dataOf(result).moved as Record<string, number>).accounts).toBe(1);
     expect(dataOf(result).skipped).toEqual([
-      { media: "KUAISHOU", accountId: ACCOUNTS[0], reason: "blocked_by_changeset" },
+      { media: "KUAISHOU", accountId: ACCOUNTS[0], reason: "blocked_by_changeset",
+        detail: "有未终态变更集，交接后再试" },
     ]);
   });
 
@@ -194,7 +195,9 @@ describe("A7 account transfer routes (real PostgreSQL)", () => {
     });
     expect((dataOf(result).moved as Record<string, number>).accounts).toBe(0);
     expect(dataOf(result).skipped).toEqual([
-      { media: "KUAISHOU", accountId: ACCOUNTS[1], reason: "not_granted" },
+      // v1.9.13 把「没授权」和「没这个户」分开了；这一条是户在、但交出方没有效授权。
+      { media: "KUAISHOU", accountId: ACCOUNTS[1], reason: "not_authorized",
+        detail: "交出方没有这个账户的有效授权" },
     ]);
   });
 
