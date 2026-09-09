@@ -17,7 +17,7 @@ import { taskReviewFixtures, type TaskReview } from "@/lib/fixtures/v17"
 
 // 任务复盘（v1.7 7.2）：发起 Deep Research → 状态 → 六段带溯源（goal / cost_trend / key_operations / attribution / why / next）；why / next 标「待人确认」；生成即归档知识库
 const reviewStatusMeta: Record<TaskReview["status"], { label: string; tone: "pending" | "progress" | "success" | "critical" }> = { queued: { label: "排队", tone: "pending" }, running: { label: "研究中", tone: "progress" }, ready: { label: "已生成", tone: "success" }, failed: { label: "失败", tone: "critical" } }
-const citationHref = (ref: string) => { const [type, id] = ref.split(":"); return type === "work_item" ? `/diagnostics/${id}` : type === "task" ? `/tasks/${id}` : null }
+const citationHref = (ref: string) => { const [type, id] = ref.split(":"); return type === "work_item" ? `/work-items/${id}` : type === "task" ? `/tasks/${id}` : null }
 
 export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName?: string }) {
   const fixture = taskReviewFixtures[taskId]

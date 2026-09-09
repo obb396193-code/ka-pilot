@@ -35,7 +35,7 @@ import { themeModes } from "@/lib/theme/theme"
 import { OPEN_COMMAND_EVENT, openAgentDrawer } from "./events"
 
 import { isOk } from "@/lib/fixtures/contract"
-import { searchFixture, searchTypeLabel, type SearchItem } from "@/lib/fixtures/agent"
+import { searchFixture, searchTypeLabel, type SearchItem, searchSubtitle } from "@/lib/fixtures/agent"
 
 // ⌘K 命令面板 = 对象直达（GET /search?q= · system/search.json）+ 最近访问 + 页面 + 动作；命中为空 → 问 AI
 const typeIcon: Record<SearchItem["type"], typeof IconDatabase> = { account: IconDatabase, task: IconTargetArrow, work_item: IconAlertTriangle, material: IconBook2, document: IconBook2 }
@@ -101,9 +101,9 @@ export function CommandPalette() {
               <span className="truncate">查看全部结果：{query}</span>
             </CommandItem>
             {searchData.items.map((item) => { const Icon = typeIcon[item.type]; return (
-              <CommandItem key={item.id} value={`${searchTypeLabel[item.type]} ${item.label} ${item.id}`} onSelect={() => go(item.href)}>
+              <CommandItem key={item.id} value={`${searchTypeLabel[item.type]} ${item.title} ${item.id}`} onSelect={() => go(item.href)}>
                 <Icon />
-                <span className="truncate">{item.label}</span>
+                <span className="flex min-w-0 flex-col"><span className="truncate">{item.title}</span>{searchSubtitle(item) ? <span className="truncate text-[11px] text-muted-foreground">{searchSubtitle(item)}</span> : null}</span>
                 <span className="ml-auto flex items-center gap-1.5"><Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">{searchTypeLabel[item.type]}</Badge><span className="font-mono text-[10px] text-muted-foreground">{item.id}</span></span>
               </CommandItem>
             ) })}
@@ -111,9 +111,9 @@ export function CommandPalette() {
         ) : (
           <CommandGroup heading="最近访问">
             {searchData.recent.map((item) => { const Icon = typeIcon[item.type]; return (
-              <CommandItem key={item.id} value={`最近 ${searchTypeLabel[item.type]} ${item.label}`} onSelect={() => go(item.href)}>
+              <CommandItem key={item.id} value={`最近 ${searchTypeLabel[item.type]} ${item.title}`} onSelect={() => go(item.href)}>
                 <Icon />
-                <span className="truncate">{item.label}</span>
+                <span className="truncate">{item.title}</span>
                 <span className="ml-auto flex items-center gap-1.5"><Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">{searchTypeLabel[item.type]}</Badge></span>
               </CommandItem>
             ) })}

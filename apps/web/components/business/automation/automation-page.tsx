@@ -164,7 +164,7 @@ function makeAgentColumns(onEvents: (run: AgentRunItem) => void) {
     agentHelper.accessor("durationMs", { header: "耗时", meta: { label: "耗时", align: "right" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue() == null ? "−" : `${(getValue()! / 1000).toFixed(1)} s`}</span> }),
     agentHelper.accessor((row) => row.tokens?.in ?? null, { id: "tokens", header: "Tokens", meta: { label: "Tokens", align: "right" }, cell: ({ row }) => row.original.tokens ? <span className="tabular-nums">{row.original.tokens.in} / {row.original.tokens.out}</span> : <MissingValue /> }),
     agentHelper.accessor("budgetUsd", { header: "花费", meta: { label: "花费", align: "right" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue() == null ? "−" : `$${getValue()!.toFixed(2)}`}</span> }),
-    agentHelper.accessor((row) => row.result?.workItemId ?? "", { id: "result", header: "产物", meta: { label: "产物" }, cell: ({ row }) => row.original.result?.workItemId ? <Link href={`/diagnostics/${row.original.result.workItemId}`} className="text-xs underline-offset-4 hover:underline">工作项 …{row.original.result.workItemId.slice(-4)}</Link> : <MissingValue /> }),
+    agentHelper.accessor((row) => row.result?.workItemId ?? "", { id: "result", header: "产物", meta: { label: "产物" }, cell: ({ row }) => row.original.result?.workItemId ? <Link href={`/work-items/${row.original.result.workItemId}`} className="text-xs underline-offset-4 hover:underline">工作项 …{row.original.result.workItemId.slice(-4)}</Link> : <MissingValue /> }),
     actionsColumn<AgentRunItem>((run) => <DropdownMenuItem onSelect={() => onEvents(run)}>查看事件（受限日志）</DropdownMenuItem>),
   ])
 }
