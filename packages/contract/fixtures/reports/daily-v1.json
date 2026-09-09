@@ -120,7 +120,8 @@
       {
         "key": "dim_task",
         "title": "按任务",
-        "rows": []
+        "rows": [],
+        "unsupported": false
       },
       {
         "key": "dim_biz",
@@ -213,7 +214,8 @@
             },
             "anomaly": false
           }
-        ]
+        ],
+        "unsupported": false
       },
       {
         "key": "dim_account",
@@ -308,7 +310,8 @@
             },
             "anomaly": false
           }
-        ]
+        ],
+        "unsupported": false
       },
       {
         "key": "dim_agent",
@@ -513,12 +516,14 @@
       {
         "key": "dim_deduction",
         "title": "扣量区间",
-        "rows": []
+        "rows": [],
+        "unsupported": true
       },
       {
         "key": "deduction_analysis",
         "title": "扣量分析",
-        "rows": []
+        "rows": [],
+        "unsupported": true
       },
       {
         "key": "health",
@@ -528,7 +533,8 @@
       {
         "key": "cost_tiers",
         "title": "消耗分层",
-        "rows": []
+        "rows": [],
+        "unsupported": true
       }
     ],
     "actions": {
@@ -560,7 +566,8 @@
       "dim_deduction: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
       "deduction_analysis: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
       "cost_tiers: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
-      "v1.9.13：dim_bid_tool / dim_resource_position 与 dim_agent 同批填行（键=解析段值），unsupported=false"
+      "v1.9.13：dim_bid_tool / dim_resource_position 与 dim_agent 同批填行（键=解析段值），unsupported=false",
+      "v1.9.13b：十个维度模块一律带 unsupported 键（false=有行，true=源未接）——与实现键集对拍"
     ]
   }
 }
