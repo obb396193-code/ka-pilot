@@ -57,7 +57,7 @@ export function ShadowTab() {
             <div className="grid gap-2 @3xl/main:grid-cols-4">
               {[
                 { label: "观察改善率", pass: exam.gates.observation.pass, text: `${rv(exam.gates.observation.value)} · 门槛 ${(exam.gates.observation.threshold * 100).toFixed(0)}% · 最少 ${exam.gates.observation.minSample} 样本` },
-                { label: "执行可靠性", pass: exam.gates.executionReliability.pass, text: `成功 ${rv(exam.gates.executionReliability.successRate)} · UNKNOWN ${rv(exam.gates.executionReliability.unknownRate)}` },
+                { label: "执行可靠性", pass: exam.gates.executionReliability.pass, text: `成功 ${rv(exam.gates.executionReliability.successRate)} · 结果未知 ${rv(exam.gates.executionReliability.unknownRate)}` },
                 { label: "范围", pass: exam.gates.scope.pass, text: exam.gates.scope.note },
                 { label: "损失上限", pass: exam.gates.lossBound.pass, text: `30 日净损 ${mv(exam.gates.lossBound.netLoss30d, "money0")} · 上限 ¥${exam.gates.lossBound.threshold}` },
               ].map((gate) => <div key={gate.label} className="rounded-lg border px-3 py-2 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{gate.label}</span>{gate.pass ? <StatusChip tone="success">过</StatusChip> : <StatusChip tone="critical">未过</StatusChip>}</div><p className="mt-1 text-xs text-muted-foreground">{gate.text}</p></div>)}

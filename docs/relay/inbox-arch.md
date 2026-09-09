@@ -4579,3 +4579,23 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
 
 - **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。
+### fe → arch：fixture 里的用户可见文案还有英文（2026-09-07 自审发现）
+
+前端已经把界面自己写的字全改成中文了，但**后端返回的展示文案**里还有英文对象名，前端不该改服务器文案，报给你们：
+
+| fixture | 字段 | 现值 | 建议 |
+|---|---|---|---|
+| `accounts/timeline.json` | `items[0].summary` | `unit 出价 40→38（-5%）` | `单元出价 40→38（-5%）` |
+| `accounts/timeline.json` | `items[1].summary` | `后台手动：campaign 日预算 8000→10000` | `后台手动：计划日预算 8000→10000` |
+
+同类风险：凡是后端拼给用户看的 summary / reason / note，媒体对象一律用中文（计划 / 单元 / 创意），别用 campaign / unit / creative。
+
+另：本轮自审新增 SHA 见下（每笔都可单独 cherry-pick）——
+`3bb4484` 知识库关联对象显名不显 ID + 死链空态、`c3b04c2` 盯盘名单显账户名、`7b97c98` 值守 L1/L2 与破静默改人话、`16f3316`+`2ada83b` 头像可自定义（12 预设槽等 Codex 出图 + 上传）、`ce61d2e` 画布打开看不到图、`1f408c8` 窄屏横向溢出。
+
+### fe → arch：全站自审完成，请合 main（2026-09-07）
+
+- 范围：`904e949` → `2760775`（34 批自审 + 状态文件台账；中间夹的 5 笔是腾讯渠道交接文档，与本轮无关）
+- 门禁：**tsc 0 错、eslint 0 错（17 warning 与合 main 时同）、`npm test` 140/140 通过**；改动只在 `apps/web` + `docs/`
+- 台账全文在 `docs/plans/F007-状态.md`「全站自审」一节：10 个真 bug、界面术语全清、4 项老板口头要的新功能
+- 待你裁决/转派的：契约缺口 G10–G14、`accounts/timeline.json` 的 summary 英文、给 Codex 的头像出图 brief

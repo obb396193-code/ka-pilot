@@ -11,7 +11,7 @@ import { openAgentDrawer } from "@/components/business/command/events"
 import { Button } from "@/components/ui/button"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { isOk, rv } from "@/lib/fixtures/contract"
+import { isOk, rv, exportStatusText } from "@/lib/fixtures/contract"
 import { exportQueuedFixture, tableFixture, type TableRow } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { cell, GroupHeader, LineageFooter, OnTargetChip } from "./shared"
@@ -89,7 +89,7 @@ export function TableTab({ onSaveView }: { onSaveView: (name: string, columns: s
         actions={
           <>
             <Button variant="outline" size="sm" onClick={() => { const visible = table.getVisibleLeafColumns().map((column) => column.id).filter((id) => !["drag", "select", "actions"].includes(id)); onSaveView("我的总表视图", visible); toast.success("已存为个人视图「我的总表视图」", { description: "接入后同步到账号" }) }}><IconDeviceFloppy />存列</Button>
-            <Button variant="outline" size="sm" onClick={() => { const queued = isOk(exportQueuedFixture) ? exportQueuedFixture.data : null; toast(queued ? `已加入导出队列 · ${queued.format}` : "导出接口接入后可用", { description: queued ? `exportId ${queued.exportId.slice(-6)} · 状态 ${queued.status}；完成后带口径戳与数据日期` : undefined }) }}><IconDownload />导出 Excel</Button>
+            <Button variant="outline" size="sm" onClick={() => { const queued = isOk(exportQueuedFixture) ? exportQueuedFixture.data : null; toast(queued ? `已加入导出队列 · ${queued.format}` : "导出接口接入后可用", { description: queued ? `导出单号 ${queued.exportId.slice(-6)} · ${exportStatusText(queued.status)}；完成后带口径戳与数据日期` : undefined }) }}><IconDownload />导出 Excel</Button>
           </>
         }
         bulkActions={<Button variant="outline" size="sm" onClick={() => openAgentDrawer(`分析所选 ${table.getSelectedRowModel().rows.length} 条账户日行`)}>分析所选</Button>}

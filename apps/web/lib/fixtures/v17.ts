@@ -58,6 +58,8 @@ export const actionKindLabel: Record<string, string> = { lower_bid: "降价", ra
 export type AiImpact = { window: { from: string; to: string; preset?: string }; quadrants: { automatedRules: { executed: MetricValue; succeeded: MetricValue; unknown: MetricValue }; anomaliesIntercepted: { count: MetricValue; p0: MetricValue; avgAckMinutes: RatioValue }; hoursSaved: { value: MetricValue; basis: string; detail: { action: string; count: number; minutes: number }[] }; observedCostDiff: { adoptedVsNot: { cashCpaDelta: RatioValue; sample: { adopted: number; notAdopted: number } }; caveat: string } }; trend: { ds: string; executed: MetricValue; intercepted: MetricValue; hoursSaved: MetricValue }[]; byUser: { userId: string; name: string; executed: number; hoursSaved: number }[] }
 export const aiImpactFixture = aiImpact as unknown as Fixture<AiImpact>
 export const aiActionLabel: Record<string, string> = { diagnosis: "诊断", changeset_bid: "调价变更集", report_daily: "日报" }
+// 节省人时的口径键，界面显中文
+export const hoursSavedBasisLabel: Record<string, string> = { action_minutes_table: "按每类操作的估时表折算（表里的分钟数可改）", manual_estimate: "人工估算", not_configured: "未配置" }
 
 // ---- 7.2 周报 / 复盘 ----
 export type WeeklySection = { key: "overview"; cards: { cost: MetricValue; cashCost: MetricValue; realConversion: MetricValue; cashCpa: RatioValue; onTargetRate: RatioValue } } | { key: "tasks"; rows: { taskId: string; taskName: string; achievementRate: RatioValue; costStatus: CostStatus; stage: string }[] } | { key: "anomalies"; items: { title: string; handled: boolean; t1: string }[] } | { key: "operations"; items: { summary: string; observed: string }[] } | { key: "nextWeek"; items: { text: string; source: string }[] }

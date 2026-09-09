@@ -1,5 +1,7 @@
 "use client"
 
+import { paramTypeLabel, runEventKindLabel } from "@/lib/fixtures/agent"
+
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { IconExternalLink, IconPlus, IconSparkles, IconTopologyStar3 } from "@tabler/icons-react"
@@ -178,7 +180,7 @@ function RunsTab() {
   const eventData = isOk(agentRunEventsFixture) && events && agentRunEventsFixture.data.runId === events.runId ? agentRunEventsFixture.data : null
   return (
     <div className="flex flex-col gap-6">
-      <DataGrid table={table} empty="没有运行记录" toolbar={<Tabs value={status} onValueChange={(value) => setStatus(value as typeof status)}><TabsList><TabsTrigger value="all">全部</TabsTrigger><TabsTrigger value="active">运行中 / UNKNOWN</TabsTrigger><TabsTrigger value="waiting">待确认</TabsTrigger><TabsTrigger value="done">已结束</TabsTrigger></TabsList></Tabs>} />
+      <DataGrid table={table} empty="没有运行记录" toolbar={<Tabs value={status} onValueChange={(value) => setStatus(value as typeof status)}><TabsList><TabsTrigger value="all">全部</TabsTrigger><TabsTrigger value="active">运行中 / 结果未知</TabsTrigger><TabsTrigger value="waiting">待确认</TabsTrigger><TabsTrigger value="done">已结束</TabsTrigger></TabsList></Tabs>} />
       <Card>
         <CardHeader><CardTitle>Agent / OS 运行监控</CardTitle><CardDescription>我发起的 Run；原始日志受限</CardDescription></CardHeader>
         <CardContent><DataGrid table={agentTable} empty="没有 Agent 运行" showPagination={false} showColumnPicker={false} /></CardContent>
@@ -186,7 +188,7 @@ function RunsTab() {
       <Dialog open={events !== null} onOpenChange={(open) => { if (!open) setEvents(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>运行事件 · …{events?.runId.slice(-4)}</DialogTitle><DialogDescription>只显示事件骨架，不含 prompt / 原始日志</DialogDescription></DialogHeader>
-          {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（示例只给了 …1801）。</p>}
+          {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{runEventKindLabel[event.kind] ?? event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（示例只给了 …1801）。</p>}
         </DialogContent>
       </Dialog>
     </div>
@@ -204,7 +206,7 @@ function CapabilityForm({ item, onClose }: { item: CapabilityItem; onClose: () =
       <div className="grid gap-3">
         {props.length ? props.map(([key, schema]) => (
           <div key={key} className="grid gap-1.5">
-            <Label>{key}{required.includes(key) ? <span className="text-status-critical"> *</span> : null}<span className="ml-1 text-xs text-muted-foreground">{schema.type}{schema.items ? `<${schema.items.type}>` : ""}</span></Label>
+            <Label>{key}{required.includes(key) ? <span className="text-status-critical"> *</span> : null}<span className="ml-1 text-xs text-muted-foreground">{paramTypeLabel[schema.type] ?? schema.type}{schema.items ? `（${paramTypeLabel[schema.items.type] ?? schema.items.type}）` : ""}</span></Label>
             {schema.enum ? (
               <Select value={values[key] ?? ""} onValueChange={(value) => setValues((prev) => ({ ...prev, [key]: value }))}><SelectTrigger><SelectValue placeholder="选择" /></SelectTrigger><SelectContent>{schema.enum.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent></Select>
             ) : schema.type === "number" ? (
