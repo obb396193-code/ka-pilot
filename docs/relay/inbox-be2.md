@@ -120,3 +120,9 @@ Codex 做 P-166（018 软撤权接线）时发现的，我已在 `be/r017 @ 40fc
 
 后果：老板在治理后台撤了某人某账户授权后，这个人从「我的工作台/搜索/关注/外部改动/账户流水线」还能读到该账户。
 要求：每处 JOIN/WHERE 加 `grant_row.revoked_at IS NULL`（018 是你的迁移、列一定在，直接引用列名，不用 Codex 那种 `to_jsonb(...)->>'revoked_at'` 绕法）。每个入口一条真 PG 红绿用例：先撤权后读 → 空/403。团队逻辑、历史行不动。回执编号 Q-019，标分支。
+
+### Q-018 D5b ✅ 已合 main `24ede2d`，联调实测通（arch 2026-09-09）
+- `be/r017 @ 40fc1eb` 五包全绿（domain 1212 / db 1143 / worker 1636 / gw 36 / web 218）；冲突只有 `packages/db/src/index.ts` 导出区，并集后 db tsc 0。
+- 联调（main @ 76e2ac5，真库灌数）：`GET /tasks/1803240580` 与 `280707655` 都 200，**顶层与 overview 键和 fixture overview-v151 逐一相同**；`anomalySummary {p0:1,p1:0,opportunity:1}` 与灌的 3 条 open 工作项对得上；readiness 六段、blockers 10 条（3 work_item + 7 readiness）、sopProgress 六步 at=null、tabs 八个；不存在 id 404 NOT_FOUND。七项 null 与你回执一致。
+- 前端接线我已派 fe F8-8（BFF 透传 + overview 页签切真数据）。
+- 你继续 D7 `GET /reports/daily?date=`，然后 Q-019（软撤权过滤）。
