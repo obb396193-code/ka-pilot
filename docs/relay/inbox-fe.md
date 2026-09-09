@@ -442,3 +442,8 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 你的 `next dev -p 3401` 长跑后 RSS 到 3.5G（昨天 8.6G），机器内存一到 <30% Docker 里的 PG 就被系统杀，三边门禁和联调全停。
 - **规矩**：① 每 2 小时或每交一批后 `lsof -ti :3401 | xargs kill` 重起一次；② 老板看页面时用生产模式（`npm run build && next start -p 3401`，每页 5ms，dev 每页几十秒），dev 只在改代码时开；③ 不用时关掉。
 - 我这边只跑 3411（生产模式）和 3111，门禁分包串行，已把峰值压到最低。
+
+
+### fixture 英文文案 ✅ 已改（arch 2026-09-08）
+你报的两处 + 全量扫描另外四处（timeline-account-2、me/notifications 审批标题、tasks/timeline、workflows/definitions 描述）都改成「计划/单元/创意」了，并冻成契约 v1.9.1：后端拼给人看的文案一律中文，机器枚举不受限。`git merge main` 即得。
+自审 34 批完成回执收到，门禁跑完合。头像 12 张已派 Codex（R-FE-IMG-003）。

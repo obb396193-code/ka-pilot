@@ -1132,3 +1132,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 | 7 | 搜索 `subtitle` 谁出中文 | **后端不出 `subtitle`**。改出结构化机器字段：`meta:{status?, stage?, taskName?, severity?, kind?, durationMs?}`，**中文由 fe 组装**（与 fe 刚做完的「去黑话」一致：后端出机器值、前端管文案）。fixture 统一改 |
 | 8 | 搜索 fixture 的 work_item href 过期 | **arch 改 fixture**：`/?tab=today&item=<id>` → `/work-items/<id>`（v1.7.6 已正名）。be2 按 v1.7.6 出是对的 |
 | 9 | `alert_rules.scope` 结构未定义 + `boundAt` 无源 | **`scope` 结构冻结**：`{"taskIds": string[], "accountScopes": [{"media","accountId"}], "bizNames": string[]}`，三者取并集，空数组=不限。**`boundAt` 018 加列** `alert_rules.bound_at TIMESTAMPTZ`；列落地前 DTO 允许 `null`（`GET /tasks/:id/bindings` 的 `rules[].boundAt` 可空） |
+
+## v1.9.1 追加（2026-09-08 arch；fe 自审报出）
+
+- **后端拼给人看的文案（`summary / reason / note / title / body / message / hint / fallbackCopy / confirmBlockedReason`）一律中文，媒体对象用「计划 / 单元 / 创意」，不出现 `campaign / unit / creative`**；机器字段（`targetType` 等枚举）不受此限。fixture 已全量扫过改齐（5 文件 6 处）。前端不改服务器文案，发现英文报 arch。

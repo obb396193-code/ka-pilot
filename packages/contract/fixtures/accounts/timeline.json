@@ -9,7 +9,7 @@
           "userId": "00000000-0000-4000-8000-000000000001",
           "name": "示例优化师"
         },
-        "summary": "unit 出价 40→38（-5%）",
+        "summary": "单元出价 40→38（-5%）",
         "ref": {
           "type": "changeset",
           "id": "00000000-0000-4000-8000-000000000301"
@@ -37,7 +37,7 @@
         "at": "2026-09-04T14:10:00.000+08:00",
         "kind": "external_change",
         "actor": "external",
-        "summary": "后台手动：campaign 日预算 8000→10000",
+        "summary": "后台手动：计划日预算 8000→10000",
         "ref": {
           "type": "external_change",
           "id": "41"
