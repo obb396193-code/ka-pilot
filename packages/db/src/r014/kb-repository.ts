@@ -27,6 +27,13 @@ const SELECT_COLUMNS = `
   document.owner, document.visibility, document.updated_at`;
 
 /** 可见性谓词：private 只给 owner。参数顺序固定为 (workspaceId, userId)。 */
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 200;
+/** 整棵树没有分页概念，但也不能无上限——超出就如实标 `truncated`，让调用方改用筛选。 */
+const TREE_HARD_LIMIT = 2_000;
+/** 反查一次最多回这么多条；多出来只标 `truncated`，不静默截断。 */
+const REF_LIMIT = 200;
+
 const VISIBLE = `document.workspace_id=$1
   AND document.deleted_at IS NULL
   AND (document.visibility <> 'private' OR document.owner=$2)`;
@@ -49,12 +56,27 @@ export class KbRepository {
     if (this.readOnly(auth)) throw new R014RepositoryError("FORBIDDEN");
   }
 
-  /** 8.x 树/列表。`parentId` 不传 = 整棵树；传了 = 该节点的直接子级（扁平）。 */
+  /**
+   * 8.x 树/列表。`parentId` 不传 = 整棵树；传了 = 该节点的直接子级（扁平）。
+   *
+   * 一律有上限：契约里 `page` 是列出来的参数，而且**不加 LIMIT 的话，空间文档一多
+   * 就会把整库的正文投影一次性捞出来**（`content_text` 是全文，不是摘要）。
+   * 整棵树也给硬上限并如实回 `truncated`，不假装「就这么多」。
+   */
   async list(
     auth: ApprovedWorkspaceAuthContext,
-    filter: { parentId?: string | null; kind?: string; visibility?: string; q?: string } = {},
-  ): Promise<{ items: KbTreeNode[] }> {
+    filter: {
+      parentId?: string | null; kind?: string; visibility?: string; q?: string;
+      page?: number; pageSize?: number;
+    } = {},
+  ): Promise<{ items: KbTreeNode[]; total: number; truncated: boolean }> {
     const approved = approveAuth(auth);
+    const page = filter.page ?? 1;
+    const pageSize = filter.pageSize ?? DEFAULT_PAGE_SIZE;
+    if (!Number.isInteger(page) || page < 1 || !Number.isInteger(pageSize)
+      || pageSize < 1 || pageSize > MAX_PAGE_SIZE) {
+      throw new R014RepositoryError("INVALID_INPUT");
+    }
     const conditions: string[] = [VISIBLE];
     const params: unknown[] = [approved.workspaceId, approved.userId];
 
@@ -79,11 +101,20 @@ export class KbRepository {
       }
     }
 
+    const total = Number((await this.pool.query(
+      `SELECT count(*)::int AS n FROM kb_documents AS document WHERE ${conditions.join(" AND ")}`,
+      params,
+    )).rows[0].n);
+
+    // 排序必须唯一到 id：只按 position/title 排，同名同位的行在翻页之间会漏也会重。
+    const limit = flat ? pageSize : TREE_HARD_LIMIT;
+    const offset = flat ? (page - 1) * pageSize : 0;
     const rows = (await this.pool.query(
       `SELECT ${SELECT_COLUMNS} FROM kb_documents AS document
        WHERE ${conditions.join(" AND ")}
-       ORDER BY document.position NULLS LAST, document.title /* kb-list-page */`,
-      params,
+       ORDER BY document.position NULLS LAST, document.title, document.id
+       LIMIT $${params.length + 1} OFFSET $${params.length + 2} /* kb-list-page */`,
+      [...params, limit, offset],
     )).rows as Record<string, unknown>[];
 
     const nodes = rows.map((row) => {
@@ -95,11 +126,12 @@ export class KbRepository {
       };
     });
     // 过滤过的结果不成树（父可能被筛掉），只有整棵树才嵌套。
+    const truncated = !flat && total > rows.length;
     if (flat || filter.kind !== undefined || filter.visibility !== undefined
       || (filter.q !== undefined && filter.q.trim() !== "")) {
-      return { items: nodes.map((node) => ({ ...node, children: [] })) };
+      return { items: nodes.map((node) => ({ ...node, children: [] })), total, truncated };
     }
-    return { items: buildDocumentTree(nodes) };
+    return { items: buildDocumentTree(nodes), total, truncated };
   }
 
   async get(auth: ApprovedWorkspaceAuthContext, documentId: string): Promise<KbDocument> {
@@ -128,7 +160,7 @@ export class KbRepository {
        WHERE link.workspace_id=$1 AND link.source_document_id=$2
          AND target.deleted_at IS NULL
          AND (target.visibility <> 'private' OR target.owner=$3)
-       ORDER BY target.title`,
+       ORDER BY target.title, target.id`,
       [auth.workspaceId, id, auth.userId],
     )).rows as Record<string, unknown>[];
 
@@ -362,8 +394,13 @@ export class KbRepository {
     });
   }
 
-  /** 8.4 反查一：谁引用了这篇文档。已软删的不出现。 */
-  async backlinks(auth: ApprovedWorkspaceAuthContext, documentId: string): Promise<{ items: KbRefItem[] }> {
+  /**
+   * 8.4 反查一：谁引用了这篇文档。已软删的不出现。
+   * 有上限：一篇被广泛引用的 SOP 反引用可以很多，不设限就是一次请求把它们全捞出来。
+   */
+  async backlinks(
+    auth: ApprovedWorkspaceAuthContext, documentId: string,
+  ): Promise<{ items: KbRefItem[]; truncated: boolean }> {
     const approved = approveAuth(auth);
     const id = requireUuid(documentId);
     // 目标文档本身不可见时不能返空列表——那等于确认它存在。
@@ -379,16 +416,19 @@ export class KbRepository {
        WHERE link.workspace_id=$1 AND link.target_document_id=$3
          AND document.deleted_at IS NULL
          AND (document.visibility <> 'private' OR document.owner=$2)
-       ORDER BY document.title`,
-      [approved.workspaceId, approved.userId, id],
+       ORDER BY document.title, document.id LIMIT $4`,
+      [approved.workspaceId, approved.userId, id, REF_LIMIT + 1],
     )).rows as Record<string, unknown>[];
-    return { items: rows.map((row) => this.refItem(row, approved.workspaceId)) };
+    return {
+      items: rows.slice(0, REF_LIMIT).map((row) => this.refItem(row, approved.workspaceId)),
+      truncated: rows.length > REF_LIMIT,
+    };
   }
 
   /** 8.4 反查二：某个业务对象关联了哪些文档。没有关联返 `items:[]`，不是 404。 */
   async byObject(
     auth: ApprovedWorkspaceAuthContext, objectType: string, objectId: string,
-  ): Promise<{ objectType: string; objectId: string; items: KbRefItem[] }> {
+  ): Promise<{ objectType: string; objectId: string; items: KbRefItem[]; truncated: boolean }> {
     const approved = approveAuth(auth);
     const parsed = kbObjectTypeSchema.safeParse(objectType);
     if (!parsed.success) throw new R014RepositoryError("INVALID_INPUT");
@@ -401,12 +441,13 @@ export class KbRepository {
        WHERE ref.workspace_id=$1 AND ref.object_type=$3 AND ref.object_id=$4
          AND document.deleted_at IS NULL
          AND (document.visibility <> 'private' OR document.owner=$2)
-       ORDER BY document.title`,
-      [approved.workspaceId, approved.userId, parsed.data, objectId],
+       ORDER BY document.title, document.id LIMIT $5`,
+      [approved.workspaceId, approved.userId, parsed.data, objectId, REF_LIMIT + 1],
     )).rows as Record<string, unknown>[];
     return {
       objectType: parsed.data, objectId,
-      items: rows.map((row) => this.refItem(row, approved.workspaceId)),
+      items: rows.slice(0, REF_LIMIT).map((row) => this.refItem(row, approved.workspaceId)),
+      truncated: rows.length > REF_LIMIT,
     };
   }
 

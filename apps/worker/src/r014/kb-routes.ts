@@ -10,6 +10,13 @@ const DOCUMENT = /^\/api\/v1\/kb\/documents\/([0-9a-fA-F-]{36})$/;
 const BACKLINKS = /^\/api\/v1\/kb\/documents\/([0-9a-fA-F-]{36})\/backlinks$/;
 const BY_OBJECT = /^\/api\/v1\/kb\/by-object\/([a-z_]{1,32})\/([^/]{1,128})$/;
 
+/** 分页参数：非正整数直接拒，不悄悄当默认值——那会让调用方以为自己翻到了第 0 页。 */
+function positive(key: string, raw: string | null): Record<string, number> {
+  if (raw === null) return {};
+  if (!/^[0-9]{1,6}$/.test(raw)) throw new R014HttpError(400, "INVALID_REQUEST", `${key} must be a positive integer`);
+  return { [key]: Number(raw) };
+}
+
 /** `exactOptionalPropertyTypes` 下「不传」和「传 undefined」不是一回事，所以缺参直接不进对象。 */
 function optional(key: string, value: string | null): Record<string, string> {
   return value === null ? {} : { [key]: value };
@@ -23,17 +30,20 @@ export function createKbRoutes(pool: Pool): R014Route[] {
       const method = requireMethod(context.request, ["GET", "POST"]);
       if (method === "GET") {
         const parentParam = context.url.searchParams.get("parent_id") ?? context.url.searchParams.get("parentId");
-        sendData(
-          context.response,
-          await repository.list(context.auth, {
+        const listed = await repository.list(context.auth, {
             // `parent_id=root` 明确要顶层；不传该参数才是「整棵树」。
             ...(parentParam === null ? {} : { parentId: parentParam === "root" ? null : parentParam }),
             ...optional("kind", context.url.searchParams.get("kind")),
             ...optional("visibility", context.url.searchParams.get("visibility")),
             ...optional("q", context.url.searchParams.get("q")),
-          }),
-          context.requestId, context.maxResponseBytes,
-        );
+            ...positive("page", context.url.searchParams.get("page")),
+            ...positive("pageSize", context.url.searchParams.get("page_size")
+              ?? context.url.searchParams.get("pageSize")),
+        });
+        // `data` 严格保持 fixture 冻的形状（tree.json 只有 items）；
+        // 总数与截断标记是分页信号，放 meta —— 与 TRGM_MISSING 同一处理。
+        sendData(context.response, { items: listed.items }, context.requestId, context.maxResponseBytes,
+          { total: listed.total, truncated: listed.truncated });
         return;
       }
       const body = await readJsonBody(context.request, 4_194_304) as Record<string, unknown> | undefined;
@@ -68,17 +78,19 @@ export function createKbRoutes(pool: Pool): R014Route[] {
     guardedRoute((pathname) => BACKLINKS.test(pathname), async (context) => {
       requireMethod(context.request, ["GET"]);
       const documentId = BACKLINKS.exec(context.url.pathname)![1]!;
-      sendData(context.response, await repository.backlinks(context.auth, documentId),
-        context.requestId, context.maxResponseBytes);
+      const links = await repository.backlinks(context.auth, documentId);
+      sendData(context.response, { items: links.items }, context.requestId, context.maxResponseBytes,
+        { truncated: links.truncated });
     }),
 
     guardedRoute((pathname) => BY_OBJECT.test(pathname), async (context) => {
       requireMethod(context.request, ["GET"]);
       const [, objectType, objectId] = BY_OBJECT.exec(context.url.pathname)!;
+      const related = await repository.byObject(context.auth, objectType!, decodeURIComponent(objectId!));
       sendData(
         context.response,
-        await repository.byObject(context.auth, objectType!, decodeURIComponent(objectId!)),
-        context.requestId, context.maxResponseBytes,
+        { objectType: related.objectType, objectId: related.objectId, items: related.items },
+        context.requestId, context.maxResponseBytes, { truncated: related.truncated },
       );
     }),
 
