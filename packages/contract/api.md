@@ -1261,3 +1261,10 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 日报六卡/异常/趋势/维度行按会话 scope 收口（be2 自查修复）追认为契约：**任何按 workspace 聚合的读都必须过授权谓词**，团队空间只读全量、个人空间只看授权账户。
 - 规矩：`schema.sql` 注释不用反引号；fixture 路径已存在的先查作者，新形状另起 `-vX` 文件。
 
+## v1.9.10 追加（2026-09-09 arch；裁 be2 Q-026）
+- **pg_trgm 撤回不装**（v1.9.8 那条作废）：be2 实测短中文词 trigram 相似度为 0（`similarity('新任务开户到基建SOP','开户')=0`），救不了「搜开户」；kb/全局搜索保持「子串 ILIKE OR FTS」双通路 + 可解释排序分。文档量上来再谈 GIN 索引。
+- **`dim_ubp` 不映射任何昵称段**：UBP/UAA/智投是平台侧属性（内网 `base_adgroup.is_ubp`），只能来自 ka-data 暴露（门禁 A26）；暴露前保持 `unsupported:true`，不猜。
+- BFF 共享稳定码枚举加 `NOT_FOUND / CONFLICT / RATE_LIMITED`（be2 已在 r014 forwarder 本地扩；fe F8-14 把它们并进共享 `contracts.ts`，状态映射 404/409/429）。
+- D5b-2 cost 四项已接（窗口=本月至业务日，按 scope tuple 收敛；窗口内缺一天整段 missing）；`projectedWindowCashCpa / affordableDailyCashCpa` 窗口源不提供 → undefined；`budget*` 仍等 014。
+- 归属清洗权限形态、工作项任务级口径：按 v1.9.9 / §3.3（已裁，be2 未及看到）。
+

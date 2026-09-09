@@ -656,3 +656,19 @@ P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要
 
 ### P-175 `400b63e1` 未合：worker 1 红是真红（arch 2026-09-09）
 干净树门禁：domain 4 红是**我的 fixture**（members.json / dimension-v3-agent_type.json 已在 main 修回，与你无关）；db 1333 绿；**worker `test/qihang-protocol-pg.integration.test.ts` › "persists safe exhausted request detail, retains the job for retry, then leases the same job successfully" 红**：`expected false to be true`。我用独立库 `ka_be_verify_test` 在 `400b63e1` 单跑仍红，而 `c40755a8` 同文件 4/4 绿 → P175 那两笔（2d836d80/400b63e1）改坏的，或该用例对 P175 的安全阶段诊断有顺序依赖。请修后重交（标 SHA），修好我立刻合。你 c40755a8 之前的都已在 main。
+
+### P-178（P1，插在 P176 Task2 之前）：你名下仓储的授权谓词自查（arch 2026-09-09）
+be2 在他名下逐条 SQL 扫出 6 处「按 workspace 聚合、不核账户授权」的越权（任务详情、日报、搜索、通知、计数、交接次序），全修了，谓词收敛到 `packages/db/src/r014/workspace-authority.ts`（`accountScopeParams / accountScopeClause / workItemScopeClause`）。你名下同类文件他没权限看：请把 **r010 域所有读 `work_items / account_metrics_daily / ad_metrics_hourly / external_changes / changesets / alert_* / pivot / window` 的 SQL** 逐条过一遍：个人空间必须命中会话 scope 的 (media, account_id)，任务级对象看任务下有无授权账户，团队空间只读全量。有漏的按同一谓词收口（直接引用 be2 那个文件，不另写一套），每处一条「摘掉谓词就红」的真 PG 用例，回执列清「查了哪些文件、几处漏、几处误报」。
+- 另：`2534d684` 上 `qihang-protocol-pg` 那条用独立库单跑已绿（P176 顺手修好或 P175 时的顺序依赖），主门禁跑完我把它上链，不用你再动。P177 守卫改法（`ka_*_test` + local 55432）对。
+
+### P-175 / P-176 ✅ 已合 main（arch 2026-09-09）
+`2534d684` 门禁：domain 1311 / worker 1768 / gw 36 / web 223 绿；db 链跑时 `contract-v1-3-migration` 3 红，独立库单跑 4/4 绿、你也没动迁移 → 判为链内顺序干扰，合了。队列：P-178 授权自查（P1）→ P177 守卫 → P176 Task2/3（Full/Incr 容错 + coverage）→ F-OS-004 → 021。
+
+### F-P179（小，排在 P-178 之后）：`GET /system/etl-runs` 契约写「已有」但没注册（arch 2026-09-09，第十五轮联调）
+main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src` 里 grep 不到该路径；api.md v1.7.5 冻的行形状 = 一次 attempt `{runId, jobId, attempt, jobType, status, businessDate, startedAt, finishedAt, rows{raw,canonical}|null, warnings[]}`，`POST /system/etl-runs/:id/rerun` 仅 admin。治理后台「拉数记录」tab 靠它。你 P176 的 warnings（BATCH_FAILED）正好从这里露出来。fixture `system/etl-runs*.json`（已有）逐字段对拍。
+
+### P-177 / P-178 ✅ 收到，`2d50476b` 上链门禁中（arch 2026-09-09）
+时钟到期假设修法对；守卫 `ka_*_test` + local 55432 对；你独占库对。另：主门禁复用库残留把 `contract-v1-3-migration` 弄红过，我改成每次重建库，与你无关。队列：P-178 授权自查 → F-P179（etl-runs 端点）→ P176 Task2/3 → F-OS-004 → 021。
+
+### P-177 / P-178 ✅ 已合 main `c0a5ff9d`（arch 2026-09-09）
+门禁 domain 1311 / db 1387 / worker 1779 / gw 36 / web 223 全绿。

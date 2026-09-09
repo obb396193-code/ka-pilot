@@ -149,6 +149,36 @@ describe("Q-019 soft revocation is honoured by every grant-based read (real Post
     expect(after.tasks.participating).toBe(0);
   });
 
+  it("keeps another optimizer's work items out of search, notifications and counts", async () => {
+    await restore();
+    // 别人账户上的工作项：标题里带着账户名，泄出去就是把别人的经营情况端出去。
+    const other = (await pool.query(
+      "INSERT INTO accounts(workspace_id,media,account_id,account_name) VALUES($1,'KUAISHOU','q019-other','别人的户') RETURNING account_id",
+      [workspaceId],
+    )).rows[0].account_id;
+    await pool.query(
+      `INSERT INTO work_items(workspace_id,type,severity,title,status,media,account_id)
+       VALUES($1,'diagnosis','P0','Q019 别人户的成本异常','open','KUAISHOU',$2)`,
+      [workspaceId, other]);
+    await pool.query(
+      `INSERT INTO work_items(workspace_id,type,severity,title,status,media,account_id)
+       VALUES($1,'diagnosis','P1','Q019 我的户的成本异常','open','KUAISHOU',$2)`,
+      [workspaceId, ACCOUNT]);
+
+    const found = (await search.search(auth, "Q019")).items.filter((item) => item.type === "work_item");
+    expect(found.map((item) => item.title)).toEqual(["Q019 我的户的成本异常"]);
+
+    const counts = await me.countsParts(auth, EMPTY_READ_STATE);
+    // 只该数到自己那一条，不是全空间两条。
+    expect(counts.workItems).toEqual({ open: 1, p0: 0, p1: 1, opportunity: 0 });
+
+    const notifications = await me.notificationSources(auth);
+    expect(JSON.stringify(notifications)).not.toContain("别人户");
+
+    await pool.query("DELETE FROM work_items WHERE workspace_id=$1", [workspaceId]);
+    await pool.query("DELETE FROM accounts WHERE workspace_id=$1 AND account_id=$2", [workspaceId, other]);
+  });
+
   it("keeps the revoked grant row for audit instead of deleting it", async () => {
     await revoke();
     const row = (await pool.query(

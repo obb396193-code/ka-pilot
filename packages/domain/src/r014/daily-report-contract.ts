@@ -94,3 +94,40 @@ export function unsupportedModule(key: DailyReportModuleKey): DailyReportModule 
   if (definition === undefined) throw new Error(`unknown daily report module: ${key}`);
   return dailyReportModuleSchema.parse({ ...definition, rows: [], unsupported: true });
 }
+
+/**
+ * v1.9.2：按解析维度归并账户行。**不查库、不重算指标**——把已经按账户聚好的行
+ * 按该账户的维度值合并而已，所以和六卡、dim_account 天然同源。
+ *
+ * 解析不出该维度的账户归入「未标注」桶：这是 v1.7.9 对 agent_type 定的口径
+ * （无标记的显「未标注」），不是丢掉，也不是硬塞进某个真实取值里。
+ */
+export const UNLABELLED_DIMENSION = "未标注";
+
+export function groupRowsByDimension<Row extends { key: string; metrics: Record<string, number | null> }>(
+  rows: readonly Row[],
+  valueOf: (row: Row) => string | null,
+): { key: string; label: string; metrics: Record<string, number | null> }[] {
+  const buckets = new Map<string, { key: string; label: string; metrics: Record<string, number | null> }>();
+  // null 是「没有数据」不是 0。整组都没数据的指标必须留 null——两个 null 相加得 0，
+  // 就是把「不知道」变成了「确实是零」。所以单独记「这一格见过真值没有」。
+  const seenValue = new Map<string, Set<string>>();
+
+  for (const row of rows) {
+    const value = valueOf(row) ?? UNLABELLED_DIMENSION;
+    const bucket = buckets.get(value) ?? { key: value, label: value, metrics: {} };
+    const seen = seenValue.get(value) ?? new Set<string>();
+    for (const [metric, amount] of Object.entries(row.metrics)) {
+      if (amount === null) {
+        if (!(metric in bucket.metrics)) bucket.metrics[metric] = null;
+        continue;
+      }
+      bucket.metrics[metric] = (seen.has(metric) ? bucket.metrics[metric] ?? 0 : 0) + amount;
+      seen.add(metric);
+    }
+    seenValue.set(value, seen);
+    buckets.set(value, bucket);
+  }
+  return [...buckets.values()].sort((left, right) =>
+    (right.metrics.cost ?? 0) - (left.metrics.cost ?? 0) || left.key.localeCompare(right.key));
+}

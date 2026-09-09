@@ -190,3 +190,24 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - ⑤1 `RATE_LIMITED`（429，`retryable:true`）**准**，进契约 v1.9.9；fe 我派映射。⑤2 schema.sql 注释反引号**我已全部去掉**，立成规矩（循环工程）。
 - 你说没活了——这些已在 main 等你拉（v1.9.8/1.9.9）：**pg_trgm**（019 加扩展 + trgm 索引 + similarity 分数，缺扩展降级 ILIKE）→ **F-Q023-1**（dim_biz 取绑定任务 biz_name）→ **F-Q023-2**（四个解析维度模块填行）→ **Q-022 访客登录**（v1.9.6）→ 归属清洗权限形态（上面 ③）。
 - `internal-test-login-provider.ts` 交回 Codex 我已转告；你的 `identity-password-repository` 落 main 后 Codex 接 F-OS-004。
+
+### bb0d981a ✅ 已合 main `e9e45530`；改密实测一处对不上 fixture（arch 2026-09-09）
+- 联调（main @ 69b1582b，库升 020 = 16 迁移）：`POST /auth/password` 新密码=当前 → 400、太短 → 400，对；**当前密码错 → 403 `FORBIDDEN`「The caller is not allowed…」**，而 fixture `auth/password-error.json` 冻的是 `INVALID_CREDENTIALS`「当前密码不正确」`retryable:true`。**F-Q024-1**：按 fixture 回（HTTP 401），同一句话不透露是否设过密码；fe 的表单已按 fixture 写了「当前密码不正确」分支，403 会走成未知错误。
+- 归属清洗角色闸、020、identity_passwords 仓储都在 main 了；Codex 接 F-OS-004。你的下一批见上一条（pg_trgm → F-Q023-1/2 → Q-022 访客 → 权限形态）。
+
+### Q-025 ✅ 口径确认 + 立为验收项（arch 2026-09-09）
+- 工作项口径**按你取的**：账户级按 tuple 收口；任务级（account 为空）看该任务下有没有他授权的账户；两者都不沾的不进个人视图。团队空间只读全量不收口。写进验收基线 §3.3「授权谓词铁律」。
+- 谓词收敛到 `workspace-authority.ts` 一处——对。以后新 SQL 读 `work_items / account_metrics_daily / external_changes / changesets / account_metrics_hourly` 必须带那三个谓词之一或先 `assertAccountVisible`，我在验收时 grep。
+- Codex 那边我派自查（P-178）。`1a58b084` 等主门禁跑完就上链。
+
+### 1a58b084 ✅ 已合 main（arch 2026-09-09）
+门禁 domain 1276 / db 1248 / worker 1719 / gw 36 / web 223 全绿；db eslint 那个红还是 `allowedTuple` 死函数（你分支上没拉我的删除），合流后 main 已无。下一批不变：pg_trgm → F-Q023-1/2 → F-Q024-1（改密错误码）→ Q-022 访客 → 权限形态。
+
+### Q-026 三问裁了 → 契约 v1.9.10（arch 2026-09-09）
+- pg_trgm **不装，采纳你的实测**；v1.9.8 那条作废，双通路保持。
+- `dim_ubp` **不映射昵称段**：它是平台属性（内网 `is_ubp`），等 ka-data 暴露（A26）再接，之前保持 unsupported。
+- 权限形态 / 工作项口径：v1.9.9 和验收基线 §3.3 已裁——权限形态选「成员限已授权账户」（拉 main 看），工作项按你取的最保守解。
+- BFF 稳定码：你 forwarder 本地扩三码对；共享枚举由 fe F8-14 并入。`7efe272b` 上链门禁中。你现在真空了的话：**Q-022 访客登录（v1.9.6）**、F-Q024-1（改密错误码）、权限形态改法，三条按序。
+
+### 7efe272b ✅ 已合 main `210b7458`（arch 2026-09-09）
+门禁 domain 1279 / db 1248 / worker 1722 / gw 36 / web 224 绿（db eslint 那个还是死函数，main 已无）。D5b-2 与日报解析维度联调结果见下一条。

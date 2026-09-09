@@ -156,3 +156,24 @@ test("forwarder relays an upstream error envelope with its own status, unchanged
   assert.equal(result.status, 403)
   assert.equal((result.body as { ok: boolean }).ok, false)
 })
+
+test("passes the backend's 404/409/429 through instead of calling them contract violations", async () => {
+  // 后端 r014 用的是 NOT_FOUND / CONFLICT / RATE_LIMITED 这几个码（kb 单读、账户交接、
+  // 任务详情、改密限速都在返）。BFF 原来只认那 11 个稳定码，于是把它们全翻成
+  // 502「上游不合契约」——用户看到的是「上游坏了」，而不是「这篇文档不存在」。
+  for (const [code, status, retryable] of [
+    ["NOT_FOUND", 404, false], ["CONFLICT", 409, false], ["RATE_LIMITED", 429, true],
+  ] as const) {
+    const result = await forwardToBackend(req(), {
+      path: "/api/v1/me/counts", method: "GET", dataSchema: meCountsSchema, environment,
+      requestId: () => "req-err",
+      fetchImpl: async () => Response.json(
+        { ok: false, error: { code, message: "后端的原话", retryable, requestId: "req-err" } },
+        { status, headers: { "x-request-id": "req-err" } },
+      ),
+    })
+    assert.equal(result.status, status)
+    assert.equal((result.body as { error: { code: string; message: string } }).error.code, code)
+    assert.equal((result.body as { error: { message: string } }).error.message, "后端的原话")
+  }
+})

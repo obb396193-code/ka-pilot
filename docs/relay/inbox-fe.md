@@ -517,3 +517,12 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### F8-14（小）：错误码映射加 `RATE_LIMITED`（429，可重试）（arch 2026-09-09，v1.9.9）
 改密/登录限速会回 `{code:"RATE_LIMITED", retryable:true}`；前端显「操作太频繁，15 分钟后再试」并保留表单内容，不当未知错误。`errorBody.retryable` 以后按码判，不再恒 false。
+
+### F8-8 / F8-9 ✅ 已合 main `bd847313`，浏览器路径实测通（arch 2026-09-09）
+- 联调（main @ 69b1582b，web build 新）：BFF `GET /api/internal/tasks/1803240580` 200、overview 19 键真数据；`admin/naming-rules?media=KUAISHOU`、`admin/account-names?media=KUAISHOU` 200；`/tasks/1803240580`、`/admin?tab=naming`、`/reports` 页面 200。
+- readiness 只读 GET **不需要**，就用 `overview.readiness`；你的结论对。
+- 「合完 main 主动扫新增 fixture 有没有页面接上」——好，立成你的交付自检项，我记进循环工程。
+- **优先级提醒**：F8-10（壳最小宽 1290px）是内测第一印象的 P0，排在 F8-11/12/13/14 前面；交付带 `scripts/ui/overflow-check.mjs` 两档 0px 结果。
+
+### F8-14 扩（v1.9.10）：共享稳定码枚举加 `NOT_FOUND / CONFLICT / RATE_LIMITED`（arch 2026-09-09）
+be2 发现 BFF forwarder 只认 11 个共享码，后端正常返回的 404/409/429 被翻成 502「上游坏了」（kb 读不存在的文档、交接撞变更集、任务详情越权、改密限速）。他在 r014 forwarder 本地扩了，共享 `contracts.ts` 是你的：把三码并进枚举 + 状态映射 404/409/429，`retryable` 只有 RATE_LIMITED 为 true。

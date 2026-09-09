@@ -133,8 +133,11 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     const dimensions = (data.modules as Record<string, unknown>[]).filter((module) => "unsupported" in module);
     expect(dimensions).toHaveLength(10);
     const sourced = dimensions.filter((module) => module.unsupported === false).map((module) => module.key);
-    // v1.9.2：这三个从 canonical 日表聚出来（与六卡同源）；其余七个源没接。
-    expect(sourced.sort()).toEqual(["dim_account", "dim_biz", "dim_task"]);
+    // v1.9.2：前三个从 canonical 日表聚；后三个按 account_name_parses 的解析维度归并。
+    // 剩下四个（含 dim_ubp——它对不上命名规范任何一段）源没接。
+    expect(sourced.sort()).toEqual([
+      "dim_account", "dim_agent", "dim_biz", "dim_bid_tool", "dim_resource_position", "dim_task",
+    ].sort());
     for (const module of dimensions) {
       if (module.unsupported === false) continue;
       // 「源没接」和「查过了没有数据」在页面上必须分得开。
@@ -203,5 +206,27 @@ describe("D7 daily report route (real PostgreSQL)", () => {
 
   it("rejects a malformed date", async () => {
     expect((await call("?date=2026-9-5")).status).toBe(400);
+  });
+
+  it("groups the parse-driven dimensions and puts unparsed accounts under 未标注", async () => {
+    const modules = dataOf(await call()).modules as Record<string, unknown>[];
+    const agent = modules.find((module) => module.key === "dim_agent")!;
+    const rows = agent.rows as { key: string; label: string; metrics: Record<string, number | null> }[];
+    expect(rows.length).toBeGreaterThan(0);
+    // 这批账户没有解析行 → 全部归「未标注」，不硬塞进某个真实取值里。
+    expect(rows.map((row) => row.key)).toEqual(["未标注"]);
+
+    // 归并只是把账户行合并，不重算指标：加总必须仍等于大盘卡。
+    const summary = modules.find((module) => module.key === "executive_summary")!;
+    const cardCost = (summary.cards as { cost: { value: number | null } }).cost.value;
+    expect(rows.reduce((total, row) => total + (row.metrics.cost ?? 0), 0)).toBeCloseTo(cardCost ?? 0, 6);
+  });
+
+  it("leaves dim_ubp unsupported rather than guessing which segment UBP means", async () => {
+    const modules = dataOf(await call()).modules as Record<string, unknown>[];
+    const ubp = modules.find((module) => module.key === "dim_ubp")!;
+    // 十个解析维度里没有叫 UBP 的；猜一个映射上去就是给日报贴错标签。
+    expect(ubp.unsupported).toBe(true);
+    expect(ubp.rows).toEqual([]);
   });
 });
