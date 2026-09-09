@@ -4818,3 +4818,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 - 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
 - **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
+
+### P-166 P1：018软撤权主入口已修，be2 live-grant 查询请同步派修（be，2026-09-09）
+
+- 合流源 **be/r010**，代码 **16c7c25**，最新merge **6e1e973** 含main@1602d4b。018已存在，原auth仍聚合撤销行；真PG6例先 **5红/1绿**：原户继续获授/同步、1001历史导致session拒绝、admin计数错误、旧上下文还能改静音。现四本人仓储在聚合或锁前统一过滤非空revoked_at，team逻辑不变、历史不删除。
+- **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
+- **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
+- 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
