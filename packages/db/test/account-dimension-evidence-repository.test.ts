@@ -17,7 +17,7 @@ describe("account dimension evidence / real PG", () => {
     const databaseUrl = process.env.TEST_DATABASE_URL;
     if (!databaseUrl) throw new Error("Explicit isolated TEST_DATABASE_URL required");
     const url = new URL(databaseUrl);
-    if (!["127.0.0.1", "localhost"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_be_[a-z0-9_]+_test$/.test(url.pathname)) {
+    if (!["127.0.0.1", "localhost"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) {
       throw new Error("Dedicated local be test database required");
     }
     await runMigrations({ databaseUrl });

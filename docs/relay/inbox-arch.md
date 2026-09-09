@@ -5148,6 +5148,13 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 - warning固定v1.9.8形状，私有ledger run/job/attempt/current lease/同媒体账户与日期范围限定，10000/16MiB、并发幂等、真实回滚、写前lease时钟反例均过。只有记录内核，**没把Full/Incr容错打开**，还须旧Raw/Canonical missing屏蔽+公开coverage，避免旧数据假ready；不把F-OS-001③勾完。
 - 报告`2026-09-09-P176批次失败内核质量回执.md`，Task2/3计划同前缀。您新P-175库名守卫收到：会单独用本人P177编号修，ka_*_test且local55432，绝不借您的门禁库跑。密码仓储待main后接；BUC/Pod仍条件待办。
 
+### P-177/P-178 两条P175退修回执（be/r010，2026-09-09）
+
+- **495ea1c9**：原协议PG用例本机1/1过；对您对比的400b63e1/c40755a8查consumer/job-repository/full/client/该测试零diff，未进入supervisor。注入Node时钟领先60s，原第二次processOnce断言稳定同错`false→true`；改为先验证未到期不领取，再用PG clock在本例tuple/job条件内模拟到期，原job重试成功。相关6文件32过。**不能断言您当时一定是时钟原因**，请exact复验；若仍红请给断言行与合成job run_after/DB now快照。
+- **16679e7a**：9套件10guard都改为您要求的ka_*_test且local55432（原7套件+P175诊断2套件），静态先9红→10过。新建本人独占`ka_ci_be_r010_p178_test`，DB48、Worker7真实PG/CLI全部过，两包type/lint/cache audit0。不共用您的门禁库。
+- P177/P178均仅测试改动，报告`2026-09-09-P177-P178审查退修质量回执.md`；磁盘5.7GiB仍未全包，P175请重新验收，不冒报已部署。
+- main69b1582已合本人分支2534d684；已收到020密码仓储交回，后续接F-OS-004。P176只完成内核，继续旧canonical屏蔽和批次容错；完整信箱目标仍active，生图停止。
+
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。
 

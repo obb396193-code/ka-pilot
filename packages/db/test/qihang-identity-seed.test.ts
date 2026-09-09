@@ -13,7 +13,7 @@ describe("Qihang identity explicit binding / real PG", () => {
   beforeAll(async () => {
     databaseUrl = process.env.TEST_DATABASE_URL ?? "";
     const url = new URL(databaseUrl);
-    if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_be_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated local be test DB required");
+    if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated local test DB required");
     await runMigrations({ databaseUrl }); pool = new Pool({ connectionString: databaseUrl }); repository = new QihangIdentitySeedRepository(pool);
     for (const id of [workspaceId, other]) await pool.query("INSERT INTO workspaces(id,name) VALUES($1,'synthetic binding')", [id]);
     await pool.query("INSERT INTO users(id,workspace_id,name) VALUES($1,$2,'synthetic actor')", [userId, workspaceId]);
