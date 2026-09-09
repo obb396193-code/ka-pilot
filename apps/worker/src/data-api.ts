@@ -42,6 +42,7 @@ import { createMeRoutes } from "./r014/me-routes.js";
 import { createNamingRoutes } from "./r014/naming-routes.js";
 import { createDailyReportRoutes } from "./r014/daily-report-routes.js";
 import { createTaskDetailRoutes } from "./r014/task-detail-routes.js";
+import { createTransferRoutes } from "./r014/transfer-routes.js";
 import { createTaskRoutes } from "./r014/task-routes.js";
 import { createWorkspaceRoutes } from "./r014/workspace-routes.js";
 import { registerR014Routes } from "./r014/routes.js";
@@ -57,6 +58,7 @@ async function main(): Promise<void> {
     ...createNamingRoutes(pool),
     ...createTaskDetailRoutes(pool),
     ...createDailyReportRoutes(pool),
+    ...createTransferRoutes(pool),
   ]);
   const authRepository = new AuthSessionRepository(pool);
   const sessionAuthService = new SessionAuthService(authRepository);
