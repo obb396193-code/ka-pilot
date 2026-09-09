@@ -1,6 +1,7 @@
 import type { Fixture, MetricValue, RatioValue } from "@/lib/fixtures/contract"
 import library from "@contract/fixtures/reports/library.json"
 import dailyV1 from "@contract/fixtures/reports/daily-v1.json"
+import dailyV1NotSent from "@contract/fixtures/reports/daily-v1-not-sent.json"
 import render from "@contract/fixtures/reports/render.json"
 import configV1 from "@contract/fixtures/reports/config-v1.json"
 import exportQueued from "@contract/fixtures/exports/queued.json"
@@ -22,8 +23,11 @@ export const deliveryLabel: Record<NonNullable<ReportLibraryItem["deliveryStatus
 
 // ---- 日报 daily-report/v1 ----
 export type DailyModule = { key: string; title: string; cards?: { cost: MetricValue; cashCost: MetricValue; realConversion: MetricValue; cashCpa: RatioValue; onTargetRate: RatioValue; costSpace: MetricValue }; anomalies?: string[]; trend?: unknown[]; rows?: unknown[]; unsupported?: boolean; status?: string }
-export type DailyReport = { schema: "daily-report/v1"; date: string; role: "optimizer" | "lead" | "admin" | "finance"; dataAsOf: string; modules: DailyModule[]; actions: { pushDingtalk: boolean; exportPdf: boolean } }
+export type DailyDelivery = { status: "sent" | "not_sent" | "failed"; at: string | null; target: string | null }
+export type DailyReport = { schema: "daily-report/v1"; date: string; role: "optimizer" | "lead" | "admin" | "finance"; dataAsOf: string; modules: DailyModule[]; actions: { pushDingtalk: boolean; exportPdf: boolean }; delivery?: DailyDelivery }
+export const dailyDeliveryMeta: Record<DailyDelivery["status"], { label: string; tone: "success" | "pending" | "critical" }> = { sent: { label: "已推送", tone: "success" }, not_sent: { label: "未推送", tone: "pending" }, failed: { label: "推送失败", tone: "critical" } }
 export const dailyFixture = dailyV1 as unknown as Fixture<DailyReport>
+export const dailyNotSentFixture = dailyV1NotSent as unknown as Fixture<DailyReport>
 export const dailyRoleLabel: Record<DailyReport["role"], string> = { optimizer: "优化师", lead: "负责人", admin: "管理员", finance: "财务" }
 
 // ---- 自定义报告 report-config/v1 + render ----

@@ -1204,7 +1204,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 登录校验顺序（v1.9.3 已定）：`identity_passwords` 有行 → 用表；无行 → 回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（首次引导凭证）。用户首次登录后用 `POST /auth/password` 自改。
 - 成员列表行加 `mustChangePassword: boolean`（初始密码未改过 = true；前端在成员表和该用户设置页提示）。
 - `provider="buc"`：仍只建身份不设密码，登录走 BUC SSO——**BUC 登录 provider 本期未实现**，正式化前置项（门禁 A23）。
-- fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members.json` 行加 `mustChangePassword`。
+- fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members-v195.json`（行加 `mustChangePassword`；F-OS-004 落地后并回 `members.json`——Codex 契约测试是 strict，先不动原文件）。
 - 分工：`identity_passwords` 表/仓储/登录回落 = be2（020，Q-021 ①）；`POST /admin/members` 扩展 + reset-password = Codex（r010 admin-members，**等 be2 的 `identity-password-repository.ts` 落 main 后再接**，不各写一套 scrypt）；成员页「新增成员 / 重置密码」对话框 = fe F8-11。
 
 ## v1.9.6 追加（2026-09-09 arch；老板：没有 BUC 也要能登录，做访客；内网 M0 底表清单带来的源变化）
@@ -1243,9 +1243,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 **`account.dimension/v3` 的来源（P-170）**
 1. **哪些维度带 `source`**：只有十个解析类维度（`placement / bid_mode(bid_tool) / device / goal / rta / agent_type / optimizer / special / landing / rebate`）的行带 `source` + `sources`；`dimension=account|task|biz` 的行**不带**（account 行以后可挂 `dimensions{}` 同列表，本批不做）。
 2. **混合来源**：`source ∈ manual|nickname|platform|qihang|mixed|null`；一组内所有成员账户来源相同 → 该值；不同 → `"mixed"`；`sources` 恒带计数 `{manual?:n, nickname?:n, platform?:n, qihang?:n}`。**不拆行、不重算分组**。`null` 只用于「整组都没有来源」（都没解析出来）。
-3. **昵称值 → 枚举**：`agent_type`：`自投→self`、`代投|代理→agency`、其它/冲突/缺 → `unknown`；`label` 保留原中文值（unknown 时显「未知」）。平台源 `julang_daili_relation.type`（自投/代理）走同一映射。**优先级仍是 manual > nickname > platform**（老板：昵称为主）；昵称与平台不一致 → 该账户在归属清洗页为 `conflict`（v1.8 机制），维度行按优先级取值不等人。
+3. **昵称值 → 枚举**：`agent_type`：`自投→self`、`代投|代理→agency`、其它/冲突/缺 → `unknown`；`label` 保留原中文值（unknown 时显「未标注」，与 v1.7.5 一致）；行仍带 v1.7.5 冻结的 `agent_type` / `agency_name?` 字段。平台源 `julang_daili_relation.type`（自投/代理）走同一映射。**优先级仍是 manual > nickname > platform**（老板：昵称为主）；昵称与平台不一致 → 该账户在归属清洗页为 `conflict`（v1.8 机制），维度行按优先级取值不等人。
 4. **`resource_position` 统一切到 `placement`**：值 = 解析段 `placement`（nickname）或平台版位（`platform`，ka-data `dwd_adgroup_daily.resource_position`）按优先级；旧「平台版位照旧」作废。
-- fixture：`data-query/dimension-v3-agent_type.json`（自投 nickname / 代投 mixed / 未知）。
+- fixture：`data-query/dimension-v3-agent_type-v198.json`（自投 nickname / 代投 mixed / 未标注）；Codex P-170 落地后并回 `dimension-v3-agent_type.json`（现有 domain 严格测试读它，先不动）。
 
 **ETL 单批失败的语义（P-171 ③ / P-172）**
 - 不新增 run 状态枚举。单批失败：该批的 `(media, account_id, ds)` **不写 canonical**（= 缺数 missing），`etl-runs` 行 `warnings[]` 加 `{code:"BATCH_FAILED", resource, ds, accountIds[], fingerprint}`，run 仍 `done`；`account.summary/table` 的 lineage `coverage:"partial"`（现有三态）。**不许**把旧 canonical 当 ready，也不许写 0。
@@ -1254,4 +1254,10 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 **中文搜索（be2 Q-022 ③）**
 - 装 **`pg_trgm`**：migration 019 加 `CREATE EXTENSION IF NOT EXISTS pg_trgm` + `kb_documents(title, content_text)` GIN trgm 索引，`score` = `similarity()` 真值；全局搜索（v1.9）同法。RDS 申请勾 pg_trgm（runbook A1 扩展清单 pgcrypto / btree_gist / pg_trgm）；扩展缺失时降级 ILIKE 双通路并在 `meta.warnings` 标 `TRGM_MISSING`。
 - Q-023 两条备注追认：`assessment_price_history / task_readiness_overrides` 无账户维度，靠主任务 404 闸；任务级工作项（无账户）保留。
+
+## v1.9.9 追加（2026-09-09 arch；裁 be2 Q-024）
+- 稳定错误码加 **`RATE_LIMITED`（429，`retryable:true`）**；`errorBody.retryable` 按码判（其余码维持 false）。前端显「操作太频繁，15 分钟后再试」。
+- 归属清洗六端点权限：`putRule / reparseCandidates` = lead|admin；`list / patch / upsertParse / confirmBatch` = 任何成员，但**只作用于会话 scope 内的账户**（个人空间按授权 tuple 收口；团队空间只读 403）；`currentRule` 不加闸。= v1.8「归属可人工改」+ 与账户列表同口径。
+- 日报六卡/异常/趋势/维度行按会话 scope 收口（be2 自查修复）追认为契约：**任何按 workspace 聚合的读都必须过授权谓词**，团队空间只读全量、个人空间只看授权账户。
+- 规矩：`schema.sql` 注释不用反引号；fixture 路径已存在的先查作者，新形状另起 `-vX` 文件。
 

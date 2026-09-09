@@ -72,6 +72,18 @@ export interface ParsedSegment {
   taskIds: string[];
 }
 
+/**
+ * `account_name_parses.segments` 是 JSONB，读回来要校形状再用。
+ * 库里的东西不是天生可信的——写它的可能是上一版解析器，也可能是人工改过的行。
+ */
+export const parsedSegmentSchema = z.object({
+  key: z.string().min(1).max(64),
+  value: z.string().max(512),
+  mapsTo: z.string().min(1).max(64).nullable(),
+  taskIds: z.array(z.string().max(128)).max(64),
+}).strict();
+export const parsedSegmentsSchema = z.record(z.string().max(64), parsedSegmentSchema);
+
 export interface AccountNameParse {
   /** parser 只产出这三种；conflict / confirmed / overridden 由仓储层按外部事实定。 */
   status: Extract<ParseStatus, "parsed" | "partial" | "failed">;
@@ -330,6 +342,36 @@ export const accountDimensionsSchema = z.object(
     Record<ParsedDimension, typeof dimensionValueSchema>,
 ).strict();
 export type AccountDimensions = z.infer<typeof accountDimensionsSchema>;
+
+/**
+ * DTO 侧的十个维度键（fixture `account-list/ready-v193-dimensions.json` 冻结）。
+ * 库内与 `mapsTo` 用 snake_case（跟命名规范原文一致），出到 DTO 转 camelCase——
+ * 两套键名各有出处，映射写在这里一处，别散到服务层各拼一遍。
+ */
+export const DIMENSION_DTO_KEYS = {
+  placement: "placement", bid_mode: "bidMode", device: "device", goal: "goal", rta: "rta",
+  agent_type: "agentType", optimizer: "optimizer", special: "special",
+  landing: "landing", rebate: "rebate",
+} as const satisfies Record<ParsedDimension, string>;
+
+export const accountDimensionsDtoSchema = z.object(
+  Object.fromEntries(Object.values(DIMENSION_DTO_KEYS).map((key) => [key, dimensionValueSchema])) as
+    Record<(typeof DIMENSION_DTO_KEYS)[ParsedDimension], typeof dimensionValueSchema>,
+).strict();
+export type AccountDimensionsDto = z.infer<typeof accountDimensionsDtoSchema>;
+
+export function toDimensionsDto(dimensions: AccountDimensions): AccountDimensionsDto {
+  return accountDimensionsDtoSchema.parse(Object.fromEntries(
+    PARSED_DIMENSIONS.map((key) => [DIMENSION_DTO_KEYS[key], dimensions[key]]),
+  ));
+}
+
+/** 没有解析行的账户：十个维度全 null。**不是 "unknown" 也不是空串。** */
+export const EMPTY_DIMENSIONS_DTO: AccountDimensionsDto = toDimensionsDto(
+  accountDimensionsSchema.parse(Object.fromEntries(
+    PARSED_DIMENSIONS.map((key) => [key, { value: null, source: null }]),
+  )),
+);
 
 export interface DimensionInputs {
   /** 解析出的段（已叠加 override）；键是段 key，带 mapsTo。 */

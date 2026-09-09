@@ -11,7 +11,7 @@ const ratioValueSchema = z.object({
 
 /** 13 个模块的顺序与标题逐字取自 fixture；顺序即阅读顺序，不许重排。 */
 export const DAILY_REPORT_MODULES = [
-  { key: "executive_summary", title: "Executive Summary" },
+  { key: "executive_summary", title: "管理摘要" },
   { key: "overview", title: "大盘" },
   { key: "dim_task", title: "按任务" },
   { key: "dim_biz", title: "按业务" },

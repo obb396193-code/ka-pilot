@@ -1,0 +1,340 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "dimension": "agent_type",
+      "rows": [
+        {
+          "key": "self",
+          "label": "自投",
+          "metrics": {
+            "cost": {
+              "value": 9100.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 4062.24,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 41000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1750,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 130,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 124,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 649.76,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0427,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0743,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 41.94,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 32.76,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0484,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "priceSource": "history",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false,
+          "source": "nickname",
+          "sources": {
+            "nickname": 3
+          },
+          "agent_type": "self"
+        },
+        {
+          "key": "agency",
+          "label": "代投",
+          "metrics": {
+            "cost": {
+              "value": 4200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 4062.24,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 41000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1750,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 130,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 124,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 649.76,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0427,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0743,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 41.94,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 32.76,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0484,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "priceSource": "history",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false,
+          "source": "mixed",
+          "sources": {
+            "manual": 1,
+            "platform": 2
+          },
+          "agent_type": "agency",
+          "agency_name": "某代理"
+        },
+        {
+          "key": "unknown",
+          "label": "未标注",
+          "metrics": {
+            "cost": {
+              "value": 350.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 4062.24,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 41000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1750,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 130,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 124,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 649.76,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0427,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0743,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 41.94,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 32.76,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0484,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "priceSource": "history",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false,
+          "source": "nickname",
+          "sources": {
+            "nickname": 1
+          },
+          "agent_type": "unknown"
+        }
+      ],
+      "returnedRowCount": 3,
+      "wholeResultTotal": {
+        "value": 3,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "datasetVersion": "canonical-20260905-01",
+        "queryTemplateVersion": "account-summary-v3",
+        "metricVersion": "account-metrics-v2",
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.9.8 形状示例（Codex P-170 落地后并回 dimension-v3-agent_type.json）：在 v1.7.5 冻结行（key/label/agent_type/agency_name?）之上加 source（manual|nickname|platform|qihang|mixed|null）+ sources 计数；unknown 显「未标注」"
+  }
+}

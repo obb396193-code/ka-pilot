@@ -5,10 +5,14 @@ import { findR014Route } from "../../src/r014/routes.js";
 /** 最小的 req/res 替身：只验路由层自己的行为，不把整个壳层拖进来。 */
 export interface Captured { status: number; headers: Record<string, string>; body: unknown }
 
-export function fakeRequest(method: string, body?: unknown): never {
+export function fakeRequest(
+  method: string, body?: unknown, headers: Record<string, string> = {},
+): never {
   const payload = body === undefined ? [] : [Buffer.from(JSON.stringify(body))];
   const request = Object.assign(new EventEmitter(), {
     method,
+    // 真实的 IncomingMessage 恒有 headers；替身缺了它，读请求头的路由会当场 500。
+    headers,
     [Symbol.asyncIterator]: async function* (): AsyncGenerator<Buffer> { yield* payload; },
   });
   return request as never;
@@ -34,12 +38,13 @@ export async function callRoute(
   method: string,
   body?: unknown,
   search = "",
+  headers: Record<string, string> = {},
 ): Promise<Captured> {
   const route = findR014Route(pathname);
   if (route === null) throw new Error(`no R-014 route matched ${pathname}`);
   const { response, captured } = fakeResponse();
   await route.handle({
-    request: fakeRequest(method, body),
+    request: fakeRequest(method, body, headers),
     response,
     url: new URL(`http://data-api.internal${pathname}${search}`),
     auth: auth as never,

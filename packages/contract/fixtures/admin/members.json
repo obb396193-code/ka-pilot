@@ -11,8 +11,7 @@
         "isActive": true,
         "joinedAt": "2026-09-05",
         "grantsCount": 5,
-        "lastSeenAt": "2026-09-05T09:15:00.000+08:00",
-        "mustChangePassword": false
+        "lastSeenAt": "2026-09-05T09:15:00.000+08:00"
       },
       {
         "identityId": "00000000-0000-4000-8000-0000000000a2",
@@ -23,8 +22,7 @@
         "isActive": true,
         "joinedAt": "2026-09-05",
         "grantsCount": 2,
-        "lastSeenAt": null,
-        "mustChangePassword": false
+        "lastSeenAt": null
       },
       {
         "identityId": "00000000-0000-4000-8000-0000000000a3",
@@ -35,8 +33,7 @@
         "isActive": false,
         "joinedAt": "2026-09-05",
         "grantsCount": 0,
-        "lastSeenAt": null,
-        "mustChangePassword": true
+        "lastSeenAt": null
       }
     ]
   },
@@ -46,6 +43,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "停用=membership 失活+撤 session，行不删 | v1.9.5：行加 mustChangePassword（初始密码未改过）"
+    "_note": "停用=membership 失活+撤 session，行不删"
   }
 }

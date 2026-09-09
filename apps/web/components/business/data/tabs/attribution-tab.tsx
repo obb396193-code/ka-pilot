@@ -17,8 +17,8 @@ export function AttributionTab() {
   const tasks = isOk(tasksFixture) ? tasksFixture.data.items : []
   const [taskId, setTaskId] = useState(tasks[0]?.taskId ?? "")
   const [mode, setMode] = useState<"volume" | "cost">("volume")
-  const fixture = attributionFixtures[taskId]
-  const tree = fixture && isOk(fixture) && fixture.data.mode === mode ? fixture.data : null
+  const fixture = attributionFixtures[taskId]?.[mode]
+  const tree = fixture && isOk(fixture) ? fixture.data : null
   const task = tasks.find((item) => item.taskId === taskId)
   return (
     <div className="flex flex-col gap-4">
@@ -31,7 +31,7 @@ export function AttributionTab() {
       {tree ? <GapTree tree={tree} /> : (
         <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center text-sm">
           <p className="font-medium">{task?.taskName ?? taskId} 的{mode === "cost" ? "成本" : "量级"}归因树没有样例</p>
-          <p className="max-w-md text-xs text-muted-foreground">示例只有「AAC 拉新」的量级模式；接口接入后按任务 × 模式返回，数据不足的节点灰显。</p>
+          <p className="max-w-md text-xs text-muted-foreground">示例只有「AAC 拉新」的量级 / 成本两种模式；接口接入后按任务 × 模式返回，数据不足的节点灰显。</p>
         </div>
       )}
     </div>
