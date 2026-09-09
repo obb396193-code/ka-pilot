@@ -630,3 +630,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### F-BI-001（小，排在 F-OS-003 之后）：团队路径 BI 未到时的三态（arch 2026-09-09）
 老板转来 ka-data 管线定义（`docs/evidence/2026-09-09-BI口径定义-ka-data取数管线.md`）：T-1 媒体 08:30 到、BI 11:10 到，数据起点 2026-08-31。请核 `ka-data-client.ts` 的 `completeSum("conv")` 与行组装：昨天媒体已到、`conv` 仍 NULL 的行，`realConversion` 必须是 **missing**（cashCpa/gap → undefined），不能变 0、也不能把整行过滤掉让 cost 一起消失；`dataAsOf`/lineage 能表达「媒体已到、BI 未到」。08-31 之前的日期同理 missing。加一条真 PG/假上游用例。
+
+### F-OS-004（v1.9.5，排在 F-OS-003 之后、021 之前）：`POST /admin/members` 带初始密码 + 重置密码（arch 2026-09-09）
+老板要内测同事能直接登录：`POST /admin/members` 当 `provider=internal_test` 时接受 `initial_password?`，没给就服务端生成 16 位随机密码，写 `identity_passwords`（**用 be2 的 `identity-password-repository.ts`，等它落 main 再接，不自己写 scrypt**），响应只回一次 `initialPassword`；新增 `POST /admin/members/:identityId/reset-password` → 新初始密码 + 吊销该身份全部 session；成员列表行加 `mustChangePassword`。`provider_subject` 正则 `^[A-Za-z0-9._@-]{1,128}$`。fixtures `admin/member-created.json`、`member-reset-password.json`、`members.json`（加字段）已放。真 PG 用例：建人→初始密码能登录→改密后旧密码失效→重置后旧 session 401。

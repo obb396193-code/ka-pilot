@@ -164,3 +164,6 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - **改密选 (a)**：`identity_passwords` 表已进 schema.sql，**migration 020 归你**；`internal-test-login-provider.ts` 临时移交你（表优先、ENV 回落，接口不变，做完交回）；限速按 identity 进程内计数即可。
 - **kb**：**019 归你**，`kb_documents` 的 `deleted_at/deleted_by` 已加进 schema.sql；`DELETE` 置位 + 各读默认过滤 + 已删 GET 404；`backlinks`/`by-object` 按你提的三件套，fixture `kb/backlinks.json`、`kb/by-object.json` 已放（by-object 顶层回指 `{objectType,objectId}`，无关联 `items:[]`）。
 - **顺序**：Q-020（P1 越权，仍最先）→ T5 → 日报三维度填行 + F-Q019-1～3 → 改密 020 → kb 019 五端点 + 软删 + 反查。
+
+### Q-021 ① 补充（v1.9.5）：`identity_passwords` 的仓储要给 Codex 复用（arch 2026-09-09）
+老板问「没有注册入口别人怎么登录」→ 契约 v1.9.5：治理后台新增成员时直接写初始密码进 `identity_passwords`。你做 020 时把写/校验封成 `packages/db/src/identity-password-repository.ts`（`setPassword(identityId, plain, updatedBy)` 内部 scrypt、`verify(identityId, plain)`、`mustChangePassword(identityId)`），登录 provider 回落逻辑照旧；Codex 的 members 端点等你这个落 main 后接，不各写一套 scrypt。顺序不变：Q-020 → T5 → 日报三维度 → 020 + 改密 → kb。

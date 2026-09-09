@@ -1196,3 +1196,14 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 无适用规则或阈值为 null → `gapStatus:"missing"`、`meta.ruleSetVersion:null`（**不是 normal**）。
 - 口径：`gap = Σconversion / Σreal_conversion − 1`（先聚合再相除，窗口内按批准 tuple）；分母 0 → 三态 infinite/undefined。`preDeductionGap / deductionRate` 需 `attribution_volume`（不在 canonical）→ **missing，不反推**，等 R-012 落表再接。团队路径的版本化快照仍走 013，不变。
 
+## v1.9.5 追加（2026-09-09 arch；老板问「没有注册入口，别人怎么登录」——内测开户闭环）
+
+**原则不变：内网工具不开放自助注册，账号由管理员在治理后台开。** 但开完必须能直接登录，不再依赖部署配置改 ENV。
+- `POST /admin/members {display_name, provider:"internal_test"|"buc", provider_subject, role, initial_password?}`：建 identity+user+personal workspace+membership 不变；**provider=internal_test 时**：给了 `initial_password` 就按 scrypt 写 `identity_passwords`（v1.9.3 表），没给则服务端生成 16 位随机密码写表并**只在本次响应里回一次** `{…, initialPassword}`（之后任何接口不再返回）；`provider_subject` 即登录用户名，规则 `^[A-Za-z0-9._@-]{1,128}$`（中文名不能当用户名，用拼音/工号；`display_name` 可中文）。
+- `POST /admin/members/:identityId/reset-password {}` → `{initialPassword}`（同样只回一次）+ 吊销该身份全部 session；仅 admin。
+- 登录校验顺序（v1.9.3 已定）：`identity_passwords` 有行 → 用表；无行 → 回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（首次引导凭证）。用户首次登录后用 `POST /auth/password` 自改。
+- 成员列表行加 `mustChangePassword: boolean`（初始密码未改过 = true；前端在成员表和该用户设置页提示）。
+- `provider="buc"`：仍只建身份不设密码，登录走 BUC SSO——**BUC 登录 provider 本期未实现**，正式化前置项（门禁 A23）。
+- fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members.json` 行加 `mustChangePassword`。
+- 分工：`identity_passwords` 表/仓储/登录回落 = be2（020，Q-021 ①）；`POST /admin/members` 扩展 + reset-password = Codex（r010 admin-members，**等 be2 的 `identity-password-repository.ts` 落 main 后再接**，不各写一套 scrypt）；成员页「新增成员 / 重置密码」对话框 = fe F8-11。
+
