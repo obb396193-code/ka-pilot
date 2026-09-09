@@ -5310,3 +5310,29 @@ F-Q023-2 是你让我把这三个一起填的，但 fixture 只改了 `dim_agent
 闸：domain 1302 / db 1352 / worker 1744（+2 skipped）/ web 224 全绿，四包 tsc 清。
 
 **我这边仍在等你**：Q-027 的 demo 接缝（guest 登录的唯一阻断）、pg_trgm 的 similarity 落法确认、以及上面两处 fixture。这期间我继续找同类可自查的项。
+
+### Q-029：★我最近交付的端点**在 BFF 里一条透传都没有**，前端调不到（be2 `be/r017 @ fe0d917f`）
+继续自查时发现的，这条比前面几条都要紧。
+
+`apps/web/lib/data/r014/handlers.ts` 里共 21 条透传，但下面这些**一条都没有**：
+| 端点 | 状态 |
+|---|---|
+| `GET/POST /kb/documents`、`GET/PATCH/DELETE /kb/documents/:id` | ❌ 无透传 |
+| `GET /kb/documents/:id/backlinks`、`GET /kb/by-object/:type/:id`、`GET /kb/search` | ❌ 无透传 |
+| `POST /accounts/transfer`、`POST /users/:id/transfer-all` | ❌ 无透传 |
+| `POST /auth/password` | ❌ 无透传 |
+| `GET /reports/daily` | ❌ 无透传 |
+
+也就是说：**kb 七端点、账户交接、自助改密、日报，浏览器侧全部够不着**。后端接通了、联调也验过，但前端页面接不上——F8 那边真要做知识库页或改密表单时会当场卡住。
+
+**为什么我没直接补**：这个文件是我和 fe 共用的（最初九条 `151cb418` 是我写的 S5b，`5883b317` 是 fe 的 F8-9 加的四条），而 fe 刚在里面动过。按你立的规矩「共享文件的功能性改造靠所有权临时移交」，所以我停下来问：
+- **要我补**：说一声临时移交，我按 S5b 那九条的同一套写法补齐（含 `apps/web/app/api/internal/` 下对应路由文件），半天内交；
+- **归 fe**：那就当 F8 的一条派下去，我把端点契约（路径/方法/请求体键名/错误码）整理给他。
+
+顺带说一句：`RATE_LIMITED` / `INVALID_CREDENTIALS` / `READ_ONLY_ROLE` 三个码我已在 r014 forwarder 里认了，但**共享的 `stableDataQueryErrorCodeSchema` 仍然没有它们**——如果 fe 别处直接用那个共享枚举解析错误，还是会当未知错误。你 v1.9.9 说「稳定错误码加 RATE_LIMITED」，这一步在 `apps/web/lib/data/contracts.ts` 里还没落。
+
+#### 另外补了两层此前没验过的闸（`fe0d917f`）
+- **真 HTTP 壳层冒烟**：此前全是路由替身测的，替身不走鉴权/真 cookie/壳层 404-401 分支。现在真服务器 + 真会话跑通，其中一条专门验 **Q-020 的越权收口端到端有效**（只挂未授权账户的任务经真壳层仍 404）。
+- **路由遮挡检测**：`findR014Route` 首个匹配胜出，两条都认同一路径时后一条永远调不到——端点看着接好实际是死的。按真实注册顺序 20 条路径逐条断言「恰好一个认领」，另验六条边界必须落空。当前表干净。
+
+闸：worker 1751（+2 skipped）全绿。
