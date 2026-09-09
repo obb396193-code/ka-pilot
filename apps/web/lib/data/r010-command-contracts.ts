@@ -1,5 +1,10 @@
 import { z } from "zod"
 import { requestIdSchema } from "./contracts.ts"
+import { changeValueSchema, sameChangeValue } from "../../../../packages/domain/src/change-value-schema.ts"
+import { createPreflightPresentationSchemas } from "../../../../packages/domain/src/changeset-preflight-wire.ts"
+
+export const { preflightPresentationResponseSchema } = createPreflightPresentationSchemas({ changeValueSchema, sameChangeValue })
+type PreflightSuccess = Extract<z.infer<typeof preflightPresentationResponseSchema>, { ok: true }>
 
 // Small, source-off command boundary; permanent parity tests use @ka/domain.
 export const muteDaysSchema = z.union([z.literal(1), z.literal(3), z.literal(7)])
@@ -20,7 +25,7 @@ export const commandErrorSchema = z.object({ ok: z.literal(false), error: z.obje
   code: commandErrorCodeSchema, message: z.string().min(1).max(4096), retryable: z.boolean(), requestId: requestIdSchema,
 }).strict() }).strict()
 export type CommandErrorCode = z.infer<typeof commandErrorCodeSchema>
-export type CommandResponse = (z.infer<typeof commandSuccessSchema> & { error?: never }) | z.infer<typeof commandErrorSchema>
+export type CommandResponse = ((z.infer<typeof commandSuccessSchema> | PreflightSuccess) & { error?: never }) | z.infer<typeof commandErrorSchema>
 
 export const commandErrorStatus: Record<CommandErrorCode, number> = {
   INVALID_REQUEST: 400, UNAUTHORIZED: 401, FORBIDDEN: 403, NOT_FOUND: 404, INVALID_STATE: 409, FROM_VALUE_CHANGED: 409,

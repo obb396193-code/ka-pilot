@@ -52,6 +52,13 @@ function accountResult(): AccountListRepositoryResult {
       dataAsOf: "2026-08-25T12:00:00.000Z",
       balance: null,
       balanceSyncedAt: null,
+      // Synthetic legacy account has no S6 pool/product/action metadata.
+      poolStatus: null,
+      poolStatusSource: null,
+      productName: null,
+      productRef: null,
+      lastAction: null,
+      nextSuggestion: null,
     }],
     page: 1,
     pageSize: 20,

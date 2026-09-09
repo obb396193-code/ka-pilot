@@ -35,6 +35,55 @@ function setup() {
 }
 
 describe("ChangeSetDryRunService", () => {
+  it("public preview requires observed values and persists the exact three-value snapshot", async () => {
+    const c = setup();
+    c.preflight.check.mockResolvedValue({ ...c.proof, dataAsOf: null,
+      items: [{ ...c.proof.items[0], observed: { type: "number", value: 30 } }] });
+    const execute = { ...auth, scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a1", accessLevel: "execute" }] } };
+    const result = await c.service.preview(id, execute);
+    expect(result).toMatchObject({ dataAsOf: null, data: { changesetId: id, executionRunId: id,
+      status: "ready", confirmAllowed: true, summary: { total: 1, ok: 1, changed: 0, unknown: 0, blocked: 0 },
+      items: [{ itemId: "1", observed: { type: "number", value: 30 }, verdict: "ok" }] } });
+    expect(c.store.recordDryRun).toHaveBeenCalledWith(expect.objectContaining({ observations: {
+      checkedAt: now.toISOString(), dataAsOf: null, items: result.data.items } }));
+    expect(c.preflight.check).toHaveBeenCalledWith(expect.objectContaining({ requireObservedValues: true }));
+    expect(await c.service.preview(id, auth)).toMatchObject({ data: { confirmAllowed: false, confirmBlockedReason: "当前账户仅允许预检，未获授执行权限" } });
+  });
+  it("public preview cannot adapt a legacy status-only proof", async () => {
+    const c = setup(); await expect(c.service.preview(id, auth)).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+    expect(c.store.recordDryRun).not.toHaveBeenCalled();
+  });
+  it.each(["hash", "status", "run-id"])("does not publish a malformed persisted %s acknowledgment", async kind => {
+    const c = setup();
+    c.preflight.check.mockResolvedValue({ ...c.proof, dataAsOf: null, items: [{ ...c.proof.items[0], observed: { type: "number", value: 30 } }] });
+    const record = vi.fn(async () => ({ executionRunId: kind === "run-id" ? "invalid" : id,
+      hash: kind === "hash" ? "b".repeat(64) : hash, status: kind === "status" ? "failed" as const : "success" as const }));
+    const service = new ChangeSetDryRunService({ store: { ...c.store, recordDryRun: record }, preflight: c.preflight, now: () => now });
+    await expect(service.preview(id, auth)).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
+  it.each(["changed", "unknown", "blocked"])("public %s remains ready but prevents confirmation", async kind => {
+    const c = setup();
+    const status = kind === "unknown" ? "unknown" : "failed";
+    c.preflight.check.mockResolvedValue({ ...c.proof, dataAsOf: now.toISOString(), items: [{ itemId: 1, status,
+      failReason: kind === "changed" ? "FROM_VALUE_CHANGED" : kind === "unknown" ? "SOURCE_UNAVAILABLE" : "PERMISSION_DENIED",
+      observed: kind === "unknown" ? null : { type: "number", value: 31 } }] });
+    const record = vi.fn(async () => ({ executionRunId: id, hash, status: status as "failed" | "unknown" }));
+    const service = new ChangeSetDryRunService({ store: { ...c.store, recordDryRun: record }, preflight: c.preflight, now: () => now });
+    expect(await service.preview(id, auth)).toMatchObject({ data: { status: "ready", confirmAllowed: false,
+      items: [{ verdict: kind }], summary: { [kind]: 1 } } });
+    expect(record).toHaveBeenCalledOnce();
+  });
+  it.each(["success-different", "unknown-known", "changed-equal", "future-time", "missing-value"])("rejects %s evidence before persistence", async kind => {
+    const c = setup();
+    const item: Record<string, unknown> = { itemId: 1, status: "success", failReason: null, observed: { type: "number", value: 30 } };
+    if (kind === "success-different") item.observed = { type: "number", value: 31 };
+    if (kind === "unknown-known") { item.status = "unknown"; item.failReason = "UNKNOWN_RESULT"; }
+    if (kind === "changed-equal") { item.status = "failed"; item.failReason = "FROM_VALUE_CHANGED"; }
+    if (kind === "missing-value") delete item.observed;
+    c.preflight.check.mockResolvedValue({ ...c.proof, dataAsOf: kind === "future-time" ? new Date(now.getTime() + 1).toISOString() : null, items: [item] });
+    await expect(c.service.preview(id, auth)).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+    expect(c.store.recordDryRun).not.toHaveBeenCalled();
+  });
   it("records trusted complete preflight without confirming or enqueuing", async () => {
     const c = setup();
     await expect(c.service.run(id, auth)).resolves.toMatchObject({ executionRunId: id, status: "success", hash });

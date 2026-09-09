@@ -7,6 +7,7 @@ import {
 import { readBoundedResponseBody } from "./bounded-response.ts"
 import {
   commandErrorSchema, commandErrorStatus, commandSuccessSchema, dryRunRequestSchema, ignoreRequestSchema, muteRequestSchema,
+  preflightPresentationResponseSchema,
   type CommandErrorCode, type CommandResponse,
 } from "./r010-command-contracts.ts"
 
@@ -113,9 +114,15 @@ export async function handleR010CommandRequest(request: Request, deps: {
     try { raw = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)) as unknown }
     catch { return fail("UPSTREAM_INVALID_RESPONSE") }
     if (upstream.status === 200) {
-      // Source-off pilot has no public dry-run success mapping. A plain ignore
-      // must not masquerade as ignore+mute. Neither is allowed a fake success.
-      if (kind === "dry-run" || (kind === "ignore" && !("mute_days" in parsed.data))) return fail("UPSTREAM_INVALID_RESPONSE")
+      if (kind === "dry-run") {
+        const result = preflightPresentationResponseSchema.safeParse(raw)
+        if (!result.success || !result.data.ok || result.data.meta.requestId !== requestId ||
+          command.upstreamPath !== `/api/v1/changesets/${result.data.data.changesetId}/dry-run`)
+          return fail("UPSTREAM_INVALID_RESPONSE")
+        return { status: 200, requestId, body: result.data }
+      }
+      // A plain ignore must not masquerade as ignore+mute.
+      if (kind === "ignore" && !("mute_days" in parsed.data)) return fail("UPSTREAM_INVALID_RESPONSE")
       const result = commandSuccessSchema.safeParse(raw)
       if (!result.success || result.data.meta.requestId !== requestId) return fail("UPSTREAM_INVALID_RESPONSE")
       return { status: 200, requestId, body: result.data }

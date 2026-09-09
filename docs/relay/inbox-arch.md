@@ -4572,6 +4572,11 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 本批 **57/57（8真实PG+22HTTP+14DB+13Domain）**，含exact10000成功/10001拒绝；DB行/分支100%，DB type/lint过，diff干净。报告 `docs/plans/2026-09-09-FP139-日历排序质量报告.md`。未合流部署，请exact复验。
 - **新主线类型门禁未绿**：Worker4处旧fixture缺be2新增required字段：account-list-{http,service}.test.ts:37/32；task-list-{http,service}.test.ts:40/31。请协调be2更新其交界fixture/服务，本批不越界。Worker整包lint因type失败未跑。磁盘最低321MiB，低于8GiB，未跑全量/未清缓存；不可把57过当全量通过。
 
+### P-154｜D6三值Domain接线第一步（be，2026-09-09）
+
+- **cef4e90**，已合main@185d34e。新strict schema完全对照你修正后的fixture（仅测试剥文档_note）；三值一致性、计数、TTL、BIGSERIAL字符串、changed/unknown挡confirm；复用sameChangeValue不做类型强转。
+- 新30+旧52=**82/82**，Domain type/lint过，模块行/分支100%。非法子值导致safeParse异常也已红绿修正。报告 `docs/plans/2026-09-09-D6-三值契约质量报告.md`。无Contract/前端/DB/媒体写改动。
+- **不是公开成功态完成**：P129旧proof无observed，下一子批增加受控现值证据和持久化映射后再接HTTP/BFF；当前源未接入503保留。磁盘573MiB，不跑全量、未清缓存。P153日历P1已交仍等你的exact复验，旧四个交界fixture类型错未擅自替be2放宽。
 
 ### P-134～P-153 ✅合流｜be/r010 @ b8bc0e2 → main `3a9dade`｜arch 2026-09-08
 - 门禁（真 PG 分包新库）：domain 1183 / db 1122 / worker 1617+2 / gateway 36 / web 218，全绿。F-P139-1 日历 exact-10000 的 502 已修（7697a67）确认。
@@ -4599,3 +4604,47 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 门禁：**tsc 0 错、eslint 0 错（17 warning 与合 main 时同）、`npm test` 140/140 通过**；改动只在 `apps/web` + `docs/`
 - 台账全文在 `docs/plans/F007-状态.md`「全站自审」一节：10 个真 bug、界面术语全清、4 项老板口头要的新功能
 - 待你裁决/转派的：契约缺口 G10–G14、`accounts/timeline.json` 的 summary 英文、给 Codex 的头像出图 brief
+
+### P-155｜D6现值证据绑定与原子落库（be，2026-09-09）
+
+- **a317f7c**；已含main@7dd47e6。`preview`要求完整observed proof，status-only旧run不给页面；锁内核对实际草稿三值、目标、结果与时间后同事务存observations/run/hash。changed/unknown撤旧proof，preview grant不能confirm，全程不enqueue/不调用媒体写。
+- 定向 **204过（9真实PG）**：Worker77/DB52/Domain66/PG9；DB/Domain type+lint、Worker lint过，新DBvalidator100%行/分支，Worker100%行/92.74%分支。Worker type仍P153那4个account/task旧fixture缺be2新字段；请协调收口，不谎报全绿。磁盘6.7GiB<8全量没跑。报告 `docs/plans/2026-09-09-D6-现值证据落库质量报告.md`。
+- **公开HTTP/BFF仍待下一独立子批切preview**，不是D6成功态全通；当前source-off503不变。P134–153合流回执收到。
+- 再同步：**R-FE-IMG-003老板已明确取消**，P152已有原话记录；不再生图，请通知fe。F-Q011-1已由0ce730f/P152处理并进入本次合流，不重复改。
+
+### P-156｜D6公开HTTP切三值preview（be，2026-09-09）
+
+- 代码 **de63169**，含main@7dd47e6；仅Worker route/composition类型+HTTP/PG测试四文件。已接P155 preview，合法三值返回200；旧缩略结果、错对象/缺observed/错误计数/未来lineage/额外字段502。生产仍无Provider503，未开媒体写。
+- **97定向过（87 Worker+10真实PG）**；真实HTTP回传与execution_runs.observations一致，ok/changed/unknown、跨媒体/空间、零jobs均实证。route98.38%行/90%分支，Worker lint绿；typecheck仍四个旧account/task fixture缺字段。磁盘7.7GiB<8，不冒称全量绿；报告 `docs/plans/2026-09-09-D6-公开HTTP观测结果质量报告.md`。
+- **BFF成功态仍未切**，继续独立子批，不代表浏览器整链/部署完成。请按exact SHA审核；旧fixture请协调be2，头像已取消不再执行。
+
+### P-157｜D6 BFF完成三值软件接线（be，2026-09-09）
+
+- **693614e**，已含main@7dd47e6，9代码/测试文件。BFF成功态直接复用唯一Domain schema factory，拒路径对象/相关ID/三值/计数/未来lineage漂移。纯value/equality共享，旧hash不改语义；无Contract/页面/依赖/真实媒体写改动。
+- **270定向过**（Domain82/Worker含PG97/DB52/Web39），含真实BFF函数→HTTP→独立PG unknown证据与run快照一致；sourceoff503/零jobs/权限边界保持。Domain wire100%行/分支、BFF100%行/94.06%分支；Domain/DBtype+lint、Worker lint、Web改动lint过。
+- **整包门禁不绿**：Worker仍4个旧account/task fixture缺be2新列；Web工作树缺shiki/ai/streamdown/motion/xyflow/blocknote等依赖，整包75类型错（本批文件0），请前端线补安装后全量。磁盘7.7~7.8GiB<8，未全量/build/浏览器验收；报告 `docs/plans/2026-09-09-D6-BFF三值接线质量报告.md`。
+- D6软件接线可交审，但真实只读Provider按你裁决继续不接，不把合成证据当公司源。后续继续剩余R010a2，不停等；R-FE-IMG-003继续取消。
+
+### P-158｜Worker四个旧fixture修复 + 三包全量复验（be，2026-09-09）
+
+- 代码 **cb73aea**，含main@7dd47e6；仅4个自有测试、30行。移交清单不含这4个测试；生产/be2服务/Contract/视觉0 diff。补必填null经营字段和明确合成readiness事实，不放宽类型、不加cast。红灯4个TS2740→绿；定向56/56。
+- **Worker1643过+2外部opt-in跳过；Domain1213过；DB全新专用库1143过**；三包typecheck/lint全绿，Worker离线缓存audit0。本轮磁盘11GiB满足全量门槛。P154–157候选代码随本轮后端整包回归覆盖；Web整包未重验，不能声称五包全绿。
+- DB先复用Worker的be库跑出1140过/3红，均012测试首次down遇typed JSON；未改有损回退保护、未删数据。另建 `ka_be_p158_20260909_test` 同命令103文件1143全过。**测试仍依赖干净库**，保留失败事实与隔离待办；不是迁移生产缺陷已证实。详细命令与范围见 `docs/plans/2026-09-09-Worker交界测试样本质量报告.md`。
+- **请同步be2：S6服务投影仍有缺口**。`accounts/account-list-service.ts:79`、`tasks/task-list-service.ts:113` 的itemFor仍不返回pool/product/action与stage/readiness/nextMilestone，不能因仓储/fixture类型绿就记端到端完成。我没越界改移交服务。
+- **R010a2需你最小裁决**：新 `fixtures/work-items/detail.json` 为workItemId+account/task/rule/assignee对象+decision/actions/meta，旧read-detail Domain/Service为kind/workItem。请确认替换及本人无账户/未分配/缺task-rule的null形状；历史成功率样本、人工操作窗口事实、额度判定源未接，strict gates又不容unknown，需冻结缺证据时输出。不填recentManualOps=0或withinCap=true冒充查证。详见 `docs/plans/2026-09-09-R010a2详情与S6交界实读缺口.md`。此项标阻塞，继续其他派活。
+- 生图按老板取消；尚未审合/部署，不push，不开媒体写。
+
+### P-159｜R010a2 工作项授权流转内核（be，2026-09-09）
+
+- **9de07d9**，已合main@7dd47e6。新Domain内部strict command + 新Repository；6代码/测试文件223行（已有两个index仅be末尾export各2行），无Contract/视觉/be2文件/HTTP/媒体写改动。
+- `start_processing/ignore/reject` 从锁内工作项真实tuple鉴权，活跃workspace/user/membership/identity/grant/account FOR SHARE复核，状态与audit同事务；撤权旧context失败，跨media同ID拒绝，重复处理只有一次成功，审计失败状态回滚。没有用旧无approved-context的transition给公开调用绕路。
+- **Domain1229 / DB1155 / Worker1643+2外部skip**，三包typecheck/lint通过。新Domain16、新真实PG12；DB新模块100%行/86.95%分支，离线缓存audit0。详见 `docs/plans/2026-09-09-R010a2工作项授权流转质量报告.md`。PG仅专用合成库，非公司源验证。
+- **尚非公开三按钮完成**：请补process/plain-ignore/reject成功DTO（当前ignore+mute已有fixture，不擅自套用）；personal双null只读规则不自动外推可写。派发/升级还缺收件人、通知与SLA，不假装改status就完成。018软撤销仅预留兼容行JSON检查，当前实测为删除grant撤销；未来018仍要真PG补验。
+- 上轮P158发现的详情新旧envelope/decision证据缺失/S6移交服务投影待裁仍在；本批推进可独立做的安全内核。候选未审合/部署，不push，真实媒体写保持关闭。
+
+### P-160｜全信箱剩余依赖复核，请优先解迁移主链（be，2026-09-09）
+
+- 当前候选038ec54、main7dd47e6；本轮实读全部队列与真实入口，未新增实现/测试声明。详见 `docs/plans/2026-09-09-全信箱剩余交付依赖复核.md`，保留R010原#1–11及R011/012/013b/015/010b，不把内核当功能验收。
+- **优先请求一：013/014解阻**。schema.sql:227明细BIGSERIAL，:1100/:1104仍UUID引用；请统一或授权拆分013。014的accounts六列请明确归be落DDL（不动be2服务）；六raw证据列目前仍只有resource_position/bid_tool两派生列。解除这两项即可推进team→协作/知识库→素材/结算整链；016草稿已有实证但无前置表不能注册。
+- **请求二：统一已有DTO的缺失/冲突态**。详情/动作按P158/P159；ETL按P141（三个问题原文仍未变）；system health的agent.total vs fixture.instances；SSE type七帧 vs event/context/token/diagnosis；workflow taskId UUID vs opaque TEXT。请改唯一Contract/fixture，不让be自行猜字段、制造时间/计数或第二套wire。
+- pivot注入/D6source-off/图取消等旧阻断已从“待解”移除；S6服务仍属be2。剩余不可用项没有被删、降成演示或宣称完成。请按上面优先给最小裁决，后端继续相应纵切片；真实媒体写不开、无push。

@@ -89,7 +89,7 @@ export interface DataApiServerOptions {
   maxResponseBytes?: number;
   sessionHttpService?: SessionHttpService;
   sessionAuthService?: SessionAuthService;
-  dryRunService?: Pick<ChangeSetDryRunService, "run">;
+  dryRunService?: Pick<ChangeSetDryRunService, "preview">;
   accountMuteService?: Pick<AccountMuteService, "mute" | "ignoreAndMute">;
   agentModelCatalogService?: Pick<AgentModelCatalogService, "list">;
   adminCalendarService?: Pick<AdminCalendarService, "list">;

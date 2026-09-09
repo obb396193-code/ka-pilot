@@ -5,6 +5,7 @@ import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import type { ChangeSetRecord } from "@ka/db";
 import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
 import { ChangeSetDryRunService } from "../src/changesets/dry-run-service.js";
+import type { ChangeSetPreflightPort } from "../src/changesets/dry-run-service.js";
 import { approvedSessionAuth, businessHeaders, teamAuth } from "./business-auth-fixtures.js";
 
 // Actual HTTP shell and service; synthetic session/store, never media execution.
@@ -23,10 +24,12 @@ describe("D6 source-off real HTTP composition", () => {
   const servers: Server[] = [];
   afterEach(async () => { for (const server of servers.splice(0)) { server.closeAllConnections();
     await new Promise<void>((resolve, reject) => server.close(e => e ? reject(e) : resolve())); } });
-  async function setup(context: ApprovedWorkspaceAuthContext = auth, maxResponseBytes = 16 * 1024 * 1024) {
+  async function setup(context: ApprovedWorkspaceAuthContext = auth, maxResponseBytes = 16 * 1024 * 1024, preflight?: ChangeSetPreflightPort) {
     const store = { find: vi.fn(async (): Promise<ChangeSetRecord | null> => structuredClone(draft)),
       prepareDryRun: vi.fn(), recordDryRun: vi.fn() };
-    const dryRunService = new ChangeSetDryRunService({ store, now: () => at });
+    store.prepareDryRun.mockResolvedValue({ changeset: structuredClone(draft), hash: "a".repeat(64) });
+    store.recordDryRun.mockResolvedValue({ executionRunId: id, status: "success", hash: "a".repeat(64) });
+    const dryRunService = new ChangeSetDryRunService({ store, now: () => at, ...(preflight ? { preflight } : {}), timeoutMs: 20 });
     // Unrelated route services throw if used; this test never substitutes auth headers for session resolution.
     const absent = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
     const options = { service: absent, detailService: absent, taskListService: absent, accountListService: absent,
@@ -90,8 +93,58 @@ describe("D6 source-off real HTTP composition", () => {
     } expect(c.store.find).not.toHaveBeenCalled();
   });
   it("does not expose an old abbreviated record as a public success", async () => {
-    const c = await setup(); vi.spyOn(c.dryRunService, "run").mockResolvedValue({ executionRunId: id, status: "success", hash: "a".repeat(64) });
+    const c = await setup(); vi.spyOn(c.dryRunService, "preview").mockResolvedValue({ executionRunId: id, status: "success", hash: "a".repeat(64) } as never);
     const r = await c.call(); expect(r.response.status).toBe(502); expect(r.body.error.code).toBe("UPSTREAM_INVALID_RESPONSE");
+  });
+  function presentation() {
+    const fixture = JSON.parse(readFileSync(new URL("../../../packages/contract/fixtures/changesets/dry-run-ok.json", import.meta.url), "utf8"));
+    delete fixture.meta._note; fixture.meta.requestId = "d6-request";
+    return fixture;
+  }
+  it("exposes the canonical three-value fixture with requestId and real lineage", async () => {
+    const c = await setup(), fixture = presentation();
+    vi.spyOn(c.dryRunService, "preview").mockResolvedValue({ data: fixture.data, dataAsOf: fixture.meta.dataAsOf });
+    const r = await c.call(); expect(r.response.status).toBe(200); expect(r.body).toEqual(fixture);
+    expect(r.response.headers.get("cache-control")).toBe("no-store");
+    expect(r.response.headers.get("x-request-id")).toBe("d6-request");
+    expect(c.dryRunService.preview).toHaveBeenCalledWith(id, auth);
+  });
+  it("calls observed service, stores evidence, keeps unknown lineage and preview-only confirmation blocked", async () => {
+    const check = vi.fn(async (input: Parameters<ChangeSetPreflightPort["check"]>[0]) => ({
+      workspaceId: input.workspaceId, media: input.media, accountId: input.accountId,
+      credentialOwnerUserId: input.credentialOwnerUserId, draftHash: input.draftHash, dataAsOf: null,
+      items: input.items.map(item => ({ itemId: item.id, status: "success", failReason: null, observed: item.fromValue })),
+    }));
+    const c = await setup(auth, undefined, { check }), r = await c.call();
+    expect(r.response.status).toBe(200); expect(r.body.meta.dataAsOf).toBeNull();
+    expect(r.body.data.confirmAllowed).toBe(false); expect(r.body.data.items[0].verdict).toBe("ok");
+    expect(r.body.data.items[0].observed).toEqual(draft.items[0]!.fromValue);
+    expect(check.mock.calls[0]![0].requireObservedValues).toBe(true);
+    expect(c.store.recordDryRun.mock.calls[0]![0].observations.items).toEqual(r.body.data.items);
+  });
+  it.each(["id", "summary", "observed", "lineage", "extra", "date"])("rejects malformed service %s rather than exposing success", async kind => {
+    const c = await setup(), fixture = presentation();
+    const value = { data: fixture.data, dataAsOf: fixture.meta.dataAsOf };
+    if (kind === "id") value.data.changesetId = user;
+    if (kind === "summary") value.data.summary.total = 99;
+    if (kind === "observed") delete value.data.items[0].observed;
+    if (kind === "lineage") value.dataAsOf = "2027-01-01T00:00:00Z";
+    if (kind === "extra") Object.assign(value, { token: "synthetic-private" });
+    if (kind === "date") value.data.checkedAt = "not-a-date";
+    vi.spyOn(c.dryRunService, "preview").mockResolvedValue(value);
+    const r = await c.call(); expect(r.response.status).toBe(502); expect(r.body.error.code).toBe("UPSTREAM_INVALID_RESPONSE");
+    expect(JSON.stringify(r.body)).not.toContain("synthetic-private");
+  });
+  it("rejects an exact-limit successful envelope without partially sending it", async () => {
+    const fixture = presentation(), c = await setup(auth, Buffer.byteLength(JSON.stringify(fixture)));
+    vi.spyOn(c.dryRunService, "preview").mockResolvedValue({ data: fixture.data, dataAsOf: fixture.meta.dataAsOf });
+    const r = await c.call(); expect(r.response.status).toBe(502); expect(r.body.error.code).toBe("SOURCE_TRUNCATED");
+    expect(r.body).not.toHaveProperty("data");
+  });
+  it("maps provider timeout to stable 504", async () => {
+    const c = await setup(auth, undefined, { check: async () => new Promise(() => undefined) });
+    const r = await c.call(); expect(r.response.status).toBe(504); expect(r.body.error.code).toBe("UPSTREAM_TIMEOUT");
+    expect(c.store.recordDryRun).not.toHaveBeenCalled();
   });
   it("fails closed when even the response reaches the configured exact limit", async () => {
     const first = await setup(), baseline = await first.call();

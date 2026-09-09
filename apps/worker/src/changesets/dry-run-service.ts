@@ -1,13 +1,15 @@
-import { aggregateExecutionResult, approvedWorkspaceAuthContextSchema, type ApprovedWorkspaceAuthContext,
+import { aggregateExecutionResult, approvedWorkspaceAuthContextSchema, preflightPresentationDataSchema, type ApprovedWorkspaceAuthContext,
   type ChangeSetItemSnapshot } from "@ka/domain";
 import { ChangeSetAuthorizationError, ChangeSetPreconditionError, type ChangeSetRecord, type ChangeSetRepository } from "@ka/db";
 import { z } from "zod";
-import { DryRunServiceError, preflightDraftItemsSchema, preflightProofSchema } from "./dry-run-contract.js";
+import { DryRunServiceError, preflightDraftItemsSchema, preflightProofSchema, preflightObservedProofSchema } from "./dry-run-contract.js";
+import { observedPreflightSnapshot } from "./observed-preflight.js";
 
 type PersonalAuth = Extract<ApprovedWorkspaceAuthContext, { workspaceKind: "personal" }>;
 export interface ChangeSetPreflightInput {
   workspaceId: string; media: string; accountId: string; credentialOwnerUserId: string;
   draftHash: string; items: ChangeSetItemSnapshot[]; signal: AbortSignal;
+  requireObservedValues?: true;
 }
 export interface ChangeSetPreflightPort {
   /** Trusted, read-only checks of live target/field/permission/value. No execute,
@@ -58,6 +60,16 @@ export class ChangeSetDryRunService {
   }
 
   async run(changeSetId: string, approved: unknown) {
+    return (await this.perform(changeSetId, approved, false)).result;
+  }
+
+  async preview(changeSetId: string, approved: unknown) {
+    const result = await this.perform(changeSetId, approved, true);
+    if (!result.presentation) throw new DryRunServiceError("UPSTREAM_INVALID_RESPONSE");
+    return result.presentation;
+  }
+
+  private async perform(changeSetId: string, approved: unknown, requireObservedValues: boolean) {
     if (!uuid.safeParse(changeSetId).success) throw new DryRunServiceError("INVALID_REQUEST");
     const parsed = approvedWorkspaceAuthContextSchema.safeParse(approved);
     if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.scope.accounts.length === 0) {
@@ -76,9 +88,9 @@ export class ChangeSetDryRunService {
       const hash = prepared.hash;
       const binding = { workspaceId: auth.workspaceId, media: draft.media!, accountId: draft.accountId!,
         credentialOwnerUserId: auth.userId, draftHash: hash };
-      const proof = await this.check({ ...binding, items: structuredClone(draft.items) });
+      const proof = await this.check({ ...binding, items: structuredClone(draft.items), ...(requireObservedValues ? { requireObservedValues: true as const } : {}) });
       bounded(proof);
-      const validated = preflightProofSchema.safeParse(proof);
+      const validated = requireObservedValues ? preflightObservedProofSchema.safeParse(proof) : preflightProofSchema.safeParse(proof);
       if (!validated.success) throw new DryRunServiceError("UPSTREAM_INVALID_RESPONSE");
       const evidence = validated.data;
       const ids = new Set(evidence.items.map(item => item.itemId));
@@ -88,15 +100,30 @@ export class ChangeSetDryRunService {
       }
       const finished = clock(this.now);
       authorize(draft, changeSetId, auth, finished);
+      const observations = requireObservedValues ? observedPreflightSnapshot(draft.items, preflightObservedProofSchema.parse(proof), finished) : undefined;
+      if (observations) bounded(observations);
       const items = evidence.items.map(item => ({ itemId: item.itemId, status: item.status,
         ...(item.failReason === null ? {} : { failReason: item.failReason }) }));
       const result = recordResult.safeParse(await this.dependencies.store.recordDryRun({ workspaceId: auth.workspaceId,
         changeSetId, expectedHash: hash, now: finished, items,
+        ...(observations === undefined ? {} : { observations }),
         expectedScope: { media: binding.media, accountId: binding.accountId, initiatorUserId: auth.userId, credentialOwnerUserId: auth.userId } }));
       if (!result.success || result.data.hash !== hash || result.data.status !== aggregateExecutionResult(items)) {
         throw new DryRunServiceError("UPSTREAM_INVALID_RESPONSE");
       }
-      return result.data;
+      if (!observations) return { result: result.data };
+      const summary = { total: observations.items.length, ok: 0, changed: 0, unknown: 0, blocked: 0 };
+      for (const item of observations.items) summary[item.verdict]++;
+      const canExecute = auth.scope.accounts.some(grant => grant.media === binding.media && grant.accountId === binding.accountId && grant.accessLevel === "execute");
+      const confirmAllowed = summary.ok === summary.total && canExecute;
+      const presentation = preflightPresentationDataSchema.safeParse({ changesetId: changeSetId, executionRunId: result.data.executionRunId,
+        status: "ready", hash, checkedAt: finished.toISOString(), ttlExpireAt: draft.ttlExpireAt!.toISOString(),
+        items: observations.items, summary, confirmAllowed,
+        confirmBlockedReason: confirmAllowed ? null : summary.ok !== summary.total
+          ? `有 ${summary.changed} 项与媒体现值不一致、${summary.unknown} 项读不回来、${summary.blocked} 项受限，需逐项复核`
+          : "当前账户仅允许预检，未获授执行权限" });
+      if (!presentation.success) throw new DryRunServiceError("UPSTREAM_INVALID_RESPONSE");
+      return { result: result.data, presentation: { data: presentation.data, dataAsOf: observations.dataAsOf } };
     } catch (error) {
       if (error instanceof DryRunServiceError) throw error;
       if (error instanceof ChangeSetAuthorizationError) throw new DryRunServiceError("FORBIDDEN");

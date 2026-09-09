@@ -47,6 +47,13 @@ function readyResult(overrides: Partial<AccountListRepositoryResult> = {}): Acco
       dataAsOf: "2026-08-25T12:00:00.000Z",
       balance: 1_000,
       balanceSyncedAt: "2026-08-25T11:00:00.000Z",
+      // Synthetic legacy account has no S6 pool/product/action metadata.
+      poolStatus: null,
+      poolStatusSource: null,
+      productName: null,
+      productRef: null,
+      lastAction: null,
+      nextSuggestion: null,
     }],
     page: 1,
     pageSize: 20,
