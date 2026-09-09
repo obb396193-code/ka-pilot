@@ -2,6 +2,7 @@ export * from "./migrate.js";
 export * from "./pool.js";
 export * from "./job-repository.js";
 export * from "./etl-run-repository.js";
+export * from "./etl-run-list-repository.js";
 export * from "./outbound-message-repository.js";
 export * from "./metrics-repository.js";
 export * from "./gateway-repository.js";
