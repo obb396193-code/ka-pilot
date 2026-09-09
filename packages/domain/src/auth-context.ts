@@ -1,7 +1,13 @@
 import { z } from "zod";
 
-export const authRoleSchema = z.enum(["optimizer", "operator", "lead", "admin"]);
+/** v1.9.6：`viewer` = 访客只读角色。所有写类端点对它 403 READ_ONLY_ROLE。 */
+export const authRoleSchema = z.enum(["optimizer", "operator", "lead", "admin", "viewer"]);
 export const accountAccessLevelSchema = z.enum(["read", "preview", "execute"]);
+/**
+ * v1.9.6 的 `demo`（访客演示空间）**暂未加入**：加了会让 Codex 的
+ * `bootstrap-seed-repository.ts` 类型不过（它有自己一份 personal|team 的窄类型），
+ * 而按接缝规矩共享文件的结构性改造归 arch 开缝。已在回执点名那一行。
+ */
 export const workspaceKindSchema = z.enum(["personal", "team"]);
 
 const mediaSchema = z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/);
