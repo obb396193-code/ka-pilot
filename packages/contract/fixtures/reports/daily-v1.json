@@ -319,13 +319,190 @@
       {
         "key": "dim_resource_position",
         "title": "资源位",
-        "rows": []
+        "rows": [
+          {
+            "key": "上下滑",
+            "label": "上下滑",
+            "metrics": {
+              "cost": {
+                "value": 5200.0,
+                "availability": "available"
+              },
+              "cashCost": {
+                "value": 4062.24,
+                "availability": "available"
+              },
+              "exposure": {
+                "value": 41000,
+                "availability": "available"
+              },
+              "click": {
+                "value": 1750,
+                "availability": "available"
+              },
+              "conversion": {
+                "value": 130,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 124,
+                "availability": "available"
+              },
+              "costSpace": {
+                "value": 649.76,
+                "availability": "available"
+              },
+              "wakeUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "potentialUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "ratios": {
+                "ctr": {
+                  "value": 0.0427,
+                  "state": "finite"
+                },
+                "cvr": {
+                  "value": 0.0743,
+                  "state": "finite"
+                },
+                "realCpa": {
+                  "value": 41.94,
+                  "state": "finite"
+                },
+                "cashCpa": {
+                  "value": 32.76,
+                  "state": "finite"
+                },
+                "gap": {
+                  "value": 0.0484,
+                  "state": "finite"
+                },
+                "potentialRate": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "biConversionRate": {
+                  "value": null,
+                  "state": "undefined"
+                }
+              }
+            },
+            "assessment": {
+              "price": {
+                "value": 38.0,
+                "effectiveDate": "2026-09-01"
+              },
+              "priceSource": "history",
+              "onTarget": true,
+              "costStatus": "green",
+              "costStatusReason": "window_ok",
+              "budgetUsageRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "anomaly": false
+          }
+        ],
+        "unsupported": false
       },
       {
         "key": "dim_bid_tool",
         "title": "出价工具",
-        "rows": [],
-        "unsupported": true
+        "rows": [
+          {
+            "key": "单出价",
+            "label": "单出价",
+            "metrics": {
+              "cost": {
+                "value": 5200.0,
+                "availability": "available"
+              },
+              "cashCost": {
+                "value": 4062.24,
+                "availability": "available"
+              },
+              "exposure": {
+                "value": 41000,
+                "availability": "available"
+              },
+              "click": {
+                "value": 1750,
+                "availability": "available"
+              },
+              "conversion": {
+                "value": 130,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 124,
+                "availability": "available"
+              },
+              "costSpace": {
+                "value": 649.76,
+                "availability": "available"
+              },
+              "wakeUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "potentialUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "ratios": {
+                "ctr": {
+                  "value": 0.0427,
+                  "state": "finite"
+                },
+                "cvr": {
+                  "value": 0.0743,
+                  "state": "finite"
+                },
+                "realCpa": {
+                  "value": 41.94,
+                  "state": "finite"
+                },
+                "cashCpa": {
+                  "value": 32.76,
+                  "state": "finite"
+                },
+                "gap": {
+                  "value": 0.0484,
+                  "state": "finite"
+                },
+                "potentialRate": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "biConversionRate": {
+                  "value": null,
+                  "state": "undefined"
+                }
+              }
+            },
+            "assessment": {
+              "price": {
+                "value": 38.0,
+                "effectiveDate": "2026-09-01"
+              },
+              "priceSource": "history",
+              "onTarget": true,
+              "costStatus": "green",
+              "costStatusReason": "window_ok",
+              "budgetUsageRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "anomaly": false
+          }
+        ],
+        "unsupported": false
       },
       {
         "key": "dim_ubp",
@@ -382,7 +559,8 @@
       "dim_ubp: v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true",
       "dim_deduction: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
       "deduction_analysis: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
-      "cost_tiers: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
+      "cost_tiers: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
+      "v1.9.13：dim_bid_tool / dim_resource_position 与 dim_agent 同批填行（键=解析段值），unsupported=false"
     ]
   }
 }
