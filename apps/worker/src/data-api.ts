@@ -1,6 +1,7 @@
 import {
   AccountListRepository,
   AccountMuteRepository,
+  AccountNameParseRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
   AdminMembersRepository,
@@ -95,6 +96,8 @@ async function main(): Promise<void> {
     }),
     accountListService: new AccountListService({
       repository: new AccountListRepository(pool),
+      // R-017 T5：十个归属维度来自 account_name_parses（be2）。
+      dimensions: new AccountNameParseRepository(pool),
     }),
     workItemListService: new WorkItemListService({
       repository: new WorkItemListRepository(pool),

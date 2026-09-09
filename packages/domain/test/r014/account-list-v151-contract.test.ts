@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { EMPTY_DIMENSIONS_DTO } from "../../src/r014/account-name-parse-contract.js";
 import {
   accountGroupBySchema, accountListItemSchema, accountListRequestSchema, accountPoolStatusSchema,
 } from "../../src/account-list-contract.js";
@@ -29,6 +30,8 @@ const BASE_ITEM = {
   capacityLoad: { value: null, state: "undefined" as const },
   lastAction: { at: "2026-09-05T08:42:00.000+08:00", kind: "changeset" as const, summary: "降价 5%" },
   nextSuggestion: null,
+  // v1.9.3 T5：dimensions 是必填字段，十个键恒在。
+  dimensions: EMPTY_DIMENSIONS_DTO,
 };
 
 describe("v1.5.1 ① account list additions", () => {

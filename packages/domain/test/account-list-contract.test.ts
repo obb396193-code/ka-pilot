@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { EMPTY_DIMENSIONS_DTO } from "../src/r014/account-name-parse-contract.js";
 import {
   accountListRequestSchema,
   accountListResponseSchema,
@@ -39,6 +40,8 @@ const ready = {
       capacityLoad: { value: null, state: "undefined" },
       lastAction: null,
       nextSuggestion: null,
+      // v1.9.3 T5：dimensions 是必填字段，十个键恒在。
+      dimensions: EMPTY_DIMENSIONS_DTO,
     }],
     page: 1,
     pageSize: 20,
