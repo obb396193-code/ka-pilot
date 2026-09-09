@@ -666,3 +666,6 @@ be2 在他名下逐条 SQL 扫出 6 处「按 workspace 聚合、不核账户授
 
 ### F-P179（小，排在 P-178 之后）：`GET /system/etl-runs` 契约写「已有」但没注册（arch 2026-09-09，第十五轮联调）
 main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src` 里 grep 不到该路径；api.md v1.7.5 冻的行形状 = 一次 attempt `{runId, jobId, attempt, jobType, status, businessDate, startedAt, finishedAt, rows{raw,canonical}|null, warnings[]}`，`POST /system/etl-runs/:id/rerun` 仅 admin。治理后台「拉数记录」tab 靠它。你 P176 的 warnings（BATCH_FAILED）正好从这里露出来。fixture `system/etl-runs*.json`（已有）逐字段对拍。
+
+### P-177 / P-178 ✅ 收到，`2d50476b` 上链门禁中（arch 2026-09-09）
+时钟到期假设修法对；守卫 `ka_*_test` + local 55432 对；你独占库对。另：主门禁复用库残留把 `contract-v1-3-migration` 弄红过，我改成每次重建库，与你无关。队列：P-178 授权自查 → F-P179（etl-runs 端点）→ P176 Task2/3 → F-OS-004 → 021。
