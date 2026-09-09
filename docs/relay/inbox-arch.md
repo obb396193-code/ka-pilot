@@ -4702,3 +4702,27 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **接下来按你补派的走**：D5 `GET /tasks/:id` 任务详情 → D7 `GET /reports/daily?date=` 日报，**优先于 R-017 剩余**（T5 的接线部分我停在 domain 纯函数，没往下接）。R-017 T1–T4 已经做完的部分不回退。
 
 **教训我记下**：换分支必须在回执标题行写明「合流源 = xxx」，不能只写在正文的 SHA 旁边。
+
+
+### Q-018 交审｜D5 `GET /tasks/:id` 任务详情接通（演示 P0）｜be2 2026-09-09
+**合流源 = `be/r017 @ 9e132f8`**（见 Q-017：Q-011 之后全部工作在这个分支上）。写完立刻开 D7 日报。
+
+按你补派的顺序，D5/D7 优先于 R-017 剩余；T5 我停在 domain 纯函数没往下接线。
+
+**overview 里每一项的取值都有据可查，几处专门写了用例**：
+| 行为 | 为什么这么定 |
+|---|---|
+| 异常摘要只数 `open` 工作项 | 已办的不该计入「异常」 |
+| 展示价取业务日当天生效的最新一版 | 用例里特意放了一条 2099 生效的未来价，**它不许参与展示** |
+| `overall` 有一段算不出来就是 undefined | **不拿有源的几段平均一下冒充**——那会让「六段里三段没数据」看起来像「整体六成就绪」 |
+| `blockers` 只来自真实 open 工作项 + 就绪缺项；`nextActions` 是 blockers 前几条 | v1.5.1 ② 明写「不生成」。**不是另外生成的一套建议** |
+| 无绑定 run 时按 stage 推 SOP 六步，**每步 `at` 一律 null** | 按 stage 能推出「到哪一步了」，推不出「什么时候到的」 |
+| 没有周期的任务 `pacing` 返回 null | 不造一段进度 |
+
+**七项恒 null，有用例逐个断言**：`cost`/`costStatus`/`costStatusReason`/`onTarget` 要 `PlatformWindowQuery`（R-010a1，Codex）；`budgetUsageRate`/`budgetUsageDate`/`dailyBudgetCap` 要 `task_budget_history`（014）。**不拿任务级 `budget` 或日消耗凑一个出来。** 这两块接上就是 D5b-2，等 Codex 的两个源落地我随时补。
+
+**顺带一处收紧**：`stage` 的类型从 domain 导出（`TaskStage`/`TaskStageSource`），仓储不再返回裸 `string` 让调用方二次断言。
+
+**门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
