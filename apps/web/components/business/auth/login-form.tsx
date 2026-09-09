@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { resolveErrorMessage } from "@/lib/data/contracts"
 import { loginSession, readSession } from "@/lib/data/session-client"
 import { cn } from "@/lib/utils"
 
@@ -33,7 +34,9 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
     setPending(true)
     try {
       const response = await loginSession({ provider: "internal_test", username: username.trim(), password })
-      if (!response.ok) { setError(response.error.code === "UNAUTHORIZED" ? "用户名或密码错误" : "登录失败，请稍后重试"); return }
+      // 401 统一「用户名或密码错误」不区分原因；429 限速要说清等多久，不当「登录失败」（F8-14）。
+      // 表单内容一律保留：报错后重填一遍用户名很招人烦。
+      if (!response.ok) { setError(response.error.code === "UNAUTHORIZED" ? "用户名或密码错误" : resolveErrorMessage(response.error.code, "登录失败，请稍后重试")); return }
       const session = await readSession()
       if (!session.ok) { setError("登录成功但读取会话失败，请重试"); return }
       router.replace(nextPath)
