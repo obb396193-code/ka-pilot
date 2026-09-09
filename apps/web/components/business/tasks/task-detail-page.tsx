@@ -11,6 +11,7 @@ import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
 import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
+import { useTaskDetail } from "@/lib/data/use-task-detail"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { WorkItemCard } from "@/components/business/workbench/work-item-card"
 import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
@@ -51,8 +52,10 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
   const { isMock } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "overview")
+  // F8-8：总览接真后端（GET /api/internal/tasks/:id）；mock 模式仍走 fixture，其余七个页签暂时保持 fixture
+  const remote = useTaskDetail(taskId, !isMock)
   const fixture = taskId === "fixture-task-nocap" ? overviewFixtures.nocap : overviewFixtures.ready
-  const data = isOk(fixture) ? fixture.data : null
+  const data = isMock ? (isOk(fixture) ? fixture.data : null) : remote.status === "ok" ? remote.data : null
   const listItem = isOk(tasksFixture) ? tasksFixture.data.items.find((item) => item.taskId === taskId) ?? null : null
   const [priceDialog, setPriceDialog] = useState<"assessment" | "cap" | "stage" | null>(null)
   const [form, setForm] = useState({ value: "", effectiveDate: "2026-09-06", evidenceUrl: "", note: "", stage: (data?.overview.stage?.value ?? "delivering") as TaskStage })
@@ -96,7 +99,12 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
       />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="任务阶段 / 就绪度 / SOP + 任务详情接口接入后切换为真数据" empty={{ title: "没有这个任务", description: "检查任务 ID，或回列表重新选。" }}>
+        <StateFrame
+          state={isMock ? state : remote.status === "loading" ? "loading" : remote.status === "not_found" ? "empty" : remote.status === "error" ? "error" : state}
+          error={remote.status === "error" ? { code: "SOURCE_UNAVAILABLE", message: remote.message, retryable: true, requestId: remote.requestId ?? "" } : undefined}
+          unlock="其余页签的接口接入后切换为真数据（总览已接真后端）"
+          empty={{ title: "没有这个任务", description: "检查任务 ID，或回列表重新选。" }}
+        >
           {tab === "overview" ? (
             <div className="flex flex-col gap-4">
               <KpiCards metrics={headline} className="px-0 lg:px-0" />

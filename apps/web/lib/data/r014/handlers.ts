@@ -14,7 +14,12 @@ import {
   savedViewListSchema,
   savedViewSchema,
   searchResultSchema,
+  accountNamePatchSchema,
+  accountNamesSchema,
+  namingRuleSchema,
+  namingRulesTestSchema,
   taskBindingsSchema,
+  taskDetailSchema,
   watchlistSchema,
 } from "./schemas.ts"
 
@@ -104,6 +109,14 @@ export const handleMeWatchlist = (request: Request, deps: Deps): Promise<R014Bff
     ...withDeps(deps),
   })
 
+export const handleTaskDetail = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}`,
+    method: "GET",
+    dataSchema: taskDetailSchema,
+    ...withDeps(deps),
+  })
+
 export const handleTaskBindings = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
   forwardToBackend(request, {
     path: `/api/v1/tasks/${encodeURIComponent(taskId)}/bindings`,
@@ -149,5 +162,41 @@ export const handleExportDetail = (request: Request, exportId: string, deps: Dep
     path: `/api/v1/exports/${encodeURIComponent(exportId)}`,
     method: "GET",
     dataSchema: exportRecordSchema,
+    ...withDeps(deps),
+  })
+
+/* 归属清洗（契约 v1.8）——F8-9 */
+export const handleAdminNamingRules = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/naming-rules",
+    method: request.method === "PUT" ? "PUT" : "GET",
+    dataSchema: namingRuleSchema,
+    allowedQuery: ["media"],
+    ...withDeps(deps),
+  })
+
+export const handleAdminNamingRulesTest = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/naming-rules/test",
+    method: "POST",
+    dataSchema: namingRulesTestSchema,
+    allowedQuery: ["media"],
+    ...withDeps(deps),
+  })
+
+export const handleAdminAccountNames = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/account-names",
+    method: "GET",
+    dataSchema: accountNamesSchema,
+    allowedQuery: ["media", "status", "q", "page", "pageSize"],
+    ...withDeps(deps),
+  })
+
+export const handleAdminAccountNamePatch = (request: Request, media: string, accountId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/admin/account-names/${encodeURIComponent(media)}/${encodeURIComponent(accountId)}`,
+    method: "PATCH",
+    dataSchema: accountNamePatchSchema,
     ...withDeps(deps),
   })
