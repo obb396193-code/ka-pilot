@@ -43,10 +43,11 @@ export function ThemeSwitch({ className }: { className?: string }) {
             value={mode.value}
             aria-label={mode.label}
             title={mode.hint}
-            className="h-7 min-w-0 gap-1.5 rounded-full! border-0 px-3 text-xs font-medium text-muted-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm hover:bg-muted hover:text-foreground"
+            className="h-7 min-w-0 gap-1.5 rounded-full! border-0 px-2 text-xs font-medium text-muted-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm hover:bg-muted hover:text-foreground xl:px-3"
           >
             <ModeDot mode={mode.value} />
-            {mode.label}
+            {/* F8-10：窄屏（<1280）只留圆点，1093px 下页头才放得下 */}
+            <span className="hidden xl:inline">{mode.label}</span>
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
