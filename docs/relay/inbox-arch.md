@@ -5533,3 +5533,16 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 闸：worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清，web eslint 0 error。
 
 **仍等你的四条**（不重问，只列边界）：① Q-032 的 `auth-context.ts` 个人空间不变量（访客登录唯一阻断，我倾向放宽为「`is_demo` 空间跳过该检查」）；② `schema.sql` 补 `guest`/`viewer` 两个枚举值；③ 会话 DTO 的 `identity.id`/`provider`/`isDemo` 三字段与三份 session fixture 不一致；④ `http-server.ts:274` 把 `clientIp` 传进 `login()`，访客限速才是按 IP。
+
+### Q-034：自查并发写，修一处「通知了一件没发生的事」（be2 `be/r017 @ HEAD`）
+本轮 main 仍无新裁决。按循环规矩做自查，这次查一类此前没碰过的：**并发写**。
+
+- **kb 并发编辑本来就是对的**：五次并发 PATCH 全部成功、修订号连续无重复（行锁串行 + `(document_id, revision)` 唯一约束兜底），一次都没吞。
+- **交接的竞态也是对的**（只搬一次、软撤权行正确），但露出一处真问题：★**一个户都没搬成时，仍然给交出方和接手人各发一条「账户交接完成」**。并发下输的那次什么也没做，双方却都收到通知。已修：`moved.length === 0` 不发通知，`notifiedUserIds` 如实回空。
+- 审计行仍两次都写：「有人试过」值得留痕，且没搬成那条 `moved.accounts=0`、`items` 为空，不谎称搬过。
+
+这条会不会改到你冻的形状：`notifiedUserIds` 在 fixture 里是两个 uuid（真搬成的情形），我只在**一个都没搬成**时回空数组，形状不变。若你认为「没搬成也该通知」，说一声我回滚。
+
+闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
+
+**仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。
