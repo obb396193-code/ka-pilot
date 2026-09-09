@@ -6,7 +6,7 @@ import type { QueryRecord } from "@/lib/data/data-view"
 import { getMockChangeSetDetail, getMockWorkItemDetail } from "@/lib/data/mock-data"
 import { useReadModel } from "@/lib/data/use-read-model"
 
-// 只剩工作项详情（/diagnostics/[id]）还走 lib/data 读模型；工作台 / 账户池 / 数据分析已改读契约 fixtures（F-007）
+// 只剩工作项详情（/work-items/[id]）还走 lib/data 读模型；工作台 / 账户池 / 数据分析已改读契约 fixtures（F-007）
 function MockDiagnosticDetailContainer({ findingId }: { findingId: string }) {
   const workItem = getMockWorkItemDetail(findingId)
   const changeSet = getMockChangeSetDetail()

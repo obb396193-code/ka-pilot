@@ -23,7 +23,7 @@ function ItemList({ items, empty }: { items: LeadItem[]; empty: string }) {
       {items.map((item, index) => (
         <div key={`${item.taskId}-${item.kind}-${index}`} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm">
           <div className="flex items-center gap-2"><TypeChip>{leadKindLabel[item.kind]}</TypeChip><Link href={`/tasks/${encodeURIComponent(item.taskId)}`} className="font-medium underline-offset-4 hover:underline">{item.taskName}</Link></div>
-          <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="tabular-nums">影响 {mv(item.impact, "money0")}</span>{item.suggestion ? <Link href={`/diagnostics/${item.suggestion.workItemId}`} className="underline-offset-4 hover:underline">去处理</Link> : <span>无建议</span>}</div>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="tabular-nums">影响 {mv(item.impact, "money0")}</span>{item.suggestion ? <Link href={`/work-items/${item.suggestion.workItemId}`} className="underline-offset-4 hover:underline">去处理</Link> : <span>无建议</span>}</div>
         </div>
       ))}
     </div>

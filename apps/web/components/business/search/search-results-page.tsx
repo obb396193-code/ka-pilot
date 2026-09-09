@@ -13,7 +13,7 @@ import { ExampleBlock } from "@/components/business/state/page-state"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { isOk } from "@/lib/fixtures/contract"
-import { searchFixture, searchTypeLabel, type SearchItem } from "@/lib/fixtures/agent"
+import { searchFixture, searchTypeLabel, type SearchItem, searchSubtitle } from "@/lib/fixtures/agent"
 
 // 全部搜索结果：⌘K 是直达（前几条），这里是「没直接找到，想翻一翻」的落点。
 // 五类对象按 v1.7.4 冻结的 type 分组；搜不到不留白，给「问 AI」的出口。
@@ -27,7 +27,7 @@ export function SearchResultsPage() {
 
   const groups = useMemo(() => {
     const matched = query
-      ? data.items.filter((item) => `${item.label} ${item.id}`.toLowerCase().includes(query.toLowerCase()))
+      ? data.items.filter((item) => `${item.title} ${item.id}`.toLowerCase().includes(query.toLowerCase()))
       : data.items
     return order
       .map((type) => ({ type, items: matched.filter((item) => item.type === type) }))
@@ -62,7 +62,7 @@ export function SearchResultsPage() {
                   <CardContent className="grid gap-2 @3xl/main:grid-cols-2">
                     {group.items.map((item) => (
                       <Link key={item.id} href={item.href} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 hover:bg-muted/60">
-                        <span className="truncate text-sm">{item.label}</span>
+                        <div className="min-w-0"><p className="truncate text-sm">{item.title}</p>{searchSubtitle(item) ? <p className="truncate text-xs text-muted-foreground">{searchSubtitle(item)}</p> : null}</div>
                         <span className="flex shrink-0 items-center gap-2"><TypeChip>{searchTypeLabel[item.type]}</TypeChip><span className="font-mono text-[10px] text-muted-foreground">{item.id}</span></span>
                       </Link>
                     ))}
@@ -77,7 +77,7 @@ export function SearchResultsPage() {
           <Card>
             <CardHeader><CardTitle className="text-base">最近访问</CardTitle><CardDescription>按你自己的浏览记录，不参与搜索排序</CardDescription></CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              {data.recent.map((item) => <Button key={item.id} asChild size="sm" variant="outline"><Link href={item.href}>{item.label}</Link></Button>)}
+              {data.recent.map((item) => <Button key={item.id} asChild size="sm" variant="outline"><Link href={item.href}>{item.title}</Link></Button>)}
             </CardContent>
           </Card>
         ) : null}

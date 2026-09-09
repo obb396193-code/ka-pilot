@@ -29,7 +29,7 @@ const columns = helper.columns([
   helper.accessor((row) => row.t1Result?.cashCpaDelta.value ?? null, { id: "t1", header: "T+1 观察", meta: { label: "T+1 观察", align: "right" }, cell: ({ row }) => row.original.t1Result ? <span className={cn("text-xs tabular-nums", (row.original.t1Result.cashCpaDelta.value ?? 0) < 0 ? "text-status-success" : "text-status-warning")}>CPA {rv(row.original.t1Result.cashCpaDelta, "money")} · 消耗 {mv(row.original.t1Result.costDelta, "money0")} · 转化 {mv(row.original.t1Result.realConversionDelta)}</span> : <MissingValue title="未成熟" /> }),
   helper.accessor((row) => row.t7Result?.cashCpaDelta.value ?? null, { id: "t7", header: "T+7 观察", meta: { label: "T+7 观察", align: "right" }, cell: ({ row }) => row.original.t7Result ? <span className="text-xs tabular-nums">CPA {rv(row.original.t7Result.cashCpaDelta, "money")}</span> : <MissingValue title="未成熟" /> }),
   helper.accessor("status", { header: "状态", meta: { label: "状态" }, cell: ({ getValue }) => <TypeChip>{getValue()}</TypeChip> }),
-  actionsColumn<ShadowDecision>((row) => <DropdownMenuItem asChild><Link href={`/diagnostics/${row.workItemId}`}>看工作项</Link></DropdownMenuItem>),
+  actionsColumn<ShadowDecision>((row) => <DropdownMenuItem asChild><Link href={`/work-items/${row.workItemId}`}>看工作项</Link></DropdownMenuItem>),
 ])
 
 export function ShadowTab() {
