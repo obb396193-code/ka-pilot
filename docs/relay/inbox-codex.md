@@ -630,3 +630,15 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### F-BI-001（小，排在 F-OS-003 之后）：团队路径 BI 未到时的三态（arch 2026-09-09）
 老板转来 ka-data 管线定义（`docs/evidence/2026-09-09-BI口径定义-ka-data取数管线.md`）：T-1 媒体 08:30 到、BI 11:10 到，数据起点 2026-08-31。请核 `ka-data-client.ts` 的 `completeSum("conv")` 与行组装：昨天媒体已到、`conv` 仍 NULL 的行，`realConversion` 必须是 **missing**（cashCpa/gap → undefined），不能变 0、也不能把整行过滤掉让 cost 一起消失；`dataAsOf`/lineage 能表达「媒体已到、BI 未到」。08-31 之前的日期同理 missing。加一条真 PG/假上游用例。
+
+### F-OS-004（v1.9.5，排在 F-OS-003 之后、021 之前）：`POST /admin/members` 带初始密码 + 重置密码（arch 2026-09-09）
+老板要内测同事能直接登录：`POST /admin/members` 当 `provider=internal_test` 时接受 `initial_password?`，没给就服务端生成 16 位随机密码，写 `identity_passwords`（**用 be2 的 `identity-password-repository.ts`，等它落 main 再接，不自己写 scrypt**），响应只回一次 `initialPassword`；新增 `POST /admin/members/:identityId/reset-password` → 新初始密码 + 吊销该身份全部 session；成员列表行加 `mustChangePassword`。`provider_subject` 正则 `^[A-Za-z0-9._@-]{1,128}$`。fixtures `admin/member-created.json`、`member-reset-password.json`、`members.json`（加字段）已放。真 PG 用例：建人→初始密码能登录→改密后旧密码失效→重置后旧 session 401。
+
+### 只读知会（v1.9.6）：内网 M0 底表给你后面几批带来的源（arch 2026-09-09）
+`docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`：UBP 有源（`is_ubp`）、扣量 PV 分钟表、赔付/资金表、账户小时表（团队空间可直读，与你 021 同构）、操作日志（T+1 回收）。都要经 ka-data 暴露，OS 在问；暴露前不动，暴露后我按表发派活。你当前队列不变。
+
+### 知会（v1.9.7）：BUC provider 接入契约已冻，开工条件 = OS 拿到日常 AppCode（arch 2026-09-09）
+接口细节（302 → BUC、`/sendBucSSOToken.do` 回调、`communicate.json` 验票、empId → 成员表、无成员 403、全局登出）在 api.md v1.9.7。到时候在 `apps/worker/src/auth/` 加 `buc-login-provider.ts`（be2 交回 login-provider 后）。另：正式化可能走 Aone App 容器（Pod）路线，需要 `APP-META/docker-config` + `main.sh` + `runtime.env.example`，等 OS 评估结论后派你，现在不动。
+
+### F-BI-002（小，随 F-BI-001 一起）：团队空间页头「数据日 − · 更新 −」（arch 2026-09-09，内网实机截图）
+团队空间（ka-data）数据分析页有数（大盘六卡、趋势线都出来了），但页头「数据日 −、更新 −」：`ka-data-client.ts:62/282` 只认 envelope 的可选 `dataAsOf`，ka-data 不回就是 null。契约 v1.7.7 定的团队口径是 **`updated_at` 批次**：`meta.dataAsOf = max(updated_at)`（本次返回行）、`meta.businessDate = max(ds)`；两者都取不到才 null。一条用例。

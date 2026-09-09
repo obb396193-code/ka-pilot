@@ -1196,3 +1196,45 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 无适用规则或阈值为 null → `gapStatus:"missing"`、`meta.ruleSetVersion:null`（**不是 normal**）。
 - 口径：`gap = Σconversion / Σreal_conversion − 1`（先聚合再相除，窗口内按批准 tuple）；分母 0 → 三态 infinite/undefined。`preDeductionGap / deductionRate` 需 `attribution_volume`（不在 canonical）→ **missing，不反推**，等 R-012 落表再接。团队路径的版本化快照仍走 013，不变。
 
+## v1.9.5 追加（2026-09-09 arch；老板问「没有注册入口，别人怎么登录」——内测开户闭环）
+
+**原则不变：内网工具不开放自助注册，账号由管理员在治理后台开。** 但开完必须能直接登录，不再依赖部署配置改 ENV。
+- `POST /admin/members {display_name, provider:"internal_test"|"buc", provider_subject, role, initial_password?}`：建 identity+user+personal workspace+membership 不变；**provider=internal_test 时**：给了 `initial_password` 就按 scrypt 写 `identity_passwords`（v1.9.3 表），没给则服务端生成 16 位随机密码写表并**只在本次响应里回一次** `{…, initialPassword}`（之后任何接口不再返回）；`provider_subject` 即登录用户名，规则 `^[A-Za-z0-9._@-]{1,128}$`（中文名不能当用户名，用拼音/工号；`display_name` 可中文）。
+- `POST /admin/members/:identityId/reset-password {}` → `{initialPassword}`（同样只回一次）+ 吊销该身份全部 session；仅 admin。
+- 登录校验顺序（v1.9.3 已定）：`identity_passwords` 有行 → 用表；无行 → 回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（首次引导凭证）。用户首次登录后用 `POST /auth/password` 自改。
+- 成员列表行加 `mustChangePassword: boolean`（初始密码未改过 = true；前端在成员表和该用户设置页提示）。
+- `provider="buc"`：仍只建身份不设密码，登录走 BUC SSO——**BUC 登录 provider 本期未实现**，正式化前置项（门禁 A23）。
+- fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members.json` 行加 `mustChangePassword`。
+- 分工：`identity_passwords` 表/仓储/登录回落 = be2（020，Q-021 ①）；`POST /admin/members` 扩展 + reset-password = Codex（r010 admin-members，**等 be2 的 `identity-password-repository.ts` 落 main 后再接**，不各写一套 scrypt）；成员页「新增成员 / 重置密码」对话框 = fe F8-11。
+
+## v1.9.6 追加（2026-09-09 arch；老板：没有 BUC 也要能登录，做访客；内网 M0 底表清单带来的源变化）
+
+**访客登录（guest）**
+- 角色枚举加 **`viewer`**：只读，所有写类 BFF/端点对 viewer 返 `403 READ_ONLY_ROLE`，治理后台不可见，导出/推送不可用；`readOnly:true` 常驻。
+- `POST /auth/login {provider:"guest"}`（无用户名密码）：仅当 `GUEST_ACCESS_ENABLED=1` 时开放；建一条 **匿名会话**（identity 为固定的 `guest` 身份，不建 user 行），`activeWorkspace` 固定为 `GUEST_WORKSPACE_ID` 指向的**演示空间**（kind `demo`，合成数据，由 `scripts/seed-demo-data.py` 灌），角色 `viewer`；TTL 2 小时；按 IP 限速 20 次/小时。**访客看不到真实账户与团队数据**——要给某人看真数据，走治理后台开成员，不走访客。
+- 登录页加「访客浏览」按钮（ENV 开时才显示），进入后顶部常驻条「演示数据 · 只读 · 想用真数据找管理员开户」。
+- `GET /auth/session` 响应对 guest 会话 `identity.provider="guest"`，`workspaces` 只有演示空间。
+- fixtures：`auth/login-guest.json`、`session-http/guest.json`（`activeWorkspace.kind="demo"`, `role="viewer"`, `readOnly=true`）。
+- 分工：be2（provider + viewer 角色 + 写类拦截，`session-http.ts` 在你手上）；fe F8-12（按钮 + 只读条 + 写入口对 viewer 隐藏）；OS（沙箱设 ENV + 灌演示空间）。**BUC**：正式化用，OS 去申请接入（门禁 A24），provider=buc 位置已留。
+
+**内网 M0 底表带来的源变化（先记，待 OS 确认 ka-data 暴露后逐条解禁）**
+- `ubp` 维度：`ads_rta_media_daily_report_base_adgroup.is_ubp` 有源 → ka-data `dwd_adgroup_daily` 加列后，v1.7.5 的「`ubp` 永久 DIM_UNSUPPORTED」作废，改为普通维度（值 1/0 → 「UBP/非UBP」）。
+- 扣量率/扣量前 Gap：`rta_transform_deduction_pv_mm`（分钟级 pv/deduction_pv）或 `base_adgroup.deduction_rate/ocpx_gap`（T+1）→ 不再等 R-012 `attribution_volume`；`preDeductionGap = ocpx_conversions/bi − 1` 语义与 metrics.md 一致（ocpx_conversions 即扣量前回传）。
+- 赔付 `income`、余额：`qihang_rta_account_fund_report_d`；快手缺账户 → missing。
+- `dimensions.agentType.source="platform"` 的真源：`julang_daili_relation`。
+- T+1 动作回收：`qihang_media_operation_log`（不完整 → 对不上标 unverified）。
+- 基建统计（冷启动/空耗/0 曝光）：`ads_rta_media_daily_report_base_account`，校验通过前不接。
+详见 `docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`。
+
+## v1.9.7 追加（2026-09-09 arch；按内网 BUC 教程冻 provider=buc 接入契约，落地等 AppCode）
+
+- 环境变量：`BUC_ENV=daily|prod`、`BUC_APP_CODE`（日常与正式各一）、`BUC_BASE_URL`、`AUTH_ALLOWED_ORIGINS`（允许的前端入口，含 io 默认域名与自定义域名，两者都开放就都登记）。
+- `GET /api/v1/auth/login?provider=buc`（BFF `GET /api/internal/auth/login/buc`）：生成签名 `state`（5 分钟有效，HttpOnly cookie 存 nonce），302 到 BUC，`BACK_URL` 指向 **API 回调**（不是页面）。
+- `GET /sendBucSSOToken.do`（**固定路径**，web 与 data-api 均需可达；BFF 转发）：服务端 `POST <BUC_BASE_URL>/rpc/sso/communicate.json`，form `SSO_TOKEN / APP_CODE / RETURN_USER=true`；`content` 是 JSON 字符串需二次解析；**只有拿到非空 `empId` 才继续**；无 token → 400（不重定向，防死循环）。
+- 身份映射：`auth_identities(provider='buc', provider_subject=empId)`；**没有 membership 的 empId → 403 `NOT_A_MEMBER`**（BUC 只证明是员工，能不能进由我们成员表决定，ACL 登录包再挡一层）；有成员行则建会话（同 internal_test），`session.identity.provider="buc"`。
+- `GET /auth/logout`：清本地 cookie + 302 到 BUC 全局登出。
+- 治理后台新增成员时 `provider="buc"` 只填 `provider_subject=工号`，不设密码（v1.9.5 已定）；`POST /auth/password` 对 buc 身份 409（v1.7.6 已定）。
+- 会话 cookie：HttpOnly、Secure、SameSite=Lax；写操作沿用 Sec-Fetch-Site + CSRF（F-P157-1）。
+- 验收（照教程）：无痕窗口从每个入口域名登录都回到原入口；未加入 ACL 的 403；`/api/me` 200；退出后全局登出。
+- 实现归 Codex（`internal-test-login-provider.ts` 交回后同目录加 `buc-login-provider.ts`）；**开工条件 = OS 拿到日常 AppCode**。
+
