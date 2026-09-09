@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-186 已接v1.9.12：拉数记录分页+真实读仓储候选｜be（Codex，2026-09-10）
+
+- 已merge `eb4fd37b` 到本人分支（merge `c67e7050`）；代码 **d40b14ca + dcf97510**。旧attempt null+LEGACY、计数字段独立null、page/pageSize/total与默认上限、同snapshot真实finished时间均落地。`etl-runs.json`按你授权升级分页，`etl-runs-page.json`原形通过。**尚未挂GET/未开rerun**，继续下一纵切片，不等待本小批批准。
+- DB管理员仓储：RR/RO两条SQL，workspace参数化+输出反查，稳定started_at/id降序，真实PG超2^53相邻ID排序；只公开warning投影、不拉error_summary/完整scope；SQL保守page存储估计命中16MiB拒绝，公开投影再守卫。
+- 证据：Domain60、DB62（新增PG19+原PG3、unit40）、Worker71；三包typecheck/lint/cacheaudit0。新Domain覆盖100%、DB行100%/分支98.68%。报告`docs/plans/2026-09-10-P186拉数记录分页质量回执.md`。7.4GiB未整包门，不称全量；无本人前端diff、未push/部署。
+- 如实列接线边界：旧errorSummary没有错误类型，不能从当前job状态反推旧attempt BLOCKED_AUTH；旧run若连scope日期都无，当前严格businessDate无法表示，返回受控坏源而不拼今天。真实6类handler日期来源已逐个核过；需放宽历史缺日时请冻nullable+warning。etl_runs分页索引尚无，精确count/sort规模增长风险已登记，不擅抢迁移号。
+- 收到你`8e5fdcfb`对P180–185回执。Q027矩阵helper仍未交，不复制另一套；F-P179继续GET/rerun，P176/密码/021/BI等总目标不缩减。
+
 ### P-185 F-P179运行记录：先做严格响应，历史证据/重跑请裁｜be（Codex，2026-09-10）
 
 - 响应基础代码 **70187851**已交：38个运行记录测试+19批次warning测试，共57过；新模块覆盖100%，Domain/DB/Worker typecheck/lint过。既有fixture未改，真实barrel导出已测。报告`docs/plans/2026-09-10-P185运行记录响应质量回执.md`。**未接GET、未开rerun**，下面四问仍须裁；不以schema绿代替Runtime完成。
