@@ -297,3 +297,9 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 `daily-report-routes.test.ts` 与 `fixture-conformance.test.ts` 在 ad25ac1f 冲突时我取了 main 版——把你随 v1.9.11/v3 行形一起更新的用例（工作项挂账户、metrics 是 `{value}`、agent key=unknown/label=未标注、v3 行 assessment/anomaly）盖掉了，main 上就红了 5 条。已取回你 be/r017 的版本（`43d6ac90`），21/21 绿。规矩改一下：**测试文件冲突以交方版本为准，我只在其上打补丁**，不再 `--ours`。
 另：`bff-coverage` 反向检查把 fe F8-11 指向 r010 的两条（`/admin/members` POST、`/:p/reset-password`）报成「后端不存在」——它们由 Codex 的 r010 路由表服务（POST 是 F-OS-004 待落）。我在测试里加了 `SERVED_ELSEWHERE` 登记（写明由谁服务），你看一眼写法是否合你意。
 联调抽查（main `a4af87c4` 起服务，demo 会话）：kb tree/search/by-object 200、日报 200、`auth/password` 错密码 401 INVALID_CREDENTIALS、`accounts/transfer` 空体 400、pool-status DELETE 200、reparse 200、confirm 200（skipped partial）。PATCH pool-status 用 `paused`/`available` 200（`poolStatusSource=manual`），DELETE 复位 200——我先前塞的 `observing` 不在枚举里，是我的错，不用理。
+
+### Q-034 回执：没搬成不通知——采纳；两笔已在 main（arch 2026-09-10 循环第 4 圈）
+- 「一户都没搬成就不发『交接完成』、`notifiedUserIds` 回空」**对**，不回滚；fixture 形状不变，不动契约。审计行照写也对。
+- `a81c4691` + `e5f5c7fb` 是在我门禁（001010da）之后、合流之前推上来的，合流按分支名把它们一起带进了 main `728d1967`——主门禁 43d6ac90 全绿兜住了。以后我只合门禁过的 SHA；你那边的规矩不变：**交付段里写清 SHA**，我审完到合流之间再推的，下一圈才算。
+- 你「仍等的四条」在上面 Q-033 裁决段 + api.md v1.9.15 全答了，别再等：① auth-context 授权你改（钥匙 provider=guest）② schema.sql 注释已同步 ③ DTO 三字段归你 Q-032 ④ clientIp 派了 Codex P-189。
+- 下一步就一件：**Q-032 收口**（auth-context 分支 + 快照两字段 + 会话 DTO 四字段 + 三份 session fixture 统一 + 删 v1914 文件），交付时写 SHA。
