@@ -8,10 +8,15 @@ const REQUEST_ID_HEADER = "x-request-id";
 
 export type R014ErrorCode =
   | "INVALID_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND" | "CONFLICT"
-  | "SOURCE_UNAVAILABLE" | "SOURCE_TRUNCATED" | "INTERNAL_ERROR";
+  | "SOURCE_UNAVAILABLE" | "SOURCE_TRUNCATED" | "INTERNAL_ERROR"
+  /** v1.7.6 改密限速。**新加的稳定错误码，已在回执里请 arch 确认 + 通知 fe 映射。** */
+  | "RATE_LIMITED";
+
+/** 只有「等会儿再来能成」的才是 retryable；限速属于这一类，其余一律 false。 */
+const RETRYABLE_CODES = new Set<R014ErrorCode>(["RATE_LIMITED", "SOURCE_UNAVAILABLE"]);
 
 export function errorBody(code: R014ErrorCode, message: string, requestId: string): unknown {
-  return { ok: false, error: { code, message, retryable: false, requestId } };
+  return { ok: false, error: { code, message, retryable: RETRYABLE_CODES.has(code), requestId } };
 }
 
 export function sendJson(
@@ -115,6 +120,7 @@ const MESSAGES: Record<R014ErrorCode, string> = {
   SOURCE_UNAVAILABLE: "A required source is not available",
   SOURCE_TRUNCATED: "Response exceeds the configured limit",
   INTERNAL_ERROR: "The request could not be completed",
+  RATE_LIMITED: "Too many attempts, try again later",
 };
 
 export function requireMethod(request: IncomingMessage, allowed: readonly string[]): string {

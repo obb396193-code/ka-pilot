@@ -2,6 +2,7 @@ import {
   AccountListRepository,
   AccountMuteRepository,
   AccountNameParseRepository,
+  IdentityPasswordRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
   AdminMembersRepository,
@@ -44,6 +45,7 @@ import { createNamingRoutes } from "./r014/naming-routes.js";
 import { createDailyReportRoutes } from "./r014/daily-report-routes.js";
 import { createTaskDetailRoutes } from "./r014/task-detail-routes.js";
 import { createKbRoutes } from "./r014/kb-routes.js";
+import { createPasswordRoutes } from "./r014/password-routes.js";
 import { createTransferRoutes } from "./r014/transfer-routes.js";
 import { createTaskRoutes } from "./r014/task-routes.js";
 import { createWorkspaceRoutes } from "./r014/workspace-routes.js";
@@ -52,6 +54,14 @@ import { registerR014Routes } from "./r014/routes.js";
 async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
   const pool = createPool(config.databaseUrl);
+  // v1.9.3 自助改密：登录先查 identity_passwords、无行才回落 ENV。
+  // provider 提出来单建，是因为改密路由也要用它取 ENV 引导凭证做「当前密码」比对。
+  const internalTestLoginProvider = new InternalTestLoginProvider(
+    config.internalTestAuthEnabled,
+    config.internalTestAuthCredentialsJson,
+  );
+  internalTestLoginProvider.useStoredPasswords(new IdentityPasswordRepository(pool));
+
   registerR014Routes([ // be2-r014
     ...createMeRoutes(pool),
     ...createAccountRoutes(pool),
@@ -62,6 +72,7 @@ async function main(): Promise<void> {
     ...createDailyReportRoutes(pool),
     ...createTransferRoutes(pool),
     ...createKbRoutes(pool),
+    ...createPasswordRoutes(pool, internalTestLoginProvider),
   ]);
   const authRepository = new AuthSessionRepository(pool);
   const sessionAuthService = new SessionAuthService(authRepository);
@@ -104,10 +115,7 @@ async function main(): Promise<void> {
     }),
     sessionHttpService: new SessionHttpService(
       sessionAuthService,
-      new InternalTestLoginProvider(
-        config.internalTestAuthEnabled,
-        config.internalTestAuthCredentialsJson,
-      ),
+      internalTestLoginProvider,
       { ttlSeconds: config.sessionTtlSeconds },
     ),
     sessionAuthService,

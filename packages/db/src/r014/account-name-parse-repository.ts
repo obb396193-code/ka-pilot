@@ -89,6 +89,17 @@ function mapParse(row: Record<string, unknown>, workspaceId: string): AccountNam
 }
 
 const WRITE_ROLES = new Set(["lead", "admin"]);
+/**
+ * 归属清洗后台（六个端点全在 `/api/v1/admin/` 下）一律 lead|admin。
+ * 原来只有 `putRule` 挡了角色，`list/patch/confirmBatch/reparseCandidates/upsertParse`
+ * 五个是敞开的——个人空间里任何优化师都能列出并改**全空间**账户的昵称解析，
+ * 而账户列表本身是按授权收口的。和 Q-020 是同一类：一个入口收口了，旁边的没收。
+ *
+ * `currentRule` 不在此列：账户列表取维度要读规范（`dimensionsFor`），那是普通读路径。
+ */
+function assertGovernance(role: string): void {
+  if (!WRITE_ROLES.has(role)) throw new R014RepositoryError("FORBIDDEN");
+}
 const MEDIA = /^[A-Z0-9_]{1,32}$/;
 
 export class AccountNameParseRepository {
@@ -156,6 +167,7 @@ export class AccountNameParseRepository {
     options: { status?: string; media?: string; q?: string; page?: number; pageSize?: number } = {},
   ): Promise<{ items: AccountNameParseRecord[]; total: number }> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     const page = options.page ?? 1;
     const pageSize = options.pageSize ?? 20;
     if (!Number.isInteger(page) || page < 1 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) {
@@ -200,6 +212,7 @@ export class AccountNameParseRepository {
     },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (!MEDIA.test(input.media) || !parseStatusSchema.safeParse(input.status).success) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
@@ -243,6 +256,7 @@ export class AccountNameParseRepository {
     input: { segments?: unknown; confirm?: boolean },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (!MEDIA.test(media)) throw new R014RepositoryError("INVALID_INPUT");
     const hasOverride = input.segments !== undefined && input.segments !== null;
     const override = hasOverride ? parseOverrideSchema.safeParse(input.segments) : null;
@@ -275,6 +289,7 @@ export class AccountNameParseRepository {
     items: readonly { media: string; accountId: string }[],
   ): Promise<{ confirmed: number; skipped: { media: string; accountId: string; status: ParseStatus }[] }> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (!Array.isArray(items) || items.length === 0 || items.length > 500) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
@@ -317,6 +332,7 @@ export class AccountNameParseRepository {
     options: { media?: string; accountIds?: readonly string[] } = {},
   ): Promise<ReparseCandidate[]> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (options.media !== undefined && !MEDIA.test(options.media)) throw new R014RepositoryError("INVALID_INPUT");
     const result = await this.pool.query(
       `SELECT account.media, account.account_id, COALESCE(account.account_name, '') AS account_name,
