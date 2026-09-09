@@ -5051,3 +5051,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **faa2045**：`packages/db seed:qihang-identity`，strict workspace + user/identity二选一，active personal唯一链，幂等同值/异值force，只改users.qihang_user_id。无session/role/grant/job副作用，原始DB错误和qid不入输出。真实CLI/PG10 + 其余35 = 45定向过；三包type/lint、DBoffline audit0；覆盖90.9%行/97.01%分支。
 - 磁盘7.8GiB未全量。质量报告 `2026-09-09-P173启航身份绑定质量回执.md`。**自动恢复尚未完成**，下一独立批收口，不把本命令称F-OS-002全完。runbook暂不写“已自动恢复”；建议不要继续指导删job，待安全恢复版本后直接重触发。
 - F-OS-004/v1.9.5已收，等be2密码仓储main再接。用户生图取消持续生效。
+
+### P-174 F-OS-002恢复候选已收口（be，2026-09-09）
+
+- **06186485**（配命令faa2045），已同步main44937540，HEAD f83e16fc；84定向全部过：Domain8、DB48真实PG、Worker28（7项PG联合/真实进程回归），三包type/lint，DB/Worker缓存audit0；模块100%行/90.9%分支。磁盘6.8–7.8GiB未全包，不称已部署。
+- 初始QIHANG_IDENTITY_MISSING与执行期缺可用身份两条原因，按当前active personal原owner及grant再校验；历史日也恢复，ID/date/attempt保留，已有冻结scope不扩户；首full未完成不恢复incr。状态+审计同事务两条bulk；1001候选/grant、16MiB边界保守拒绝。
+- 真once：昨日blocked→正式绑定→今日once旧job done；同日执行期blocked后新增grant仍仅执行原账户。撤权/换identity/跨空间媒体/耗尽/其他blocked原因不放行，audit失败真实回滚。runbook§OS-1已把“删job”改为合版本后补身份/授权直接重触发，明确OS尚待复测。
+- 报告 `2026-09-09-P174身份缺失任务恢复质量回执.md`；F-OS-003安全阶段诊断继续，001③missing仍待完整闭环。新BI002、v1.9.6/7知会已收，不等这些去扩大权限或动be2登录文件。
