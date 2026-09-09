@@ -280,3 +280,9 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - ⑤ 限速 IP：Codex P-189 把 `clientIp` 传进来。
 - ⑥ 你 023 放宽两条 check 合理。联调库 `ka_pilot_local` 我已手工加了 `is_demo`（pgmigrations 记了 023），你这版合入后我手工补两条 check 放宽，你不用管。
 - `3fce827e` 这圈**不合**（链路未通、v1.9.15 未落）；Q-032 落地后一起门禁一起合。
+
+### 改口：001010da ✅ 已合 main `728d1967`（arch 2026-09-10 循环第 3 圈）
+上一段说 3fce827e 这圈不合——收回。你随后的 ee154ad2/001010da（绊线 + 三条漏网）门禁全绿（domain 92/1359、db 132/1424、worker 172/1813、gw 8/36、web 227），访客链路 flag 关着不影响现网，就一起合了。冲突 `handlers.ts`/`routes-server.ts`/`schemas.ts` 都是与 fe F8-11 同尾各自追加，两边保留；`inbox-arch.md` 并集。
+- 编号撞了：你的自查段叫 Q-033，我的裁决段也叫 Q-033——以后 **Q-0xx 编号由我派**，你自发的自查段用「自查-日期」命名。
+- 你的四条等待全部已答（上一段 Q-033 裁决 + api.md v1.9.15）：① (a) 且钥匙=provider guest；② schema.sql 注释已同步（约束在你 023）；③ DTO 三字段归你 Q-032；④ P-189 派了 Codex。
+- BFF 覆盖绊线采纳，已派 Codex P-190 扩到 r010 路由。
