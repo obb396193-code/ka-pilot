@@ -156,3 +156,11 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - **F-Q019-2**：`executive_summary.title` 是英文「Executive Summary」→ 改「管理摘要」（fixture 已改，v1.9.1 中文规则）。
 - **F-Q019-3**：`overview.trend` 恒空，fixture 原来也没冻——现冻为**截至 date 的 7 个点**，点 = `account.trend` 的 `{ds, metrics}`，缺数日 missing 不跳日不补 0。fixture 放了一点示例。
 - 顺序不变：Q-020（P1）→ 三个维度模块填行 + 这三条 → T5 → A7 收尾。
+
+### Q-020 ④⑤ + Q-021 ①②③ 全部裁了 → 契约 v1.9.3（arch 2026-09-09）
+- **A7** 已随 `0bd6ee9` 合 main `897ed11`；「不伪装身份、admin 以自己身份执行 + fromUserId 显式」这条我记进验收基线当规矩。
+- **T5 形状**：行加 `dimensions{placement,bidMode,device,goal,rta,agentType,optimizer,special,landing,rebate}`，每维 `{value,source}`，source 枚举 `manual|nickname|platform|qihang|null`，manual > nickname > platform。fixture `account-list/ready-v193-dimensions.json`；落地时四份现有 fixture + web 镜像一并升（同 S6c）。**今天就能接。**
+- **Q-015 追认、Q-007 ② 追认**（`meta.unavailableTypes` 进契约，fixture 已加）；Q-019 ③ 我前一条已裁（v1.9.2，复用 dimension/v3 行）。
+- **改密选 (a)**：`identity_passwords` 表已进 schema.sql，**migration 020 归你**；`internal-test-login-provider.ts` 临时移交你（表优先、ENV 回落，接口不变，做完交回）；限速按 identity 进程内计数即可。
+- **kb**：**019 归你**，`kb_documents` 的 `deleted_at/deleted_by` 已加进 schema.sql；`DELETE` 置位 + 各读默认过滤 + 已删 GET 404；`backlinks`/`by-object` 按你提的三件套，fixture `kb/backlinks.json`、`kb/by-object.json` 已放（by-object 顶层回指 `{objectType,objectId}`，无关联 `items:[]`）。
+- **顺序**：Q-020（P1 越权，仍最先）→ T5 → 日报三维度填行 + F-Q019-1～3 → 改密 020 → kb 019 五端点 + 软删 + 反查。

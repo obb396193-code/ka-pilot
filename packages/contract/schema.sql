@@ -61,6 +61,16 @@ CREATE TABLE auth_sessions (
   FOREIGN KEY (active_workspace_id, identity_id)
     REFERENCES workspace_memberships(workspace_id, identity_id) ON DELETE RESTRICT
 );
+-- v1.9.3（2026-09-09 arch 裁 be2 Q-021 ①，migration 020 = be2）：内测账密期自助改密的落点。
+-- 登录校验先查本表，无行回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（ENV 降级为首次引导凭证）；只对 provider=internal_test。
+CREATE TABLE identity_passwords (
+  identity_id UUID PRIMARY KEY REFERENCES auth_identities(id) ON DELETE CASCADE,
+  password_salt TEXT NOT NULL,
+  password_scrypt TEXT NOT NULL,
+  algo TEXT NOT NULL DEFAULT 'scrypt',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_by UUID
+);
 
 -- ═══ 业务对象 ═══
 -- P-001#3 裁决（全表通用）：外部 ID（task_id/account_id/entity_id/ad_id）在租户间不保证唯一，
@@ -676,6 +686,7 @@ CREATE TABLE kb_documents (
   tags TEXT[], owner UUID,
   visibility TEXT DEFAULT 'private',      -- private|team|workspace；错题本默认 private
   source_ref JSONB,                       -- ai_report/case 来源 {type,id}
+  deleted_at TIMESTAMPTZ, deleted_by UUID, -- v1.9.3 软删（DELETE 只置位；列表/搜索/反查默认过滤）
   created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE kb_revisions (

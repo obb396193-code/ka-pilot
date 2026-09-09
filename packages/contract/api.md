@@ -1161,3 +1161,23 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - `executive_summary.title` = **管理摘要**（v1.9.1 中文对象名规则；fixture 已改）。
 - `overview.trend` = **截至 `date` 的 7 个点**，点 = `account.trend` 的点（`{ds, metrics}`，metrics 与 summary 同构、三态）；缺数日照缺（三态 missing），不补 0、不跳日。fixture 放一点示例。
 
+## v1.9.3 追加（2026-09-09 arch；裁 be2 Q-020 ④⑤ + Q-021 ①②③；migration 019 = kb、020 = identity_passwords，均 be2）
+
+**T5 账户维度的形状（Q-020 ④）**
+- 账户列表行加 **`dimensions`** 对象（不并进 meta、不展开成 `bizNameSource` 之类）：`{placement, bidMode, device, goal, rta, agentType, optimizer, special, landing, rebate}`，每维 `{value:string|null, source:"manual"|"nickname"|"platform"|"qihang"|null}`；优先级 **manual > nickname > platform**（`qihang` 只出现在 agent_type/optimizer 的启航侧来源），都没有 → `{value:null, source:null}`。键名 camelCase 跟行走；解析段 key（`bid_mode/agent_type`）到行字段的映射在服务层做。fixture `account-list/ready-v193-dimensions.json`；T5 落地时四份现有 account-list fixture 一并加字段（同 S6c 做法，含 web 镜像）。
+- `account.dimension/v3` 行加 `source` 同枚举 → Codex 域，另派（不阻塞 T5）。
+
+**追认两条旧账**
+- Q-015：be2 为 R-014 S6c 改 `apps/web/lib/data/task-list-contracts.ts` **追认**；规则补一句：**§2.0 临时移交的服务，其 web 侧镜像契约文件随之移交**（`task-list-contracts.ts`、`account-list-contracts.ts`），直到交回。
+- Q-007 ②：搜索 `meta.unavailableTypes: string[]` **追认**（缺源政策读侧：表还不存在、本次没搜的类型，前端显「还搜不了」而不是「没搜到」）；fixture 已加。kb 019 落地后 `document` 移出。
+
+**改密码（Q-021 ①）：选 (a)，做真的**
+- 新表 `identity_passwords`（schema.sql v1.9.3；**migration 020 = be2**）。登录校验：**先查表，无行回落 ENV**（ENV 降级为首次引导凭证；多实例一致）。改密写表 + 吊销该身份其他 session（`otherSessionsRevoked` = 排除当前 token_hash 的 UPDATE 行数）。
+- `apps/worker/src/auth/internal-test-login-provider.ts` **临时移交 be2**（只改「表优先、ENV 回落」那一处，接口不变），做完交回 Codex；分工文档 §2.0 已记。
+- 限速 5 次/15 分钟：内测期**按 identity 的进程内计数**即可，多实例不严格可接受；HTTP 层通用限速另立项。
+- fixture 不变（`auth/password-changed.json` / `password-error.json`）。
+
+**知识库（Q-021 ②③）**
+- **migration 019 = kb 四表**（`kb_documents/kb_revisions/kb_links/kb_business_refs`），DDL 仍从 schema.sql 切片生成；`kb_documents` 加 `deleted_at TIMESTAMPTZ, deleted_by UUID`（schema.sql 已加）。`DELETE /kb/documents/:id` = 置位；列表/树/搜索/反查/backlinks 默认过滤已删；已删文档 `GET` → 404。
+- `GET /kb/documents/:id/backlinks` → `{items:[{id,title,kind}]}`；`GET /kb/by-object/:type/:id` → `{objectType, objectId, items:[{id,title,kind}]}`，`type ∈ task|account|material|work_item`，无关联 → `items:[]` 不 404。fixture `kb/backlinks.json`、`kb/by-object.json`。
+
