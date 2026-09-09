@@ -12,7 +12,8 @@ export function PageHeader({ title, description, actions, isMock }: { title: Rea
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {isMock === undefined ? null : isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : <Badge variant="outline">内网数据</Badge>}
-        {actions}
+        {/* data-write-actions：F8-1 窄屏隐藏页面级写入口 */}
+        {actions ? <span data-write-actions className="flex items-center gap-2">{actions}</span> : null}
       </div>
     </div>
   )
