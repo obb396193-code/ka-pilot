@@ -5151,3 +5151,44 @@ Q-020 和日报那两次是同一类，所以我把名下仓储**逐条 SQL** �
 **建议你把这条立成验收项**：新加任何读 `work_items` / `account_metrics_daily` / `external_changes` / `changesets` 的 SQL，必须带 `workspace-authority` 里那三个谓词之一，或在同一函数里先 `assertAccountVisible`。Codex 那边同类文件我没权限扫，**建议派他自查一遍**——这类漏检两边都可能有。
 
 闸：db 1248 / worker 1719（+2 skipped）全绿，四包 tsc 清。
+
+### Q-026 结账：补做两条漏项 + 修一个已交付端点的真 bug + 待办按边界分类（be2 `be/r017 @ d19c6b80`）
+上一轮我说「手上没有待办」，**说早了**——重新逐条比对你的派活，发现漏了两条，都已补完。另外自查时揪出一个影响**已交付端点**的 BFF bug。
+
+#### ① 漏项一：D5b-2 cost 四项（你说「Q-020 修完顺手做、同一批」）
+`cost / costStatus / costStatusReason / onTarget` 已接 `PlatformWindowQuery`。窗口 = 本月至业务日；传的是会话 scope 的 tuple、内部按 taskId 收敛（用例实测：两户各 100 元只授权一个 → 出 100 不是 200）。
+`projectedWindowCashCpa` / `affordableDailyCashCpa` **窗口源不提供**（预估不是观测），照 undefined 出。源在但算不出 → 503 SOURCE_UNAVAILABLE（v1.9 §一）。`budget*` 三项仍等 014。
+顺带记一条口径：窗口源是「应观测 vs 实观测」，**窗口里缺一天整段就 missing**，不做部分求和。
+
+#### ② 漏项二：日报三个解析维度模块（v1.9.2「T5 接线时一并填」）
+`dim_agent / dim_resource_position / dim_bid_tool` 已填行：把按账户聚好的行**按解析维度归并**，不重查不重算，所以与六卡同源（用例断言归并加总 == 大盘卡）。解析不出的归「未标注」（v1.7.9 对 agent_type 的原口径）。
+
+**`dim_ubp` 仍 unsupported，需要你一句话**：它的标题就是「UBP」，而 v1.8 命名规范的十个维度里没有叫 UBP 的段（placement/bidMode/device/goal/rta/agentType/optimizer/special/landing/rebate）。**UBP 对应哪一段？** 猜一个映射上去就是给日报贴错标签。
+
+#### ③ ★修一个影响已交付端点的真 bug：后端 404/409/429 被 BFF 翻成 502
+`apps/web/lib/data/r014/forwarder.ts`（我的镜像）只认共享的 11 个稳定码，而我后端一直在返 `NOT_FOUND`/`CONFLICT`/`RATE_LIMITED`（kb 单读不存在的文档、账户交接撞未终态变更集、任务详情越权 404、改密限速）。解析不过 → 全部变成 **502 UPSTREAM_INVALID_RESPONSE**。
+用户看到「上游坏了」而不是「这篇文档不存在」，而且 502 会把人引去查后端故障——后端行为其实完全正确。forwarder 里那句「后端错误码复用 INVALID_REQUEST 一类」是我当初的错误假设。
+已在 r014 forwarder 就地扩三个码 + 状态映射，**不动共享枚举**。红绿都跑了（修前三个码全 502）。
+
+#### ④ pg_trgm：我**实测后建议不装**，这条不用你拍板了
+```
+similarity('新任务开户到基建SOP', '开户')      = 0
+similarity('新任务开户到基建SOP', '新任务开户') = 0.385   （默认阈值 0.3）
+```
+**短中文词的 trigram 相似度是 0**——`similarity()` 救不了「搜开户」，我现在的子串路反而更对。pg_trgm 唯一的价值是给 ILIKE 建 GIN 索引（性能），而我们当前数据量下这个收益没法证明。所以：**不建议装，代码不动**。等 kb 文档量真上来了再谈索引。
+
+#### ⑤ 待办按边界分类 —— 剩下的**没有一条是我能自己推进的**
+| 项 | 归属 | 卡在哪 | 我这边状态 |
+|---|---|---|---|
+| `dim_ubp` 映射 | **等你一句话** | 十个维度里没有 UBP，猜就是贴错标签 | 代码位置留好了，你说哪段我当天填 |
+| 归属清洗权限形态 | **等你裁** | admin-only vs「成员限已授权账户」是契约语义 | **已按更严的 lead\|admin 落地**，安全侧无敞口；你要放宽我改 |
+| 工作项任务级可见口径 | **等你确认** | 我取了最保守解（任务下有授权账户才可见） | 已落地并有用例，你不改就是它 |
+| `RATE_LIMITED` 进共享枚举 | **fe/arch 的活** | 共享 `contracts.ts` 不是我的文件 | 我这侧已闭环（③），fe 若要统一枚举再动 |
+| `source:"platform"` 维度 | **无源** | `accounts` 表没有平台侧维度列 | 有列我就接 |
+| `budget*` 三项 | **Codex 014** | `task_budget_history` 未落地 | 保持 null 不凑 |
+| 限速换共享计数器 | **正式化前的部署项** | 内测按你说的进程内够用 | 注释写明，不装作强限速 |
+
+#### ⑥ 合流与部署（不冒充完成）
+17 笔全在 `be/r017`，**未 push**（按规矩等你 cherry-pick），**线上未部署**——staradar/内网环境都还没有这些改动。这一批里有四处越权修复（Q-020、日报、搜索/通知/计数、归属清洗闸），**在合流部署前线上仍是有敞口的**，建议优先合。
+
+闸：domain 1279 / db 1248 / worker 1722（+2 skipped）/ web 224 全绿，四包 `tsc --noEmit` 清。
