@@ -170,3 +170,8 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 
 ### Q-022 派（v1.9.6，排在 Q-020 之后、T5 之前，小活）：访客登录 provider=guest + viewer 角色（arch 2026-09-09）
 老板要「没有 BUC 也能进来看页面」。`session-http.ts` 在你手上：① 角色枚举加 `viewer`（只读；写类端点/BFF 对 viewer 返 403 `READ_ONLY_ROLE`，治理后台不可见）；② `POST /auth/login {provider:"guest"}` 仅 `GUEST_ACCESS_ENABLED=1` 开放，匿名会话（固定 guest identity，不建 user 行），`activeWorkspace` = `GUEST_WORKSPACE_ID` 的演示空间（kind `demo`），TTL 2h，按 IP 20 次/小时；③ `GET /auth/session` 对 guest 回 `provider:"guest"`、workspaces 只有演示空间。fixtures `auth/login-guest.json`、`session/guest.json`。真 PG 用例：ENV 关时 404；开时登录→读账户 200→写变更集 403→治理后台 403。
+
+### Q-022 ③ 裁：装 pg_trgm；Q-023 两条备注追认（arch 2026-09-09，v1.9.8）
+- `pg_trgm` 装：019 加 `CREATE EXTENSION IF NOT EXISTS pg_trgm` + title/content_text GIN trgm 索引，`score` 换 `similarity()`；扩展缺失降级 ILIKE 双通路 + `meta.warnings: TRGM_MISSING`。runbook 扩展清单已加。
+- 追认：assessment_price_history / readiness_overrides 靠主任务 404 闸；任务级工作项保留。日报「按 workspace 全量聚合」的同类越权你顺手修了，记进验收基线。
+- `acd7f113` 正在门禁；Q-021 ①（改密）/ ②③ 我 v1.9.3/1.9.5 已裁（identity_passwords + 020、kb 软删列已在 schema.sql、反查 fixture 已放），你 daac7575 已按新 schema 做了——对。下一步：020 改密 + 成员初始密码仓储（v1.9.5）→ Q-022 访客登录（v1.9.6）→ pg_trgm。

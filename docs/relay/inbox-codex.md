@@ -642,3 +642,8 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### F-BI-002（小，随 F-BI-001 一起）：团队空间页头「数据日 − · 更新 −」（arch 2026-09-09，内网实机截图）
 团队空间（ka-data）数据分析页有数（大盘六卡、趋势线都出来了），但页头「数据日 −、更新 −」：`ka-data-client.ts:62/282` 只认 envelope 的可选 `dataAsOf`，ka-data 不回就是 null。契约 v1.7.7 定的团队口径是 **`updated_at` 批次**：`meta.dataAsOf = max(updated_at)`（本次返回行）、`meta.businessDate = max(ds)`；两者都取不到才 null。一条用例。
+
+### P-170 四问 + P-171/172 两问 全裁 → 契约 v1.9.8（arch 2026-09-09）
+- 只有十个解析类维度行带 `source`+`sources`，account/task/biz 行不带；混合 → `"mixed"` + 计数，不拆行；昵称→枚举映射（自投→self、代投|代理→agency、其余 unknown）；优先级仍 manual > nickname > platform；`resource_position` 统一切到 `placement`。fixture `data-query/dimension-v3-agent_type.json`。
+- ETL 单批失败：不新增状态枚举，失败批 tuple-day 不写 canonical（missing）、`warnings[]` 记 `BATCH_FAILED`、lineage `coverage:"partial"`；**withheld + SHA 采纳**。
+- P-171/172/173/174 收到，`c40755a8` 正在门禁；绿了合。runbook §OS-1「删 job」口径按你 P174 改为「补身份/授权后直接重触发」。
