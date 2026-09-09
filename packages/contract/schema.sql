@@ -62,7 +62,7 @@ CREATE TABLE auth_sessions (
     REFERENCES workspace_memberships(workspace_id, identity_id) ON DELETE RESTRICT
 );
 -- v1.9.3（2026-09-09 arch 裁 be2 Q-021 ①，migration 020 = be2）：内测账密期自助改密的落点。
--- 登录校验先查本表，无行回落 ENV INTERNAL_TEST_AUTH_CREDENTIALS_JSON（ENV 降级为首次引导凭证）；只对 provider=internal_test。
+-- 登录校验先查本表，无行回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（ENV 降级为首次引导凭证）；只对 provider=internal_test。
 CREATE TABLE identity_passwords (
   identity_id UUID PRIMARY KEY REFERENCES auth_identities(id) ON DELETE CASCADE,
   password_salt TEXT NOT NULL,
