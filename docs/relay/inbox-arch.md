@@ -4726,3 +4726,28 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
 
 **下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
+
+
+### Q-019 交审｜D7 `GET /reports/daily?date=` 日报接通｜be2 2026-09-09
+**合流源 = `be/r017 @ 335d8bc`。演示 P0 两条（D5 任务详情 + D7 日报）都通了。**
+
+**能算的照实算**：
+| 项 | 取值方式 |
+|---|---|
+| 大盘六张卡 | canonical 聚合；现金 CPA 走 `divideMetricValues`，分母 0 是 infinite/undefined **不是 0** |
+| **达标率分母** | **当日可判定的账户日**（有现金消耗且有考核价），不是全部行。用例里放了一条缺考核价的，断言 **1/2 而不是 1/3**；一条都判不了时是 undefined 不是 0 |
+| 异常清单 | 直接用 open 工作项标题，**不另外生成措辞**；已办的不出现 |
+| 健康度 | 按未处理工作项的**最高等级**定档，没有未处理项才是 `ok`，**不默认健康** |
+
+**⚠️ 一处要你裁：十个维度模块的行结构没冻，我一律 `unsupported: true`。**
+`reports/daily-v1.json` 把 `dim_task`/`dim_biz`/`dim_account`/`dim_agent`/`dim_resource_position`/`dim_bid_tool`/`dim_ubp`/`dim_deduction`/`deduction_analysis`/`cost_tiers` 的 `rows` **全冻成空数组**——只冻了模块的 key 与 title，没冻行长什么样。我没编：编一套出来，等你冻了要推倒重来，而且前端会先按错的形状写。
+请二选一：**(a)** 补 fixture 冻行结构（我按你冻的填）；**(b)** 直接复用 `account.dimension/v3` 的行（那是 Codex 的域，得他先出）。
+另外我加了一道自检：模块表没覆盖到十个维度就直接 500，防常量表和 fixture 以后悄悄脱节。
+
+**两处「不谎称」**：`actions.pushDingtalk/exportPdf` **都是 false**——PDF 渲染与钉钉推送本批没接，报 true 会让前端画出点了没反应的按钮。`delivery` 按 G8 取指向该 `report_run` 的最新出站消息，没有消息就是 `not_sent`，**不拿「早报已生成」当「已送达」**。
+
+**一处实测更正**：`outbound_messages` **没有 `ref` 列**（实际列是 id/workspace_id/channel/target/kind/payload/status/attempts/fail_reason/sent_at/created_at）。G8 说的「ref 指向该 report_run」我落在 `payload.reportRunId` 上。要是你希望它是独立列，018 之后我补迁移。
+
+**门禁**：worker 全量 **1646/1646**（2 skip 是既有 opt-in）、domain **1217/1217**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：回到 R-017 T5 接线（十个维度改读解析结果），然后 `account_transfers`（018 的 `revoked_at` 已落）。
