@@ -4868,6 +4868,19 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
 - **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
 
+### P-166 P1：018软撤权主入口已修，be2 live-grant 查询请同步派修（be，2026-09-09）
+
+- 合流源 **be/r010**，代码 **16c7c25**，最新merge **6e1e973** 含main@1602d4b。018已存在，原auth仍聚合撤销行；真PG6例先 **5红/1绿**：原户继续获授/同步、1001历史导致session拒绝、admin计数错误、旧上下文还能改静音。现四本人仓储在聚合或锁前统一过滤非空revoked_at，team逻辑不变、历史不删除。
+- **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
+- **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
+- 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
+
+### P-167 排队同步撤权独立交审（be，2026-09-09）
+
+- 合流源 **be/r010**；代码 **620f376**，merge **269edfd**。在你把此项记未排期之前已独立开始：原scheduled credential只查identity/member/user，真实PG5红证明scope撤销/删除或workspace失活/变team仍能取身份；wrapper另4红证明未传scope、focus逃逸及await对象被修改。
+- 修后一次SQL验证原owner + 全部有效tuple，再允许handler；缺一户整任务blocked_auth，service fallback不启用；私有payload不被await期间修改。DB17/Worker31=**48过，含21真实PG**，两包type/lint0；凭证仓储100%覆盖、wrapper91.34%行/83.78%分支；DB offline audit0。真PG service排队→撤权→受限JobConsumer持久化blocked_auth，上游handler **0调用**。
+- 仅两生产+四测试文件；旧credential测试广域DELETE改为随机本例范围清理。计划与红绿/覆盖首次79.1%红灯及修复细节见 `docs/plans/2026-09-09-P167排队撤权质量报告.md`。磁盘<8未全量/部署，无真实源调用/媒体写/push。
+- 这是独立P167，不把“非P166欠账”混成P166验收前置。边界：只保证handler启动前授权快照，不能取消已发出的HTTP；非scheduled legacy通路未重定义，bootstrap历史计数未改。已读你Q019派修，不碰be2文件。
 
 ### Q-018 交审｜D5 `GET /tasks/:id` 任务详情接通（演示 P0）｜be2 2026-09-09
 **合流源 = `be/r017 @ 9e132f8`**（见 Q-017：Q-011 之后全部工作在这个分支上）。写完立刻开 D7 日报。
@@ -4913,3 +4926,12 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **门禁**：db 全量 **1212/1212**；`tsc` 0、`eslint` 0。
 
 **下一批**：R-017 T5 接线（十个维度改读解析结果）→ `account_transfers`（4.10 交接，018 的 `revoked_at` 已落，正好用得上软撤权语义）。
+
+### P-168 请优先派修：D5 personal越权实锤 + 合流全量一红（be，2026-09-09）
+
+- 合流源 **be/r010**，已合main `10c26cf` → **cbeb920**。磁盘9GiB补门禁：Domain **1258**、DB **1218**全过；Worker **1667过/1红/2外部skip**，三包typecheck/lint过，DB/Worker离线audit0。P166/P167自身回归仍绿，但不能据此称组合全绿。
+- **P1 D5范围漏检，已真实Session+HTTP+PG复现**：`db/src/r014/task-detail-repository.ts:54–68`主任务只限制workspace/taskId，`:74–80`把scope丢掉再查全部子数据。合成Session仅获授KUAISHOU tuple：未授权TENCENT任务 **200并返回名称**；同号跨媒体混合任务转化 **8（授权部分仅1）**，未授权工作项进入blockers；软撤销唯一grant后Session确认空scope，原Cookie查详情仍 **200**。无Cookie401，非绕开HTTP认证的mock结论。请派be2修所有派生查询，不仅主任务EXISTS；个人空范围/跨媒体/混合范围必须补反例。未改be2生产文件。
+- 独立诊断脚本 **83f5a27**：`apps/worker/scripts/audit-task-detail-scope.ts`，显式 `TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_be_p158_20260909_test node --import tsx scripts/audit-task-detail-scope.ts`（cwd apps/worker）。只建随机合成对象、finally定向清理，原session仓储+原HTTP+原handler，无真实源。退出2为漏洞发现，非绿灯；详细JSON和源码行号见 `docs/plans/2026-09-09-P168全量回归与D5权限诊断.md`。
+- **P2 本轮全量红**：`worker/test/r014/task-detail-routes.test.ts:140`期望“d5-a2 无 unit”，返回“d5-a2 无单元”。新D5测试未跟v1.9.1中文同步，请be2修测试，不回退生产中文。
+- **D5b-2依赖纠正**：Q018说等PlatformWindowQuery落地，但本人 `worker/src/data/platform-window-query.ts:28–31,76–81,136`已有批准tuple+taskId+window入口及factory，`data-api.ts:67`已使用，本轮真实PG窗口8/8。请让be2复用现成个人源，不必等hourly/Gap全部收口；预算014与team源仍分开处理，不误称有源。
+- 未push/部署/媒体写/视觉变更。hourly、Gap及013/014等原裁决请求仍有效；本批验证暴露集成问题，不将完整目标缩成安全修补。
