@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -325,5 +326,29 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
     expect(found.warnings).toEqual(["TRGM_MISSING"]);
     expect(found.items.map((item) => item.title)).toContain("开户流程说明");
     expect(found.items[0]!.score).toBeGreaterThan(0);
+  });
+
+  it("returns the frozen fixture's key sets for the document, tree, search and reverse lookups", async () => {
+    const frozen = (path: string): Record<string, unknown> => (JSON.parse(readFileSync(
+      new URL(`../../../../packages/contract/fixtures/kb/${path}`, import.meta.url), "utf8",
+    )) as { data: Record<string, unknown> }).data;
+
+    const created = await createDocument(auth, "对拍用文档", {
+      content_json: doc([paragraph(text("正文"))]),
+    });
+    const read = dataOf(await callRoute(auth, `/api/v1/kb/documents/${String(created.id)}`));
+    expect(Object.keys(read).sort()).toEqual(Object.keys(frozen("document.json")).sort());
+
+    const tree = dataOf(await callRoute(auth, "/api/v1/kb/documents"));
+    const node = (tree.items as Record<string, unknown>[])[0]!;
+    const frozenNode = (frozen("tree.json").items as Record<string, unknown>[])[0]!;
+    expect(Object.keys(node).sort()).toEqual(Object.keys(frozenNode).sort());
+
+    const hits = dataOf(await callRoute(auth, "/api/v1/kb/search?q=对拍")).items as Record<string, unknown>[];
+    expect(Object.keys(hits[0]!).sort())
+      .toEqual(Object.keys((frozen("search.json").items as Record<string, unknown>[])[0]!).sort());
+
+    const byObject = dataOf(await callRoute(auth, "/api/v1/kb/by-object/task/none"));
+    expect(Object.keys(byObject).sort()).toEqual(Object.keys(frozen("by-object.json")).sort());
   });
 });

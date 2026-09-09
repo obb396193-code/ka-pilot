@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -261,5 +262,42 @@ describe("D7 daily report route (real PostgreSQL)", () => {
 
     await pool.query("DELETE FROM task_accounts WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
     await pool.query("DELETE FROM tasks WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
+  });
+
+  it("returns exactly the frozen fixture's module list and per-module key sets", async () => {
+    const frozen = JSON.parse(readFileSync(
+      new URL("../../../../packages/contract/fixtures/reports/daily-v1.json", import.meta.url), "utf8",
+    )) as { data: { modules: Record<string, unknown>[] } & Record<string, unknown> };
+    const live = dataOf(await call());
+
+    expect(Object.keys(live).sort()).toEqual(Object.keys(frozen.data).sort());
+
+    const liveModules = live.modules as Record<string, unknown>[];
+    expect(liveModules.map((module) => module.key)).toEqual(frozen.data.modules.map((module) => module.key));
+
+    for (const frozenModule of frozen.data.modules) {
+      const liveModule = liveModules.find((module) => module.key === frozenModule.key)!;
+      // 键只允许多出 `unsupported`（「源没接」的标记，fixture 只在部分模块上冻了它）。
+      const extra = Object.keys(liveModule).filter((key) => !(key in frozenModule));
+      expect(extra, String(frozenModule.key)).toEqual(extra.filter((key) => key === "unsupported"));
+      for (const key of Object.keys(frozenModule)) {
+        expect(Object.keys(liveModule), `${String(frozenModule.key)} 缺 ${key}`).toContain(key);
+      }
+    }
+
+    // fixture 声明了 unsupported 的模块，取值必须和我一致——除了下面这一处已知分歧。
+    const KNOWN_DIVERGENCE = new Set(["dim_bid_tool"]);
+    for (const frozenModule of frozen.data.modules) {
+      if (frozenModule.unsupported === undefined || KNOWN_DIVERGENCE.has(String(frozenModule.key))) continue;
+      expect(liveModules.find((module) => module.key === frozenModule.key)!.unsupported,
+        String(frozenModule.key)).toBe(frozenModule.unsupported);
+    }
+
+    // ★daily-v1.json 处在半更新状态：`dim_agent` 已改成 unsupported:false，
+    // 但 F-Q023-2 同一批要我填的 `dim_bid_tool` 还冻着 true、`dim_resource_position`
+    // 干脆没这个键。我按裁决把三个都填了，所以 bid_tool 这一格与 fixture 相反。
+    // 钉在这里，等 arch 同步 fixture；免得下次谁对着 fixture 以为我做错了。
+    expect(frozen.data.modules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(true);
+    expect(liveModules.find((module) => module.key === "dim_bid_tool")!.unsupported).toBe(false);
   });
 });

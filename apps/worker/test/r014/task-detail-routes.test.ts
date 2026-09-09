@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -186,5 +187,20 @@ describe("D5 task detail route (real PostgreSQL)", () => {
       `/api/v1/tasks/${encodeURIComponent(richTask)}`, "GET",
     );
     expect(result.status).toBe(404);
+  });
+
+  it("returns exactly the frozen fixture's key set, no more and no less", () => {
+    // arch 每轮联调都在人工核「顶层与 overview 键和 fixture 逐一相同」——
+    // F-Q019-2（标题还是英文）、F-Q024-1（错误码不是冻的那个）都是这一类漏网。
+    // 自动化到我这边的闸里，就轮不到他去发现。
+    const frozen = JSON.parse(readFileSync(
+      new URL("../../../../packages/contract/fixtures/task-detail/overview-v151.json", import.meta.url), "utf8",
+    )) as { data: Record<string, unknown> };
+    return call(richTask).then((result) => {
+      const live = dataOf(result);
+      expect(Object.keys(live).sort()).toEqual(Object.keys(frozen.data).sort());
+      expect(Object.keys(live.overview as Record<string, unknown>).sort())
+        .toEqual(Object.keys(frozen.data.overview as Record<string, unknown>).sort());
+    });
   });
 });

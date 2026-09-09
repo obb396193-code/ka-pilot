@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
@@ -165,5 +166,28 @@ describe("POST /auth/password (real PostgreSQL)", () => {
     expect(errorOf(limited).code).toBe("RATE_LIMITED");
     // 限速是「等会儿再来能成」，这类才该标 retryable。
     expect(errorOf(limited).retryable).toBe(true);
+  });
+
+  it("matches the frozen success and error fixtures key for key", async () => {
+    // 限速器是**进程内按 identity 计数**，上一条用例把窗口打满了。
+    // registerR014Routes 是整表替换，重注册即拿到干净的窗口。
+    registerR014Routes(createPasswordRoutes(pool, provider));
+
+    const frozen = (path: string): { data?: Record<string, unknown>; error?: Record<string, unknown> } =>
+      JSON.parse(readFileSync(
+        new URL(`../../../../packages/contract/fixtures/auth/${path}`, import.meta.url), "utf8",
+      )) as { data?: Record<string, unknown>; error?: Record<string, unknown> };
+
+    const ok = await change({ currentPassword: OLD_PASSWORD, newPassword: NEW_PASSWORD }, undefined, currentToken);
+    expect(Object.keys(dataOf(ok)).sort())
+      .toEqual(Object.keys(frozen("password-changed.json").data!).sort());
+
+    const wrong = await change({ currentPassword: "nope-not-this-one", newPassword: NEW_PASSWORD });
+    const frozenError = frozen("password-error.json").error!;
+    expect(Object.keys(errorOf(wrong)).sort()).toEqual(Object.keys(frozenError).sort());
+    // 码与文案都照 fixture 冻的原话（F-Q024-1 就是栽在这两项上）。
+    expect(errorOf(wrong).code).toBe(frozenError.code);
+    expect(errorOf(wrong).message).toBe(frozenError.message);
+    expect(errorOf(wrong).retryable).toBe(frozenError.retryable);
   });
 });
