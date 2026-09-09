@@ -8,6 +8,7 @@ import { AuthSessionRepository } from "../src/auth-repository.js";
 import { WorkspaceSyncRepository } from "../src/workspace-sync-repository.js";
 import { AdminMembersRepository } from "../src/admin-members-repository.js";
 import { AccountMuteRepository } from "../src/account-mute-repository.js";
+import { CredentialRepository } from "../src/credential-repository.js";
 
 let pool: Pool;
 const spaces: string[] = [], identities: string[] = [];
@@ -97,4 +98,29 @@ it("stale approved context cannot mutate mute state after soft revocation", asyn
   await expect(repository.find(a.auth, { media: input.media, accountId: input.accountId })).rejects.toMatchObject({ code: "FORBIDDEN" });
   expect((await pool.query("SELECT reason_chip FROM account_mutes WHERE workspace_id=$1", [a.workspaceId])).rows).toEqual([{ reason_chip: "synthetic" }]);
   expect(await repository.set(a.auth, { ...input, media: "TENCENT" })).toMatchObject({ media: "TENCENT" });
+});
+
+it.each(["revoke", "delete"])("scheduled credential refuses the whole frozen scope after %s", async change => {
+  const a = await fixture(), repository = new CredentialRepository(pool);
+  const accounts = ["KUAISHOU", "TENCENT"].map(media => ({ media, accountId: "same" }));
+  expect(await repository.resolveScheduledQihangUserId(a.workspaceId, a.userId, a.identityId, accounts)).toBe("synthetic-qh");
+  if (change === "revoke") await revoke(a.workspaceId, "KUAISHOU");
+  else await pool.query("DELETE FROM account_access_grants WHERE workspace_id=$1 AND media='KUAISHOU'", [a.workspaceId]);
+  expect(await repository.resolveScheduledQihangUserId(a.workspaceId, a.userId, a.identityId, accounts)).toBeNull();
+  // Same account id in another media does not rescue the missing grant.
+  expect(await repository.resolveScheduledQihangUserId(a.workspaceId, a.userId, a.identityId, [accounts[0]!])).toBeNull();
+  expect(await repository.resolveScheduledQihangUserId(a.workspaceId, a.userId, a.identityId, [accounts[1]!])).toBe("synthetic-qh");
+});
+it.each(["inactive", "team"])("scheduled credential rejects an %s workspace", async change => {
+  const a = await fixture();
+  if (change === "inactive") await pool.query("UPDATE workspaces SET is_active=false WHERE id=$1", [a.workspaceId]);
+  else await pool.query("UPDATE workspaces SET kind='team' WHERE id=$1", [a.workspaceId]);
+  expect(await new CredentialRepository(pool).resolveScheduledQihangUserId(a.workspaceId, a.userId, a.identityId, [{ media: "KUAISHOU", accountId: "same" }])).toBeNull();
+});
+it("scheduled credential rejects empty, duplicated, malformed or ungranted ranges", async () => {
+  const a = await fixture(), repository = new CredentialRepository(pool);
+  for (const accounts of [[], [{ media: "KUAISHOU", accountId: "same" }, { media: "KUAISHOU", accountId: "same" }],
+    [{ media: "", accountId: "same" }], [{ media: "KUAISHOU", accountId: "not-granted" }]]) {
+    expect(await repository.resolveScheduledQihangUserId(a.workspaceId, a.userId, a.identityId, accounts)).toBeNull();
+  }
 });

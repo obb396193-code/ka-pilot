@@ -10,12 +10,14 @@ export interface QihangCredentialPort {
     workspaceId: string,
     userId: string,
     identityId: string,
+    accounts: ReadonlyArray<{ media: string; accountId: string }>,
   ): Promise<string | null>;
 }
 
 interface ScheduledIdentity {
   userId: string;
   identityId: string;
+  accounts: Array<{ media: string; accountId: string }>;
 }
 
 function scheduledIdentity(job: JobRecord): ScheduledIdentity | null {
@@ -35,7 +37,8 @@ function scheduledIdentity(job: JobRecord): ScheduledIdentity | null {
     throw new BlockedAuthError("Scheduled job authorization identity does not match its owner");
   }
   assertScheduledAccountScope(job, snapshot.allowedAccounts);
-  return { userId: snapshot.userId, identityId: snapshot.identityId };
+  return { userId: snapshot.userId, identityId: snapshot.identityId,
+    accounts: snapshot.allowedAccounts.filter(a => a.media === job.payload.media).map(a => ({ media: a.media, accountId: a.accountId })) };
 }
 
 function assertScheduledAccountScope(
@@ -63,6 +66,10 @@ function assertScheduledAccountScope(
   ) {
     throw new BlockedAuthError("Scheduled job account scope drifted from its frozen authorization");
   }
+  const focus = job.payload.focusAccountIds;
+  if (focus !== undefined && (!Array.isArray(focus) || focus.some(id => typeof id !== "string" || !actual.includes(id)))) {
+    throw new BlockedAuthError("Scheduled job focus escaped its frozen account scope");
+  }
 }
 
 async function resolveJobQihangUserId(
@@ -77,6 +84,7 @@ async function resolveJobQihangUserId(
       job.workspaceId!,
       scheduled.userId,
       scheduled.identityId,
+      scheduled.accounts,
     );
   }
   return job.credentialOwnerUserId
@@ -90,6 +98,9 @@ export function withQihangIdentity(
   serviceQihangUserId: string | null,
 ): JobHandler {
   return async (job: JobRecord): Promise<void> => {
+    // Validation and the eventual handler must observe the same private payload,
+    // even if a caller changes its object while credential I/O is pending.
+    job = { ...job, payload: structuredClone(job.payload) };
     if (!job.workspaceId) {
       throw new BlockedAuthError("Qihang job is missing workspace ownership");
     }
