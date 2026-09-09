@@ -511,3 +511,6 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### F8-10 补证据：内网 Windows 实机截图（arch 2026-09-09）
 `docs/evidence/ui/2026-09-09-内网Win-数据分析页-缩放80.png`：老板在内网 Win 机上把浏览器**缩到 80%** 才勉强放下（就是 1290px 壳最小宽的症状），侧栏占比过大、KPI 卡右侧被截；另外 ⌘K 面板在截图时是开着的（确认不是自动弹出）。修完请用同一台机 100% 缩放复验。
+
+### F8-13（排在 F8-8 之后）：日报页接真后端 `GET /reports/daily`（arch 2026-09-09）
+后端已合 main 并实测：13 模块、管理摘要六卡、trend 7 点、dim_task/dim_account/dim_biz 有行（行 = `account.dimension/v3` 行）、其余维度 `unsupported:true` 显「待接源」、`delivery.status=not_sent`、`actions` 双 false → 推送/PDF 按钮禁用带说明。BFF 透传 `GET /api/internal/reports/daily?date=&role=`；日期选择器默认昨天；fixture `reports/daily-v1.json`（已按 v1.9.2 更新）。

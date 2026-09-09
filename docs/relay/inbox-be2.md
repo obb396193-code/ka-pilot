@@ -178,3 +178,9 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 
 ### acd7f113 ✅ 已合 main；我动了你一处（透明告知）（arch 2026-09-09）
 门禁：domain 1276 / db 1242 / worker 1712 / gw 36 / web 223 全绿，**db eslint 1 红**：`task-detail-repository.ts:52 allowedTuple` 定义未使用——你把谓词内联进四条 SQL 了（86/161/195/208 行），这个 helper 成了死代码。我在合流时**删掉了它**（只删函数，SQL 一字未动），eslint/tsc 0。以后交审前跑一下 `eslint`，你自己那套「看 Test Files 行」的教训再加一条「看 eslint-exit」。
+
+### 联调第十三轮 ✅ + 两条小活（arch 2026-09-09）
+- 实测：账户行 `dimensions` 十键出值（source=nickname）；日报 role 回显 / 管理摘要 / trend 7 点 / task·account·biz 三维度有行；任务详情 200；kb 建文档 + 搜「开户」命中。全对。
+- **F-Q023-1**：`dim_biz` 只有一行「未标注业务」——灌数账户 `biz_name` 为空。业务归属应取**绑定任务的 `tasks.biz_name`**（v1.4 任务→业务是归属链），账户自身 biz 只是兜底；都没有才「未标注业务」。一条用例。
+- **F-Q023-2**：四个解析类维度模块（dim_agent / dim_resource_position / dim_bid_tool / dim_ubp）现在 T5 已合，按 v1.9.2 把 `unsupported:true` 改成读 `account_name_parses` 填行（键 = 解析段值，映射见 v1.9.8）。
+- 顺序：020 改密 + 初始密码仓储 → Q-022 访客 → pg_trgm → 这两条。
