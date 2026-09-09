@@ -9,7 +9,8 @@ function object(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 function canonical(evidence: EtlBatchFailureEvidence): string {
-  return JSON.stringify([evidence.code, evidence.resource, evidence.ds, [...evidence.accountIds].sort(), evidence.media]);
+  return JSON.stringify([evidence.code, evidence.resource, evidence.ds, [...evidence.accountIds].sort(), evidence.media,
+    evidence.filters?.hh ?? 24, [...(evidence.filters?.adIds ?? [])].sort()]);
 }
 
 /** Additive ledger only. Runtime must not enable partial success until canonical
@@ -50,7 +51,8 @@ export class EtlBatchFailureRepository {
         value.media !== batch.media || value.ds < batch.dateFrom || value.ds > batch.dateTo || value.accountIds.some(id => !batch.accountIds.includes(id)))) throw new Error(message);
       if (!(row.failed_at instanceof Date) || !Number.isFinite(row.failed_at.valueOf())) throw new Error(message);
       const next = etlBatchFailureEvidenceSchema.parse({ ...input.warning, accountIds: [...input.warning.accountIds].sort(),
-        media: batch.media, failedAt: row.failed_at.toISOString() });
+        media: batch.media, failedAt: row.failed_at.toISOString(),
+        ...(input.filters === undefined ? {} : { filters: input.filters }) });
       const previous = entries.find(value => value.fingerprint === next.fingerprint);
       if (previous) {
         if (canonical(previous) !== canonical(next)) throw new Error(message);

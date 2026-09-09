@@ -20,13 +20,20 @@ export const etlBatchScopeSchema = z.object({
 }).strict().refine(scope => scope.dateFrom <= scope.dateTo &&
   Date.parse(scope.dateTo) - Date.parse(scope.dateFrom) <= 30 * 86_400_000);
 export type EtlBatchScope = z.infer<typeof etlBatchScopeSchema>;
+/** Private request coverage, never appended to the public warning. Missing means full-day/all ads. */
+export const etlBatchAdFiltersSchema = z.object({
+  hh: z.number().int().min(0).max(24).optional(),
+  adIds: etlBatchAccountIdsSchema.optional(),
+}).strict();
 export const etlBatchFailureEvidenceSchema = etlBatchFailureWarningSchema.extend({
   media: etlBatchMediaSchema, failedAt: z.iso.datetime({ offset: true }),
-});
+  filters: etlBatchAdFiltersSchema.optional(),
+}).refine(value => value.filters === undefined || value.resource === "ad_realtime");
 export type EtlBatchFailureEvidence = z.infer<typeof etlBatchFailureEvidenceSchema>;
 export const recordEtlBatchFailureSchema = z.object({
   workspaceId: z.string().uuid(), jobId: z.string().uuid(), leaseToken: z.string().uuid(),
   runId: z.string().regex(/^[1-9][0-9]{0,18}$/).refine(id => id.length < 19 || id <= "9223372036854775807"),
   warning: etlBatchFailureWarningSchema,
-}).strict();
+  filters: etlBatchAdFiltersSchema.optional(),
+}).strict().refine(value => value.filters === undefined || value.warning.resource === "ad_realtime");
 export type RecordEtlBatchFailure = z.infer<typeof recordEtlBatchFailureSchema>;
