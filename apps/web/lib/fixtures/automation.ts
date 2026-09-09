@@ -1,6 +1,8 @@
 import type { Fixture, RatioValue } from "@/lib/fixtures/contract"
 import rulesList from "@contract/fixtures/rules/list.json"
 import rulesExplain from "@contract/fixtures/rules/explain.json"
+import rulesExplain7 from "@contract/fixtures/rules/explain-7.json"
+import rulesExplain9 from "@contract/fixtures/rules/explain-9.json"
 import definitions from "@contract/fixtures/workflows/definitions.json"
 import graphV1 from "@contract/fixtures/workflows/graph-v1.json"
 import validate from "@contract/fixtures/workflows/validate.json"
@@ -10,6 +12,7 @@ import runDetail from "@contract/fixtures/workflows/run-detail.json"
 import capabilities from "@contract/fixtures/capabilities/list.json"
 import agentRuns from "@contract/fixtures/agent/runs.json"
 import agentRunEvents from "@contract/fixtures/agent/run-events.json"
+import agentRunEvents1802 from "@contract/fixtures/agent/run-events-1802.json"
 import health from "@contract/fixtures/system/health.json"
 
 // 自动化（F-007 §5，契约 v1.3 rules/explain · v1.5 capabilities · v1.5.1 ③ workflow-graph/v1）fixture 读取层。不算数。
@@ -26,6 +29,12 @@ export const autonomyLevels = [
 ]
 export type RuleExplain = { ruleId: number; accountId: string; ds: string; leaves: { metric: string; operator: string; threshold: number | string; value: number | null; availability: "available" | "missing" | "error"; pass: boolean | null }[]; notTriggeredReason: string | null; fallbackCopy: string }
 export const ruleExplainFixture = rulesExplain as unknown as Fixture<RuleExplain>
+// arch 第三批补了规则 7 / 9 的判定样例，按 ruleId 取
+export const ruleExplainFixtures: Record<number, Fixture<RuleExplain>> = {
+  3: rulesExplain as unknown as Fixture<RuleExplain>,
+  7: rulesExplain7 as unknown as Fixture<RuleExplain>,
+  9: rulesExplain9 as unknown as Fixture<RuleExplain>,
+}
 export const metricLabel: Record<string, string> = { cash_cpa: "现金 CPA", real_conversion: "真实转化", cost: "账面消耗", cash_cost: "现金消耗", ctr: "CTR", assessment_price: "考核价", exposure: "曝光", click: "点击" }
 export const conditionText = (tree: RuleItem["conditionTree"]): string => {
   const leaves = tree.all ?? tree.any ?? []
@@ -105,6 +114,11 @@ export const capabilityCategoryLabel: Record<CapabilityItem["category"], string>
 export type AgentRunItem = { runId: string; kind: string; status: "done" | "failed" | "running"; startedAt: string; durationMs: number | null; tokens: { in: number; out: number } | null; budgetUsd: number | null; result: Record<string, string> | null; error?: string }
 export const agentRunsFixture = agentRuns as unknown as Fixture<{ items: AgentRunItem[] }>
 export const agentRunEventsFixture = agentRunEvents as unknown as Fixture<{ runId: string; events: { seq: number; kind: string; at: string; tool?: string; argsExcerpt?: unknown; ok?: boolean; schema?: string; status?: string }[]; rawLogAccess: "restricted" | "full" }>
+// arch 第三批补了失败 run 的事件流，按 runId 取
+export const agentRunEventsFixtures: Record<string, Fixture<{ runId: string; events: { seq: number; kind: string; at: string; tool?: string; argsExcerpt?: unknown; ok?: boolean; schema?: string; status?: string }[]; rawLogAccess: "restricted" | "full" }>> = {
+  [(agentRunEvents as { data?: { runId?: string } }).data?.runId ?? "unknown"]: agentRunEvents as unknown as Fixture<{ runId: string; events: { seq: number; kind: string; at: string; tool?: string; argsExcerpt?: unknown; ok?: boolean; schema?: string; status?: string }[]; rawLogAccess: "restricted" | "full" }>,
+  [(agentRunEvents1802 as { data?: { runId?: string } }).data?.runId ?? "unknown-2"]: agentRunEvents1802 as unknown as Fixture<{ runId: string; events: { seq: number; kind: string; at: string; tool?: string; argsExcerpt?: unknown; ok?: boolean; schema?: string; status?: string }[]; rawLogAccess: "restricted" | "full" }>,
+}
 
 // ---- 顶部健康五卡 ----
 export const automationHealthFixture = health as unknown as Fixture<{ overall: "green" | "yellow" | "red"; connectors: { total: number; ok: number }; executors: { total: number; ok: number }; queue: { pending: number }; agent: { instances: number; ok: number }; healthScore: number }>

@@ -1,6 +1,7 @@
 import type { Fixture, RatioValue } from "@/lib/fixtures/contract"
 import members from "@contract/fixtures/admin/members.json"
 import grants from "@contract/fixtures/admin/grants.json"
+import grantsMember2 from "@contract/fixtures/admin/grants-member-2.json"
 import calendar from "@contract/fixtures/admin/calendar.json"
 import flags from "@contract/fixtures/admin/flags.json"
 import etlRuns from "@contract/fixtures/system/etl-runs.json"
@@ -13,6 +14,11 @@ export const membersFixture = members as unknown as Fixture<{ items: Member[] }>
 export const roleLabel: Record<Member["role"], string> = { admin: "管理员", lead: "负责人", operator: "优化师", viewer: "只读" }
 export type Grant = { media: string; accountId: string; accessLevel: "read" | "execute"; grantedAt: string }
 export const grantsFixture = grants as unknown as Fixture<{ identityId: string; items: Grant[] }>
+// arch 第三批补了第二位成员的授权，按 identityId 取；查不到就显诚实空态
+export const grantsFixtures: Record<string, Fixture<{ identityId: string; items: Grant[] }>> = {
+  [(grants as { data?: { identityId?: string } }).data?.identityId ?? "unknown"]: grants as unknown as Fixture<{ identityId: string; items: Grant[] }>,
+  [(grantsMember2 as { data?: { identityId?: string } }).data?.identityId ?? "unknown-2"]: grantsMember2 as unknown as Fixture<{ identityId: string; items: Grant[] }>,
+}
 export type CalendarEvent = { id: number; eventDate: string; eventType: "holiday" | "coefficient_change" | "promotion" | "custom"; label: string; affectsBaseline: boolean; thresholdProfile: string | null }
 export const calendarFixture = calendar as unknown as Fixture<{ items: CalendarEvent[] }>
 export const eventTypeLabel: Record<CalendarEvent["eventType"], string> = { holiday: "节假日", coefficient_change: "口径变更", promotion: "大促", custom: "自定义" }

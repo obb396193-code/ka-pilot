@@ -1,5 +1,6 @@
 import type { Fixture } from "@/lib/fixtures/contract"
 import counts from "@contract/fixtures/me/counts.json"
+import workload from "@contract/fixtures/me/workload.json"
 import notifications from "@contract/fixtures/me/notifications.json"
 import notificationsEmpty from "@contract/fixtures/me/notifications-empty.json"
 import preferences from "@contract/fixtures/me/preferences.json"
@@ -19,3 +20,13 @@ export const notificationsFixture = notifications as unknown as Fixture<{ items:
 export const notificationsEmptyFixture = notificationsEmpty as unknown as Fixture<{ items: NotificationItem[]; unread: number; nextCursor: string | null }>
 export const notificationKindLabel: Record<NotificationItem["kind"], string> = { alert: "告警", approval: "待审批", dispatch: "派给我", run: "运行", system: "系统" }
 export const notificationTone: Record<NotificationItem["severity"], "critical" | "warning" | "muted" | "pending"> = { p0: "critical", p1: "warning", warning: "warning", info: "pending" }
+
+// G9 我的负载（契约 v1.7.4）：只给计数；负载分老板未定，source=not_configured 时显 −，不编分数
+export type MeWorkload = {
+  tasks: { owned: number; participating: number }
+  accounts: { owned: number; watching: number }
+  pending: { workItems: number; approvals: number; dispatches: number; runsWaitingConfirmation: number }
+  oncall: { today: boolean; next: { at: string; role: string } | null }
+  loadScore: { value: { value: number | null; state: string }; source: string; formula: string | null }
+}
+export const workloadFixture = workload as unknown as Fixture<MeWorkload>

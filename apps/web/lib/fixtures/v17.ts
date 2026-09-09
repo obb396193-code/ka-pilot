@@ -2,9 +2,11 @@ import type { Fixture, MetricValue, RatioValue } from "@/lib/fixtures/contract"
 import type { CostStatus } from "@/lib/fixtures/contract"
 import strategiesList from "@contract/fixtures/strategies/list.json"
 import strategyDetail from "@contract/fixtures/strategies/detail.json"
+import strategyDetail3002 from "@contract/fixtures/strategies/detail-3002.json"
 import strategyCompare from "@contract/fixtures/strategies/compare.json"
 import strategyTaskBinding from "@contract/fixtures/strategies/task-binding.json"
 import attribution from "@contract/fixtures/tasks/attribution.json"
+import attributionCost from "@contract/fixtures/tasks/attribution-cost.json"
 import leadGapTree from "@contract/fixtures/workbench/lead-gaptree.json"
 import fyi from "@contract/fixtures/workbench/fyi.json"
 import intelMaterials from "@contract/fixtures/intel/materials.json"
@@ -24,6 +26,11 @@ export type StrategyItem = { id: string; name: string; version: number; status: 
 export const strategiesFixture = strategiesList as unknown as Fixture<{ items: StrategyItem[] }>
 export type StrategyDetail = StrategyItem & { playbookMap: { step: number; key: string; label: string; value: string }[]; conditions: { applicable: string[]; not_applicable: string[] }; validationsDetail: { taskId: string; window: { from: string; to: string }; before: { cashCpa: RatioValue; volume: MetricValue; onTarget: boolean | null } | null; after: { cashCpa: RatioValue; volume: MetricValue; onTarget: boolean | null } | null; status: "improved" | "no_change" | "worse" | "insufficient_sample"; note: string }[]; versions: { version: number; at: string; note: string }[] }
 export const strategyDetailFixture = strategyDetail as unknown as Fixture<StrategyDetail>
+// arch 第三批补了第二个方案的详情，按 id 取
+export const strategyDetailFixtures: Record<string, Fixture<StrategyDetail>> = {
+  "00000000-0000-4000-8000-000000003001": strategyDetail as unknown as Fixture<StrategyDetail>,
+  "00000000-0000-4000-8000-000000003002": strategyDetail3002 as unknown as Fixture<StrategyDetail>,
+}
 export const strategyCompareFixture = strategyCompare as unknown as Fixture<{ left: { id: string; name: string }; right: { id: string; name: string }; fields: { key: string; left: string; right: string }[]; evidence: { left: { cashCpa: RatioValue; sampleTasks: number }; right: { cashCpa: RatioValue; sampleTasks: number } } }>
 export type StrategyTaskBinding = { taskId: string; strategy: { id: string; name: string; version: number; status: StrategyStatus }; boundAt: string; diff: { field: string; playbook: string; actual: string | null; match: boolean | null }[] }
 export const strategyTaskBindingFixture = strategyTaskBinding as unknown as Fixture<StrategyTaskBinding>
@@ -34,7 +41,13 @@ export const playbookFieldLabel: Record<string, string> = { placement: "版位",
 // ---- 3.7 归因树 ----
 export type GapNode = { key: string; label: string; gap: MetricValue; share?: RatioValue; gapRate?: RatioValue; availability?: "available" | "undeterminable"; evidence?: { accounts: { media: string; accountId: string; cashCpa?: RatioValue; price?: number; costShare?: RatioValue; note?: string }[] }; children?: GapNode[] }
 export type AttributionTree = { mode: "volume" | "cost"; root: GapNode; children: GapNode[]; byTask?: { taskId: string; taskName: string; gap: MetricValue }[]; lineage: { window: { from: string; to: string; preset?: string }; adLevelSource: string } }
-export const attributionFixtures: Record<string, Fixture<AttributionTree>> = { "fixture-task-ready": attribution as unknown as Fixture<AttributionTree> }
+// 归因树按「任务 + 模式」取样例：量级 / 成本各一份（arch 第三批补了成本模式）
+export const attributionFixtures: Record<string, Record<string, Fixture<AttributionTree>>> = {
+  "fixture-task-ready": {
+    volume: attribution as unknown as Fixture<AttributionTree>,
+    cost: attributionCost as unknown as Fixture<AttributionTree>,
+  },
+}
 export const leadGapTreeFixture = leadGapTree as unknown as Fixture<AttributionTree>
 export const adLevelSourceLabel: Record<string, string> = { "platform.ad_realtime": "启航广告实时", "ka_data.dwd_adgroup_daily": "ka_data 广告组日表", none: "无广告级数据" }
 
