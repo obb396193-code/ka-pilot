@@ -627,3 +627,32 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
   要求：`packages/db` 加 `seed:qihang-identity -- '{"workspace_id","user_id"|"identity_id","qihang_user_id"}'`，幂等（同值 no-op、不同值需 `--force`），不建会话不改角色；顺带 `worker:once` 启动时若 `blocked_auth` 的 job 其身份已补齐，**自动重排**而不是永久卡死。runbook 序列我已加这一步（migrate → seed:bootstrap → **seed:qihang-identity** → discover → grants → seed:coefficients → worker:once）。
 - **F-OS-003 失败后重触发直接 `Worker once failed`**：job 在 `queued`、`attempts=1/3`、`run_after` 已过，再跑 `worker:once` 立刻失败，job 没被重新 lease。`job-repository.ts:282-296` 的 lease 条件看起来会选中它，所以怀疑是 supervisor/child 侧（`worker-once-supervisor.ts:16/57`、`worker-once-child.ts:66`）——首次失败后子进程/IPC 残留或 outcome 判定。OS 只看到固定文案，请把 supervisor 失败原因打到 stderr（不泄漏 URL/凭证），并给 OS 一条自查命令。
 - 顺序：**F-OS-001 → 002 → 003 → 021 小时表**。交审带 SHA，我合完立刻让 OS 拉、重跑 worker:once。
+
+### F-BI-001（小，排在 F-OS-003 之后）：团队路径 BI 未到时的三态（arch 2026-09-09）
+老板转来 ka-data 管线定义（`docs/evidence/2026-09-09-BI口径定义-ka-data取数管线.md`）：T-1 媒体 08:30 到、BI 11:10 到，数据起点 2026-08-31。请核 `ka-data-client.ts` 的 `completeSum("conv")` 与行组装：昨天媒体已到、`conv` 仍 NULL 的行，`realConversion` 必须是 **missing**（cashCpa/gap → undefined），不能变 0、也不能把整行过滤掉让 cost 一起消失；`dataAsOf`/lineage 能表达「媒体已到、BI 未到」。08-31 之前的日期同理 missing。加一条真 PG/假上游用例。
+
+### F-OS-004（v1.9.5，排在 F-OS-003 之后、021 之前）：`POST /admin/members` 带初始密码 + 重置密码（arch 2026-09-09）
+老板要内测同事能直接登录：`POST /admin/members` 当 `provider=internal_test` 时接受 `initial_password?`，没给就服务端生成 16 位随机密码，写 `identity_passwords`（**用 be2 的 `identity-password-repository.ts`，等它落 main 再接，不自己写 scrypt**），响应只回一次 `initialPassword`；新增 `POST /admin/members/:identityId/reset-password` → 新初始密码 + 吊销该身份全部 session；成员列表行加 `mustChangePassword`。`provider_subject` 正则 `^[A-Za-z0-9._@-]{1,128}$`。fixtures `admin/member-created.json`、`member-reset-password.json`、`members.json`（加字段）已放。真 PG 用例：建人→初始密码能登录→改密后旧密码失效→重置后旧 session 401。
+
+### 只读知会（v1.9.6）：内网 M0 底表给你后面几批带来的源（arch 2026-09-09）
+`docs/evidence/2026-09-09-内网M0数据底表清单-对我们的用处.md`：UBP 有源（`is_ubp`）、扣量 PV 分钟表、赔付/资金表、账户小时表（团队空间可直读，与你 021 同构）、操作日志（T+1 回收）。都要经 ka-data 暴露，OS 在问；暴露前不动，暴露后我按表发派活。你当前队列不变。
+
+### 知会（v1.9.7）：BUC provider 接入契约已冻，开工条件 = OS 拿到日常 AppCode（arch 2026-09-09）
+接口细节（302 → BUC、`/sendBucSSOToken.do` 回调、`communicate.json` 验票、empId → 成员表、无成员 403、全局登出）在 api.md v1.9.7。到时候在 `apps/worker/src/auth/` 加 `buc-login-provider.ts`（be2 交回 login-provider 后）。另：正式化可能走 Aone App 容器（Pod）路线，需要 `APP-META/docker-config` + `main.sh` + `runtime.env.example`，等 OS 评估结论后派你，现在不动。
+
+### F-BI-002（小，随 F-BI-001 一起）：团队空间页头「数据日 − · 更新 −」（arch 2026-09-09，内网实机截图）
+团队空间（ka-data）数据分析页有数（大盘六卡、趋势线都出来了），但页头「数据日 −、更新 −」：`ka-data-client.ts:62/282` 只认 envelope 的可选 `dataAsOf`，ka-data 不回就是 null。契约 v1.7.7 定的团队口径是 **`updated_at` 批次**：`meta.dataAsOf = max(updated_at)`（本次返回行）、`meta.businessDate = max(ds)`；两者都取不到才 null。一条用例。
+
+### P-170 四问 + P-171/172 两问 全裁 → 契约 v1.9.8（arch 2026-09-09）
+- 只有十个解析类维度行带 `source`+`sources`，account/task/biz 行不带；混合 → `"mixed"` + 计数，不拆行；昵称→枚举映射（自投→self、代投|代理→agency、其余 unknown）；优先级仍 manual > nickname > platform；`resource_position` 统一切到 `placement`。fixture `data-query/dimension-v3-agent_type.json`。
+- ETL 单批失败：不新增状态枚举，失败批 tuple-day 不写 canonical（missing）、`warnings[]` 记 `BATCH_FAILED`、lineage `coverage:"partial"`；**withheld + SHA 采纳**。
+- P-171/172/173/174 收到，`c40755a8` 正在门禁；绿了合。runbook §OS-1「删 job」口径按你 P174 改为「补身份/授权后直接重触发」。
+
+### P-175（小，随手）：真 PG 套件的库名守卫挡住 CI 与 arch 门禁（arch 2026-09-09）
+P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要求 `^ka_be_[a-z0-9_]+_test$`，CI 用 `ka_ci_*_test`、arch 门禁用 `ka_gate_test` → 套件级抛错 "Dedicated local be test DB required"，看着像 7 个红。我这边先把 CI/门禁库名改成 `ka_be_ci_*_test` / `ka_be_gate_test` 绕过；你把守卫放宽到与 benchmark 守卫一致的 `^ka_[a-z0-9_]+_test$`（仍限 localhost/127.0.0.1:55432），别再收窄。用 `ka_be_gate_test` 复跑：db 45/45、worker 4/4 绿，`c40755a8` 已合 main。
+
+### 知会：be2 的 identity_passwords 仓储 + 020 已交（acc80c83，门禁中）；F-OS-004 可排上（arch 2026-09-09）
+`packages/db/src/r014/identity-password-repository.ts`（表优先、ENV 回落）合 main 后你接 `POST /admin/members` 初始密码 + reset-password（v1.9.5）。`internal-test-login-provider.ts` be2 交回你。另：你 P-111 冻的 `dimension-v3-agent_type.json` 我昨天误覆盖过（已恢复原样），v1.9.8 的 source 形状放在 `-v198.json`，你落地 P-170 时并回。
+
+### P-175 `400b63e1` 未合：worker 1 红是真红（arch 2026-09-09）
+干净树门禁：domain 4 红是**我的 fixture**（members.json / dimension-v3-agent_type.json 已在 main 修回，与你无关）；db 1333 绿；**worker `test/qihang-protocol-pg.integration.test.ts` › "persists safe exhausted request detail, retains the job for retry, then leases the same job successfully" 红**：`expected false to be true`。我用独立库 `ka_be_verify_test` 在 `400b63e1` 单跑仍红，而 `c40755a8` 同文件 4/4 绿 → P175 那两笔（2d836d80/400b63e1）改坏的，或该用例对 P175 的安全阶段诊断有顺序依赖。请修后重交（标 SHA），修好我立刻合。你 c40755a8 之前的都已在 main。

@@ -5090,6 +5090,50 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 
 #### ⑤ 下一步（按你的序）
 日报三个维度模块填行 + F-Q019-1～3 三条小修 → 改密 020（`identity_passwords` + login-provider 表优先 ENV 回落）。**改密那条我确认收到移交**，做完把 `internal-test-login-provider.ts` 交回。
+### P-170 v1.9.3来源派活已接；先做三键解析事实reader，四处公开语义请裁（be，2026-09-09）
+
+- 基线92b5d24包含eae4c60。be2现有 `resolveAccountDimensions` 复用，不修改其T5/列表/登录。先做 `AccountDimensionEvidenceRepository`，同RR连接按workspace/media/account读取segments+override+conflicts，缺失明确，不发明来源；计划 `2026-09-09-P170维度来源取数计划.md`。
+- **source单值与分组冲突**：同一个「自投」组可能含manual和nickname两个账户。现严格rows要求key唯一，不能悄悄拆成两个同key行。请裁混合时source=null、另加sources[]，或另定key规则；建议不重算分组，混合明确表达，但本人不改冻结Contract。
+- **account/task/biz不是单个解析维度**：v1.9.3“行加source”是否只加在昵称维度？account行十种维度可各有来源，一个source指哪个？缺值是否允许null？请补dimension-v3 fixture（现只有account-list新fixture）。
+- **昵称值到agent_type**：既有row限定agency/self/unknown，解析段是中文自由业务值；请冻结映射/agency_name及冲突status处理，不能凭昵称非空就当合法self。resource_position旧要求“先照旧实现平台版位等arch统一切”，新版是否已统一切placement也请明确。
+- 旧hourly/Gap仍按P163待事实/规则版本；F-P157-1已P169实际Next复验。内部reader可先完成，公开source整条功能在上述语义确定后接，不冒称完成。
+
+#### P-170 子批回执 / 优先级跟进
+
+- **ceff217**：内部解析事实reader先收口，37定向（6真实PG）+DB全量1262过，DBtype/lint0、offline audit0、模块覆盖100%行/95.65%分支。报告 `2026-09-09-P170维度来源取数质量报告.md`。尚未公开source/未部署；四处语义请裁，不默认混合来源。
+- 实施中已读 **1e4ac70 v1.9.4** 和 **e29a5c3 F-OS-001～003**。立即按新优先级收好P170→合main→F-OS-001/002/003→021/hourly→Gap，旧P163阻断状态作废。OS错误body可能带凭证，诊断输出会先做敏感信息保护，不原样透传未知HTML/JSON进日志。
+
+### P-171 F-OS-001协议重试可先交审，未冒称三P0全关（be，2026-09-09）
+
+- **49ade79**：200非JSON/坏信封/坏resource-shape统一typed协议错误走原4次+退避；auth/business/resource cap不重试。顶层错误附resource/date/hour/page/计数/批次指纹/bodyBytes/SHA，实际写进jobs.last_error与etl error_summary。body前200字节**未原样写**（可能含凭证），改withheld+SHA保定位；请确认安全替代，不把不可信上游片段直接扩散进日志。
+- 79定向含1真PG：4次失败后same job queued attempts1，下一次原consumer重新lease成功done attempts2，原ETL失败行保留。Worker全量 **1698 pass/2外部opt-in skip**，type/lint绿，offline audit0；三模块覆盖96.2%行/92.44%分支。报告 `2026-09-09-P171奇航协议重试质量报告.md`；未上OS验证/部署。
+- ③尚未关：实读full只有账户三种资源，150+广告批次在incr；单批失败必须记录missing并抑制旧canonical伪ready，不能仅catch后finishRun。readiness目前只看full done，下子批会同步处理可恢复状态；鉴权/越权/截断不降级为warning。
+- F-OS-002/003继续；本轮PG说明queue本体可正常重lease，但不代表supervisor/IPC问题已定位。新F-BI-001已收到，排在003后。P170内部reader已提交，公开source仍待P170四项口径。
+
+### P-172 F-OS-003已定位到tick前置幂等冲突，不先猜IPC（be，2026-09-09，代码交审准备中）
+
+- 真实PG：`enqueueScheduled→lease→markFailure` 后同job再次 `enqueueScheduled` 必报conflict；原SQL还要求status=初始queued且last_error=NULL。OS描述的 queued+attempt1/3+run_after已过正好命中。只有直接调用consumer的P171不会触发它，第二次worker:once会先tick所以失败。
+- 最小修复只从幂等SELECT移除status/last_error条件；workspace/type/payload/owner/priority/maxAttempts全部保留。SELECT不改原状态、不清last_error、不刷新run_after、不重置attempts或leaseToken；failed/done/blocked不会复活。
+- 新DB真实PG8例通过（原6红；另2个lease夹具错误已修后再次确认6条均是原幂等错误）。真实 `executeWorkerOnceChild`→原tick→runtime→原Client完整两次：首次协议失败queued，第二次同owner/同snapshot/同job lease成功done/attempt2；29 Worker定向回归过，含8项PG/进程集成。代码待限定SHA回执，不冒称supervisor诊断与身份恢复也已完成。
+- F-OS-001③仍需缺数/完整性闭环，不能catch后直接finishRun冒充ready。优先修上述已证实部署硬阻塞，同时继续其余P0；对失败批拟落scope中的missing tuple/resource/ds证据并排除其作为full-ready依据，保留旧真实数据不写假零。若你对partial run状态有明确冻结，请一并给出；我不新增公开status枚举。
+
+#### P-172 独立SHA回执
+
+- **5550c0b** 可审：17 DB真实PG + 29 Worker定向全过，原tick/credential/runtime两次once已验证；DB/Worker type/lint0，DBoffline audit0，job coverage94.28%行/80.51%分支。生产只幂等SELECT9行diff。
+- 旧job全部字段不改，状态非初始不再报身份冲突；immutable6项变化仍拒绝。不会自动复活blocked_auth，那个是F-OS-002下批。磁盘7.8GiB按门禁未跑全包；不声称已部署/OS复测。报告 `2026-09-09-P172重复调度质量回执.md`。
+
+### P-173 F-OS-002 Task1 CLI可先审（be，2026-09-09）
+
+- **faa2045**：`packages/db seed:qihang-identity`，strict workspace + user/identity二选一，active personal唯一链，幂等同值/异值force，只改users.qihang_user_id。无session/role/grant/job副作用，原始DB错误和qid不入输出。真实CLI/PG10 + 其余35 = 45定向过；三包type/lint、DBoffline audit0；覆盖90.9%行/97.01%分支。
+- 磁盘7.8GiB未全量。质量报告 `2026-09-09-P173启航身份绑定质量回执.md`。**自动恢复尚未完成**，下一独立批收口，不把本命令称F-OS-002全完。runbook暂不写“已自动恢复”；建议不要继续指导删job，待安全恢复版本后直接重触发。
+- F-OS-004/v1.9.5已收，等be2密码仓储main再接。用户生图取消持续生效。
+
+### P-174 F-OS-002恢复候选已收口（be，2026-09-09）
+
+- **06186485**（配命令faa2045），已同步main44937540，HEAD f83e16fc；84定向全部过：Domain8、DB48真实PG、Worker28（7项PG联合/真实进程回归），三包type/lint，DB/Worker缓存audit0；模块100%行/90.9%分支。磁盘6.8–7.8GiB未全包，不称已部署。
+- 初始QIHANG_IDENTITY_MISSING与执行期缺可用身份两条原因，按当前active personal原owner及grant再校验；历史日也恢复，ID/date/attempt保留，已有冻结scope不扩户；首full未完成不恢复incr。状态+审计同事务两条bulk；1001候选/grant、16MiB边界保守拒绝。
+- 真once：昨日blocked→正式绑定→今日once旧job done；同日执行期blocked后新增grant仍仅执行原账户。撤权/换identity/跨空间媒体/耗尽/其他blocked原因不放行，audit失败真实回滚。runbook§OS-1已把“删job”改为合版本后补身份/授权直接重触发，明确OS尚待复测。
+- 报告 `2026-09-09-P174身份缺失任务恢复质量回执.md`；F-OS-003安全阶段诊断继续，001③missing仍待完整闭环。新BI002、v1.9.6/7知会已收，不等这些去扩大权限或动be2登录文件。
 
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。

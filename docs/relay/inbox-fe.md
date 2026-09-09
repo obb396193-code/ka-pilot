@@ -478,3 +478,42 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### 8af3c77 ✅ 已合 main（集成页崩溃修，web 222/0）（arch 2026-09-09）
 联调环境重建到这版；老板报的集成页 `config.robots` 崩溃在 `/integrations` 复验。
+
+### F8-10（P0，内测第一印象，插在 F8-8 前）：内网打不到外网资源 → 登录页缺图；Windows 字体先跳后换（arch 2026-09-09，老板看内网部署反馈「变形、不顺畅」）
+内网沙箱出网只放行两个素材 CDN 域名，**任何运行时外链都拉不到**。核到：
+1. `components/business/auth/login-directions.tsx:32-33` 两张 Unsplash 背景图（`IMAGE_WAVES / IMAGE_CUBES`），`app/(auth)/login/page.tsx` 在用 → 内网登录页背景空白。**改成仓库内本地图**（`public/login/*.webp`，各压到 ≤300KB；或直接用你 C2-5 那种纯 CSS/canvas 背景不带图）。老板 9-7 定过「不用生成图，用现有登录页」，所以换本地图即可，不要再去外网取。
+2. 加一条守卫测试：`apps/web` 的 `app/ components/ lib/ *.tsx|*.ts|*.css` 里不许出现运行时外链（`https?://` 的图/脚本/样式/字体），白名单只有 `hwmov.a.kwimgs.com`、`tx2.a.yximgs.com`；注释里的来源链接不算（`diceui/registry.ai-sdk` 那几条是注释，确认一下）。
+3. **Windows 字体**：`globals.css` 字体栈 Mac 走苹方、Windows 走自带 MiSans（300 个 unicode-range 切片，6.7MB，`font-display: swap`）。经公网代理慢时，Windows 先用微软雅黑排版、切片到了再换 → 行宽变、换行跳（老板说的「变形」）。做两件：① 给最常用切片（常用汉字 + 拉丁数字那几片）加 `<link rel=preload as=font>`；② 正文考虑 `font-display: optional`（慢网直接用雅黑不再跳），标题保留 swap。Mac 本地不受影响（苹方在栈里更前）。
+4. **Windows 缩放**：内网同事多是 1366×768 + 125% 缩放，CSS 视口只有 1093px。用 Chrome 设备工具把宽度拨到 1093 和 1280 各过一遍全站 12 页：侧栏 + 内容不许横向滚动、表格容器自己滚、页头动作不折成两行。发现问题按响应式铁律只往窄处加规则（≥lg 不变）。
+5. 交付时附三张截图：1093 宽登录页、1093 宽账户池、Network 面板里字体请求列表。
+
+### F8-10 修订（P0）：「变形」根因已定位在我们自己的壳——最小宽 1290px（arch 2026-09-09，本地 headless Chrome 实测，证据 `docs/evidence/ui/2026-09-09-1093px/`）
+老板说的不是登录页，是登录后**很多页面**在内网机器上变形。我把本地生产构建缩到 1093px（Windows 1366×768 @125% 的 CSS 视口）实测：**8 个页面全部横向溢出 32～197px**；1280 基本正常；1440 全正常。表在 evidence README，截图三张。
+**根因（一处壳）**：
+- `components/site-header.tsx:45-72`：面包屑 `Breadcrumb className="min-w-0 shrink-0"` + `BreadcrumbList flex-nowrap whitespace-nowrap`，右侧 `ml-auto` 簇 = ThemeSwitch 三个带字按钮（黑白/黑白+彩/全彩）+ 搜索框 + 铃铛 + 头像，全 `whitespace-nowrap`，页头 min-content ≈ **1002px**；侧栏固定 `SIDEBAR_WIDTH = 16rem`（272px + inset 16px）→ 壳最小 **1290px**。
+- `SidebarInset`/`main`（`relative flex w-full flex-1 …`）没有 `min-w-0`，flex 子项默认 `min-width:auto`，被页头的 min-content 撑开，整个 main 右移出视口（实测 main.left=288、width=1002、right=1290）。
+**修法（按顺序，先壳后页）**：
+1. `SidebarInset`/`main` 加 `min-w-0 overflow-x-clip`；`header` 内层 `div.flex.w-full` 加 `min-w-0`；面包屑改 `min-w-0 shrink truncate`（只留末两级，前面省略）；ThemeSwitch **< xl 只显图标**（下拉三选）；搜索框 `< lg` 收成图标按钮；右簇 `gap-1`。目标：页头 min-content ≤ 560px。
+2. 侧栏 `collapsible="icon"`，**< xl（1280）默认折叠成 3rem 图标栏**（`SidebarProvider defaultOpen` 按 `matchMedia('(min-width:1280px)')`，用户手动展开的状态照旧记 cookie）。
+3. 页内：`accounts/pool-views.tsx` 九态卡 `grid-cols-9` → `grid-cols-5 xl:grid-cols-9`（或 `[repeat(auto-fit,minmax(112px,1fr))]`）；`tasks/task-detail-page.tsx` 的 `grid-cols-12` KPI → `md:grid-cols-6 xl:grid-cols-12`；`tasks-page.tsx` 同。表格已在容器内滚，不动。
+4. 仍按响应式铁律：只往窄处加规则，≥1440 一像素不变。
+**验收（硬）**：仓库新加 `scripts/ui/overflow-check.mjs`（headless Chrome + CDP，用法在文件头），跑出 **1093 与 1280 两档 8 页横向溢出全 0px**，把输出表贴回执；再手动过全站 12 页两档宽度，附 1093 账户池、任务详情、工作台三张截图。
+之前那条 F8-10 的 Unsplash 本地图、外链守卫、MiSans 预载/optional 三项照做，排在壳修之后。
+
+### F8-10 验收补充：适配测试计划已出（arch 2026-09-09）
+`docs/plans/2026-09-09-内测Mac-Win适配测试计划.md`：矩阵五档宽度 × 四浏览器 × 三主题；通过标准五条；你交付附 L1 脚本结果 + L2 三张截图。Win 上 MiSans 先雅黑后切换一次算正常，反复跳/换行不同才算 bug。
+
+### F8-11（排在 F8-10 之后）：成员页「新增成员 / 重置密码」对话框（契约 v1.9.5）（arch 2026-09-09）
+现在没有注册入口，内测同事由管理员在治理后台开。做三件：① 成员 tab 的「邀请」改成「新增成员」对话框：显示名（可中文）、登录名（ASCII，实时校验 `^[A-Za-z0-9._@-]{1,128}$`，中文提示「用拼音或工号」）、角色、可选初始密码；提交后弹「一次性初始密码」面板（复制按钮 + 「关闭后不再显示」），fixture `admin/member-created.json`；② 行动作「重置密码」→ 二次确认 → 同样一次性面板，fixture `admin/member-reset-password.json`；③ 成员行 `mustChangePassword=true` 显「未改初始密码」角标；该用户自己进设置页顶部提示「请修改初始密码」。BFF 透传两条 POST。
+
+### F8-12（排在 F8-11 之后）：登录页「访客浏览」+ viewer 只读态（契约 v1.9.6）（arch 2026-09-09）
+① 登录页加「访客浏览」按钮（`GET /auth/capabilities` 或 BFF 透出 `guestEnabled` 时才显示）；② viewer 会话：顶部常驻条「演示数据 · 只读 · 想用真数据找管理员开户」，所有写入口（新建/批量/导入/自定义列/确认/推送/导出）对 viewer 隐藏，治理后台入口隐藏；③ 空间切换器只显示演示空间。fixtures `auth/login-guest.json`、`session/guest.json`。
+
+### F8-10 补证据：内网 Windows 实机截图（arch 2026-09-09）
+`docs/evidence/ui/2026-09-09-内网Win-数据分析页-缩放80.png`：老板在内网 Win 机上把浏览器**缩到 80%** 才勉强放下（就是 1290px 壳最小宽的症状），侧栏占比过大、KPI 卡右侧被截；另外 ⌘K 面板在截图时是开着的（确认不是自动弹出）。修完请用同一台机 100% 缩放复验。
+
+### F8-13（排在 F8-8 之后）：日报页接真后端 `GET /reports/daily`（arch 2026-09-09）
+后端已合 main 并实测：13 模块、管理摘要六卡、trend 7 点、dim_task/dim_account/dim_biz 有行（行 = `account.dimension/v3` 行）、其余维度 `unsupported:true` 显「待接源」、`delivery.status=not_sent`、`actions` 双 false → 推送/PDF 按钮禁用带说明。BFF 透传 `GET /api/internal/reports/daily?date=&role=`；日期选择器默认昨天；fixture `reports/daily-v1.json`（已按 v1.9.2 更新）。
+
+### F8-14（小）：错误码映射加 `RATE_LIMITED`（429，可重试）（arch 2026-09-09，v1.9.9）
+改密/登录限速会回 `{code:"RATE_LIMITED", retryable:true}`；前端显「操作太频繁，15 分钟后再试」并保留表单内容，不当未知错误。`errorBody.retryable` 以后按码判，不再恒 false。

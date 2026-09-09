@@ -234,3 +234,158 @@ export const exportRecordSchema = z.object({
   error: z.string().min(1).nullable(),
   fileExpired: z.boolean(),
 }).strict()
+
+/* 任务详情总览（契约 v1.5.1 ②，GET /api/v1/tasks/:id）——F8-8 接真后端 */
+const readinessSegmentSchema = z.object({
+  ratio: ratioValueSchema,
+  ready: z.boolean(),
+  source: z.string().min(1),
+  missing: z.array(z.string()),
+}).strict()
+
+const versionedValueSchema = z.object({
+  current: z.number().finite().nullable(),
+  effectiveDate: z.string().min(1).nullable(),
+  historyCount: z.number().int().nonnegative(),
+}).strict()
+
+export const taskDetailSchema = z.object({
+  task: z.object({
+    taskId: z.string().min(1),
+    taskName: z.string().min(1),
+    bizName: z.string().nullable(),
+    status: z.string().min(1),
+    period: z.object({ start: z.string().min(1), end: z.string().min(1) }).strict().nullable(),
+    owner: z.object({ userId: z.string().min(1), displayName: z.string().min(1) }).strict().nullable(),
+    budget: metricValueSchema,
+  }).strict(),
+  overview: z.object({
+    targetVolume: metricValueSchema,
+    achieved: metricValueSchema,
+    achievementRate: ratioValueSchema,
+    timeProgress: ratioValueSchema,
+    pacing: z.object({
+      asOf: z.string().min(1),
+      elapsedDays: z.number().int().nonnegative(),
+      totalDays: z.number().int().nonnegative(),
+      remainingDays: z.number().int().nonnegative(),
+      targetProgress: ratioValueSchema,
+      timeProgress: ratioValueSchema,
+      projectedVolume: z.number().finite().nullable(),
+      projectedCompletion: ratioValueSchema,
+      projectedGap: z.number().finite().nullable(),
+      requiredDailyVolume: z.number().finite().nullable(),
+      sevenDayAvgVolume: z.number().finite().nullable(),
+      excludedZeroDays: z.number().int().nonnegative(),
+      finalAchievementRate: ratioValueSchema,
+    }).strict().nullable(),
+    onTarget: z.boolean().nullable(),
+    costStatus: z.enum(["green", "yellow", "red"]).nullable(),
+    costStatusReason: z.string().nullable(),
+    cost: z.object({
+      window: z.object({ from: z.string().min(1), to: z.string().min(1), preset: z.string().optional() }).strict(),
+      cost: metricValueSchema,
+      cashCost: metricValueSchema,
+      cashCpa: ratioValueSchema,
+      realCpa: ratioValueSchema,
+      costSpace: metricValueSchema,
+      projectedWindowCashCpa: ratioValueSchema,
+      affordableDailyCashCpa: ratioValueSchema,
+    }).strict().nullable(),
+    anomalySummary: z.object({ p0: z.number().int().nonnegative(), p1: z.number().int().nonnegative(), opportunity: z.number().int().nonnegative() }).strict(),
+    assessmentPrice: versionedValueSchema.nullable(),
+    dailyBudgetCap: versionedValueSchema.nullable(),
+    budgetUsageRate: ratioValueSchema.nullable(),
+    budgetUsageDate: z.string().nullable(),
+    stage: z.object({ value: z.string().min(1), source: z.string().min(1), changedAt: z.string().nullable() }).strict(),
+    readiness: z.object({
+      accounts: readinessSegmentSchema,
+      recharge: readinessSegmentSchema,
+      products: readinessSegmentSchema,
+      materials: readinessSegmentSchema,
+      strategy: readinessSegmentSchema,
+      infra: readinessSegmentSchema,
+      overall: ratioValueSchema,
+    }).strict(),
+    sopProgress: z.object({
+      runId: z.string().nullable(),
+      steps: z.array(z.object({ key: z.string().min(1), status: z.string().min(1), at: z.string().nullable() }).strict()),
+    }).strict().nullable(),
+    blockers: z.array(z.object({
+      kind: z.string().min(1),
+      ref: z.string().min(1),
+      title: z.string().min(1),
+      severity: z.string().nullable(),
+    }).strict()),
+    nextActions: z.array(z.object({ kind: z.string().min(1), ref: z.string().min(1), title: z.string().min(1) }).strict()),
+  }).strict(),
+  tabs: z.array(z.string().min(1)),
+}).strict()
+
+/* 归属清洗（契约 v1.8，admin/naming-*）——F8-9 BFF 透传 */
+const namingSegmentSchema = z.object({
+  key: z.string().min(1),
+  label: z.string().min(1),
+  order: z.number().int().nonnegative(),
+  source: z.enum(["enum", "regex", "free"]),
+  values: z.array(z.string()).optional(),
+  pattern: z.string().nullable().optional(),
+  required: z.boolean(),
+  multi: z.boolean(),
+  mapsTo: z.string().nullable(),
+}).strict()
+
+export const namingRuleSchema = z.object({
+  media: z.string().min(1),
+  version: z.number().int().positive(),
+  segments: z.array(namingSegmentSchema),
+  separators: z.array(z.string().min(1)),
+  effectiveFrom: z.string().nullable(),
+  note: z.string().nullable(),
+  createdAt: z.string().nullable(),
+}).strict()
+
+const parsedSegmentSchema = z.object({
+  key: z.string().min(1),
+  value: z.string().nullable(),
+  mapsTo: z.string().nullable(),
+  taskIds: z.array(z.string()),
+}).strict()
+
+const parseStatusSchema = z.enum(["parsed", "partial", "failed", "conflict", "confirmed", "overridden"])
+
+const accountNameParseSchema = z.object({
+  media: z.string().min(1),
+  accountId: z.string().min(1),
+  accountName: z.string().min(1),
+  ruleVersion: z.number().int().positive(),
+  status: parseStatusSchema,
+  segments: z.record(z.string(), parsedSegmentSchema),
+  taskIds: z.array(z.string()),
+  conflicts: z.array(z.object({
+    field: z.string().min(1),
+    fromNickname: z.string(),
+    fromPlatform: z.string(),
+  }).strict()).nullable(),
+  override: z.record(z.string(), z.string()).nullable(),
+  parsedAt: z.string().min(1),
+  confirmedAt: z.string().nullable(),
+}).strict()
+
+export const accountNamesSchema = z.object({
+  items: z.array(accountNameParseSchema),
+  total: z.number().int().nonnegative(),
+}).strict()
+
+export const accountNamePatchSchema = accountNameParseSchema
+
+export const namingRulesTestSchema = z.object({
+  ruleVersion: z.number().int().positive(),
+  results: z.array(z.object({
+    accountName: z.string().min(1),
+    status: parseStatusSchema,
+    segments: z.record(z.string(), parsedSegmentSchema),
+  }).strict()),
+  hitRate: z.number().min(0).max(1),
+  counts: z.record(z.string(), z.number().int().nonnegative()),
+}).strict()

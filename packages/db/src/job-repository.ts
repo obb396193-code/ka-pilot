@@ -1,4 +1,6 @@
 import type { Pool, PoolClient } from "pg";
+import type { ScheduledSyncAuthorizationSnapshot } from "@ka/domain";
+import { recoverQihangIdentityJobs } from "./qihang-job-recovery.js";
 
 export type JobStatus =
   | "queued"
@@ -152,6 +154,11 @@ export class JobRepository implements JobRepositoryPort {
     this.leaseScope = normalizeLeaseScope(leaseScope);
   }
 
+  async recoverQihangIdentityBlocked(snapshot: ScheduledSyncAuthorizationSnapshot, media: string): Promise<string[]> {
+    if (this.leaseScope && this.leaseScope.workspaceId !== snapshot.workspaceId) throw new Error("Qihang recovery scope mismatch");
+    return recoverQihangIdentityJobs(this.pool, { snapshot, media });
+  }
+
   async enqueue(job: NewJob, transactionClient?: PoolClient): Promise<string> {
     const executor = transactionClient ?? this.pool;
     const normalized = normalizeNewJob(job);
@@ -241,6 +248,9 @@ export class JobRepository implements JobRepositoryPort {
       ],
     );
     if (inserted.rows[0]) return { id: inserted.rows[0].id, inserted: true };
+    // A replay observes the existing job, never rewrites its execution state.
+    // status/last_error evolve after lease or failure and are not job identity;
+    // comparing them to the insertion state rejects the next tick before lease.
     const existing = await this.pool.query<{ id: string }>(
       `SELECT id
        FROM jobs
@@ -250,9 +260,7 @@ export class JobRepository implements JobRepositoryPort {
          AND payload = $4::jsonb
          AND priority = $5
          AND credential_owner_user_id IS NOT DISTINCT FROM $6::uuid
-         AND max_attempts = $7
-         AND status = $8
-         AND last_error IS NOT DISTINCT FROM $9::text`,
+         AND max_attempts = $7`,
       [
         normalized.id,
         normalized.workspaceId,
@@ -261,8 +269,6 @@ export class JobRepository implements JobRepositoryPort {
         normalized.priority,
         normalized.credentialOwnerUserId,
         normalized.maxAttempts,
-        initialState.status,
-        reason,
       ],
     );
     if (existing.rows[0]) return { id: existing.rows[0].id, inserted: false };

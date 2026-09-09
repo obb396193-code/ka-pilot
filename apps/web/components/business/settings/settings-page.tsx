@@ -13,7 +13,7 @@ import { PasswordForm } from "@/components/business/settings/password-form"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { avatarSrc } from "@/lib/avatar"
 import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -27,7 +27,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
 import { accountsFixture } from "@/lib/fixtures/accounts"
-import { preferencesFixture } from "@/lib/fixtures/me"
+import { preferencesFixture, workloadFixture } from "@/lib/fixtures/me"
 import { themeModes } from "@/lib/theme/theme"
 import { useTheme } from "@/components/business/theme/theme-provider"
 import { mediaLabel } from "@/components/business/accounts/account-status"
@@ -257,6 +257,54 @@ function ViewsTab() {
 // 盯盘名单显账户名，不显 ID；样例里查不到就退回 ID，不编名字
 const accountName = (id: string) => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === id)?.accountName ?? id : id)
 
+/** 我的负载（契约 v1.7.4 GET /me/workload）：只显计数；负载分口径老板未定，未配置就显 − */
+function WorkloadTab() {
+  const data = isOk(workloadFixture) ? workloadFixture.data : null
+  if (!data) return null
+  const scoreConfigured = data.loadScore.source !== "not_configured" && data.loadScore.value.state === "finite"
+  const cells: { label: string; value: string; hint?: string }[] = [
+    { label: "负责任务", value: String(data.tasks.owned), hint: data.tasks.participating ? `另参与 ${data.tasks.participating} 个` : undefined },
+    { label: "负责账户", value: String(data.accounts.owned), hint: data.accounts.watching ? `盯盘 ${data.accounts.watching} 个` : undefined },
+    { label: "待处理工作项", value: String(data.pending.workItems) },
+    { label: "等我审批", value: String(data.pending.approvals) },
+    { label: "待回执派发", value: String(data.pending.dispatches) },
+    { label: "待确认运行", value: String(data.pending.runsWaitingConfirmation) },
+  ]
+  return (
+    <div className="grid gap-4 @3xl/main:grid-cols-2">
+      <Card>
+        <CardHeader><CardTitle className="text-base">手上的活</CardTitle><CardDescription>只数个数，不做排名；这些数字与侧栏角标同源</CardDescription></CardHeader>
+        <CardContent>
+          <dl className="grid grid-cols-2 gap-3 text-sm @3xl/main:grid-cols-3">
+            {cells.map((cell) => (
+              <div key={cell.label}>
+                <dt className="text-xs text-muted-foreground">{cell.label}</dt>
+                <dd className="text-lg font-semibold tabular-nums">{cell.value}</dd>
+                {cell.hint ? <dd className="text-[11px] text-muted-foreground">{cell.hint}</dd> : null}
+              </div>
+            ))}
+          </dl>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle className="text-base">值班与负载分</CardTitle><CardDescription>负载分的算法还没定，定之前这里显 −，不编分数</CardDescription></CardHeader>
+        <CardContent className="flex flex-col gap-3 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="w-20 shrink-0 text-muted-foreground">今天值班</span>
+            {data.oncall.today ? <StatusChip tone="warning">是</StatusChip> : <StatusChip tone="muted">否</StatusChip>}
+            {data.oncall.next ? <span className="text-xs text-muted-foreground">下次 {data.oncall.next.at} · {data.oncall.next.role}</span> : null}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-20 shrink-0 text-muted-foreground">负载分</span>
+            {scoreConfigured ? <span className="text-lg font-semibold tabular-nums">{data.loadScore.value.value}</span> : <><MissingValue /><span className="text-xs text-muted-foreground">算法未配置</span></>}
+          </div>
+          {data.loadScore.formula ? <p className="text-xs text-muted-foreground">口径：{data.loadScore.formula}</p> : null}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
 export function SettingsPage() {
   const { isMock } = useSession()
   const state = usePageState()
@@ -270,11 +318,7 @@ export function SettingsPage() {
           {tab === "profile" ? <ProfileTab /> : null}
           {tab === "credentials" ? <div className="flex flex-col gap-4"><CredentialsTab /><PasswordForm /></div> : null}
           {tab === "notifications" ? <NotificationsTab /> : null}
-          {tab === "workload" ? (
-            <ExampleBlock unlock="我的负载：按负责任务数 / 账户数 / 待处理工作项算负载分，接口接入后显示">
-              <Card><CardHeader><CardTitle>我的负载</CardTitle><CardDescription>负责任务数 · 账户数 · 待处理 · 值班 · 负载分</CardDescription></CardHeader><CardContent><dl className="grid grid-cols-2 gap-3 text-sm @3xl/main:grid-cols-5">{["负责任务", "负责账户", "待处理", "本周值班", "负载分"].map((label) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="text-lg font-semibold">−</dd></div>)}</dl></CardContent></Card>
-            </ExampleBlock>
-          ) : null}
+          {tab === "workload" ? <WorkloadTab /> : null}
           {tab === "metrics" ? <MetricsTab /> : null}
           {tab === "views" ? <ViewsTab /> : null}
         </StateFrame>

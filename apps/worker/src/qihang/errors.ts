@@ -31,6 +31,10 @@ export class QihangResourceLimitError extends QihangError {
   readonly code = "RESOURCE_LIMIT";
 }
 
+export class QihangProtocolError extends QihangError {
+  constructor(readonly diagnostic: string) { super(`Qihang transient protocol error: ${diagnostic}`); }
+}
+
 export class QihangSuspectedTruncationError extends QihangError {
   readonly code = "SUSPECTED_TRUNCATION";
 
@@ -47,6 +51,7 @@ export class RetryExhaustedError extends QihangError {
     readonly attempts: number,
     options?: ErrorOptions,
   ) {
-    super(`Qihang request failed after ${attempts} attempts`, options);
+    const diagnostic = options?.cause instanceof QihangProtocolError ? `: ${options.cause.diagnostic}` : "";
+    super(`Qihang request failed after ${attempts} attempts${diagnostic}`, options);
   }
 }

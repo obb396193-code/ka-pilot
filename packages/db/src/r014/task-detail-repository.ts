@@ -49,11 +49,6 @@ const SEVERITY_KEYS = ["P0", "P1", "opportunity"] as const;
  */
 interface TaskScope { kind: string; allowed: string }
 
-function allowedTuple(kindParam: string, listParam: string, media: string, accountId: string): string {
-  return `(${kindParam}::text = 'team_workspace_readonly' OR EXISTS (
-    SELECT 1 FROM jsonb_to_recordset(${listParam}::jsonb) AS allowed(media text, account_id text)
-    WHERE allowed.media = ${media} AND allowed.account_id = ${accountId}))`;
-}
 
 export class TaskDetailRepository {
   constructor(private readonly pool: Pool) {}

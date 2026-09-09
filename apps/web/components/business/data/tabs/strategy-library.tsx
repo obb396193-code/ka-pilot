@@ -18,7 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { tasksFixture, taskStageMap, type TaskStage } from "@/lib/fixtures/tasks"
-import { playbookFieldLabel, strategiesFixture, strategyCompareFixture, strategyDetailFixture, strategyStatusMeta, validationStatusMeta, type StrategyItem } from "@/lib/fixtures/v17"
+import { playbookFieldLabel, strategiesFixture, strategyCompareFixture, strategyDetailFixture, strategyStatusMeta, validationStatusMeta, type StrategyItem, strategyDetailFixtures } from "@/lib/fixtures/v17"
 import { cn } from "@/lib/utils"
 
 // 策略分析 · 方案库（v1.7 3.11b，原型 P07/P08）：卡片列表（官方 / 团队已验证 / 我的 / 草稿）→ 方案详情抽屉（策略地图七步 / 商品素材规则 / 适用条件 / 历史验证 / 版本 / 对比）；只显样本数与验证计数，不显置信度
@@ -112,7 +112,7 @@ export function StrategyLibrary() {
                 </Card>
               </>
             ) : active ? (
-              <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">该方案没有详情样例（示例只有「双成本控量起量」）；列表字段照常。<div className="mt-3 flex flex-wrap justify-center gap-1">{Object.entries(playbookFieldLabel).slice(0, 4).map(([key, label]) => <Badge key={key} variant="outline">{label}</Badge>)}</div></CardContent></Card>
+              <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">该方案没有详情样例（示例给了两个方案）；列表字段照常。<div className="mt-3 flex flex-wrap justify-center gap-1">{Object.entries(playbookFieldLabel).slice(0, 4).map(([key, label]) => <Badge key={key} variant="outline">{label}</Badge>)}</div></CardContent></Card>
             ) : null}
           </div>
         </SheetContent>

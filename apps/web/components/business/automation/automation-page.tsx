@@ -31,7 +31,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { agentRunEventsFixture, agentRunsFixture, automationHealthFixture, autonomyLevels, capabilitiesFixture, capabilityCategoryLabel, capabilityStatusMeta, conditionText, definitionsFixture, metricLabel, notTriggeredLabel, riskLabel, ruleExplainFixture, rulesFixture, runsFixture, runStatusMeta, type AgentRunItem, type CapabilityItem, type RuleItem, type RunItem, type WorkflowDefinition } from "@/lib/fixtures/automation"
+import { agentRunsFixture, automationHealthFixture, autonomyLevels, capabilitiesFixture, capabilityCategoryLabel, capabilityStatusMeta, conditionText, definitionsFixture, metricLabel, notTriggeredLabel, riskLabel, ruleExplainFixture, rulesFixture, runsFixture, runStatusMeta, type AgentRunItem, type CapabilityItem, type RuleItem, type RunItem, type WorkflowDefinition, ruleExplainFixtures, agentRunEventsFixtures } from "@/lib/fixtures/automation"
 import { fmtTime, isOk, rv } from "@/lib/fixtures/contract"
 import { ShadowTab } from "./shadow-tab"
 import { cn } from "@/lib/utils"
@@ -109,7 +109,8 @@ function RulesTab() {
   const columns = useMemo(() => makeRuleColumns(setExplain, (rule, level) => { setLevels((prev) => ({ ...prev, [rule.ruleId]: level })); toast(`「${rule.name}」自治度 → ${autonomyLevels[level].label}`, { description: `${autonomyLevels[level].hint}` }) }, (rule, next) => { setEnabled((prev) => ({ ...prev, [rule.ruleId]: next })); toast(`「${rule.name}」已${next ? "启用" : "停用"}`) }), [])
   const { ordered, reorder } = useLocalOrder(rules, (rule) => String(rule.ruleId))
   const table = useGridTable({ data: ordered, columns, pageSize: 20, getRowId: (rule) => String(rule.ruleId), initialColumnVisibility: { owner: false } })
-  const explainData = isOk(ruleExplainFixture) && explain && ruleExplainFixture.data.ruleId === explain.ruleId ? ruleExplainFixture.data : null
+  const explainFixture = explain ? ruleExplainFixtures[Number(explain.ruleId)] : undefined
+  const explainData = explainFixture && isOk(explainFixture) ? explainFixture.data : null
   return (
     <>
       <DataGrid table={table} onReorder={reorder} empty="还没有规则" toolbar={<p className="text-xs text-muted-foreground">12.8：任一叶子指标缺数 → 不触发也不消触，账户计入「不可判断」；自治度三档只改执行方式，不改条件</p>} actions={<Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button size="sm" disabled><IconPlus />新建规则</Button></span></TooltipTrigger><TooltipContent side="bottom">新建规则接入后启用（自然语言建规则未开发）</TooltipContent></Tooltip>} />
@@ -125,7 +126,7 @@ function RulesTab() {
               </Table>
               <p className="rounded-lg bg-muted px-3 py-2 text-sm">{explainData.fallbackCopy}</p>
             </div>
-          ) : <p className="text-sm text-muted-foreground">该规则没有判定样例（示例只给了规则 3 · account-5）；接口接入后按账户 × 日期查看。</p>}
+          ) : <p className="text-sm text-muted-foreground">该规则没有判定样例（示例给了规则 3 / 7 / 9）；接口接入后按账户 × 日期查看。</p>}
         </DialogContent>
       </Dialog>
     </>
@@ -177,7 +178,8 @@ function RunsTab() {
   const agentRuns = isOk(agentRunsFixture) ? agentRunsFixture.data.items : []
   const agentColumns = useMemo(() => makeAgentColumns(setEvents), [])
   const agentTable = useGridTable({ data: agentRuns, columns: agentColumns, pageSize: 20, getRowId: (run) => run.runId })
-  const eventData = isOk(agentRunEventsFixture) && events && agentRunEventsFixture.data.runId === events.runId ? agentRunEventsFixture.data : null
+  const eventFixture = events ? agentRunEventsFixtures[String(events.runId ?? "")] : undefined
+  const eventData = eventFixture && isOk(eventFixture) ? eventFixture.data : null
   return (
     <div className="flex flex-col gap-6">
       <DataGrid table={table} empty="没有运行记录" toolbar={<Tabs value={status} onValueChange={(value) => setStatus(value as typeof status)}><TabsList><TabsTrigger value="all">全部</TabsTrigger><TabsTrigger value="active">运行中 / 结果未知</TabsTrigger><TabsTrigger value="waiting">待确认</TabsTrigger><TabsTrigger value="done">已结束</TabsTrigger></TabsList></Tabs>} />
