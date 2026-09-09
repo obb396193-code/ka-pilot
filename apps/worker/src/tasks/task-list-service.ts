@@ -1,8 +1,11 @@
 import {
   computeTaskPacing,
+  deriveSystemReadiness,
+  mergeReadiness,
   shanghaiTaskBusinessDate,
   taskListRequestSchema,
   taskListResponseSchema,
+  type ReadinessDimension,
   type StableDataQueryError,
   type TaskListItem,
   type TaskListPacing,
@@ -129,6 +132,19 @@ function itemFor(row: TaskListRepositoryRow, businessDate: string): TaskListItem
     pacing: pacingFor(row, businessDate),
     linkedAccountCount: row.linkedAccountCount,
     workItemSummary: row.workItemSummary,
+    // v1.5.1 ②（S6）：阶段直接透传；六段就绪度由 domain 的纯函数从仓储取出的事实推，
+    // 服务层不自己编任何一段（products/materials/strategy 没有系统来源 → undefined 不是 0）。
+    stage: (row.stage ?? "preparing") as TaskListItem["stage"],
+    stageSource: (row.stageSource ?? "system") as TaskListItem["stageSource"],
+    readiness: mergeReadiness(
+      deriveSystemReadiness(row.readinessFacts),
+      row.readinessOverrides.map((entry) => ({
+        dimension: entry.dimension as ReadinessDimension,
+        ready: entry.ready,
+      })),
+    ),
+    // 下一个里程碑要的是任务日历/SOP 排期，本批没有源 → null，不拿 period_end 冒充。
+    nextMilestone: null,
   };
 }
 

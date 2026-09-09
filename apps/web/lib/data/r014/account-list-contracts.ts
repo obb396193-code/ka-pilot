@@ -61,6 +61,35 @@ export const accountListItemSchema = z.object({
   balance: z.object({
     value: z.number().finite(),
     syncedAt: z.string().datetime({ offset: true }),
+    // v1.5.1 ① 断量倒计时；velocity 无源时 hours missing、state unknown。
+    cutoff: z.object({
+      hours: z.object({
+        value: z.number().finite().nullable(),
+        availability: z.enum(["available", "missing", "error"]),
+      }).strict(),
+      state: z.enum(["ok", "warning", "critical", "unknown"]),
+    }).strict(),
+  }).strict().nullable(),
+  // v1.5.1 ① 新增字段，与 domain 侧同步转必填：漏发一个 BFF 就该挡成 502。
+  poolStatus: z.enum([
+    "available", "assigned", "pending_open", "pending_recharge", "pending_build",
+    "in_delivery", "paused", "closed", "abnormal",
+  ]),
+  poolStatusSource: z.enum(["system", "manual"]),
+  product: z.object({ name: z.string().min(1), ref: z.string().min(1).nullable() }).strict().nullable(),
+  dailyBudgetCap: z.number().finite().nullable(),
+  capacityLoad: z.object({
+    value: z.number().finite().nullable(),
+    state: z.enum(["finite", "infinite", "undefined"]),
+  }).strict(),
+  lastAction: z.object({
+    at: z.string().datetime({ offset: true }),
+    kind: z.enum(["changeset", "external_change", "pool_status"]),
+    summary: z.string().min(1),
+  }).strict().nullable(),
+  nextSuggestion: z.object({
+    workItemId: z.string().uuid(),
+    title: z.string().min(1),
   }).strict().nullable(),
 }).strict().superRefine((item, context) => {
   if (new Set(item.tags).size !== item.tags.length) {
@@ -84,6 +113,7 @@ const accountListSuccessSchema = z.object({
     page: z.number().int().min(1),
     pageSize: z.number().int().min(1).max(100),
     total: z.number().int().nonnegative(),
+    groupBy: z.enum(["none", "lifecycle", "product", "owner", "task"]).optional(),
   }).strict(),
   meta: z.object({
     dataState: z.enum(["ready", "empty", "partial", "stale"]),

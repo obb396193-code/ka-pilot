@@ -52,6 +52,13 @@ function accountResult(): AccountListRepositoryResult {
       dataAsOf: "2026-08-25T12:00:00.000Z",
       balance: null,
       balanceSyncedAt: null,
+      // v1.5.1 ①（S6）新增的仓储字段
+      poolStatus: "in_delivery",
+      poolStatusSource: "system",
+      productName: null,
+      productRef: null,
+      lastAction: null,
+      nextSuggestion: null,
     }],
     page: 1,
     pageSize: 20,

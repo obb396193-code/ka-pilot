@@ -47,6 +47,13 @@ function readyResult(overrides: Partial<AccountListRepositoryResult> = {}): Acco
       dataAsOf: "2026-08-25T12:00:00.000Z",
       balance: 1_000,
       balanceSyncedAt: "2026-08-25T11:00:00.000Z",
+      // v1.5.1 ①（S6）新增的仓储字段
+      poolStatus: "in_delivery",
+      poolStatusSource: "system",
+      productName: null,
+      productRef: null,
+      lastAction: null,
+      nextSuggestion: null,
     }],
     page: 1,
     pageSize: 20,

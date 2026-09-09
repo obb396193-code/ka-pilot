@@ -180,17 +180,15 @@ export const taskListItemSchema = z
     pacing: taskListPacingSchema.nullable(),
     linkedAccountCount: z.number().int().nonnegative(),
     workItemSummary: taskWorkItemSummarySchema,
-    // v1.5.1 ② 新增。**optional 是迁移状态不是设计**：fixtures/task-list/*.json
-    // 还是旧形状（arch 的文件），设成必填会当场打红既有 parity 用例。
-    // fixture 升级后应立刻转必填，否则服务层漏发不会有任何东西报警。已回抛 arch。
-    stage: taskStageSchema.optional(),
-    stageSource: taskStageSourceSchema.optional(),
-    readiness: taskListReadinessSchema.optional(),
+    // v1.5.1 ② 新增。fixtures/task-list/* 已升到新形状（arch Q-011 批准），**现在必填**——
+    // 留成 optional 的话，服务层漏发它们不会有任何东西报警。
+    stage: taskStageSchema,
+    stageSource: taskStageSourceSchema,
+    readiness: taskListReadinessSchema,
     nextMilestone: z
       .object({ at: taskListCalendarDateSchema, label: z.string().min(1) })
       .strict()
-      .nullable()
-      .optional(),
+      .nullable(),
   })
   .strict();
 export type TaskListItem = z.infer<typeof taskListItemSchema>;

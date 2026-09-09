@@ -1,23 +1,95 @@
 {
   "ok": true,
   "data": {
-    "items": [{
-      "taskId": "fixture-task-stale",
-      "taskName": "数据未到任务",
-      "bizName": null,
-      "status": "active",
-      "period": null,
-      "owner": null,
-      "assessmentPrice": null,
-      "volume": null,
-      "pacing": null,
-      "linkedAccountCount": 1,
-      "workItemSummary": {
-        "openCount": 0,
-        "highestSeverity": null,
-        "counts": {"P0": 0, "P1": 0, "P2": 0, "opportunity": 0}
+    "items": [
+      {
+        "taskId": "fixture-task-stale",
+        "taskName": "数据未到任务",
+        "bizName": null,
+        "status": "active",
+        "period": null,
+        "owner": null,
+        "assessmentPrice": null,
+        "volume": null,
+        "pacing": null,
+        "linkedAccountCount": 1,
+        "workItemSummary": {
+          "openCount": 0,
+          "highestSeverity": null,
+          "counts": {
+            "P0": 0,
+            "P1": 0,
+            "P2": 0,
+            "opportunity": 0
+          }
+        },
+        "stage": "delivering",
+        "stageSource": "system",
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "products": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "materials": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "infra": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          }
+        },
+        "nextMilestone": null
       }
-    }],
+    ],
     "page": 1,
     "pageSize": 20,
     "total": 1
@@ -26,7 +98,9 @@
     "dataState": "stale",
     "businessDate": "2026-08-25",
     "dataAsOf": "2026-08-24T12:00:00.000Z",
-    "coverage": {"complete": true},
+    "coverage": {
+      "complete": true
+    },
     "selectedSource": "qihang",
     "requestId": "fixture-task-stale-001"
   }

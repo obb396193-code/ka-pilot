@@ -42,6 +42,19 @@ const successFixture = {
         highestSeverity: "P1",
         counts: { P0: 0, P1: 1, P2: 1, opportunity: 0 },
       },
+      // v1.5.1 ② 的新字段现在必填（fixture 已升级）：漏发一个就该解析失败。
+      // 三段没有系统来源的必须是 undefined + 需人工确认，不是 0 分。
+      stage: "delivering",
+      stageSource: "system",
+      readiness: {
+        accounts: { ratio: { value: 1, state: "finite" }, ready: true, source: "system", missing: [] },
+        recharge: { ratio: { value: 1, state: "finite" }, ready: true, source: "system", missing: [] },
+        products: { ratio: { value: null, state: "undefined" }, ready: false, source: "system", missing: ["无系统来源，需人工确认"] },
+        materials: { ratio: { value: null, state: "undefined" }, ready: false, source: "system", missing: ["无系统来源，需人工确认"] },
+        strategy: { ratio: { value: null, state: "undefined" }, ready: false, source: "system", missing: ["无系统来源，需人工确认"] },
+        infra: { ratio: { value: 1, state: "finite" }, ready: true, source: "system", missing: [] },
+      },
+      nextMilestone: null,
     }],
     page: 1,
     pageSize: 20,
