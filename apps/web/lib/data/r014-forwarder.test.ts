@@ -177,3 +177,58 @@ test("passes the backend's 404/409/429 through instead of calling them contract 
     assert.equal((result.body as { error: { message: string } }).error.message, "后端的原话")
   }
 })
+
+test("Q-030 handlers hit the right backend path and method for every newly exposed endpoint", async () => {
+  const {
+    handleKbDocuments, handleKbDocument, handleKbBacklinks, handleKbSearch, handleKbByObject,
+    handleAccountTransfer, handleTransferAll, handleAuthPassword, handleDailyReport,
+  } = await import("./r014/handlers.ts")
+
+  const seen: { url: string; method: string }[] = []
+  const spy = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    seen.push({ url: String(input), method: (init?.method ?? "GET").toUpperCase() })
+    // 只验路由拼装，不验响应形状；给一个必定过不了 dataSchema 的空体即可。
+    return Response.json({ ok: true, data: {}, meta: { requestId: "req-path" } },
+      { headers: { "x-request-id": "req-path" } })
+  }
+  const deps = { environment, requestId: () => "req-path", fetchImpl: spy }
+  const DOC = "00000000-0000-4000-8000-0000000000aa"
+  const USER = "00000000-0000-4000-8000-0000000000bb"
+
+  await handleKbDocuments(req("http://localhost/api/internal/kb/documents?q=x&page=2"), deps)
+  await handleKbDocuments(req("http://localhost/api/internal/kb/documents", { method: "POST", body: "{}" }), deps)
+  await handleKbDocument(req(`http://localhost/api/internal/kb/documents/${DOC}`), DOC, deps)
+  await handleKbDocument(req(`http://localhost/api/internal/kb/documents/${DOC}`, { method: "DELETE" }), DOC, deps)
+  await handleKbBacklinks(req(`http://localhost/api/internal/kb/documents/${DOC}/backlinks`), DOC, deps)
+  await handleKbSearch(req("http://localhost/api/internal/kb/search?q=开户"), deps)
+  await handleKbByObject(req("http://localhost/api/internal/kb/by-object/task/1803240580"), "task", "1803240580", deps)
+  await handleAccountTransfer(req("http://localhost/api/internal/accounts/transfer", { method: "POST", body: "{}" }), deps)
+  await handleTransferAll(req(`http://localhost/api/internal/users/${USER}/transfer-all`, { method: "POST", body: "{}" }), USER, deps)
+  await handleAuthPassword(req("http://localhost/api/internal/auth/password", { method: "POST", body: "{}" }), deps)
+  await handleDailyReport(req("http://localhost/api/internal/reports/daily?date=2026-09-05"), deps)
+
+  const paths = seen.map((call) => `${call.method} ${new URL(call.url).pathname}${new URL(call.url).search}`)
+  assert.deepEqual(paths, [
+    "GET /api/v1/kb/documents?q=x&page=2",
+    "POST /api/v1/kb/documents",
+    `GET /api/v1/kb/documents/${DOC}`,
+    `DELETE /api/v1/kb/documents/${DOC}`,
+    `GET /api/v1/kb/documents/${DOC}/backlinks`,
+    "GET /api/v1/kb/search?q=%E5%BC%80%E6%88%B7",
+    "GET /api/v1/kb/by-object/task/1803240580",
+    "POST /api/v1/accounts/transfer",
+    `POST /api/v1/users/${USER}/transfer-all`,
+    "POST /api/v1/auth/password",
+    "GET /api/v1/reports/daily?date=2026-09-05",
+  ])
+})
+
+test("Q-030 refuses a query parameter the backend never declared", async () => {
+  const { handleKbSearch } = await import("./r014/handlers.ts")
+  const result = await handleKbSearch(
+    req("http://localhost/api/internal/kb/search?q=x&evil=1"),
+    { environment, requestId: () => "req-q", fetchImpl: async () => { throw new Error("不该打到后端") } },
+  )
+  // 白名单之外的参数在 BFF 就挡掉：否则浏览器侧随手加个参数就绕过后端入参校验。
+  assert.equal(result.status, 400)
+})
