@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { accountDimensionsDtoSchema } from "./r014/account-name-parse-contract.js";
+
 import {
   requestIdSchema,
   stableDataQueryErrorSchema,
@@ -104,6 +106,11 @@ export const accountListItemSchema = z.object({
     workItemId: z.string().uuid(),
     title: z.string().min(1),
   }).strict().nullable(),
+  /**
+   * v1.9.3 R-017 T5：十个归属维度，每维 `{value, source}`，人工 > 昵称 > 平台。
+   * 三者都没有 → 两个字段都是 null——**不写 "unknown" 当值**。
+   */
+  dimensions: accountDimensionsDtoSchema,
 }).strict().superRefine((item, context) => {
   if (new Set(item.tags).size !== item.tags.length) {
     context.addIssue({ code: "custom", path: ["tags"], message: "tags must be unique" });

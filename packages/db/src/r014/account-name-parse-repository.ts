@@ -1,6 +1,9 @@
 import {
-  namingRuleSchema, parseOverrideSchema, parseStatusSchema,
-  type ApprovedWorkspaceAuthContext, type NamingRule, type ParseConflict, type ParseStatus,
+  EMPTY_DIMENSIONS_DTO, applyOverride, namingRuleSchema, parsedSegmentsSchema,
+  parseOverrideSchema, parseStatusSchema,
+  resolveAccountDimensions, toDimensionsDto, toNamingRule,
+  type AccountDimensionsDto, type ApprovedWorkspaceAuthContext, type NamingRule,
+  type ParseConflict, type ParseStatus,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -86,6 +89,17 @@ function mapParse(row: Record<string, unknown>, workspaceId: string): AccountNam
 }
 
 const WRITE_ROLES = new Set(["lead", "admin"]);
+/**
+ * 归属清洗后台（六个端点全在 `/api/v1/admin/` 下）一律 lead|admin。
+ * 原来只有 `putRule` 挡了角色，`list/patch/confirmBatch/reparseCandidates/upsertParse`
+ * 五个是敞开的——个人空间里任何优化师都能列出并改**全空间**账户的昵称解析，
+ * 而账户列表本身是按授权收口的。和 Q-020 是同一类：一个入口收口了，旁边的没收。
+ *
+ * `currentRule` 不在此列：账户列表取维度要读规范（`dimensionsFor`），那是普通读路径。
+ */
+function assertGovernance(role: string): void {
+  if (!WRITE_ROLES.has(role)) throw new R014RepositoryError("FORBIDDEN");
+}
 const MEDIA = /^[A-Z0-9_]{1,32}$/;
 
 export class AccountNameParseRepository {
@@ -153,6 +167,7 @@ export class AccountNameParseRepository {
     options: { status?: string; media?: string; q?: string; page?: number; pageSize?: number } = {},
   ): Promise<{ items: AccountNameParseRecord[]; total: number }> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     const page = options.page ?? 1;
     const pageSize = options.pageSize ?? 20;
     if (!Number.isInteger(page) || page < 1 || !Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) {
@@ -197,6 +212,7 @@ export class AccountNameParseRepository {
     },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (!MEDIA.test(input.media) || !parseStatusSchema.safeParse(input.status).success) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
@@ -240,6 +256,7 @@ export class AccountNameParseRepository {
     input: { segments?: unknown; confirm?: boolean },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (!MEDIA.test(media)) throw new R014RepositoryError("INVALID_INPUT");
     const hasOverride = input.segments !== undefined && input.segments !== null;
     const override = hasOverride ? parseOverrideSchema.safeParse(input.segments) : null;
@@ -272,6 +289,7 @@ export class AccountNameParseRepository {
     items: readonly { media: string; accountId: string }[],
   ): Promise<{ confirmed: number; skipped: { media: string; accountId: string; status: ParseStatus }[] }> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (!Array.isArray(items) || items.length === 0 || items.length > 500) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
@@ -314,6 +332,7 @@ export class AccountNameParseRepository {
     options: { media?: string; accountIds?: readonly string[] } = {},
   ): Promise<ReparseCandidate[]> {
     const approved = approveAuth(auth);
+    assertGovernance(approved.role);
     if (options.media !== undefined && !MEDIA.test(options.media)) throw new R014RepositoryError("INVALID_INPUT");
     const result = await this.pool.query(
       `SELECT account.media, account.account_id, COALESCE(account.account_name, '') AS account_name,
@@ -336,5 +355,65 @@ export class AccountNameParseRepository {
       accountName: String(row.account_name),
       status: row.status === null ? null : parseStatusSchema.parse(row.status),
     }));
+  }
+
+  /**
+   * R-017 T5：账户列表要的十个维度。**人工 > 昵称 > 平台**（`resolveAccountDimensions`）。
+   *
+   * 平台那一路现在**没有源**：`accounts` 表里没有任何平台侧维度列
+   * （v1.7.9 说的 `custom_tags` 代投/自投也还没入库），所以 platform 传空。
+   * 昵称没解析到的维度就是 `{value:null, source:null}`——不写 "unknown" 当值。
+   */
+  async dimensionsFor(
+    auth: ApprovedWorkspaceAuthContext,
+    tuples: readonly { media: string; accountId: string }[],
+  ): Promise<Map<string, AccountDimensionsDto>> {
+    const approved = approveAuth(auth);
+    const result = new Map<string, AccountDimensionsDto>();
+    if (tuples.length === 0) return result;
+
+    const rows = (await this.pool.query(
+      `SELECT parse.media, parse.account_id, parse.segments, parse.override, parse.rule_version
+       FROM account_name_parses AS parse
+       WHERE parse.workspace_id=$1
+         AND (parse.media, parse.account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))`,
+      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId)],
+    )).rows as Record<string, unknown>[];
+    if (rows.length === 0) return result;
+
+    // 规范按 media 存，一次列表最多几个 media，按 media 缓存避免逐行查规范。
+    const rules = new Map<string, NamingRule | null>();
+    for (const row of rows) {
+      const media = String(row.media);
+      if (!rules.has(media)) {
+        const record = await this.currentRule(approved, media);
+        rules.set(media, record === null ? null : toNamingRule(record));
+      }
+      const rule = rules.get(media) ?? null;
+      // 没有规范就没有 mapsTo，段落不知道该落到哪个维度 → 全 null，不硬凑。
+      if (rule === null) continue;
+
+      const override = parseOverrideSchema.safeParse(row.override ?? {});
+      // 库里的 segments 是 JSONB，不盲信：形状不对就当这个账户没有解析（全 null），
+      // 而不是把半个对象塞进解析器。
+      const segments = parsedSegmentsSchema.safeParse(row.segments ?? {});
+      if (!segments.success) continue;
+      const applied = applyOverride(
+        { status: "parsed", segments: segments.data, taskIds: [], unmatched: [], leftover: [] },
+        override.success ? override.data : {},
+        rule,
+      );
+      result.set(`${media}:${String(row.account_id)}`, toDimensionsDto(resolveAccountDimensions({
+        segments: applied.segments,
+        overriddenKeys: Object.keys(override.success ? override.data : {}),
+        platform: {},
+      })));
+    }
+    return result;
+  }
+
+  /** 列表里没有解析行的账户用它填位，保证十个键恒在。 */
+  static emptyDimensions(): AccountDimensionsDto {
+    return EMPTY_DIMENSIONS_DTO;
   }
 }

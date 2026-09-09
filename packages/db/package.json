@@ -8,6 +8,7 @@
     "migrate": "tsx src/migrate.ts",
     "seed:bootstrap": "tsx src/seed-bootstrap.ts",
     "seed:coefficients": "tsx src/seed-coefficients.ts",
+    "seed:qihang-identity": "tsx src/seed-qihang-identity.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."

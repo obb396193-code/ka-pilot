@@ -50,7 +50,49 @@
           "state": "undefined"
         },
         "lastAction": null,
-        "nextSuggestion": null
+        "nextSuggestion": null,
+        "dimensions": {
+          "placement": {
+            "value": "优选",
+            "source": "nickname"
+          },
+          "bidMode": {
+            "value": "单出价",
+            "source": "nickname"
+          },
+          "device": {
+            "value": "安卓",
+            "source": "nickname"
+          },
+          "goal": {
+            "value": "激活",
+            "source": "nickname"
+          },
+          "rta": {
+            "value": "有R",
+            "source": "nickname"
+          },
+          "agentType": {
+            "value": "自投",
+            "source": "nickname"
+          },
+          "optimizer": {
+            "value": "张三",
+            "source": "manual"
+          },
+          "special": {
+            "value": null,
+            "source": null
+          },
+          "landing": {
+            "value": "13177",
+            "source": "nickname"
+          },
+          "rebate": {
+            "value": "常规",
+            "source": "platform"
+          }
+        }
       }
     ],
     "page": 1,

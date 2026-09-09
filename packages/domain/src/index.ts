@@ -93,3 +93,6 @@ export * from "./work-item-command.js";
 export * from "./r014/task-detail-contract.js";
 export * from "./r014/daily-report-contract.js";
 export * from "./r014/account-transfer-contract.js";
+export * from "./r014/kb-contract.js";
+// be: private operator Qihang identity binding, never an HTTP auth context.
+export * from "./qihang-identity-seed.js";

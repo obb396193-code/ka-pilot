@@ -1,11 +1,14 @@
 import {
+  EMPTY_DIMENSIONS_DTO,
   accountListRequestSchema,
   accountListResponseSchema,
   safeDivide,
   shanghaiTaskBusinessDate,
   type AccountListItem,
+  type AccountDimensionsDto,
   type AccountListRequest,
   type AccountListResponse,
+  type ApprovedWorkspaceAuthContext,
   type StableDataQueryError,
 } from "@ka/domain";
 import type {
@@ -44,8 +47,21 @@ export interface AccountListRepositoryPort {
   list(query: AccountListRepositoryQuery): Promise<AccountListRepositoryResult>;
 }
 
+/**
+ * R-017 T5：十个归属维度的来源。列表自己不解析昵称，只把 `account_name_parses`
+ * 的解析结果取来拼。键 = `media:accountId`。
+ */
+export interface AccountDimensionsPort {
+  dimensionsFor(
+    auth: ApprovedWorkspaceAuthContext,
+    tuples: readonly { media: string; accountId: string }[],
+  ): Promise<Map<string, AccountDimensionsDto>>;
+}
+
 export interface AccountListServiceDependencies {
   repository: AccountListRepositoryPort;
+  /** 没接时十个维度全 null——这是「还没接线」的诚实表达，不是「查到了没有」。 */
+  dimensions?: AccountDimensionsPort;
   now?: () => Date;
 }
 
@@ -76,7 +92,7 @@ function mapSourceError(error: AccountListSourceError, requestId: string): Accou
   );
 }
 
-function itemFor(row: AccountListRepositoryRow): AccountListItem {
+function itemFor(row: AccountListRepositoryRow, dimensions?: AccountDimensionsDto): AccountListItem {
   const metrics = row.metricDate === null ? null : {
     businessDate: row.metricDate,
     cost: row.cost,
@@ -119,6 +135,7 @@ function itemFor(row: AccountListRepositoryRow): AccountListItem {
       summary: row.lastAction.summary,
     },
     nextSuggestion: row.nextSuggestion,
+    dimensions: dimensions ?? EMPTY_DIMENSIONS_DTO,
   };
 }
 
@@ -230,6 +247,20 @@ export class AccountListService {
       }
       return stableError("INTERNAL_ERROR", "The account list could not be loaded", false, requestId);
     }
+    // 维度是列表之外的一次读；解析表出问题不该让整个列表 500——
+    // 拿不到就十个 null（前端显 −），列表照常出。
+    let byAccount = new Map<string, AccountDimensionsDto>();
+    if (this.dependencies.dimensions !== undefined) {
+      try {
+        byAccount = await this.dependencies.dimensions.dimensionsFor(
+          auth as ApprovedWorkspaceAuthContext,
+          result.rows.map((row) => ({ media: row.media, accountId: row.accountId })),
+        );
+      } catch {
+        byAccount = new Map();
+      }
+    }
+
     try {
       assertRepositoryResult(
         result,
@@ -241,7 +272,7 @@ export class AccountListService {
       return accountListResponseSchema.parse({
         ok: true,
         data: {
-          items: result.rows.map(itemFor),
+          items: result.rows.map((row) => itemFor(row, byAccount.get(`${row.media}:${row.accountId}`))),
           page: result.page,
           pageSize: result.pageSize,
           total: result.total,

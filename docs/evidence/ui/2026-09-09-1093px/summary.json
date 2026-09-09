@@ -1,0 +1,285 @@
+[
+  {
+    "width": 1093,
+    "page": "/accounts",
+    "finalUrl": "/accounts",
+    "overflowPx": 48,
+    "overflowing": [
+      "main.relative.flex.w-full right=1141",
+      "header.flex.h-(--header-height).shrink-0 right=1141",
+      "div.flex.w-full.items-center right=1141",
+      "div.ml-auto.flex.min-w-0 right=1117",
+      "div.flex.items-center.gap-1.5 right=1117",
+      "button.inline-flex.h-8.items-center right=1117"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-accounts.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/data",
+    "finalUrl": "/data",
+    "overflowPx": 65,
+    "overflowing": [
+      "main.relative.flex.w-full right=1158",
+      "header.flex.h-(--header-height).shrink-0 right=1158",
+      "div.flex.w-full.items-center right=1158",
+      "div.ml-auto.flex.min-w-0 right=1134",
+      "div.flex.items-center.gap-1.5 right=1134",
+      "button.inline-flex.h-8.items-center right=1134"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-data.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/tasks",
+    "finalUrl": "/tasks",
+    "overflowPx": 65,
+    "overflowing": [
+      "main.relative.flex.w-full right=1158",
+      "header.flex.h-(--header-height).shrink-0 right=1158",
+      "div.flex.w-full.items-center right=1158",
+      "div.ml-auto.flex.min-w-0 right=1134",
+      "div.flex.items-center.gap-1.5 right=1134",
+      "button.inline-flex.h-8.items-center right=1134"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-tasks.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/tasks/1803240580",
+    "finalUrl": "/tasks/1803240580",
+    "overflowPx": 131,
+    "overflowing": [
+      "main.relative.flex.w-full right=1224",
+      "header.flex.h-(--header-height).shrink-0 right=1224",
+      "div.flex.w-full.items-center right=1224",
+      "div.ml-auto.flex.min-w-0 right=1200",
+      "div.flex.items-center.gap-1.5 right=1200",
+      "button.inline-flex.h-8.items-center right=1200"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-tasks_1803240580.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/work-items/inbox",
+    "finalUrl": "/work-items/inbox",
+    "overflowPx": 197,
+    "overflowing": [
+      "main.relative.flex.w-full right=1290",
+      "header.flex.h-(--header-height).shrink-0 right=1290",
+      "div.flex.w-full.items-center right=1290",
+      "div.ml-auto.flex.min-w-0 right=1266",
+      "div.flex.items-center.gap-1.5 right=1266",
+      "button.inline-flex.h-8.items-center right=1266"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-work_items_inbox.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/reports",
+    "finalUrl": "/reports",
+    "overflowPx": 32,
+    "overflowing": [
+      "main.relative.flex.w-full right=1125",
+      "header.flex.h-(--header-height).shrink-0 right=1125",
+      "div.flex.w-full.items-center right=1125",
+      "div.ml-auto.flex.min-w-0 right=1101",
+      "div.flex.items-center.gap-1.5 right=1101",
+      "button.inline-flex.h-8.items-center right=1101"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-reports.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/settings",
+    "finalUrl": "/settings",
+    "overflowPx": 32,
+    "overflowing": [
+      "main.relative.flex.w-full right=1125",
+      "header.flex.h-(--header-height).shrink-0 right=1125",
+      "div.flex.w-full.items-center right=1125",
+      "div.ml-auto.flex.min-w-0 right=1101",
+      "div.flex.items-center.gap-1.5 right=1101",
+      "button.inline-flex.h-8.items-center right=1101"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-settings.jpg"
+  },
+  {
+    "width": 1093,
+    "page": "/admin",
+    "finalUrl": "/admin",
+    "overflowPx": 65,
+    "overflowing": [
+      "main.relative.flex.w-full right=1158",
+      "header.flex.h-(--header-height).shrink-0 right=1158",
+      "div.flex.w-full.items-center right=1158",
+      "div.ml-auto.flex.min-w-0 right=1134",
+      "div.flex.items-center.gap-1.5 right=1134",
+      "button.inline-flex.h-8.items-center right=1134"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1093-admin.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/accounts",
+    "finalUrl": "/accounts",
+    "overflowPx": 0,
+    "overflowing": [
+      "table.w-full.caption-bottom.text-sm right=1712",
+      "thead.[&_tr]:border-b.sticky.top-0 right=1712",
+      "tr.border-b.transition-colors.hover:bg-muted/50 right=1712",
+      "th.h-10.px-2.align-middle right=1393",
+      "button.inline-flex.items-center.gap-1 right=1385",
+      "th.h-10.px-2.text-left right=1505"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-accounts.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/data",
+    "finalUrl": "/data",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-data.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/tasks",
+    "finalUrl": "/tasks",
+    "overflowPx": 0,
+    "overflowing": [
+      "table.w-full.caption-bottom.text-sm right=1701",
+      "thead.[&_tr]:border-b.sticky.top-0 right=1701",
+      "tr.border-b.transition-colors.hover:bg-muted/50 right=1701",
+      "th.h-10.px-2.text-left right=1376",
+      "button.inline-flex.items-center.gap-1 right=1350",
+      "th.h-10.px-2.align-middle right=1439"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-tasks.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/tasks/1803240580",
+    "finalUrl": "/tasks/1803240580",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-tasks_1803240580.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/work-items/inbox",
+    "finalUrl": "/work-items/inbox",
+    "overflowPx": 10,
+    "overflowing": [
+      "main.relative.flex.w-full right=1290",
+      "header.flex.h-(--header-height).shrink-0 right=1290",
+      "div.flex.w-full.items-center right=1290",
+      "div.flex.flex-1.flex-col right=1290",
+      "div.@container/main.flex.flex-1 right=1290",
+      "div.flex.flex-1.flex-col right=1290"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-work_items_inbox.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/reports",
+    "finalUrl": "/reports",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-reports.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/settings",
+    "finalUrl": "/settings",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-settings.jpg"
+  },
+  {
+    "width": 1280,
+    "page": "/admin",
+    "finalUrl": "/admin",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1280-admin.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/accounts",
+    "finalUrl": "/accounts",
+    "overflowPx": 0,
+    "overflowing": [
+      "table.w-full.caption-bottom.text-sm right=1712",
+      "thead.[&_tr]:border-b.sticky.top-0 right=1712",
+      "tr.border-b.transition-colors.hover:bg-muted/50 right=1712",
+      "th.h-10.px-2.text-left right=1505",
+      "button.inline-flex.items-center.gap-1 right=1463",
+      "th.h-10.px-2.text-left right=1664"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-accounts.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/data",
+    "finalUrl": "/data",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-data.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/tasks",
+    "finalUrl": "/tasks",
+    "overflowPx": 0,
+    "overflowing": [
+      "table.w-full.caption-bottom.text-sm right=1701",
+      "thead.[&_tr]:border-b.sticky.top-0 right=1701",
+      "tr.border-b.transition-colors.hover:bg-muted/50 right=1701",
+      "th.h-10.px-2.text-left right=1526",
+      "button.inline-flex.items-center.gap-1 right=1494",
+      "th.h-10.px-2.text-left right=1653"
+    ],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-tasks.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/tasks/1803240580",
+    "finalUrl": "/tasks/1803240580",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-tasks_1803240580.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/work-items/inbox",
+    "finalUrl": "/work-items/inbox",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-work_items_inbox.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/reports",
+    "finalUrl": "/reports",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-reports.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/settings",
+    "finalUrl": "/settings",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-settings.jpg"
+  },
+  {
+    "width": 1440,
+    "page": "/admin",
+    "finalUrl": "/admin",
+    "overflowPx": 0,
+    "overflowing": [],
+    "file": "/private/tmp/claude-501/-Users-aik/00371371-c16c-4f99-a8db-70fff27a8483/scratchpad/shots/1440-admin.jpg"
+  }
+]

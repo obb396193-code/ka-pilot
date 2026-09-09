@@ -164,3 +164,33 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - **改密选 (a)**：`identity_passwords` 表已进 schema.sql，**migration 020 归你**；`internal-test-login-provider.ts` 临时移交你（表优先、ENV 回落，接口不变，做完交回）；限速按 identity 进程内计数即可。
 - **kb**：**019 归你**，`kb_documents` 的 `deleted_at/deleted_by` 已加进 schema.sql；`DELETE` 置位 + 各读默认过滤 + 已删 GET 404；`backlinks`/`by-object` 按你提的三件套，fixture `kb/backlinks.json`、`kb/by-object.json` 已放（by-object 顶层回指 `{objectType,objectId}`，无关联 `items:[]`）。
 - **顺序**：Q-020（P1 越权，仍最先）→ T5 → 日报三维度填行 + F-Q019-1～3 → 改密 020 → kb 019 五端点 + 软删 + 反查。
+
+### Q-021 ① 补充（v1.9.5）：`identity_passwords` 的仓储要给 Codex 复用（arch 2026-09-09）
+老板问「没有注册入口别人怎么登录」→ 契约 v1.9.5：治理后台新增成员时直接写初始密码进 `identity_passwords`。你做 020 时把写/校验封成 `packages/db/src/identity-password-repository.ts`（`setPassword(identityId, plain, updatedBy)` 内部 scrypt、`verify(identityId, plain)`、`mustChangePassword(identityId)`），登录 provider 回落逻辑照旧；Codex 的 members 端点等你这个落 main 后接，不各写一套 scrypt。顺序不变：Q-020 → T5 → 日报三维度 → 020 + 改密 → kb。
+
+### Q-022 派（v1.9.6，排在 Q-020 之后、T5 之前，小活）：访客登录 provider=guest + viewer 角色（arch 2026-09-09）
+老板要「没有 BUC 也能进来看页面」。`session-http.ts` 在你手上：① 角色枚举加 `viewer`（只读；写类端点/BFF 对 viewer 返 403 `READ_ONLY_ROLE`，治理后台不可见）；② `POST /auth/login {provider:"guest"}` 仅 `GUEST_ACCESS_ENABLED=1` 开放，匿名会话（固定 guest identity，不建 user 行），`activeWorkspace` = `GUEST_WORKSPACE_ID` 的演示空间（kind `demo`），TTL 2h，按 IP 20 次/小时；③ `GET /auth/session` 对 guest 回 `provider:"guest"`、workspaces 只有演示空间。fixtures `auth/login-guest.json`、`session/guest.json`。真 PG 用例：ENV 关时 404；开时登录→读账户 200→写变更集 403→治理后台 403。
+
+### Q-022 ③ 裁：装 pg_trgm；Q-023 两条备注追认（arch 2026-09-09，v1.9.8）
+- `pg_trgm` 装：019 加 `CREATE EXTENSION IF NOT EXISTS pg_trgm` + title/content_text GIN trgm 索引，`score` 换 `similarity()`；扩展缺失降级 ILIKE 双通路 + `meta.warnings: TRGM_MISSING`。runbook 扩展清单已加。
+- 追认：assessment_price_history / readiness_overrides 靠主任务 404 闸；任务级工作项保留。日报「按 workspace 全量聚合」的同类越权你顺手修了，记进验收基线。
+- `acd7f113` 正在门禁；Q-021 ①（改密）/ ②③ 我 v1.9.3/1.9.5 已裁（identity_passwords + 020、kb 软删列已在 schema.sql、反查 fixture 已放），你 daac7575 已按新 schema 做了——对。下一步：020 改密 + 成员初始密码仓储（v1.9.5）→ Q-022 访客登录（v1.9.6）→ pg_trgm。
+
+### acd7f113 ✅ 已合 main；我动了你一处（透明告知）（arch 2026-09-09）
+门禁：domain 1276 / db 1242 / worker 1712 / gw 36 / web 223 全绿，**db eslint 1 红**：`task-detail-repository.ts:52 allowedTuple` 定义未使用——你把谓词内联进四条 SQL 了（86/161/195/208 行），这个 helper 成了死代码。我在合流时**删掉了它**（只删函数，SQL 一字未动），eslint/tsc 0。以后交审前跑一下 `eslint`，你自己那套「看 Test Files 行」的教训再加一条「看 eslint-exit」。
+
+### 联调第十三轮 ✅ + 两条小活（arch 2026-09-09）
+- 实测：账户行 `dimensions` 十键出值（source=nickname）；日报 role 回显 / 管理摘要 / trend 7 点 / task·account·biz 三维度有行；任务详情 200；kb 建文档 + 搜「开户」命中。全对。
+- **F-Q023-1**：`dim_biz` 只有一行「未标注业务」——灌数账户 `biz_name` 为空。业务归属应取**绑定任务的 `tasks.biz_name`**（v1.4 任务→业务是归属链），账户自身 biz 只是兜底；都没有才「未标注业务」。一条用例。
+- **F-Q023-2**：四个解析类维度模块（dim_agent / dim_resource_position / dim_bid_tool / dim_ubp）现在 T5 已合，按 v1.9.2 把 `unsupported:true` 改成读 `account_name_parses` 填行（键 = 解析段值，映射见 v1.9.8）。
+- 顺序：020 改密 + 初始密码仓储 → Q-022 访客 → pg_trgm → 这两条。
+
+### Q-024 ✅ 收到；③⑤ 裁 + 下一批（arch 2026-09-09）
+- ③ **归属清洗权限形态：选「成员可改但只限已授权账户」**——`list / patch / upsertParse / confirmBatch` 对 optimizer 开放但只作用于会话 scope 内的 tuple（个人空间按授权收口，团队空间只读）；`reparseCandidates` 与 `putRule` 仍 lead|admin。理由 = v1.8 铁律「归属可人工改」+ 与账户列表同口径。你现在的全 admin 闸先留着当过渡，改成上面这样后一并交。
+- ⑤1 `RATE_LIMITED`（429，`retryable:true`）**准**，进契约 v1.9.9；fe 我派映射。⑤2 schema.sql 注释反引号**我已全部去掉**，立成规矩（循环工程）。
+- 你说没活了——这些已在 main 等你拉（v1.9.8/1.9.9）：**pg_trgm**（019 加扩展 + trgm 索引 + similarity 分数，缺扩展降级 ILIKE）→ **F-Q023-1**（dim_biz 取绑定任务 biz_name）→ **F-Q023-2**（四个解析维度模块填行）→ **Q-022 访客登录**（v1.9.6）→ 归属清洗权限形态（上面 ③）。
+- `internal-test-login-provider.ts` 交回 Codex 我已转告；你的 `identity-password-repository` 落 main 后 Codex 接 F-OS-004。
+
+### bb0d981a ✅ 已合 main `e9e45530`；改密实测一处对不上 fixture（arch 2026-09-09）
+- 联调（main @ 69b1582b，库升 020 = 16 迁移）：`POST /auth/password` 新密码=当前 → 400、太短 → 400，对；**当前密码错 → 403 `FORBIDDEN`「The caller is not allowed…」**，而 fixture `auth/password-error.json` 冻的是 `INVALID_CREDENTIALS`「当前密码不正确」`retryable:true`。**F-Q024-1**：按 fixture 回（HTTP 401），同一句话不透露是否设过密码；fe 的表单已按 fixture 写了「当前密码不正确」分支，403 会走成未知错误。
+- 归属清洗角色闸、020、identity_passwords 仓储都在 main 了；Codex 接 F-OS-004。你的下一批见上一条（pg_trgm → F-Q023-1/2 → Q-022 访客 → 权限形态）。
