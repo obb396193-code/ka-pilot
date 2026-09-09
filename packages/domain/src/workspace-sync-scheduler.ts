@@ -113,3 +113,21 @@ export type BlockedSyncAuthorizationSnapshot = z.infer<
 export type WorkspaceSyncBlockedReason = z.infer<typeof workspaceSyncBlockedReasonSchema>;
 export type WorkspaceSyncScheduledJob = z.infer<typeof workspaceSyncScheduledJobSchema>;
 export type WorkspaceSyncTickResult = z.infer<typeof workspaceSyncTickResultSchema>;
+
+export const scheduledQihangRecoveryRequestSchema = z.object({
+  snapshot: scheduledSyncAuthorizationSnapshotSchema, media: mediaSchema,
+}).strict();
+
+/** Shared scheduler/recovery payload: contains authorization facts, never credentials. */
+export function approvedScheduledSyncPayload(
+  value: ScheduledSyncAuthorizationSnapshot, jobType: WorkspaceSyncJobType,
+  media: string, businessDate: string,
+): Record<string, unknown> {
+  const snapshot = scheduledSyncAuthorizationSnapshotSchema.parse(value);
+  workspaceSyncJobTypeSchema.parse(jobType); mediaSchema.parse(media); taskListCalendarDateSchema.parse(businessDate);
+  if (snapshot.allowedAccounts.length === 0 || snapshot.allowedAccounts.some(a => a.media !== media)) throw new Error("Scheduled sync scope is invalid");
+  const common = { workspaceId: snapshot.workspaceId, media, businessDate, initiatorUserId: snapshot.userId,
+    authorizationSnapshot: snapshot, accountIds: snapshot.allowedAccounts.map(a => a.accountId) };
+  return jobType === "etl_full" ? { ...common, asOfDate: businessDate }
+    : { ...common, ds: businessDate, offlineReconcileDays: 1, focusAccountIds: [], adIds: [] };
+}

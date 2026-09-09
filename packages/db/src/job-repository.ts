@@ -1,4 +1,6 @@
 import type { Pool, PoolClient } from "pg";
+import type { ScheduledSyncAuthorizationSnapshot } from "@ka/domain";
+import { recoverQihangIdentityJobs } from "./qihang-job-recovery.js";
 
 export type JobStatus =
   | "queued"
@@ -150,6 +152,11 @@ export class JobRepository implements JobRepositoryPort {
   private readonly leaseScope: JobLeaseScope | null;
   constructor(private readonly pool: Pool, leaseScope?: JobLeaseScope) {
     this.leaseScope = normalizeLeaseScope(leaseScope);
+  }
+
+  async recoverQihangIdentityBlocked(snapshot: ScheduledSyncAuthorizationSnapshot, media: string): Promise<string[]> {
+    if (this.leaseScope && this.leaseScope.workspaceId !== snapshot.workspaceId) throw new Error("Qihang recovery scope mismatch");
+    return recoverQihangIdentityJobs(this.pool, { snapshot, media });
   }
 
   async enqueue(job: NewJob, transactionClient?: PoolClient): Promise<string> {
