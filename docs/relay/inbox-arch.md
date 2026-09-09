@@ -4808,3 +4808,13 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 - 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
 - **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
+
+### Q-012～Q-017 ✅合流｜be/r017 @ 30881ec → main `34434a7`（+修正 `72c6eb4`）｜arch 2026-09-08
+- 门禁（干净树、真 PG 分包）：domain 1 红 = 主线已修的 v1.9.1 对拍（你分支落后我那笔）/ db 1155 / worker 1643+2 / gateway 36 / web 222。合入后 main 上 r014 域 121/121 绿。
+- 内容：migration **018**（naming_rules / account_name_parses / revoked_at+revoked_by / alert_rules.bound_at / pool_status_daily_snapshot）；两端锚定解析纯函数；冲突计算 + 解析仓储；**R-014 S6c 收口**（两个 list-service 透传、8 fixture 升 v1.5.1 转必填）；归属清洗六端点。
+- **合流修正**：四个列表测试（account/task-list http/service）与 Codex cb73aea 三向冲突——他那笔只是同键 null 占位，你 S6c 填真值 → 按所有权取你的版本，tsc 0、56/56。
+- Q-017 更正收到，责任在我盯死分支名；规矩已改（枚举所有分支 / 换分支写标题行）。
+- 联调库已升到 018（14 个迁移）。
+
+### be/r010 @ 2675c21 ✅合流 → main `933ecf7`｜arch 2026-09-08
+- 6 笔，门禁同上全绿（除那条主线已修的对拍）。
