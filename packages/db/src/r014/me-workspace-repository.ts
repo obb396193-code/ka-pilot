@@ -4,7 +4,9 @@ import {
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
 
-import { R014RepositoryError, approveAuth } from "./workspace-authority.js";
+import {
+  R014RepositoryError, accountScopeParams, approveAuth, workItemScopeClause,
+} from "./workspace-authority.js";
 
 /**
  * v1.7.1 me/counts + v1.7.4 G9 me/workload + v1.7.8 G10 通知投影的读侧。
@@ -146,11 +148,14 @@ export class MeWorkspaceRepository {
     const candidates: NotificationCandidate[] = [];
     const unavailable: string[] = [];
 
+    const scope = accountScopeParams(approved);
     const workItems = await this.pool.query(
       `SELECT id, severity, title, coalesce(last_triggered_at, created_at) AS at
        FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])
+         -- 通知是「我的」通知：别人账户上的告警不该推给他。
+         AND ${workItemScopeClause("$3", "$4", "work_items")}
        ORDER BY coalesce(last_triggered_at, created_at) DESC LIMIT 200`,
-      [approved.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES]],
+      [approved.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES], scope.kind, scope.allowed],
     );
     for (const row of workItems.rows as Record<string, unknown>[]) {
       candidates.push({
@@ -218,13 +223,15 @@ export class MeWorkspaceRepository {
   }
 
   private async workItemCounts(auth: ApprovedWorkspaceAuthContext): Promise<NonNullable<MeCountsParts["workItems"]>> {
+    const scope = accountScopeParams(auth);
     const result = await this.pool.query(
       `SELECT count(*)::int AS open,
               count(*) FILTER (WHERE severity='P0')::int AS p0,
               count(*) FILTER (WHERE severity='P1')::int AS p1,
               count(*) FILTER (WHERE severity='opportunity')::int AS opportunity
-       FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])`,
-      [auth.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES]],
+       FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])
+         AND ${workItemScopeClause("$3", "$4", "work_items")}`,
+      [auth.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES], scope.kind, scope.allowed],
     );
     const row = result.rows[0] as Record<string, unknown> | undefined;
     if (row === undefined) throw new R014RepositoryError("INVALID_RESULT");

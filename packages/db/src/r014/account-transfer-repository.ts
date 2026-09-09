@@ -68,6 +68,18 @@ export class AccountTransferRepository {
       const moved: { media: string; accountId: string }[] = [];
 
       for (const item of request.items) {
+        // 先看授权再看变更集：反过来的话，对一个**交出方根本没授权**的账户也会先查变更集，
+        // 于是 blocked_by_changeset 这个 reason 就泄露了「那个户正在跑变更集」。
+        // 没授权就只该得到 not_granted，别的一概不说。
+        const granted = (await client.query(
+          `SELECT 1 FROM account_access_grants
+           WHERE workspace_id=$1 AND identity_id=$2 AND media=$3 AND account_id=$4 AND revoked_at IS NULL`,
+          [approved.workspaceId, fromIdentityId, item.media, item.accountId],
+        )).rows.length === 1;
+        if (!granted) {
+          skipped.push({ ...item, reason: "not_granted" });
+          continue;
+        }
         // 有未终态变更集的账户不许交接：执行到一半换人会让「谁发起、谁负责」对不上。
         const running = (await client.query(
           `SELECT 1 FROM changesets

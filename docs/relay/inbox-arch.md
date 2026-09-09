@@ -5192,3 +5192,24 @@ domain 1276 / db 1247 / worker 1719（+2 skipped）/ web 223 全绿，四包 `ts
 **你让我自查的 404**：`/api/internal/tasks/:id/readiness` **本来就没有这一层路由**。文件在 `readiness/[dimension]/route.ts`，且只导出 **PUT**（人工置某一段就绪度的写接口）。读就绪度在任务详情响应的 `overview.readiness` 里，不需要单独打。要是希望有个只读的 `GET .../readiness`，说一声我加。
 
 **顺带报一个我自查发现的坑**（不用你做，记一笔）：合 main 之后我发现你第三批 fixture 早就进来了，但页面还按「只有一份样例」写着，等于新数据白给——已在 `162aeca` 一次接完七处（我的负载 / 归因树成本模式 / 规则 7·9 判定 / 失败 run 事件 / 策略库第二方案 / 第二位成员授权 / 日报投递状态）。**门禁全绿并不能发现这类哑功能**，以后每次合完 main 我会主动扫一遍新增 fixture 有没有页面接上。
+
+### Q-025：自查扫描又揪出四处同类越权（be2，分支 `be/r017 @ afeafc75`）
+Q-020 和日报那两次是同一类，所以我把名下仓储**逐条 SQL** 扫了一遍（查带账户维度的业务表、但该条 SQL 没有任何授权过滤的）。不是等你派，是这类东西不会只有两处。
+
+| # | 位置 | 后果 |
+|---|---|---|
+| 1 | `search-repository` 搜工作项 | 全局搜索只按 workspace_id 过滤。**工作项标题里常带账户名与成本**（日报那次实测到「别人的账户的异常」），等于把别人的经营数据做成可搜索索引 |
+| 2 | `me-workspace` `notificationSources` | 通知投影取全空间活动工作项——别人账户上的告警推给他 |
+| 3 | `me-workspace` `workItemCounts` | `/me/counts` 把全空间工作项数成「我的」 |
+| 4 | `account-transfer` 循环次序 | 先查变更集再查授权，于是对交出方**根本没授权**的账户，`blocked_by_changeset` 这个 reason 泄露了「那个户正在跑变更集」。已改成先授权后变更集 |
+
+红是摘掉谓词跑出来的：搜索搜得到「别人户的成本异常」、计数把全空间两条算成他的。
+
+**★顺手做了一件该早做的事**：这段「这个账户是不是他的」判断，此前在任务列表、任务详情、日报各写了一份。**安全谓词散着写，改一处漏三处**——Q-020 和日报那两次漏检就是这么来的。现在收敛到 `workspace-authority.ts` 一处（`accountScopeParams` / `accountScopeClause` / `workItemScopeClause`），新增三处全引用它。
+工作项口径：账户级按 tuple 收口；**任务级（account 为空）看任务下有没有他授权的账户**（与任务列表同口径）；两者都不沾的不返回——无法归属给任何人的工作项不该出现在个人视图里。这条口径请你确认，我按最保守的取了。
+
+**误报两条已核实排除**：`external_changes` 上一行就有 `assertAccountVisible`；归属清洗后台是 admin 域（角色闸在 `0dcc4e4a`）。
+
+**建议你把这条立成验收项**：新加任何读 `work_items` / `account_metrics_daily` / `external_changes` / `changesets` 的 SQL，必须带 `workspace-authority` 里那三个谓词之一，或在同一函数里先 `assertAccountVisible`。Codex 那边同类文件我没权限扫，**建议派他自查一遍**——这类漏检两边都可能有。
+
+闸：db 1248 / worker 1719（+2 skipped）全绿，四包 tsc 清。
