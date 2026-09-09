@@ -125,12 +125,15 @@ describe("contract v1.8 / v1.9 migration 018 (real PostgreSQL)", () => {
     for (const table of NEW_TABLES) {
       await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspace]);
     }
-    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("018") })).toHaveLength(1);
+    // 条数跟着窗口走，不写死：019 落地后「回滚到 018 之前」本来就会多带一条，
+    // 写死 1 会在下一条迁移合进来时假红（Q-002 同类）。
+    const window = windowSize("018");
+    expect(await runMigrations({ databaseUrl, direction: "down", count: window })).toHaveLength(window);
     for (const table of NEW_TABLES) expect(await tableExists(table)).toBe(false);
     expect(await columnCount("account_access_grants", "revoked_at")).toBe(0);
     // 015 的列不受影响：018 回滚不许把上一批的东西一起带走。
     expect(await columnCount("accounts", "pool_status")).toBe(1);
-    expect(await runMigrations({ databaseUrl, count: windowSize("018") })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, count: window })).toHaveLength(window);
     for (const table of NEW_TABLES) expect(await tableExists(table)).toBe(true);
     expect(await columnCount("alert_rules", "bound_at")).toBe(1);
   });
