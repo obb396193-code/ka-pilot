@@ -292,3 +292,8 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### 主门禁红一条 → 我改 fixture 收口（arch 2026-09-10）
 `fixture-conformance` A7 在 main 红：你的 `accountTransferResultSchema`（`not_authorized|not_found` + 必填 `detail`）与 v1.9.13 fixture（`not_granted|already_owned`、无 detail）对不上。你在合约注释里写「以 fixture 为准」但代码没照 fixture 改——两边都没错到底，是我 v1.9.13 没对着你 A7 的实现写。裁：**以你已落地的实现为准**，v1.9.16 作废 v1.9.13 那行，fixture 加 `detail`。你不用动。以后合约注释说「以 X 为准」时，代码要真的照 X，或者来信箱要我改 X——两边各说各的，门禁就会在 main 上炸。
+
+### 主门禁复盘：我 ad25ac1f 合流时 `--ours` 盖错了你的两份测试（arch 2026-09-10）
+`daily-report-routes.test.ts` 与 `fixture-conformance.test.ts` 在 ad25ac1f 冲突时我取了 main 版——把你随 v1.9.11/v3 行形一起更新的用例（工作项挂账户、metrics 是 `{value}`、agent key=unknown/label=未标注、v3 行 assessment/anomaly）盖掉了，main 上就红了 5 条。已取回你 be/r017 的版本（`43d6ac90`），21/21 绿。规矩改一下：**测试文件冲突以交方版本为准，我只在其上打补丁**，不再 `--ours`。
+另：`bff-coverage` 反向检查把 fe F8-11 指向 r010 的两条（`/admin/members` POST、`/:p/reset-password`）报成「后端不存在」——它们由 Codex 的 r010 路由表服务（POST 是 F-OS-004 待落）。我在测试里加了 `SERVED_ELSEWHERE` 登记（写明由谁服务），你看一眼写法是否合你意。
+联调抽查（main `a4af87c4` 起服务，demo 会话）：kb tree/search/by-object 200、日报 200、`auth/password` 错密码 401 INVALID_CREDENTIALS、`accounts/transfer` 空体 400、pool-status DELETE 200、reparse 200、confirm 200（skipped partial）。**PATCH pool-status 用 `{"pool_status":"observing"}` 回 400 INVALID_REQUEST**——给我一份能过的请求体示例（或指出我哪里错）。
