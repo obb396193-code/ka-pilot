@@ -55,6 +55,20 @@ export const kbSearchItemSchema = z.object({
 }).strict();
 export type KbSearchItem = z.infer<typeof kbSearchItemSchema>;
 
+/** 反查行 = search 行去掉 snippet/score 的三件套（fixture `kb/backlinks.json`）。 */
+export const kbRefItemSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  kind: kbKindSchema,
+}).strict();
+export type KbRefItem = z.infer<typeof kbRefItemSchema>;
+
+export const kbByObjectSchema = z.object({
+  objectType: kbObjectTypeSchema,
+  objectId: z.string(),
+  items: z.array(kbRefItemSchema),
+}).strict();
+
 export const kbCreateRequestSchema = z.object({
   title: z.string().trim().min(1).max(512),
   parentId: z.string().uuid().nullable().optional(),

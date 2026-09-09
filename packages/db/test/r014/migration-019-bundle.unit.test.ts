@@ -35,7 +35,7 @@ describe("019 frozen DDL package (not PostgreSQL SQL execution)", () => {
     expect(sql).not.toMatch(/CREATE TABLE (card_templates|card_instances|card_callbacks|settlement_lines)/);
   });
 
-  it("carries the full-text index the search endpoint depends on", () => {
+  it("carries the full-text index the search endpoint reads", () => {
     expect(normalize(sqlFor("up")))
       .toContain("CREATE INDEX idx_kb_documents_fts ON kb_documents USING gin (to_tsvector('simple'");
   });

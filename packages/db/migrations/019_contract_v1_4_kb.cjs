@@ -1,10 +1,10 @@
-// Contract v1.4 knowledge base (8.x). The four kb tables were specified in schema.sql from
-// the start but never landed in any migration — only in the reference file
+// Contract v1.4 knowledge base (8.x) + v1.9.3 soft delete. The four kb tables were specified
+// in schema.sql from the start but never landed in any migration — only in the reference file
 // migrations/sql/001_contract_v1.sql — so no database has ever had them.
-// DDL is transcribed verbatim from packages/contract/schema.sql (the single authority),
-// slice markers `-- ── 8.x 知识库` → `-- ── 9.4 卡片中心`. Do not hand-edit the statements
-// here: change schema.sql first, then this file; test/r014 compares them statement by statement.
-// Run before workers in a stopped-write maintenance window. Refuse lossy downgrade.
+// DDL is transcribed verbatim from packages/contract/schema.sql (the single authority);
+// the slice runs from the knowledge-base section header to the card-centre one. Do not hand-edit
+// the statements here: change schema.sql first, then this file; test/r014 compares them statement
+// by statement. Run before workers in a stopped-write maintenance window. Refuse lossy downgrade.
 exports.up = (pgm) => {
   pgm.sql(`
     SET LOCAL lock_timeout = '5s';
@@ -22,6 +22,7 @@ CREATE TABLE kb_documents (
   tags TEXT[], owner UUID,
   visibility TEXT DEFAULT 'private',      -- private|team|workspace；错题本默认 private
   source_ref JSONB,                       -- ai_report/case 来源 {type,id}
+  deleted_at TIMESTAMPTZ, deleted_by UUID, -- v1.9.3 软删（DELETE 只置位；列表/搜索/反查默认过滤）
   created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE kb_revisions (

@@ -5,10 +5,10 @@ import { R014HttpError, guardedRoute, readJsonBody, requireMethod, sendData } fr
 import type { R014Route } from "./routes.js";
 
 // v1.4 知识库 8.x。表在 migration 019。
-// 本批只接五条：树/列表、单文档读、创建、编辑、搜索。
-// `DELETE`（软删）与 `backlinks`/`by-object` 两个反查端点等 arch 裁决 Q-021 ③：
-// 前者 `kb_documents` 没有 `deleted_at` 列，后者行形状没有 fixture。**不猜形状。**
+// 七条端点齐（v1.9.3 裁决后补上软删与两个反查）。
 const DOCUMENT = /^\/api\/v1\/kb\/documents\/([0-9a-fA-F-]{36})$/;
+const BACKLINKS = /^\/api\/v1\/kb\/documents\/([0-9a-fA-F-]{36})\/backlinks$/;
+const BY_OBJECT = /^\/api\/v1\/kb\/by-object\/([a-z_]{1,32})\/([^/]{1,128})$/;
 
 /** `exactOptionalPropertyTypes` 下「不传」和「传 undefined」不是一回事，所以缺参直接不进对象。 */
 function optional(key: string, value: string | null): Record<string, string> {
@@ -63,9 +63,32 @@ export function createKbRoutes(pool: Pool): R014Route[] {
       );
     }),
 
+    guardedRoute((pathname) => BACKLINKS.test(pathname), async (context) => {
+      requireMethod(context.request, ["GET"]);
+      const documentId = BACKLINKS.exec(context.url.pathname)![1]!;
+      sendData(context.response, await repository.backlinks(context.auth, documentId),
+        context.requestId, context.maxResponseBytes);
+    }),
+
+    guardedRoute((pathname) => BY_OBJECT.test(pathname), async (context) => {
+      requireMethod(context.request, ["GET"]);
+      const [, objectType, objectId] = BY_OBJECT.exec(context.url.pathname)!;
+      sendData(
+        context.response,
+        await repository.byObject(context.auth, objectType!, decodeURIComponent(objectId!)),
+        context.requestId, context.maxResponseBytes,
+      );
+    }),
+
     guardedRoute((pathname) => DOCUMENT.test(pathname), async (context) => {
-      const method = requireMethod(context.request, ["GET", "PATCH"]);
+      const method = requireMethod(context.request, ["GET", "PATCH", "DELETE"]);
       const documentId = DOCUMENT.exec(context.url.pathname)![1]!;
+      if (method === "DELETE") {
+        // 软删：置位不删行。返回 deletedAt 让前端能显示「已删除于…」而不是凭空消失。
+        sendData(context.response, await repository.softDelete(context.auth, documentId),
+          context.requestId, context.maxResponseBytes);
+        return;
+      }
       if (method === "GET") {
         sendData(context.response, await repository.get(context.auth, documentId),
           context.requestId, context.maxResponseBytes);

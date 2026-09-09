@@ -222,6 +222,68 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
     expect(dataOf(read).readOnly).toBe(true);
   });
 
+  it("soft-deletes: the row and its history stay, every read stops showing it", async () => {
+    const target = await createDocument(auth, "被引用后又被删的文档", {
+      content_json: doc([paragraph(text("待删正文 kbdeleted"))]),
+    });
+    const source = await createDocument(auth, "引用它的文档", {
+      content_json: doc([paragraph({ type: "mention",
+        attrs: { type: "document", id: target.id, label: "被引用后又被删的文档" } })]),
+    });
+    expect((dataOf(await callRoute(auth, `/api/v1/kb/documents/${String(target.id)}/backlinks`)).items as unknown[]))
+      .toHaveLength(1);
+
+    const deleted = await callRoute(auth, `/api/v1/kb/documents/${String(target.id)}`, "DELETE");
+    expect(deleted.status).toBe(200);
+    expect(typeof dataOf(deleted).deletedAt).toBe("string");
+
+    // 行还在、修订历史还在——真删了「这篇当初引用过谁」就永久消失。
+    const row = (await pool.query(
+      "SELECT deleted_at, deleted_by FROM kb_documents WHERE id=$1", [target.id],
+    )).rows[0];
+    expect(row.deleted_at).not.toBeNull();
+    expect(row.deleted_by).toBe(auth.userId);
+    expect((await pool.query("SELECT count(*)::int AS n FROM kb_revisions WHERE document_id=$1", [target.id]))
+      .rows[0].n).toBeGreaterThan(0);
+
+    // 读侧一律看不到了：单读 404、搜索为空、别人的正文反查里也不出现。
+    expect((await callRoute(auth, `/api/v1/kb/documents/${String(target.id)}`)).status).toBe(404);
+    expect(dataOf(await callRoute(auth, "/api/v1/kb/search?q=kbdeleted")).items).toEqual([]);
+    expect(JSON.stringify(dataOf(await callRoute(auth, "/api/v1/kb/documents")).items))
+      .not.toContain("被引用后又被删的文档");
+    expect(dataOf(await callRoute(auth, `/api/v1/kb/documents/${String(source.id)}`)).documentLinks).toEqual([]);
+    // 再删一次是 404：已删的不在可见集里，幂等靠状态码表达。
+    expect((await callRoute(auth, `/api/v1/kb/documents/${String(target.id)}`, "DELETE")).status).toBe(404);
+  });
+
+  it("answers by-object with the frozen three-field rows and an empty list when nothing links", async () => {
+    const linked = await createDocument(auth, "挂了任务的文档", {
+      content_json: doc([paragraph({ type: "mention",
+        attrs: { type: "task", id: "kb-obj-task", label: "任务" } })]),
+    });
+    const found = dataOf(await callRoute(auth, "/api/v1/kb/by-object/task/kb-obj-task"));
+    expect(found.objectType).toBe("task");
+    expect(found.objectId).toBe("kb-obj-task");
+    expect(found.items).toEqual([{ id: linked.id, title: "挂了任务的文档", kind: "manual" }]);
+
+    // 无关联返回空列表而不是 404——「这个任务没有文档」是答案，不是错误。
+    const empty = await callRoute(auth, "/api/v1/kb/by-object/task/kb-obj-none");
+    expect(empty.status).toBe(200);
+    expect(dataOf(empty).items).toEqual([]);
+    // 不在 kb_business_refs 枚举里的类型直接拒。
+    expect((await callRoute(auth, "/api/v1/kb/by-object/planet/mars")).status).toBe(400);
+  });
+
+  it("hides another member's private document from backlinks and by-object", async () => {
+    const secret = await createDocument(auth, "私密的引用者", {
+      visibility: "private",
+      content_json: doc([paragraph({ type: "mention",
+        attrs: { type: "task", id: "kb-private-task", label: "任务" } })]),
+    });
+    expect(dataOf(await callRoute(otherAuth, "/api/v1/kb/by-object/task/kb-private-task")).items).toEqual([]);
+    expect((await callRoute(otherAuth, `/api/v1/kb/documents/${String(secret.id)}/backlinks`)).status).toBe(404);
+  });
+
   it("rejects an empty patch and an unknown kind instead of silently doing nothing", async () => {
     const existing = await createDocument(auth, "空补丁");
     expect((await callRoute(auth, `/api/v1/kb/documents/${String(existing.id)}`, "PATCH", {})).status).toBe(400);

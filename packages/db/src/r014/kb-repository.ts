@@ -1,8 +1,9 @@
 import {
   buildDocumentTree, buildSnippet, collectMentions, contentFingerprint,
   kbCreateRequestSchema, kbPatchRequestSchema, projectContentText, relevanceScore, splitMentions,
+  kbObjectTypeSchema,
   type ApprovedWorkspaceAuthContext, type KbCreateRequest, type KbDocument,
-  type KbPatchRequest, type KbSearchItem, type KbTreeNode, KB_KINDS,
+  type KbPatchRequest, type KbRefItem, type KbSearchItem, type KbTreeNode, KB_KINDS,
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
 
@@ -27,6 +28,7 @@ const SELECT_COLUMNS = `
 
 /** 可见性谓词：private 只给 owner。参数顺序固定为 (workspaceId, userId)。 */
 const VISIBLE = `document.workspace_id=$1
+  AND document.deleted_at IS NULL
   AND (document.visibility <> 'private' OR document.owner=$2)`;
 
 function mapKind(value: unknown): KindFilter {
@@ -124,6 +126,7 @@ export class KbRepository {
       `SELECT link.target_document_id, target.title FROM kb_links AS link
        JOIN kb_documents AS target ON target.id=link.target_document_id
        WHERE link.workspace_id=$1 AND link.source_document_id=$2
+         AND target.deleted_at IS NULL
          AND (target.visibility <> 'private' OR target.owner=$3)
        ORDER BY target.title`,
       [auth.workspaceId, id, auth.userId],
@@ -306,6 +309,82 @@ export class KbRepository {
     return { items };
   }
 
+  /**
+   * v1.9.3 软删：只置位不删行。文档的修订历史、双链、反查都留着——
+   * 真删了「这篇当初引用过谁」就永久消失，跟 A7 保留授权审计行是同一条理。
+   */
+  async softDelete(auth: ApprovedWorkspaceAuthContext, documentId: string): Promise<{ deletedAt: string }> {
+    const approved = approveAuth(auth);
+    this.assertWritable(approved);
+    const id = requireUuid(documentId);
+
+    return inTransaction(this.pool, async (client) => {
+      await lockWorkspaceMembership(client, approved);
+      const row = (await client.query(
+        `UPDATE kb_documents AS document SET deleted_at=now(), deleted_by=$2
+         WHERE ${VISIBLE} AND document.id=$3
+         RETURNING deleted_at`,
+        [approved.workspaceId, approved.userId, id],
+      )).rows[0] as Record<string, unknown> | undefined;
+      // 已经删过的再删也是 404：VISIBLE 里 deleted_at IS NULL 把它挡在外面，幂等靠调用方看状态码。
+      if (row === undefined) throw new R014RepositoryError("NOT_FOUND");
+      return { deletedAt: requireTimestamp(row.deleted_at).toISOString() };
+    });
+  }
+
+  /** 8.4 反查一：谁引用了这篇文档。已软删的不出现。 */
+  async backlinks(auth: ApprovedWorkspaceAuthContext, documentId: string): Promise<{ items: KbRefItem[] }> {
+    const approved = approveAuth(auth);
+    const id = requireUuid(documentId);
+    // 目标文档本身不可见时不能返空列表——那等于确认它存在。
+    const target = (await this.pool.query(
+      `SELECT 1 FROM kb_documents AS document WHERE ${VISIBLE} AND document.id=$3`,
+      [approved.workspaceId, approved.userId, id],
+    )).rows.length;
+    if (target !== 1) throw new R014RepositoryError("NOT_FOUND");
+
+    const rows = (await this.pool.query(
+      `SELECT ${SELECT_COLUMNS} FROM kb_links AS link
+       JOIN kb_documents AS document ON document.id=link.source_document_id
+       WHERE link.workspace_id=$1 AND link.target_document_id=$3
+         AND document.deleted_at IS NULL
+         AND (document.visibility <> 'private' OR document.owner=$2)
+       ORDER BY document.title`,
+      [approved.workspaceId, approved.userId, id],
+    )).rows as Record<string, unknown>[];
+    return { items: rows.map((row) => this.refItem(row, approved.workspaceId)) };
+  }
+
+  /** 8.4 反查二：某个业务对象关联了哪些文档。没有关联返 `items:[]`，不是 404。 */
+  async byObject(
+    auth: ApprovedWorkspaceAuthContext, objectType: string, objectId: string,
+  ): Promise<{ objectType: string; objectId: string; items: KbRefItem[] }> {
+    const approved = approveAuth(auth);
+    const parsed = kbObjectTypeSchema.safeParse(objectType);
+    if (!parsed.success) throw new R014RepositoryError("INVALID_INPUT");
+    if (typeof objectId !== "string" || objectId.length === 0 || objectId.length > 128) {
+      throw new R014RepositoryError("INVALID_INPUT");
+    }
+    const rows = (await this.pool.query(
+      `SELECT ${SELECT_COLUMNS} FROM kb_business_refs AS ref
+       JOIN kb_documents AS document ON document.id=ref.document_id
+       WHERE ref.workspace_id=$1 AND ref.object_type=$3 AND ref.object_id=$4
+         AND document.deleted_at IS NULL
+         AND (document.visibility <> 'private' OR document.owner=$2)
+       ORDER BY document.title`,
+      [approved.workspaceId, approved.userId, parsed.data, objectId],
+    )).rows as Record<string, unknown>[];
+    return {
+      objectType: parsed.data, objectId,
+      items: rows.map((row) => this.refItem(row, approved.workspaceId)),
+    };
+  }
+
+  private refItem(row: Record<string, unknown>, workspaceId: string): KbRefItem {
+    requireOwnWorkspace(row, workspaceId);
+    return { id: String(row.id), title: String(row.title), kind: mapKind(row.kind) };
+  }
+
   private async assertVisibleDocument(
     client: PoolClient,
     auth: ApprovedWorkspaceAuthContext,
@@ -371,10 +450,12 @@ export class KbRepository {
       // 不新建一个空文档去凑——那会往知识库里塞垃圾。
       const target = ref.id !== null
         ? (await client.query(
-          "SELECT id FROM kb_documents WHERE workspace_id=$1 AND id=$2", [auth.workspaceId, ref.id],
+          "SELECT id FROM kb_documents WHERE workspace_id=$1 AND id=$2 AND deleted_at IS NULL",
+          [auth.workspaceId, ref.id],
         )).rows[0]
         : (await client.query(
-          "SELECT id FROM kb_documents WHERE workspace_id=$1 AND title=$2 ORDER BY created_at LIMIT 1",
+          `SELECT id FROM kb_documents WHERE workspace_id=$1 AND title=$2 AND deleted_at IS NULL
+           ORDER BY created_at LIMIT 1`,
           [auth.workspaceId, ref.label],
         )).rows[0];
       if (target === undefined) continue;
