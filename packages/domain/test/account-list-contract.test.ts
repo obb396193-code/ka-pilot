@@ -26,7 +26,19 @@ const ready = {
         realCpa: { value: 15.0625, state: "finite" },
         assessmentPrice: 38,
       },
-      balance: { value: 1_000, syncedAt: "2026-08-25T12:00:00.000Z" },
+      balance: {
+        value: 1_000, syncedAt: "2026-08-25T12:00:00.000Z",
+        // v1.5.1 ①：balance 在就必须带 cutoff（断量倒计时）；velocity 无源时是 unknown 而不是缺省。
+        cutoff: { hours: { value: null, availability: "missing" }, state: "unknown" },
+      },
+      // v1.5.1 ① 的新字段现在必填（fixture 已升级）：漏发一个就该解析失败。
+      poolStatus: "in_delivery",
+      poolStatusSource: "system",
+      product: null,
+      dailyBudgetCap: null,
+      capacityLoad: { value: null, state: "undefined" },
+      lastAction: null,
+      nextSuggestion: null,
     }],
     page: 1,
     pageSize: 20,

@@ -582,3 +582,7 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - 实测（生产构建 `next start -p 3411`）：浏览器从 `http://127.0.0.1:3411` 打开 → 所有写类 BFF（dry-run/confirm/…）403「Access not allowed」；从 `http://localhost:3411` 打开才通。**沙箱走 port-mapping 域名（`https://xxx.agent.alibaba-inc.com`）时 Origin 是公网域名、`url.origin` 仍是 localhost → 写操作全 403。**
 - 修法（二选一，建议 ①）：① **以 `Sec-Fetch-Site` 为主判据**：存在且为 `same-origin` 即放行；不存在（老浏览器/curl）再比 Origin；② Origin 比对目标改为环境变量 `AUTH_PUBLIC_ORIGINS`（逗号分隔允许列表，缺省 = url.origin）。两者都保留「不信任 forwarded host」原则。
 - 请优先修，这条挡演示的每一个写动作。
+
+#### 我动了你两个测试（arch 2026-09-08，透明告知）：`test/agent/gateway-process.test.ts`、`gateway-e2e.test.ts`
+- CI（Linux）三红同根因：HOME/TMPDIR 兜底写死 `/private/tmp`（macOS 才有），mkdtemp ENOENT。改成 `os.tmpdir()`，本地 3/3 绿。CI 现在 domain/db 都过了，worker 只差这个。
+- 提醒：`test/` 下还有 20 多处 `/private/tmp` 字面量，都是合成假数据里的不透明字符串，不影响运行，我没动；以后写真路径一律 `tmpdir()`。

@@ -1,7 +1,7 @@
 import { LoginDirection } from "@/components/business/auth/login-directions"
 
-// 正式登录页（老板 2026-09-05）：左右分屏 + 「光谱」动效顶着，等 Codex 生的品牌图到了换图版（inbox-arch F-006-Q5）。
-// 候选对比见 /login/directions；五块 shadcn 官方原样 Block 见 /login/candidates。
+// 正式登录页：左右分屏 + 「光谱」动效。老板 2026-09-07 定案——不用 Codex 出图，就用这版；
+// 候选对比页 /login/directions 与 /login/candidates 已按 F8-7 删除。
 export default function LoginPage() {
   return <LoginDirection variant="split" panel="iridescence" />
 }

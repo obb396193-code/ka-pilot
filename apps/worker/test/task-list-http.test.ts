@@ -68,6 +68,15 @@ function taskResult(status = "active"): TaskListRepositoryResult {
       sopRunId: null,
       readinessFacts: { accountCount: 1, rechargedCount: 0, builtCount: 0,
         unfundedAccounts: ["account-1"], unbuiltAccounts: ["account-1"] },
+      // v1.5.1 ②（S6）新增的仓储字段
+      stage: "delivering",
+      stageSource: "system",
+      stageChangedAt: null,
+      sopRunId: null,
+      readinessFacts: {
+        accountCount: 0, rechargedCount: 0, builtCount: 0,
+        unfundedAccounts: [], unbuiltAccounts: [],
+      },
       readinessOverrides: [],
     }],
     page: 1,

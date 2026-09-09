@@ -25,7 +25,7 @@ const extraTitles: [string, string][] = [["/settings", "设置"], ["/admin", "�
 // 面包屑 = 当前一级页名（+ 详情）；九项与侧栏、命令面板共用 lib/navigation
 function crumbsFor(pathname: string): { href: string; title: string }[] {
   if (pathname === "/") return [{ href: "/", title: "经营工作台" }]
-  if (pathname.startsWith("/diagnostics")) return [{ href: "/", title: "经营工作台" }, { href: pathname, title: "工作项详情" }]
+  if (pathname.startsWith("/work-items") || pathname.startsWith("/diagnostics")) return [{ href: "/", title: "经营工作台" }, { href: pathname, title: "工作项详情" }]
   const section = primaryNavigation.find((item) => item.url !== "/" && (pathname === item.url || pathname.startsWith(`${item.url}/`)))
   // 侧栏九项之外的页（设置 / 治理后台 / 搜索 / 403）也要有名字，否则面包屑退化成「KA Pilot」
   if (!section) {
