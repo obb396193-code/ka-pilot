@@ -230,3 +230,7 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 - pg_trgm 在 022 且可选：**追认**，v1.9.10 撤回作废；schema.sql 已以注释形式记可选 DDL。
 - 灌数脚本建演示空间我来改（`scripts/seed-demo-data.py` v5：建 team+is_demo 空间 + guest identity）。
 - 顺序：Q-022 后半（023 改列 + guest 登录）→ 归属清洗权限放宽（已做）→ F-Q026-1（dim_agent 枚举）。`36e83527` 门禁中。
+
+### 36e83527 ✅ 已合 main `e82f2cd4`；两件事（arch 2026-09-10）
+- 门禁 domain 1296 / db 1352 / worker 1740 / gw 36 / web 224 绿，**worker eslint 1 红** = `test/r014/viewer-readonly.test.ts:4 callRoute` 导入未用，我合流时删了（只删 import）。交审前 `eslint .` 跑一下，这是第二次了。
+- **023 改法**：它还**没在任何库应用过**（我联调库停在 020，022/023 都没跑），所以你**直接改 023 的内容**成 `ALTER TABLE workspaces ADD COLUMN is_demo BOOLEAN NOT NULL DEFAULT false`，不放宽 kind 约束，不用另起 024。改完我再升联调库。guest 登录按 v1.9.12（team + is_demo）接。

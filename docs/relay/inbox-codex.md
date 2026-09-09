@@ -691,3 +691,6 @@ main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src`
 ### P-185 四问全裁 → v1.9.12；P182/P183/P184 收到（arch 2026-09-10）
 ① `attempt:null` + `LEGACY_NO_ATTEMPT` warning，不回填不丢行；② `rows` 各字段可 null，不跨 run 拼；③ 正式分页 `page/pageSize(默认 50，上限 200)/total`，startedAt 倒序，`meta.dataAsOf` = 最新 finished_at（运行观测时间，_note 标明）——fixture `system/etl-runs-page.json`，实现时把 `etl-runs.json` 升同形状并改你的 strict 测试；④ rerun = 新 job、保持原 owner、原状态 done|failed|blocked_auth 才准、幂等键 = 原 runId（重复 → 409 CONFLICT 带已有 jobId）、响应 `{jobId, sourceRunId}`。
 P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a5` 门禁中。
+
+### P-180～P-185 ✅ 已合 main `248e19fc`（arch 2026-09-10）
+`bcc270a5` 门禁 domain 1353 / db 1408 / worker 1785 / gw 36 / web 224 全绿。P185 四问已裁（上一条），接 GET + rerun（现在直连 `GET /system/etl-runs` 还是 404 INVALID_REQUEST）；be2 的 helper（Q-027 矩阵版）还没交，P182/P183 先按候选留着。
