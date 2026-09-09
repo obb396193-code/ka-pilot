@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { fmtTime, isOk, mv, rv, schemaText } from "@/lib/fixtures/contract"
-import { dailyFixture, dailyRoleLabel, type DailyModule, type DailyReport } from "@/lib/fixtures/reports"
+import { dailyFixture, dailyRoleLabel, type DailyModule, type DailyReport, dailyDeliveryMeta } from "@/lib/fixtures/reports"
 import { cn } from "@/lib/utils"
 
 // 日报 daily-report/v1：12 模块 + 分角色 + 一键推钉钉 / 导出 PDF；缺数三态（有数 / 无数据 / UNSUPPORTED）
@@ -55,7 +55,8 @@ export function DailyReportView() {
         {role !== report.role ? <StatusChip tone="muted">示例为 {dailyRoleLabel[report.role]} 视角</StatusChip> : null}
         <div className="ml-auto flex gap-2">
           <Button size="sm" variant="outline" disabled={!report.actions.exportPdf} onClick={() => toast("已排队导出 PDF", { description: "排队后完成（签名链接有效期内下载）" })}><IconFileTypePdf />导出 PDF</Button>
-          <Button size="sm" disabled={!report.actions.pushDingtalk} onClick={() => toast.success("已推送到钉钉群", { description: "发到日报订阅的目标群" })}><IconBrandDingtalk />一键发钉钉</Button>
+          {report.delivery ? <StatusChip tone={dailyDeliveryMeta[report.delivery.status].tone}>{dailyDeliveryMeta[report.delivery.status].label}{report.delivery.at ? ` · ${fmtTime(report.delivery.at)}` : ""}{report.delivery.target ? ` · ${report.delivery.target.replace(/^dingtalk:/, "钉钉 ")}` : ""}</StatusChip> : null}
+          <Button size="sm" disabled={!report.actions.pushDingtalk} onClick={() => toast.success("已推送到钉钉群", { description: "发到日报订阅的目标群" })}><IconBrandDingtalk />{report.delivery?.status === "sent" ? "再推一次" : "一键发钉钉"}</Button>
         </div>
       </div>
       <div className="grid gap-4 @5xl/main:grid-cols-[200px_minmax(0,1fr)]">

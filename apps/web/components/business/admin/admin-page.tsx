@@ -24,7 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { fmtTime, isOk, rv } from "@/lib/fixtures/contract"
-import { assetKindLabel, assetsFixture, assetStatusMeta, calendarFixture, etlJobLabel, etlRunsFixture, eventTypeLabel, flagMeta, flagsFixture, grantsFixture, membersFixture, reconcileFixture, roleLabel, type AssetItem, type CalendarEvent, type EtlRun, type FlagKey, type Member } from "@/lib/fixtures/admin"
+import { assetKindLabel, assetsFixture, assetStatusMeta, calendarFixture, etlJobLabel, etlRunsFixture, eventTypeLabel, flagMeta, flagsFixture, grantsFixtures, membersFixture, reconcileFixture, roleLabel, type AssetItem, type CalendarEvent, type EtlRun, type FlagKey, type Member } from "@/lib/fixtures/admin"
 import { connectionsFixture, providerLabel } from "@/lib/fixtures/integrations"
 import { coefficientText, coefficientsFixture, decisionPolicyFixture } from "@/lib/fixtures/settings"
 import { cn } from "@/lib/utils"
@@ -71,7 +71,8 @@ function MembersTab() {
   const items = useMemo(() => (isOk(membersFixture) ? membersFixture.data.items : []).map((item) => ({ ...item, isActive: active[item.identityId] ?? item.isActive })), [active])
   const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已已停用：成员失效并踢下线" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => item.identityId })
-  const grants = isOk(grantsFixture) && grantsFor && grantsFixture.data.identityId === grantsFor.identityId ? grantsFixture.data.items : null
+  const grantsFixture = grantsFor ? grantsFixtures[grantsFor.identityId] : undefined
+  const grants = grantsFixture && isOk(grantsFixture) ? grantsFixture.data.items : null
   return (
     <>
       <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">停用 = 成员失效并立刻踢下线，记录不删；该成员的长期令牌一并吊销</p>} actions={<Button size="sm" onClick={() => toast("邀请成员", { description: "接口接入后生效（当前为示例）" })}><IconPlus />邀请</Button>} showPagination={false} />
@@ -83,7 +84,7 @@ function MembersTab() {
               <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>级别</TableHead><TableHead>授权于</TableHead><TableHead /></TableRow></TableHeader>
               <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => toast("已撤销", { description: "接口接入后生效（当前为示例）" })}>撤销</Button></TableCell></TableRow>)}</TableBody>
             </Table>
-          ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（示例只给了第一位成员）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
+          ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（示例给了两位成员）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
           <DialogFooter><Button size="sm" variant="outline" onClick={() => toast("新增授权", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新增授权</Button></DialogFooter>
         </DialogContent>
       </Dialog>
