@@ -39,7 +39,7 @@ jobs:
       - name: Install (locked, serial; postinstall 允许——前端字体切片靠它生成)
         run: bash scripts/install-all.sh
       - name: 前端字体切片自检（I-003）
-        run: test -f apps/web/app/fonts/misans/misans.css || node apps/web/scripts/fonts/prepare-misans.mjs
+        run: (test -f apps/web/app/fonts/misans/misans.css && test -f apps/web/app/fonts/misans/preload.css) || node apps/web/scripts/fonts/prepare-misans.mjs
 
       - name: packages/domain
         run: cd packages/domain && npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .

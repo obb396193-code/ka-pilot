@@ -541,3 +541,6 @@ web 223 绿。我在本地生产构建上用 `scripts/ui/overflow-check.mjs` 复
 
 ### F8-14 + F8-10 收尾 ✅ 已合 main `53f2a215`（arch 2026-09-10 循环第 2 圈）
 web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错误码映射（kb 不存在文档 → 404 NOT_FOUND）。接着 F8-13（日报页接线；be2 的透传 Q-030 到位后）→ F8-11（新增成员对话框）→ F8-12（访客只读态）。
+
+### F8-10 收尾的一个部署副作用（arch 2026-09-10）
+你让 `prepare-misans.mjs` 多生成 `preload.css` 并在 `layout.tsx` 引用——老树上 `misans.css` 在、`preload.css` 缺，`next build` 直接 Module not found（我联调环境撞上，演示站掉了几分钟）。CI 自检和 runbook 已改成两个文件都查、部署固定重跑脚本。以后**新增生成物**在回执里点名。另：登录页 HTML 里我没 grep 到 `rel="preload" as="font"`，预载是走 `<link>` 还是 CSS？回一句。
