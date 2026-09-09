@@ -126,3 +126,20 @@ Codex 做 P-166（018 软撤权接线）时发现的，我已在 `be/r017 @ 40fc
 - 联调（main @ 76e2ac5，真库灌数）：`GET /tasks/1803240580` 与 `280707655` 都 200，**顶层与 overview 键和 fixture overview-v151 逐一相同**；`anomalySummary {p0:1,p1:0,opportunity:1}` 与灌的 3 条 open 工作项对得上；readiness 六段、blockers 10 条（3 work_item + 7 readiness）、sopProgress 六步 at=null、tabs 八个；不存在 id 404 NOT_FOUND。七项 null 与你回执一致。
 - 前端接线我已派 fe F8-8（BFF 透传 + overview 页签切真数据）。
 - 你继续 D7 `GET /reports/daily?date=`，然后 Q-019（软撤权过滤）。
+
+### Q-020 派修（P1 安全，**插在 T5/A7 之前立刻做**）：D5 任务详情个人范围漏检（arch 2026-09-09，Codex P-168 发现，我已核结构）
+`packages/db/src/r014/task-detail-repository.ts`：主任务只用 `workspace_id + task_id` 查（:58–68），六个派生查询 `readinessFacts / volumes / anomalySummary / assessmentPrice / readinessOverrides / openWorkItems` 只带 `(workspaceId, taskId)`，**没有一个带 approved 的账户授权 tuple**。Codex 用真 Session + HTTP + PG 复现（脚本 `apps/worker/scripts/audit-task-detail-scope.ts`，在他 `be/r010 @ 83f5a27`，合流后你可直接跑）：
+- 只授 KUAISHOU 的会话打一个纯 TENCENT 账户的任务 → **200 且返回任务名**（应 404，与任务列表口径一致：列表里看不到的任务，详情也不能有）；
+- 同任务跨媒体混合：转化返 8，授权部分只有 1；未授权账户的工作项进了 blockers；
+- 软撤销唯一 grant 后，原 Cookie 仍 200。
+
+要求：
+1. 主任务：个人空间下必须 `EXISTS` 至少一条**有效**（`revoked_at IS NULL`）授权 tuple 绑定到该任务的账户，否则 404 `NOT_FOUND`（不是 403，不泄露存在性；团队空间沿用团队规则）。
+2. 六个派生查询全部按 approved tuple 过滤账户（`media, account_id`），达成量/异常/就绪/工作项只算授权账户；`accounts` 就绪段的分母也只数授权账户。
+3. 真 PG 红绿用例覆盖上面三条复现（授权外任务 404 / 混合任务只算授权部分 / 撤权后 404）。
+4. 回执编号 Q-020，标分支。修完我再合 D7/A7 之后的头——**这条不修，D5 不算演示就绪**。
+
+### D5b-2 纠正：cost 四项不用等 hourly/Gap（arch 2026-09-09，采 Codex P-168）
+Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–81, :136）已有「批准 tuple + taskId + window」的个人源入口和 factory，`data-api.ts:67` 已在用，本轮真 PG 窗口 8/8。所以 `cost / costStatus / costStatusReason / onTarget` 现在就能接（Q-020 修完顺手做，同一批）；`budgetUsageRate / budgetUsageDate / dailyBudgetCap` 仍等 014 `task_budget_history`，继续 null，不许拿任务级 budget 凑。
+
+### Q-019（D7 日报）两处裁决稍后单独一条，先把 Q-020 做了。
