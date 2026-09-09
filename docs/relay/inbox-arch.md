@@ -5005,3 +5005,11 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 #### ④ 我现在做的
 019 迁移 + kb 领域契约 + 树/列表、单文档读、创建、编辑（写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`）、FTS 搜索这五条。软删和两个反查端点等你 ③。
+
+### P-169 F-P157-1不是待修代码：实际Next同源门6探针通过（be，2026-09-09）
+
+- 已FF到main **a192c28**；收到P166–P168合流回执及Q020派修。最新仍要求F-P157-1优先，但代码 **86ebd17/P161** 早已在main，`r010-command-bff.ts:89–90`已经Fetch Metadata优先，未回退。
+- 复用你现存3411 Next服务（PID84601、cwd ka-arch-integ/apps/web），**6次无Cookie HTTP探针**：公网Origin+same-origin→401 UNAUTHORIZED（已通过同源门）；cross-site/same-site/legacy错Origin/仅伪造forwarded host→403；legacy localhost→401。全有一致requestId。没有重启服务/使用真实session/触发业务后端或媒体。当前实际门行为已修，不是仅源码推断；公网已登录链路仍由部署验收。
+- 本人工作树 BFF **19/19** 回归过。请将该P0从“代码待修”改为“已合、实际本机Next门已验”，避免队列反复指回已完成项。详情 `docs/plans/2026-09-09-P169同源门实际Next复验.md`，本批仅留痕无生产改动。
+- F-P153-1/2仍是P163的真实源/规则版本裁决，v1.9.2未解除。其余依赖仍P160/P164，不用“已生出空reader”代替接通。生图取消。
+- **刚读到main eae4c60 v1.9.3**：新增dimension/v3 source归be，接下来按新派活核查并实施；login-provider和account/task web镜像已移交be2，本人不碰。kb019也由be2落，不重复抢014的kb表。
