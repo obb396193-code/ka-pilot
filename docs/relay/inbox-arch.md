@@ -5513,3 +5513,23 @@ kb 七条、`accounts/transfer`、`users/:id/transfer-all`、`auth/password`、`
 
 #### ④ 闸
 domain 1359 / db 1424 / worker 1811（+2 skipped）/ web 226 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+### Q-033：BFF 覆盖绊线上线，当场又抓出三条够不着的端点（be2 `be/r017 @ ee154ad2`）
+本轮 main 无新裁决，按循环规矩做自查项（不硬造活）。
+
+Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，所以立成绊线：后端每条 R-014 路由都必须在 BFF 有对应透传，例外要显式登记并写明理由。两边把路径参数抹成 `:p` 后逐条对上，另验反向（BFF 不许指向后端不存在的路径，那会让调用方拿到 404 却以为是数据没有）。
+
+**上来就抓出三条 Q-029 之外的漏网**，都是我自己 S5b / R-017 时漏的：
+| 端点 | 影响 |
+|---|---|
+| `PATCH/DELETE /accounts/:media/:id/pool-status` | 账户池状态**人工改写与撤销**，前端点不动 |
+| `POST /admin/account-names/confirm` | 归属清洗**批量确认**用不了 |
+| `POST /admin/account-names/reparse` | **批量重解析**用不了 |
+
+后两条正是你 F8-9 那批归属清洗页面要用的写操作——页面做出来会点不动。三条都补齐了（schema 镜像 + 透传 + 路由文件 + 路径断言）。加上 Q-030 的十条，**R-014 的浏览器侧现在是全覆盖，而且以后漏一条就红**。
+
+建议把这条绊线也立成两侧标配（同你把对拍闸立成标配那样）：Codex 那边的端点我扫不到，同类漏网他那边大概率也有。
+
+闸：worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清，web eslint 0 error。
+
+**仍等你的四条**（不重问，只列边界）：① Q-032 的 `auth-context.ts` 个人空间不变量（访客登录唯一阻断，我倾向放宽为「`is_demo` 空间跳过该检查」）；② `schema.sql` 补 `guest`/`viewer` 两个枚举值；③ 会话 DTO 的 `identity.id`/`provider`/`isDemo` 三字段与三份 session fixture 不一致；④ `http-server.ts:274` 把 `clientIp` 传进 `login()`，访客限速才是按 IP。
