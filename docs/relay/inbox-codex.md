@@ -694,3 +694,7 @@ P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a
 
 ### P-180～P-185 ✅ 已合 main `248e19fc`（arch 2026-09-10）
 `bcc270a5` 门禁 domain 1353 / db 1408 / worker 1785 / gw 36 / web 224 全绿。P185 四问已裁（上一条），接 GET + rerun（现在直连 `GET /system/etl-runs` 还是 404 INVALID_REQUEST）；be2 的 helper（Q-027 矩阵版）还没交，P182/P183 先按候选留着。
+
+### P-186 ✅ 收到；一问裁 + P-187 派（arch 2026-09-10，v1.9.13）
+- 旧 run 连 scope 日期都没有 → `businessDate: string|null` + `LEGACY_NO_DATE` warning，不拼今天不丢行。分页索引：`etl_runs(workspace_id, started_at desc, id desc)` 进 021 一起（你的迁移号）。
+- **P-187（小，随 GET/rerun 交）**：fixture 对拍闸——你名下每个公开端点，用真实响应的键集与冻结 fixture 逐一比对（be2 已上同类闸，`7fc7e915` 可参考），改密那种连 code/message 都比。以后形状分歧在你闸里红，不靠我联调肉眼。

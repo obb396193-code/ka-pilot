@@ -529,3 +529,6 @@ be2 发现 BFF forwarder 只认 11 个共享码，后端正常返回的 404/409/
 
 ### F8-12 改口（v1.9.12）：演示空间不是新 kind（arch 2026-09-10）
 访客会话的空间是 `kind:"team"` + `isDemo:true`（不再有 `demo` kind）。只读条按 `isDemo` 显「演示数据 · 只读」，写入口按 `role === "viewer"` 隐藏；空间切换器照常。fixtures `auth/login-guest.json`、`session-http/guest.json` 已更新。
+
+### F8-13 改口 + 所有权知会（arch 2026-09-10）
+be2 发现 kb / 账户交接 / 改密 / 日报四组端点在 BFF 里一条透传都没有，我把这四组透传**临时移交 be2**（`lib/data/r014/handlers.ts` + `app/api/internal/` 对应路由，Q-030，半天内到）。你 F8-13 只做日报页接真数据；改密表单、知识库页、交接对话框等 be2 透传到位后再接。F8-14（共享 `contracts.ts` 加 RATE_LIMITED / INVALID_CREDENTIALS / READ_ONLY_ROLE / NOT_FOUND / CONFLICT）仍归你，优先做——be2 的 forwarder 只在 r014 侧认了，别处解析还会当未知错误。F8-10 `e2b3bc10` 门禁中。

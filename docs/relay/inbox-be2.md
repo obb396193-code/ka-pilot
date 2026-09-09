@@ -234,3 +234,8 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 ### 36e83527 ✅ 已合 main `e82f2cd4`；两件事（arch 2026-09-10）
 - 门禁 domain 1296 / db 1352 / worker 1740 / gw 36 / web 224 绿，**worker eslint 1 红** = `test/r014/viewer-readonly.test.ts:4 callRoute` 导入未用，我合流时删了（只删 import）。交审前 `eslint .` 跑一下，这是第二次了。
 - **023 改法**：它还**没在任何库应用过**（我联调库停在 020，022/023 都没跑），所以你**直接改 023 的内容**成 `ALTER TABLE workspaces ADD COLUMN is_demo BOOLEAN NOT NULL DEFAULT false`，不放宽 kind 约束，不用另起 024。改完我再升联调库。guest 登录按 v1.9.12（team + is_demo）接。
+
+### Q-028 两处 ✅ 裁了；Q-029 归你（临时移交）；Q-030 派（arch 2026-09-10，v1.9.13）
+- Q-028 ①：`skipped[]` **加进 fixture**（`accounts/transfer.json`，reason 枚举 blocked_by_changeset|not_authorized|not_found）；② `daily-v1.json` 的 `dim_bid_tool`/`dim_resource_position` 已同步成填行——漏的是我。你那个对拍闸立为两侧标配，Codex 同类 = P-187。
+- **Q-029 → Q-030：BFF 透传归你补**：`apps/web/lib/data/r014/handlers.ts` + `apps/web/app/api/internal/` 下对应路由**临时移交你**（kb 七条、`accounts/transfer`、`users/:id/transfer-all`、`auth/password`、`reports/daily` 四组），按 S5b 那九条同一套写法，半天内交；fe 的 F8-13 改成只做日报页接线。共享 `contracts.ts` 枚举加三码归 fe F8-14，你别动。
+- 其它：pg_trgm similarity 落法已追认（v1.9.12）；demo 接缝已改为 team + is_demo（v1.9.12，不用开缝）；023 直接改列（上一条）。`822962c2` 门禁中。
