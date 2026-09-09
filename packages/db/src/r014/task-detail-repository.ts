@@ -41,6 +41,20 @@ export interface TaskDetailFacts {
 
 const SEVERITY_KEYS = ["P0", "P1", "opportunity"] as const;
 
+/**
+ * Q-020：详情必须和任务列表**同一口径**——列表里看不见的任务，详情也不能有。
+ * 谓词与 `task-list-sql.ts` 同源：团队空间是只读全量不收口，个人空间必须命中
+ * 会话 scope 里的 (media, account_id)。scope 由会话解析时按 live 授权重算
+ * （`auth-repository.ts` 已排除 `revoked_at` 非空的审计行），所以撤权下一次请求即生效。
+ */
+interface TaskScope { kind: string; allowed: string }
+
+function allowedTuple(kindParam: string, listParam: string, media: string, accountId: string): string {
+  return `(${kindParam}::text = 'team_workspace_readonly' OR EXISTS (
+    SELECT 1 FROM jsonb_to_recordset(${listParam}::jsonb) AS allowed(media text, account_id text)
+    WHERE allowed.media = ${media} AND allowed.account_id = ${accountId}))`;
+}
+
 export class TaskDetailRepository {
   constructor(private readonly pool: Pool) {}
 
@@ -50,6 +64,13 @@ export class TaskDetailRepository {
       throw new R014RepositoryError("INVALID_INPUT");
     }
     if (!/^\d{4}-\d{2}-\d{2}$/.test(businessDate)) throw new R014RepositoryError("INVALID_INPUT");
+
+    const scope: TaskScope = {
+      kind: approved.scope.kind,
+      allowed: JSON.stringify(approved.scope.kind === "explicit_accounts"
+        ? approved.scope.accounts.map((account) => ({ media: account.media, account_id: account.accountId }))
+        : []),
+    };
 
     const taskRow = (await this.pool.query(
       `SELECT task.workspace_id, task.task_id, task.task_name, task.biz_name,
@@ -61,9 +82,17 @@ export class TaskDetailRepository {
               task.owner_user_id, owner.name AS owner_name
        FROM tasks AS task
        LEFT JOIN users AS owner ON owner.workspace_id=task.workspace_id AND owner.id=task.owner_user_id
-       WHERE task.workspace_id=$1 AND task.task_id=$2`,
-      [approved.workspaceId, taskId],
+       WHERE task.workspace_id=$1 AND task.task_id=$2
+         AND ($3::text = 'team_workspace_readonly' OR EXISTS (
+           SELECT 1 FROM task_accounts AS relation
+           JOIN jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
+             ON allowed.media=relation.media AND allowed.account_id=relation.account_id
+           WHERE relation.workspace_id=task.workspace_id AND relation.task_id=task.task_id
+             AND relation.valid_from <= $5::date
+             AND (relation.valid_to IS NULL OR relation.valid_to >= $5::date)))`,
+      [approved.workspaceId, taskId, scope.kind, scope.allowed, businessDate],
     )).rows[0] as Record<string, unknown> | undefined;
+    // 一个账户都没授权到的任务 → 404 而不是 403：403 等于确认「这个任务存在」。
     if (taskRow === undefined) throw new R014RepositoryError("NOT_FOUND");
     requireOwnWorkspace(taskRow, approved.workspaceId);
 
@@ -72,12 +101,12 @@ export class TaskDetailRepository {
     if (!stage.success || !stageSource.success) throw new R014RepositoryError("INVALID_RESULT");
 
     const [readiness, volumes, anomalies, assessment, overrides, workItems] = await Promise.all([
-      this.readinessFacts(approved.workspaceId, taskId, businessDate),
-      this.volumes(approved.workspaceId, taskId, businessDate),
-      this.anomalySummary(approved.workspaceId, taskId),
+      this.readinessFacts(approved.workspaceId, taskId, businessDate, scope),
+      this.volumes(approved.workspaceId, taskId, businessDate, scope),
+      this.anomalySummary(approved.workspaceId, taskId, scope),
       this.assessmentPrice(approved.workspaceId, taskId, businessDate),
       this.readinessOverrides(approved.workspaceId, taskId),
-      this.openWorkItems(approved.workspaceId, taskId),
+      this.openWorkItems(approved.workspaceId, taskId, scope),
     ]);
 
     return {
@@ -110,7 +139,9 @@ export class TaskDetailRepository {
     };
   }
 
-  private async readinessFacts(workspaceId: string, taskId: string, businessDate: string): Promise<TaskReadinessFacts> {
+  private async readinessFacts(
+    workspaceId: string, taskId: string, businessDate: string, scope: TaskScope,
+  ): Promise<TaskReadinessFacts> {
     const row = (await this.pool.query(
       `SELECT
          count(*)::int AS account_count,
@@ -126,6 +157,10 @@ export class TaskDetailRepository {
          WHERE account_task.workspace_id=$1 AND account_task.task_id=$2
            AND account_task.valid_from <= $3::date
            AND (account_task.valid_to IS NULL OR account_task.valid_to >= $3::date)
+           -- 就绪度分母也只数授权账户：否则「10 个户建好 3 个」里有 7 个是他看不到的。
+           AND ($4::text = 'team_workspace_readonly' OR EXISTS (
+             SELECT 1 FROM jsonb_to_recordset($5::jsonb) AS allowed(media text, account_id text)
+             WHERE allowed.media=account_task.media AND allowed.account_id=account_task.account_id))
        ) AS link
        LEFT JOIN account_balance AS balance
          ON balance.workspace_id=$1 AND balance.media=link.media AND balance.account_id=link.account_id
@@ -135,7 +170,7 @@ export class TaskDetailRepository {
            AND entity.account_id=link.account_id AND entity.entity_type='unit'
          LIMIT 1
        ) AS unit ON true`,
-      [workspaceId, taskId, businessDate],
+      [workspaceId, taskId, businessDate, scope.kind, scope.allowed],
     )).rows[0] as Record<string, unknown>;
     return {
       accountCount: Number(row.account_count),
@@ -146,7 +181,7 @@ export class TaskDetailRepository {
     };
   }
 
-  private async volumes(workspaceId: string, taskId: string, businessDate: string):
+  private async volumes(workspaceId: string, taskId: string, businessDate: string, scope: TaskScope):
   Promise<{ completed: number | null; recent: number[] }> {
     const row = (await this.pool.query(
       `SELECT
@@ -155,7 +190,11 @@ export class TaskDetailRepository {
             AND link.media=metric.media AND link.account_id=metric.account_id
             AND link.task_id=$2 AND link.valid_from <= metric.ds
             AND (link.valid_to IS NULL OR link.valid_to >= metric.ds)
-          WHERE metric.workspace_id=$1 AND metric.ds <= $3::date) AS completed,
+          WHERE metric.workspace_id=$1 AND metric.ds <= $3::date
+            -- 达成量只算授权账户：混合媒体任务里，没授权的那部分不能计进他的完成数。
+            AND ($4::text = 'team_workspace_readonly' OR EXISTS (
+              SELECT 1 FROM jsonb_to_recordset($5::jsonb) AS allowed(media text, account_id text)
+              WHERE allowed.media=link.media AND allowed.account_id=link.account_id))) AS completed,
          COALESCE((SELECT array_agg(daily.total ORDER BY daily.ds)
           FROM (
             SELECT metric.ds, sum(metric.real_conversion)::float8 AS total
@@ -166,9 +205,12 @@ export class TaskDetailRepository {
               AND (link.valid_to IS NULL OR link.valid_to >= metric.ds)
             WHERE metric.workspace_id=$1 AND metric.ds <= $3::date
               AND metric.ds > $3::date - INTERVAL '7 days'
+              AND ($4::text = 'team_workspace_readonly' OR EXISTS (
+              SELECT 1 FROM jsonb_to_recordset($5::jsonb) AS allowed(media text, account_id text)
+              WHERE allowed.media=link.media AND allowed.account_id=link.account_id))
             GROUP BY metric.ds
           ) AS daily), ARRAY[]::float8[]) AS recent`,
-      [workspaceId, taskId, businessDate],
+      [workspaceId, taskId, businessDate, scope.kind, scope.allowed],
     )).rows[0] as Record<string, unknown>;
     return {
       completed: row.completed === null ? null : Number(row.completed),
@@ -176,7 +218,7 @@ export class TaskDetailRepository {
     };
   }
 
-  private async anomalySummary(workspaceId: string, taskId: string):
+  private async anomalySummary(workspaceId: string, taskId: string, scope: TaskScope):
   Promise<{ p0: number; p1: number; opportunity: number }> {
     const row = (await this.pool.query(
       `SELECT
@@ -184,8 +226,12 @@ export class TaskDetailRepository {
          count(*) FILTER (WHERE severity='P1')::int AS p1,
          count(*) FILTER (WHERE severity='opportunity')::int AS opportunity
        FROM work_items
-       WHERE workspace_id=$1 AND task_id=$2 AND status='open'`,
-      [workspaceId, taskId],
+       WHERE workspace_id=$1 AND task_id=$2 AND status='open'
+         -- 任务级工作项（account 为空）留下：任务本身已经过闸；账户级的按授权收口。
+         AND ($3::text = 'team_workspace_readonly' OR account_id IS NULL OR EXISTS (
+           SELECT 1 FROM jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
+           WHERE allowed.media=work_items.media AND allowed.account_id=work_items.account_id))`,
+      [workspaceId, taskId, scope.kind, scope.allowed],
     )).rows[0] as Record<string, unknown>;
     return { p0: Number(row.p0), p1: Number(row.p1), opportunity: Number(row.opportunity) };
   }
@@ -222,15 +268,18 @@ export class TaskDetailRepository {
     }));
   }
 
-  private async openWorkItems(workspaceId: string, taskId: string):
+  private async openWorkItems(workspaceId: string, taskId: string, scope: TaskScope):
   Promise<{ id: string; title: string; severity: string | null }[]> {
     const result = await this.pool.query(
       `SELECT id, COALESCE(title, '工作项') AS title, severity FROM work_items
        WHERE workspace_id=$1 AND task_id=$2 AND status='open'
+         AND ($3::text = 'team_workspace_readonly' OR account_id IS NULL OR EXISTS (
+           SELECT 1 FROM jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
+           WHERE allowed.media=work_items.media AND allowed.account_id=work_items.account_id))
        ORDER BY CASE severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END,
                 created_at DESC
        LIMIT 20`,
-      [workspaceId, taskId],
+      [workspaceId, taskId, scope.kind, scope.allowed],
     );
     return (result.rows as Record<string, unknown>[]).map((row) => ({
       id: String(row.id),
