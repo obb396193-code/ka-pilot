@@ -1181,3 +1181,18 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **migration 019 = kb 四表**（`kb_documents/kb_revisions/kb_links/kb_business_refs`），DDL 仍从 schema.sql 切片生成；`kb_documents` 加 `deleted_at TIMESTAMPTZ, deleted_by UUID`（schema.sql 已加）。`DELETE /kb/documents/:id` = 置位；列表/树/搜索/反查/backlinks 默认过滤已删；已删文档 `GET` → 404。
 - `GET /kb/documents/:id/backlinks` → `{items:[{id,title,kind}]}`；`GET /kb/by-object/:type/:id` → `{objectType, objectId, items:[{id,title,kind}]}`，`type ∈ task|account|material|work_item`，无关联 → `items:[]` 不 404。fixture `kb/backlinks.json`、`kb/by-object.json`。
 
+## v1.9.4 追加（2026-09-09 arch；裁 Codex P-163 = F-P153-1/2 的最小源与规则语义；migration 021 = Codex）
+
+**F-P153-1 小时盯盘的源与存储（冻）**
+- 源 = 启航 `account_realtime`（账户级，**不是 ad 加总**），`hh` 语义按 docs/19 已实证：截至该小时（0..hh 含）累计、单调非降、`hh=24` = 全天、历史 `ds` 可查、行带 `last_sync_time`。不需要再向 OS 探针。
+- 表 `account_metrics_hourly`（schema.sql v1.9.4）：PK `(workspace_id, media, account_id, ds, hh)`，只存 `hh 0..23` 的累计；`last_sync_time`（源）+ `sampled_at`（我方）+ `complete`（该小时是否已完整：`sampled_at ≥ 小时末 + 5min`）+ `source_run_id`。**缺行 = missing，永不补 0**；`complete=false` 的行每次采样覆盖。
+- 采样：worker 每小时 HH:05 抓 `hh=HH−1`（complete=true）与 `hh=HH`（当前小时，complete=false）；补抓给定 ds 的 hh 列表按需触发（限速沿用 ETL）。`metrics_raw.request_params` 继续原样留 hh 与 payload 作审计，不作真源。
+- 读 `account.hourly`：只读此表、只取批准 tuple；`cumulative` 直出、`delta = cum(hh) − cum(hh−1)`（hh−1 缺行 → delta missing）；`cashCost` 按 ds 生效的 `channel_coefficients` op 折算；`velocity / projectedDayCost / budgetUsage` 走现有 `hourly-projection.ts`（`completeHour` = `complete`，`elapsedDayFraction` 按 `sampled_at`）；`lastSyncAt = last_sync_time`。行不足以投影的项 → missing/undefined。
+- 实施链（Codex）：021 迁移 → client（`account_realtime` 带 hh）→ ETL 小时 job → 批准 tuple reader → factory 注入 `data-api.ts` → 现有 hourly 契约/缺源用例改为真源用例。`ad_metrics_hourly` 保留给广告级差分，不动。
+
+**F-P153-2 Gap 的规则集版本与多命中（冻）**
+- `meta.ruleSetVersion` = **读时派生**：取 workspace 内 `alert_rules` 里 `enabled=true AND metric='gap'` 的规则，按 `id` 排序做规范化 JSON（`id, scope, operator, threshold, severity, condition_tree.version`），`sha256` 前 12 位。**不加表、不加列**；`meta.ruleSet` 同时回放该快照 `[{ruleId, scope, operator, threshold, severity}]`，前端可显「按哪版规则判的」。
+- 多命中：适用 = enabled + metric=gap + `scope` 命中该行（`{}` 全空间 / `{media}` / `{taskIds}` / `{accountIds}`）；**最具体的 scope 赢**（account > task > biz > media > 全空间），同级多条取**最严**（按 operator 方向最容易命中 high 的阈值）。
+- 无适用规则或阈值为 null → `gapStatus:"missing"`、`meta.ruleSetVersion:null`（**不是 normal**）。
+- 口径：`gap = Σconversion / Σreal_conversion − 1`（先聚合再相除，窗口内按批准 tuple）；分母 0 → 三态 infinite/undefined。`preDeductionGap / deductionRate` 需 `attribution_volume`（不在 canonical）→ **missing，不反推**，等 R-012 落表再接。团队路径的版本化快照仍走 013，不变。
+

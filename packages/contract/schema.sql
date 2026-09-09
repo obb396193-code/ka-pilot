@@ -174,6 +174,21 @@ CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rol
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (workspace_id, ad_id, ds, hh)    -- P-001#3 裁决：同上
 ) PARTITION BY RANGE (ds);
+-- v1.9.4（2026-09-09 arch 裁 Codex P-163；migration 021 = Codex，不依赖 013/014）：账户级小时快照，F-P153-1 的唯一真源。
+-- 源 = 启航 account_realtime(ds, hh)：docs/19 已实证 hh 为「截至该小时（0..hh 含）累计」、单调非降、hh=24 等于全天、历史 ds 可查、行带 last_sync_time。
+-- 只存 hh 0..23 的累计值；小时增量 = cum(hh) − cum(hh−1) 在读侧算；缺行 = missing，永不补 0。cash 口径在读侧按 ds 生效的 channel_coefficients 折算。
+CREATE TABLE account_metrics_hourly (
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
+  ds DATE NOT NULL, hh SMALLINT NOT NULL CHECK (hh BETWEEN 0 AND 23),
+  cost NUMERIC, exposure BIGINT, click BIGINT, conversion BIGINT, real_conversion BIGINT, budget NUMERIC,  -- 均为截至 hh 的累计
+  last_sync_time TIMESTAMPTZ NOT NULL,   -- 源行的同步时间（原样）
+  sampled_at TIMESTAMPTZ NOT NULL,       -- 我方抓取时间
+  complete BOOLEAN NOT NULL,             -- sampled_at ≥ 该小时结束 +5min → 该小时已完整；false 的行每次采样覆盖
+  source_run_id BIGINT,                  -- etl attempt（system/etl-runs 的 runId）
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
+  PRIMARY KEY (workspace_id, media, account_id, ds, hh)
+) PARTITION BY RANGE (ds);
 CREATE TABLE ad_entities (             -- 账户结构（经 agent 同步，强类型层级）
   entity_id TEXT NOT NULL, workspace_id UUID NOT NULL,
   media TEXT NOT NULL, account_id TEXT NOT NULL,

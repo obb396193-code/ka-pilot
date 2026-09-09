@@ -115,14 +115,12 @@
               }
             }
           }
-        ],
-        "_note": "v1.9.2：trend = 截至 date 的 7 个点，点形状 = account.trend（{ds, metrics 同 summary}）；示例一点"
+        ]
       },
       {
         "key": "dim_task",
         "title": "按任务",
-        "rows": [],
-        "_note": "v1.9.2：行同 dim_biz，key=taskId、label=任务名"
+        "rows": []
       },
       {
         "key": "dim_biz",
@@ -215,8 +213,7 @@
             },
             "anomaly": false
           }
-        ],
-        "_note": "v1.9.2：行 = account.dimension/v3 行（去 media/accountId），key=业务名；示例一行"
+        ]
       },
       {
         "key": "dim_account",
@@ -311,47 +308,40 @@
             },
             "anomaly": false
           }
-        ],
-        "_note": "v1.9.2：行 = account.dimension/v3 行三键形（key=media:accountId）；示例一行"
+        ]
       },
       {
         "key": "dim_agent",
         "title": "代理/自投",
         "rows": [],
-        "unsupported": false,
-        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
+        "unsupported": false
       },
       {
         "key": "dim_resource_position",
         "title": "资源位",
-        "rows": [],
-        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
+        "rows": []
       },
       {
         "key": "dim_bid_tool",
         "title": "出价工具",
         "rows": [],
-        "unsupported": true,
-        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
+        "unsupported": true
       },
       {
         "key": "dim_ubp",
         "title": "UBP",
         "rows": [],
-        "unsupported": true,
-        "_note": "v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true"
+        "unsupported": true
       },
       {
         "key": "dim_deduction",
         "title": "扣量区间",
-        "rows": [],
-        "_note": "v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
+        "rows": []
       },
       {
         "key": "deduction_analysis",
         "title": "扣量分析",
-        "rows": [],
-        "_note": "v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
+        "rows": []
       },
       {
         "key": "health",
@@ -361,8 +351,7 @@
       {
         "key": "cost_tiers",
         "title": "消耗分层",
-        "rows": [],
-        "_note": "v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
+        "rows": []
       }
     ],
     "actions": {
@@ -381,6 +370,19 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null} | v1.9.2：十个维度模块行结构冻结为 account.dimension/v3 行；delivery 源 = outbound_messages.payload.reportRunId（无 ref 列） | v1.9.2：role 回显请求的 role（optimizer|lead|exec），不是身份角色；executive_summary.title=管理摘要"
+    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null} | v1.9.2：十个维度模块行结构冻结为 account.dimension/v3 行；delivery 源 = outbound_messages.payload.reportRunId（无 ref 列） | v1.9.2：role 回显请求的 role（optimizer|lead|exec），不是身份角色；executive_summary.title=管理摘要",
+    "_moduleNotes": [
+      "overview: v1.9.2：trend = 截至 date 的 7 个点，点形状 = account.trend（{ds, metrics 同 summary}）；示例一点",
+      "dim_task: v1.9.2：行同 dim_biz，key=taskId、label=任务名",
+      "dim_biz: v1.9.2：行 = account.dimension/v3 行（去 media/accountId），key=业务名；示例一行",
+      "dim_account: v1.9.2：行 = account.dimension/v3 行三键形（key=media:accountId）；示例一行",
+      "dim_agent: v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true",
+      "dim_resource_position: v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true",
+      "dim_bid_tool: v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true",
+      "dim_ubp: v1.9.2：行同 dim_biz，key=解析段值（agent_type/placement/bid_mode/ubp）；T5 接线前 unsupported:true",
+      "dim_deduction: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
+      "deduction_analysis: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单",
+      "cost_tiers: v1.9.2：源/阈值未裁，unsupported:true；进未排期清单"
+    ]
   }
 }
