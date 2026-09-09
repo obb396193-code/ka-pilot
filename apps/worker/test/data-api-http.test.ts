@@ -5,6 +5,7 @@ import { promisify } from "node:util";
 import type { SessionHttpService } from "../src/auth/session-http.js";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ChangeSetAuthorizationError } from "@ka/db";
 
 import type {
   ApprovedWorkspaceAuthContext,
@@ -796,6 +797,21 @@ describe("data API HTTP composition", () => {
         requestId: "platform-contract-001",
       },
     });
+  });
+
+  it("keeps repository scope denial as HTTP403 with the same requestId and approved session", async () => {
+    const id = "00000000-0000-4000-8000-000000000202";
+    const find = vi.fn().mockRejectedValue(new ChangeSetAuthorizationError());
+    const baseUrl = await start({ detailService: new ReadDetailService({
+      workItems: { find: async () => null }, changeSets: { find },
+    }) });
+    const response = await fetch(`${baseUrl}/api/v1/changesets/${id}`, {
+      headers: { ...authHeaders(), "x-request-id": "changeset-repo-denial", "x-ka-account-scope": "forged" },
+    });
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ ok: false, error: { code: "FORBIDDEN",
+      message: "Changeset is outside the approved account scope", retryable: false, requestId: "changeset-repo-denial" } });
+    expect(find).toHaveBeenCalledWith(auth.workspaceId, id, auth);
   });
 
   it("serves both read-only detail routes with the same auth and requestId boundary", async () => {
