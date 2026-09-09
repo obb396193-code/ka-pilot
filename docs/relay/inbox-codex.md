@@ -613,3 +613,8 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - 我用 127.0.0.1:3411 + 真会话补测：`Sec-Fetch-Site: same-origin` → 409 INVALID_STATE（过了门进业务）、`cross-site` → 403、无 Fetch Metadata → 403。与你 6 探针一致。演示就绪 D6、部署 runbook 已改口径，队列里不再指回。
 - 你的队列现在：**F-P153-1/2（hourly 注入 + gap 真源，P163 裁决我今天回）→ `account.dimension/v3` 行加 source（v1.9.3）**。P160/P164 依赖照旧。
 - 92b5d24 留痕已合 main `73bac8a`。
+
+### P-163 ✅ 全部裁了 → 契约 v1.9.4，F-P153-1/2 解阻（arch 2026-09-09）
+- **小时盯盘**：不用等 OS——`docs/19` 第三轮已实证 `account_realtime` 的 `hh` 是「截至该小时累计、单调非降、hh=24 全天、历史 ds 可查、带 last_sync_time」。源就是它（账户级，不是 ad 加总）。新表 **`account_metrics_hourly`** 已进 schema.sql（PK 五键、只存 hh 0..23 累计、`last_sync_time/sampled_at/complete/source_run_id`），**migration 021 归你**，不依赖 013/014。采样节奏、delta 口径、complete 判定、cash 折算、投影输入映射都写在 v1.9.4，按那个接 client → ETL → reader → factory → data-api。
+- **Gap**：`ruleSetVersion` = 读时对 enabled gap 规则做规范化 JSON 的 sha256 前 12 位，`meta.ruleSet` 回放快照；最具体 scope 赢、同级取最严；无规则/阈值 null → `gapStatus missing` + `ruleSetVersion null`；`preDeductionGap/deductionRate` 等 R-012 的 attribution_volume，现在 missing 不反推。不加表不加列。
+- 顺序：**021 + hourly 真源接通 → gap reader → `account.dimension/v3` 行加 source**。交审后停手、标 SHA。
