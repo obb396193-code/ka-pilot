@@ -5,6 +5,7 @@ import { IconPlus, IconTrash } from "@tabler/icons-react"
 import { toast } from "sonner"
 
 import { mediaLabel } from "@/components/business/accounts/account-status"
+import { accountsFixture } from "@/lib/fixtures/accounts"
 import { TypeChip } from "@/components/business/data-grid/data-grid"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,9 @@ import { LineageFooter } from "./shared"
 
 // 盯盘：名单（GET/PUT /me/watchlist）+ 小时表（account.hourly）；缺小时显 −，不补 0；delta 相邻缺一边也 −
 type WatchItem = { media: string; accountId: string }
+
+// 盯盘名单显账户名，不显 ID；样例里查不到就退回 ID
+const accountName = (id: string) => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === id)?.accountName ?? id : id)
 
 export function HourlyTab() {
   const [items, setItems] = useState<WatchItem[]>(() => (isOk(watchlistFixture) ? watchlistFixture.data.items : []))
@@ -42,7 +46,7 @@ export function HourlyTab() {
             <div key={`${item.media}:${item.accountId}`} className={cn("flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm", current?.accountId === item.accountId && "border-foreground ring-1 ring-foreground")}>
               <button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={() => setCurrent(item)}>
                 <TypeChip>{mediaLabel(item.media)}</TypeChip>
-                <span className="truncate font-mono text-xs">{item.accountId}</span>
+                <span className="truncate text-xs">{accountName(item.accountId)}</span>
               </button>
               <Button variant="ghost" size="icon" className="size-7 text-muted-foreground" onClick={() => { setItems((prev) => prev.filter((other) => other !== item)); toast("已从名单移除", { description: "接口接入后同步保存" }) }} aria-label="移除"><IconTrash className="size-3.5" /></Button>
             </div>

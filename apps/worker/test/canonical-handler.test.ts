@@ -57,7 +57,7 @@ describe("canonical handler", () => {
       upsertCanonicalBatch: upsert,
     };
     const runs = {
-      startRun: vi.fn().mockResolvedValue(51),
+      startRun: vi.fn().mockResolvedValue("51"),
       finishRun: vi.fn().mockResolvedValue(undefined),
       failRun: vi.fn().mockResolvedValue(undefined),
     };
@@ -133,7 +133,7 @@ describe("canonical handler", () => {
       credentialOwnerUserId: null,
       maxAttempts: 3,
     });
-    expect(runs.finishRun).toHaveBeenCalledWith(51, 1);
+    expect(runs.finishRun).toHaveBeenCalledWith("51", 1);
   });
 
   it("records the failing canonical stage before retrying", async () => {
@@ -154,7 +154,7 @@ describe("canonical handler", () => {
       upsertCanonicalBatch: vi.fn(),
     };
     const runs = {
-      startRun: vi.fn().mockResolvedValue(52),
+      startRun: vi.fn().mockResolvedValue("52"),
       finishRun: vi.fn(),
       failRun: vi.fn().mockResolvedValue(undefined),
     };
@@ -183,7 +183,7 @@ describe("canonical handler", () => {
       }),
     ).rejects.toThrow("settings unavailable");
 
-    expect(runs.failRun).toHaveBeenCalledWith(52, "aggregate:settings", "settings unavailable");
+    expect(runs.failRun).toHaveBeenCalledWith("52", "aggregate:settings", "settings unavailable");
     expect(jobs.enqueue).not.toHaveBeenCalled();
   });
 
@@ -219,7 +219,7 @@ describe("canonical handler", () => {
         upsertCanonicalBatch,
       },
       runs: {
-        startRun: vi.fn().mockResolvedValue(53),
+        startRun: vi.fn().mockResolvedValue("53"),
         finishRun: vi.fn().mockResolvedValue(undefined),
         failRun: vi.fn().mockResolvedValue(undefined),
       },
@@ -283,7 +283,7 @@ describe("canonical handler", () => {
         upsertCanonicalBatch: vi.fn(),
       },
       runs: {
-        startRun: vi.fn().mockResolvedValue(54),
+        startRun: vi.fn().mockResolvedValue("54"),
         finishRun: vi.fn(),
         failRun,
       },
@@ -313,7 +313,7 @@ describe("canonical handler", () => {
     ).rejects.toThrow("missing requested key");
 
     expect(failRun).toHaveBeenCalledWith(
-      54,
+      "54",
       "aggregate:settings",
       expect.stringContaining("missing requested key"),
     );
@@ -361,7 +361,7 @@ describe("canonical handler", () => {
         upsertCanonicalBatch,
       },
       runs: {
-        startRun: vi.fn().mockResolvedValue(55),
+        startRun: vi.fn().mockResolvedValue("55"),
         finishRun: vi.fn(),
         failRun,
       },
@@ -392,7 +392,7 @@ describe("canonical handler", () => {
     ).rejects.toThrow("batch write interrupted");
 
     expect(upsertCanonicalBatch.mock.calls.map(([records]) => records.length)).toEqual([2, 1]);
-    expect(failRun).toHaveBeenCalledWith(55, "aggregate:upsert", "batch write interrupted");
+    expect(failRun).toHaveBeenCalledWith("55", "aggregate:upsert", "batch write interrupted");
     expect(jobs.enqueue).not.toHaveBeenCalled();
   });
 

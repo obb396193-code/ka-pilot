@@ -35,7 +35,7 @@ describe("data quality handler", () => {
       findConsecutiveMissingAccounts: vi.fn().mockResolvedValue([]),
       recordCheck: vi.fn(),
     };
-    const runs = { startRun: vi.fn().mockResolvedValue(63), finishRun: vi.fn(), failRun: vi.fn() };
+    const runs = { startRun: vi.fn().mockResolvedValue("63"), finishRun: vi.fn(), failRun: vi.fn() };
     const outbound = { enqueue: vi.fn() };
     const job = leasedJob();
     await expect(createDataQualityHandler({ quality, runs, outbound })({
@@ -44,7 +44,7 @@ describe("data quality handler", () => {
     expect(quality.recordCheck).toHaveBeenCalledTimes(3);
     expect(quality.recordCheck.mock.calls[0]?.[0]).toMatchObject({ passed });
     expect(runs.finishRun).not.toHaveBeenCalled();
-    expect(runs.failRun).toHaveBeenCalledWith(63, "quality:validation_failed", "Backfill quality checks did not pass");
+    expect(runs.failRun).toHaveBeenCalledWith("63", "quality:validation_failed", "Backfill quality checks did not pass");
   });
   it("records all checks and emits one alert without failing the completed canonical data", async () => {
     const quality = {
@@ -60,7 +60,7 @@ describe("data quality handler", () => {
       recordCheck: vi.fn().mockResolvedValue(undefined),
     };
     const runs = {
-      startRun: vi.fn().mockResolvedValue(61),
+      startRun: vi.fn().mockResolvedValue("61"),
       finishRun: vi.fn().mockResolvedValue(undefined),
       failRun: vi.fn().mockResolvedValue(undefined),
     };
@@ -84,7 +84,7 @@ describe("data quality handler", () => {
         failedChecks: ["total_reconciliation", "missing_consecutive_days"],
       },
     });
-    expect(runs.finishRun).toHaveBeenCalledWith(61, 3);
+    expect(runs.finishRun).toHaveBeenCalledWith("61", 3);
     expect(runs.failRun).not.toHaveBeenCalled();
   });
 
@@ -96,7 +96,7 @@ describe("data quality handler", () => {
       recordCheck: vi.fn(),
     };
     const runs = {
-      startRun: vi.fn().mockResolvedValue(62),
+      startRun: vi.fn().mockResolvedValue("62"),
       finishRun: vi.fn(),
       failRun: vi.fn().mockResolvedValue(undefined),
     };
@@ -106,7 +106,7 @@ describe("data quality handler", () => {
       createDataQualityHandler({ quality, runs, outbound })(leasedJob()),
     ).rejects.toThrow("query failed");
     expect(runs.failRun).toHaveBeenCalledWith(
-      62,
+      "62",
       "quality:total_reconciliation",
       "query failed",
     );

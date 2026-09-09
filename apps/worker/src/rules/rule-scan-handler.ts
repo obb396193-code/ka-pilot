@@ -21,7 +21,7 @@ import {
   parseEvaluation, safeCandidateFailure, snapshotCandidateBatch, workItemSinkResultSchema,
 } from "./scan-boundary.js";
 
-export const builtInRuleEvaluator: RuleEvaluator = {
+export const builtInRuleEvaluator = {
   evaluate(candidate) {
     switch (candidate.ruleCode) {
       case "over_cost_ramp":
@@ -32,7 +32,7 @@ export const builtInRuleEvaluator: RuleEvaluator = {
         return evaluateSpendCliff(candidate.facts);
     }
   },
-};
+} satisfies RuleEvaluator;
 
 export interface RuleScanDependencies {
   candidateProvider: RuleCandidateProvider;
@@ -119,7 +119,7 @@ export class RuleScanHandler {
       return;
     }
     let evaluation;
-    try { evaluation = parseEvaluation(this.dependencies.evaluator.evaluate(structuredClone(candidate)), candidate.ruleCode); }
+    try { evaluation = parseEvaluation(await this.dependencies.evaluator.evaluate(structuredClone(candidate)), candidate.ruleCode); }
     catch (error) { recordCoverage(coverage, candidate, "undeterminable"); throw error; }
     recordCoverage(coverage, candidate, "checked");
     if (evaluation.outcome === "not_matched") {

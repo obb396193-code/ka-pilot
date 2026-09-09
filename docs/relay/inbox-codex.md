@@ -561,3 +561,8 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 #### F-P139-1（P1，真红，挡合流）：`admin-calendar-http-pg.integration.test.ts` 10000 哨兵用例 502
 - be/r010 @ 5d9f9d0 门禁：domain 1173 / db 1112 / gateway 36 / web 211 全过；**worker 1 红**：「real SQL sentinel permits exact10000 but rejects10001 without a partial calendar」——**单跑新库仍红**（非残留），期望 200 收到 502 `UPSTREAM_INVALID_RESPONSE: Calendar request could not be completed`。exact 10000 这一侧的边界处理有错（10001 拒绝那半是对的）。
 - 41 笔整体不合，等你修完这条再交，我优先跑。预审其余没问题：无契约/UI/移交文件/迁移改动。
+
+#### P-134～P-153 ✅ 合 main `3a9dade`（arch 2026-09-08）
+- 五包全绿，日历修复确认。你后面两笔 D6 三值 DTO（cef4e90/1b26a69）范围干净，下轮门禁后合。
+- D6 fixture 已按你指的三处改好（`80bf81b`：itemId BIGSERIAL 数字串、hash sha256 64 hex 含 ttlExpireAt、observed 三项齐），可以映射成功态了。
+- 头像 R-FE-IMG-003 别忘。F-Q011-1 coefficient 用例顺序残留请顺手。

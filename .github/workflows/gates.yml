@@ -1,0 +1,65 @@
+# 五包门禁（与 arch 本地 run-gates.sh 同口径）：每次推 main / 开 PR 自动跑。
+# 真 PostgreSQL 16 服务；测试库名必须匹配 ka_[a-z0-9_]*_test 且端口 55432（代码里的安全守卫）。
+name: gates
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: gates-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ka
+          POSTGRES_PASSWORD: ka
+          POSTGRES_DB: postgres
+        ports: ["55432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ka" --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      CI: "1"
+      PGPASSWORD: ka
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: "**/package-lock.json"
+      - name: psql client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client >/dev/null
+      - name: Install (locked, serial; postinstall 允许——前端字体切片靠它生成)
+        run: bash scripts/install-all.sh
+      - name: 前端字体切片自检（I-003）
+        run: test -f apps/web/app/fonts/misans/misans.css || node apps/web/scripts/fonts/prepare-misans.mjs
+
+      - name: packages/domain
+        run: cd packages/domain && npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
+      - name: packages/db（真 PG，串行，新库）
+        run: |
+          psql -h 127.0.0.1 -p 55432 -U ka -d postgres -c "DROP DATABASE IF EXISTS ka_ci_db_test" -c "CREATE DATABASE ka_ci_db_test"
+          cd packages/db && TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_ci_db_test npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
+      - name: apps/worker（真 PG，串行，新库）
+        run: |
+          psql -h 127.0.0.1 -p 55432 -U ka -d postgres -c "DROP DATABASE IF EXISTS ka_ci_worker_test" -c "CREATE DATABASE ka_ci_worker_test"
+          cd apps/worker && TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_ci_worker_test npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
+      - name: apps/dingtalk-gateway
+        run: |
+          psql -h 127.0.0.1 -p 55432 -U ka -d postgres -c "DROP DATABASE IF EXISTS ka_ci_gw_test" -c "CREATE DATABASE ka_ci_gw_test"
+          cd apps/dingtalk-gateway && TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_ci_gw_test npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
+      - name: apps/web
+        run: cd apps/web && npm test && npx tsc --noEmit && npx eslint .
+      - name: 迁移计数自检（部署前同样要做）
+        run: |
+          files=$(ls packages/db/migrations/*.cjs | wc -l)
+          psql -h 127.0.0.1 -p 55432 -U ka -d postgres -c "DROP DATABASE IF EXISTS ka_ci_mig_test" -c "CREATE DATABASE ka_ci_mig_test"
+          cd packages/db && DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_ci_mig_test npm run --silent migrate
+          applied=$(psql -h 127.0.0.1 -p 55432 -U ka -d ka_ci_mig_test -Atc "SELECT count(*) FROM pgmigrations")
+          echo "files=$files applied=$applied"; test "$files" = "$applied"

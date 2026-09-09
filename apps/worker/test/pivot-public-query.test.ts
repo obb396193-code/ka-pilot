@@ -36,6 +36,13 @@ function service(reader: { read: (auth: unknown, window: unknown) => Promise<unk
   return new DataQueryService({ registry: createDataQueryRegistry(), platform, kaData: ka, requestId: () => "pivot-test" });
 }
 describe("pivot public query and approved source chain", () => {
+  it("preserves taskIds from public request through Registry and adapter, including zero matches", async () => {
+    const matched = await service({ read: async () => snapshot() }).execute({ ...request, params: { ...request.params, taskIds: ["task"] } }, auth);
+    expect(matched).toMatchObject({ ok: true, meta: { cellCoverage: { cells: 1 } } });
+    const empty = await service({ read: async () => snapshot() }).execute({ ...request, params: { ...request.params, taskIds: ["not-present"] } }, auth);
+    expect(empty).toMatchObject({ ok: true, data: { source: { rows: [], returnedRowCount: 0, wholeResultTotal: { value: 0, availability: "available" },
+      lineage: { coverage: { requestedObjects: 1, returnedObjects: 1, complete: true } } } }, meta: { cellCoverage: { cells: 0, withData: 0, undeterminable: 0 } } });
+  });
   it("uses actual account-day query, narrows media while preserving role/grants, returns strict meta", async () => {
     const read = vi.fn(async () => snapshot());
     const response = await createDataQueryHttpHandler(service({ read }))({ method: "POST", body: request, auth, requestId: "pivot-real" });
@@ -114,7 +121,7 @@ describe("pivot public query and approved source chain", () => {
       const url = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
       const script = `const {handleSemanticQueryRequest}=await import(process.argv[1]);
         const headers=JSON.parse(process.argv[4]); const body=JSON.parse(process.argv[5]); const result=[];
-        for(const extra of [{},{params:{...body.params,dimA:'ubp'}},{dataView:'ka_data'}]) {
+        for(const extra of [{},{params:{...body.params,dimA:'ubp'}},{dataView:'ka_data'},{params:{...body.params,taskIds:['absent']}}]) {
           const req=new Request('http://localhost/api/internal/query',{method:'POST',headers:{...headers,'x-ka-workspace-id':'forged'},body:JSON.stringify({...body,...extra})});
           result.push(await handleSemanticQueryRequest(req,{environment:{KA_DATA_BACKEND_ORIGIN:process.argv[2],KA_DATA_SERVICE_TOKEN:process.argv[3]},requestId:()=> 'pivot-http'}));
         } process.stdout.write(JSON.stringify(result));`;
@@ -122,7 +129,8 @@ describe("pivot public query and approved source chain", () => {
         new URL("../../web/lib/data/bff.ts", import.meta.url).href, url, token, JSON.stringify(businessHeaders(token)), JSON.stringify(request)],
       { timeout: 15000, maxBuffer: 1024 * 1024 });
       const results = JSON.parse(stdout);
-      expect(results.map((r: { status: number }) => r.status)).toEqual([200, 422, 400]);
+      expect(results.map((r: { status: number }) => r.status)).toEqual([200, 422, 400, 200]);
+      expect(results[3]).toMatchObject({ body: { ok: true, data: { source: { rows: [] } }, meta: { cellCoverage: { cells: 0 } } } });
       expect(results[0]).toMatchObject({ requestId: "pivot-http", body: { ok: true, meta: { cellCoverage: { cells: 1, withData: 1, undeterminable: 0 } } } });
       expect(dataQueryResponseSchema.safeParse(results[0].body).success).toBe(true);
     } finally { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); }

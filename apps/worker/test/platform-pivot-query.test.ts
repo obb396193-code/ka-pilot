@@ -28,6 +28,25 @@ function snapshot() {
       earliestComputedAt: "2026-09-01T02:00:00.000Z", latestComputedAt: "2026-09-02T02:00:00.000Z" } };
 }
 describe("PlatformPivotQuery", () => {
+  it("filters daily task membership before recomputing metrics even when neither axis is task", async () => {
+    const result = await new PlatformPivotQuery({ read: async () => snapshot() }).query({ ...input, dimA: "biz", dimB: "account", taskIds: ["a"] });
+    expect(result.rows).toHaveLength(1);
+    expect(result.rows[0]).toMatchObject({ metrics: { cashCost: { value: 10 }, realConversion: { value: 1 }, ratios: { cashCpa: { value: 10, state: "finite" } }, costSpace: { value: 10 } } });
+    expect(result.cellCoverage.cells).toBe(1);
+    // Source lineage is still about the complete authorized read, not the filtered result rows.
+    expect(result.observation.expectedAccountDays).toBe(2);
+  });
+  it("empty selector means no filter; nonmatching task yields no cells without borrowing data", async () => {
+    const query = new PlatformPivotQuery({ read: async () => snapshot() });
+    expect((await query.query({ ...input, taskIds: [] })).rows).toHaveLength(2);
+    const empty = await query.query({ ...input, taskIds: ["absent"] });
+    expect(empty.rows).toEqual([]); expect(empty.cellCoverage).toEqual({ cells: 0, withData: 0, undeterminable: 0 });
+  });
+  it("a task filter cannot conceal an invalid excluded source member", async () => {
+    const raw = snapshot(); raw.members[1]!.media = "TENCENT";
+    await expect(new PlatformPivotQuery({ read: async () => raw }).query({ ...input, taskIds: ["a"] }))
+      .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
   it("partitions actual daily task membership without duplicating an account window", async () => {
     const read = vi.fn(async () => snapshot());
     const result = await new PlatformPivotQuery({ read }).query(input);

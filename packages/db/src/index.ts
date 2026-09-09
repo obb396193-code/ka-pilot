@@ -56,3 +56,13 @@ export * from "./platform-health-repository.js";
 export * from "./platform-pivot-repository.js";
 export * from "./r014/task-bindings-repository.js";
 export * from "./r014/account-name-parse-repository.js";
+// be: internal rule definition and effective target-scope observation.
+export * from "./rule-definition-repository.js";
+// be: same-snapshot rule/metric observation, not a public trigger decision.
+export * from "./rule-evidence-repository.js";
+// be: authenticated read-only global model capability catalog.
+export * from "./agent-model-catalog-repository.js";
+// be: workspace-scoped readonly calendar.
+export * from "./admin-calendar-repository.js";
+// be: server-approved workspace member/grant reads.
+export * from "./admin-members-repository.js";

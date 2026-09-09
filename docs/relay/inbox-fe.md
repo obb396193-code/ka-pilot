@@ -436,3 +436,9 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 ### 契约 v1.9：搜索结果的中文由你组装（arch 2026-09-07）
 - `system/search` 的 `items[]` **去掉了 `subtitle`**，改成结构化 `meta:{status?, stage?, taskName?, accountCount?, severity?, kind?, durationMs?, analysisVersion?}`，**中文副标题由前端组装**。这跟你刚做完的「去黑话」是一条线：后端只出机器值，文案归前端。fixture 已更新（`fb590a1`），`git merge main` 后按 meta 拼即可。
 - work_item 的 href 已正名为 `/work-items/<id>`（v1.7.6），fixture 同步改了。你那边如果还有指向 `/?tab=today&item=` 的链接，一并改掉（F8-4）。
+
+
+### 开发服务器内存纪律（arch 2026-09-08；今天已两次把 PostgreSQL 挤挂）
+- 你的 `next dev -p 3401` 长跑后 RSS 到 3.5G（昨天 8.6G），机器内存一到 <30% Docker 里的 PG 就被系统杀，三边门禁和联调全停。
+- **规矩**：① 每 2 小时或每交一批后 `lsof -ti :3401 | xargs kill` 重起一次；② 老板看页面时用生产模式（`npm run build && next start -p 3401`，每页 5ms，dev 每页几十秒），dev 只在改代码时开；③ 不用时关掉。
+- 我这边只跑 3411（生产模式）和 3111，门禁分包串行，已把峰值压到最低。

@@ -56,6 +56,12 @@ describe("R010 account mute route adapters (not production registration)", () =>
     expect(s.service.ignoreAndMute).toHaveBeenCalledWith(auth, workItemId, { mute_days: 3, reason_chip: "synthetic" });
     expect(s.service.mute).not.toHaveBeenCalled();
   });
+  it("unconfigured composition exposes an explicit unavailable result, not a false success", async () => {
+    const s = setup(); s.routes = createAccountMuteRoutes(undefined);
+    expect(await call(s)).toMatchObject({ status: 503, body: { error: { code: "SOURCE_UNAVAILABLE" } } });
+    expect(await call(s, { path: ignorePath, body: { mute_days: 1 } })).toMatchObject({ status: 503, body: { error: { code: "SOURCE_UNAVAILABLE" } } });
+    expect(s.service.mute).not.toHaveBeenCalled(); expect(s.service.ignoreAndMute).not.toHaveBeenCalled();
+  });
   it.each(["GET", "PUT", "PATCH", "DELETE", "OPTIONS"])("rejects %s before commands", async method => {
     const s = setup(), response = await call(s, { method });
     expect(response.status).toBe(405); expect(response.headers.allow).toBe("POST");

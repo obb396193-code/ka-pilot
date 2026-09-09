@@ -71,6 +71,18 @@ export * from "./pivot-window.js";
 export * from "./hourly-projection.js";
 // be: P096 business-day account mute policy; HTTP and rule scan are separate.
 export * from "./account-mute-policy.js";
+// be: hourly/Gap request syntax; source authorization/Registry admission separate.
+export * from "./operational-query-request.js";
 // be2-r014
 export * from "./r014/task-bindings-contract.js";
 export * from "./r014/account-name-parse-contract.js";
+// be: internal rule definition read boundary, not a public DTO.
+export * from "./rule-definition.js";
+// be: explicit daily windows and actual canonical evidence interpretation.
+export * from "./rule-daily-evidence.js";
+// be: public Agent model catalog; no credential or runtime-readiness projection.
+export * from "./agent-model-catalog.js";
+// be: strict admin calendar read DTO.
+export * from "./admin-calendar.js";
+// be: workspace member and grant read DTOs.
+export * from "./admin-members.js";

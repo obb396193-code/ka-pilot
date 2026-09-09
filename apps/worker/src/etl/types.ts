@@ -23,11 +23,11 @@ export interface EtlRunStore {
     jobId: string,
     runKind: "full" | "incr" | "backfill_coordinator" | "backfill_day" | "canonical" | "quality",
     scope: Record<string, unknown>,
-  ): Promise<number>;
+  ): Promise<string>;
   appendRaw(records: readonly RawMetricRecord[]): Promise<void>;
-  recordObservation(runId: number, observation: EtlRunObservation): Promise<void>;
-  finishRun(runId: number, rowsIngested: number): Promise<void>;
-  failRun(runId: number, stepFailed: string, errorSummary: string): Promise<void>;
+  recordObservation(runId: string, observation: EtlRunObservation): Promise<void>;
+  finishRun(runId: string, rowsIngested: number): Promise<void>;
+  failRun(runId: string, stepFailed: string, errorSummary: string): Promise<void>;
 }
 
 export interface AccountMetadataEtlStore extends EtlRunStore {

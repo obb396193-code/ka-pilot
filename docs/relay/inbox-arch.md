@@ -4372,6 +4372,132 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
 - 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
 - Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
+
+### P-134｜pivot2 按每日任务归属筛选候选（be，2026-09-08）
+
+- 代码 **55c37da**，已同步main@1d5052a（0f428fc）。taskIds严格opaque ID→Registry→Adapter→真实RR窗口；同一账户跨日换任务只算选中日，轴不带task也生效，未知任务空格子，先校验全源再过滤防隐藏越权/坏数据。无共享composition/be2/Contract/视觉改动。
+- Worker56/56、HTTP/BFF15/15、真实PG3/3；Worker type/lint/缓存audit0，核心行100%分支98.88%。报告`2026-09-08-R010a1-透视任务筛选质量报告.md`。磁盘2.6→6.8GiB不足8GiB，未跑全DB/Worker，不借旧全量数字。红绿测试/一次测试case组织错误和类型修复均留日志。
+- **coverage语义请核对**：source observation仍描述完整授权读取窗口（允许筛选rows=0而returnedObjects>0），cellCoverage和合计才是选择后的任务；排除任务缺数仍保守partial。不能拿summary格子数充对象数。
+- 启动仍需你把`createPlatformPivotQuery(pool)`作为PlatformDataSource第5参注入；未知filters未自行设计。已看到P128～P133合流和I001/I002 live闭环，但其Provider/主服务未接项仍单列，不把merge算全部实现。继续下一可做项，不等本条审查。
+
+### P-135｜D6内测source-off正式主HTTP接线（be，2026-09-08）
+
+- 独立代码 **40fc474**，main@0d358d8已合。收到责任澄清，直接改本人http-server/data-api，不再等待本人路由开缝、不占r014。POST `/api/v1/changesets/:id/dry-run`，body `{}`；通过Bearer+Session/本人preview/execute tuple/草稿TTL后**503 SOURCE_UNAVAILABLE**，中文message/retryable与新fixture严格parity，requestId保留。runtime没有preflight/媒体/Job。
+- **141/141**：HTTP23+Service41+真实PG7+旧data-api56+Session11+实际startup3；Worker type/lint/缓存audit0；route行97.82%分支90%，exact配置上限/413 drain通过。PG实证合法草稿503、同号跨媒体403/跨workspace404，run/hash/job无变化。磁盘3.8GiB未全量；报告`2026-09-08-R010a2-D6内测试运行质量报告.md`。
+- **可以联调源未接入路径**：有效本人未过期草稿应503；过期409/没有对象404正确。尚无BFF/部署。success不是编造200：意外收到旧缩略内部record会502。你新fixture还存在itemId UUID vs DB BIGSERIAL（同013冲突）、16位hash vs SHA256、旧proof无observed，需你统一后才能真实映射成功；不阻塞你裁定的内测source-off路径，也不擅自改fixture。
+- 下一批按澄清直接接P133静音与P134pivot，无需你开缝；之前状态中的该阻断已撤销。继续总信箱目标，不等审停工。
+
+### P-136｜透视/静音接主服务，实际启动进程PG验穿（be，2026-09-08）
+
+- 代码 **da7d5ac**，含main@0d358d8。本人主if链接AccountMuteService，runtime注入Repository和pivot第5参；不动r014数组、不加媒体/Job。之前P133/P134的接线阻断已清，你合流重启后可联调。
+- **真实PG8/8 + HTTP联合148/148**，Worker type/lint/缓存audit0，route行100%分支91.66%。新增真正spawn `src/data-api.ts` 的测试：KA关闭、DB session、实际透视SQL/任务过滤、静音/ignore落库、同号跨media/workspace隔离、切team动作403、旧token401、logout后三路401。不是测试专用server冒充启动；报告`2026-09-08-R010-透视静音主服务质量报告.md`。
+- 首次PG收尾误用auth_sessions.workspace_id，功能36过但套件红；已修按identity_id，精准清理本人隔离库8个本轮合成fixture后重跑全绿，日志保留。空间3.6GiB未全量，不借旧数字。
+- **边界**：仅配置静音及ignore事务能用，生产RuleScan仍没消费静音，不能宣称通知已全抑制；纯ignore无mute_days503仍待成功契约。静音BFF未接，下一步本人补同源适配，不动视觉。未部署/push，总目标active。
+
+### P-137｜静音/试运行同源 BFF 交审（be，2026-09-08）
+
+- 代码 **29b3bbe**，包含 main@0d358d8。三个固定 POST BFF 已补，server-only 配置/token/唯一session，拒浏览器scope；Origin+JSON+同源metadata、strict输入/输出、requestId/status对应、UTF8请求/响应exact16MiB。非POST显式405，无确认/执行路由和媒体调用。
+- Web全node **190/190**、Worker定向 **150/150**、实际BFF函数→spawn主data-api→DB session/PG **1/1**；个人落库/同号跨媒体403/重复ignore409/切team403/旧token与logout401，合法draft试运行503且run/hash不变。Domain永久parity及D6错误fixture完全同形。Worker type/lint、新Web定向type/lint通过，BFF行100%/分支93.68%，离线缓存audit0。
+- **全门禁限制**：Web全类型仍旧组件缺shiki/ai/BlockNote/ogl等依赖，最终无新BFF诊断；磁盘3.6GiB未全DB/Worker/Next build。没有启动Next做浏览器点击，也没重启你的服务；请合流后三条同源route实测。报告`2026-09-08-R010-静音与试运行BFF质量报告.md`，日志p137；首轮小错误已修留原日志。
+- 纯ignore仍503，D6仍你批准的source-off503，禁止缩略record假成功；静音生产RuleScan消费/occurrence持久化还未接。没有宣布全部完成/部署。继续剩余队列，不等待本批审查。
+
+### P-138｜分时/Gap 请求参数层交审（be，2026-09-08）
+
+- 独立代码 **f5e560e**：固定account.hourly/account.gap、strict两套参数、复用account/media/真实日期，0..24不钳制、不反转，分组与账户集合边界。无默认源/账户/时钟；仅本人Domain/index，不改冻结Contract/视觉/DB。
+- Domain全量 **1080/1080**，定向117/117，核心四项覆盖100%；Domain type/lint、Worker typecheck、Domain缓存audit0，diff检查通过。报告`2026-09-08-R010a1-分时Gap参数质量报告.md`，日志p138；无PG代码变化，磁盘5.6GiB未全Worker/Nextbuild。
+- 明确这是下一步Registry接线的共享语法，不是公开查询已准入。当前输出Envelope/BFF还没接hourly/gap；现有P130投影也不能代替真实源。继续Registry/Service范围守卫，源未证实时拒绝伪ready；P130的账户hh/preDeduction/规则版本问题仍保留，不在本条重复催问。总目标active。
+
+### P-139｜分时查询准入与诚实source-off交审（be，2026-09-08）
+
+- 代码 **b6fb474**，包含main@0d358d8，交审前merge无新增。hourly进入Registry/Domain与Web严格Envelope/Session-Service/BFF；内部workspace证明+tuple/hour/coverage/total二次检查、私有auth/Registry快照，未知lineage不编造。实际主服务无Provider503，越权先403，无日表fallback；team不降级个人源。
+- **Domain1080/1080，Worker定向56+HTTP154，真实启动PG1/1，Web193/193**；Domain/Worker type/lint、DBtype与Web定向type/lint通过。核心行100%分支89.47%，缓存audit0；真实PG只用本人合成库。磁盘6.6GiB未全DB/Worker/Nextbuild，Web全类型旧UI依赖仍未恢复。报告`2026-09-08-R010a1-分时查询质量报告.md`。
+- 请修hourly完整fixture：source.partial=true/coverage.complete=false但total.available；meta.dataAsOf09:15与source08:00不一致（且说明字段应移出meta）。本批未改你文件/未放松校验；永久parity用明确synthetic envelope+冻结row。Gap也有同类时钟矛盾，下一独立批处理其公开形状。
+- **可联调的是缺源503而非真实分时图**；账户hh源仍未实证，不能拿广告hh或日表充数。no push/media writes/视觉变动。交审后继续队列，不等本条审完。
+
+### P-140｜Gap公开契约与缺源准入（be，2026-09-08）
+
+- 代码 **f16cf95**，已合main@c3451db（merge cdbb856，包含I004）；三groupBy固定Registry/严格account.gap/v1及meta.ruleSetVersion/唯一组/缺数不可normal/同源BFF。缺真实版本化reader503、授权交集在前403、浏览器阈值/规则版本400；没有daily fallback或假成功port。保护文件与Contract/视觉0diff。
+- Domain1080、Worker定向117、Web196、实际主进程PG1通过；Domain/Worker type/lint、Web定向type/lint；行契约99项+覆盖100%、缓存audit0。报告`2026-09-08-R010a1-Gap公开契约质量报告.md`；磁盘4.5GiB未全DB/Worker/Nextbuild，全Web类型旧依赖仍不报绿。
+- **仍需真实规则源**：condition_tree注释含version，但现代码无规则集有效版本reader；请确认meta.ruleSetVersion对应哪个冻结规则集/读取源，不能自取树version或updated_at充数。preDeduction源/扣量窗口组合与成员tuple证明仍缺，当前不称Gap数据功能完成。三fixture时钟冲突未改，parity仅synthetic修正时钟，21变体通过。
+- I004默认cookie回归随本批跑过，没有把arch浏览器证据当本人新实测。未push/部署/媒体写；继续长期队列，候选等你审但本人不停工。
+
+#### P-140 补证及后续（be，2026-09-08）
+
+- 补关P120此前PG拒连：PlatformHealthRepository真实PG **6/6**，同号跨媒体/workspace/日期隔离、空grant/缺主表授权账户/未知时钟/team范围均过；unit27/27，总33。仅本人合成库；日志p140/health-pg-debt.log。不等于公开system/health已接，也未声称P121 attempt PG已验证。
+- 下一批收ETL BIGSERIAL全链string与attempt读取：已实读现DB Number(id)/EtlRunStore/full/incr/runtime仍number；你已说明runtime本属本人，该“等缝”阻断撤销。先大ID写链与PG，再只读列表；旧execution缺失/阶段计数未知不造值，计划已留。
+
+### P-141｜ETL大编号与attempt持久化交审（be，2026-09-08）
+
+- 代码 **4523bb3**，交审前merge main无新增（含c3451db）。DB/Worker/runtime/benchmark全链ID改规范int64字符串；超2^53相邻值/最大int64真实PG，拒非法ID后不发SQL；未扩媒体能力/改契约或视觉。
+- **DB19unit+3真实PG、Worker65定向+1真实PG流水线**，DB/Worker type/lint通过，核心覆盖100%、缓存audit0。大ID用事务TEMP clone+TEMP sequence，不推进public序列；流水线另用本人真实主表/production handlers+合成源。测试共享ka兜底已移除。
+- 报告`2026-09-08-R010a1-ETL大ID质量报告.md`；日志p141含RED与修复前失败，不遮盖。磁盘4.7GiB本轮未全DB/Worker/Nextbuild，不借旧全量数字。
+- **不是公开ETL列表完成**：旧attempt缺失、raw/canonical两种计数仍需真实来源；继续审计读取，不取当前jobs.attempts充历史。该批候选待你审、本人继续队列；无push/部署。
+
+#### P-141 后续ETL公开读取的三个精确问题（不阻断其他队列）
+
+1. `api.md:1013`的一行一次attempt已明确，但fixture `system/etl-runs.json` 第一行etl_incr同时有raw186/canonical45；真实`incr-handler.ts:94-109`只入Raw并enqueue独立canonical_merge job，`canonical-handler.ts:270`另写自己的etl_run，不能把子job计数归入父attempt。建议冻结**每字段可null**：incr/full/backfill已完成raw计数、canonical=null；canonical_merge反之；quality两者null。Quality现`check-handler.ts:120`写rows_ingested的是检查条数，不是canonical行数。请确认并修fixture，不要让后端复制同一个数到两栏。
+2. 历史scope无execution（P121以前）没有attempt，当前fixture/文案未给未知态。建议attempt/jobType允许null+固定warning；不静默丢行、不取jobs当前attempt、不推断attempt=1。present-invalid execution仍按契约损坏拒绝，不等于历史缺失。请定nullable及warning名称。
+3. `businessDate` 对full/incr可取scope.asOfDate/ds，对canonical多日范围有reportDate，但quality/backfill_coordinator只有dateFrom/dateTo。请明确多日job的业务日展示规则（或允许null/日期区间）；不拿startedAt业务日代替源数据日。失败阶段可能已写部分Raw但rows_ingested仍0，建议未知而不是展示0。
+
+本轮只提交精确源代码依据，不改你Contract、不发明成功DTO。编号/attempt写入内核已可审。公开ETL列表等待这三点；其他R010a2及后续队列照常继续，总目标未完成。
+
+### P-142｜异步规则证据内核与现有扫描消费（be，2026-09-08）
+
+- **2a25373** Domain async AST：校验/复制树在IO前，唯一metric/window/day读取、缺数不短路、沿用唯一求值器；**18568ea** RuleScan：await结果再strict parse，pending门/私有candidate/安全失败保留，修掉异步插件Promise当普通对象及未处理reject问题。两笔独立代码，交审前merge main无新差异。
+- Domain全量**1097/1097**，新旧解释器52/52；Worker**39/39**；真实PG合成源→production流水线**1/1**，Domain/Worker type/lint通过，核心行100%/98.56%，缓存audit0。报告`2026-09-08-R010a2-异步规则质量报告.md`及p142日志含RED与首次测试类型错误；磁盘3.5GiB未全DB/Worker/Nextbuild。
+- **未声称公开explain可用**：真实定义/范围/指标reader、动态树到扫描结果映射、HTTP/BFF、静音/SLA持久化仍需接；已有三条builtin不替代用户自定义规则。IO预算/超时/RR由下一reader承担，4096内核限额不承诺延迟。真实PG证明旧同步流水线兼容，不冒充已连接异步真实源。
+- 无Contract/视觉/保护文件变更、无媒体写/push/部署。继续你信箱R010a2余项，不等本批审查；总目标保持全部有效任务范围。
+
+### P-143｜真实规则定义/账户适用性读取（be，2026-09-08）
+
+- 代码 **05fb748**：内部strict规则目标/定义、BIGINT字符串；RR/RO同快照读取定义及账户当日taskIds/accountScopes/bizNames union，personal显式tuple、team当前空间。PG先量投影exact16MiB、恶意字段/越权/错误body不外泄，AST读后私有复制；无Contract/保护文件/视觉变更。
+- **Domain1115/1115、DB全量969/969、Worker1541 pass+2外部skip、Web196/196**；三包type/lint过、缓存audit0。新仓储22unit+11真实PG（并发snapshot/同号跨媒体空间/超2^53/oversizedpayload确实null），100%行/93.18%分支。报告`2026-09-08-R010a2-规则定义读取质量报告.md`，精确版本日志p143；PG只用本人合成库。
+- 磁盘恢复后全DB/Worker已实跑补债，未借旧数字。仍候选未合流部署；**不是公开explain完成**，真实指标/readiness/freshness/mute/provider/HTTP待接。下一步定义+指标须同RR，legacy空树与公开数字ID不臆造；整个信箱目标继续，不等本批审查。
+
+### P-144｜规则+canonical日指标单快照交审（be，2026-09-08）
+
+- **5c7168f**：显式日窗/连续日/逐日加权考核价/CPA三态，缺日不补0，未知指标missing，小时窗不用日表；**0e7366c**：复用定义与pivot内部connection reader，当前获授tuple的规则/归属/指标/有效价同RR/RO，team无发布源明确unavailable。旧两个Repository入口保留。
+- **Domain1131、DB全量991、Worker1541+2外部opt-in skip**；三包type/lint、缓存audit0。真实PG24（新增组合6）含另一事务一次改三表，本读旧快照、下读新快照；同号跨媒体/workspace逐行断言。83定向unit、新仓储100%行/分支；日志p144与`2026-09-08-R010a2-日级规则证据质量报告.md`。
+- 该批只给内部evaluation，不能跳过initialFull/freshness/cold-start/mute/dedupe创建工作项，**公开explain/生产provider仍未完成**。当前canonical computed_at是转换时间，不当真实源时间；legacy空树与公开大ID语义保留。无Contract/保护文件/视觉/依赖改动、未push部署；继续有效全信箱范围。
+- Web node回归另实跑196/196（p144/web-test.log）；未运行Next build，不修其他人UI依赖、不冒称全UI类型通过。
+
+### P-145｜已派发项重复建告警实证修复（be，2026-09-08）
+
+- **ba0c400**，交审前merge main up-to-date。findActiveAlert旧SQL漏dispatched；真实PG红灯见p145/pg-red：原派发项之外新created open。现在绑定共用ACTIVE_WORK_ITEM_STATUSES，并发重复信号merged原ID且状态不重开；跨媒体/终态回归。生产仅3处小改，无Contract/视觉修改。
+- DB全量**995/995**；Worker本批完整**1541 pass+2外部opt-in skip**，DB/Worker type/lint通过。定向PG12+unit33，核心99.05%行/95.08%分支。新改测试的shared ka兜底移除，afterAll只清理自己记录的workspace；报告`2026-09-08-R010a2-派发态去重质量报告.md`。
+- 没把旧原地severity upgrade称为P083关旧建新；occurrence/013及全局partial unique同步依赖仍保留。未合流/部署/push/媒体写，整个信箱未完成，继续其他已冻任务不等本批审查。
+
+### P-146｜Agent模型清单真实只读纵切片交审（be，2026-09-08）
+
+- **6d9800b**（merge main up-to-date）：能力矩阵表RR/RO→Service→主HTTP `GET /agent/models`→同源BFF；直接共享Domain strict schema。personal空grant/team可读全局非业务目录；Session+bearer双鉴权、撤销/旧token在repo前拒绝，无凭证/探测/Job/媒体写。1001哨兵、SQL字段限幅、exact16MiB、requestId/405/错误安全边界。
+- **Domain1143、DB全量1012、Worker1560+2外部opt-in skip、Web201**；三包type/lint、新BFF定向type/lint过；新增实际PG6项（DB4+HTTP2），包括切team/旧cookie/退出/成员撤销。核心行100%，分支Domain100/DB92.3/Worker88；缓存audit0。日志p146、质量报告`2026-09-08-R010b-Agent模型清单质量报告.md`。未跑Nextbuild/浏览器，未合流部署。
+- **映射请审**：实表无label/default，当前label=model原ID，default全false；不擅自选fixture模型。failed→disabled，verified缺tested_at/test_version降documented_unverified。若要求默认选择，请冻结服务端provider+model来源/Router一致性；清单状态绝不替代用户AK或运行时鉴权。消息/SSE/会话仍未接，R010a1/a2/013其余缺口未关；按队列继续，不等待本批审。
+
+### P-147｜Agent同用户跨会话串写修复 + SSE契约冲突（be，2026-09-08）
+
+- **52fe688**：旧startRun未落session_id，complete只核对workspace/user/run，实测A的run能写入B。新Run与用户消息同事务写session_id；complete在原FOR UPDATE追加会话绑定，错会话/null旧绑定都不写消息、不改终态。failRun仍可按原所有权结束旧run；不猜历史关联，不开公开接口。
+- RED实际PG **3失败/3通过**→定向**13/13**（新6+旧7）；DB全量**1018/1018**、Worker**1560+2外部opt-in skip**、DB/Worker type/lint过，缓存audit0。整个既有repo覆盖98.06%行/76.62%分支，旧非本批异常仍未全覆盖。报告`2026-09-08-R010b-Agent运行会话绑定质量报告.md`、原始日志p147。未合流部署；main c3451db已对齐，无Contract/视觉改动。
+- **公开Agent下一步请裁wire/fixture冲突**：api.md:595规定type= session/run/delta/tool/evidence/done/error，统一run_id/seq/ts/data，结构化只在done；`fixtures/agent/sse-frames.json`却是event/data，含context/token/diagnosis、部分无run_id/seq/ts、7帧done.seq=6。`run-events.json`又用run_started/tool_call等。请明确后两者是否仅UI派生日志，以及实际SSE以哪套为准并修fixture；我不会擅自造第二套wire或提前发未完成诊断。该单项暂留依赖，其余有效队列继续。
+
+### P-148｜重复告警计数与最近触发时间修复（be，2026-09-08）
+
+- **e3cd971**（main c3451db已对齐）：createOrMergeAlert首次落count1/time；重复在原事务锁内count+1、clock_timestamp处理时间，不冒充源新鲜度。null/非法/溢出计数拒绝整体回滚，无新HTTP/迁移/Contract/媒体写。
+- RED实际PG9失败→最终新PG10通过；定向55（PG22+unit33），DB全量1028、Worker1560+2外部skip、两包type/lint过，缓存audit0。仓储99.05%行/95.16%分支，原始p148日志，`2026-09-08-R010a2-重复告警次数质量报告.md`。已自审未合流/部署/push，Domain/Web未重跑不套旧数字。
+- 边界仍在：013/superseded_by关旧建新、完整详情/decision/动作DTO、生产规则闭环、外部event幂等均未完成；此次只关闭012字段从未维护的真实缺陷。继续队列，不等本批审核。
+
+### P-149｜016草稿验证 + 014基表/账户列归属请裁（be，2026-09-08）
+
+- **990c520**：从冻结v1.6直接生成46句（6表40列）和先锁/拒有损down。**未注册草稿**在db/migration-drafts；不是可安装迁移。实PG正式runner先报 `relation materials does not exist`，回滚无半成品，证实016还依赖014七张基础表；没有把014表挪进016绕过。
+- 草稿限定事务schema+原样冻结前置DDL，49真实PG +5静态对账通过，DB type/lint过；临时schema与016注册残留均0。全量未跑：磁盘5.6GiB低于规范8GiB；报告`2026-09-08-R015-016迁移前置与质量报告.md`，日志p149。未合流部署/push，不能套P148全量证据。
+- **请裁014账户列归属**：防冲突§6规定be不加accounts列，但R012/014冻结含 `agent_type/is_ubp/claimed_by/claimed_at/closed_at/close_reason`。建议仅这6列的原样DDL归be的014；be不改be2保护的account/task repository/sql/DTO六文件。批准后可补014基表、再正式注册016并跑完整链。另014目前只有resource_position/bid_tool两列，六raw证据列未齐，仍不解除bid_tool unsupported。
+- 013 item UUID/BIGSERIAL冲突、公开Agent wire与work-item DTO等原问题不重复改契约；本条有新实证先处理依赖。全部R015 API仍待，目标未缩减；继续其它可做项。
+
+### P-150｜管理端业务日历GET真实纵切片交审（be，2026-09-08）
+
+- **dc53b55**（merge main up-to-date）：001真实表→RR/RO→Service→主HTTP GET `/api/v1/admin/calendar`→同源BFF；直接共用Domain strict schema。当前membership admin才读本workspace，personal/team隔离；不需要账户grant，不能自报role；只GET无媒体/业务写。
+- 新定向**61**（含**7真实PG**）+旧路由回归**179**；三包type/lint、新BFF定向type/lint通过，核心行100%，分支Domain87.5/DB100/Worker92.5，缓存audit0。**磁盘4.5GiB<8，未跑全量，不套旧全绿**；报告`2026-09-08-R015-业务日历只读质量报告.md`、日志p150。
+- SQL10001哨兵，exact10000完整，overflow拒绝；安全整数ID/真实日期/非法字段/跨workspace守卫；unknown dataAsOf=null、businessDate非新鲜度。首次新增10k PG反例出现502（未拿到错误body）；加诊断断言后连续3次通过，**原因尚未定位，不称修复，请exact复验关注**。
+- 当前仅GET，不称日历POST/DELETE/阈值应用已实现；无视觉、Contract或be2保护文件改动，未合流部署/push。原013/014/Agent待裁决继续保留；总目标持续，不等此批审完。
 ### fe → arch：请派 Codex 出 12 张预设头像（2026-09-07，老板要求头像可自定义）
 
 **背景**：老板 09-07 拍板「头像要能自己换：给一批预设让他们挑，也能自己上传」。前端已做完（见下方 SHA），**只差 12 张预设图**——老板说图不让我生成，派给 Codex 出。
@@ -4403,6 +4529,12 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 现在：选择存本机 localStorage，上传的图裁成 256×256 存本地，不上传服务器
 - 需要：`me/preferences` 加 `avatar: {kind:"default"|"preset"|"upload", id?, url?}`，以及上传端点（或复用素材上传）返回可访问 URL
 
+### P-151｜当前空间成员/授权档案两个GET交审（be，2026-09-08）
+
+- **5d9f9d0**：两条admin成员/授权GET + BFF，真实RR/RO仓储→Service→主HTTP；当前Session admin、workspace隔离、外空间目标404；team SQL不查grant且空授权，真实1001遗留grant无影响。personal同号跨media保留；1001哨兵/exact16MiB/安全字段/requestId，未开放创建/改权/停用。
+- 新65（含9真实PG）+旧路由201；Domain/DB/Worker type/lint、新BFF定向type/lint过。核心行100%，分支100/98.14/96.42；缓存audit0。磁盘4.1GiB<8，**本轮不称全量绿**；报告`2026-09-08-R015-成员授权只读质量报告.md`，日志p151。
+- 映射请审：isActive=membership配置；joinedAt=真实created_at上海日期；lastSeenAt只取当前绑定该workspace的session真实最大值；dataAsOf=null。**不把personal admin升级成全局超管**，本批只看当前workspace；全局成员管理若有意图需另冻entitlement。
+- 已merge main@a15369a为6ce9242，信箱双方保留；本人代码未改视觉/Contract/be2保护service。R-FE-IMG-003和D6最新fixture已收到，当前代码子批独立后继续；整信箱仍未完成，未push/合流部署。
 
 ### Q-011 交审｜S6b 任务列表阶段与就绪度完成；**R-014 的 S1–S6 全部做完**｜be2 2026-09-08
 **分支 `be/r014 @ HEAD`（已合 main 0d358d8）。写完立刻开下一批（R-017）。**
@@ -4509,3 +4641,22 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **★ R-014 到此整批完成**：S1 迁移 015 / S2 十一表 / S3 只读聚合 / S4 十七条端点 / S5 BFF 全通 / S6 交界字段与服务层接线。唯一剩项 `account_transfers`（4.10 交接）——018 的 `revoked_at` 已经落了，我在 R-017 之后回头补。
 
 **一条环境教训（供门禁清单）**：同一个测试库上**并发跑两次 vitest 全量会互相删数据**，产生假红（我这轮被上个会话遗留的后台 db 任务坑了一次，`auth-migration` / `changeset-repository` 等报错，单跑全过、串行重跑 948/948）。判红之前先确认没有并发跑。
+### P-152｜F-Q011-1 定向修复交审 + 老板停图（be，2026-09-09）
+
+- 代码 **0ce730f**，main@6814c05 已合（7af1a46）。仅系数PG测试：allSettled等待兄弟事务再清理；第三workspace坏历史验证隔离；专用库守卫。生产代码0 diff。
+- 新反例真实PG先红；最终两种随机顺序分别 **38/38（8PG+30unit）**，DB type/lint过、离线缓存audit0。原文件本已随机workspace，本机非空库原样7/7，因此**不宣称重现你全量失败同因**；需你exact全量复验。磁盘不足8GiB，本轮未跑全量。质量报告 `docs/plans/2026-09-09-FQ011-系数测试隔离质量报告.md`。
+- **老板最新明确取消 R-FE-IMG-003 生图**，已停止，不产正式头像、不提交图片，请同步fe；现有工具候选保留。F-P139-1已收到，接下来优先修日历边界，不等本P2审完。
+
+### P-153｜F-P139-1 日历P1修复交审（be，2026-09-09）
+
+- 代码 **7697a67**（仅DB查询+DB/Worker各1测试文件），已合main@64d9ed9。**根因确定**：`id::text AS id`输出别名被`ORDER BY id`引用，跨位数字典序错。真实PG两条跨位数ID旧代码稳定502，原表BIGINT限定排序后200；不改上限、不放宽strict校验。先前P150偶尔同库绿不能证明无此错，现补稳定回归。
+- 本批 **57/57（8真实PG+22HTTP+14DB+13Domain）**，含exact10000成功/10001拒绝；DB行/分支100%，DB type/lint过，diff干净。报告 `docs/plans/2026-09-09-FP139-日历排序质量报告.md`。未合流部署，请exact复验。
+- **新主线类型门禁未绿**：Worker4处旧fixture缺be2新增required字段：account-list-{http,service}.test.ts:37/32；task-list-{http,service}.test.ts:40/31。请协调be2更新其交界fixture/服务，本批不越界。Worker整包lint因type失败未跑。磁盘最低321MiB，低于8GiB，未跑全量/未清缓存；不可把57过当全量通过。
+
+
+### P-134～P-153 ✅合流｜be/r010 @ b8bc0e2 → main `3a9dade`｜arch 2026-09-08
+- 门禁（真 PG 分包新库）：domain 1183 / db 1122 / worker 1617+2 / gateway 36 / web 218，全绿。F-P139-1 日历 exact-10000 的 502 已修（7697a67）确认。
+- 未验的 cef4e90 / 1b26a69（D6 三值 DTO）范围干净（7 文件、无契约/UI），下一轮门禁后合。
+- 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
+
+- **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。

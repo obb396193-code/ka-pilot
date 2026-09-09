@@ -11,11 +11,14 @@ describe("pivot Registry admission", () => {
     expect(() => createDataQueryRegistry().resolve("account.pivot2", { ...params, dimA }, "platform"))
       .toThrowError(expect.objectContaining({ code: "DIMENSION_UNSUPPORTED" }));
   });
-  it.each([{ ...params, sql: "SELECT 1" }, { ...params, taskIds: ["x"] }, { ...params, filters: { biz: ["x"] } },
+  it.each([{ ...params, sql: "SELECT 1" }, { ...params, taskIds: ["x", "x"] }, { ...params, taskIds: ["\n"] }, { ...params, filters: { biz: ["x"] } },
     { ...params, window_to: "2026-02-31" }, { ...params, window_to: "2026-10-02" }, { ...params, media: "" },
     { ...params, dateFrom: "2026-09-01" }])("does not ignore unknown or not-yet-supported filters %#", input => {
     expect(() => createDataQueryRegistry().resolve("account.pivot2", input, "platform"))
       .toThrowError(expect.objectContaining({ code: "INVALID_REQUEST" }));
+  });
+  it.each([{ taskIds: [] }, { taskIds: ["task-a", "启航-task-1"] }])("preserves explicit task IDs %j", ({ taskIds }) => {
+    expect(createDataQueryRegistry().resolve("account.pivot2", { ...params, taskIds }, "platform").params).toMatchObject({ taskIds });
   });
   it.each(["ka_data", "reconcile"])("does not borrow %s", view => {
     expect(() => createDataQueryRegistry().resolve("account.pivot2", params, view))

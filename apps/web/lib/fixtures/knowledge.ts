@@ -1,4 +1,7 @@
-import type { Fixture } from "@/lib/fixtures/contract"
+import { isOk, type Fixture } from "@/lib/fixtures/contract"
+import { tasksFixture } from "@/lib/fixtures/tasks"
+import { accountsFixture } from "@/lib/fixtures/accounts"
+import { materialsFixture } from "@/lib/fixtures/materials"
 import tree from "@contract/fixtures/kb/tree.json"
 import document from "@contract/fixtures/kb/document.json"
 import search from "@contract/fixtures/kb/search.json"
@@ -20,3 +23,11 @@ export const flattenTree = (nodes: KbTreeNode[]): KbTreeNode[] => nodes.flatMap(
 export const findNode = (nodes: KbTreeNode[], id: string): KbTreeNode | null => { for (const node of nodes) { if (node.id === id) return node; const hit = findNode(node.children ?? [], id); if (hit) return hit } return null }
 export const businessRefHref = (ref: { type: string; id: string }): string => ref.type === "task" ? `/tasks/${encodeURIComponent(ref.id)}` : ref.type === "account" ? `/accounts/KUAISHOU/${encodeURIComponent(ref.id)}` : ref.type === "work_item" ? `/diagnostics/${encodeURIComponent(ref.id)}` : "#"
 export const businessRefLabel: Record<string, string> = { task: "任务", account: "账户", work_item: "工作项", material: "素材" }
+
+// 关联对象在界面上显名字，不显 ID（fixture 里查不到就退回 ID，不编名字）
+export function businessRefName(ref: { type: string; id: string }): string {
+  if (ref.type === "task" && isOk(tasksFixture)) return tasksFixture.data.items.find((item) => item.taskId === ref.id)?.taskName ?? ref.id
+  if (ref.type === "account" && isOk(accountsFixture)) return accountsFixture.data.items.find((item) => item.accountId === ref.id)?.accountName ?? ref.id
+  if (ref.type === "material" && isOk(materialsFixture)) return materialsFixture.data.items.find((item) => item.materialId === ref.id)?.name ?? ref.id
+  return ref.id
+}

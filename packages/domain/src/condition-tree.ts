@@ -82,10 +82,10 @@ function compare(actual: number, threshold: number, operator: Leaf["operator"]):
  * price. A missing window means caller's current window, not an invented 24h.
  * Missing evidence anywhere dominates AND/OR/NOT (no trigger, no clear).
  */
-export function evaluateConditionTree(input: unknown, reader: (request: ConditionReadRequest) => unknown): {
+function evaluateParsedTree(root: Node, reader: (request: ConditionReadRequest) => unknown): {
   pass: boolean | null; reason: "METRIC_MISSING" | "CONDITION_FALSE" | null; leaves: ConditionLeafResult[];
 } {
-  const root = parseTree(input), leaves: ConditionLeafResult[] = [];
+  const leaves: ConditionLeafResult[] = [];
   const cache = new Map<string, Value>();
   function read(request: ConditionReadRequest): Value {
     const key = JSON.stringify([request.metric, request.windowHours, request.dayOffset]);
@@ -123,4 +123,59 @@ export function evaluateConditionTree(input: unknown, reader: (request: Conditio
   const matched = evaluate(root);
   if (leaves.some(leaf => leaf.pass === null)) return { pass: null, reason: "METRIC_MISSING", leaves };
   return { pass: matched, reason: matched ? null : "CONDITION_FALSE", leaves };
+}
+
+export function evaluateConditionTree(input: unknown, reader: (request: ConditionReadRequest) => unknown) {
+  return evaluateParsedTree(parseTree(input), reader);
+}
+
+function requestKey(request: ConditionReadRequest): string {
+  return JSON.stringify([request.metric, request.windowHours, request.dayOffset]);
+}
+
+function collectRequests(root: Node): ConditionReadRequest[] {
+  const requests = new Map<string, ConditionReadRequest>();
+  function visit(node: Node): void {
+    if ("leaf" in node) {
+      const leaf = node.leaf;
+      for (let dayOffset = 0; dayOffset < (leaf.consecutive_days ?? 1); dayOffset++) {
+        const request = { metric: leaf.metric, windowHours: leaf.window_hours ?? null, dayOffset };
+        requests.set(requestKey(request), request);
+        if (typeof leaf.threshold === "string") {
+          const price = { ...request, metric: "assessment_price" };
+          requests.set(requestKey(price), price);
+        }
+      }
+      return;
+    }
+    for (const group of groups) for (const child of node.groups[group] ?? []) visit(child);
+  }
+  visit(root);
+  return [...requests.values()];
+}
+
+/** Internal bounded read plan, useful for batch prefetch in one RR snapshot. */
+export function conditionReadRequests(input: unknown): ConditionReadRequest[] {
+  return collectRequests(parseTree(input));
+}
+
+/** The same interpreter with bounded asynchronous evidence reads. Parsing and
+ * copying precede IO; no dummy evaluation is used to discover requirements.
+ * The caller still owns authorization, freshness, RR snapshot and IO deadlines.
+ * This helper does not prove a source is ready and does not trigger any writes. */
+export async function evaluateConditionTreeAsync(
+  input: unknown,
+  reader: (request: ConditionReadRequest) => Promise<unknown>,
+) {
+  const root = parseTree(input);
+  const observations = new Map<string, z.infer<typeof observationSchema>>();
+  for (const request of collectRequests(root)) {
+    let value: unknown;
+    try { value = await reader({ ...request }); }
+    catch { throw new Error("Rule evidence source unavailable"); }
+    const parsed = observationSchema.safeParse(value);
+    if (!parsed.success || (parsed.data.granularity === "daily" && request.windowHours !== null && request.windowHours % 24 !== 0)) return invalid();
+    observations.set(requestKey(request), parsed.data);
+  }
+  return evaluateParsedTree(root, request => observations.get(requestKey(request)));
 }

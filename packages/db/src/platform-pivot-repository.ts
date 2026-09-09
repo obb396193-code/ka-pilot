@@ -3,7 +3,7 @@ import {
   approvedWorkspaceAuthContextSchema, queryWindowSchema, calendarDateSchema, sourceLineageSchema,
   canonicalMetricSetSchema, dailyAssessmentInputSchema, metricValue,
 } from "@ka/domain";
-import { withSemanticReadSnapshot } from "./semantic-read-snapshot.js";
+import { withSemanticReadSnapshot, type SemanticReadConnection } from "./semantic-read-snapshot.js";
 import { mapMetricSummary } from "./semantic-query-metrics.js";
 import { PLATFORM_PIVOT_SQL, PIVOT_METRIC_FIELDS } from "./platform-pivot-sql.js";
 
@@ -64,39 +64,49 @@ export type PlatformPivotMember = ReturnType<typeof decode>;
 /** Personal canonical facts only; team uses its published snapshot reader, never grants/fallback.
  * Auth is already approved by the server session layer. This does not grant access or certify readiness.
  */
+function prepareRead(authInput: unknown, windowInput: unknown) {
+  const auth = approvedWorkspaceAuthContextSchema.parse(authInput), window = queryWindowSchema.parse(windowInput);
+  if (auth.workspaceKind !== "personal") throw new Error("Platform pivot requires personal explicit account scope");
+  const accounts = auth.scope.accounts.map(({ media, accountId }) => ({ media, account_id: accountId }));
+  const allowed = new Set(accounts.map(a => JSON.stringify([a.media, a.account_id])));
+  const days = (Date.parse(`${window.to}T00:00:00Z`) - Date.parse(`${window.from}T00:00:00Z`)) / 86400000 + 1;
+  if (allowed.size !== accounts.length || days > 31 || accounts.length * days > 10000) return invalid();
+  return { auth, window, accounts, allowed, days };
+}
+
+/** Internal query-only reader. Caller owns the RR/RO transaction and connection. */
+export async function readPlatformPivotInSnapshot(connection: SemanticReadConnection, authInput: unknown, windowInput: unknown) {
+  const { auth, window, accounts, allowed, days } = prepareRead(authInput, windowInput);
+  const result = await connection.query(PLATFORM_PIVOT_SQL, [auth.workspaceId, window.from, window.to, JSON.stringify(accounts)]);
+  if (!Array.isArray(result.rows) || result.rows.length > 10000) return invalid();
+  try { if (Buffer.byteLength(JSON.stringify(result.rows)) >= 16 * 1024 * 1024) return invalid(); }
+  catch { return invalid(); }
+  const members = result.rows.map(decode), seen = new Set<string>(), observedAccounts = new Set<string>();
+  let observedAccountDays = 0, missingComputedAt = 0, earliestComputedAt: string | null = null, latestComputedAt: string | null = null;
+  for (const member of members) {
+    const accountKey = JSON.stringify([member.media, member.accountId]), key = JSON.stringify([accountKey, member.assessment.ds]);
+    if (member.workspaceId !== auth.workspaceId || !allowed.has(accountKey) || seen.has(key) ||
+      member.assessment.ds < window.from || member.assessment.ds > window.to) return invalid();
+    seen.add(key);
+    if (member.observed) {
+      observedAccountDays++; observedAccounts.add(accountKey);
+      if (member.computedAt === null) missingComputedAt++;
+      else {
+        if (earliestComputedAt === null || member.computedAt < earliestComputedAt) earliestComputedAt = member.computedAt;
+        if (latestComputedAt === null || member.computedAt > latestComputedAt) latestComputedAt = member.computedAt;
+      }
+    }
+  }
+  if (seen.size !== accounts.length * days) return invalid();
+  return { window, members, observation: { expectedAccountDays: accounts.length * days, observedAccountDays,
+    observedAccounts: observedAccounts.size, missingComputedAt, earliestComputedAt, latestComputedAt } };
+}
+
 export class PlatformPivotRepository {
   constructor(private readonly pool: Pick<Pool, "connect">) {}
   async read(authInput: unknown, windowInput: unknown) {
-    const auth = approvedWorkspaceAuthContextSchema.parse(authInput), window = queryWindowSchema.parse(windowInput);
-    if (auth.workspaceKind !== "personal") throw new Error("Platform pivot requires personal explicit account scope");
-    const accounts = auth.scope.accounts.map(({ media, accountId }) => ({ media, account_id: accountId }));
-    const allowed = new Set(accounts.map(a => JSON.stringify([a.media, a.account_id])));
-    const days = (Date.parse(`${window.to}T00:00:00Z`) - Date.parse(`${window.from}T00:00:00Z`)) / 86400000 + 1;
-    if (allowed.size !== accounts.length || days > 31 || accounts.length * days > 10000) return invalid();
-    return withSemanticReadSnapshot(this.pool, async connection => {
-      const result = await connection.query(PLATFORM_PIVOT_SQL, [auth.workspaceId, window.from, window.to, JSON.stringify(accounts)]);
-      if (!Array.isArray(result.rows) || result.rows.length > 10000) return invalid();
-      try { if (Buffer.byteLength(JSON.stringify(result.rows)) >= 16 * 1024 * 1024) return invalid(); }
-      catch { return invalid(); }
-      const members = result.rows.map(decode), seen = new Set<string>(), observedAccounts = new Set<string>();
-      let observedAccountDays = 0, missingComputedAt = 0, earliestComputedAt: string | null = null, latestComputedAt: string | null = null;
-      for (const member of members) {
-        const accountKey = JSON.stringify([member.media, member.accountId]), key = JSON.stringify([accountKey, member.assessment.ds]);
-        if (member.workspaceId !== auth.workspaceId || !allowed.has(accountKey) || seen.has(key) ||
-          member.assessment.ds < window.from || member.assessment.ds > window.to) return invalid();
-        seen.add(key);
-        if (member.observed) {
-          observedAccountDays++; observedAccounts.add(accountKey);
-          if (member.computedAt === null) missingComputedAt++;
-          else {
-            if (earliestComputedAt === null || member.computedAt < earliestComputedAt) earliestComputedAt = member.computedAt;
-            if (latestComputedAt === null || member.computedAt > latestComputedAt) latestComputedAt = member.computedAt;
-          }
-        }
-      }
-      if (seen.size !== accounts.length * days) return invalid();
-      return { window, members, observation: { expectedAccountDays: accounts.length * days, observedAccountDays,
-        observedAccounts: observedAccounts.size, missingComputedAt, earliestComputedAt, latestComputedAt } };
-    });
+    // Validate before connection acquisition and keep private parsed inputs across IO.
+    const { auth, window } = prepareRead(authInput, windowInput);
+    return withSemanticReadSnapshot(this.pool, connection => readPlatformPivotInSnapshot(connection, auth, window));
   }
 }

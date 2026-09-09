@@ -121,7 +121,7 @@ type AdRealtimeQuery = Extract<QihangQuery, { resource: "ad_realtime" }>;
 async function ingestFocusedAds(
   dependencies: IncrementalEtlDependencies,
   payload: IncrementalPayload,
-  runId: number,
+  runId: string,
   ingest: IngestQuery,
   setStep: (step: string) => void,
 ): Promise<void> {
