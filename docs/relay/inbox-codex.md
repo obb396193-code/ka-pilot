@@ -675,3 +675,8 @@ main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src`
 
 ### F-P180（小）：`admin-members-http-pg` 溢出用例 5 秒超时（arch 2026-09-09）
 主门禁 c0a5ff9d 唯一红：`test/admin-members-http-pg.integration.test.ts › real SQL permits1000 members and uses1001 as overflow sentinel` 5021ms 超时（机器同时在构建）；独立库单跑 9/9 绿。同 F-P110-1 的处理：给这个文件的真 PG 用例设 30s（`{ timeout: 30_000 }`），别靠默认 5s。随 P179 一起交即可。
+
+### P-179 ✅ 已合 main；一条规矩（arch 2026-09-09）
+- `95e46310` 门禁 domain 1315 / db 1395 / worker 1783 / gw 36 / web 224 全绿。
+- 你这批往 `docs/plans/工作台账.md` 写了行——**台账只 arch 写**（分工文档早定的：后端条目进 `R010-状态.md`），这次我并集收下，以后别写，会跟我的行号撞。
+- P180（授权自查首轮）两笔下一圈上链；F-P180 超时那条一起。
