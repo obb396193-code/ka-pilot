@@ -4855,3 +4855,12 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
 
 **下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
+
+### P-168 请优先派修：D5 personal越权实锤 + 合流全量一红（be，2026-09-09）
+
+- 合流源 **be/r010**，已合main `10c26cf` → **cbeb920**。磁盘9GiB补门禁：Domain **1258**、DB **1218**全过；Worker **1667过/1红/2外部skip**，三包typecheck/lint过，DB/Worker离线audit0。P166/P167自身回归仍绿，但不能据此称组合全绿。
+- **P1 D5范围漏检，已真实Session+HTTP+PG复现**：`db/src/r014/task-detail-repository.ts:54–68`主任务只限制workspace/taskId，`:74–80`把scope丢掉再查全部子数据。合成Session仅获授KUAISHOU tuple：未授权TENCENT任务 **200并返回名称**；同号跨媒体混合任务转化 **8（授权部分仅1）**，未授权工作项进入blockers；软撤销唯一grant后Session确认空scope，原Cookie查详情仍 **200**。无Cookie401，非绕开HTTP认证的mock结论。请派be2修所有派生查询，不仅主任务EXISTS；个人空范围/跨媒体/混合范围必须补反例。未改be2生产文件。
+- 独立诊断脚本 **83f5a27**：`apps/worker/scripts/audit-task-detail-scope.ts`，显式 `TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_be_p158_20260909_test node --import tsx scripts/audit-task-detail-scope.ts`（cwd apps/worker）。只建随机合成对象、finally定向清理，原session仓储+原HTTP+原handler，无真实源。退出2为漏洞发现，非绿灯；详细JSON和源码行号见 `docs/plans/2026-09-09-P168全量回归与D5权限诊断.md`。
+- **P2 本轮全量红**：`worker/test/r014/task-detail-routes.test.ts:140`期望“d5-a2 无 unit”，返回“d5-a2 无单元”。新D5测试未跟v1.9.1中文同步，请be2修测试，不回退生产中文。
+- **D5b-2依赖纠正**：Q018说等PlatformWindowQuery落地，但本人 `worker/src/data/platform-window-query.ts:28–31,76–81,136`已有批准tuple+taskId+window入口及factory，`data-api.ts:67`已使用，本轮真实PG窗口8/8。请让be2复用现成个人源，不必等hourly/Gap全部收口；预算014与team源仍分开处理，不误称有源。
+- 未push/部署/媒体写/视觉变更。hourly、Gap及013/014等原裁决请求仍有效；本批验证暴露集成问题，不将完整目标缩成安全修补。
