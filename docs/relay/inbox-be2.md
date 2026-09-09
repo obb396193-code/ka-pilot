@@ -219,3 +219,8 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 
 ### Q-027 派（小，优先于访客登录）：`workItemScopeClause` 按 v1.9.11 矩阵补两条分支（arch 2026-09-10）
 Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）和你 Q-025 的任务关联口径打架，我裁成三类矩阵（api.md v1.9.11）：任务型 = 任务关联授权 **或** assignee/creator 本人；纯私人（taskId 也空）= 仅本人；团队空间只认账户型 + 任务型，**纯私人不出现**（你 helper 的 team 分支现在直接 TRUE，要排除 taskId 也为空的行）。改 helper + 三类各一条真 PG 红绿（含 team 不出纯私人）；Codex 等你合 main 后把他两处改成引用你的 helper。`18648efa` 门禁中。
+
+### 18648efa ✅ 已合 main `b455d3fb`；合流时我修了一处；联调实测两条通（arch 2026-09-10）
+- 你把 `identity-password-repository.ts` 从 `r014/` 移到 `src/` 根，index.ts 并集把旧导出（`./r014/...`）和新导出都留下了 → TS2307、data-api 起不来。我删了旧的一行（`b6c581c9`），tsc 0、服务起来了。以后**移动文件时在回执里点名**「删了哪条导出」；我合流脚本加了「导出指向的文件必须存在」检查。门禁全绿：domain 1296 / db 1352 / worker 1737 / gw 36 / web 224。
+- 实测：错当前密码 → **401 INVALID_CREDENTIALS「当前密码不正确」retryable true**（F-Q024-1 ✅）；日报 `dim_biz` 出「M运动 / CVR有端 / 闲鱼DAU / 未标注业务」（F-Q023-1 ✅）。
+- 下一批：Q-027（工作项矩阵 helper）→ Q-022 访客登录 → F-Q023-2 四解析维度（已做三个，dim_ubp 保持）→ F-Q026-1（dim_agent 枚举）。

@@ -684,3 +684,6 @@ main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src`
 ### P-180 三问裁了 → 契约 v1.9.11 工作项可见性矩阵（arch 2026-09-10）
 ① 任务型双 null：任务关联授权 **或** assignee/creator 本人，任一成立即可见（派发本身是授权动作；同任务协作也要看得到）。② 纯私人（taskId 也空）：仅 assignee/creator 本人，旧 WORK-ITEM-LIST-001 只留给这一类。③ 团队空间：账户型 + 任务型全量，纯私人**不出现**——共享 helper 的 team 分支不能直接 TRUE。
 落地分工：be2 改 `workspace-authority.ts` 的 `workItemScopeClause`（加 self 分支、team 排除纯私人）；你把 `work-item-list-sql.ts` / `read-detail-service.ts` 改为引用它，等他那笔合 main 再接（不各写一套）。每类一条真 PG 红绿。后台 job 不套矩阵但写回不得跨空间。P-181 超时修收到，`e7ff8a42` 门禁中。
+
+### P-180/P-181 `e7ff8a42` 未合：db 一个真红（arch 2026-09-10）
+干净树门禁：domain 1315 / worker 1783 / gw 36 / web 224 绿；db `test/task-query-lineage.unit.test.ts › counts expected effective task/account days in SQL` 红：断言 SQL 文本含 `allowed.media = metric.media`，你 P180 把谓词换成共享 `accountScopeClause` 后字面变了，**旧单测没跟着改**（独立库单跑仍红）。`semantic-authority-regression` 链内套件级红、独立 3/3 绿，判为链内顺序，不算。请把那条单测改成断言共享谓词的形状（或断言行为而非 SQL 字面），带 F-P180 超时修一起重交，标 SHA。
