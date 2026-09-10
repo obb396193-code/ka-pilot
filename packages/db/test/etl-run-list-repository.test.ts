@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { EtlRunListRepository } from "../src/etl-run-list-repository.js";
+import { runMigrations } from "../src/migrate.js";
 
 describe("ETL run pages / synthetic real PG", { timeout: 30_000 }, () => {
   const workspaceId = randomUUID(), foreign = randomUUID(), jobId = randomUUID(), foreignJob = randomUUID();
@@ -17,6 +18,7 @@ describe("ETL run pages / synthetic real PG", { timeout: 30_000 }, () => {
   beforeAll(async () => {
     const url = new URL(process.env.TEST_DATABASE_URL ?? "");
     if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated synthetic test DB required");
+    await runMigrations({ databaseUrl: url.toString() });
     pool = new Pool({ connectionString: url.toString(), max: 4 }); repo = new EtlRunListRepository(pool);
     await pool.query("INSERT INTO workspaces(id,name) VALUES($1,'synthetic P186'),($2,'synthetic P186 foreign')", [workspaceId, foreign]);
     await pool.query("INSERT INTO jobs(id,workspace_id,job_type,payload,attempts) VALUES($1,$2,'etl_incr','{}',9),($3,$4,'etl_incr','{}',9)", [jobId, workspaceId, foreignJob, foreign]);
@@ -26,7 +28,7 @@ describe("ETL run pages / synthetic real PG", { timeout: 30_000 }, () => {
         accountIds: ["synthetic-account"], fingerprint: "a".repeat(64), media: "KUAISHOU", failedAt: "2026-09-09T01:00:00Z" }] });
     second = await insert(workspaceId, jobId, "canonical", { reportDate: "2026-09-09" }, "done", 0);
     await insert(foreign, foreignJob, "incr", { ds: "2026-09-09" });
-  });
+  }, 30_000);
   afterAll(async () => {
     if (!pool) return;
     try {

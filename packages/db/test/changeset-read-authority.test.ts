@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { ChangeSetRepository, ChangeSetAuthorizationError } from "../src/changeset-repository.js";
 import { accountScopeClause } from "../src/r014/workspace-authority.js";
+import { runMigrations } from "../src/migrate.js";
 
 describe("changeset session read authority / synthetic PG", { timeout: 30_000 }, () => {
   const workspaceId = randomUUID(), foreign = randomUUID(), userId = randomUUID(), foreignUser = randomUUID();
@@ -17,6 +18,7 @@ describe("changeset session read authority / synthetic PG", { timeout: 30_000 },
   beforeAll(async () => {
     const url = new URL(process.env.TEST_DATABASE_URL ?? "");
     if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated synthetic test DB required");
+    await runMigrations({ databaseUrl: url.toString() });
     pool = new Pool({ connectionString: url.toString(), max: 3 });
     repository = new ChangeSetRepository(pool);
     for (const [ws, actor] of [[workspaceId, userId], [foreign, foreignUser]]) {
@@ -50,7 +52,7 @@ describe("changeset session read authority / synthetic PG", { timeout: 30_000 },
       } });
     }, query: pool.query.bind(pool) } as unknown as Pool;
     repository = new ChangeSetRepository(monitored);
-  });
+  }, 30_000);
   afterAll(async () => {
     if (!pool) return;
     try {

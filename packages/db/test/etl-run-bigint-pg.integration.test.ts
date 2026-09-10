@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool, type PoolClient } from "pg";
 import { EtlRunRepository } from "../src/etl-run-repository.js";
+import { runMigrations } from "../src/migrate.js";
 
 // Synthetic private transaction/temp table only. No public sequence advancement,
 // cleanup of shared tables, credentials or live ETL/media execution.
@@ -15,9 +16,10 @@ describe("ETL int64 lifecycle real PG", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 1 });
   let client: PoolClient, repository: EtlRunRepository;
   beforeAll(async () => {
+    await runMigrations({ databaseUrl });
     client = await pool.connect();
     repository = new EtlRunRepository(client as unknown as Pool);
-  });
+  }, 30_000);
   beforeEach(async () => {
     await client.query("BEGIN");
     await client.query("CREATE TEMP SEQUENCE etl_bigint_test_seq START WITH 9007199254740993");

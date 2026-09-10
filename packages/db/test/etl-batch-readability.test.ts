@@ -6,6 +6,7 @@ import { EtlBatchFailureRepository } from "../src/etl-batch-failure-repository.j
 import { RawMetricsRepository } from "../src/raw-metrics-repository.js";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
 import { etlBatchReadableSql } from "../src/etl-batch-readability.js";
+import { runMigrations } from "../src/migrate.js";
 
 // Synthetic local PG only. Each test owns its workspace; no shared table cleanup.
 describe("failed tuple-day readability / real PG", () => {
@@ -22,11 +23,12 @@ describe("failed tuple-day readability / real PG", () => {
   const raw = (resource = "account_realtime", params: unknown = {}, media = "KUAISHOU", ws = workspaceId, date = ds) => pool.query(
     `INSERT INTO metrics_raw(workspace_id,media,account_id,ds,resource,source,request_params,payload,fetched_at)
      VALUES($1,$2,'a',$3,$4,'realtime',$5,'{}',clock_timestamp())`, [ws, media, date, resource, params]);
-  beforeAll(() => {
+  beforeAll(async () => {
     const value = process.env.TEST_DATABASE_URL ?? "", url = new URL(value);
     if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated synthetic test DB required");
+    await runMigrations({ databaseUrl: value });
     pool = new Pool({ connectionString: value }); semantic = new SemanticQueryRepository(pool);
-  });
+  }, 30_000);
   beforeEach(async () => {
     workspaceId = randomUUID(); foreignId = randomUUID(); jobId = randomUUID(); leaseToken = randomUUID();
     for (const ws of [workspaceId, foreignId]) {
