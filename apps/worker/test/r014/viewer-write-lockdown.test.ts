@@ -115,4 +115,25 @@ describe("v1.9.17 a viewer cannot write anywhere in R-014", () => {
     // 前端不再藏写入口，这里漏一条就是访客能改真数据。
     expect(leaked, "这些写路由没被 READ_ONLY_ROLE 拦住").toEqual([]);
   });
+
+  it("★documents that the shell guard runs first and which POSTs it deliberately lets through", () => {
+    // 我这条闸只扫 `src/r014/*-routes.ts`，而 v1.9.17 之后**壳层还有一道更靠前的拦截**
+    // （`data/http-server.ts`，在 body 解析和所有业务 handler 之前就拦掉 viewer 的写方法）。
+    // 壳层那道有三个「POST 其实是读」的例外——data-query / semantic-query / admin-reconcile：
+    // 它们用 POST 只是为了传复杂查询参数，不是写。
+    //
+    // 把这层关系钉在这里的理由：那三条例外**不在我的扫描范围内**，
+    // 万一有人往例外名单里加一条真正的写端点，我这边扫不到、壳层又放行，
+    // 就是访客能写。下面断言例外名单恰好是那三条已知的读查询。
+    const shell = readFileSync(new URL("../../src/data/http-server.ts", import.meta.url), "utf8");
+    const exception = shell.match(/const isReadQueryPost = [^;]*;/s);
+    expect(exception, "壳层的 viewer 例外判断不见了，先确认拦截是否还在").not.toBeNull();
+    const names = [...exception![0].matchAll(/([A-Z_]+_HTTP_PATH)/g)].map((match) => match[1]!);
+    expect(new Set(names)).toEqual(new Set([
+      "DATA_QUERY_HTTP_PATH", "SEMANTIC_QUERY_HTTP_PATH", "ADMIN_RECONCILE_HTTP_PATH",
+    ]));
+    // 壳层拦截本身也得在：它没了的话，我这条闸只覆盖 r014，r010 的写端点就裸奔。
+    expect(shell).toContain('role === "viewer"');
+    expect(shell).toContain("READ_ONLY_ROLE");
+  });
 });
