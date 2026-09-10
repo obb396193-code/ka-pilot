@@ -7,8 +7,7 @@ import { toast } from "sonner"
 
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { ExampleBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { Badge } from "@/components/ui/badge"
@@ -215,7 +214,6 @@ function ExperimentsTab() {
 }
 
 export function MaterialsPage() {
-  const { isMock } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "products")
   const [open, setOpen] = useState<MaterialItem | null>(null)
@@ -233,7 +231,7 @@ export function MaterialsPage() {
   const analysisMaterial = materials.find((item) => item.materialId === analysisId) ?? materials[0] ?? null
   return (
     <PageBody>
-      <PageHeader title="商品素材" description="商品池 · 素材池 · 拆片分析 · 复刻 · 测品复盘 · AIGC 下单；素材效果只用数据分析同口径，样本不足不出结论" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="商品素材" description="商品池 · 素材池 · 拆片分析 · 复刻 · 测品复盘 · AIGC 下单；素材效果只用数据分析同口径，样本不足不出结论"  />
       {cards.length ? <ExampleBlock unlock={UNLOCK} inline><KpiCards metrics={cards} /></ExampleBlock> : null}
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">

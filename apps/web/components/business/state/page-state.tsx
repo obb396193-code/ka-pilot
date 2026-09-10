@@ -1,12 +1,11 @@
 "use client"
 
 import { useMemo, type ReactNode } from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { IconAlertCircle, IconDatabaseOff, IconLock } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { FixtureErr } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
@@ -32,20 +31,6 @@ export function usePageState(): PageState {
 }
 
 /** 页头右侧的态切换（mock 演示用；真数据接入后隐藏） */
-export function StateSwitch() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const params = useSearchParams()
-  const state = usePageState()
-  if (process.env.NEXT_PUBLIC_KA_DATA_PROVIDER !== "mock") return null
-  return (
-    <Select value={state} onValueChange={(value) => { const next = new URLSearchParams(params.toString()); if (value === "normal") next.delete("state"); else next.set("state", value); router.replace(`${pathname}${next.size ? `?${next}` : ""}`) }}>
-      <SelectTrigger size="sm" className="w-36" aria-label="页面状态"><span className="text-muted-foreground">态</span><SelectValue /></SelectTrigger>
-      <SelectContent align="end">{pageStates.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
-    </Select>
-  )
-}
-
 /** 「示例」角标：数据源未接或 P2 的区块——降饱和 + 一句解锁条件；绝不造真实感假数据 */
 export function ExampleBadge({ className }: { className?: string }) {
   return <Badge variant="secondary" className={cn("pointer-events-none select-none", className)}>示例</Badge>

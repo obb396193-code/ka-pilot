@@ -1,6 +1,6 @@
 import type { Server } from "node:http";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AdminMembersError } from "@ka/db";
+import { AdminMembersError, AdminMemberProvisioningError } from "@ka/db";
 import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
 import { AdminMembersService } from "../src/admin/members-service.js";
 import { approvedSessionAuth, businessHeaders, personalAuth } from "./business-auth-fixtures.js";
@@ -13,9 +13,14 @@ describe("admin member HTTP boundary", () => {
   async function start(options: { result?: unknown; failure?: unknown; max?: number; missing?: boolean; context?: typeof auth } = {}) {
     const read = vi.fn(async (_auth: unknown, identityId?: string) => { if (options.failure) throw options.failure; return options.result ?? { workspaceId: auth.workspaceId, data: identityId ? { identityId, items: [] } : { items: [] } }; });
     const unused = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
+    const provisioning = { read: async (context: typeof auth) => {
+      // This test double models a DB denial. Local role is NOT a service authorization rule.
+      if (context.role !== "admin") { await read(context); throw new AdminMemberProvisioningError("FORBIDDEN"); }
+      const value = await read(context); return options.result === undefined ? { items: [] } : value;
+    }, create: vi.fn(), resetPassword: vi.fn() };
     const server = createDataApiServer({ service: unused, detailService: unused, taskListService: unused, accountListService: unused, workItemListService: unused,
       internalToken: token, sessionAuthService: approvedSessionAuth(options.context ?? auth), maxResponseBytes: options.max,
-      adminMembersService: options.missing ? undefined : new AdminMembersService({ read }, () => new Date("2026-09-08T01:00:00Z")),
+      adminMembersService: options.missing ? undefined : new AdminMembersService({ read }, () => new Date("2026-09-08T01:00:00Z"), provisioning),
     } as unknown as DataApiServerOptions); servers.push(server);
     await new Promise<void>((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
     const address = server.address(); if (!address || typeof address === "string") throw new Error("Missing listener");
@@ -25,8 +30,9 @@ describe("admin member HTTP boundary", () => {
     } };
   }
   it.each(["", `/${id}/grants`])("serves canonical empty %s and no-store", async path => { const s = await start(), r = await s.call(path); expect(r.status).toBe(200); expect(r.body.data.items).toEqual([]); expect(r.body.meta).toMatchObject({ requestId, dataAsOf: null, workspaceKind: "personal" }); expect(r.headers.get("cache-control")).toBe("no-store"); });
-  it.each(["optimizer", "operator", "lead"] as const)("rejects %s before port", async role => { const s = await start({ context: { ...auth, role } }); expect((await s.call()).status).toBe(403); expect((await s.call(`/${id}/grants`)).status).toBe(403); expect(s.read).not.toHaveBeenCalled(); });
-  it.each(["POST", "PATCH", "PUT", "DELETE"])("blocks %s on both routes", async method => { const s = await start(); for (const p of ["", `/${id}/grants`]) { const r = await s.call(p, method); expect(r.status).toBe(405); expect(r.headers.get("allow")).toBe("GET"); } expect(s.read).not.toHaveBeenCalled(); });
+  it.each(["optimizer", "operator", "lead"] as const)("passes %s to global DB authorization but keeps local grants gate", async role => { const s = await start({ context: { ...auth, role } }); expect((await s.call()).status).toBe(403); expect((await s.call(`/${id}/grants`)).status).toBe(403); expect(s.read).toHaveBeenCalledTimes(1); });
+  it.each(["PATCH", "PUT", "DELETE"])("blocks %s on both routes", async method => { const s = await start(); for (const p of ["", `/${id}/grants`]) { const r = await s.call(p, method); expect(r.status).toBe(405); expect(r.headers.get("allow")).toBe(p ? "GET" : "GET, POST"); } expect(s.read).not.toHaveBeenCalled(); });
+  it("grants POST is still unavailable", async () => { const s = await start(); expect((await s.call(`/${id}/grants`, "POST")).status).toBe(405); expect(s.read).not.toHaveBeenCalled(); });
   it("rejects invalid query/path and missing auth before repository", async () => {
     const s = await start(); for (const p of ["?workspaceId=other", "/bad/grants", `/${id}/grants?role=admin`]) expect((await s.call(p)).status).toBe(400);
     expect((await s.call("", "GET", {})).status).toBe(401); expect((await s.call(`/${id}/grants`, "GET", { authorization: `Bearer ${token}` })).status).toBe(401); expect(s.read).not.toHaveBeenCalled();

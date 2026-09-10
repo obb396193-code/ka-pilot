@@ -31,13 +31,14 @@ export interface InternalTestLoginPort {
  */
 export interface StoredPasswordLookup {
   find(identityId: string): Promise<StoredPassword | null>;
+  findByLoginName?(username: string): Promise<{ identityId: string; password: StoredPassword | null } | null>;
 }
 
 export class InternalTestLoginProvider implements InternalTestLoginPort {
   private readonly credentials: z.infer<typeof credentialsSchema>;
   private stored: StoredPasswordLookup | null = null;
 
-  constructor(enabled: boolean, credentialsJson: string | undefined) {
+  constructor(private readonly enabled: boolean, credentialsJson: string | undefined) {
     if (!enabled) {
       this.credentials = [];
       return;
@@ -70,7 +71,18 @@ export class InternalTestLoginProvider implements InternalTestLoginPort {
   }
 
   async authenticate(username: string, password: string): Promise<string | null> {
-    const credential = this.credentials.find((item) => item.username === username);
+    if (!this.enabled) return null;
+    let credential = this.credentials.find((item) => item.username === username);
+
+    // F-OS-004: database-issued usernames must be usable without editing deployment ENV.
+    // A DB password takes precedence; a mismatched DB identity may never inherit another ENV identity's verifier.
+    if (this.stored?.findByLoginName !== undefined) {
+      const resolved = await this.stored.findByLoginName(username);
+      if (resolved?.password !== null && resolved?.password !== undefined) {
+        return await verifyPassword(password, resolved.password) ? resolved.identityId : null;
+      }
+      if (resolved !== null && credential?.identityId !== resolved.identityId) credential = undefined;
+    }
 
     // 自助改过密码的：库里那条说了算，ENV 里的旧密码从此无效。
     if (credential !== undefined && this.stored !== null) {

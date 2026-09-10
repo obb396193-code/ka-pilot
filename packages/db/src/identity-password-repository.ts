@@ -38,6 +38,20 @@ export const MIN_PASSWORD_LENGTH = 12;
 export class IdentityPasswordRepository {
   constructor(private readonly pool: Pool) {}
 
+  /** F-OS-004: new members do not have an ENV entry. Resolve only active internal-test identities. */
+  async findByLoginName(username: string): Promise<{ identityId: string; password: StoredPassword | null } | null> {
+    if (typeof username !== "string" || !/^[A-Za-z0-9._@-]{1,128}$(?![\s\S])/.test(username)) return null;
+    const { rows } = await this.pool.query(`SELECT i.id,p.password_salt,p.password_scrypt,p.algo
+      FROM auth_identities i LEFT JOIN identity_passwords p ON p.identity_id=i.id
+      WHERE i.provider='internal_test' AND i.provider_subject=$1 AND i.is_active=true LIMIT 2`, [username]);
+    if (rows.length === 0) return null;
+    if (rows.length !== 1 || typeof rows[0]?.id !== "string") throw new R014RepositoryError("INVALID_RESULT");
+    const row = rows[0];
+    if (row.password_salt === null && row.password_scrypt === null && row.algo === null) return { identityId: row.id, password: null };
+    if (typeof row.password_salt !== "string" || typeof row.password_scrypt !== "string" || row.algo !== "scrypt") throw new R014RepositoryError("INVALID_RESULT");
+    return { identityId: row.id, password: { passwordSalt: row.password_salt, passwordScrypt: row.password_scrypt, algo: row.algo } };
+  }
+
   /** 登录路径用：这个身份有没有自助设过密码。没有 → 调用方回落 ENV。 */
   async find(identityId: string): Promise<StoredPassword | null> {
     const row = (await this.pool.query(

@@ -19,7 +19,8 @@ export const roleLabel: Record<Member["role"], string> = { admin: "管理员", l
 
 // F8-11 新增成员 / 重置密码（契约 v1.9.5）：initialPassword **只在这一次响应里回**，
 // 关掉面板后任何接口都拿不回来，所以面板必须自带复制并把这句写在人眼前。
-export type MemberCreated = Member & { initialPassword: string }
+// v1.9.21：登录名在 loginName（userId 已变成 workspace-local UUID）
+export type MemberCreated = Member & { initialPassword: string; loginName: string }
 export const memberCreatedFixture = memberCreated as unknown as Fixture<MemberCreated>
 export type MemberPasswordReset = { identityId: string; initialPassword: string; sessionsRevoked: number }
 export const memberResetPasswordFixture = memberResetPassword as unknown as Fixture<MemberPasswordReset>

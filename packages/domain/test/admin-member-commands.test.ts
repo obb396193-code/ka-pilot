@@ -22,15 +22,15 @@ describe("F-OS-004 strict command contract", () => {
   it.each([
     { provider_subject: "中文用户名" }, { provider_subject: "contains space" }, { provider_subject: "" },
     { provider_subject: "a".repeat(129) }, { provider_subject: "name\n" }, { provider: "guest" },
-    { display_name: "" }, { display_name: "a".repeat(257) }, { role: "owner" }, { role: "viewer" },
-    { initial_password: null }, { initial_password: "short" }, { initial_password: "a".repeat(1025) },
+    { display_name: "" }, { display_name: "a".repeat(201) }, { role: "owner" }, { role: "viewer" },
+    { initial_password: null }, { initial_password: "short" }, { initial_password: "a".repeat(513) },
     { workspaceId: "client-workspace" }, { identityId: "client-identity" }, { scope: "all" },
     { is_active: true }, { provider: "buc", initial_password: "synthetic-password-only" },
   ])("rejects malformed or authority-bearing input %j", patch => {
     expect(adminMemberCreateRequestSchema.safeParse({ ...request, ...patch }).success).toBe(false);
   });
   it("accepts exact username/password length boundaries", () => {
-    for (const length of [12, 1024]) expect(adminMemberCreateRequestSchema.safeParse({
+    for (const length of [12, 512]) expect(adminMemberCreateRequestSchema.safeParse({
       ...request, provider_subject: "a".repeat(128), initial_password: "x".repeat(length),
     }).success).toBe(true);
   });

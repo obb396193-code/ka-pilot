@@ -28,8 +28,15 @@ export type AdminMemberGrantsData = z.infer<typeof adminMemberGrantsDataSchema>;
 // v1.9.21: additive until the new provisioning/list HTTP composition is wired.
 // A plain `$` also matches before a final newline in JavaScript: require true end.
 const loginName = z.string().min(1).max(128).regex(/^[A-Za-z0-9._@-]{1,128}$(?![\s\S])/);
-const initialPassword = z.string().min(12).max(1024);
-const createBase = z.object({ display_name: adminMemberSchema.shape.displayName,
+// New identities must be able to pass the EXISTING login/session wire contract:
+// password max512, displayName max200. Storage's wider bounds are not login support.
+// 与 session-http-contract 的登录线一致（password ≤512、displayName ≤200，v1.9.24）。
+// 这里不 import 那个文件：本文件被 apps/web 的 `node --test` 直接加载，它不会把 `./x.js` 改写成 `./x.ts`，
+// 一加相对 import 整个 web 测试文件就 ERR_MODULE_NOT_FOUND（arch 2026-09-10 主门禁红）。改上限两边一起改。
+const LOGIN_PASSWORD_MAX = 512;
+const DISPLAY_NAME_MAX = 200;
+const initialPassword = z.string().min(12).max(LOGIN_PASSWORD_MAX);
+const createBase = z.object({ display_name: z.string().trim().min(1).max(DISPLAY_NAME_MAX),
   provider_subject: loginName, role: adminMemberSchema.shape.role }).strict();
 export const adminMemberCreateRequestSchema = z.discriminatedUnion("provider", [
   createBase.extend({ provider: z.literal("internal_test"), initial_password: initialPassword.optional() }).strict(),

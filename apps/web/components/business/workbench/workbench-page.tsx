@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
 import { Badge } from "@/components/ui/badge"
@@ -38,7 +38,7 @@ type QueueFilter = "all" | "P0" | "P1" | "opportunity"
 const tone = (status: "green" | "yellow" | "red" | null): DisplayMetric["tone"] => status === "green" ? "positive" : status === "yellow" ? "warning" : status === "red" ? "critical" : "neutral"
 
 export function WorkbenchPage() {
-  const { isMock, session } = useSession()
+  const { session } = useSession()
   const role = session?.activeWorkspace.role
   const canLead = role === "admin" || role === "lead"
   const [view, setView] = useState<"mine" | "lead">("mine")
@@ -96,11 +96,10 @@ export function WorkbenchPage() {
       <PageHeader
         title={view === "lead" ? "负责人视图" : "早上好，KA 经营团队"}
         description={view === "lead" ? "团队缺口 / 风险 / 阻塞 / 拍板一眼看；team 空间只读" : `${windowText} · 今天处理什么：队列按严重度排，先处理最要紧的三条`}
-        isMock={isMock}
         actions={
           <>
             {canLead ? <ToggleGroup type="single" variant="outline" size="sm" value={view} onValueChange={(value) => { if (value) setView(value as typeof view) }} aria-label="视图"><ToggleGroupItem value="mine" className="px-3 text-xs">我的</ToggleGroupItem><ToggleGroupItem value="lead" className="px-3 text-xs">负责人</ToggleGroupItem></ToggleGroup> : null}
-            <StateSwitch />
+            
           </>
         }
       />

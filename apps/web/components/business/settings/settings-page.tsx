@@ -13,7 +13,7 @@ import { PasswordForm } from "@/components/business/settings/password-form"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { avatarSrc } from "@/lib/avatar"
 import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -247,8 +247,11 @@ function ViewsTab() {
     <div className="flex flex-col gap-4">
       <DataGrid table={table} empty="还没保存视图；在数据分析总表里「另存为视图」" toolbar={<p className="text-xs text-muted-foreground">保存的视图 · Agent 的修改建议可全部或局部接受</p>} showPagination={false} />
       <Card>
-        <CardHeader><CardTitle>关注账户</CardTitle><CardDescription>工作台「我关注的」用这份名单 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
-        <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {accountName(item.accountId)}</Badge></Link>)}</CardContent>
+        <CardHeader><CardTitle>关注的账户与任务</CardTitle><CardDescription>工作台「我关注的」用这份名单 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
+        {/* 名单是联合类型：task 型只有 taskId，没有 media/accountId——两支要分开渲染，不能共用一套字段 */}
+        <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => item.type === "task"
+          ? <Link key={`task-${item.taskId}`} href={`/tasks/${encodeURIComponent(item.taskId)}`}><Badge variant="outline" className="gap-1">任务 · {item.taskId}</Badge></Link>
+          : <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {accountName(item.accountId)}</Badge></Link>)}</CardContent>
       </Card>
     </div>
   )
@@ -306,7 +309,7 @@ function WorkloadTab() {
 }
 
 export function SettingsPage() {
-  const { isMock, session } = useSession()
+  const { session } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "profile")
   // F8-11 ③ 后半（契约 v1.9.14）：还在用管理员发的那串初始密码 → 顶部提示，并把人直接送到改密码那一页签。
@@ -314,7 +317,7 @@ export function SettingsPage() {
   const mustChangePassword = session?.identity.mustChangePassword === true
   return (
     <PageBody>
-      <PageHeader title="设置" description="个人资料与界面偏好 · 三凭证只显绑定状态 · 通知偏好 · 我的负载 · 口径（返点系数 + 统一变更记录）· 个人视图" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="设置" description="个人资料与界面偏好 · 三凭证只显绑定状态 · 通知偏好 · 我的负载 · 口径（返点系数 + 统一变更记录）· 个人视图"  />
       {mustChangePassword ? (
         <div className="px-4 lg:px-6">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-status-warning/40 bg-status-warning/10 px-3 py-2.5 text-sm" role="status">

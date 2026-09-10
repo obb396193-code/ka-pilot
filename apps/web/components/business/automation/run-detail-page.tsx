@@ -7,8 +7,7 @@ import { toast } from "sonner"
 import { mediaLabel } from "@/components/business/accounts/account-status"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -26,7 +25,6 @@ const backoffLabel: Record<string, string> = { exponential: "指数退避", fixe
 const onUnknownLabel: Record<string, string> = { read_back_then_decide: "先回读媒体再决定，不重发", retry: "直接重试", abort: "中止" }
 
 export function RunDetailPage({ runId }: { runId: string }) {
-  const { isMock } = useSession()
   const state = usePageState()
   const detail = isOk(runDetailFixture) ? runDetailFixture.data : null
   const listItem = isOk(runsFixture) ? runsFixture.data.items.find((item) => item.runId === runId) ?? null : null
@@ -43,10 +41,9 @@ export function RunDetailPage({ runId }: { runId: string }) {
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{listItem?.name ?? "新任务开户到基建"}<TypeChip>{detail.run.version}</TypeChip><StatusChip tone={runStatusMeta[status].tone}>{runStatusMeta[status].label}</StatusChip></span>}
         description={<span>发起人 {detail.run.initiator.name} · 执行身份 {executorLabel[detail.run.executor_identity]}{detail.run.taskId ? <> · 任务 <Link href={`/tasks/${encodeURIComponent(detail.run.taskId)}`} className="underline-offset-4 hover:underline">{detail.run.taskId}</Link></> : null} · 运行 …{runId.slice(-6)}{!isFixtureRun ? "（示例只有 …1001 的详情，这里展示该样例）" : ""}</span>}
-        isMock={isMock}
         actions={
           <>
-            <StateSwitch />
+            
             <Button size="sm" disabled={!canConfirm} title={blockReason} onClick={() => toast.success("已确认执行", { description: "同一份变更集不会重复执行" })}><IconCheck />确认执行</Button>
             <Button size="sm" variant="outline" disabled={status !== "WAITING_CONFIRMATION"} onClick={() => toast("已拒绝", { description: "记录原因；该次运行标记为已驳回" })}><IconX />拒绝</Button>
             <Button size="sm" variant="outline" disabled={status !== "WAITING_CONFIRMATION"} onClick={() => toast("重新生成预览", { description: "草稿过期或数据更新后需重新生成" })}><IconRefresh />重新预览</Button>

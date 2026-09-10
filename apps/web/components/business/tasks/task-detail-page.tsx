@@ -10,7 +10,7 @@ import { RelatedDocs } from "@/components/business/knowledge/related-docs"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { ExampleBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { useTaskDetail } from "@/lib/data/use-task-detail"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
@@ -88,10 +88,9 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{data.task.taskName}{stage ? <TypeChip className="gap-1.5"><span className={cn("size-1.5 rounded-full", taskStageMap[stage].dot)} />{taskStageMap[stage].label}{ov.stage?.source === "manual" ? " · 手" : ov.stage?.source === "workflow" ? " · 工作流" : ""}</TypeChip> : null}{ov.costStatus ? <StatusChip tone={ov.costStatus === "green" ? "success" : ov.costStatus === "yellow" ? "warning" : "critical"}>{costStatusLabel[ov.costStatus]}</StatusChip> : <StatusChip tone="muted">不可判断</StatusChip>}</span>}
         description={<span>{data.task.bizName ?? "−"} · {data.task.period.start} – {data.task.period.end} · 预算 {mv(data.task.budget, "money0")} · 负责人 {data.task.owner?.displayName ?? "待分配"}{listItem?.rta ? " · RTA" : ""}{listItem?.placementPref ? ` · ${listItem.placementPref}` : ""} · {costStatusReasonText(ov.costStatusReason)}</span>}
-        isMock={isMock}
         actions={
           <>
-            <StateSwitch />
+            
             <Button variant="outline" size="sm" onClick={() => openAgentDrawer(`分析任务「${data.task.taskName}」的达成、pacing、就绪缺项与阻塞`)}><IconSparkles />问 AI</Button>
             <Button variant="outline" size="sm" onClick={() => { setForm((prev) => ({ ...prev, stage: stage ?? "delivering", note: "" })); setPriceDialog("stage") }}><IconPencil />置阶段</Button>
             <Button asChild variant="outline" size="sm"><Link href="/tasks"><IconArrowLeft />任务列表</Link></Button>

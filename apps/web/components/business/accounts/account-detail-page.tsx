@@ -8,8 +8,7 @@ import { toast } from "sonner"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { RelatedDocs } from "@/components/business/knowledge/related-docs"
 import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
@@ -31,7 +30,6 @@ import { TimelineList } from "./timeline-list"
 const tone = (status: "green" | "yellow" | "red" | null): DisplayMetric["tone"] => status === "green" ? "positive" : status === "yellow" ? "warning" : status === "red" ? "critical" : "neutral"
 
 export function AccountDetailPage({ media, accountId }: { media: string; accountId: string }) {
-  const { isMock } = useSession()
   const state = usePageState()
   const listItem = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === accountId && item.media === media) ?? null : null), [media, accountId])
   const detailFixture = detailFixtures[accountId]
@@ -73,10 +71,9 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{name}<StatusChip tone={chip.tone}>{chip.label}</StatusChip>{poolStatus ? <TypeChip className="gap-1.5"><span className={cn("size-1.5 rounded-full", poolStatusMap[poolStatus].dot)} />{poolStatusMap[poolStatus].label}</TypeChip> : null}{lifecycle !== "unknown" ? <TypeChip>{lifecycleLabel[lifecycle]}</TypeChip> : null}</span>}
         description={<span className="font-mono text-xs">{mediaLabel(media)} · {accountId} · {detail?.account.owner?.name ?? listItem?.owner?.displayName ?? "待分配"}{detail?.account.product ? ` · ${detail.account.product.name}` : listItem?.product ? ` · ${listItem.product.name}` : ""}{detail?.bio.openedAt ? ` · 开户 ${detail.bio.openedAt}` : ""}</span>}
-        isMock={isMock}
         actions={
           <>
-            <StateSwitch />
+            
             <Button variant="outline" size="sm" onClick={() => openAgentDrawer(`分析账户「${name}」的成本、余额与结构`)}><IconSparkles />问 AI</Button>
             {asItem ? <Button variant="outline" size="sm" onClick={() => setDialog({ kind: "replicate", item: asItem })}><IconCopy />优质户复制</Button> : null}
             {asItem ? <Button variant="outline" size="sm" onClick={() => setDialog({ kind: "transfer", items: [asItem] })}><IconArrowsExchange />交接</Button> : null}

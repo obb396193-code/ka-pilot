@@ -47,11 +47,19 @@ function error(code: StableDataQueryErrorCode, message: string, retryable: boole
   return errorEnvelopeSchema.parse({ ok: false, error: { code, message, retryable, requestId } })
 }
 
-function expectedStatus(body: unknown): number | null {
+/**
+ * 校验「状态码和 body 自洽」。
+ * - 成功信封：**接受任何 2xx**，不钉死 200。契约里成功不止一种码——`POST /admin/members` 是
+ *   201（v1.9.21）、`POST /system/etl-runs/:id/rerun` 是 202（v1.9.19）；钉死 200 的话这些
+ *   合法响应会被判成「上游不合契约」502，功能整条失效。
+ * - 错误信封：按码查表（映射在共享 contracts.ts）；`null` = 状态由后端定（405/410 等），
+ *   BFF 不二次判定，只要求 body 是合法信封。
+ */
+function statusMatchesBody(body: unknown, status: number): boolean {
   const parsed = errorEnvelopeSchema.safeParse(body)
-  if (!parsed.success) return 200
-  // 映射表在共享 contracts.ts；null = 状态由后端定（405/410 等），BFF 不二次判定，只要求 body 是合法信封。
-  return stableErrorStatus[parsed.data.error.code]
+  if (!parsed.success) return status >= 200 && status < 300
+  const expected = stableErrorStatus[parsed.data.error.code]
+  return expected === null || status === expected
 }
 
 export type ForwardOptions = {
@@ -124,8 +132,7 @@ export async function forwardToBackend(request: Request, options: ForwardOptions
     }
     const schema = options.dataSchema === undefined ? envelope(z.unknown()) : envelope(options.dataSchema)
     const parsed = schema.safeParse(body)
-    const expected = expectedStatus(body)
-    if (!parsed.success || bodyRequestId(body) !== requestId || (expected !== null && response.status !== expected)) {
+    if (!parsed.success || bodyRequestId(body) !== requestId || !statusMatchesBody(body, response.status)) {
       return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "The upstream response did not match the canonical contract", false, requestId), requestId }
     }
     return { status: response.status, body: parsed.data, requestId }

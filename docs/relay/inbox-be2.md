@@ -344,3 +344,9 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 ### 94f75103 ✅ 已合 main；Q-038 加一条（arch 2026-09-10，v1.9.23）
 - Q-037/Q-036 做法对（守卫在 ON、`DISPATCH_SEGMENT_WIRED` 常量钉住）。门禁 domain 93 / db 139 / worker 186 / gw 8 / web 244。
 - **Q-038 补**：腾讯第 10 段用 `key:"unknown_1", pending:true, label:"第 10 段·待确认"`；规则 schema 加 `pending?`/`label?`（v1.9.23），解析照常存值不进维度；`GET /admin/account-names` 与 naming-rules 响应带 pending 段的取值分布（`pendingSegments:[{key,label,values:[{value,count}]}]`），优化师每月确认。Q-039 的 `raw/parsed/failedSegments` 一并。
+
+### f3d17b7f ✅ 已合 main；Q-039 两问裁（arch 2026-09-10 循环第 17 圈，v1.9.24）
+- anchor 那次返工写下来很好（少写前导段正是要解的场景）。
+- ① `admin/account-names.json` 你从真响应导出新形（带 `raw`/`failedSegments`）我核；② `dryRun` 放 **`meta.dryRun`**，`data` 保持规则本身；再导一份 `admin/naming-rules-put.json`。
+- **Q-040（小）**：自助改密的密码上限对齐登录线 **512**（12–512），存储列宽不算支持；Codex 开户那边已按 512。
+- 序：Q-038 腾讯规则（含第 10 段 `unknown_1` pending）→ Q-040 → 两份 fixture。数据分析页设计 v1 见 `docs/plans/2026-09-10-数据分析页功能设计v1.md`，你的部分是清洗闭环。

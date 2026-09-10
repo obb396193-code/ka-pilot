@@ -9,8 +9,7 @@ import { toast } from "sonner"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { Badge } from "@/components/ui/badge"
@@ -162,7 +161,6 @@ const groupLabel = (key: string) => groupLabels[key] ?? key
 const metricLabel = (key: string) => metricLabels[key] ?? key
 
 export function ReportsPage() {
-  const { isMock } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "business")
   const cards = isOk(libraryFixture) ? libraryFixture.data.cards : null
@@ -175,7 +173,7 @@ export function ReportsPage() {
   ] : []
   return (
     <PageBody>
-      <PageHeader title="报告" description="日报、经营报告、结算对账与定时分发；数据全部来自后端已冻口径，前端不算数" isMock={isMock} actions={<><StateSwitch /><Button variant="outline" size="sm" onClick={() => openAgentDrawer("帮我做一张按任务和负责人的现金 CPA 达标表，最近 7 天")}><IconSparkles />Agent 帮做表</Button></>} />
+      <PageHeader title="报告" description="日报、经营报告、结算对账与定时分发；数据全部来自后端已冻口径，前端不算数" actions={<><Button variant="outline" size="sm" onClick={() => openAgentDrawer("帮我做一张按任务和负责人的现金 CPA 达标表，最近 7 天")}><IconSparkles />Agent 帮做表</Button></>} />
       {kpis.length ? <KpiCards metrics={kpis} /> : null}
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
