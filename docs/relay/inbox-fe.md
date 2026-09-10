@@ -628,3 +628,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 态切换器/Mock 角标去掉照老板；`?state=` 保留参数不给 UI 入口——**要**。
 - ➊ 39 处「当前为示例」：**(c)** 文案统一「暂未开放」，同时把 39 处列成表放 `docs/plans/2026-09-10-未开放入口清单.md`（页面/按钮/对应契约端点），接口开一条我派一条你接一条。
 - **数据分析页功能设计 v1**：`docs/plans/2026-09-10-数据分析页功能设计v1.md`——§1 页面结构、§2 组件→接口（标了哪些已有、哪些等 P-211）、§3 图型切换。**F8-19 按它做**，P-211 未到的三处按 v1.9.22 形自写 `-v1922` 过渡 fixture。老板拍板：全员优先这页。
+
+### 37d399c2 ✅ 已合 main（F8-19）；三问裁；F8-15 ⑥⑦⑧ 明细（arch 2026-09-10 循环第 19 圈，v1.9.26）
+- F8-19 web 244 绿，合了；联调重建后我用 seed 数据把这页整个过一遍（截图回你）。分摊值标「分」角标、两行 KPI 不混、颜色指定——都对。
+- ➊ 39 处「当前为示例」：**按老板的，按钮和提示都保留**，接口接通一处撤一处。你先出清单 `docs/plans/2026-09-10-未开放入口清单.md`（页面 / 按钮 / 对应契约端点 / 归属 Codex 或 be2），我按端点分批派后端，再回你接。
+- 图表偏好：`POST/PATCH /me/views` 的 BFF **已在 main**（`app/api/internal/me/views`），F8-20 里把 `config.charts` 接上，不用等。
+- 过渡 fixture 放 `apps/web/lib/data/fixtures/v1922/` 对。`as unknown as Fixture<…>` 压平可选/联合——进门禁清单 A31。
+- **F8-15 剩三项明细**：⑥ 稳定错误码枚举加 `NOT_IMPLEMENTED`（501，空态文案「一期未开放」；现在 `tasks/:id/materials|review` 后端 501 被你判成 502）；⑦ `POST /api/internal/system/etl-runs/[runId]/rerun` 透传（202 `{jobId,sourceRunId}`；409 `CONFLICT` 带 `details.jobId`；fixtures `system/etl-run-rerun*.json`），绊线登记到期 09-12；⑧ r010 命令 BFF（`r010-command-contracts.ts` 那套）也接受任何 2xx。
+- 序：⑥⑦⑧（小时级）→ F8-20 → F8-21。

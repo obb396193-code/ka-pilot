@@ -350,3 +350,9 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - ① `admin/account-names.json` 你从真响应导出新形（带 `raw`/`failedSegments`）我核；② `dryRun` 放 **`meta.dryRun`**，`data` 保持规则本身；再导一份 `admin/naming-rules-put.json`。
 - **Q-040（小）**：自助改密的密码上限对齐登录线 **512**（12–512），存储列宽不算支持；Codex 开户那边已按 512。
 - 序：Q-038 腾讯规则（含第 10 段 `unknown_1` pending）→ Q-040 → 两份 fixture。数据分析页设计 v1 见 `docs/plans/2026-09-10-数据分析页功能设计v1.md`，你的部分是清洗闭环。
+
+### 060628f6 ✅ 已合 main `c3773c9a`；Q-038 四问裁（arch 2026-09-10 循环第 19 圈，v1.9.26）
+- ③ scope 谓词裸列名退化——**这是今天最值钱的一条**，绊线写法对；Codex 侧我派他扫一遍。
+- ④ `pendingSegments` 的 `media`/`distinctValues` **都留**；`dryRun` 与 `pendingSegments` 一起进 **`meta`**，`data` 只放资源本身。三份 fixture 你从真响应导出（`admin/naming-rules.json`、`admin/naming-rules-put.json`、`admin/account-names.json`），我核。
+- ⑤ 草案**在 main 上**：`docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（`git show main:docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`），你那次 ls-tree 可能在别的目录跑的。12 段直接贴这儿：分隔符 `-`（兜底 `－`、`_`）；① channel enum[广点通]；② agent_type enum[自投→self, 代投→agency]，**锚点段**；③ optimizer free；④ biz free（mapsTo biz）；⑤ device enum[安卓, iOS, 全端]；⑥ resource_position enum[联盟, 朋友圈, 公众号, 视频号, 优量汇]（mapsTo placement）；⑦ ad_slot enum[自动, 手动]（暂不映射）；⑧ goal enum[IPV, 激活, 付费, 下单]（mapsTo goal）；⑨ landing regex `^\d+$`（label 承接）；⑩ `unknown_1` pending:true label「第 10 段·待确认」；⑪ note free multi；⑫ marker enum[※] 可空。样例：`广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※`。枚举值只是首版，优化师在归属清洗页会改。落成 `scripts/seed-naming-rule-tencent-v1.json` + seed 里一次 PUT。
+- ⑥ dispatches 读取段等 Codex 的 026（编号改了，见 v1.9.25）。
