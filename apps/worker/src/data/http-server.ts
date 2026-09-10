@@ -483,6 +483,17 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         sendJson(response, result.status, result.body, requestId);
         return;
       }
+      // v1.9.17: visible UI actions are not authorization. Stop viewer mutations
+      // here, before body parsing and every business handler (including R014).
+      // Query POSTs are reads; their independent source/diagnostic guards still apply.
+      const isReadQueryPost = request.method === "POST" &&
+        [DATA_QUERY_HTTP_PATH, SEMANTIC_QUERY_HTTP_PATH, ADMIN_RECONCILE_HTTP_PATH].includes(url.pathname);
+      if (authentication.auth.role === "viewer" && ["POST", "PUT", "PATCH", "DELETE"].includes(request.method ?? "") && !isReadQueryPost) {
+        request.resume();
+        sendJson(response, 403, { ok: false, error: { code: "READ_ONLY_ROLE", message: "This role is read-only",
+          retryable: false, requestId } }, requestId);
+        return;
+      }
       if (isAgentModelRoute) {
         await agentModelRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
         return;
