@@ -1,3 +1,13 @@
+/** A partial cumulative account sample is not a daily canonical input.
+ * JSONB equality avoids unsafe casts of malformed historical request params.
+ */
+export function accountRealtimeDaySampleSql(alias: string): string {
+  if (!/^[a-z][a-z0-9_]*$/.test(alias)) throw new Error("Invalid readability alias");
+  return `(${alias}.resource <> 'account_realtime'
+    OR NOT (${alias}.request_params ? 'hh')
+    OR ${alias}.request_params->'hh' IN ('24'::jsonb, '"24"'::jsonb))`;
+}
+
 /** Code-owned SQL identifiers only, never interpolate request values here.
  * A failure masks the whole tuple-day, without deleting its historical samples.
  * Canonical may recover only after a matching successful sample AND recomputation.
@@ -17,6 +27,7 @@ export function etlBatchReadableSql(alias: string, kind: "canonical" | "raw" = "
         WHERE recovery.workspace_id=${alias}.workspace_id AND recovery.media=${alias}.media
           AND recovery.account_id=${alias}.account_id AND recovery.ds=${alias}.ds
           AND recovery.resource=failure.value->>'resource'
+          AND ${accountRealtimeDaySampleSql("recovery")}
           AND recovery.fetched_at > (failure.value->>'failedAt')::timestamptz
           ${kind === "canonical" ? `AND recovery.fetched_at <= ${alias}.computed_at` : ""}
           AND (recovery.resource <> 'ad_realtime' OR (

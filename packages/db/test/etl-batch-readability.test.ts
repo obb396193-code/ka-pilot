@@ -5,7 +5,7 @@ import { EtlRunRepository } from "../src/etl-run-repository.js";
 import { EtlBatchFailureRepository } from "../src/etl-batch-failure-repository.js";
 import { RawMetricsRepository } from "../src/raw-metrics-repository.js";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
-import { etlBatchReadableSql } from "../src/etl-batch-readability.js";
+import { accountRealtimeDaySampleSql, etlBatchReadableSql } from "../src/etl-batch-readability.js";
 import { runMigrations } from "../src/migrate.js";
 import { PlatformPivotRepository } from "../src/platform-pivot-repository.js";
 import { RuleEvidenceRepository } from "../src/rule-evidence-repository.js";
@@ -63,6 +63,7 @@ describe("failed tuple-day readability / real PG", () => {
   };
   it("does not allow SQL alias injection", () => {
     expect(() => etlBatchReadableSql("metric; SELECT 1")).toThrow("Invalid readability alias");
+    expect(() => accountRealtimeDaySampleSql("raw; SELECT 1")).toThrow("Invalid readability alias");
   });
   it("hides stale Raw/Canonical but keeps expected missing days and tuple isolation", async () => {
     expect((await semantic.querySummary(scope())).cost).toBe(20);
@@ -78,6 +79,28 @@ describe("failed tuple-day readability / real PG", () => {
   it("fresh matching Raw restores merge inputs, not old canonical; recompute restores readability", async () => {
     await fail(); await raw(); await missing();
     expect(await new RawMetricsRepository(pool).loadMergeInputs({ ...scope(), reportDate: ds })).toMatchObject([{ accountId: "a", realtime: {} }]);
+    await pool.query("UPDATE account_metrics_daily SET computed_at=clock_timestamp() WHERE workspace_id=$1", [workspaceId]);
+    expect((await semantic.querySummary(scope())).cost).toBe(20);
+  });
+  it("account hour samples never replace a day-level canonical merge input", async () => {
+    const repository = new RawMetricsRepository(pool);
+    await raw("account_realtime", { hh: 12 });
+    await pool.query("UPDATE metrics_raw SET payload='{\"account_cost\":999}' WHERE workspace_id=$1 AND request_params ? 'hh'", [workspaceId]);
+    expect((await repository.loadMergeInputs({ ...scope(), reportDate: ds })).map(row => row.realtime)).toEqual([{}]);
+    await raw("account_realtime", { hh: 24 });
+    await pool.query("UPDATE metrics_raw SET payload='{\"account_cost\":20}' WHERE workspace_id=$1 AND request_params->'hh'='24'::jsonb", [workspaceId]);
+    expect(await repository.loadMergeInputs({ ...scope(), reportDate: ds })).toMatchObject([{ accountId: "a", realtime: { account_cost: 20 } }]);
+  });
+  it("account partial-hour or malformed samples cannot recover a failed day, even after recomputation", async () => {
+    await fail();
+    for (const hh of [0, 12, 23, "23", null, true, {}, 25]) {
+      await raw("account_realtime", { hh });
+      await pool.query("UPDATE account_metrics_daily SET computed_at=clock_timestamp() WHERE workspace_id=$1", [workspaceId]);
+      await missing();
+      expect(await new RawMetricsRepository(pool).loadMergeInputs({ ...scope(), reportDate: ds })).toEqual([]);
+    }
+    await raw("account_realtime", { hh: "24" });
+    await missing();
     await pool.query("UPDATE account_metrics_daily SET computed_at=clock_timestamp() WHERE workspace_id=$1", [workspaceId]);
     expect((await semantic.querySummary(scope())).cost).toBe(20);
   });

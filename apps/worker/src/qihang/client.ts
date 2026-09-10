@@ -47,6 +47,7 @@ export type QihangQuery =
   | (CommonQuery & {
       resource: "account_realtime";
       ds: string;
+      hh?: number | string;
     })
   | (CommonQuery & {
       resource: "ad_realtime";
@@ -305,6 +306,7 @@ export class QihangClient {
         break;
       case "account_realtime":
         appendParam(url.searchParams, "ds", compactQihangDate(query.ds, "ds"));
+        appendParam(url.searchParams, "hh", qihangCumulativeHour(query.hh));
         break;
       case "ad_realtime":
         appendParam(url.searchParams, "ds", compactQihangDate(query.ds, "ds"));
