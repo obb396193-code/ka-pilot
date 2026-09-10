@@ -104,3 +104,4 @@ export * from "./account-hourly-sample.js";
 // be: P211 BI arithmetic; public query shape and coverage remain separate.
 export * from "./dashboard-bi.js";
 export * from "./named-dimension.js";
+export * from "./dashboard-filters.js";

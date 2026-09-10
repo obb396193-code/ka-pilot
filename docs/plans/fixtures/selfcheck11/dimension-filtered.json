@@ -1,0 +1,151 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "dimension": "optimizer",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "rows": [
+        {
+          "source": "nickname",
+          "sources": {
+            "nickname": 1
+          },
+          "key": "owner-a",
+          "label": "owner-a",
+          "metrics": {
+            "cost": {
+              "value": 10,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 100,
+              "availability": "available"
+            },
+            "click": {
+              "value": 10,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 2,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 10,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 0,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.1,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.2,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 10,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 10,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": {
+              "value": 10,
+              "effectiveDate": "2026-08-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        }
+      ],
+      "returnedRowCount": 1,
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      },
+      "lineage": {
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY"
+        ],
+        "source": "canonical",
+        "datasetVersion": null,
+        "queryTemplateVersion": "account-dimension-window-v1",
+        "metricVersion": "account-dimension-v3",
+        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true,
+          "returnedObjects": 1
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": [
+        "BUDGET_SOURCE_NOT_READY"
+      ]
+    }
+  }
+}

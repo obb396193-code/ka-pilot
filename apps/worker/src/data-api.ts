@@ -17,7 +17,6 @@ import {
   TaskListRepository,
   WorkItemListRepository,
   WorkItemRepository,
-  withSemanticReadSnapshot,
 } from "@ka/db";
 
 import { loadDataApiConfig } from "./data/data-api-config.js";
@@ -25,7 +24,7 @@ import { AccountListService } from "./accounts/account-list-service.js";
 import { createDataApiServer } from "./data/http-server.js";
 import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
-import { PlatformDataSource } from "./data/platform-data-source.js";
+import { PlatformDataSource, createPlatformReadSnapshot } from "./data/platform-data-source.js";
 import { createPlatformWindowQuery } from "./data/platform-window-query.js";
 import { createPlatformDimensionQuery } from "./data/platform-dimension-query.js";
 import { createPlatformPivotQuery } from "./data/platform-pivot-query.js";
@@ -91,8 +90,8 @@ async function main(): Promise<void> {
     kaData: config.kaDataEnabled
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
-    platform: new PlatformDataSource(new SemanticQueryRepository(pool), (read) =>
-      withSemanticReadSnapshot(pool, (connection) => read(new SemanticQueryRepository(connection))), createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), createPlatformPivotQuery(pool)),
+    platform: new PlatformDataSource(new SemanticQueryRepository(pool), createPlatformReadSnapshot(pool),
+      createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), createPlatformPivotQuery(pool)),
     sourcePolicy: {
       diagnosticEnabled: config.dataDiagnosticEnabled,
       kaDataEnabled: config.kaDataEnabled,

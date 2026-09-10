@@ -136,9 +136,9 @@ export class WindowAssessmentRepository {
     ) SELECT count(*)::int AS total,
       count(*) FILTER(WHERE complete)::int AS determinable,
       count(*) FILTER(WHERE complete AND cash<=target)::int AS on_target,
-      coalesce(bool_or(corrupt OR members<>${scope.filters?.taskId === undefined ? `$${filter.values.length + 1}` : "eligible_days"}
+      coalesce(bool_or(corrupt OR members<>${scope.filters?.taskId === undefined && scope.filters?.accountDays === undefined ? `$${filter.values.length + 1}` : "eligible_days"}
         OR cash::text IN ('NaN','Infinity','-Infinity') OR target::text IN ('NaN','Infinity','-Infinity')),false) AS invalid
-      FROM account_totals`, scope.filters?.taskId === undefined ? [...filter.values, filter.span] : filter.values);
+      FROM account_totals`, scope.filters?.taskId === undefined && scope.filters?.accountDays === undefined ? [...filter.values, filter.span] : filter.values);
     const row = result.rows[0] as Record<string, unknown> | undefined;
     if (result.rows.length !== 1 || !row || row.invalid !== false ||
       ![row.total, row.determinable, row.on_target].every((v) => typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 1000) ||

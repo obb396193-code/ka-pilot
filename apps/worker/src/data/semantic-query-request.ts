@@ -9,7 +9,8 @@ const legacySchema = z.object({
   compare: z.unknown().optional(), preset: z.unknown().optional(), dimension_type: z.unknown().optional(),
   page: z.unknown().optional(), page_size: z.unknown().optional(), columns: z.unknown().optional(),
   filters: z.object({ media: z.unknown().optional(), account_id: z.unknown().optional(),
-    task_id: z.unknown().optional(), owner: z.unknown().optional() }).strict().optional(),
+    task_id: z.unknown().optional(), owner: z.unknown().optional(), optimizer: z.unknown().optional(),
+    biz: z.unknown().optional(), goal: z.unknown().optional(), resource_position: z.unknown().optional() }).strict().optional(),
 }).strict();
 
 export const semanticQueryRequestSchema = z.preprocess((input, context) => {
@@ -31,7 +32,13 @@ export const semanticQueryRequestSchema = z.preprocess((input, context) => {
     if (Object.hasOwn(filters, "account_id")) params.accountIds = [filters.account_id];
     // Not silently dropped: until these capabilities are registered, the same
     // strict Registry rejects them rather than returning a broader result.
-    if (Object.hasOwn(filters, "task_id")) params.taskId = filters.task_id;
+    const dashboard: Record<string, unknown> = {};
+    if (Object.hasOwn(filters, "task_id")) {
+      if (Array.isArray(filters.task_id)) dashboard.task_id = filters.task_id;
+      else params.taskId = filters.task_id;
+    }
+    for (const key of ["optimizer", "biz", "goal", "resource_position"] as const) if (Object.hasOwn(filters, key)) dashboard[key] = filters[key];
+    if (Object.keys(dashboard).length) params.filters = dashboard;
     if (Object.hasOwn(filters, "owner")) params.owner = filters.owner;
   }
   return { queryId: `account.${value.query_type}`, params };

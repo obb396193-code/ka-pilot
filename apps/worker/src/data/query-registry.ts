@@ -8,6 +8,7 @@ import {
   dimensionTypeSchema,
   accountHourlyParamsSchema,
   accountGapParamsSchema,
+  dashboardFiltersSchema, type DashboardFilters,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -33,6 +34,7 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  filters?: DashboardFilters;
   groupBy?: "account" | "task" | "biz";
   hhFrom?: number;
   hhTo?: number;
@@ -142,6 +144,7 @@ const commonDateFields = {
 };
 
 function normalizeDateParams(input: {
+  filters?: DashboardFilters;
   dimensionType?: z.infer<typeof dimensionTypeSchema>;
   date?: string;
   dateFrom?: string;
@@ -171,6 +174,7 @@ function normalizeDateParams(input: {
   return {
     dateFrom,
     dateTo,
+    ...(input.filters === undefined ? {} : { filters: input.filters }),
     ...(input.dimensionType === undefined ? {} : { dimensionType: input.dimensionType }),
     ...(input.preset === undefined ? {} : { preset: input.preset }),
     ...(input.compare === undefined ? {} : { compare: input.compare }),
@@ -203,11 +207,12 @@ const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSch
 }).strict().transform(({ window_from, window_to, taskIds, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to,
   ...(taskIds === undefined ? {} : { taskIds }) }));
 const intervalSchema = normalizedSchema(commonDateFields);
-const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
+const windowFields = { ...commonDateFields, filters: dashboardFiltersSchema.optional(), taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
 const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
 const trendSchema = normalizedSchema(windowFields);
 const tableSchema = normalizedSchema({
   ...commonDateFields,
+  filters: dashboardFiltersSchema.optional(),
   taskId: taskQueryIdSchema.optional(),
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(500).default(50),
@@ -348,7 +353,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-dimension-window-v1",
     metricVersion: "account-dimension-v3", authorityPolicy: authority("cross_media_operations", "platform"),
-    paramsSchema: normalizedSchema({ ...commonDateFields, preset: queryWindowSchema.shape.preset.optional(), dimensionType: dimensionTypeSchema }),
+    paramsSchema: normalizedSchema({ ...commonDateFields, filters: dashboardFiltersSchema.optional(), preset: queryWindowSchema.shape.preset.optional(), dimensionType: dimensionTypeSchema }),
   },
   {
     queryId: "account.anomalies",
@@ -500,6 +505,10 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
+    if (parsedParams.data.filters !== undefined) {
+      if (dataView.data !== "platform") throw new QueryRegistryError("VIEW_UNSUPPORTED", "Dashboard filters are not available for this source");
+      assertDateBudget(parsedParams.data, 31);
+    }
     if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !["account", "task", "biz"].includes(dim ?? ""))) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source");
     }
@@ -637,6 +646,7 @@ export function createDataQueryRegistry(options: { today?: () => string } = {}):
 }
 
 function rejectKaTaskWindow(resolved: ResolvedDataQuery): void {
+  if (resolved.params.filters !== undefined) throw new QueryRegistryError("VIEW_UNSUPPORTED", "Dashboard filters are not available for this source");
   if (resolved.params.taskId !== undefined && (resolved.queryId === "account.summary" || resolved.queryId === "account.trend")) {
     throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");
   }
