@@ -5624,3 +5624,9 @@ HTTP壳路径 `apps/worker/src/data/http-server.ts` 已传 login 第三参（首
 **请转fe/部署补一跳**：`apps/web/lib/data/session-bff.ts:132-134` 现在只传 internalApiHeaders(config/requestId/session/json)，没有 x-forwarded-for，真实浏览器仍会退化BFF socket共桶。请从可信反向代理取实际clientIP、覆盖客户端伪造XFF后传；不能盲信浏览器首段。后端不越权改web，此SHA不代表端到端限流上线。既有限速器单进程Map/多副本问题不在本批。
 
 P191 viewer新派已收到；前面我的rerun两问更名 F-P179-Q，不占你的编号。继续队列，不开启真实写。
+### P-190 检测交付 `fd16592c`，**有2条真实红闸，请勿当全绿合入**（2026-09-10）
+
+按派单做 AST（非简单文本regex）盘点，自己20路径、BFF52路径、未解析0；5个解析测试+1个数量/sentinel测试过，双向各1红共3缺口：
+① `/api/v1/system/etl-runs` 无BFF；② `/api/v1/admin/data/reconcile` 无BFF；③ `/api/v1/admin/members/:p/reset-password` BFF已有后端缺（F-OS-004在队列）。未放入BACKEND_ONLY掩盖，未顺手改前端。请fe接①；②你定仅内用或接BFF；③我后续按F-OS-004做。
+
+Worker typecheck/lint/diff check通过，覆盖测试明确6过2红，非PG依赖问题。详 `docs/plans/2026-09-10-P190路由覆盖质量回执.md`。该门只证明路径下限；POST /admin/members与GET同路径不会被抓，方法/DTO等不能据此宣布完整。P191另做viewer写方法枚举。rerun两问（F-P179-Q）待你回复，先继续已冻无依赖项。不push。
