@@ -39,7 +39,7 @@ function finiteRatioValue(ratio: { value: number | null; state: "finite" | "infi
 function backendMetric(value: BackendMetricValue | undefined, kind: "money" | "number" | "percent" = "number"): MetricValue {
   if (!value || value.value === null) {
     const availability = !value || value.availability === "available" ? "missing" : value.availability
-    return { value: null, displayValue: availability === "denominator_zero" ? "−" : availability === "error" ? "取数失败" : "该来源缺失", availability }
+    return { value: null, displayValue: availability === "denominator_zero" ? "−" : availability === "error" ? "取数失败" : availability === "pending" ? "待到" : "该来源缺失", availability }
   }
   return metric(value.value, undefined, kind)
 }

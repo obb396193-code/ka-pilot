@@ -15,7 +15,9 @@ import { displayMetricValueSchema, dataViewModeSchema } from "./data-view.ts"
 
 export { dataQueryIdSchema, type DataQueryId }
 
-export const availabilitySchema = z.enum(["available", "missing", "denominator_zero", "partial", "stale", "error"])
+// v1.9.27 加 pending：「这个数还没到」（调度未跑完 / 源未回），界面显「待到」——
+// 和 missing「这次查下来就是没有」分开，混成一个「−」人分不清是等一会儿还是永远没有。
+export const availabilitySchema = z.enum(["available", "missing", "denominator_zero", "partial", "stale", "error", "pending"])
 export type Availability = z.infer<typeof availabilitySchema>
 
 export const metricValueSchema = z.object({

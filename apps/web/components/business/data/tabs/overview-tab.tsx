@@ -60,7 +60,14 @@ export function OverviewTab({ colorKey, window }: { colorKey?: string; window: D
    * 过渡期用手上的按天行自己合，口径与后端一致（和的和、比率用总和÷总和重算而不是对每天的比率取平均）。
    * 窗口外没有任何一天时返回 null，页面照实说「这个区间没有数据」，不拿全量数顶上。
    */
-  const windowed = useMemo(() => aggregateDays(days as never, window.from, window.to), [days, window.from, window.to])
+  // ★只有当用户选的窗口**和后端那份 summary 的窗口不一样**时才自己重算。
+  // 一样的时候直接用后端那份——它带着后端算好的环比（compare.deltas），
+  // 自己重算反而把环比弄丢了（默认就是「本月至今」，等于环比永远不显）。
+  const sameAsBackend = lineage?.window?.from === window.from && lineage?.window?.to === window.to
+  const windowed = useMemo(
+    () => (sameAsBackend ? null : aggregateDays(days as never, window.from, window.to)),
+    [sameAsBackend, days, window.from, window.to],
+  )
 
   if (!summary) return <p className="rounded-lg border border-dashed px-3 py-10 text-center text-sm text-muted-foreground">概览暂无数据</p>
 
@@ -99,10 +106,10 @@ export function OverviewTab({ colorKey, window }: { colorKey?: string; window: D
               <TabsTrigger value="optimizer">优化师视角</TabsTrigger>
             </TabsList>
             <TabsContent value="biz" className="mt-3">
-              <DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv.value} rootCost={summary.metrics.cost.value} />
+              <DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv} />
             </TabsContent>
             <TabsContent value="optimizer" className="mt-3">
-              <DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv.value} rootCost={summary.metrics.cost.value} />
+              <DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv} />
             </TabsContent>
           </Tabs>
         </CardContent>

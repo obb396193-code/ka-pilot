@@ -16,16 +16,12 @@
               "value": 72030.0,
               "availability": "available"
             },
-            "cashCost": {
-              "value": 56269.8,
-              "availability": "available"
-            },
             "exposure": {
-              "value": 548800,
+              "value": 548868,
               "availability": "available"
             },
             "click": {
-              "value": 22866,
+              "value": 22862,
               "availability": "available"
             },
             "conversion": {
@@ -33,209 +29,19 @@
               "availability": "available"
             },
             "realConversion": {
-              "value": 1682,
-              "availability": "available"
-            },
-            "costSpace": {
-              "value": 7652.0,
-              "availability": "available"
-            },
-            "wakeUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "potentialUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "ratios": {
-              "ctr": {
-                "value": 0.0417,
-                "state": "finite"
-              },
-              "cvr": {
-                "value": 0.0772,
-                "state": "finite"
-              },
-              "realCpa": {
-                "value": 42.82,
-                "state": "finite"
-              },
-              "cashCpa": {
-                "value": 33.45,
-                "state": "finite"
-              },
-              "gap": {
-                "value": 0.0476,
-                "state": "finite"
-              },
-              "potentialRate": {
-                "value": null,
-                "state": "undefined"
-              },
-              "biConversionRate": {
-                "value": null,
-                "state": "undefined"
-              }
-            }
-          },
-          "assessment": {
-            "biConv": {
-              "value": 1558,
-              "availability": "available"
-            },
-            "biCashCost": {
-              "value": 36.12,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
-              "availability": "available"
-            },
-            "priceSource": "ka_daily",
-            "onTarget": true,
-            "costStatus": "green",
-            "costStatusReason": null,
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
-            }
-          },
-          "anomaly": null
-        },
-        {
-          "key": "rp-youxuan",
-          "label": "快手优选",
-          "metrics": {
-            "cost": {
-              "value": 44100.0,
+              "value": 1681,
               "availability": "available"
             },
             "cashCost": {
-              "value": 34450.9,
-              "availability": "available"
-            },
-            "exposure": {
-              "value": 336000,
-              "availability": "available"
-            },
-            "click": {
-              "value": 14000,
-              "availability": "available"
-            },
-            "conversion": {
-              "value": 1081,
-              "availability": "available"
-            },
-            "realConversion": {
-              "value": 1030,
+              "value": 56269.84,
               "availability": "available"
             },
             "costSpace": {
-              "value": 4685.0,
+              "value": 7649.59,
               "availability": "available"
             },
-            "wakeUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "potentialUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "ratios": {
-              "ctr": {
-                "value": 0.0417,
-                "state": "finite"
-              },
-              "cvr": {
-                "value": 0.0772,
-                "state": "finite"
-              },
-              "realCpa": {
-                "value": 42.82,
-                "state": "finite"
-              },
-              "cashCpa": {
-                "value": 33.45,
-                "state": "finite"
-              },
-              "gap": {
-                "value": 0.0472,
-                "state": "finite"
-              },
-              "potentialRate": {
-                "value": null,
-                "state": "undefined"
-              },
-              "biConversionRate": {
-                "value": null,
-                "state": "undefined"
-              }
-            }
-          },
-          "assessment": {
-            "biConv": {
-              "value": 954,
-              "availability": "available"
-            },
-            "biCashCost": {
-              "value": 36.11,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
-              "availability": "available"
-            },
-            "priceSource": "ka_daily",
-            "onTarget": false,
-            "costStatus": "yellow",
-            "costStatusReason": "window_over_single_day",
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
-            }
-          },
-          "anomaly": null
-        },
-        {
-          "key": "rp-jingxuan",
-          "label": "精选",
-          "metrics": {
-            "cost": {
-              "value": 19110.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 14928.7,
-              "availability": "available"
-            },
-            "exposure": {
-              "value": 145600,
-              "availability": "available"
-            },
-            "click": {
-              "value": 6066,
-              "availability": "available"
-            },
-            "conversion": {
-              "value": 468,
-              "availability": "available"
-            },
-            "realConversion": {
-              "value": 446,
-              "availability": "available"
-            },
-            "costSpace": {
-              "value": 2030.0,
+            "incentiveCost": {
+              "value": 6115.35,
               "availability": "available"
             },
             "wakeUv": {
@@ -264,7 +70,7 @@
                 "state": "finite"
               },
               "gap": {
-                "value": 0.047,
+                "value": 0.0481,
                 "state": "finite"
               },
               "potentialRate": {
@@ -278,63 +84,67 @@
             }
           },
           "assessment": {
-            "biConv": {
-              "value": 413,
-              "availability": "available"
-            },
-            "biCashCost": {
-              "value": 36.15,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
+            "priceSource": "ka_daily",
             "price": {
               "value": 34.5,
-              "availability": "available"
+              "effectiveDate": null
             },
-            "priceSource": "ka_daily",
             "onTarget": true,
             "costStatus": "green",
-            "costStatusReason": null,
+            "costStatusReason": "window_ok",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
-            }
-          },
-          "anomaly": null
-        },
-        {
-          "key": "rp-lianmeng",
-          "label": "联盟",
-          "metrics": {
-            "cost": {
-              "value": 11760.0,
+            },
+            "biConv": {
+              "value": 1558,
               "availability": "available"
             },
-            "cashCost": {
-              "value": 9186.9,
+            "biCashCost": {
+              "value": 36.12,
+              "availability": "available"
+            },
+            "overCost": {
+              "value": 2518.84,
+              "availability": "available"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "rp-youxuan",
+          "label": "快手优选",
+          "metrics": {
+            "cost": {
+              "value": 44100.0,
               "availability": "available"
             },
             "exposure": {
-              "value": 89600,
+              "value": 336042,
               "availability": "available"
             },
             "click": {
-              "value": 3734,
+              "value": 13997,
               "availability": "available"
             },
             "conversion": {
-              "value": 290,
+              "value": 1081,
               "availability": "available"
             },
             "realConversion": {
-              "value": 275,
+              "value": 1029,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 34450.92,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1250.0,
+              "value": 4683.42,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 3744.09,
               "availability": "available"
             },
             "wakeUv": {
@@ -351,19 +161,19 @@
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.0777,
+                "value": 0.0772,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.76,
+                "value": 42.86,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 33.41,
+                "value": 33.48,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0517,
+                "value": 0.0481,
                 "state": "finite"
               },
               "potentialRate": {
@@ -377,32 +187,238 @@
             }
           },
           "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 954,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.11,
+              "availability": "available"
+            },
+            "overCost": {
+              "value": 1537.92,
+              "availability": "available"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "rp-jingxuan",
+          "label": "精选",
+          "metrics": {
+            "cost": {
+              "value": 19110.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 145618,
+              "availability": "available"
+            },
+            "click": {
+              "value": 6065,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 468,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 445,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 14928.73,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 2029.48,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 1622.44,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0772,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.94,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.55,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0491,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 413,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.15,
+              "availability": "available"
+            },
+            "overCost": {
+              "value": 680.23,
+              "availability": "available"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "rp-lianmeng",
+          "label": "联盟",
+          "metrics": {
+            "cost": {
+              "value": 11760.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 89611,
+              "availability": "available"
+            },
+            "click": {
+              "value": 3732,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 290,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 276,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 9186.91,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 1248.91,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 998.42,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0777,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.61,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.29,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0483,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
             "biConv": {
               "value": 255,
               "availability": "available"
             },
             "biCashCost": {
               "value": 36.03,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
               "availability": "available"
             },
-            "priceSource": "ka_daily",
-            "onTarget": true,
-            "costStatus": "green",
-            "costStatusReason": null,
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+            "overCost": {
+              "value": 389.41,
+              "availability": "available"
             }
           },
-          "anomaly": null
+          "anomaly": false
         }
       ],
       "returnedRowCount": 4,
@@ -415,7 +431,8 @@
         "workspaceKind": "team",
         "window": {
           "from": "2026-09-01",
-          "to": "2026-09-05"
+          "to": "2026-09-05",
+          "preset": "month_to_date"
         },
         "coverage": {
           "complete": true,
@@ -439,6 +456,6 @@
   },
   "meta": {
     "requestId": "fixture-dimension-resource-position",
-    "_note": "★fe 过渡 fixture（F8-19）：按 api.md v1.9.22 形自写；Codex P-210 导出后并回删除。未解析出该段的账户归「未标注」，不丢行也不并进别人。"
+    "_note": "★fe 过渡 fixture（F8-19b）：按 api.md v1.9.27 形自写并过 zod 校验；后端导出真 fixture 后删本文件。未解析出该段的账户归「未标注」，不丢行也不并进别人。"
   }
 }

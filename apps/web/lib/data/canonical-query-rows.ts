@@ -48,6 +48,10 @@ export const canonicalMetricValueSchema = z.discriminatedUnion("availability", [
   z.object({ value: finiteNumber, availability: z.literal("available") }).strict(),
   z.object({ value: z.null(), availability: z.literal("missing") }).strict(),
   z.object({ value: z.null(), availability: z.literal("error") }).strict(),
+  // v1.9.27：pending =「这个数还没到」（调度未跑完 / 源未回），界面显「待到」。
+  // 和 missing「这次查下来就是没有」不是一回事——两者混成一个「−」，
+  // 人分不清是等一会儿还是永远不会有。
+  z.object({ value: z.null(), availability: z.literal("pending") }).strict(),
 ])
 
 const hourlyVolumeSchema = z.object({ cost: canonicalMetricValueSchema, cashCost: canonicalMetricValueSchema,
@@ -93,6 +97,9 @@ export const canonicalMetricSetSchema = z.object({
   realConversion: canonicalMetricValueSchema,
   cashCost: canonicalMetricValueSchema,
   costSpace: canonicalMetricValueSchema,
+  // v1.9.27：账面里由平台激励承担的部分。**不是 costSpace**——
+  // costSpace 是「成本空间」（离考核线还剩多少），两者含义无关，之前 KPI 卡绑错了。
+  incentiveCost: canonicalMetricValueSchema.optional(),
   wakeUv: canonicalMetricValueSchema,
   potentialUv: canonicalMetricValueSchema,
   ratios: canonicalRatioSetSchema,
@@ -117,6 +124,12 @@ export const accountSummaryRowSchema = z.object({
     onTarget: z.boolean().nullable(), costStatus: z.enum(["green", "yellow", "red"]).nullable(),
     costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
     budgetUsageRate: ratioValueSchema,
+    /* v1.9.27 考核口径三项（camelCase）。只有 summary 和新维度带，老维度行没有 → optional。 */
+    biConv: canonicalMetricValueSchema.optional(),
+    /** ★MetricValue 不是 RatioValue：它是「一个 BI 转化多少钱」的金额，可缺可待到 */
+    biCashCost: canonicalMetricValueSchema.optional(),
+    /** 现金花费 − Σ日(考核BI数 × 当日生效考核价)；正 = 超成本，负 = 还有余量 */
+    overCost: canonicalMetricValueSchema.optional(),
   }).strict().superRefine((value, ctx) => {
     const expected = { window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
       cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null] } as const
@@ -127,7 +140,7 @@ export const accountSummaryRowSchema = z.object({
     if (value.onTarget !== null && value.price === null && value.priceVersions === undefined) ctx.addIssue({ code: "custom", message: "Missing price evidence" })
     if (value.costStatusReason === "assessment_missing" && (value.price !== null || value.priceVersions !== undefined)) ctx.addIssue({ code: "custom", message: "Missing assessment cannot have complete prices" })
   }),
-  compare: z.object({ mode: z.enum(["dod", "wow"]), deltas: z.object({
+  compare: z.object({ mode: z.enum(["dod", "wow", "prev_window"]), deltas: z.object({
     cost: ratioValueSchema, cashCost: ratioValueSchema, realConversion: ratioValueSchema, cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
   }).strict() }).strict().optional(),
 }).strict().superRefine(refineAssessmentMetrics)

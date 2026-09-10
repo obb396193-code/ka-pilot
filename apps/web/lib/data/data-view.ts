@@ -7,7 +7,7 @@ export const dataStateSchema = z.enum(["loading", "ready", "empty", "error", "un
 export type DataState = z.infer<typeof dataStateSchema>
 
 const availableDisplayValueSchema = z.object({ value: z.number().finite(), displayValue: z.string().min(1), availability: z.literal("available") }).strict()
-const unavailableDisplayValueSchema = z.object({ value: z.null(), displayValue: z.string().min(1), availability: z.enum(["missing", "denominator_zero", "partial", "stale", "error"]) }).strict()
+const unavailableDisplayValueSchema = z.object({ value: z.null(), displayValue: z.string().min(1), availability: z.enum(["missing", "denominator_zero", "partial", "stale", "error", "pending"]) }).strict()
 export const displayMetricValueSchema = z.union([availableDisplayValueSchema, unavailableDisplayValueSchema])
 export type MetricValue = z.infer<typeof displayMetricValueSchema>
 
