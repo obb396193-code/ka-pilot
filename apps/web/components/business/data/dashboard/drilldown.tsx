@@ -2,27 +2,32 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { IconChevronRight } from "@tabler/icons-react"
+import { IconChevronRight, IconLoader2 } from "@tabler/icons-react"
 
 import { StatusChip } from "@/components/business/data-grid/data-grid"
+import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { isOk, mv, rv } from "@/lib/fixtures/contract"
-import { allocateBi, drillFixture, type DashboardRow } from "@/lib/fixtures/dashboard"
+import { mv, rv } from "@/lib/fixtures/contract"
+import { allocateBi, type DashboardRow } from "@/lib/fixtures/dashboard"
+import { useDrillChildren } from "@/lib/data/use-dashboard"
 import { cn } from "@/lib/utils"
 
-// F8-19 三级钻取：优化师 → 任务大类 → 细分任务 → 账户。
-// 真实模式下每展开一层 = 一次 `POST /data/query`（带上游 filters），不是一次性把整棵树拉下来——
-// 树全量下发在账户多的空间会非常大，而且大部分层永远不会被展开。
-// 过渡期用 fixture 的 byParent 表模拟同样的「按需取下一层」。
+/**
+ * 三级钻取表。层级由 `levels` 给（优化师树 = optimizer→biz→task→account，
+ * 任务大类树 = biz→task→account），**每展开一层发一次带上游 filters 的查询**——
+ * 树全量下发在账户多的空间会非常大，而且大部分层永远不会被展开。
+ *
+ * 未展开时不知道某行有没有下一级（真实模式没查过），所以：
+ * 非叶子层一律给展开箭头，点开若为空就说「没有下一级」——
+ * 比「先查一遍全部只为决定要不要画箭头」诚实也便宜。
+ */
 
-const children = (parentKey: string): DashboardRow[] => {
-  const table = isOk(drillFixture) ? drillFixture.data.byParent : {}
-  return table[parentKey] ?? []
-}
+/** 每一级维度对应的 filter 键：逐级把上游选中的值带下去 */
+const FILTER_KEY: Record<string, string> = { optimizer: "optimizer", biz: "biz", task: "task_id", account: "account_id" }
 
 /**
  * 账户行按 **key 的形态**判，不按层级深度：`<MEDIA>:<accountId>` 才是账户。
- * 按 depth 判是错的——优化师树的账户在第 3 层、任务大类树的账户在第 2 层，
+ * 按 depth 判是错的——优化师树的账户在第 3 层、任务大类树在第 2 层，
  * 写死 depth 会让后者永远不是链接（审查员 C ⑭）。
  */
 function accountHref(key: string): string | null {
@@ -37,22 +42,39 @@ function Allocated() {
   return <span className="rounded bg-muted px-1 text-[10px] text-muted-foreground" title="按消耗占比从上级分摊，不是该层实测值">分</span>
 }
 
-function Row({ row, depth, siblings, parentBi, path, expanded, onToggle }: {
+type Shared = {
+  levels: string[]
+  window: DataWindow
+  workspaceId: string | undefined
+  expanded: Set<string>
+  onToggle: (path: string) => void
+  /** 结果被截断或只是部分：整列不分摊 */
+  incomplete: boolean
+}
+
+function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
   row: DashboardRow
   depth: number
   /** 同级已返回的行：分摊的分母取它们的消耗之和，不是父行消耗 */
   siblings: DashboardRow[]
   parentBi: DashboardRow["assessment"]["biConv"] | null
   path: string
-  expanded: Set<string>
-  onToggle: (path: string) => void
+  /** 从祖先累积下来的上游过滤条件 */
+  filters: Record<string, unknown>
+  shared: Shared
 }) {
-  const kids = children(path)
+  const { levels, window, workspaceId, expanded, onToggle, incomplete } = shared
+  const nextDimension = levels[depth + 1]
+  const isLeaf = nextDimension === undefined
   const open = expanded.has(path)
+  const childFilters = { ...filters, [FILTER_KEY[levels[depth]] ?? levels[depth]]: [row.key] }
+  // 只有展开时才查下一层（未展开时 path 传空，hook 内不发请求）
+  const kids = useDrillChildren(open ? path : "", nextDimension ?? "account", childFilters, window, workspaceId)
+
   // 后端给了这一层的考核 BI 数就直接用，不重算；没给才按消耗占比从上级分摊
   const own = row.assessment.biConv
   const measured = own && own.availability === "available" ? own.value : null
-  const allocatedBi = measured === null ? allocateBi({ parentBi, siblings, childCost: row.metrics.cost.value }) : null
+  const allocatedBi = measured === null ? allocateBi({ parentBi, siblings, childCost: row.metrics.cost.value, incomplete }) : null
   const bi = measured ?? allocatedBi
   const isAllocated = measured === null && allocatedBi !== null
   // 后端给了 biCashCost 就用它，别拿分摊值再除一遍——两个口径会打架
@@ -63,13 +85,14 @@ function Row({ row, depth, siblings, parentBi, path, expanded, onToggle }: {
   // 派生出来的成本同样是「分」的——它建立在分摊值之上（审查员 D ③）
   const biCostAllocated = (!backendBiCost || backendBiCost.availability !== "available") && isAllocated
   const href = accountHref(row.key)
+  const childRows = kids.data ?? []
 
   return (
     <>
       <TableRow>
         <TableCell style={{ paddingLeft: 12 + depth * 18 }}>
           <span className="flex items-center gap-1.5">
-            {kids.length ? (
+            {isLeaf ? <span className="w-[22px] shrink-0" /> : (
               // 整行可点在这里不合适：行内还有账户链接，点链接会连带展开。
               // 改成行内按钮 + aria-expanded，键盘也能到（审查员 C ⑬）
               <button
@@ -79,9 +102,11 @@ function Row({ row, depth, siblings, parentBi, path, expanded, onToggle }: {
                 onClick={() => onToggle(path)}
                 className="rounded p-0.5 text-muted-foreground hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
               >
-                <IconChevronRight className={cn("size-3.5 transition-transform", open && "rotate-90")} />
+                {open && kids.loading
+                  ? <IconLoader2 className="size-3.5 animate-spin" />
+                  : <IconChevronRight className={cn("size-3.5 transition-transform", open && "rotate-90")} />}
               </button>
-            ) : <span className="w-[22px] shrink-0" />}
+            )}
             {href ? <Link href={href} className="underline-offset-4 hover:underline">{row.label}</Link> : <span className={cn(depth === 0 && "font-medium")}>{row.label}</span>}
           </span>
         </TableCell>
@@ -102,18 +127,43 @@ function Row({ row, depth, siblings, parentBi, path, expanded, onToggle }: {
             : row.assessment.onTarget ? <StatusChip tone="success">达标</StatusChip> : <StatusChip tone="critical">超线</StatusChip>}
         </TableCell>
       </TableRow>
-      {open ? kids.map((kid) => (
-        <Row key={`${path}|${kid.key}`} row={kid} depth={depth + 1} siblings={kids} parentBi={own ?? parentBi} path={`${path}|${kid.key}`} expanded={expanded} onToggle={onToggle} />
+      {open && kids.error ? (
+        <TableRow><TableCell colSpan={10} className="text-xs text-status-critical" style={{ paddingLeft: 30 + depth * 18 }}>
+          展开失败：{kids.error.message}
+          {kids.error.requestId ? <span className="ml-1 text-muted-foreground">（问题编号 {kids.error.requestId}）</span> : null}
+          <button type="button" onClick={kids.reload} className="ml-2 underline underline-offset-2">重试</button>
+        </TableCell></TableRow>
+      ) : null}
+      {open && !kids.loading && !kids.error && childRows.length === 0 ? (
+        <TableRow><TableCell colSpan={10} className="text-xs text-muted-foreground" style={{ paddingLeft: 30 + depth * 18 }}>没有下一级</TableCell></TableRow>
+      ) : null}
+      {open ? childRows.map((kid) => (
+        <Row
+          key={`${path}|${kid.key}`}
+          row={kid}
+          depth={depth + 1}
+          siblings={childRows}
+          parentBi={own ?? parentBi}
+          path={`${path}|${kid.key}`}
+          filters={childFilters}
+          shared={shared}
+        />
       )) : null}
     </>
   )
 }
 
-export function DrillTable({ rows, caption, rootBi = null }: {
+export function DrillTable({ rows, caption, levels, window, workspaceId, rootBi = null, incomplete = false }: {
   rows: DashboardRow[]
   caption: string
+  /** 从上到下的维度序列，例如 ["optimizer","biz","task","account"] */
+  levels: string[]
+  window: DataWindow
+  workspaceId: string | undefined
   /** 顶层行的上级（= 窗口 summary）的考核 BI 数：顶层自己没有时按占比分摊下来 */
   rootBi?: DashboardRow["assessment"]["biConv"] | null
+  /** 结果被截断或只是部分：整列不分摊 */
+  incomplete?: boolean
 }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const toggle = (path: string) => setExpanded((prev) => {
@@ -121,6 +171,7 @@ export function DrillTable({ rows, caption, rootBi = null }: {
     if (next.has(path)) next.delete(path); else next.add(path)
     return next
   })
+  const shared: Shared = { levels, window, workspaceId, expanded, onToggle: toggle, incomplete }
 
   if (rows.length === 0) return <p className="rounded-lg border border-dashed px-3 py-8 text-center text-sm text-muted-foreground">这个窗口没有数据</p>
 
@@ -144,12 +195,24 @@ export function DrillTable({ rows, caption, rootBi = null }: {
           </TableHeader>
           <TableBody>
             {rows.map((row) => (
-              <Row key={row.key} row={row} depth={0} siblings={rows} parentBi={row.assessment.biConv ?? rootBi} path={row.key} expanded={expanded} onToggle={toggle} />
+              <Row
+                key={row.key}
+                row={row}
+                depth={0}
+                siblings={rows}
+                parentBi={row.assessment.biConv ?? rootBi}
+                path={row.key}
+                filters={{}}
+                shared={shared}
+              />
             ))}
           </TableBody>
         </Table>
       </div>
-      <p className="text-[11px] text-muted-foreground">点箭头展开下一级；带「分」的数是按消耗占比从上级分摊的，不是该层实测值。账户行可点进账户详情。</p>
+      <p className="text-[11px] text-muted-foreground">
+        点箭头展开下一级（每展开一层向后端查一次）；带「分」的数是按消耗占比从上级分摊的，不是该层实测值。账户行可点进账户详情。
+        {incomplete ? <span className="ml-1 text-status-warning">结果不完整，本页不做分摊。</span> : null}
+      </p>
     </div>
   )
 }

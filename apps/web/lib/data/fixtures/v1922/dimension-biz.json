@@ -1,0 +1,504 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "ka_data",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "dimension": "biz",
+      "rows": [
+        {
+          "key": "biz-aac",
+          "label": "AAC 拉新包",
+          "metrics": {
+            "cost": {
+              "value": 59000.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 449580,
+              "availability": "available"
+            },
+            "click": {
+              "value": 18726,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 1446,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1376,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 46090.8,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 6265.8,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 5009.1,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0772,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.88,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.5,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0484,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "biz-xianyu",
+          "label": "闲鱼潜客",
+          "metrics": {
+            "cost": {
+              "value": 31600.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 240792,
+              "availability": "available"
+            },
+            "click": {
+              "value": 10029,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 771,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 733,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 24685.92,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 3355.92,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 2682.84,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0769,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 43.11,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.68,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0493,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "biz-xinke",
+          "label": "新客首单",
+          "metrics": {
+            "cost": {
+              "value": 25600.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 195072,
+              "availability": "available"
+            },
+            "click": {
+              "value": 8125,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 626,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 595,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 19998.72,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 2718.72,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 2173.44,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.077,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 43.03,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.61,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0495,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "biz-huanxing",
+          "label": "唤醒回流",
+          "metrics": {
+            "cost": {
+              "value": 19040.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 145084,
+              "availability": "available"
+            },
+            "click": {
+              "value": 6043,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 473,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 450,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 14874.05,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 2022.05,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 1616.5,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0783,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.31,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.05,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0486,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "unlabeled",
+          "label": "未标注",
+          "metrics": {
+            "cost": {
+              "value": 11760.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 89611,
+              "availability": "available"
+            },
+            "click": {
+              "value": 3732,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 289,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 275,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 9186.91,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 1248.91,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 998.42,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0774,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.76,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.41,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0484,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        }
+      ],
+      "returnedRowCount": 5,
+      "wholeResultTotal": {
+        "value": 147000.0,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "ka_data",
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "coverage": {
+          "complete": true,
+          "expectedDays": 5,
+          "actualDays": 5,
+          "missingDays": []
+        },
+        "partial": false,
+        "truncated": false,
+        "metadataAvailability": "known",
+        "sourceMetadata": [
+          {
+            "source": "ka_data",
+            "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+            "businessDate": "2026-09-05"
+          }
+        ]
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture-dimension-biz",
+    "_note": "★fe 过渡 fixture（F8-19b）：任务大类顶层行。**必须和 summary 同源**——审查 ③ 点名：把契约里那份 personal 的 biz 行挂在 team summary 下，分摊分母整个错。这份是从同一棵钻取树按优化师聚合出来的。"
+  }
+}
