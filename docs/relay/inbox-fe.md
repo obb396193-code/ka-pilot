@@ -660,3 +660,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 11. 单测：审查文档 §2 列的 12 组，至少补 allocateBi 六边界、deltaRate、六态文案、真实/mock 路由。
 **F8-22（P0 第二批，F8-19b 后）：自定义透视** = Excel 式：行维 × 列维（下拉列出固定 8 维 + 该媒体规则里所有 `analyzable` 段，含腾讯的 bid_mode/device/landing 等）× 指标集 × 图型（表/柱/环/折线），走 `account.pivot2` 的 `segment:<key>`（v1.9.27）；预设保存进 saved_views。策略分析的 3 个预设并入它。
 - **F8-19b 追加（审查员 C：体验/视觉/响应式，全文见审查文档 §3.1，带 文件:行）**。P0 再加三条：⑫页头 preset 传进 OverviewTab、两处窗口标签同一来源；⑬钻取行改行内 `<button aria-expanded>`，键盘可达；⑭账户行链接按 key 形态判不按 depth（biz 树账户在 depth 2，现在永远不是链接）。P1 视觉这几条老板会盯：黑白模式图表仍彩色（读 `--chart-1..5`）、主题切换不重画（colorKey 用 `${mode}|${hue}|${isDark}`）、趋势第三条线被压扁（第三轴）、KPI 卡抽 `KpiCard` 与工作台同一套、1280+侧栏展开 KPI 必须 4 列、切图型不闪（实例只建一次 + UniversalTransition）、图表字体/tooltip 走站内 token、图下「查看数据表」折叠区（既是无障碍替代也是老板要的表格视图）。验收按 §3.1 末尾的截图矩阵交图。
+- **F8-19b 追加（审查员 D：代码质量/测试，全文见审查文档 §3.2 + 附录）**。P0 再加四条：⑮环比改收后端 `compare.deltas`（RatioValue），删自造 `previous`/`deltaRate`；⑯`biCashCost` 是 MetricValue 不是 RatioValue；⑰v1922 fixture 改成 zod `parse()` 导入并加 `dashboard-fixtures.test.ts` 门禁（现在 4 个 `as unknown as` 压着 16 处不合 schema）；⑱`ChartFrame` 加 dataKey/`setOption(notMerge)`，否则接真接口后切窗口图不重画。P1 里最要紧：建 `lib/data/use-dashboard.ts` 取数层（mock/真实内部切，组件只吃 props）；MetricValue 全部 `z.infer` 自 `canonical-query-rows.ts`；`use-data-query` 加 AbortController + 稳定 key（含 workspaceId）+ SWR；错误边界；核心算法抽到 `lib/data/dashboard-math.ts`（`package.json` 的 test glob 只跑 `lib/data/*.test.ts`，放 fixtures 下的测试根本不会执行）；localStorage 偏好 safeParse。测试按附录 9 个文件补。TODO 注释里的归属改成 F8-19b / be2 Q-041（P-210 已改号、数据链已改派）。
+
+### F8-23：投放任务页「任务管理」视图（v1.9.28；排 F8-19b 之后、F8-22 之前）
+老板要任务维护 + 考核价维护做进投放任务模块，内容布局参照同事工作台 v7 的任务管理（只借布局，不借他的样式）：
+- 投放任务页加「任务管理」tab：按业务大类分卡片；卡头 = 大类名 + 计数 + 「保存」+「删除大类」（Ghost 红边，删除=把该大类下任务 status 置 ended，二次确认）；卡内表：任务名（在投/停投胶囊，点击切 `active`↔`paused`）· 别名 chips（回车添加、× 删）· 预算 · 考核价（当前值 + 「历史」按钮 → 弹层：生效日 / 值 / 改的人 / 证据 / 作废；底部加新段、行可作废）· 监测链接 · 产品名 · 行删除；停投沉底；>8 条折叠「展开全部」；按大类整体 `POST /tasks/batch-save`。
+- 「＋ 新建任务大类」= 新建任务对话框里 biz_name 可填新值。
+- 单任务的考核价/日预算编辑仍在任务详情（已有），历史弹层两处共用一个组件。
+- 后端 Q-043 未到前按 `tasks/list-manage.json` 等 fixture 形先做页（fixture 由 be2 从真响应导出，之前你按 v1.9.28 字面自写 `-v1928` 过渡件）。
