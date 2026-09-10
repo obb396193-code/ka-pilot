@@ -58,7 +58,7 @@ export function AddMemberDialog({ open, onOpenChange, onCreated }: {
   const [role, setRole] = useState<Member["role"]>("operator")
   const [password, setPassword] = useState("")
   const [pending, setPending] = useState(false)
-  const [created, setCreated] = useState<{ displayName: string; initialPassword: string } | null>(null)
+  const [created, setCreated] = useState<{ displayName: string; initialPassword: string; loginName: string } | null>(null)
 
   // 登录名当场校验：中文名不能当用户名（后端规则 ^[A-Za-z0-9._@-]{1,128}$），提交后才报错太晚
   const usernameBad = username.length > 0 && !MEMBER_USERNAME_PATTERN.test(username)
@@ -74,7 +74,7 @@ export function AddMemberDialog({ open, onOpenChange, onCreated }: {
       if (isMock) {
         const fixture = isOk(memberCreatedFixture) ? memberCreatedFixture.data : null
         if (!fixture) { toast.error("新增失败", { description: "示例数据缺失" }); return }
-        setCreated({ displayName: displayName.trim(), initialPassword: fixture.initialPassword })
+        setCreated({ displayName: displayName.trim(), initialPassword: fixture.initialPassword, loginName: username })
         onCreated({ ...fixture, displayName: displayName.trim(), role, mustChangePassword: true })
         return
       }
@@ -95,7 +95,8 @@ export function AddMemberDialog({ open, onOpenChange, onCreated }: {
         toast.error("新增成员失败", { description: resolveErrorMessage(body?.error?.code ?? "", body?.error?.message ?? `请求失败（${response.status}）`) })
         return
       }
-      setCreated({ displayName: body.data.displayName, initialPassword: body.data.initialPassword })
+      // 登录名以后端回的 loginName 为准（v1.9.21）：服务端可能规范化过，显示我们输入的那份会对不上
+      setCreated({ displayName: body.data.displayName, initialPassword: body.data.initialPassword, loginName: body.data.loginName ?? username })
       onCreated(body.data as Member)
     } catch {
       toast.error("新增成员失败", { description: "网络异常，稍后重试" })
@@ -113,7 +114,7 @@ export function AddMemberDialog({ open, onOpenChange, onCreated }: {
               <DialogTitle>{created.displayName} 的初始密码</DialogTitle>
               <DialogDescription>把用户名和这串密码一起发给 TA，首次登录后让 TA 自己改掉。</DialogDescription>
             </DialogHeader>
-            <OneTimePassword password={created.initialPassword} note={`登录名：${username}`} />
+            <OneTimePassword password={created.initialPassword} note={`登录名：${created.loginName}`} />
             <DialogFooter><Button size="sm" onClick={() => close(false)}>我已保存，关闭</Button></DialogFooter>
           </>
         ) : (

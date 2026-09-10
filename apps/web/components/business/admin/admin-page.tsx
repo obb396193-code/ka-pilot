@@ -11,7 +11,7 @@ import { PageBody, PageHeader } from "@/components/business/page-header"
 import { NamingTab } from "@/components/business/admin/naming-tab"
 import { NoAccess } from "@/components/business/state/no-access"
 import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -261,13 +261,13 @@ function DiagnosticsTab() {
 }
 
 export function AdminPage() {
-  const { isMock, session } = useSession()
+  const { session } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "members")
   const isAdmin = session?.activeWorkspace.role === "admin"
   return (
     <PageBody>
-      <PageHeader title="治理后台" description="成员与授权 · 连接与拉数 · 口径与日历 · 灰度开关 · 资产流转 · 对账诊断 · 归属清洗（仅管理员）" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="治理后台" description="成员与授权 · 连接与拉数 · 口径与日历 · 灰度开关 · 资产流转 · 对账诊断 · 归属清洗（仅管理员）"  />
       {isAdmin ? <PageTabs tabs={tabs} value={tab} onChange={setTab} /> : null}
       <div className="px-4 lg:px-6">
         {!isAdmin ? (

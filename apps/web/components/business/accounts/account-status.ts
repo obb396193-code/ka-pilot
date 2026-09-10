@@ -11,6 +11,9 @@ export function accountStatusTone(assessment: AssessmentV3 | null | undefined): 
 
 // 媒体代码 → 中文（表格里当母版的「类型 chip」用；未知代码原样显示）
 const mediaLabels: Record<string, string> = { KUAISHOU: "快手", DOUYIN: "抖音", OCEANENGINE: "巨量", TENCENT: "腾讯", BAIDU: "百度", TOUTIAO: "头条" }
-export function mediaLabel(media: string) {
+export function mediaLabel(media: string | null | undefined) {
+  // 兜底不是为了掩盖调用方的 bug，是因为这是个纯文案函数：
+  // 拿到空值最坏也就是显个「−」，没有理由让整页白屏。
+  if (!media) return "−"
   return mediaLabels[media.toUpperCase()] ?? media
 }

@@ -1,9 +1,8 @@
 import type { ReactNode } from "react"
 
-import { Badge } from "@/components/ui/badge"
-
 // 母版内容区页头：标题 + 一句说明 + 右侧动作；配 py-4 md:py-5 的内容壳
-export function PageHeader({ title, description, actions, isMock }: { title: ReactNode; description?: ReactNode; actions?: ReactNode; isMock?: boolean }) {
+// 老板 2026-09-10：当真产品看，页头不自报「脱敏 Mock / 内网数据」这种数据源角标
+export function PageHeader({ title, description, actions }: { title: ReactNode; description?: ReactNode; actions?: ReactNode }) {
   return (
     <div className="flex flex-col gap-3 px-4 lg:px-6 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
@@ -11,7 +10,6 @@ export function PageHeader({ title, description, actions, isMock }: { title: Rea
         {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        {isMock === undefined ? null : isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : <Badge variant="outline">内网数据</Badge>}
         {/* data-write-actions：F8-1 窄屏隐藏页面级写入口 */}
         {actions ? <span data-write-actions className="flex items-center gap-2">{actions}</span> : null}
       </div>

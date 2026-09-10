@@ -7,8 +7,7 @@ import { toast } from "sonner"
 
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { ExampleBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -228,12 +227,11 @@ function MessagesTab() {
 }
 
 export function IntegrationsPage() {
-  const { isMock } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "connections")
   return (
     <PageBody>
-      <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、四类卡片（只读 / 可取消 / 确认执行 / 结果）、值守升级链、消息记录（出站 + 入站）" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、四类卡片（只读 / 可取消 / 确认执行 / 结果）、值守升级链、消息记录（出站 + 入站）"  />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="消息网关（接入 / 订阅 / 卡片 / 消息记录）接入后切换为真数据" empty={{ title: "还没有接入", description: "先在接入管理连上钉钉机器人。" }}>

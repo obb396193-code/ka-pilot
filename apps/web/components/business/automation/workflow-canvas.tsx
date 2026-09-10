@@ -9,8 +9,7 @@ import { toast } from "sonner"
 
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBadge, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { ExampleBadge, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -255,7 +254,6 @@ function Canvas({ definitionId }: { definitionId: string }) {
 }
 
 export function WorkflowCanvasPage({ definitionId }: { definitionId: string }) {
-  const { isMock } = useSession()
   const state = usePageState()
   const version = isOk(graphFixture) ? graphFixture.data : null
   const defs = isOk(definitionsFixture) ? [...definitionsFixture.data.official, ...definitionsFixture.data.mine, ...definitionsFixture.data.team] : []
@@ -263,7 +261,7 @@ export function WorkflowCanvasPage({ definitionId }: { definitionId: string }) {
   const isNew = definitionId === "new"
   return (
     <PageBody>
-      <PageHeader title={<span className="flex items-center gap-2">{isNew ? "新建工作流" : definition?.name ?? "工作流画布"}{!isNew && version ? <StatusChip tone={version.status === "published" ? "success" : "pending"}>{version.status === "published" ? `v${version.version} 已发布` : `v${version.version} 草稿`}</StatusChip> : null}</span>} description={isNew ? "从空白画布开始；也可以回官方模板复制" : definition?.description ?? "workflow-graph/v1"} isMock={isMock} actions={<><StateSwitch /><Button asChild variant="outline" size="sm"><Link href="/automation"><IconArrowLeft />自动化</Link></Button></>} />
+      <PageHeader title={<span className="flex items-center gap-2">{isNew ? "新建工作流" : definition?.name ?? "工作流画布"}{!isNew && version ? <StatusChip tone={version.status === "published" ? "success" : "pending"}>{version.status === "published" ? `v${version.version} 已发布` : `v${version.version} 草稿`}</StatusChip> : null}</span>} description={isNew ? "从空白画布开始；也可以回官方模板复制" : definition?.description ?? "workflow-graph/v1"} actions={<><Button asChild variant="outline" size="sm"><Link href="/automation"><IconArrowLeft />自动化</Link></Button></>} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="工作流画布接口（读图 / 校验 / 模拟 / 发布）接入后切换为真数据" empty={{ title: "没有这个工作流", description: "回自动化页从模板创建。" }}>
           <ReactFlowProvider><Canvas definitionId={definitionId} /></ReactFlowProvider>

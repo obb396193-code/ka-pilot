@@ -5,8 +5,7 @@ import { IconArrowsExchange, IconChevronDown, IconEye, IconListCheck, IconPlus, 
 import { toast } from "sonner"
 
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { ExampleBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -49,7 +48,6 @@ function CapacityDistribution({ items }: { items: AccountItem[] }) {
 }
 
 export function AccountsPage() {
-  const { isMock } = useSession()
   const [tab, setTab] = usePageTab<Tab>(tabs, "pool")
   const state = usePageState()
   const [view, setView] = useState<PoolView>("tiles")
@@ -135,7 +133,7 @@ export function AccountsPage() {
 
   return (
     <PageBody>
-      <PageHeader title="账户池" description="全量账户各在哪个状态、哪些没用、按产品名分、哪些备用；缺数显 −" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="账户池" description="全量账户各在哪个状态、哪些没用、按产品名分、哪些备用；缺数显 −"  />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="账户池扩展字段接口接入后切换为真数据" empty={{ title: "当前空间没有可见账户", description: "个人空间只看本人授权账户；导入认领或新建账户后出现。" }}>

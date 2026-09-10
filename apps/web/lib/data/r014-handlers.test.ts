@@ -137,17 +137,23 @@ test("an expired export link is relayed with the backend's own 410, not softened
 /* F8-11 新增成员 / 重置密码（契约 v1.9.5） */
 const MEMBER = {
   identityId: "00000000-0000-4000-8000-000000000201", displayName: "王五", provider: "internal_test",
-  userId: "wangwu", role: "operator", isActive: true, joinedAt: "2026-09-05T09:15:00.000+08:00",
+  userId: "00000000-0000-4000-8000-0000000000a7", role: "operator", isActive: true, joinedAt: "2026-09-10",
   grantsCount: 0, lastSeenAt: null, mustChangePassword: true, initialPassword: "Kp7v-Qm2x-Ln9s-Ab3d",
+  loginName: "wangwu",
 }
 
-test("creating a member posts to /admin/members and carries the one-time initial password back", async () => {
-  const { seen, fetchImpl } = spy("req-m1", MEMBER)
+test("creating a member posts to /admin/members and carries the one-time initial password back（201 Created 不能被判成 502）", async () => {
+  const seen: { url: string; method: string }[] = []
+  const fetchImpl = async (input: string, init?: RequestInit) => {
+    seen.push({ url: String(input), method: (init?.method ?? "GET").toUpperCase() })
+    return Response.json({ ok: true, data: MEMBER, meta: { requestId: "req-m1" } }, { status: 201, headers: { "x-request-id": "req-m1" } })
+  }
   const result = await handleAdminMemberCreate(
     req("http://localhost/api/internal/admin/members", "POST", { display_name: "王五", provider: "internal_test", provider_subject: "wangwu", role: "operator" }),
     { environment, fetchImpl, requestId: () => "req-m1" },
   )
-  assert.equal(result.status, 200)
+  assert.equal(result.status, 201)
+  assert.equal((result.body as { data: { loginName: string } }).data.loginName, "wangwu")
   assert.equal(new URL(seen[0]!.url).pathname, "/api/v1/admin/members")
   assert.equal(seen[0]!.method, "POST")
   assert.equal((result.body as { data: { initialPassword: string } }).data.initialPassword, "Kp7v-Qm2x-Ln9s-Ab3d")
