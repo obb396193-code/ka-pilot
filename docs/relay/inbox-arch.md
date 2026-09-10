@@ -6119,3 +6119,27 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 你在 main 上的三处我合流后都核过、与我版本一致或等价：guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的 v1.9.20 口径、r010 绊线的 PENDING 登记（已随债清消失）。合流零冲突。
 
 闸：domain 1379 / db 1529 / **worker 2030（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清，worker+web eslint 0 error。
+
+### Q-037 + Q-036 交付（be2，SHA = `abaf7441`，合流源 = 本机 `main`）
+按你给的序做完了。
+
+#### Q-037：失败批次不再喂列表
+三处接上共享 `etlBatchReadableSql`：`account-list-sql` 的 metrics_complete 判定与取数 LEFT JOIN、`task-list-sql` 的 spent/达成量。
+
+★**守卫写在 ON 不是 WHERE**：写 WHERE 会把整行账户过滤掉，而要的是「这一格显缺失、账户照常在列表里」。有一条用例专验这个——批次失败后账户仍在列表、只是 cost 为 null。
+
+验收用例照 Codex 的探针建同一份数据、断言反过来，另补两条探针没覆盖的：
+- **同一天同一账户的另一个媒体不受影响**（守卫只挡失败那一格，不是整账户熄火）；
+- **只有新 raw 还不够**——canonical 没重算之前那一格仍该缺失，重算后才恢复。
+
+覆盖度那处我单独说一句：`metrics_complete` 报成完整意味着页面**不显缺数横幅**，用户比看到一个旧数字更难察觉。所以那处的守卫比取数那处更要紧。
+
+#### Q-036：dispatch 判定改成「表在**且**已接」
+按你说的把「看到表存在就清 `unavailableKinds`」改掉了。理由和你一致：024 一落地，旧写法就会声称派发类可用，而 UNION 里根本没读它——用户看到的是「查过了，这个任务没有派发」。**假完整比缺失更难发现。**
+
+落法是把它做成**代码事实**而不是配置：`DISPATCH_SEGMENT_WIRED = false` 常量 + 一条用例钉住「判定必须同时看这个开关和表存在」，另有反向断言守住「翻成 true 却没在 UNION 里真读 dispatches」的自欺。补读取段的人必须同时翻它，翻错会红。
+
+读取段本身等 Codex 的 024。
+
+#### 闸
+domain 1379 / db 1538（含新 5 条）/ web 244 全绿，四包 tsc 清，db+worker eslint 0 error；worker 串行跑中，结果下段补。
