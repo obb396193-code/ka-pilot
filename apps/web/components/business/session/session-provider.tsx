@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 
 import { logoutSession, readSession, switchWorkspace as requestWorkspaceSwitch } from "@/lib/data/session-client"
 import type { SessionHttpResponse, SessionView } from "@/lib/data/session-contracts"
-import { mockSessionView } from "./mock-session"
+import { mockGuestSessionView, mockSessionView } from "./mock-session"
 
 export type SessionStatus = "loading" | "ready" | "unauthenticated" | "error"
 
@@ -15,6 +15,8 @@ type SessionContextValue = {
   status: SessionStatus
   session: SessionView | null
   isMock: boolean
+  /** 当前空间是演示空间（契约 v1.9.12：team + isDemo，不是单独的 kind） */
+  isDemo: boolean
   switching: boolean
   switchWorkspace(workspaceId: string): Promise<SwitchResult>
   logout(): Promise<void>
@@ -32,6 +34,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const isMock = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
   const router = useRouter()
   const [status, setStatus] = useState<SessionStatus>(isMock ? "ready" : "loading")
+  // mock 下 ?session=guest 可以预览访客态（演示条 + 写入口全藏），不用起后端就能验收
   const [session, setSession] = useState<SessionView | null>(isMock ? mockSessionView : null)
   const [switching, setSwitching] = useState(false)
 
@@ -48,7 +51,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     }
   }, [isMock])
 
-  useEffect(() => { void refresh() }, [refresh])
+  useEffect(() => {
+    // mock 没有会话服务，用 ?session=guest 预览访客态（真实模式下这个参数不起作用）
+    if (isMock) { setSession(new URLSearchParams(window.location.search).get("session") === "guest" ? mockGuestSessionView : mockSessionView); return }
+    void refresh()
+  }, [isMock, refresh])
 
   const switchWorkspace = useCallback(async (workspaceId: string): Promise<SwitchResult> => {
     if (!session) return { ok: false, message: "当前没有可用会话" }
@@ -74,7 +81,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     router.replace("/login")
   }, [isMock, router])
 
-  const value = useMemo<SessionContextValue>(() => ({ status, session, isMock, switching, switchWorkspace, logout, refresh }), [status, session, isMock, switching, switchWorkspace, logout, refresh])
+  const isDemo = session?.activeWorkspace.isDemo === true
+  const value = useMemo<SessionContextValue>(() => ({ status, session, isMock, isDemo, switching, switchWorkspace, logout, refresh }), [status, session, isMock, isDemo, switching, switchWorkspace, logout, refresh])
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }
 

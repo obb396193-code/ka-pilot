@@ -5610,3 +5610,37 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 已 fast-forward main@5682a509，保留你对 etl-batch-failure 的两行修复，不重复改。自查另外六套同类依赖，含 BIGINT 临时表仍 LIKE public.etl_runs；独占空库先复现 3/3 relation-not-exist，再补 runMigrations。六套各自新空库单跑：bigint3 / semantic3 / changeset9 / batch-readability7 / run-list20 / actual Data API HTTP7 = **49/49**。DB/Worker typecheck/lint、diff check、offline production audit0；磁盘6.1GiB按门规未跑五包全量。代码只动6测试文件，无运行时/前端/迁移改动；未push。质量回执：`docs/plans/2026-09-10-P188独立空库质量回执.md`。
 
 已收到 P189/P190；Q027 helper 已在当前主线，可继续 P178，不再报告等 helper。继续你的 rerun→P190→P178顺序；生图按老板取消。此 SHA 待你 exact 复验，不声称 merged/deployed。
+
+---
+
+## fe → arch：F8-12 访客浏览交付（2026-09-09）+ 老板改了你的一条口径
+
+| SHA | 内容 |
+|---|---|
+| `1070de19` | F8-12 访客浏览 + viewer 只读态（按你派的做） |
+| `61cb3f17` | 改回：★老板拍板「访客看到的和正常用户完全一样，不做区别」，把隐藏那套整个撤了 |
+
+门禁：tsc 0 错、eslint 0 错、npm test 236/236、生产构建过。浏览器实测走通（截图 `docs/evidence/ui/2026-09-09-F8-12-访客只读态.png`）。
+
+### ★老板口径变更（优先于你派的第 ② 条，请你知会 be2）
+你派的是「所有写入口（新建/批量/导入/自定义列/确认/推送/导出）对 viewer 隐藏」。我做完之后老板连着说了两句：
+1. 「原来不是有快速新建吗？怎么给取消了？把那个恢复了吧」——他是在访客态截图里看到侧栏少了那个按钮；
+2. 「**我们的所有访客看的和我们正常看的都一样，不要做区别，就是正常能看到啥，访客就能看到啥**」。
+
+所以 `61cb3f17` 把 `ViewerScope`、那条 CSS、以及我为此加的卡片级 `data-write-actions` 包裹全撤了，`isViewer` 也删了（留着等于给「以后再藏一次」留后门）。**现在访客点写按钮会真的打到后端，靠 be2 那层 403 READ_ONLY_ROLE 兜底**——这一点请确认后端拦截是完整的（你说过是路由层统一拦、挡在处理器之前，那就够）。前端只保留「演示数据 · 只读」那条顶部提示，它是加信息不是减功能。
+
+### 做了的部分（`1070de19` 里仍然有效）
+1. **会话 schema 扩展**（`lib/data/session-contracts.ts`）：role 枚举加 `viewer`、workspace 加可选 `isDemo`、identity 加可选 `id`/`provider`、view 加可选 `expiresAt`、login 请求改成 `internal_test | guest` 联合（访客那支 strict，不许夹带凭证）。**我上一封问你的 ➌（role 枚举要不要加 viewer）不用答了——你的 fixture 里就是 `role:"viewer"`，按 fixture 落的。**
+2. **登录页访客入口**：`GET /login` 本来就是服务端渲染，直接读 `GUEST_ACCESS_ENABLED`（后端受理 `{provider:"guest"}` 也是看这个开关）决定按钮显不显，**没开就不给入口**，不用为一个布尔值多开一条 capabilities 请求。你要是希望走 `GET /auth/capabilities` 说一声，我改。
+3. 空间切换器不用改：访客的 workspaces 里本来就只有演示空间。
+4. mock 下 `?session=guest` 可预览访客态（真实模式该参数不起作用），你和老板不起后端也能看。
+5. 新增 `lib/data/guest-session-contract.test.ts`：两份访客 fixture 逐字段过 schema、普通会话不带新字段照旧过、login 只收两种形状。
+
+### ➊ 要你裁：两份 session fixture 的 `meta` 不一致
+- `session-http/personal.json`、`team.json` 的 meta 只有 `requestId`；
+- 新的 `session-http/guest.json`、`auth/login-guest.json` 的 meta 带了标准信封那一套（`dataAsOf`/`businessDate`/`workspaceKind`/`selectedSource`/`_note`）。
+
+我们的 `sessionMetaSchema` 原来是 **strict**，直接把新 fixture 判成非法。我改成「只要求 `requestId`，其余键不消费也不拦」了——因为 strict 在这儿只买到风险：后端哪天在 meta 多回一个字段，就是**整条会话解析失败、用户卡在登录页**。请你确认 `GET /auth/session` 真实响应的 meta 到底是哪一种；如果 fixture 是模板噪声，麻烦把 guest 那两份的 meta 削成 `{requestId}` 保持一致。
+
+### 下一步
+F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊（设置页「请修改初始密码」要 session 上加 `mustChangePassword`）和 ➋（`members-v195.json` 并回 `members.json` 时知会）仍待你回。

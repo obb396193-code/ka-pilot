@@ -58,8 +58,8 @@ function Footer({ className }: { className?: string }) {
   return <p className={cn("text-xs text-muted-foreground", className)}>内测版 · 仅限已授权账户 · 数据按空间隔离</p>
 }
 
-function Form() {
-  return <Suspense fallback={null}><LoginForm frame="plain" /></Suspense>
+function Form({ guestEnabled = false }: { guestEnabled?: boolean }) {
+  return <Suspense fallback={null}><LoginForm frame="plain" guestEnabled={guestEnabled} /></Suspense>
 }
 
 function Credit({ text, className }: { text: string; className?: string }) {
@@ -124,7 +124,7 @@ function PanelBackground({ panel }: { panel: SplitPanel }) {
 }
 
 // C2 · 分屏：左面板（图 / 材质动效）+ 右表单
-function Split({ panel }: { panel: SplitPanel }) {
+function Split({ panel, guestEnabled = false }: { panel: SplitPanel; guestEnabled?: boolean }) {
   const dark = panel !== "iridescence"
   const sloganPosition = panel === "orb" ? "justify-end" : "justify-between"
   return (
@@ -149,7 +149,7 @@ function Split({ panel }: { panel: SplitPanel }) {
         <div className="flex flex-1 items-center justify-center">
           <div className="flex w-full max-w-[360px] flex-col gap-8">
             <Heading />
-            <Form />
+            <Form guestEnabled={guestEnabled} />
           </div>
         </div>
         <Footer className="lg:hidden" />
@@ -204,9 +204,9 @@ function Glass() {
   )
 }
 
-export function LoginDirection({ variant, panel = "image" }: { variant: LoginVariant; panel?: SplitPanel }) {
+export function LoginDirection({ variant, panel = "image", guestEnabled = false }: { variant: LoginVariant; panel?: SplitPanel; guestEnabled?: boolean }) {
   if (variant === "bleed") return <Bleed />
-  if (variant === "split") return <Split panel={panel} />
+  if (variant === "split") return <Split panel={panel} guestEnabled={guestEnabled} />
   if (variant === "glass") return <Glass />
   return <Minimal />
 }

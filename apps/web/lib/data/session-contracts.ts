@@ -8,6 +8,12 @@ export const internalTestLoginRequestSchema = z.object({
   password: z.string().min(1).max(512),
 }).strict()
 
+// F8-12（契约 v1.9.6）：访客浏览 —— 匿名会话，不带任何凭证，后端仅在 GUEST_ACCESS_ENABLED=1 时开放。
+export const guestLoginRequestSchema = z.object({ provider: z.literal("guest") }).strict()
+export const loginRequestSchema = z.union([internalTestLoginRequestSchema, guestLoginRequestSchema])
+export type GuestLoginRequest = z.infer<typeof guestLoginRequestSchema>
+export type LoginRequest = z.infer<typeof loginRequestSchema>
+
 export const workspaceSwitchRequestSchema = z.object({
   workspaceId: z.string().uuid(),
 }).strict()
@@ -16,8 +22,11 @@ export const sessionWorkspaceSchema = z.object({
   id: z.string().uuid(),
   name: z.string().trim().min(1).max(200),
   kind: z.enum(["personal", "team"]),
-  role: z.enum(["optimizer", "operator", "lead", "admin"]),
+  // viewer = 访客/只读身份（be2 在后端加的角色，写类请求一律 403 READ_ONLY_ROLE）
+  role: z.enum(["optimizer", "operator", "lead", "admin", "viewer"]),
   readOnly: z.boolean(),
+  // 演示空间（契约 v1.9.12 改口：不再有 demo kind，就是 team + isDemo）。老会话不带这个字段。
+  isDemo: z.boolean().optional(),
 }).strict().superRefine((workspace, context) => {
   if (workspace.readOnly !== (workspace.kind === "team")) {
     context.addIssue({
@@ -29,9 +38,16 @@ export const sessionWorkspaceSchema = z.object({
 })
 
 export const sessionViewSchema = z.object({
-  identity: z.object({ displayName: z.string().trim().min(1).max(200) }).strict(),
+  // id / provider 是访客会话带出来的（provider:"guest"）；老的账号密码会话只有 displayName，所以两个都可选
+  identity: z.object({
+    id: z.string().uuid().optional(),
+    displayName: z.string().trim().min(1).max(200),
+    provider: z.string().min(1).max(64).optional(),
+  }).strict(),
   activeWorkspace: sessionWorkspaceSchema,
   workspaces: z.array(sessionWorkspaceSchema).min(1).max(1_000),
+  // 访客会话是有 TTL 的（2h），登录响应里回；普通会话没有这个字段
+  expiresAt: z.string().datetime({ offset: true }).optional(),
 }).strict().superRefine((view, context) => {
   const ids = new Set(view.workspaces.map((workspace) => workspace.id))
   if (ids.size !== view.workspaces.length) {
@@ -47,7 +63,10 @@ export const sessionViewSchema = z.object({
   }
 })
 
-const sessionMetaSchema = z.object({ requestId: requestIdSchema }).strict()
+// meta 只取 requestId（相关性校验用），其余键不消费也不拦：
+// 老的 session fixture 只有 requestId，新的访客 fixture 带了标准信封那一套（dataAsOf/businessDate/…）。
+// 这里 strict 的话，后端哪天多回一个 meta 字段就是整条会话解析失败、用户卡在登录页——不值当。
+const sessionMetaSchema = z.looseObject({ requestId: requestIdSchema })
 
 export const sessionSuccessResponseSchema = z.object({
   ok: z.literal(true),
