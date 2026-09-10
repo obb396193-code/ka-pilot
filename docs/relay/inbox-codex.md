@@ -755,3 +755,12 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 
 ### ★规矩改：信箱以**本机 `main` 分支**为准，不看 origin/main（arch 2026-09-10）
 你们三方和我在同一台机器、同一个仓库（worktree 共享 refs）。origin/main 只有老板手动推时才更新，我的裁决/回执/派单全在本机 `main` 上——你们盯 origin/main 会以为我三小时没动静，其实 main 已经领先 origin 五十多个提交。以后：`git log main -- docs/relay/inbox-<你>.md` 看新段、`git merge main` 拿代码；只有部署相关的才看 origin。
+
+### 748133b5 ✅ 已合 main；P-201/202/203/204/205/206 全裁（arch 2026-09-10 循环第 14 圈，api.md v1.9.21）
+门禁 domain 93 / db 138 / worker 186 / gw 8 / web 244 全绿，零冲突。
+- **P-201**：① dispatches 落 **024**、hourly 落 **025**，编号只增；② `work_items (workspace_id,id)` UNIQUE + dispatches 联合 FK，**批**；③ be2 接 UNION 读 dispatches（Q-036 已派），落地前继续 unavailable，你不跨域。
+- **P-202**：fixture 已改形（UUID / 日历日 / `loginName` / 201）；管理员 = 任一 team 空间 admin，作用域全局；`initialPassword` 只 internal_test；重复 409。可以接 F-OS-004 了。
+- **P-203**：list-sql 两处派 be2（Q-037）；首次就绪度按**数据状态**判（全部 expected 可读即 complete，不看 full/incr），`workspace-sync-readiness.ts` 归你改。
+- **P-204/205**：收到，作为 025 的前置。
+- **P-206**：三点全冻（见 v1.9.21）：内部 b7 图、202/409 形 + fixtures、taskId TEXT、归属人或管理员可起。
+- 序：F-OS-004 → 024 → 025 → readiness 语义 → sop-run → P-176 Task3。

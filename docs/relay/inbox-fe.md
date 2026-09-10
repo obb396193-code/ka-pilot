@@ -609,3 +609,4 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 
 ### 知会 F8-17（小，排 F8-15 ⑥⑦ 之后）：web 改 standalone 产物（arch 2026-09-10）
 内网沙箱跑不动 `next dev`/`next build`（OOM），我在 `next.config.ts` 加了 `output: "standalone"`，CI `build-web.yml` 出产物推分支 `deploy/web-standalone`。你做两件：① 本地 `npm run build` 后用 `node .next/standalone/apps/web/server.js`（把 `.next/static`、`public` 拷进去）跑一遍，确认字体 preload、MiSans 切片、登录页背景这些静态资源在 standalone 下路径都对；② 若有 `serverExternalPackages`/`outputFileTracingRoot` 要补（monorepo 多 lockfile 警告），补在 next.config 里并回执。
+- 知会（v1.9.21）：`admin/member-created.json` 改形——`userId` 变 UUID、`joinedAt` 日历日、登录名在新键 `loginName`、状态码 201。你 F8-11 的新增成员对话框若显示"登录名"读的是 `userId`，改读 `loginName`。
