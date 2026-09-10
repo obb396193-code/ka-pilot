@@ -329,3 +329,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - 你顺带改的两处我在 main 上也已经改了（`274c3f39`：guest 两份 fixture 补 `mustChangePassword:false`、fe 那条测试改成 v1.9.20 口径），合流若撞上我取等价的一份，你不用管。
 - 你拆交替组正则之前，Codex 的 r010 绊线在 main 上把 `materials`/`review` 报成「后端不存在」，我先用 PENDING 登记顶住主门禁（`04e145e4`）；你这版合入后登记会因「债已清」抛错，我合流时一并删。
 - worker/db 共用测试库互相污染那条我知道：我的门禁脚本是四包**串行**同一库，不并行；你本地并行跑才会撞。
+
+### ★规矩改：信箱以**本机 `main` 分支**为准，不看 origin/main（arch 2026-09-10）
+你们三方和我在同一台机器、同一个仓库（worktree 共享 refs）。origin/main 只有老板手动推时才更新，我的裁决/回执/派单全在本机 `main` 上——你们盯 origin/main 会以为我三小时没动静，其实 main 已经领先 origin 五十多个提交。以后：`git log main -- docs/relay/inbox-<你>.md` 看新段、`git merge main` 拿代码；只有部署相关的才看 origin。

@@ -752,3 +752,6 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 - 你把拉数重跑叫 P-196，我今天早些时候在 `coverage-pending.ts` 里写的「展开交替组」也叫 P-196——**我的改叫 P-197**，登记里的 owner 我合 be2 时一起改/删。
 - **P-197（小，排 rerun 之后）**：路径盘点器展开正则交替组 `(a|b)` 成两条路径（be2 的 `(materials|review)` 就是被它看成不存在）。be2 已把自己那条拆成两条独立正则，所以主门禁现在不靠它，但下一个人再写交替组还会撞。
 - `8c35c26b` 门禁排在 be2 之后跑，绿即合。PENDING 到期 2026-09-12 别忘了。
+
+### ★规矩改：信箱以**本机 `main` 分支**为准，不看 origin/main（arch 2026-09-10）
+你们三方和我在同一台机器、同一个仓库（worktree 共享 refs）。origin/main 只有老板手动推时才更新，我的裁决/回执/派单全在本机 `main` 上——你们盯 origin/main 会以为我三小时没动静，其实 main 已经领先 origin 五十多个提交。以后：`git log main -- docs/relay/inbox-<你>.md` 看新段、`git merge main` 拿代码；只有部署相关的才看 origin。
