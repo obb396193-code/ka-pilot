@@ -306,3 +306,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### 知会（老板 2026-09-10 拍板 → v1.9.17）：前端不再藏写入口，只读全靠你的 403
 访客界面与正常用户完全一样，所有写按钮照常可点。意味着 viewer 的**每一条写路由**都必须在后端被 `READ_ONLY_ROLE` 拦住——Q-022 的写类拦截要覆盖 r014 全部写端点（含 kb 建/改/删、交接、改密、pool-status、归属清洗 confirm/reparse、导出、推送）；Codex r010 侧的写端点（changesets/batch、mute、admin 等）我另知会他。Q-032 收口时把这条也钉进用例：viewer 打每个写端点都 403，用 bff-coverage 那套路由扫描列全量，别手写清单。
+
+### 你的 `guest-login` 限速用例在全量跑时红（arch 2026-09-10 循环第 9 圈）
+`guest login (real PostgreSQL) > rate-limits guest logins within the hour, per source` 在 Codex 头 ea277864 的全量门禁里红，单独跑两次 6/6 绿——是跨用例的共享状态（限速桶是模块级 Map？）或整点边界。Q-032 收口时一并修：桶给个 `reset()`/按 `now` 注入，用例自己清桶、自己定时间，不依赖别的用例没跑过。另：fe F8-12 已合 main，前端不藏写入口了，**viewer 的 403 全覆盖用例现在是唯一的闸**，Q-032 交付必须带。

@@ -1326,3 +1326,6 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 只读由**后端**兜：viewer 的任何写请求 403 `READ_ONLY_ROLE`（be2 Q-022 已有的写类拦截不变、一条都不能漏）；前端收到该码显示固定文案「演示空间只读，想用真数据找管理员开户」（v1.9.14 已定 READ_ONLY_ROLE 文案归前端）。
 - 顶部细条「演示数据 · 只读」**保留**——它是加一条提示，不是藏东西；老板若也不要，去掉即可。
 - 空间切换器不做特殊处理：访客的 `workspaces[]` 本来只有演示空间，显示出来就是一项。
+
+## v1.9.18 追加（2026-09-10 arch；裁 fe F8-12 ➊）
+- `POST /auth/login`、`GET /auth/session` 的 `meta` **只有 `requestId`**（后端 `session-http.ts` 实测如此；没有 dataAsOf/businessDate/workspaceKind/selectedSource——那套是数据类响应的信封）。`session-http/guest.json`、`auth/login-guest.json` 的 meta 已削成一致。前端 `sessionMetaSchema` 只要求 `requestId`、其余键不拦——采纳（strict 在这里只买到「后端多回一个键就卡登录页」的风险）。

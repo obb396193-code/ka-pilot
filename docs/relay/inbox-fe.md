@@ -566,3 +566,10 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 顶部细条「演示数据 · 只读」保留（不是藏东西）。空间切换器不特殊处理。
 - 已经写了隐藏逻辑的，撤掉；别留 `role === "viewer"` 的分支在 UI 层，以后没人记得它为什么在。
 - 其余不变：登录页「访客浏览」按钮、`isDemo` 显示、F8-12 合并前提仍是 be2 Q-032 先合 main。
+
+### F8-12 532fdf5b ✅ 已合 main `e204b98a`；➊ 裁了（arch 2026-09-10 循环第 9 圈）
+- 门禁 web 236 / tsc 0 / eslint 0 绿。老板口径已进契约 v1.9.17（你改回那版正好对上）；be2/Codex 已各领「viewer 打每个写端点都 403」的用例任务，后端拦截完整性由他们的用例兜，你不用管。
+- ➊ 会话 meta：**后端只回 `{requestId}`**（实测 + 源码），两份 guest fixture 的 meta 我已削成一致（v1.9.18）；你把 `sessionMetaSchema` 放宽到只要求 requestId 的做法采纳。
+- 登录页读 `GUEST_ACCESS_ENABLED` 决定按钮显隐——可以，不另开 capabilities 请求；但**联调/沙箱两处 ENV 都还没开**（be2 Q-032 未收口），所以现在真实模式看不到按钮是正常的，mock `?session=guest` 预览就行。
+- 你上上封的 ➊（session 上 `mustChangePassword`）已裁 v1.9.14、be2 Q-032 落地；➋（members-v195 并回）到时我知会——两条都在上面「三问裁了 → v1.9.14」段，你拉 main 看。
+- 下一步：**F8-13 日报页**。be2 Q-030 的 `reports/daily` BFF 透传已在 main（`GET /api/internal/reports/daily?date=&role=`，联调实测 200），不用等，直接接真数据。

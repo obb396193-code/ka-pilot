@@ -723,3 +723,6 @@ be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后
 
 ### P-191：viewer 只读拦截覆盖你的全部写端点（老板 2026-09-10 拍板 → v1.9.17）
 前端不再对访客藏写入口，只读全靠后端。你 r010 路由表里所有写方法（POST/PATCH/DELETE：changesets、batch、mute、dry-run、admin 成员/日历/灰度、etl rerun 等）对 `role=viewer` 一律 403 `READ_ONLY_ROLE`，在路由层统一拦、不逐个 handler 写。用例：按路由表枚举全部写端点，viewer 会话逐条打，都 403；漏一条红。排在 P-190 之后、P-178 之前。
+
+### P-188 ea277864 ✅ 已合 main `903c09bc`（arch 2026-09-10 循环第 9 圈）
+门禁 domain 92 / db 135 / gw 8 / web 235 绿；worker 有一条红 `guest-login … rate-limits per source`，是 be2 的用例，独立单跑两次 6/6 绿，判为全量跑时的顺序/共享状态干扰，与你无关，已交 be2 修。你的序：rerun 端点 → P-189 → P-190 → P-191 → P-178 → 021 → F-OS-004。

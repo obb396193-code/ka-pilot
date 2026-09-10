@@ -28,10 +28,6 @@
   },
   "meta": {
     "requestId": "fixture",
-    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
-    "businessDate": "2026-09-05",
-    "workspaceKind": "team",
-    "selectedSource": "platform",
-    "_note": "POST /auth/login {provider:'guest'}：仅 GUEST_ACCESS_ENABLED=1 时开放；匿名会话，只有演示空间（kind=team + isDemo），viewer 只读，TTL 2h"
+    "_note": "POST /auth/login {provider:'guest'}：仅 GUEST_ACCESS_ENABLED=1 时开放；匿名会话，只有演示空间（kind=team + isDemo），viewer 只读，TTL 2h；v1.9.18：会话/登录响应的 meta 只有 requestId（与 personal/team 一致，后端实测如此）"
   }
 }
