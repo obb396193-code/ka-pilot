@@ -8,6 +8,9 @@ import { QihangError, QihangHttpError, QihangProtocolError, RetryExhaustedError 
  */
 export function batchFailureWarning(workspaceId: string, query: QihangQuery, error: unknown): EtlBatchFailureWarning | null {
   if (!(error instanceof RetryExhaustedError) || query.resource === "account") return null;
+  // Hourly account ingestion is not yet wired to a private coverage ledger.
+  // Until it is, fail-stop rather than erase hh into a full-day failure fact.
+  if (query.resource === "account_realtime" && query.hh !== undefined) return null;
   const cause = error.cause;
   if (cause instanceof QihangError && !(cause instanceof QihangProtocolError) &&
     !(cause instanceof QihangHttpError && [502, 503, 504].includes(cause.status))) return null;

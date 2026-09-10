@@ -11,7 +11,7 @@ export function toEtlQueryObservation(
     ...(hasDate(query, "ds") ? { ds: query.ds } : {}),
     ...(hasDate(query, "beginDate") ? { beginDate: query.beginDate } : {}),
     ...(hasDate(query, "endDate") ? { endDate: query.endDate } : {}),
-    ...(query.resource === "ad_realtime" && query.hh !== undefined ? { hh: query.hh } : {}),
+    ...((query.resource === "ad_realtime" || query.resource === "account_realtime") && query.hh !== undefined ? { hh: query.hh } : {}),
   });
 }
 

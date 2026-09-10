@@ -38,6 +38,23 @@ describe("authorized local work-item actions (synthetic PG)", () => {
     } finally { await pool.end(); }
   });
   const command = () => ({workItemId:id, action:"start_processing"});
+  it("shared SQL scope does not materialize denied same-ID media metadata before rejecting", async () => {
+    await pool.query("UPDATE work_items SET media='TENCENT' WHERE id=$1", [id]);
+    const observed: unknown[] = [];
+    const guarded = new WorkItemCommandRepository({ connect: async () => {
+      const client = await pool.connect();
+      return new Proxy(client, { get(connection, prop) {
+        if (prop === "query") return async (sql: string, values?: unknown[]) => {
+          const result = await connection.query(sql, values);
+          if (sql.includes("FROM work_items")) observed.push(...result.rows);
+          return result;
+        };
+        const value = Reflect.get(connection, prop); return typeof value === "function" ? value.bind(connection) : value;
+      } });
+    } });
+    await expect(guarded.apply(auth, command())).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(observed.some(row => (row as { media?: string }).media === "TENCENT")).toBe(false);
+  });
   const status = async () => (await pool.query("SELECT status FROM work_items WHERE id=$1",[id])).rows[0].status;
   it("processes then rejects with persisted reason and two atomic audit records", async () => {
     expect(await repo.apply(auth,command())).toMatchObject({workItemId:id,status:"processing"});
