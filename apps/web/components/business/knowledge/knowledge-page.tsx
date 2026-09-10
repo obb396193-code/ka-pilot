@@ -11,7 +11,7 @@ import { openAgentDrawer } from "@/components/business/command/events"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
-import { LoadingBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { LoadingBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
@@ -58,7 +58,7 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
 
   return (
     <PageBody>
-      <PageHeader title="知识库" description={<span>SOP · AI 报告归档 · 案例库 · 错题本；富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入文档双链或业务对象；双链解析在后端保存时重建</span>} isMock={isMock} actions={<><StateSwitch />{readOnly ? <StatusChip tone="muted">团队空间只读</StatusChip> : null}<Button variant="outline" size="sm" onClick={() => openAgentDrawer(doc ? `把文档「${doc.title}」归纳成三句话，并列出关联任务` : "把今天的日报归档到知识库")}><IconSparkles />问 AI</Button><Button size="sm" disabled={readOnly} onClick={() => { void kbActions.createDoc(null, "manual", "新文档").then((id) => { if (id) { setSelId(id); toast("已建文档") } }) }}><IconPlus />新建文档</Button></>} />
+      <PageHeader title="知识库" description={<span>SOP · AI 报告归档 · 案例库 · 错题本；富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入文档双链或业务对象；双链解析在后端保存时重建</span>} actions={<>{readOnly ? <StatusChip tone="muted">团队空间只读</StatusChip> : null}<Button variant="outline" size="sm" onClick={() => openAgentDrawer(doc ? `把文档「${doc.title}」归纳成三句话，并列出关联任务` : "把今天的日报归档到知识库")}><IconSparkles />问 AI</Button><Button size="sm" disabled={readOnly} onClick={() => { void kbActions.createDoc(null, "manual", "新文档").then((id) => { if (id) { setSelId(id); toast("已建文档") } }) }}><IconPlus />新建文档</Button></>} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="知识库接口（文档 / 搜索 / 修订 / 双链 / 业务关联）接入后切换为真数据" empty={{ title: "知识库还是空的", description: "新建文档，或从报告页把日报归档进来。" }}>
           <div className="grid min-h-[640px] gap-0 rounded-xl border bg-card @3xl/main:grid-cols-[280px_minmax(0,1fr)]">

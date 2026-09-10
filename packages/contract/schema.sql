@@ -175,7 +175,7 @@ CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rol
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (workspace_id, ad_id, ds, hh)    -- P-001#3 裁决：同上
 ) PARTITION BY RANGE (ds);
--- v1.9.4（2026-09-09 arch 裁 Codex P-163；migration 021 = Codex，不依赖 013/014）：账户级小时快照，F-P153-1 的唯一真源。
+-- v1.9.4（2026-09-09 arch 裁 Codex P-163；migration **025** = Codex（原编号 021，v1.9.21/25 改；不依赖 013/014）：账户级小时快照，F-P153-1 的唯一真源。
 -- 源 = 启航 account_realtime(ds, hh)：docs/19 已实证 hh 为「截至该小时（0..hh 含）累计」、单调非降、hh=24 等于全天、历史 ds 可查、行带 last_sync_time。
 -- 只存 hh 0..23 的累计值；小时增量 = cum(hh) − cum(hh−1) 在读侧算；缺行 = missing，永不补 0。cash 口径在读侧按 ds 生效的 channel_coefficients 折算。
 CREATE TABLE account_metrics_hourly (
@@ -212,6 +212,8 @@ CREATE TABLE account_balance (
 -- ═══ 工作项与执行 ═══
 CREATE TABLE work_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  -- v1.9.21：给 dispatches 的联合 FK 用，跨空间引用在 DDL 层挡住
+  UNIQUE (workspace_id, id),
   type TEXT NOT NULL,                  -- diagnosis|dispatch|self|agent_question|external_handled
   media TEXT, account_id TEXT, task_id TEXT, rule_id BIGINT,
   CHECK ((account_id IS NULL) = (media IS NULL)),
@@ -573,9 +575,10 @@ CREATE TABLE escalation_policies (        -- 默认三行由 migration 014 seed�
 );
 
 -- ── 1.9 / 3.10 协作：派发 + 主动提审（PRD 3.10 已给列，此处冻结）
-CREATE TABLE dispatches (
+CREATE TABLE dispatches (            -- migration = 落地时的下一个空号（v1.9.25；原逻辑编号 014）
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
-  work_item_id UUID NOT NULL REFERENCES work_items(id),
+  work_item_id UUID NOT NULL,
+  FOREIGN KEY (workspace_id, work_item_id) REFERENCES work_items(workspace_id, id),  -- v1.9.21 联合 FK
   from_user UUID NOT NULL, to_user UUID NOT NULL,
   acceptance_criteria TEXT,
   acceptance_rule JSONB,                  -- {metric, operator, threshold, window_days}：T+1 自动判定关闭

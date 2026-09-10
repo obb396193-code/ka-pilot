@@ -71,7 +71,16 @@ export const pivot2Fixture = pivot2 as unknown as Pivot2Fixture
 export const pivot2Fixtures: Record<string, Pivot2Fixture> = { "resource_position-task": pivot2Fixture, "biz-resource_position": pivot2BizPosition as unknown as Pivot2Fixture }
 export const pivot2UnsupportedFixture = pivot2Unsupported as unknown as { ok: false; error: { code: string; message: string; dimension: string; hint: string } }
 export const exportQueuedFixture = exportQueued as unknown as Fixture<{ exportId: string; status: string; kind: string; format: string }>
-export const watchlistFixture = watchlist as unknown as Fixture<{ items: { media: string; accountId: string }[]; updatedAt: string }>
+/**
+ * 盯盘名单（`GET/PUT /me/watchlist`，契约 v1.7.4 G2）。
+ * ★items 是**联合类型**：task 型只有 taskId、**没有 media/accountId**。
+ * 原来这里断言成 `{media, accountId}[]`，TypeScript 就看不见 task 那一支了——
+ * `/data?tab=hourly` 拿 `item.media` 去 `.toUpperCase()` 直接整页崩（老板 2026-09-10 在联调环境撞到）。
+ */
+export type WatchlistItem =
+  | { type?: "account"; media: string; accountId: string }
+  | { type: "task"; taskId: string }
+export const watchlistFixture = watchlist as unknown as Fixture<{ items: WatchlistItem[]; updatedAt: string }>
 export type SavedView = { id: string; page: string; name: string; config: { version: string; filters: Record<string, string>; columns: string[]; sort: { by: string; dir: string }[]; window: { preset: WindowPreset } }; isShared: boolean; updatedAt: string }
 export const viewsFixture = views as unknown as Fixture<{ items: SavedView[] }>
 export type ReportConfig = { id: string; name: string; config: { version: string; dataset: { queryId: string; params: Record<string, unknown> }; groupBy: string[]; columns: { metric: string; label?: string }[]; sort: { by: string; dir: string }[]; filters: unknown[]; highlight: { metric: string; op: string; value: unknown; style: string }[]; layout: { type: "table" | "chart" } }; isShared: boolean; version: string; updatedAt: string }

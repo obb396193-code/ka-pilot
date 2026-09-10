@@ -8,7 +8,6 @@ import { IconSearch, IconSparkles } from "@tabler/icons-react"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
 import { ExampleBlock } from "@/components/business/state/page-state"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,7 +21,6 @@ const order: SearchItem["type"][] = ["account", "task", "work_item", "material",
 export function SearchResultsPage() {
   const params = useSearchParams()
   const query = (params.get("q") ?? "").trim()
-  const { isMock } = useSession()
   const data = isOk(searchFixture) ? searchFixture.data : { items: [], recent: [] }
 
   const groups = useMemo(() => {
@@ -41,7 +39,6 @@ export function SearchResultsPage() {
       <PageHeader
         title={query ? `搜索「${query}」` : "搜索"}
         description={query ? `${total} 个结果 · 只搜你有权限的对象` : "在上方按 ⌘K 输入关键词，或从这里翻结果"}
-        isMock={isMock}
       />
       <div className="flex flex-col gap-4 px-4 lg:px-6">
         <ExampleBlock unlock="搜索接口接入后按关键词实时检索（当前为示例索引）">

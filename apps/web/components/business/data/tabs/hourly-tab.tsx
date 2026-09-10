@@ -15,17 +15,23 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { hourlyFixture, watchlistFixture } from "@/lib/fixtures/data-analysis"
+import Link from "next/link"
+
 import { cn } from "@/lib/utils"
 import { LineageFooter } from "./shared"
 
 // 盯盘：名单（GET/PUT /me/watchlist）+ 小时表（account.hourly）；缺小时显 −，不补 0；delta 相邻缺一边也 −
+// ★名单里还有 task 型条目（只有 taskId、没有 media/accountId）。分时表是**按账户**取的（account.hourly），
+// 任务没有小时行，所以任务条目只列出来能点去任务详情，不参与选中。
 type WatchItem = { media: string; accountId: string }
 
 // 盯盘名单显账户名，不显 ID；样例里查不到就退回 ID
 const accountName = (id: string) => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === id)?.accountName ?? id : id)
 
 export function HourlyTab() {
-  const [items, setItems] = useState<WatchItem[]>(() => (isOk(watchlistFixture) ? watchlistFixture.data.items : []))
+  const all = isOk(watchlistFixture) ? watchlistFixture.data.items : []
+  const watchedTasks = all.flatMap((item) => (item.type === "task" ? [item.taskId] : []))
+  const [items, setItems] = useState<WatchItem[]>(() => all.flatMap((item) => (item.type === "task" ? [] : [{ media: item.media, accountId: item.accountId }])))
   const [current, setCurrent] = useState<WatchItem | null>(items[0] ?? null)
   const [draft, setDraft] = useState("")
   const rows = useMemo(() => (isOk(hourlyFixture) ? hourlyFixture.data.source.rows.filter((row) => current && row.accountId === current.accountId && row.media === current.media) : []), [current])
@@ -51,6 +57,14 @@ export function HourlyTab() {
               <Button variant="ghost" size="icon" className="size-7 text-muted-foreground" onClick={() => { setItems((prev) => prev.filter((other) => other !== item)); toast("已从名单移除", { description: "接口接入后同步保存" }) }} aria-label="移除"><IconTrash className="size-3.5" /></Button>
             </div>
           ))}
+          {watchedTasks.length ? (
+            <div className="mt-1 flex flex-col gap-1 border-t pt-2">
+              <p className="text-[11px] text-muted-foreground">名单里的任务（分时是按账户取的，任务没有小时行）</p>
+              {watchedTasks.map((taskId) => (
+                <Link key={taskId} href={`/tasks/${encodeURIComponent(taskId)}`} className="truncate rounded-md px-2 py-1 text-xs hover:bg-muted">任务 · {taskId}</Link>
+              ))}
+            </div>
+          ) : null}
           <Dialog>
             <DialogTrigger asChild><Button variant="outline" size="sm"><IconPlus />加入账户</Button></DialogTrigger>
             <DialogContent className="sm:max-w-sm">

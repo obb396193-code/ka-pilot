@@ -15,7 +15,7 @@ export function DiagnosticDetailView({ response, preview }: { response: DataResp
   const blocked = response.state !== "ready"
   const accountHref = data.accountId === "unknown" ? "/accounts?data_view=platform" : `/accounts/${data.accountId}?data_view=platform${data.media ? `&media=${encodeURIComponent(data.media)}` : ""}`
   return (
-    <PageBody><PageHeader title={data.title} description={`${data.accountName} · ${data.accountId}。规则结论与证据来自只读工作项详情；AI 仅解释。`} actions={<div className="flex gap-2"><Badge variant={data.severity === "critical" ? "destructive" : "secondary"}>{data.severity === "critical" ? "P0" : "P1"}</Badge>{response.isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : null}</div>} /><div className="flex flex-col gap-4 px-4 lg:px-6">
+    <PageBody><PageHeader title={data.title} description={`${data.accountName} · ${data.accountId}。规则结论与证据来自只读工作项详情；AI 仅解释。`} actions={<div className="flex gap-2"><Badge variant={data.severity === "critical" ? "destructive" : "secondary"}>{data.severity === "critical" ? "P0" : "P1"}</Badge></div>} /><div className="flex flex-col gap-4 px-4 lg:px-6">
       <div><Button asChild variant="ghost" size="sm"><Link href={accountHref}><IconArrowLeft />{data.accountId === "unknown" ? "返回账户池" : "返回账户详情"}</Link></Button></div>
       <DataStateFrame response={response}>
         <div className="grid gap-4 lg:grid-cols-2">

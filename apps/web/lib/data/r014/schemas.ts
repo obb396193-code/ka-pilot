@@ -499,6 +499,7 @@ const memberRowSchema = z.object({
   identityId: z.string().uuid(),
   displayName: z.string().min(1),
   provider: z.enum(["internal_test", "buc", "sso"]),
+  // v1.9.21：workspace-local UUID，不是登录名——登录名在创建响应的 loginName 里
   userId: z.string().min(1),
   role: z.enum(["admin", "lead", "operator", "viewer", "optimizer"]),
   isActive: z.boolean(),
@@ -512,7 +513,11 @@ const memberRowSchema = z.object({
  * `POST /admin/members` 的响应比列表行多一个 `initialPassword`——**只在这一次回**。
  * 不 strict：后端以后往行里加字段（v1.9.5 的 mustChangePassword 就是这么来的）不该让整条透传变 502。
  */
-export const memberCreatedSchema = memberRowSchema.extend({ initialPassword: z.string().min(1) })
+export const memberCreatedSchema = memberRowSchema.extend({
+  initialPassword: z.string().min(1),
+  // v1.9.21：登录名从 userId 挪到这个键（userId 现在是 workspace-local UUID，不是人输入的登录名）
+  loginName: z.string().min(1),
+})
 
 /** `POST /admin/members/:identityId/reset-password` → 新初始密码只回一次 + 该身份全部 session 吊销 */
 export const memberPasswordResetSchema = z.object({

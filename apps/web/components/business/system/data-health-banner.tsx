@@ -46,7 +46,7 @@ export function useSystemHealth(): SystemHealth {
     businessDate: current?.businessDate ?? null,
     updatedAt: current?.etl?.at ?? healthFixture.meta.dataAsOf ?? null,
     metricVersion: "account-metrics-v2 · 考核=现金口径",
-    detail: current?.note ?? "脱敏 Mock：最近一次同步已完成。",
+    detail: current?.note ?? "最近一次同步已完成。",
     sources,
   }
 }
