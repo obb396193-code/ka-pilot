@@ -41,9 +41,17 @@ export function KnowledgeTree({ items, selectedId, onSelect, searchTerm, readOnl
     if (readOnly) return
     const node = dragNodes[0]?.data; if (!node) return
     const siblings: TNode[] = parentId ? (findNode(data, parentId)?.children ?? []) : data
-    kbActions.move(node.id, parentId, rankAt(siblings, index, new Set(dragNodes.map((n) => n.id))))
+    void kbActions.move(node.id, parentId, rankAt(siblings, index, new Set(dragNodes.map((n) => n.id))))
   }
-  const newDoc = (parentId: string | null, kind: KbKind = "manual") => { const id = kbActions.createDoc(parentId, kind); onSelect(id); toast("已建文档", { description: "接口接入后生效（当前为示例）" }); let tries = 0; const tryEdit = () => { const n = arboristNodes.get(id); if (n) { n.edit(); return } if (tries++ < 25) setTimeout(tryEdit, 100) }; setTimeout(tryEdit, 200) }
+  const newDoc = async (parentId: string | null, kind: KbKind = "manual") => {
+    // 真实模式下 id 由后端给：等它回来再选中并进入改名态；失败时 store 已经说明了原因
+    const id = await kbActions.createDoc(parentId, kind)
+    if (!id) return
+    onSelect(id); toast("已建文档")
+    let tries = 0
+    const tryEdit = () => { const n = arboristNodes.get(id); if (n) { n.edit(); return } if (tries++ < 25) setTimeout(tryEdit, 100) }
+    setTimeout(tryEdit, 200)
+  }
 
   return (
     <div ref={wrapRef} className="min-h-0 flex-1" onContextMenu={(e) => { if (readOnly) return; e.preventDefault(); setMenu({ x: e.clientX, y: e.clientY, node: null }) }}>
@@ -52,7 +60,7 @@ export function KnowledgeTree({ items, selectedId, onSelect, searchTerm, readOnl
         openByDefault searchTerm={searchTerm}
         selection={selectedId ?? undefined}
         onMove={onMove}
-        onRename={({ node, name }) => { if (name.trim() && name !== node.data.name) { kbActions.rename(node.data.id, name.trim()); toast("已改名", { description: "接口接入后生效（当前为示例）" }) } }}
+        onRename={({ node, name }) => { if (name.trim() && name !== node.data.name) { void kbActions.rename(node.data.id, name.trim()) } }}
         disableEdit={readOnly} disableDrag={readOnly} disableDrop={readOnly}
       >
         {(props) => <TreeRow {...props} onSelect={onSelect} onMenu={(x, y, n) => { if (!readOnly) setMenu({ x, y, node: n }) }} />}
@@ -61,9 +69,9 @@ export function KnowledgeTree({ items, selectedId, onSelect, searchTerm, readOnl
         <DropdownMenu open onOpenChange={(open) => { if (!open) setMenu(null) }}>
           <DropdownMenuTrigger asChild><span aria-hidden style={{ position: "fixed", left: menu.x, top: menu.y, width: 0, height: 0 }} /></DropdownMenuTrigger>
           <DropdownMenuContent align="start" sideOffset={2} collisionPadding={8} loop onCloseAutoFocus={(e) => e.preventDefault()}>
-            <DropdownMenuItem onSelect={() => newDoc(menu.node?.id ?? null, "manual")}>新建笔记{menu.node ? "（子文档）" : ""}</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => newDoc(menu.node?.id ?? null, "sop")}>新建 SOP</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => newDoc(menu.node?.id ?? null, "case")}>新建案例</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => void newDoc(menu.node?.id ?? null, "manual")}>新建笔记{menu.node ? "（子文档）" : ""}</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => void newDoc(menu.node?.id ?? null, "sop")}>新建 SOP</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => void newDoc(menu.node?.id ?? null, "case")}>新建案例</DropdownMenuItem>
             {menu.node ? (<><DropdownMenuSeparator /><DropdownMenuItem onSelect={() => arboristNodes.get(menu.node!.id)?.edit()}>重命名</DropdownMenuItem><DropdownMenuItem variant="destructive" onSelect={() => setDelTarget(menu.node)}>删除</DropdownMenuItem></>) : null}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -71,7 +79,7 @@ export function KnowledgeTree({ items, selectedId, onSelect, searchTerm, readOnl
       <Dialog open={!!delTarget} onOpenChange={(open) => { if (!open) setDelTarget(null) }}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader><DialogTitle>{delTarget?.children?.length ? "不能删除" : "删除文档"}</DialogTitle><DialogDescription>{delTarget?.children?.length ? `「${delTarget.name}」下还有 ${delTarget.children.length} 个子文档，先把它们拖到别处再删。` : `删除「${delTarget?.name}」？软删除，修订历史保留。`}</DialogDescription></DialogHeader>
-          <DialogFooter><Button variant="outline" onClick={() => setDelTarget(null)}>取消</Button><Button variant="destructive" disabled={!!delTarget?.children?.length} onClick={() => { if (delTarget) { kbActions.remove(delTarget.id); if (selectedId === delTarget.id) onSelect(null); toast("已删除") } setDelTarget(null) }}>删除</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setDelTarget(null)}>取消</Button><Button variant="destructive" disabled={!!delTarget?.children?.length} onClick={() => { if (delTarget) { void kbActions.remove(delTarget.id); if (selectedId === delTarget.id) onSelect(null) } setDelTarget(null) }}>删除</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

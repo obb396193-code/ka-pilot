@@ -36,6 +36,13 @@ export interface TaskTimelinePage {
 
 const PAGE_MAX = 100;
 
+/**
+ * timeline 的 UNION 里**有没有真读 `dispatches`** 的那一段。
+ * 现在没有（表要 Codex 的 migration 024）。这是个「代码事实」而不是配置：
+ * 补完读取段的人必须同时把它翻成 true，否则 `unavailableKinds` 一直如实报缺。
+ */
+const DISPATCH_SEGMENT_WIRED = false;
+
 /** 游标 = `<毫秒>:<ref id>`，两段都要——同一毫秒可能有多条，只按时间翻会漏行也会重复。 */
 function encodeCursor(item: TaskTimelineItem): string {
   return `${Date.parse(item.at)}:${item.ref.id}`;
@@ -142,7 +149,12 @@ export class TaskTimelineRepository {
       items,
       nextCursor: rows.length > limit && items.length > 0 ? encodeCursor(items[items.length - 1]!) : null,
       // 表不在 = 这一类整体取不到。空数组会被当成「查过了，没有派发」，那是两回事。
-      unavailableKinds: await this.tableExists("dispatches") ? [] : ["dispatch"],
+      //
+      // ★Q-037/Q-036：判定是「表在 **且** 上面的 UNION 真读了它」，不是「表在就清」。
+      // 只看表存在的话，Codex 的 024 一落地这里就会声称派发类可用——而 UNION 里
+      // 根本没有读它的那一段，用户看到的是「查过了，没有派发」。**假完整比缺失更难发现。**
+      // 等 024 落地后在 UNION 里补上真读的那一段，再把 DISPATCH_SEGMENT_WIRED 翻成 true。
+      unavailableKinds: DISPATCH_SEGMENT_WIRED && await this.tableExists("dispatches") ? [] : ["dispatch"],
     };
   }
 

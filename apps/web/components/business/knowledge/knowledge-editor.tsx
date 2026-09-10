@@ -57,7 +57,7 @@ export function KnowledgeEditor({ doc, readOnly }: { doc: KbDocument; readOnly: 
     if (readOnly) return
     setStatus("saving")
     if (timer.current) clearTimeout(timer.current)
-    timer.current = setTimeout(() => { kbActions.saveBlocks(doc.id, editor.document as unknown[]); setStatus("saved") }, 500)
+    timer.current = setTimeout(() => { void kbActions.saveBlocks(doc.id, editor.document as unknown[]).then(() => setStatus("saved")) }, 500)
   }
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
   const allDocs = flattenTree(store.tree).filter((node) => node.id !== doc.id)

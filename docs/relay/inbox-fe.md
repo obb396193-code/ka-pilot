@@ -610,3 +610,15 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### 知会 F8-17（小，排 F8-15 ⑥⑦ 之后）：web 改 standalone 产物（arch 2026-09-10）
 内网沙箱跑不动 `next dev`/`next build`（OOM），我在 `next.config.ts` 加了 `output: "standalone"`，CI `build-web.yml` 出产物推分支 `deploy/web-standalone`。你做两件：① 本地 `npm run build` 后用 `node .next/standalone/apps/web/server.js`（把 `.next/static`、`public` 拷进去）跑一遍，确认字体 preload、MiSans 切片、登录页背景这些静态资源在 standalone 下路径都对；② 若有 `serverExternalPackages`/`outputFileTracingRoot` 要补（monorepo 多 lockfile 警告），补在 next.config 里并回执。
 - 知会（v1.9.21）：`admin/member-created.json` 改形——`userId` 变 UUID、`joinedAt` 日历日、登录名在新键 `loginName`、状态码 201。你 F8-11 的新增成员对话框若显示"登录名"读的是 `userId`，改读 `loginName`。
+
+### P0 三批（老板拍板，借同事工作台 v7 的优化师视角）：F8-19 → F8-20 → F8-21（arch 2026-09-10）
+详 `docs/plans/2026-09-10-数据看板P0-借鉴工作台v7.md` §1/§2，契约 v1.9.22。F8-15 ⑥⑦ 先收掉（1 小时），然后：
+- **F8-19 数据分析·概览**：两行 KPI（账面 / 考核）+ 环比；趋势双轴；任务大类表现（biz → 展开 task）；优化师三级钻取（optimizer → biz → task → account，BI 按消耗占比分摊）；资源位环图。后端 P-210 未到前按 v1.9.22 fixture 做页（Codex 导出 fixture 前，你先按 api.md 形自己写一份 `-v1922` 过渡 fixture，落地后并回）。
+- **F8-20 筛选与导出**：月历区间 + chips、四个级联多选（`GET /data/filters`）、账户 ID 多值、CSV、骨架屏 + stale-while-revalidate。
+- **F8-21 清洗闭环 UI**：归属清洗 tab 加「未归属样例 → 点段加别名 → 干跑 → 重解析」，媒体切 TENCENT。
+每批交付写 SHA + 截图。
+- **老板补充**：v7 那份的前端规范（样式/Chart.js/CSS/字体）一概不参考，只借「每页放哪些维度、用哪类组件」；组件库、视觉、交互全按你自己的规范做。
+
+
+### F8-19 规格补三条（老板拍板，v1.9.23）
+① 数据分析页顶部加「个人 | 团队」切换：同一个会话级 switchWorkspace（与左下角同步），切完留在本页；个人视角默认本人账户、一个渠道，看任务/版位/资源位/成本；团队视角开级联筛选。② 每个图表组件带类型切换（柱/饼/环/折线，按组件给合法集合），偏好存 `saved_views.config.charts`；图表库你定（ECharts 可，**自托管**不走 CDN）；要美观。③ F8-21 里加「pending 段」列表（待确认段的取值分布，优化师每月确认）。优先级：**F8-19 最先**，⑥⑦ 若一小时内收不掉就先放。
