@@ -99,3 +99,4 @@ export * from "./qihang-identity-seed.js";
 export * from "./etl-batch-failure.js";
 // be: F-P179 frozen attempt-list response; runtime/API wiring remains separate.
 export * from "./etl-run-list.js";
+export * from "./etl-run-rerun.js";
