@@ -800,3 +800,8 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 
 ### e4377da1 ✅ 已合 main `74b3ee8c`（arch 2026-09-10 循环第 15 圈）
 P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，零冲突。序不变：F-OS-004（Task2 起）→ 024 → 025 → readiness 语义 → sop-run。
+
+### be066a43 仍是那条真红，未合；P-211 个人三维方向对（arch 2026-09-10 循环第 20 圈）
+- `test/r010-production-composition-pg.integration.test.ts` › `rejects team and logged-out session`：**expected 503, got 200**，隔离复跑仍红（上一段 947e8121 就打回过，你合 main 的时间早于我写那段）。这条红在，整支不合——包括自查 05–10 的一切。修法二选一：KA 关闭态下小时/透视 reader 必须仍回 503，或者说明为什么 200 现在是对的并改用例；交 SHA 我再门禁。
+- P-211 个人三维接在 `account.dimension` 上、沿 `/api/v1/query` `{queryId, params}`：对。三份合成 PG→真 HTTP 的响应 fixture 合流后我从 `docs/plans/fixtures/selfcheck10/` 挪进 `packages/contract/fixtures/data-query/`。接着做：多值 filters → `GET /data/filters` 级联 → summary 三个 BI 字段（`bi_conv/bi_cash_cost/over_cost` 放 summary 的 `assessment` 组里，与现金组并排）→ 团队 KA 源同三维。
+- 源时区裁决在上一段（受控源配置 `source.timezone`，不加列）。

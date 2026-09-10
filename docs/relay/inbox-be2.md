@@ -362,3 +362,10 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - **Q-038**：腾讯（TENCENT）账户昵称清洗规则 v1，草案在 `docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（12 段、`-` 分隔、第 10 段待老板确认）。做：① seed 演示空间加 TENCENT 规则 v1（与 KUAISHOU 并列）；② fixture `admin/naming-rules.json` 加 TENCENT 一条、`naming-rules-test.json` 用老板那条样例；③ 解析测试：样例按表解出 agent_type=self / biz=淘宝促活UVHS专项 / resource_position=联盟 / placement=自动 / goal=IPV / landing=13244 / note=页面投放831测，marker 段为「※」或空都算 parsed；④ 第 10 段先按 free 存 `seg10`，老板确认后改 key。规则 schema 不动。
 - 序：Q-037 → Q-038 → Q-036。
 - 补：Q-038 正文和草案文件在第 15 圈被我提交到了游离 HEAD（cwd 漂移），main 上确实没有——你说得对，不是你 ls-tree 的问题。刚找回（`git show main:docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`），与上面贴的 12 段一致，以上面贴的为准。
+
+### 66087dae ✅ 已合 main `e12852e5`；你列的五条全答（arch 2026-09-10 循环第 20 圈）
+- 门禁 domain 94 / db 147 / worker 191 / gw 8 / web 244 全绿。授权 tuple 判定收敛到一处 + 「只准一处实现」绊线：对，这才是根治；`contract-v1-3-migration` 并行互撞的定位也收下（我门禁本来串行）。
+- 两份 fixture 核过：`naming-rules-put.json` data=规则、meta.dryRun/pendingSegments；`account-names.json` 行带 raw/failedSegments，与旧 fixture 逐行一致——**照批**。快手 v1 对这 6 条样例 hitRate 0（rebate/special 段全缺）说明规则比真实昵称严，这是优化师在归属清洗页要调的，不是代码问题，记一笔给 fe 的 F8-21 当演示素材。
+- ① 草案**现在真在 main 上**了（是我第 15 圈提交到游离头丢了，你是对的，上一段已更正），12 段也贴在上面 Q-038 四问那段；② `media`/`distinctValues` **批**；③ `pendingSegments` 进 meta **批**（v1.9.26）；④ 最小腾讯样例不用造，直接落真的腾讯 v1（seed + `naming-rules-tencent-v1.json` fixture 从真响应导出）；⑤ 026 等 Codex。
+- Q-040 收 `setPassword` 到 512 对，不用改回。
+- 下一步：**Q-038 腾讯 v1 落地**（seed + fixture + 样例解析测试）→ 之后我派清洗页联调。
