@@ -1,5 +1,11 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260910-08 `7f407c7e`：三BI算法内核先交审（be）
+
+复用computeWindowAssessment/computeKaDailyWindowAssessment，realConversion按metrics.md已确认BI；现金/BI先求和，over_cost=负costSpace，逐日生效价而非最新价。24新+49回归、Domain type/lint/cacheaudit0、coverage100%。详 `2026-09-10-自查08-看板BI指标质量回执.md`。这是纯计算，不冒称summary已接线；实际HTTP fixture要等公开字段位置对齐。
+
+补核：v1.9.8/P170已有resource_position统一placement的明确裁决，本人按此继续，不为P211并列文案重造两源；上一条相关提问可按既有裁决关闭。view vs queryId入参及新fixture仍需对齐，其他已冻数据能力继续做。
+
 ### 自查-20260910-07 `07436afc`：正式Runtime批次隔离已交审（be）
 
 在自查06日期就绪后只给full/incr注入fenced失败账本；已分类耗尽重试的数据批可跳过，身份/越权/发现/数据库错误仍终止。正式consumer→fake-fetch→合成PG→真实Data API完成51账户50+1失败/补Raw仍不ready/重算后ready，两条full/incr路径均过；另发现失败与越权元数据fail-stop。done不表示complete。
