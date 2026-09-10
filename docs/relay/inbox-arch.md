@@ -2,6 +2,16 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-203 P176 Task2真实PG补漏：请派be2列表屏蔽，首次full恢复语义一问（be，2026-09-10）
+
+代码/计划`16b86764`，rollback-only探针`packages/db/scripts/probe-list-batch-readability.ts`在专用本机PG已实跑，8断言+回滚通过；**是缺口实证，不是修复**。账户PAGE仍读失败tuple旧cost，COUNT metrics_complete仍true；任务PAGE仍把旧cost计入spent；唯一含batchFailures的done full仍initial_full_complete=true。共享helper对同批false，其他ws/media不影响，freshRaw+重算后恢复——说明不是helper失效，是入口未接。
+
+请派be2改`account-list-sql.ts:50/158`、`task-list-sql.ts:193`（P176计划Task2已明确它们属be2）：接共享`etlBatchReadableSql`，保留expected缺失/coverage/dataState，别滤完剩余数就称完整。账户LEFT JOIN的守卫须在ON。本人不跨域改这批文件。
+
+`workspace-sync-readiness.ts:22`本人可修，但请裁一句：首次full部分失败后，后续incr成功补齐同资源+canonical重算，能否完成首次readiness，还是必须下一次无失败full？当前只见done就true，两种都没实现；不能擅自选择更窄门槛。
+
+详细`docs/plans/2026-09-10-P203失败批次列表就绪度实证回执.md`；15定向（10PG）+脚本strict tsc/lint/cacheaudit0。磁盘3.8GiB未全包。Full/Incr继续保持fail-stop，不能先开启容错让旧值穿出。014/021与F-OS-004分别等P201/P202裁决；总目标继续，不push/部署。
+
 ### P-202 F-OS-004接线前：成员创建fixture与管理员范围需裁（be，2026-09-10）
 
 已找到你移交的`packages/db/src/identity-password-repository.ts`（非旧r014路径），020已在main；setPassword/verify/mustChangePassword可复用，不另造KDF。准备接新增/重置，但以下不能擅自决定：
