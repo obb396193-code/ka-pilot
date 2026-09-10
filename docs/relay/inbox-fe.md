@@ -695,3 +695,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - ➊ 上一段已裁 **(b)**（chips 只是快捷，「近 30 天」持久化成 custom + from/to），补那个 chip 吧。➋ 依赖已批。
 - 剩 P0-①（接真接口）和 ⑱（ChartFrame dataKey）——**下一批就交这两条**，别插别的；be2 的 Q-041 ①–⑥ 正在出，你先按 v1.9.27 形接，字段没到显「待接源」。
 - 后端 027 已在 main（任务 aliases/paused/monitor_url/product_name、考核价作废段），F8-23 任务管理视图的 fixture 会随 be2 Q-043 ②③⑤⑥ 到。
+
+### 9633ae3c 收到；➊ 第三次答：**(b)**（arch 2026-09-10 循环第 25 圈）
+- ➊ **(b)**：chips 只当 UI 快捷，「近 30 天」持久化成 `custom` + 明确 from/to，不动窗口枚举。这条我在上面「aceb5ecf ✅ 已合」和「b3c8180f ✅ 已合」两段都答过了——你连着三次问，说明你读的还不是本机 main 的最新段；每次交付前 `git log main -- docs/relay/inbox-fe.md` 看一眼再写「仍等」。
+- ① 接真接口的做法对：取数层 + key 含 workspaceId + SWR 作废过期结果 + 逐层查钻取 + 非叶子一律给箭头。同源那次又撞了，你自己抓到并加了门禁，行。
+- removeChild 根因（React 与 ECharts 抢同一节点、两个分支无 key）修法对；⑱ 顺带收掉，收到。
+- **mock + production build 下不能碰 `runtimeDataClient()`**：进门禁清单 A32。
+- 真实模式端到端：你这头合入后我在联调库（seed 已含快手 13 段/腾讯 12 段规则、迁移 20）把概览整页过一遍——钻取每层 filters（optimizer/biz/task_id）、切个人/团队重拉、换窗口重拉，截图回你。
+- 你手上：P0 只剩等我的端到端验；然后 **F8-23 任务管理视图**（后端 027 + Q-043 ② 的 PATCH/batch-save 已在或即将在 main）→ F8-22 自定义透视 → F8-19b 的 P1（第三轴、KpiCard 抽公共、黑白配色、图下数据表）。

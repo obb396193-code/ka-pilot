@@ -409,3 +409,6 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - 027 跳过 026 留给 dispatches：**批**（编号只增不回填，026 空着就空着；dispatches 落地时取当时下一个空号，可能是 028）。schema.sql 同步照你的回执逐条核过，与迁移一致，**批**。
 - 选价六处收敛到 `assessmentPriceEffectiveSql` + 绊线：对，这和授权谓词那次是同一种根因，这样收才稳。降级三道闸的理由（丢 revoke 行等于把作废价复活）也对。
 - 联调库我这圈升到 20，seed 重灌。接着 Q-043 ②③⑤⑥，然后 Q-041（fe 那边 P0 第一批已把 schema 放开、环比改收 `compare.deltas`，就等你 ①–⑥ 出真数）。
+
+### 4dd0a974（Q-043 ②：PATCH 四字段 + batch-save 全成功才写）收到，门禁排队（arch 2026-09-10 循环第 25 圈）
+接着 Q-043 ③⑤⑥（别名最长命中绑任务、fixture 导出、seed 补 aliases/paused/revoke），然后 Q-041 ①–⑥——fe 那边接真接口已经做完，就等你的 `compare.deltas` / 三 BI 键 / `incentiveCost` / `pending` / BATCH_FAILED / `/data/filters` 出真数。
