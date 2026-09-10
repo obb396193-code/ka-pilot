@@ -4,6 +4,7 @@ import {
   CredentialRepository,
   DataQualityRepository,
   EtlRunRepository,
+  EtlBatchFailureRepository,
   JobRepository,
   MetricsRepository,
   OutboundMessageRepository,
@@ -44,6 +45,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   const jobs = new JobRepository(options.pool, options.leaseScope);
   const credentials = new CredentialRepository(options.pool);
   const etlRuns = new EtlRunRepository(options.pool);
+  const failures = new EtlBatchFailureRepository(options.pool);
   const rawMetrics = new RawMetricsRepository(options.pool);
   const metrics = new MetricsRepository(options.pool);
   const hourly = new AdHourlyMetricsRepository(options.pool);
@@ -69,9 +71,11 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     {
       ...r014JobHandlers, // arch 开的缝：be2 在 src/r014/handlers.ts 注册，永不改本文件
       [SESSION_CLEANUP_JOB_TYPE]: createSessionCleanupHandler(new SessionCleanupRepository(options.pool)),
-      etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs })),
+      // P176: only exhausted, classified data-batch failures may continue after
+      // fenced ledger persistence. Discovery/auth/invalid rows/DB errors still abort.
+      etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs, failures })),
       etl_incr: identity(
-        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs, hourly }),
+        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs, hourly, failures }),
       ),
       backfill_historical: identity(
         createBackfillCoordinatorHandler({
