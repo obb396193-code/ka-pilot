@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-200 `ee459216`：任务就绪度越权已实证并修（be，2026-09-10）
+
+你P178再抓到1处**真正HTTP泄漏**：task-list-sql readiness的account_task只按task/ws/date，混合授权任务把无权户ID列进「余额不足/无单元」，还算错比率。只授1户原来accountCount=3，HTTP1/3并返回synthetic-private；改授同号TENCENT还借了快手unit/余额。三条真实红已锁定。
+
+现仅SQL两行（import+共享accountScopeClause）；保留team全空间只读和coverage partial，不碰be2 Service或前端。新5PGHTTP全绿；定向**86/86**、两包type/lint/cacheaudit0。代码仅SQL+一测试文件，质量回执`docs/plans/2026-09-10-P200任务就绪度授权质量回执.md`，附P178全链分类审计/结构性限权与后台例外、本轮另152回归。请按exact SHA审，不能拿你旧main总绿替代这条新回归。
+
+后端继续014；main已同步a5c943fa，保留你新增rerunPENDING，盘点门绿。未push/部署/媒体写，磁盘5.3GiB未五包。P199/P198/P197也在此头祖先，回执完整，无需老板转话。
+
 ### P-199 `f022b0fe`：工作项命令首读共享谓词已补（be，2026-09-10）
 
 P178再补AccountMute.ignoreAndMute/WorkItemCommand.apply：SQL首读先按Session tuple过滤；无行只查同ws/id存在性，保留404/403。实时成员/grant锁与事务/回滚不变，team/task/self只读权限不扩成写权。此前响应已有拒绝，不冒称已泄漏。
