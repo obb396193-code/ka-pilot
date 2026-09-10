@@ -1,3 +1,4 @@
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
 const FILTERED_ACCOUNTS_CTE = `
   allowed_scope AS (
     SELECT allowed.media, allowed.account_id
@@ -58,6 +59,9 @@ export const ACCOUNT_LIST_COUNT_SQL = `
           AND metric.account_id = account.account_id
           AND metric.ds = $2::date
           AND metric.computed_at IS NOT NULL
+          -- Q-037：失败批次的旧行不算「有数」——不然覆盖度会报完整，
+          -- 而页面上那一格拿到的其实是过期数。
+          AND ${etlBatchReadableSql("metric")}
       )
     ) AS metrics_complete
   FROM filtered_accounts`;
@@ -160,6 +164,9 @@ export const ACCOUNT_LIST_PAGE_SQL = `
    AND metric.media = account.media
    AND metric.account_id = account.account_id
    AND metric.ds = $2::date
+   -- Q-037：守卫写在 ON 而不是 WHERE——写 WHERE 会把整行账户过滤掉，
+   -- 而我们要的是「这一格显缺失」，账户本身照常出现在列表里。
+   AND ${etlBatchReadableSql("metric")}
   LEFT JOIN account_balance AS balance
     ON balance.workspace_id = account.workspace_id
    AND balance.media = account.media
