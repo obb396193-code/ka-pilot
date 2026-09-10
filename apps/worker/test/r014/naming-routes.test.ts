@@ -214,4 +214,47 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     expect((await callRoute(optimizer, "/api/v1/admin/naming-rules", "GET", undefined, "?media=KUAISHOU")).status)
       .toBe(200);
   });
+
+  it("★Q-039 ②: every cleaning row carries raw, parsed segments and the segments that failed", async () => {
+    const listed = await callRoute(auth, "/api/v1/admin/account-names", "GET", undefined, "?media=KUAISHOU");
+    expect(listed.status).toBe(200);
+    const items = (listed.body as { data: { items: Record<string, unknown>[] } }).data.items;
+    expect(items.length).toBeGreaterThan(0);
+
+    for (const item of items) {
+      // fe 的「未归属样例」闭环要三样：原文、切出来的段、没切出来的段。
+      expect(typeof item.raw).toBe("string");
+      expect(item.raw).toBe(item.accountName);
+      expect(item.segments).toBeDefined();
+      expect(Array.isArray(item.failedSegments)).toBe(true);
+    }
+
+    // 「乱起的名字」那条切不出几段，失败段就该列出来——fe 靠它知道该往哪个段加别名。
+    const messy = items.find((item) => String(item.accountName).includes("乱起"));
+    expect(messy, "种子里那条乱名不见了").toBeDefined();
+    expect((messy!.failedSegments as string[]).length).toBeGreaterThan(0);
+  });
+
+  it("★Q-039 ③: saving a rule returns how well it parses the whole workspace right away", async () => {
+    const result = await callRoute(auth, "/api/v1/admin/naming-rules", "PUT", {
+      segments: [
+        { key: "biz", label: "业务", order: 1, source: "free", required: false, multi: false, mapsTo: "biz" },
+        { key: "agent", label: "运营方", order: 2, source: "enum", required: false, multi: false,
+          mapsTo: "agent_type", values: ["自投", "代投"], anchor: true },
+      ],
+      separators: ["-"],
+      effective_from: "2026-09-01",
+    }, "?media=KUAISHOU");
+    expect(result.status, JSON.stringify(result.body)).toBe(200);
+
+    const dryRun = (result.body as { data: { dryRun: Record<string, unknown> | null } }).data.dryRun;
+    // 改规则的人当场看见「这版能解析出多少、还差哪几段」，不用再点一次干跑。
+    expect(dryRun, "保存规则后应带回干跑结果").not.toBeNull();
+    expect(typeof dryRun!.total).toBe("number");
+    expect(dryRun!.byStatus).toBeDefined();
+    expect(dryRun!.failedSegments).toBeDefined();
+    // 有昵称可跑时命中率是个数；一个都没有时是 null 而不是 0——0 会被当成「规则很烂」。
+    if ((dryRun!.total as number) > 0) expect(typeof dryRun!.hitRate).toBe("number");
+    else expect(dryRun!.hitRate).toBeNull();
+  });
 });

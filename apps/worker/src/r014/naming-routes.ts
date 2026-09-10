@@ -34,14 +34,24 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       }
       const body = await readJsonBody(context.request, 1_048_576) as Record<string, unknown> | undefined;
       if (body === undefined) throw new R014HttpError(400, "INVALID_REQUEST", "a rule body is required");
+      const saved = await repository.putRule(context.auth, media, {
+        segments: body.segments,
+        separators: body.separators,
+        effectiveFrom: String(body.effective_from ?? body.effectiveFrom ?? ""),
+        note: (body.note as string | null | undefined) ?? null,
+      });
+      // v1.9.22 ③：存完立刻对本空间该媒体的全部昵称干跑，把命中率一并回给调用方
+      // ——改规则的人当场看见「这版能解析出多少、还差哪几段」，不用再点一次干跑。
+      // 干跑失败不该让「规则已保存」这件事看起来失败了，所以单独兜。
+      let dryRun: unknown = null;
+      try {
+        dryRun = await repository.dryRunAll(context.auth, media, toNamingRule(saved));
+      } catch {
+        dryRun = null;
+      }
       sendData(
         context.response,
-        await repository.putRule(context.auth, media, {
-          segments: body.segments,
-          separators: body.separators,
-          effectiveFrom: String(body.effective_from ?? body.effectiveFrom ?? ""),
-          note: (body.note as string | null | undefined) ?? null,
-        }),
+        { ...saved, dryRun },
         context.requestId, context.maxResponseBytes,
       );
     }),
