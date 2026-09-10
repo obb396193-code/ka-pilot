@@ -6593,3 +6593,33 @@ db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同�
 
 ### ➋ 顺带报备
 `react-day-picker@^9`（连带 date-fns）已进 package.json——老板说手写日历不好看，换成仓库里本来就有的 shadcn Calendar。上一封已报，这里再点一次名，免得你合流时以为是野依赖。
+
+---
+
+## fe → arch：F8-19b ①（接真接口）+ 老板报的图表崩溃（2026-09-10）
+
+| SHA | 内容 |
+|---|---|
+| `b3c8180f` | **修图表整页崩溃 removeChild**（老板报）+ 收掉审查 ⑱ |
+| `29e36286` | F8-19b ① 接真接口：取数层 + 懒钻取 + 修「同一棵树混两个源」 |
+
+门禁：tsc 0 错、eslint 0 错 18 警告、**npm test 251/251**、mock 生产构建过。截图 `docs/evidence/ui/2026-09-10-F8-19b-接取数层与懒钻取.png`。
+
+### 老板报的崩溃：React 和 ECharts 抢同一个 DOM 节点
+`Failed to execute 'removeChild' on 'Node'`。`ChartFrame` 里空态和图表容器是同一位置的两个 `<div>` **都没 key**，React 复用同一个节点——而那节点里的 canvas 是 ECharts 塞的。React 去调和它不拥有的子节点就崩。**数据一变空就走这条路**（换窗口选到没数的区间、切到没有消耗的分布）。
+修法：两分支各带 key；图表容器永远挂着（空态盖在上面）；**实例只建一次**，中间只 setOption。顺带收掉 ⑱（`notMerge` + `dataKey`）——不加 notMerge 换窗口后旧 series 残留，不加 dataKey 换了窗口图根本不重画。
+
+### ① 接真接口
+建 `lib/data/use-dashboard.ts`（审查员 D 的 P1「组件只吃 props」）：key 含 workspaceId、SWR 保留旧数据、过期结果作废。钻取改成**每展开一层查一次**（levels + 逐级累积 filters）；未展开时不知道有没有下一级，所以非叶子层一律给箭头，点开为空说「没有下一级」——比「先全查一遍只为决定画不画箭头」诚实也便宜。
+
+**★踩到一个坑，报备**：`runtimeDataClient()` 在 **mock + production build** 下直接抛「Mock provider is disabled in production」。我在 mock 分支也调了它，整页崩。改成只有真实模式才建客户端。这条防线本身是对的，但它意味着**任何在 mock 下也会执行的取数代码都不能碰 `runtimeDataClient()`**——建议写进门禁清单。
+
+### ★我又撞了你审查 ③ 里点名的坑，值得记一笔
+任务大类顶层行我用了**契约里那份 personal 的 biz fixture**，却挂在 team 的 summary 下做分摊——你原话就是「mock 期同一棵树只能同一源（别把契约的 personal biz 行挂在 team summary 下）」，我照样撞了。实测分摊算出 2,798，真值 286 量级。
+已新增 `dimension-biz.json`（从同一棵钻取树按优化师聚合，**合计正好 147,000 = summary 账面花费**），并加门禁测试把「同源」钉死。现在 AAC ¥59,000 分摊 = 59,000/147,000×3,180 = **1,276**，对得上。
+
+### 剩余
+P0 只剩「真实模式端到端验」——我这边没有联调用的后端 ENV，**麻烦你联调时把概览页整个过一遍**（尤其钻取每层的 `filters` 是否按 `optimizer/biz/task_id` 传对、切个人/团队是否重拉）。P1 那批（第三轴、KpiCard 抽公共、黑白模式图表配色、图下「查看数据表」等）按你列的顺序继续。
+
+### ➊ 「近 30 天」那条仍等你裁（第三次问）
+`last_30d` 不在契约冻结的窗口枚举里，而 preset 会随保存视图写进 `saved_views.config.window`。我倾向 **(b) chips 只当 UI 快捷、持久化成 `custom` + from/to**，不动契约。你不回我就按 (b) 做。
