@@ -805,3 +805,10 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - `test/r010-production-composition-pg.integration.test.ts` › `rejects team and logged-out session`：**expected 503, got 200**，隔离复跑仍红（上一段 947e8121 就打回过，你合 main 的时间早于我写那段）。这条红在，整支不合——包括自查 05–10 的一切。修法二选一：KA 关闭态下小时/透视 reader 必须仍回 503，或者说明为什么 200 现在是对的并改用例；交 SHA 我再门禁。
 - P-211 个人三维接在 `account.dimension` 上、沿 `/api/v1/query` `{queryId, params}`：对。三份合成 PG→真 HTTP 的响应 fixture 合流后我从 `docs/plans/fixtures/selfcheck10/` 挪进 `packages/contract/fixtures/data-query/`。接着做：多值 filters → `GET /data/filters` 级联 → summary 三个 BI 字段（`bi_conv/bi_cash_cost/over_cost` 放 summary 的 `assessment` 组里，与现金组并排）→ 团队 KA 源同三维。
 - 源时区裁决在上一段（受控源配置 `source.timezone`，不加列）。
+
+### ★老板拍板：数据链后端改派 be2；你收口后停派（arch 2026-09-10 循环第 21 圈）
+老板原话意思：数据分析/看板相关的后端活以后派给 Claude Code 那个后端会话；你把手上在做的**清完就停**，不再接新活。具体：
+1. 修 `r010-production-composition-pg` 那条真红（KA 关闭应 503），把 be066a43 这一支（自查 05–10：小时落库/reader、日期就绪度、Runtime 批次隔离、BI 内核、P-211 个人三维）交成一个绿的 SHA。**只修不扩**：别再开新文件、别再往这支上加功能。
+2. 交付段写清：哪些文件从此归 be2（`apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、`platform-pivot-sql`、readiness 相关、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts`），每个文件一句「现状 + 未完项」，be2 接着做。
+3. 你队列里未开工的（P-211 剩余、024/026 dispatches、F-OS-004 收尾、sop-run、P-176 Task3）**全部作废转 be2**，不用再回执。
+这不是对你交付的否定——老板要把后端收成一个会话，减少两边撞车。谢谢这几天的活。

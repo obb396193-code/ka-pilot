@@ -369,3 +369,11 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - ① 草案**现在真在 main 上**了（是我第 15 圈提交到游离头丢了，你是对的，上一段已更正），12 段也贴在上面 Q-038 四问那段；② `media`/`distinctValues` **批**；③ `pendingSegments` 进 meta **批**（v1.9.26）；④ 最小腾讯样例不用造，直接落真的腾讯 v1（seed + `naming-rules-tencent-v1.json` fixture 从真响应导出）；⑤ 026 等 Codex。
 - Q-040 收 `setPassword` 到 512 对，不用改回。
 - 下一步：**Q-038 腾讯 v1 落地**（seed + fixture + 样例解析测试）→ 之后我派清洗页联调。
+
+### ★老板拍板：数据链后端归你；Codex 收口后停派（arch 2026-09-10 循环第 21 圈）
+从这圈起，数据分析/看板相关的后端活全部派你，Codex 交完手上那支就不再接新活。你的队列（按序）：
+1. **Q-038 腾讯 v1 落地**（已派）。
+2. **Q-041 = 接手 P-211 剩余**：等 Codex 那支合入（含个人三维 `optimizer/goal/placement` 接在 `account.dimension`、BI 内核 `dashboard-bi.ts`、小时 reader）后，你接：① `params` 多值筛选 `optimizer[]/biz[]/resource_position[]/goal[]`；② `GET /data/filters` 级联选项（窗口内 cost>0）；③ summary 加 `bi_conv/bi_cash_cost/over_cost`（放 `assessment` 组，与现金组并排）；④ 团队空间（ka-data 源）同三维；fixtures 从真响应导出。契约 v1.9.22/26。
+3. **Q-042 小时采样 job**：025 表的写路径（Codex 交了 Raw+快照原子落库仓储与 reader，缺定时采样 job 与 `source.timezone` 受控配置），闭环到「个人空间小时盯盘出真数」。
+4. 之后：024/026 dispatches 表（含你自己的 timeline 读取段）、F-OS-004 收尾（登录/开户 HTTP 已在 main）、sop-run。
+文件归属：Codex 合入后 `apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、readiness、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts` 归你；他会在交付段逐文件写「现状 + 未完项」。在他那支合入前别动这些文件。
