@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -210,5 +211,21 @@ describe("task detail tabs (real PostgreSQL)", () => {
   it("answers 501 for the review endpoints too (v1.9.19)", async () => {
     expect((await call(`/api/v1/tasks/${encodeURIComponent(taskId)}/review/latest`)).status).toBe(501);
     expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/review`, {})).status).toBe(501);
+  });
+
+  it("★Q-036: dispatch stays unavailable until the UNION actually reads the table, not merely when it exists", async () => {
+    const source = readFileSync(
+      new URL("../../../../packages/db/src/r014/task-timeline-repository.ts", import.meta.url), "utf8");
+
+    // 判定必须同时看「读取段接了没」和「表在不在」——只看表存在的话，
+    // Codex 的 024 一落地这里就会声称派发类可用，而 UNION 里根本没读它，
+    // 用户看到的是「查过了，没有派发」。假完整比缺失更难发现。
+    expect(source).toContain("DISPATCH_SEGMENT_WIRED && await this.tableExists(\"dispatches\")");
+
+    // 现在读取段还没接，所以这个开关必须是 false；接完的人要同时翻它。
+    expect(source).toMatch(/const DISPATCH_SEGMENT_WIRED = false;/);
+    // 反向守住：开关翻成 true 却没在 UNION 里出现 dispatches，就是自欺。
+    const wired = /const DISPATCH_SEGMENT_WIRED = true;/.test(source);
+    if (wired) expect(source).toContain("FROM dispatches");
   });
 });

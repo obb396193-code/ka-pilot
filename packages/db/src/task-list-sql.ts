@@ -1,3 +1,4 @@
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
 import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
 import { accountScopeClause } from "./r014/workspace-authority.js";
 
@@ -209,6 +210,8 @@ export const TASK_LIST_PAGE_SQL = `
         max(metric.computed_at) AS computed_at
       FROM account_metrics_daily AS metric
       WHERE metric.workspace_id = task.workspace_id
+        -- Q-037：失败批次的旧 cost 不该进 spent / 达成量，否则任务看着「花了钱」。
+        AND ${etlBatchReadableSql("metric")}
         AND task.period_start IS NOT NULL
         AND task.period_end IS NOT NULL
         AND metric.ds BETWEEN task.period_start AND LEAST(task.period_end, $2::date)
