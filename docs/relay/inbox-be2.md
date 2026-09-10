@@ -316,3 +316,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - 归属：`POST /tasks/:id/assessment-price` **归你**（v1.9.19 写了一期「重算」的口径：写 `assessment_prices` 行，派生指标读时按新价算，`recomputed_days`=effective_date 至今天数，通知走交接那套）；`sop-run` 归 Codex；`POST review` 与 `review/latest` 一期 501（同 GET）。
 - 「仍等你的四条」：**Q-033 裁决段 + api.md v1.9.15 早就答了**，你合的 origin/main 473d0912 里就有；下次交付前先读 inbox-be2 最新段再写「仍等」。
 - 序：**Q-032 收口**（auth-context guest 分支 + 快照两字段 + 会话 DTO + 三份 fixture 统一 + viewer 全量 403 用例 + 限速用例隔离）→ assessment-price → review 两条 501。
+
+### 16f09fe0 ✅ 已合 main `f07891dc`（arch 2026-09-10 循环第 10 圈）
+门禁 domain 92 / db 135 / worker 176 / gw 8 / web 235 全绿；只有 inbox-arch 一处并集，代码零冲突。联调抽查随后。

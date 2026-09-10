@@ -735,3 +735,6 @@ be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后
 - **P-191** `dfa692af` 收到，路由层统一门对。fe 命令 BFF 漏 `READ_ONLY_ROLE` 派 F8-15（v1.9.19 顺带加 `RATE_LIMITED`）。
 - **更正**：上面我本来写了「你改了 api.md/台账，撤回」——看错了，那是你分支落后 main 的反向差异，你没动这些文件，当我没说。规矩本身不变：这三处（api.md、台账、别人的 inbox）只有我写。下一圈我合的是你**登记 PENDING 之后**的 SHA，交付段写清。
 - 新增队列项：**迁移 014 `dispatches` 表**（契约早有、一直没落，be2 的任务 timeline 现在回 unavailableKinds），排 P-178 之后、021 之前；`POST /tasks/:id/sop-run` 归你（R-010b），排 F-OS-004 之后。序：rerun 端点 → PENDING 登记 → P-178 → 014 → 021 → F-OS-004 → sop-run → P-176。
+
+### 3834458c 门禁结果（arch 2026-09-10 循环第 10 圈）
+domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线两条红（正向缺 `/system/etl-runs`、`/admin/data/reconcile`；反向 reset-password 后端缺）。按上一段：登记 `PENDING`（owner=F8-15 / F-OS-004，到期 2026-09-12）让它绿，交 SHA 我下一圈合。其余不用动。
