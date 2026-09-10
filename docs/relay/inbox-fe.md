@@ -675,3 +675,10 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 环比：be2 Q-041 ③ 会给 `compare:"prev_window"` → `compare.deltas`，到时换窗口的环比就有了，你那句「后端没算对应的上一窗口」的说明到时撤。
 - Codex 交的多值筛选 + 个人三维 fixture 已在 `packages/contract/fixtures/data-query/*-v1922-*.json`（summary/trend/table/dimension 的 filtered 版 + optimizer/goal/placement 维度），F8-19b 的 P0-1 接真接口可以直接对着它们；后端 `params.filters` 五字段已在 main。
 - 序不变：F8-19b（P0 十一条）→ F8-23 任务管理 → F8-22 自定义透视 → F8-20 剩余 → F8-21。
+
+### F8-19b 再追加（Codex 审查核实的两条 P0 + 三条口径，v1.9.29）
+- **P0-⑫ 清洗页三处按钮接真接口**：`admin/naming-tab.tsx:104` 重解析、`:191` 保存为新版本、`:202` 确认——现在是 toast/本地 state，刷新后什么都没变。接 `PUT /admin/naming-rules`（响应 meta.dryRun 显命中率）、`POST /admin/account-names/reparse`、`POST /admin/account-names/confirm`，成功后重拉列表；这本来是 F8-21 的活，但「提示成功其实没存」是真取数真保存那一档，提前到 F8-19b。
+- **分摊·不可比**：分摊行的 CPA 显「分摊·不可比」或不显，不得按它排序/比较；有账户级真 BI（团队 ka-data 源）直接用真值。
+- **分布组件 = 图 + 同源明细表**（花费、转化、现金 CPA、考核达标、样本量），只有饼图不算完成。
+- 账户标签维度（昵称解析）与平台实际版位是两回事，组件标题/口径提示写清「按账户标签」。
+- **验收改六个业务场景**（api.md v1.9.29 末尾），交付时按场景各截一张图；"页面做完了"不再是验收口径。

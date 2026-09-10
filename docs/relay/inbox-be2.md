@@ -390,3 +390,10 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - ⑤ 值映射：**不加 valueMap，存原值**（自投/代投），维度层显示原值；`self/agency` 那种英文键作废，草案里的写法是我笔误。
 - Codex 已收口合入（`9d1ec19a`），44 项数据域文件的现状/未完在 `docs/plans/R010-状态.md` 顶部，从那接。他最后交的看板多值筛选（`params.filters` 五字段，summary/trend/table/dimension 四类已过真 PG→HTTP）和个人三维已在 main，7 份 fixture 我收进 `packages/contract/fixtures/data-query/*-v1922-*.json`。**Q-041 从此接**：① `GET /data/filters` 级联选项；② summary `assessment.biConv/biCashCost/overCost`（内核 `packages/domain/src/dashboard-bi.ts` 已有，接线即可）；③ `compare:"prev_window"` → `compare.deltas`；④ `cost.incentiveCost`；⑤ `availability:"pending"`；⑥ `lineage.warnings` BATCH_FAILED 对象；⑦ `segment:<key>` 维度；⑧ 团队 ka-data 源同三维；⑨ `source.timezone` 受控配置。fe F8-19b 正等 ①–⑥。
 - 序：Q-041 → Q-043 任务管理 → Q-042 小时采样 job。
+
+### Q-044（P0，插在 Q-041 之后、Q-043 之前；v1.9.29）：清洗准确性三件 + 历史归属
+Codex 的只读审查（`docs/reviews/2026-09-11-数据分析优化师视角只读审查-Codex.md`）抓到的，我核过都成立：
+① **空段不顶位**：`account-name-parse-contract.ts:167` 现在 `filter(token.length>0)` 把空段删了、后面前移，`自投--任务A-备注` 解成优化师=任务A 且 parsed。改：空段 = 该段 unmatched，后续按位不动，状态 partial；用他的反例做用例。
+② **归一**：段 `values` 改 `[{canonical, aliases[]}]`（老形兼容），解析行每段存 `raw / canonical / basis{ruleVersion, source, at}`，维度/透视/日报全用 canonical；`IOS`/`iOS` 必须归到同一 canonical。v1.9.26 那句「不加 valueMap」作废。
+③ **历史归属按业务日**：绑定带 `effectiveFrom`，读历史窗口用当日生效绑定；新规则版本不追溯，`reparse {from}` 才追溯并写变更记录；把列表/透视/日报/看板四条读路径统一到同一个取绑定的 helper（现在各取各的版本）。
+fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming-rules.json` values 新形，从真响应导出。
