@@ -77,11 +77,22 @@ export function resolveSessionCookie(request: Request): SessionCookieResolution 
   return { status: "valid", header: `${SESSION_COOKIE_NAME}=${value}` }
 }
 
+/**
+ * F8-15 ③：把入站请求里的来源 IP 原样带给后端。
+ * 登录限速是**按 IP** 算的（后端取 XFF 首段），BFF 不透传的话后端只看得到 BFF 自己的地址——
+ * 所有人共用一个计数，一个人试错就把全公司锁了。
+ * 只转发这两个头、原样不加工：信任边界是内网反向代理（网关会覆盖 XFF）；
+ * 一期不做可信代理白名单，它只护演示访客的限速，伪造的下场是多试几次登录。
+ */
+const FORWARDED_CLIENT_HEADERS = ["x-forwarded-for", "x-real-ip"] as const
+
 export function internalApiHeaders(options: {
   config: InternalApiConfig
   requestId: string
   session?: SessionCookieResolution
   json?: boolean
+  /** 入站请求；给了就把来源 IP 头带过去 */
+  request?: Request
 }): Headers {
   const headers = new Headers({
     accept: "application/json",
@@ -90,6 +101,10 @@ export function internalApiHeaders(options: {
   })
   if (options.json) headers.set("content-type", "application/json")
   if (options.session?.status === "valid") headers.set("cookie", options.session.header)
+  for (const name of FORWARDED_CLIENT_HEADERS) {
+    const value = options.request?.headers.get(name)
+    if (value) headers.set(name, value)
+  }
   return headers
 }
 

@@ -37,7 +37,8 @@ test("every code that reaches a user has Chinese copy, and the two enforced ones
   assert.equal(stableErrorCopy("RATE_LIMITED"), "操作太频繁，15 分钟后再试")
   // 限速 / 只读身份：上游那句说不清「等多久」「找谁开」，以我们的为准
   assert.equal(resolveErrorMessage("RATE_LIMITED", "Too many requests"), "操作太频繁，15 分钟后再试")
-  assert.equal(resolveErrorMessage("READ_ONLY_ROLE", "read only"), "你现在是只读身份，这一步要管理员开权限")
+  // 契约 v1.9.14 冻结原文；改这句要先改契约
+  assert.equal(resolveErrorMessage("READ_ONLY_ROLE", "read only"), "演示空间只读，想用真数据找管理员开户")
   // 其余码上游更贴场景：同是 INVALID_CREDENTIALS，改密页要的是「当前密码不正确」
   assert.equal(resolveErrorMessage("INVALID_CREDENTIALS", "当前密码不正确"), "当前密码不正确")
   assert.equal(resolveErrorMessage("INVALID_CREDENTIALS"), "用户名或密码错误")

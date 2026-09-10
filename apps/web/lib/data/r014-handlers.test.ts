@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import {
-  handleAdminMemberCreate, handleAdminMemberResetPassword,
+  handleAdminMemberCreate, handleAdminMemberResetPassword, handleAdminReconcile, handleEtlRuns,
   handleDecisionPolicy, handleExportDetail, handleMeView, handleMeViews, handleMeWatchlist,
   handleTaskBindings, handleTaskReadiness,
 } from "./r014/handlers.ts"
@@ -169,4 +169,55 @@ test("reset-password encodes the identity id and opens no query whitelist", asyn
     "a/b", { environment, fetchImpl: clean.fetchImpl, requestId: () => "req-m3" },
   )
   assert.equal(new URL(clean.seen[0]!.url).pathname, "/api/v1/admin/members/a%2Fb/reset-password")
+})
+
+/* F8-15：治理后台两条透传 + 来源 IP 透传 */
+test("etl-runs 走分页形，且只放行白名单里的查询参数", async () => {
+  const { seen, fetchImpl } = spy("req-e1", { items: [], page: 1, pageSize: 50, total: 0 })
+  const ok = await handleEtlRuns(req("http://localhost/api/internal/system/etl-runs?page=1&pageSize=50"), {
+    environment, fetchImpl, requestId: () => "req-e1",
+  })
+  assert.equal(ok.status, 200)
+  const url = new URL(seen[0]!.url)
+  assert.equal(url.pathname, "/api/v1/system/etl-runs")
+  assert.equal(url.searchParams.get("pageSize"), "50")
+
+  // 白名单外的参数一律拒，不静默丢弃
+  const blocked = spy("req-e2", { items: [], page: 1, pageSize: 50, total: 0 })
+  const bad = await handleEtlRuns(req("http://localhost/api/internal/system/etl-runs?secret=1"), {
+    environment, fetchImpl: blocked.fetchImpl, requestId: () => "req-e2",
+  })
+  assert.equal(bad.status, 400)
+  assert.equal(blocked.seen.length, 0)
+})
+
+test("对账诊断是 POST，且复用 data-query 的 reconcile 分支不另造响应形", async () => {
+  const { seen, fetchImpl } = spy("req-r1", {
+    mode: "reconcile",
+    kaData: { queryId: "reconcile.account_daily", rowSchemaVersion: "reconcile.account_daily/v2", status: "unavailable", rows: [], returnedRowCount: 0 },
+  })
+  const result = await handleAdminReconcile(req("http://localhost/api/internal/admin/data/reconcile", "POST", { window: { from: "2026-09-01", to: "2026-09-05" } }), {
+    environment, fetchImpl, requestId: () => "req-r1",
+  })
+  assert.equal(seen[0]!.method, "POST")
+  assert.equal(new URL(seen[0]!.url).pathname, "/api/v1/admin/data/reconcile")
+  // 响应形不合契约时不透传上游原文，判 502——这里给的是残缺的 reconcile
+  assert.equal(result.status, 502)
+})
+
+test("来源 IP 原样带给后端：登录限速按 IP 算，不带就是所有人共用一个计数", async () => {
+  let headers: Headers | null = null
+  const request = new Request("http://localhost/api/internal/me/counts", {
+    headers: { cookie: `ka_session=${COOKIE}`, "x-forwarded-for": "10.1.2.3, 10.0.0.1", "x-real-ip": "10.1.2.3" },
+  })
+  await handleEtlRuns(request, {
+    environment,
+    fetchImpl: async (_input, init) => {
+      headers = new Headers(init?.headers)
+      return Response.json({ ok: true, data: { items: [], page: 1, pageSize: 50, total: 0 }, meta: { requestId: "req-ip" } }, { headers: { "x-request-id": "req-ip" } })
+    },
+    requestId: () => "req-ip",
+  })
+  assert.equal(headers!.get("x-forwarded-for"), "10.1.2.3, 10.0.0.1")
+  assert.equal(headers!.get("x-real-ip"), "10.1.2.3")
 })

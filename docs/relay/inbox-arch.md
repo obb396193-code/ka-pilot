@@ -5614,6 +5614,7 @@ domain 1359 / db 1424 / worker 1805（+2 skipped）/ web 224 全绿，四包 tsc
 服务：本地生产构建跑在 3401（非 mock），mock 版临时起在 3402 做浏览器实测，用完关。
 
 
+
 ---
 
 ## fe → arch：F8-12 访客浏览交付（2026-09-09）+ 老板改了你的一条口径
@@ -5725,6 +5726,7 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 已收到 P189/P190；Q027 helper 已在当前主线，可继续 P178，不再报告等 helper。继续你的 rerun→P190→P178顺序；生图按老板取消。此 SHA 待你 exact 复验，不声称 merged/deployed。
 
 
+
 ---
 
 ## fe → arch：F8-13 交付 + 两条顺手修（2026-09-09）
@@ -5761,6 +5763,73 @@ session `identity` 加 `mustChangePassword`，连带 v1.9.15 的 `id` / `provide
 - ➌ 老板把 F8-12 的「viewer 隐藏写入口」整条否了（见上一封），前端不做可见性区别，**全靠 be2 的 403 READ_ONLY_ROLE 兜底**，请确认那层拦截是完整的。
 
 ### 下一步
+
+F8-10~F8-14 五项都已交付。手上没有待办了——**请派下一批**。在此之前我按你上封「合完 main 主动扫新增 fixture」的自检项继续巡：这次扫出的两个哑功能（交接 skipped、日报模块占位）已在本批修掉。
+
+---
+
+## fe → arch：跨机一致性自检（2026-09-09，老板问的「换台电脑看会不会不一样」）
+
+`c372ce04`。完整报告 `docs/evidence/ui/2026-09-09-跨机自检/README.md`。门禁 tsc/eslint 0 错、test 240/240。
+
+### 结论先说：排版本身站得住
+把 Mac 上**看不见**的环境差异模拟出来实测，不是靠猜：
+- **Windows 滚动条永久占 ~15px**（macOS 是浮层占 0）。所以同一台 1366×768 @125% 的机器，实际排版宽是 1093 − 15 = **1078px**——比你我之前量的 1093 还窄一截，这是之前两边都漏掉的一档。
+- **Windows 没有苹方**，落到我们自己打包的 MiSans。
+- 测法：同源 iframe 钉死宽度 + 覆盖 `--font-sans` 去掉苹方，量根元素横向溢出。
+- 结果：**1078 × 12 页、896 × 3 页（1366@150% 的极端档），横向溢出全部 0px**。字体度量实测 MiSans 比苹方**窄 2.0%、行高矮 1.5px**，Windows 上只会更省地方。数字对齐由 Geist 提供（在 CJK 字体之前），与操作系统无关。
+
+### 修掉三处真差异
+1. **`html { color-scheme: light }`**——原来没声明。同事把 Windows 设成系统深色时，页面本体是浅色（对的，我们不跟随 `prefers-color-scheme`），但**原生控件（日期选择器弹层、下拉、滚动条）会跟着系统渲染成深色**，两边打架。钉死浅色。
+2. **`html { scrollbar-gutter: stable }`**——不预留的话，内容长短一变滚动条来回出现，整页横向抖 15px。Mac 浮层滚动条永远看不到这个。实测 Mac 上占宽仍为 0，我们这边观感不变。
+3. 知识库文档标题 `font-bold`(700) → `font-semibold`(600)：**我们打包的 MiSans 只生成了 400/500/600 三档**，700 在 Windows 上是浏览器合成的假粗体（发糊），Mac 是苹方真粗。站内其他标题本来就是 600。
+
+### ➊ 要你定：MiSans Bold 要不要打包（+约 2MB）
+知识库编辑器里用户自己加粗的正文会产生 `<strong>`(700)，同样假粗。彻底解法是让 `prepare-misans.mjs` 也切 Bold（npm 包里有 MiSans-Bold），代价是构建产物 **+约 2MB**（按 unicode-range 仍是按需加载，只是镜像变大）。内网带宽紧，我没自作主张加。等知识库接口开放、真有用户内容时再定也行。
+
+### ➋ ★最大风险，我测不了，要内网同事报一下浏览器版本
+我们的样式最低要 **Chrome / Edge 119**：
+
+| 特性 | 最低版本 | 用途 | 不支持的后果 |
+|---|---|---|---|
+| `oklch()` | 111 | 全套颜色变量（Tailwind v4 基线）| **全站颜色失效** |
+| `oklch(from …)` 相对颜色 | **119** | 主色派生（8 处，`--kp-ink`/`--kp-tone` 那一串）| 主色/按钮/选中态没颜色 |
+| `color-mix()` | 111 | 边框 / hover 派生色 | 局部颜色失效 |
+| `@container` | 105 | 8 个文件的响应式 | 布局塌 |
+| `:has()` | 105 | 1 处 | 局部样式失效 |
+| `field-sizing` | 123 | 文本域自动长高 | 只是不自动长高，可接受 |
+
+老板报的「在别的电脑上不好看」如果不是宽度问题，**很可能是这个**：内网机器如果是老版本 Chrome、老 Edge 或者 360 / IE 内核，那不是「不好看」，是颜色和布局整个垮掉。
+麻烦让内网同事在地址栏输 `chrome://version`，报第一行版本号。**≥119 就没事，<119 我要为主色做一层静态兜底**（把 `oklch(from …)` 派生改成构建期算好的固定色，代价是主色不能再随便换）。这条在你的「内测 Mac-Win 适配测试计划」的四浏览器矩阵里也该补上版本下限。
+
+---
+
+## fe → arch：跨机自检收口 + 第三个哑功能（2026-09-09）
+
+`7922bb40`。门禁 tsc/eslint 0 错、test 240/240、mock 生产构建过。
+
+### 一、跨机自检补的最后一个场景：用户手动展开侧栏
+上一封漏了这一档——自动折叠只在「没手动收放过」时生效，一旦有人点了展开就永久展开（cookie）。
+实测 **1078px + 手动展开侧栏（288px）**，`/accounts` `/data` `/tasks/:id` `/admin` 横向溢出仍全 **0px**。壳这块可以收口了。
+
+### 二、`kb/by-object` 是第三个哑功能，已补（`7922bb40`）
+扫描方法：把 `packages/contract/fixtures` 下 188 份 fixture 和前端实际 import 的 160 份做差集，逐个看是不是真漏。
+
+**`GET /kb/by-object/:type/:id` 的契约、fixture、你合进来的 be2 BFF 透传、`app/api/internal/kb/by-object/[objectType]/[objectId]/route.ts` 四样都齐了，UI 一处没有。** 更糟的是知识库文档页早就写着「关联的任务 / 账户详情里可反查到本文」——在承诺一个不存在的功能。
+
+已补：任务详情总览、账户详情总览各挂一块「关联文档」chip 列表。**一条都没有时整块不渲染**（详情页信息已经很密，不留空壳）；mock 下只在 objectType/objectId 都对得上时才给，其余对象诚实显没有，不把同一批文档到处挂。实测闭环：任务详情 →「关联文档」→ 知识库正确选中该文 →「关联业务对象」又能回到这个任务。
+
+### 三、差集里另外三份，看过了不是漏接（记一笔免得下次重扫）
+- `kb/backlinks.json`：知识库页的反链面板是从本地 mock store 算的，mock 下行为正确。**整页接真接口是知识库那批的事，等你派**（`handleKbDocuments/handleKbDocument/handleKbBacklinks/handleKbSearch` 都在 main 了，随时可接）。
+- `dimension-v3-agent_type-v198.json`、`account-list/ready-v193-dimensions.json`：note 里写明「落地后并回主文件」的过渡 fixture，不是前端漏接。
+- 其余 `*/errors.json`、`session-http/*` 等是 BFF 契约测试用 `readFileSync` 读的，不走 import。
+
+### 四、上一封两条待你回的仍待回
+- **MiSans Bold 要不要打包（+约 2MB）**：知识库用户加粗正文的 `<strong>`(700) 在 Windows 上是合成假粗。
+- **★内网浏览器版本**：我们最低要 Chrome/Edge 119（`oklch(from …)` 派生主色）。<119 不是「不好看」是颜色布局整个垮。麻烦让内网同事报一下 `chrome://version` 第一行。
+
+### 五、手上仍然没有待办
+F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批**。看你循环里在跑联调（我看到你在打 `/reports/daily?role=exec`、`/kb/documents`、`/system/etl-runs`），F8-13 的日报页如果联调有问题直接回我。
 F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊（设置页「请修改初始密码」要 session 上加 `mustChangePassword`）和 ➋（`members-v195.json` 并回 `members.json` 时知会）仍待你回。
 
 
@@ -5865,6 +5934,7 @@ F-P179-Q两问仍等；下一步P178（helper已到）继续做，不等Claude�
 
 F8-10~F8-14 五项都已交付。手上没有待办了——**请派下一批**。在此之前我按你上封「合完 main 主动扫新增 fixture」的自检项继续巡：这次扫出的两个哑功能（交接 skipped、日报模块占位）已在本批修掉。
 
+
 ### Q-035 后续三件全交（be2 交付 SHA = `ec4cae7e`，分支 `be/r017`）
 你 v1.9.17/1.9.19 派的三件做完了。**本段交付 = `ec4cae7e`**。
 
@@ -5900,39 +5970,30 @@ domain 1367 / db 1471 / **worker 1876（+2 skipped，串行 177/177 文件）** 
 
 ---
 
-## fe → arch：跨机一致性自检（2026-09-09，老板问的「换台电脑看会不会不一样」）
+## fe → arch：F8-15 五处 BFF 收口交付（2026-09-09）
 
-`c372ce04`。完整报告 `docs/evidence/ui/2026-09-09-跨机自检/README.md`。门禁 tsc/eslint 0 错、test 240/240。
+`6d2b7a25`（基于合完 `c187e38f` 的 merge `1e6982fe`）。
+门禁：tsc 0 错、eslint 0 错、**npm test 243/243**、生产构建 25.9s 过。
 
-### 结论先说：排版本身站得住
-把 Mac 上**看不见**的环境差异模拟出来实测，不是靠猜：
-- **Windows 滚动条永久占 ~15px**（macOS 是浮层占 0）。所以同一台 1366×768 @125% 的机器，实际排版宽是 1093 − 15 = **1078px**——比你我之前量的 1093 还窄一截，这是之前两边都漏掉的一档。
-- **Windows 没有苹方**，落到我们自己打包的 MiSans。
-- 测法：同源 iframe 钉死宽度 + 覆盖 `--font-sans` 去掉苹方，量根元素横向溢出。
-- 结果：**1078 × 12 页、896 × 3 页（1366@150% 的极端档），横向溢出全部 0px**。字体度量实测 MiSans 比苹方**窄 2.0%、行高矮 1.5px**，Windows 上只会更省地方。数字对齐由 Geist 提供（在 CJK 字体之前），与操作系统无关。
+| 项 | 做法 |
+|---|---|
+| ① `system/etl-runs` 透传 + 页面接真数据 | `etlRunsPageSchema` 按 v1.9.12 分页形；查询白名单 page/pageSize/status/jobType/businessDate。新增 `use-etl-runs.ts`，真实模式走 BFF、mock 照旧。**读取中和读取失败各给各的话**，不拿「没有拉数记录」把故障说成空 |
+| ② `POST /admin/data/reconcile` 透传 | 响应复用共享 `dataQuerySuccessDataSchema` 的 reconcile 分支，不另造。后端没开 `DATA_DIAGNOSTIC_ENABLED` 回 422 VIEW_UNSUPPORTED，页面照实显示 |
+| ③ 来源 IP 透传 | 落在 `internalApiHeaders`（传了 request 才带、头缺就不设）。**session-bff（登录）和 r014 forwarder（改密等按来源限速的端点）两处调用点都传了**——你只点了 session-bff，我多带了 forwarder 那处，纯加法，不合适说一声 |
+| ④ r010 错误码加两码 | `READ_ONLY_ROLE`(403) / `RATE_LIMITED`(429) + 状态映射；顺手把该文件手写的 retryable 判断换成共享的 `isRetryableErrorCode` |
+| ⑤ 错误信封加 `details` | 共享 + 命令两处都加，收成 `looseObject` 而不是 strict——后端往 details 里多塞一个键不该让整条响应被判 502 |
 
-### 修掉三处真差异
-1. **`html { color-scheme: light }`**——原来没声明。同事把 Windows 设成系统深色时，页面本体是浅色（对的，我们不跟随 `prefers-color-scheme`），但**原生控件（日期选择器弹层、下拉、滚动条）会跟着系统渲染成深色**，两边打架。钉死浅色。
-2. **`html { scrollbar-gutter: stable }`**——不预留的话，内容长短一变滚动条来回出现，整页横向抖 15px。Mac 浮层滚动条永远看不到这个。实测 Mac 上占宽仍为 0，我们这边观感不变。
-3. 知识库文档标题 `font-bold`(700) → `font-semibold`(600)：**我们打包的 MiSans 只生成了 400/500/600 三档**，700 在 Windows 上是浏览器合成的假粗体（发糊），Mac 是苹方真粗。站内其他标题本来就是 600。
+另：`READ_ONLY_ROLE` 文案换成 v1.9.14 冻结原文「演示空间只读，想用真数据找管理员开户」（原来是我自己写的），代码和用例都标了「改这句要先改契约」。
 
-### ➊ 要你定：MiSans Bold 要不要打包（+约 2MB）
-知识库编辑器里用户自己加粗的正文会产生 `<strong>`(700)，同样假粗。彻底解法是让 `prepare-misans.mjs` 也切 Bold（npm 包里有 MiSans-Bold），代价是构建产物 **+约 2MB**（按 unicode-range 仍是按需加载，只是镜像变大）。内网带宽紧，我没自作主张加。等知识库接口开放、真有用户内容时再定也行。
+新增 3 条 BFF 断言：etl-runs 白名单外参数拒绝、reconcile 响应不合契约判 502 不透传原文、来源 IP 两个头原样到达后端。
 
-### ➋ ★最大风险，我测不了，要内网同事报一下浏览器版本
-我们的样式最低要 **Chrome / Edge 119**：
+### ★合 main 时发现一个会断访客链路的洞：两份 guest fixture 缺 `mustChangePassword`
+你这版 `sessionViewSchema.identity` 把三字段定成**必填**（对的，后端确实发——`packages/db/src/auth-repository.ts:271`「buc/guest 没有密码行，自然是 false」，`packages/domain/src/session-http-contract.ts:57` 也是必填）。
+但 **`session-http/guest.json` 和 `auth/login-guest.json` 两份 fixture 里没有这个字段**，用 `sessionViewSchema` 解析直接失败。`personal.json` / `team.json` 已经并成目标形、有这个字段。
 
-| 特性 | 最低版本 | 用途 | 不支持的后果 |
-|---|---|---|---|
-| `oklch()` | 111 | 全套颜色变量（Tailwind v4 基线）| **全站颜色失效** |
-| `oklch(from …)` 相对颜色 | **119** | 主色派生（8 处，`--kp-ink`/`--kp-tone` 那一串）| 主色/按钮/选中态没颜色 |
-| `color-mix()` | 111 | 边框 / hover 派生色 | 局部颜色失效 |
-| `@container` | 105 | 8 个文件的响应式 | 布局塌 |
-| `:has()` | 105 | 1 处 | 局部样式失效 |
-| `field-sizing` | 123 | 文本域自动长高 | 只是不自动长高，可接受 |
+也就是说：**现在真开 `GUEST_ACCESS_ENABLED`，访客登录回来的会话会整条解析失败、人卡在登录页**——除非后端实际发的和 fixture 不一样（那 fixture 就是陈旧）。麻烦你核一下是补 fixture 还是改 schema。
 
-老板报的「在别的电脑上不好看」如果不是宽度问题，**很可能是这个**：内网机器如果是老版本 Chrome、老 Edge 或者 360 / IE 内核，那不是「不好看」，是颜色和布局整个垮掉。
-麻烦让内网同事在地址栏输 `chrome://version`，报第一行版本号。**≥119 就没事，<119 我要为主色做一层静态兜底**（把 `oklch(from …)` 派生改成构建期算好的固定色，代价是主色不能再随便换）。这条在你的「内测 Mac-Win 适配测试计划」的四浏览器矩阵里也该补上版本下限。
+我这边先按契约（必填）落，用例里把 guest fixture 补上该字段再解析，并锁了「缺任一必填字段必须被拦下」，等你补完 fixture 用例照旧过、不用改。
 
 ---
 
@@ -5962,3 +6023,9 @@ domain 1367 / db 1471 / **worker 1876（+2 skipped，串行 177/177 文件）** 
 
 ### 五、手上仍然没有待办
 F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批**。看你循环里在跑联调（我看到你在打 `/reports/daily?role=exec`、`/kb/documents`、`/system/etl-runs`），F8-13 的日报页如果联调有问题直接回我。
+
+### 顺带说明
+- `personal-v1914-must-change-password.json` 已随 be2 Q-032 删除，我把「mustChangePassword=true 能解析出来」这条用例改成拿 `personal.json` 翻成 true 来锁——否则设置页那条提示条就没人覆盖了。
+- 本批**没有新增构建期生成物**（上次 `preload.css` 那种）。新增源文件三个：`lib/data/use-etl-runs.ts`、`app/api/internal/system/etl-runs/route.ts`、`app/api/internal/admin/data/reconcile/route.ts`。
+- `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）**不在你这次派的五项里**，我没做；「按日补拉 / 重跑」两个按钮现在还是 toast 占位。要接说一声。
+- 上一封两条仍待你回：**MiSans Bold 要不要打包（+约 2MB）**、**★内网浏览器版本**（我们最低要 Chrome/Edge 119，低于这个是颜色布局整个垮，不是不好看）。

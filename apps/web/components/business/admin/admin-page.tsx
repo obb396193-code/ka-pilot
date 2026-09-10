@@ -25,6 +25,7 @@ import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { fmtTime, isOk, rv } from "@/lib/fixtures/contract"
 import { AddMemberDialog, ResetPasswordDialog } from "@/components/business/admin/member-dialogs"
+import { useEtlRuns } from "@/lib/data/use-etl-runs"
 import { assetKindLabel, assetsFixture, assetStatusMeta, calendarFixture, etlJobLabel, etlRunsFixture, normalizeEtlRun, eventTypeLabel, flagMeta, flagsFixture, grantsFixtures, membersFixture, reconcileFixture, roleLabel, type AssetItem, type CalendarEvent, type EtlRun, type FlagKey, type Member } from "@/lib/fixtures/admin"
 import { connectionsFixture, providerLabel } from "@/lib/fixtures/integrations"
 import { coefficientText, coefficientsFixture, decisionPolicyFixture } from "@/lib/fixtures/settings"
@@ -136,8 +137,11 @@ const etlColumns = etlHelper.columns([
 function EtlTab() {
   // getRowId 原来取 item.id —— 契约里这张表的主键叫 runId，取到的是 undefined，
   // 于是所有行共用同一个 id，勾选一行等于勾选全部。
-  const runs = isOk(etlRunsFixture) ? etlRunsFixture.data.items.map(normalizeEtlRun) : []
-  const total = isOk(etlRunsFixture) ? etlRunsFixture.data.total : runs.length
+  const { isMock } = useSession()
+  const remote = useEtlRuns(!isMock)
+  const fixtureRuns = isOk(etlRunsFixture) ? etlRunsFixture.data.items.map(normalizeEtlRun) : []
+  const runs = isMock ? fixtureRuns : remote.status === "ok" ? remote.items : []
+  const total = isMock ? (isOk(etlRunsFixture) ? etlRunsFixture.data.total : fixtureRuns.length) : remote.status === "ok" ? remote.total : 0
   const connections = isOk(connectionsFixture) ? connectionsFixture.data.items : []
   const table = useGridTable({ data: runs, columns: etlColumns, pageSize: 20, getRowId: (item) => item.runId })
   return (
@@ -147,7 +151,7 @@ function EtlTab() {
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">启航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>2 户补拉中</CardDescription></CardHeader></Card>
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
-      <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从启航 / KA Data 拉数的记录（按开始时间倒序，共 {total} 次）；显示「凭证失效」= 启航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
+      <DataGrid table={table} empty={!isMock && remote.status === "loading" ? "正在读取拉数记录…" : !isMock && remote.status === "error" ? `读取失败：${remote.message}` : "没有拉数记录"} toolbar={<p className="text-xs text-muted-foreground">每天从启航 / KA Data 拉数的记录（按开始时间倒序，共 {total} 次）；显示「凭证失效」= 启航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
   )
 }
