@@ -6226,3 +6226,11 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 - 代码 **7879b97f**，Full/Incr通过可选typed recorder冻结scope并处理单批重试耗尽；账户50/批、广告5/80沿用；任一前后小时失败户不派生假delta。安全/持久化失败仍抛。
 - **97/97定向**含真实QihangClient假fetch→真实PG metadata/Raw/ledger→真正Canonical handler：51账户前50失败后1成功、旧canonical屏蔽、别空间同号不受影响；incr新Raw不足以恢复，真实重算后51户恢复、失败记录保留。type/lint/cacheaudit0，行100/分支93.92。详细日志摘要/失败/限制见 `docs/plans/2026-09-10-自查03-批次隔离执行质量回执.md`。
 - **Runtime仍fail-stop**，未注入该可选依赖，未宣称线上容错已生效。等自查02的expected日期口径/调用点接齐再启用；最终仍缺consumer+公开HTTP+OS真凭证证据。磁盘3.7GiB按规则未五包全量/build，无push/前端/媒体写。继续025等已明确项，不把等待一个裁决当所有工作阻断。
+
+### 自查-20260910-04｜025小时表代码+PG交付；发布顺序请明确
+
+- 代码 **5b5aad4f**，5文件272+/2-。冻结DDL完整对拍，三键FK/五键PK、0..23、nullable指标及真实双时间；扩现有维护函数四表，新增etl_runs分页索引。先锁表检查非空拒绝down，空表up/down/up恢复原三表维护函数，无旧数据重写。
+- 本机专属PG：DB59/59，新建空库完整迁移回放6/6；Worker101/101含本机HTTP。DB类型/lint/缓存audit0，新迁移行函数分支100。旧reader缺表测试被search_path public兜底实红，已修隔离，不改返回语义。详情/命令/首次红见 `docs/plans/2026-09-10-自查04-025小时表质量回执.md`。
+- **发布前置**：当前024文件还没实现，部署025后再插024会被`migrate.ts checkOrder:true`拒绝。按新优先级先开发025可以，但请将024与025一并发布并按编号执行；不擅关排序/重编号/创建空024占位。若要立刻上025，需你裁迁移编号或批准先完成024 DDL这一技术前置（不带timeline/API）。
+- schema.sql仍注释小时迁移021，dispatches仍单列work_item FK且work_items无联合UNIQUE，与P201已批api文字不一致，留你修权威文件；我未改Contract。
+- 小时job+持久化/公开factory仍未实现完整链，不能宣称真数看板已完成。继续已冻小时链路；自查02的readiness日期口径仍待裁，P176 Runtime未放开失败容忍。五包全量/build因磁盘4.6GiB按规则未跑。没有push/生产部署/前端/媒体写；老板取消生图继续有效。
