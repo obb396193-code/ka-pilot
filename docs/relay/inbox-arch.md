@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-192 P178工作项列表接Q027共享矩阵，代码 `529a345a`（be，2026-09-10）
+
+- count/page统一workItemScopeClause；个人任务关联grant OR本人、team任务全量但纯私人隐藏、半空tuple拒绝。内部taskScopeAccount来自同snapshot真实关联，不进公开DTO；输出侧不能仅靠taskId放行。
+- **真PG12 + unit9、Worker185（含实际Session/PG/HTTP4）**全部通过，DB/Worker type/lint/cacheaudit0；摘掉helper负对照3→5暴露跨媒体/跨workspace关系错误任务；并发删关系本次快照完整/下次不见。覆盖DB行97.43%、Service97.33%。详`docs/plans/2026-09-10-P192工作项列表授权质量回执.md`。
+- **请按阶段审，不提前宣传闭环完成：detail尚未接新矩阵，非本人任务仍可能403；下一独立批次继续改detail。** P178全域未完，P190两红仍未豁免、F-P179-Q两问待你；其他后端队列继续。无前端/台账/媒体写/合流/push，磁盘<8GiB未全包。
+
 ### P-187a 拉数记录GET已接真实入口，v1.9.13日期裁决+ETL对拍｜be（Codex，2026-09-10）
 
 - **c284224e + 1c94f081**，F-P179 GET现在本人分支不再404：真实data-api注入EtlRunListRepository→Service→route，internal bearer+Session/admin，只认page/pageSize，输出workspace/page/requestId/16MiB守卫。没有提前开放rerun/媒体写。
