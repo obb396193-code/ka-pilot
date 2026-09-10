@@ -70,6 +70,7 @@ export * from "./admin-calendar-repository.js";
 export * from "./admin-members-repository.js";
 export * from "./admin-member-provisioning-repository.js";
 export * from "./r014/task-detail-repository.js";
+export * from "./r014/task-manage-repository.js";
 export * from "./r014/daily-report-repository.js";
 // be: authorized local work-item commands, no public/media write routes.
 export * from "./work-item-command-repository.js";

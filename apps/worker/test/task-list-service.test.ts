@@ -255,7 +255,8 @@ describe("TaskListService", () => {
 
   it("fails closed with 502 for an invalid repository contract", async () => {
     const invalidStatus = readyResult();
-    invalidStatus.rows[0] = { ...invalidStatus.rows[0]!, status: "paused" };
+    // v1.9.28 起 paused 是合法状态（停投），换一个真正认不出的值当反例。
+    invalidStatus.rows[0] = { ...invalidStatus.rows[0]!, status: "stopped" };
     expectError(
       await serviceFor(invalidStatus).service.execute({}, auth, "task-list-invalid-status"),
       "UPSTREAM_INVALID_RESPONSE",

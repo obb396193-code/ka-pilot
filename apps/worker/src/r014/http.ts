@@ -21,8 +21,18 @@ export type R014ErrorCode =
 /** 只有「等会儿再来能成」的才是 retryable；限速属于这一类，其余一律 false。 */
 const RETRYABLE_CODES = new Set<R014ErrorCode>(["RATE_LIMITED", "SOURCE_UNAVAILABLE", "INVALID_CREDENTIALS"]);
 
-export function errorBody(code: R014ErrorCode, message: string, requestId: string): unknown {
-  return { ok: false, error: { code, message, retryable: RETRYABLE_CODES.has(code), requestId } };
+export function errorBody(
+  code: R014ErrorCode, message: string, requestId: string, details?: Record<string, unknown>,
+): unknown {
+  return {
+    ok: false,
+    error: {
+      code, message, retryable: RETRYABLE_CODES.has(code), requestId,
+      // v1.9.28 批量保存要回「哪几条为什么失败」。details 只装**代码自己造的结构化清单**，
+      // 不透传内部错误细节——稳定 envelope 那条不变。
+      ...(details === undefined ? {} : { details }),
+    },
+  };
 }
 
 export function sendJson(
@@ -64,7 +74,10 @@ export function sendEmpty(response: ServerResponse, requestId: string): void {
 }
 
 export class R014HttpError extends Error {
-  constructor(readonly status: number, readonly code: R014ErrorCode, message: string) {
+  constructor(
+    readonly status: number, readonly code: R014ErrorCode, message: string,
+    readonly details?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = "R014HttpError";
   }
@@ -102,7 +115,8 @@ const REPOSITORY_STATUS: Record<string, { status: number; code: R014ErrorCode }>
  */
 export function sendFailure(response: ServerResponse, error: unknown, requestId: string): void {
   if (error instanceof R014HttpError) {
-    sendJson(response, error.status, errorBody(error.code, error.message, requestId), requestId);
+    sendJson(response, error.status,
+      errorBody(error.code, error.message, requestId, error.details), requestId);
     return;
   }
   if (error instanceof R014RepositoryError) {

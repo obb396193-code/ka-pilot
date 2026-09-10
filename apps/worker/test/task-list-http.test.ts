@@ -257,7 +257,8 @@ describe("TASK-LIST-001 HTTP composition", () => {
   });
 
   it("returns top-level 502 for an invalid task status", async () => {
-    const baseUrl = await start(taskResult("paused"));
+    // v1.9.28 起 paused 是合法状态（停投），换一个真正认不出的值当反例。
+    const baseUrl = await start(taskResult("stopped"));
     const response = await fetch(`${baseUrl}/api/v1/tasks`, { headers: authHeaders() });
     expect(response.status).toBe(502);
     expect(await response.json()).toMatchObject({

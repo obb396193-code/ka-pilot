@@ -249,6 +249,21 @@ const versionedValueSchema = z.object({
   historyCount: z.number().int().nonnegative(),
 }).strict()
 
+// v1.9.28 任务管理视图（后端 be2 Q-043 ②）：与 packages/domain/src/task-list-contract.ts 逐字对应。
+export const taskManageRecordSchema = z.object({
+  taskId: z.string().min(1).max(128),
+  taskName: z.string().nullable(),
+  bizName: z.string().nullable(),
+  status: z.enum(["preparing", "active", "paused", "ended"]),
+  aliases: z.array(z.string()),
+  monitorUrl: z.string().nullable(),
+  productName: z.string().nullable(),
+}).strict()
+
+export const taskBatchSaveResponseSchema = z.object({
+  saved: z.array(taskManageRecordSchema),
+}).strict()
+
 export const taskDetailSchema = z.object({
   task: z.object({
     taskId: z.string().min(1),

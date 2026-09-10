@@ -30,6 +30,10 @@ const SERVED_ELSEWHERE: { path: string; by: string }[] = [
 
 const normalize = (path: string): string => path
   .replace(/\$\{[^}]*\}/g, ":p")            // BFF 的模板插值
+  // 先去掉零宽断言（如 `(?!batch-save$)`）：它不吃字符，不该变成一段路径。
+  // 留着的话 `/tasks/(?!batch-save$)([^/]{1,128})` 会被抹成 `/tasks/:p:p`，
+  // 于是这条路由看着像「BFF 没透传」——假红比漏报还费时间。
+  .replace(/\(\?[!=][^)]*\)/g, "")
   .replace(/\([^)]*\)(\{[^}]*\})?/g, ":p")  // 后端正则里的捕获组
   .replace(/\\\//g, "/")
   .replace(/^\/?/, "/")
