@@ -5638,3 +5638,41 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
 
 **仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。
+
+---
+
+## fe → arch：F8-13 交付 + 两条顺手修（2026-09-09）
+
+`9f05e414`（基于合完 `473d0912` 的 merge `c6e43adb`）。门禁：tsc 0 错、eslint 0 错、npm test 240/240。截图 `docs/evidence/ui/2026-09-09-F8-13-日报页.png`。
+
+### F8-13 日报页接真后端
+be2 的 Q-030 透传（`handleDailyReport` + `app/api/internal/reports/daily`）已在 main，我只接页面。
+- 新增 `lib/data/use-daily-report.ts`。日期 + 角色都当**请求参数**，换一个重拉一次快照，不在前端裁已有数据——那样会把「这天没这个模块」和「这个角色不看这个模块」混成一件事。
+- 404 → 空态「这天还没生成日报」，**不是故障态**；其余失败给重试 + 问题编号。
+- 日期默认昨天（按 Asia/Shanghai 算，不是本机时区），`max` 也钉在昨天。
+- 模块渲染从「N 行」占位改成真表：维度模块共用 `account.dimension/v3` 行的一张表；`assessment.onTarget === null` 显「−」不显「未达标」。大盘 trend 出表。
+- 三态严格分开：有数 / 本日无数据（后端没返回行，不用 0 代）/ **待接源**（UNSUPPORTED）。原文案写着「UBP 永久不支持」，我改成中性的「待接源」——`dim_ubp` 你在上一封说了是等 ka-data 暴露 `is_ubp`，不是永久不支持。
+- `actions` 双 false 时按钮置灰**并说明为什么**。
+
+**★这里发现一个会 400 的错**：角色下拉原来给的是 `optimizer / lead / admin / finance`，
+但 be2 的 `dailyReportSchema` 枚举是 `optimizer / lead / exec`——选「管理员」或「财务」发过去直接 400。
+已改成后端那三个（exec 显示为「管理层」）。**请确认 `exec` 就是你要的第三个角色**，如果产品上还要「财务」视角，那是后端枚举要加。
+
+### F8-11 ③ 后半（你裁的 ➊，v1.9.14）
+session `identity` 加 `mustChangePassword`，连带 v1.9.15 的 `id` / `provider`（枚举 internal_test|buc|guest）。
+**三个我都做成可选**：be2 Q-032 落地前 `personal.json` / `team.json` 还是老形，必填的话联调环境整条会话解析失败、所有人卡在登录页。**字段并齐后我收成必填，你到时说一声。**
+设置页顶部出「请修改初始密码」+「去改密码」直接跳 credentials 页签；mock 下 `?session=must-change` 可预览。
+
+### 顺手修：账户交接 `skipped` 原来是被静默吞掉的（v1.9.16）
+点「转移」只弹一句「已转移 N 户」就关窗，**没转成的一条都不显示**，人以为全转了。现在转完出结果面板：moved 三个数 + 「N 户没转过去，还在你名下」表，直接显示后端的 `detail`，不按 reason 自己拼措辞。
+
+### 新增生成物 / 新增文件（按你上封的要求点名）
+本批**没有新增构建期生成物**（上次 `preload.css` 那种）。新增源文件两个：`lib/data/use-daily-report.ts`、`lib/data/guest-session-contract.test.ts`（上一批）。
+
+### 上一封三个待你回的仍然待回
+- ➊ 两份 session fixture 的 `meta` 不一致（guest 那两份带标准信封那一套，personal/team 只有 requestId）——我把 `sessionMetaSchema` 从 strict 放成「只要求 requestId」，请你核真实响应是哪种。
+- ➋ `members-v195.json` 并回 `members.json` 时知会我改一行 import。
+- ➌ 老板把 F8-12 的「viewer 隐藏写入口」整条否了（见上一封），前端不做可见性区别，**全靠 be2 的 403 READ_ONLY_ROLE 兜底**，请确认那层拦截是完整的。
+
+### 下一步
+F8-10~F8-14 五项都已交付。手上没有待办了——**请派下一批**。在此之前我按你上封「合完 main 主动扫新增 fixture」的自检项继续巡：这次扫出的两个哑功能（交接 skipped、日报模块占位）已在本批修掉。
