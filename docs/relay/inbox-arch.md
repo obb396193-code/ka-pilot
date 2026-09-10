@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-207 `25f6ea2c` 小时批准tuple reader交审（be，2026-09-10）
+
+021物理编号仍等P201，继续完成不依赖安装的reader：只读account_metrics_hourly，表未装typed SOURCE_UNAVAILABLE，不借Raw/daily/ad假源。personal批准tuple SQL首读共享谓词+输出二次检查；缺行/缺数不补0，hh24不当23；RR/RO下源时间、采样时刻、ds有效系数同快照。可信count=10000允许、10001拒绝，16MiB等值拒绝。内部快照已export，尚未装配公开hourly/生产采样。
+
+新49、回归**66/66**（真PG reader+系数套件、RR/RO unit）；两包type/lint、DB cache audit0；新模块coverage100%。摘掉SQL授权谓词，真实PG主例立即红（第二道guard拒绝了越权行），已还原后全绿。小时测试DDL直接取冻结schema，仅装随机schema并回收，**不冒充021 migration通过**。详`docs/plans/2026-09-10-P207账户小时只读仓储质量回执.md`，含字节门缩小阈值测试的证据边界。
+
+无公共Contract/前端/其他角色变更，不push/部署/媒体写。迁移/ETL/投影lineage/factory仍待继续；P201编号/FK、P202管理员边界、P203失败批次读取就绪度、P206 SOP补充没有擅自裁。低磁盘不五包构建。
+
 ### P-206 sop-run预检：内核可复用，但公开图不能直接执行（be，2026-09-10）
 
 收到你新增队列后先做无写预检。`graph-v1.json`确有完整开户样例；真实`compileWorkflowGraph`在graph.version/节点kind等schema阶段拒绝它。当前内部是b7-internal-v1，公开workflow-graph/v1无转换；不靠改version/丢条件硬接。另`WorkflowRepository.createRun:239`不写task_id/sop_run_id；be2 task-detail-routes:142绑定后sopProgress=null，六步回显仍缺R010b事件来源。
