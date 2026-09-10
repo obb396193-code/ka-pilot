@@ -5,6 +5,7 @@ import type {
   SemanticTableQuery,
   SemanticTableResult,
 } from "@ka/db";
+import { AccountDimensionEvidenceError } from "@ka/db";
 import type {
   SourceAuthority,
   SourceLineage,
@@ -204,7 +205,7 @@ export class PlatformDataSource {
     private readonly repository: PlatformQueryRepository,
     private readonly snapshot?: PlatformReadSnapshot,
     private readonly windowQuery?: Pick<PlatformWindowQuery, "summary">,
-    private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group">,
+    private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group"> & Partial<Pick<PlatformDimensionQuery, "named">>,
     private readonly pivotQuery?: Pick<PlatformPivotQuery, "query">,
   ) {}
 
@@ -250,11 +251,14 @@ export class PlatformDataSource {
     try {
       if (resolved.queryId === "account.dimension") {
         const dimension = resolved.params.dimensionType;
-        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz"].includes(dimension)) throw new Error("Dimension reader unavailable");
+        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz", "optimizer", "goal", "placement"].includes(dimension)) throw new Error("Dimension reader unavailable");
         const input = { workspaceId: execution.workspaceId,
           accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
           window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } };
+        const named = ["optimizer", "goal", "placement"].includes(dimension);
+        if (named && !this.dimensionQuery.named) throw new Error("Named dimension reader unavailable");
         const result = dimension === "account" ? await this.dimensionQuery.account(input)
+          : named ? await this.dimensionQuery.named!({ ...input, dimensionType: dimension })
           : await this.dimensionQuery.group({ ...input, dimensionType: dimension });
         const rows = canonicalizeQueryRows(resolved.queryId, "platform", result.rows, execution.workspaceId);
         const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings: result.warnings };
@@ -283,6 +287,10 @@ export class PlatformDataSource {
         ? this.snapshot((repository) => this.read(repository, resolved, execution))
         : this.read(this.repository, resolved, execution));
     } catch (error) {
+      if (error instanceof AccountDimensionEvidenceError) {
+        if (error.code === "SOURCE_TRUNCATED") throw new DataSourceRoutingError("SOURCE_TRUNCATED", "Naming evidence exceeds the bounded source limit");
+        throw new PlatformDataSourceError();
+      }
       const invalidCanonical = error instanceof CanonicalQueryRowError ||
         (error instanceof Error && (error.name === "SemanticQueryContractError" || error.name === "ZodError"));
       if (invalidCanonical) throw new PlatformDataSourceError();

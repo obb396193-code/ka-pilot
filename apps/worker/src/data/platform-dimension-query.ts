@@ -2,11 +2,14 @@ import type { Pool } from "pg";
 import { z } from "zod";
 import {
   SemanticQueryRepository, WindowAssessmentRepository, SemanticQueryContractError, withSemanticReadSnapshot,
+  AccountDimensionEvidenceRepository, AccountDimensionRuleRepository,
   type AccountDailyAssessment, type SemanticQueryScope,
 } from "@ka/db";
 import {
   accountDimensionWindowRowSchema, groupedDimensionWindowRowSchema, dailyAssessmentInputSchema, queryWindowSchema,
   computeWindowAssessment, sumMetricValues, type MetricValue,
+  namedDimensionTypeSchema, namedDimensionWindowRowSchema, accountDimensionRuleSchema,
+  resolveNamedDimensions, summarizeDimensionSources, aggregateWindowMetrics,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 
@@ -23,10 +26,13 @@ interface DimensionRepository {
   queryDimension: SemanticQueryRepository["queryDimension"];
   queryLineage: SemanticQueryRepository["queryLineage"];
   loadByAccount: WindowAssessmentRepository["loadByAccount"];
+  loadEvidence?: AccountDimensionEvidenceRepository["load"];
+  loadRules?: AccountDimensionRuleRepository["load"];
 }
 type Result = { rows: z.infer<typeof accountDimensionWindowRowSchema>[]; window: z.infer<typeof queryWindowSchema>;
   lineage: z.infer<typeof lineageSchema>; warnings: string[] };
 type GroupResult = Omit<Result, "rows"> & { rows: z.infer<typeof groupedDimensionWindowRowSchema>[] };
+type NamedResult = Omit<Result, "rows"> & { rows: z.infer<typeof namedDimensionWindowRowSchema>[] };
 type Snapshot = <T>(read: (repository: DimensionRepository) => Promise<T>) => Promise<T>;
 const groupInputSchema = z.object({ ...inputFields,
   dimensionType: z.enum(["task", "biz"]),
@@ -34,6 +40,7 @@ const groupInputSchema = z.object({ ...inputFields,
   const result = inputSchema.safeParse({ workspaceId: value.workspaceId, accounts: value.accounts, window: value.window });
   if (!result.success) for (const issue of result.error.issues) ctx.addIssue({ code: "custom", path: issue.path, message: issue.message });
 });
+const namedInputSchema = z.object({ ...inputFields, dimensionType: namedDimensionTypeSchema }).strict();
 const membershipLabelsSchema = z.object({ taskId: z.string().trim().min(1).nullable(), bizName: z.string().trim().min(1).nullable() });
 function key(account: { media: string; accountId: string }): string { return `${account.media}:${account.accountId}`; }
 function span(from: string, to: string): number { return (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000 + 1; }
@@ -65,6 +72,59 @@ function groupHistory(raw: AccountDailyAssessment[], input: z.infer<typeof input
  */
 export class PlatformDimensionQuery {
   constructor(private readonly snapshot: Snapshot) {}
+  async named(value: unknown): Promise<NamedResult> {
+    const { dimensionType, ...rawInput } = namedInputSchema.parse(value), input = inputSchema.parse(rawInput);
+    return this.snapshot(async repository => {
+      if (!repository.loadEvidence || !repository.loadRules) return invalid();
+      // Bind existing account computation to this very connection, without a
+      // second transaction. Capture its already-read daily inputs for weighting.
+      let historyRows: AccountDailyAssessment[] = [];
+      const accountResult = await new PlatformDimensionQuery(async read => read({ ...repository,
+        loadByAccount: async scope => { historyRows = await repository.loadByAccount(scope); return historyRows; },
+      })).account(input);
+      const history = groupHistory(historyRows, input), scope = { workspaceId: input.workspaceId, accounts: input.accounts };
+      const evidence = await repository.loadEvidence(scope), rules = await repository.loadRules(scope);
+      const allowed = new Set(input.accounts.map(key));
+      for (const rows of [evidence, rules]) {
+        if (!Array.isArray(rows) || rows.length > input.accounts.length || Buffer.byteLength(JSON.stringify(rows)) >= 16 * 1024 * 1024) return invalid();
+        const seen = new Set<string>();
+        for (const row of rows) {
+          if (!row || row.workspaceId !== input.workspaceId || !allowed.has(key(row)) || seen.has(key(row))) return invalid();
+          seen.add(key(row));
+        }
+      }
+      const evidenceByKey = new Map(evidence.map(row => [key(row), row])), rulesByKey = new Map(rules.map(row => [key(row), accountDimensionRuleSchema.parse(row)]));
+      const warnings = new Set(accountResult.warnings);
+      type Member = { row: Result["rows"][number]; source: ReturnType<typeof resolveNamedDimensions>["optimizer"]["source"]; days: z.infer<typeof dailyAssessmentInputSchema>[] };
+      const groups = new Map<string | null, Member[]>();
+      for (const row of accountResult.rows) {
+        const stored = evidenceByKey.get(row.key), rule = rulesByKey.get(row.key), days = history.get(row.key);
+        if (!stored || !rule || !days || rule.ruleVersion !== (stored.parse?.ruleVersion ?? null)) return invalid();
+        if (stored.parse !== null && (typeof stored.parse !== "object" || Array.isArray(stored.parse))) return invalid();
+        let dimension: ReturnType<typeof resolveNamedDimensions>["optimizer"] = { value: null, source: null };
+        if (stored.parse === null) warnings.add("NAMING_PARSE_MISSING");
+        else {
+          if (!stored.parse.nameMatches) warnings.add("NAMING_PARSE_STALE");
+          if (rule.mappings === null) warnings.add("NAMING_RULE_MISSING");
+          try {
+            dimension = resolveNamedDimensions({ segments: stored.parse.segments, override: stored.parse.override ?? {},
+              nameMatches: stored.parse.nameMatches, ruleMappings: rule.mappings })[dimensionType];
+          } catch { return invalid(); }
+        }
+        const members = groups.get(dimension.value) ?? []; members.push({ row, source: dimension.source, days }); groups.set(dimension.value, members);
+      }
+      // Sort with the same deterministic JS comparator on all engines; no DB locale dependence.
+      const rows = [...groups.entries()].sort(([a], [b]) => a === b ? 0 : a === null ? -1 : b === null ? 1 : a < b ? -1 : 1)
+        .map(([key, members]) => {
+          const assessment = computeWindowAssessment(members.flatMap(member => member.days));
+          return namedDimensionWindowRowSchema.parse({ key, label: key ?? "未标注",
+            ...summarizeDimensionSources(members.map(member => member.source)),
+            metrics: { ...aggregateWindowMetrics(members.map(member => member.row.metrics)), costSpace: assessment.costSpace },
+            assessment: assessment.assessment, anomaly: members.some(member => member.row.anomaly) });
+        });
+      return { ...accountResult, rows, warnings: [...warnings] };
+    });
+  }
   async group(value: unknown): Promise<GroupResult> {
     const input = groupInputSchema.parse(value), expectedDays = span(input.window.from, input.window.to);
     const scope: SemanticQueryScope = { workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
@@ -151,7 +211,8 @@ export class PlatformDimensionQuery {
 export function createPlatformDimensionQuery(pool: Pick<Pool, "connect">): PlatformDimensionQuery {
   return new PlatformDimensionQuery((read) => withSemanticReadSnapshot(pool, (connection) => {
     const semantic = new SemanticQueryRepository(connection), assessment = new WindowAssessmentRepository(connection);
+    const evidence = new AccountDimensionEvidenceRepository(connection), rules = new AccountDimensionRuleRepository(connection);
     return read({ queryDimension: semantic.queryDimension.bind(semantic), queryLineage: semantic.queryLineage.bind(semantic),
-      loadByAccount: assessment.loadByAccount.bind(assessment) });
+      loadByAccount: assessment.loadByAccount.bind(assessment), loadEvidence: evidence.load.bind(evidence), loadRules: rules.load.bind(rules) });
   }));
 }

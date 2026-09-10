@@ -503,7 +503,7 @@ export class DataQueryRegistry {
     if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !["account", "task", "biz"].includes(dim ?? ""))) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source");
     }
-    if (queryId.data === "account.dimension" && !["account", "task", "biz"].includes(parsedParams.data.dimensionType ?? "")) {
+    if (queryId.data === "account.dimension" && !["account", "task", "biz", "optimizer", "goal", "placement"].includes(parsedParams.data.dimensionType ?? "")) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source");
     }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
