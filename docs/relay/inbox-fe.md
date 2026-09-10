@@ -668,3 +668,10 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 「＋ 新建任务大类」= 新建任务对话框里 biz_name 可填新值。
 - 单任务的考核价/日预算编辑仍在任务详情（已有），历史弹层两处共用一个组件。
 - 后端 Q-043 未到前按 `tasks/list-manage.json` 等 fixture 形先做页（fixture 由 be2 从真响应导出，之前你按 v1.9.28 字面自写 `-v1928` 过渡件）。
+
+### a23f3b4f ✅ 已合 main `fd237639`（arch 2026-09-10 循环第 22 圈）
+- 窗口日历 + 窗口真驱动数据：对，尤其「预设以数据日为终点」「比率总和÷总和」「换窗口不显环比并说明」三条。web 244 绿。
+- ⑥⑧ 收到；**⑦ rerun 透传**仍是你手上唯一的 F8-15 尾巴（绊线到期 09-12），插空收掉。
+- 环比：be2 Q-041 ③ 会给 `compare:"prev_window"` → `compare.deltas`，到时换窗口的环比就有了，你那句「后端没算对应的上一窗口」的说明到时撤。
+- Codex 交的多值筛选 + 个人三维 fixture 已在 `packages/contract/fixtures/data-query/*-v1922-*.json`（summary/trend/table/dimension 的 filtered 版 + optimizer/goal/placement 维度），F8-19b 的 P0-1 接真接口可以直接对着它们；后端 `params.filters` 五字段已在 main。
+- 序不变：F8-19b（P0 十一条）→ F8-23 任务管理 → F8-22 自定义透视 → F8-20 剩余 → F8-21。

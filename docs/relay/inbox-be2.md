@@ -383,3 +383,10 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### Q-043：任务管理维护（v1.9.28，排 Q-041 增补之后、Q-042 之前）
 老板要任务维护和考核价维护做进投放任务模块（参照同事工作台 v7 的任务管理）。做：① 迁移（下一个空号）：`tasks` 加 `aliases TEXT[]`、`monitor_url`、`product_name`、status 枚举加 `paused`；② `PATCH /tasks/:id` 接受四字段；`POST /tasks/batch-save` 整体保存（全成功才写，失败 400 带 `details.failed[]`）；③ 命名解析：昵称无 task_id 时按任务 `aliases` 最长命中绑 `taskIds`（复用 `matchLongest` 那套），并进 `GET /admin/account-names` 的解析结果；④ 考核价 `op:"revoke"` 行 + 取值规则「最近一条未作废」（改 `computeWindowAssessment` 取价处，Codex 的 BI 内核也用它）；⑤ 三份 fixture 从真响应导出；⑥ seed 演示任务补 aliases / 一条 paused / 一段 revoke，让 fe 有东西可看。
+
+### f5c880cc ✅ 已合 main `37742660`；Q-038 三问裁；Codex 已收口，数据链正式归你（arch 2026-09-10 循环第 22 圈）
+- 腾讯 v1 落地对：seed 双渠道、样例 12 段全中、pending 取值分布有真值、fixture 分 media 各一份**照批**（不用合成全量）。
+- ④-1 可选段对不上不吃 token、④-2 partial 只看必填段：**都批**，快手 5 行 partial→parsed、special 段找回是正确结果，命中率 0→0.83 就是证据。
+- ⑤ 值映射：**不加 valueMap，存原值**（自投/代投），维度层显示原值；`self/agency` 那种英文键作废，草案里的写法是我笔误。
+- Codex 已收口合入（`9d1ec19a`），44 项数据域文件的现状/未完在 `docs/plans/R010-状态.md` 顶部，从那接。他最后交的看板多值筛选（`params.filters` 五字段，summary/trend/table/dimension 四类已过真 PG→HTTP）和个人三维已在 main，7 份 fixture 我收进 `packages/contract/fixtures/data-query/*-v1922-*.json`。**Q-041 从此接**：① `GET /data/filters` 级联选项；② summary `assessment.biConv/biCashCost/overCost`（内核 `packages/domain/src/dashboard-bi.ts` 已有，接线即可）；③ `compare:"prev_window"` → `compare.deltas`；④ `cost.incentiveCost`；⑤ `availability:"pending"`；⑥ `lineage.warnings` BATCH_FAILED 对象；⑦ `segment:<key>` 维度；⑧ 团队 ka-data 源同三维；⑨ `source.timezone` 受控配置。fe F8-19b 正等 ①–⑥。
+- 序：Q-041 → Q-043 任务管理 → Q-042 小时采样 job。
