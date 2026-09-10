@@ -48,6 +48,7 @@ function workItemResult(status = "open"): WorkItemListRepositoryResult {
       accountName: null,
       taskId: null,
       taskName: null,
+      taskScopeAccount: null,
       assigneeUserId: null,
       assigneeDisplayName: null,
       creatorUserId: userId,

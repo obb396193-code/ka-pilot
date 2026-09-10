@@ -4,6 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool, type PoolClient, type QueryResult, type QueryResultRow } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+import { workItemScopeClause } from "../src/r014/workspace-authority.js";
 import {
   WorkItemListRepository,
   type WorkItemListRepositoryPool,
@@ -23,7 +24,7 @@ describe("WorkItemListRepository", () => {
   let currentUserId: string;
   let otherUserId: string;
 
-  beforeAll(async () => runMigrations({ databaseUrl }));
+  beforeAll(async () => runMigrations({ databaseUrl }), 30_000);
   afterAll(async () => pool.end());
 
   beforeEach(async () => {
@@ -76,6 +77,85 @@ describe("WorkItemListRepository", () => {
     scopeKind: "explicit_accounts" as const,
     allowedAccounts: [{ media: "KUAISHOU", accountId: "approved" }],
     page: 1, pageSize: 20,
+  });
+
+  async function taskMatrix() {
+    await pool.query(`INSERT INTO task_accounts (workspace_id,task_id,media,account_id,valid_from) VALUES
+      ($1,'task-granted','KUAISHOU','approved','2026-08-25'),
+      ($1,'task-cross-media','TENCENT','approved','2026-08-25'),
+      ($2,'task-foreign','KUAISHOU','approved','2026-08-25')`, [workspaceId, otherWorkspaceId]);
+    await pool.query(`INSERT INTO work_items (workspace_id,type,task_id,title,status,assignee,creator) VALUES
+      ($1,'self','task-granted','matrix-granted','open',$3,$3),
+      ($1,'self','task-cross-media','matrix-cross-media','open',$3,$3),
+      ($1,'self','task-foreign','matrix-foreign-link','open',$3,$3),
+      ($1,'self','task-no-link','matrix-assigned','open',$4,NULL),
+      ($1,'self','task-no-link','matrix-created','open',NULL,$4),
+      ($2,'self','task-foreign','matrix-foreign-row','open',NULL,NULL)`,
+      [workspaceId, otherWorkspaceId, otherUserId, currentUserId]);
+  }
+
+  it("uses task grants OR self without leaking cross-media/cross-workspace tasks; empty grants only self", async () => {
+    await taskMatrix();
+    const output = await repository.list({ ...baseQuery(), q: "matrix-" });
+    expect(output.total).toBe(3);
+    expect(output.rows.map(row => row.title).sort()).toEqual(["matrix-assigned", "matrix-created", "matrix-granted"]);
+    expect(output.rows.find(row => row.title === "matrix-granted")).toMatchObject({
+      workspaceId, taskId: "task-granted", taskScopeAccount: { media: "KUAISHOU", accountId: "approved" },
+    });
+    const empty = await repository.list({ ...baseQuery(), q: "matrix-", allowedAccounts: [] });
+    expect(empty.total).toBe(2);
+    expect(empty.rows.map(row => row.title).sort()).toEqual(["matrix-assigned", "matrix-created"]);
+    const second = await repository.list({ ...baseQuery(), q: "matrix-", page: 2, pageSize: 2 });
+    expect(second.total).toBe(3);
+    expect(second.rows).toHaveLength(1);
+  });
+
+  it("team sees all own task and account items, never private or foreign rows", async () => {
+    await taskMatrix();
+    const output = await repository.list({ ...baseQuery(), scopeKind: "team_workspace_readonly", allowedAccounts: [] });
+    expect(output.total).toBe(8);
+    expect(output.rows.every(row => row.workspaceId === workspaceId && (row.accountId !== null || row.taskId !== null))).toBe(true);
+    expect(output.rows.filter(row => row.title.startsWith("matrix-")).map(row => row.title).sort()).toEqual([
+      "matrix-assigned", "matrix-created", "matrix-cross-media", "matrix-foreign-link", "matrix-granted",
+    ]);
+  });
+
+  it("negative control: removing the shared predicate exposes denied count/page rows", async () => {
+    await taskMatrix();
+    const predicate = workItemScopeClause("$3", "$4", "item", "$2");
+    const mutant = new WorkItemListRepository({ connect: async () => {
+      const client = await pool.connect();
+      return { query: <Row extends QueryResultRow>(sql: string, params?: unknown[]) =>
+        client.query<Row>(sql.replace(predicate, "($2::uuid IS NOT NULL AND $3::text IS NOT NULL AND $4::jsonb IS NOT NULL)"), params),
+        release: () => client.release() };
+    } });
+    const safe = await repository.list({ ...baseQuery(), q: "matrix-" });
+    const unsafe = await mutant.list({ ...baseQuery(), q: "matrix-" });
+    expect(safe.total).toBe(3);
+    expect(unsafe.total).toBe(5);
+    expect(unsafe.rows.map(row => row.title)).toContain("matrix-cross-media");
+    expect(unsafe.rows.map(row => row.title)).toContain("matrix-foreign-link");
+  });
+
+  it("holds task link proof and count/page in one snapshot when links are concurrently removed", async () => {
+    await taskMatrix();
+    let removed = false;
+    const snapshot = new WorkItemListRepository({ connect: async () => {
+      const client = await pool.connect();
+      return { query: async <Row extends QueryResultRow>(sql: string, params?: unknown[]) => {
+        const result = await client.query<Row>(sql, params);
+        if (!removed && sql.includes("work-item-list-total")) {
+          removed = true;
+          await pool.query("DELETE FROM task_accounts WHERE workspace_id=$1 AND task_id='task-granted'", [workspaceId]);
+        }
+        return result;
+      }, release: () => client.release() };
+    } });
+    const output = await snapshot.list({ ...baseQuery(), q: "matrix-granted" });
+    expect(output).toMatchObject({ total: 1, rows: [{
+      taskId: "task-granted", taskScopeAccount: { media: "KUAISHOU", accountId: "approved" },
+    }] });
+    expect(await repository.list({ ...baseQuery(), q: "matrix-granted" })).toMatchObject({ total: 0, rows: [] });
   });
 
   it("keeps dispatched visible without exposing same-ID accounts across media or workspace", async () => {

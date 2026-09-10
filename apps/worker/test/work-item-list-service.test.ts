@@ -43,6 +43,7 @@ function readyResult(
       accountName: "账户一",
       taskId: "task-1",
       taskName: null,
+      taskScopeAccount: null,
       assigneeUserId: userId,
       assigneeDisplayName: "脱敏优化师",
       creatorUserId: userId,
@@ -91,6 +92,57 @@ function expectError(response: WorkItemListResponse, code: string): void {
 }
 
 describe("WorkItemListService", () => {
+  it("accepts a task-only item with approved internal tuple evidence without exposing that evidence", async () => {
+    const result = personalResult();
+    Object.assign(result.rows[0]!, {
+      taskId: "task-linked", creatorUserId: null,
+      taskScopeAccount: { media: "KUAISHOU", accountId: "account-1" },
+    });
+    const response = await serviceFor(result).service.execute({}, auth);
+    expect(response).toMatchObject({ ok: true, data: { items: [{ task: { taskId: "task-linked" } }] } });
+    expect(JSON.stringify(response)).not.toContain("taskScopeAccount");
+  });
+
+  it("accepts team task-only items but never team private items", async () => {
+    const teamAuth = { workspaceId, userId, role: "optimizer", workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" } } as const;
+    const result = personalResult();
+    Object.assign(result.rows[0]!, { taskId: "task-linked", creatorUserId: null, taskScopeAccount: null });
+    expect(await serviceFor(result).service.execute({}, teamAuth)).toMatchObject({ ok: true });
+    result.rows[0]!.taskId = null;
+    expectError(await serviceFor(result).service.execute({}, teamAuth), "FORBIDDEN");
+  });
+
+  it.each([
+    null,
+    { media: "OTHER", accountId: "account-1" },
+    { media: "KUAISHOU", accountId: "other-account" },
+  ])("rejects unassigned task rows without valid approved tuple evidence: %j", async (taskScopeAccount) => {
+    const result = personalResult();
+    Object.assign(result.rows[0]!, { taskId: "task-linked", creatorUserId: null, taskScopeAccount });
+    expectError(await serviceFor(result).service.execute({}, auth), "FORBIDDEN");
+  });
+
+  it.each([undefined, {}, { media: "KUAISHOU", accountId: null },
+    { media: 12, accountId: "account-1" }, { media: "KUAISHOU", accountId: "account-1", extra: true }])(
+    "rejects malformed internal proof even on a self-assigned task: %j", async (taskScopeAccount) => {
+      const result = personalResult();
+      Object.assign(result.rows[0]!, { taskId: "task-linked", taskScopeAccount });
+      expectError(await serviceFor(result).service.execute({}, auth), "UPSTREAM_INVALID_RESPONSE");
+    },
+  );
+
+  it("allows self task without grants but account items cannot use self or task evidence as a bypass", async () => {
+    const empty = { ...auth, scope: { kind: "explicit_accounts", accounts: [] } } as const;
+    const task = personalResult();
+    task.rows[0]!.taskId = "task-unlinked";
+    expect(await serviceFor(task).service.execute({}, empty)).toMatchObject({ ok: true });
+    expectError(await serviceFor(readyResult()).service.execute({}, empty), "FORBIDDEN");
+    const account = readyResult();
+    account.rows[0]!.taskScopeAccount = { media: "KUAISHOU", accountId: "account-1" };
+    expectError(await serviceFor(account).service.execute({}, auth), "FORBIDDEN");
+  });
+
   it("accepts account work items but rejects unscoped personal rows in team mode", async () => {
     const teamAuth: ApprovedWorkspaceAuthContext = {
       workspaceId,

@@ -160,7 +160,10 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
          ($1, 'diagnosis', 'KUAISHOU', 'personal-approved', $3, 'P1', '个人账户工作项', 'open', $5, $5, '{"proof":"personal"}', '{"state":"checked"}'),
          ($1, 'diagnosis', 'KUAISHOU', 'team-one', $4, 'P0', '个人隐藏工作项', 'open', $5, $5, NULL, NULL),
          ($1, 'self', NULL, NULL, NULL, 'P2', '个人无账户工作项', 'open', $5, $5, '{"proof":"self"}', NULL),
+         ($1, 'self', NULL, NULL, $3, 'P2', '个人获授任务工作项', 'open', NULL, NULL, NULL, NULL),
+         ($1, 'self', NULL, NULL, $4, 'P2', '个人隐藏任务工作项', 'open', NULL, NULL, NULL, NULL),
          ($2, 'diagnosis', 'KUAISHOU', 'team-one', $6, 'P1', '团队账户工作项', 'open', $7, $7, '{"proof":"team"}', NULL),
+         ($2, 'self', NULL, NULL, $6, 'P2', '团队任务工作项', 'open', NULL, NULL, NULL, NULL),
          ($2, 'self', NULL, NULL, NULL, 'P2', '团队空间私人工作项', 'open', $7, $7, NULL, NULL)
        RETURNING id, title`,
       [
@@ -406,11 +409,13 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
     const personalItemsBody = await personalItems.json() as {
       data: { total: number; items: Array<{ title: string }> };
     };
-    expect(personalItemsBody.data.total).toBe(2);
+    expect(personalItemsBody.data.total).toBe(3);
     expect(personalItemsBody.data.items.map((item) => item.title).sort()).toEqual([
       "个人无账户工作项",
+      "个人获授任务工作项",
       "个人账户工作项",
     ]);
+    expect(JSON.stringify(personalItemsBody)).not.toContain("taskScopeAccount");
 
     const personalDetail = await fetch(
       `${baseUrl}/api/v1/work-items/${personalSelfWorkItemId}`,
@@ -509,8 +514,8 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
     expect(await teamItems.json()).toMatchObject({
       ok: true,
       data: {
-        total: 1,
-        items: [{ workItemId: teamAccountWorkItemId, title: "团队账户工作项" }],
+        total: 2,
+        items: [{ workItemId: teamAccountWorkItemId, title: "团队账户工作项" }, { title: "团队任务工作项" }],
       },
     });
 
@@ -603,6 +608,9 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
         expect(response.headers.get("x-request-id")).toBe(`soft-revoke-${index}`);
         expect(await response.json()).toMatchObject({ ok: true, data: { total: 0, items: [] } });
       }
+      const items = await fetch(`${baseUrl}/api/v1/work-items`, { headers: headers(cookie, "soft-revoke-work-items") });
+      expect(items.status).toBe(200);
+      expect(await items.json()).toMatchObject({ ok: true, data: { total: 1, items: [{ title: "个人无账户工作项" }] } });
     } finally {
       // Restore only the synthetic grant created by this suite; never a real grant.
       await pool.query("UPDATE account_access_grants SET revoked_at=NULL WHERE workspace_id=$1 AND identity_id=$2", [personalWorkspaceId, identityId]);
