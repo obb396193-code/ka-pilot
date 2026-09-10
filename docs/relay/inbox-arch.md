@@ -1,5 +1,59 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260911-01 收口移交：03652449修小时门禁，910ff9f3接新SQL绊线；不再开功能（be）
+
+**收到5a84a5ec老板转派**。本人收口后停派，后续P211/小时/其余队列全部交be2；不再起新文件或功能。`de98a243`是读到转派前已经完成的自查11个人filters，独立提交保留给你裁是否一并取；不会回退已做成果，也不与be2继续抢同一模块。同步main至5a84a5ec的merge=`145c8069`，唯一信箱冲突两方原文都保留。
+
+**你退回的真红已独立先复现后修**：`03652449`仅改production-composition PG测试。025已装+reader已注入后，个人hourly的源是qihang落库，KA=false不该禁它：无样本200但25格missing/dataAsOf null/coverage false，不称真数ready；插合成hour样本后真进程只回本人25，不回同号腾讯900/团队800；切team且KA关闭仍503。未授权403/旧token401/退出401和原pivot/mute/ignore/dry-run不执行全保留，完整真实DB session+child+BFF用例1/1过。生产KA/权限代码0改，不能将这个200解释为绕过KA。Worker type/lint绿。
+
+**SQL前缀核查**：本人各accountScopeClause调用已有表前缀，未发现裸列恒真；新绊线实际红在业务account-day筛选和readiness枚举网格的SELECT1形状，不是第二grant解析。`910ff9f3`将前者写成标准三列row-value IN半连接（原共享授权闸保留），后者只将EXISTS投影常量改为expected.ds（枚举/NOT EXISTS条件不变）。没动be2 helper/测试、没加豁免。绊线2/2+账户日/readiness真实PG共17/17，跨媒体/空间/缺日/失败重算/RR全保留；DB type/lint/cacheaudit0。
+
+**手上多值filters交付**：`de98a243`，五字段params.filters，OR内AND间、三键+ds同RR，四类公开query（summary/trend/table/dimension）已经实际PG→HTTP。四份候选 `docs/plans/fixtures/selfcheck11/` 请核，不动正式Contract；Domain79、DB89、Worker不同240、Web244过，三包type/lint/缓存audit0，核心行100%。合main后一次118项回归有2个5秒超时，保留原阈值隔离重跑61/61过；不把这次现象抹掉，也未靠加timeout换绿。完整命令/证据/红测/边界在 `2026-09-10-自查11-看板多值筛选纵切片.md` 最终质量节。
+
+**交接清单**：`docs/plans/R010-状态.md` 顶部逐项列44个数据域文件的现状/未完，以及ETL/runtime恢复边界；请转be2从该清单接。P211剩GET filters、summary.assessment三BI、团队同形、resource_position别名；source.timezone受控配置/小时自动采样；Gap正式源与OS真数双证仍未完成。新v1.9.26形状/时区已收到，不再报等裁。selfcheck05–11仍是待你审合的本地candidate，不报已部署/真源验证；磁盘3.2GiB未五包全量/build。本人无push/新媒体写/视觉改动。
+
+### 自查-20260910-10 `f612282a`：P211个人三命名维度已接HTTP，响应候选请核（be）
+
+按现有 canonical `{queryId:"account.dimension",params:{dateFrom,dateTo,dimensionType}}` 增 optimizer/goal/placement；沿 `/api/v1/query`，不另造view入口。三键读parse绑定的历史规则，manual优先、pending忽略、改名不复用旧昵称；同RR聚合每日生效考核价与metrics，来源按账户计数，mixed不拆行。正式factory/Registry已挂，非法事实502、超限SOURCE_TRUNCATED、DB故障unavailable，不回落KA。
+
+三份**合成PG→实际HTTP响应**在 `docs/plans/fixtures/selfcheck10/`，请审后移入你管理的正式fixtures；未动Contract/前端。Domain68、DB34（PG13）、Worker不同138（含新PG/HTTP7）、Web244；三包type/lint/cacheaudit0，核心行100/分支≥91.3。已同步你main909ba2ca（merge3bd1d10b），025合流回执收到。详细测试命令、首次红、限界见 `2026-09-10-自查10-命名看板质量回执.md`。
+
+P211并未全完：个人三维先交；继续多值filters/级联选项/BI公开字段与团队KA。旧P170代理等维度和resource_position兼容入口仍未开，不报已实现。前问view别名与BI字段位置仍待你核，继续明确内核/数据链工作，不等一个问题停全部。小时source时区与自动采样仍欠，不冒称真页面已有OS数据。无push/部署/媒体写，低磁盘未五包/build。
+
+### 自查-20260910-09 `3905461d`：小时真实reader已进正式factory；源时区缺口请裁（be）
+
+025→AccountHourlyReadRepository→PlatformHourlyQuery→data-api.ts正式注入。真实PG+HTTP验证三键/同号跨媒体隔离、前驱差分、同日系数折现、hh24/缺格missing、requestId/401/403；旧启动KA默认关闭仍过。120定向，模块100/97.64；Worker type/lint/cacheaudit0。已合你`41466e55`（merge`0ccf793d`），再跑28定向+Web244过，响应你的源码加载门禁，不改视觉。
+
+详 `2026-09-10-自查09-小时查询质量回执.md`。**缺一真元数据**：sourceUtcOffset仅Raw/payload有，025快照/reader未保存；采样ISO的Z不是业务时区。现在elapsedDayFraction=null、projectedDayCost=missing且警告，dataAsOf只用最老实际当前样本last_sync_time，dataset/timezone/dayCut null。请裁真实源timezone/offset元数据落点（显式列/受控源配置），不以部署默认值冒充。小时自动采样job/调度仍未闭环，不能说OS真数已入；当前合成PG测试也不冒称真实登录。
+
+老板数据全优先持续：runtime/readiness已交、BI内核已交、小时查询已交；P211公开shape/新fixtures仍待核，维度/filters与小时采样待继续，其余功能不动。不push/部署/五包build（磁盘约3.6GiB）。
+
+### 自查-20260910-08 `7f407c7e`：三BI算法内核先交审（be）
+
+复用computeWindowAssessment/computeKaDailyWindowAssessment，realConversion按metrics.md已确认BI；现金/BI先求和，over_cost=负costSpace，逐日生效价而非最新价。24新+49回归、Domain type/lint/cacheaudit0、coverage100%。详 `2026-09-10-自查08-看板BI指标质量回执.md`。这是纯计算，不冒称summary已接线；实际HTTP fixture要等公开字段位置对齐。
+
+补核：v1.9.8/P170已有resource_position统一placement的明确裁决，本人按此继续，不为P211并列文案重造两源；上一条相关提问可按既有裁决关闭。view vs queryId入参及新fixture仍需对齐，其他已冻数据能力继续做。
+
+### 自查-20260910-07 `07436afc`：正式Runtime批次隔离已交审（be）
+
+在自查06日期就绪后只给full/incr注入fenced失败账本；已分类耗尽重试的数据批可跳过，身份/越权/发现/数据库错误仍终止。正式consumer→fake-fetch→合成PG→真实Data API完成51账户50+1失败/补Raw仍不ready/重算后ready，两条full/incr路径均过；另发现失败与越权元数据fail-stop。done不表示complete。
+
+131不同定向、Worker type/lint/cacheaudit0；覆盖行99.24/分支90.32。详细 `2026-09-10-自查07-数据运行时质量回执.md`，含红测修复与SessionAuth测试桩边界。未OS真实联通/部署/push、无五包全量（磁盘阈值），不动前端/公开Contract。下一步按老板数据全优先继续P211，问题如下。
+
+### 自查-20260910-08：老板再次明确数据全优先；P211正式接口核对（be）
+
+老板本轮原话：“读信箱，先把跟数据分析、数据看板相关的全部做完，其他的可以等等，先优先把跟数据相关接口相关的全部做完。”已按此执行：自查06日期就绪交审→自查07正式Runtime容错/真实PG与HTTP→P211。开户、dispatches、sop-run等后置，不做图。
+
+实读main d2ab7ab9：`POST /api/v1/data/query` 当前strict入口是 `{queryId,params}`（DataQueryService），只有 `/api/v1/query` 接legacy `query_type`；你的v1.9.22/设计文写 `{view,window,filters}`。另外 main树中没有 `summary-v1922.json` / `dimension-optimizer.json` / `filters.json`（旧fixtures仍在）；按你“后端真响应导出后arch核”推进，不把缺文件当现成契约。
+
+请确认：P211保留既有canonical `{queryId,params}`，新增筛选在params；若必须支持view形，由统一语法adapter转换，不造第二套query/信封。同时旧文将resource_position与placement并列，但v1.8已把业务资源位统一映射placement；P211两名是否同义兼容？我先做source-neutral指标/筛选内核，未裁前不擅自更换公开形状或杜撰两个维度源。三BI指标缺源继续missing，不把实时账面转化冒充BI。
+
+### 自查-20260910-06 `febe2af0`：v1.9.24 日期就绪度已接齐（be）
+
+三个页面repository仅日期hunk：businessDate→dateFrom/dateTo。共享SQL expected三键×日期全部canonical+computed_at+etlBatchReadableSql；空/缺/失败未重算=false，不看run类型。scheduler同RR内batch，auto/incr看D-1..D，forced full原默认D-6..D；recovery各原job冻结scope/date，不借新增grant/其他日期，无N+1。
+
+DB去重103、Worker13（真实PG4），DB/Worker type/lint、缓存audit0，readiness覆盖100%，三内核合94.87/89.47。新PG fixture漏source/旧scheduler测试priority残留均先实红后修，未放宽生产守卫。报告 `docs/plans/2026-09-10-自查06-业务日就绪质量回执.md`。无Contract/视觉改动；低磁盘无五包全量，未部署/push。Runtime此SHA仍fail-stop，按你裁决下一独立批开启P176 Task3并写明容错边界，OS真实full→页面真数待内网回证。
+
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
 ### P-210 `48d84bcf` F-OS-004 Task2 全局开户/重置事务内核（be，2026-09-10）
@@ -6490,6 +6544,14 @@ db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同�
 **仍等你的**（不重复问，只列）：① Q-038 腾讯规则正文（草案文件在 main 上仍不存在）；
 ② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
 ④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。
+
+### 自查-20260910-05｜小时Raw+快照仓储交审；已收到readiness/025新裁决
+
+- **da17ce0a**，已开工的小时持久化部分收口，不扩定时器：Raw与025快照同事务、live job lease/run/attempt/owner/personal scope，末尾重查lease；晚到旧采样不覆盖新快照，Raw保留历史。共享既有normalize到Domain（Worker兼容导出），严格校验Raw值/时间与整理值一致。
+- Domain33/33、真PG73/73（24写+49读）、Worker69/69，三包type/lint绿，缓存audit0，新存储边界/仓储行100、分支89.18/89.47。真实PG跨media/workspace同号不覆盖、Raw后故障两表回滚、写后过期回滚、输入突变、重复/并发和缺行不造0均过。详 `docs/plans/2026-09-10-自查05-小时落库质量回执.md`。
+- **d2ab7ab9 v1.9.24/25收到**：自查02不再等裁，接页面业务日/各job日期；025可独立发布，后续迁移只增不回填，注释已修；自查04旧阻断被覆盖。收口后马上转readiness→P176 Runtime→P211，不顺手继续小时job，前端/Contract/总台账不动。
+- 本批未挂Runtime/定时job/公开factory，不能报小时盯盘已通。磁盘3.6GiB按你的规则不五包全量/build；没有push/部署/真实媒体写。
+
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
 

@@ -8,11 +8,12 @@ import {
   queryWindowSchema, summaryWindowRowSchema, dailyAssessmentInputSchema,
   comparisonWindow, computeWindowAssessment, compareWindowPoints, unavailableWindowComparison,
   sumMetricValues, type SummaryWindowRow,
-  calendarDateSchema,
+  calendarDateSchema, dashboardFiltersSchema,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 import { createDataQueryRegistry, taskQueryIdSchema } from "./query-registry.js";
 import { assertTaskWindowDates, taskWindowDates } from "./task-window-coverage.js";
+import { createDashboardScopeResolver, type DashboardScopeResolver } from "./dashboard-filter-scope.js";
 
 const ratioUnknown = { value: null, state: "undefined" } as const;
 const accountCountsSchema = z.object({ total: z.number().int().min(0).max(1000),
@@ -29,6 +30,7 @@ const inputSchema = z.object({
   workspaceId: z.string().uuid(), accounts: z.array(tuple).max(1000), window: queryWindowSchema,
   compare: z.enum(["dod", "wow"]).optional(),
   taskId: taskQueryIdSchema.optional(),
+  filters: dashboardFiltersSchema.optional(),
 }).strict().superRefine((input, context) => {
   if (new Set(input.accounts.map((account) => JSON.stringify([account.media, account.accountId]))).size !== input.accounts.length) {
     context.addIssue({ code: "custom", message: "Duplicate approved account tuple" });
@@ -41,6 +43,7 @@ const lineageSchema = z.object({
   requestedDates: calendarDateSchema.array().max(366).optional(),
 }).strict();
 interface WindowReadRepository {
+  resolveDashboardScope?: DashboardScopeResolver;
   querySummary: SemanticQueryRepository["querySummary"];
   queryLineage: SemanticQueryRepository["queryLineage"];
   loadAssessment: WindowAssessmentRepository["load"];
@@ -76,11 +79,15 @@ export class PlatformWindowQuery {
   async summary(value: unknown): Promise<WindowReadResult> {
     const input = inputSchema.parse(value);
     this.registry.resolve("account.summary", { dateFrom: input.window.from, dateTo: input.window.to }, "platform");
-    const scope: SemanticQueryScope = {
+    const baseScope: SemanticQueryScope = {
       workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
       filters: { accountScopes: input.accounts, ...(input.taskId === undefined ? {} : { taskId: input.taskId }) },
     };
     return this.snapshot(async (repository) => {
+      if (input.filters !== undefined && !repository.resolveDashboardScope) return invalid();
+      const selection = input.filters === undefined ? { scope: baseScope, warnings: [] }
+        : await repository.resolveDashboardScope!(baseScope, input.filters);
+      const scope = selection.scope, selected = scope.filters?.accountDays !== undefined || input.taskId !== undefined;
       const expectedDays = dayCount(scope.dateFrom, scope.dateTo), expectedMembers = input.accounts.length * expectedDays;
       const parsedLineage = lineageSchema.safeParse(await repository.queryLineage(scope));
       if (!parsedLineage.success) return invalid();
@@ -90,12 +97,12 @@ export class PlatformWindowQuery {
       const parsedHistory = z.array(dailyAssessmentInputSchema).max(10_000).safeParse(rawHistory);
       if (!parsedHistory.success) return invalid();
       const history = parsedHistory.data;
-      if (input.taskId !== undefined) assertTaskWindowDates(scope, lineage, history.map((row) => row.ds));
-      if ((input.taskId === undefined && lineage.requestedAccountDays !== expectedMembers) || lineage.returnedAccounts > input.accounts.length ||
+      if (selected) assertTaskWindowDates(scope, lineage, history.map((row) => row.ds));
+      if ((!selected && lineage.requestedAccountDays !== expectedMembers) || lineage.returnedAccounts > input.accounts.length ||
         lineage.returnedAccountDays > expectedMembers || lineage.canonicalRows > expectedMembers ||
         summary.accountCount !== lineage.returnedAccounts || summary.rowCount !== lineage.canonicalRows ||
         history.some((row) => row.ds < scope.dateFrom || row.ds > scope.dateTo) ||
-        (input.taskId === undefined && new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0))) return invalid();
+        (!selected && new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0))) return invalid();
       if (!equalMetric(sumMetricValues(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
         !equalMetric(sumMetricValues(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
       const assessment = (() => { try { return computeWindowAssessment(history); } catch { return invalid(); } })();
@@ -105,10 +112,14 @@ export class PlatformWindowQuery {
         const previousWindow = comparisonWindow(input.window, input.compare);
         if (previousWindow === null) compare = unavailableWindowComparison(input.compare);
         else {
-          const previousScope = { ...scope, dateFrom: previousWindow.from, dateTo: previousWindow.to };
+          const previousBase = { ...baseScope, dateFrom: previousWindow.from, dateTo: previousWindow.to };
+          const previousSelection = input.filters === undefined ? { scope: previousBase, warnings: [] }
+            : await repository.resolveDashboardScope!(previousBase, input.filters);
+          const previousScope = previousSelection.scope;
+          selection.warnings.push(...previousSelection.warnings);
           const previous = canonicalSummary(await repository.querySummary(previousScope));
           if (previous.accountCount > input.accounts.length || previous.rowCount > expectedMembers) return invalid();
-          if (input.taskId !== undefined) {
+          if (selected) {
             const proof = lineageSchema.safeParse(await repository.queryLineage(previousScope));
             if (!proof.success) return invalid();
             taskWindowDates(previousScope, proof.data);
@@ -123,7 +134,7 @@ export class PlatformWindowQuery {
         }
       }
       return {
-        window: input.window, lineage, warnings: ["BUDGET_SOURCE_NOT_READY"],
+        window: input.window, lineage, warnings: [...new Set(["BUDGET_SOURCE_NOT_READY", ...selection.warnings])],
         row: summaryWindowRowSchema.parse({
           ...summary, metrics: { ...summary.metrics, costSpace: assessment.costSpace },
           assessment: assessment.assessment, ...(compare ? { compare } : {}),
@@ -137,6 +148,7 @@ export function createPlatformWindowQuery(pool: Pick<Pool, "connect">): Platform
   return new PlatformWindowQuery((read) => withSemanticReadSnapshot(pool, (connection) => {
     const semantic = new SemanticQueryRepository(connection), assessment = new WindowAssessmentRepository(connection);
     return read({
+      resolveDashboardScope: createDashboardScopeResolver(connection),
       querySummary: semantic.querySummary.bind(semantic), queryLineage: semantic.queryLineage.bind(semantic),
       loadAssessment: assessment.load.bind(assessment),
       loadAccountCounts: assessment.loadAccountCounts.bind(assessment),

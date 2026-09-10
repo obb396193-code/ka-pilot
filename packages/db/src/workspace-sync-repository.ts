@@ -4,6 +4,8 @@ import type {
   WorkspaceSyncBlockedReason,
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
+import { loadWorkspaceSyncReadinessBatch, validateWorkspaceSyncReadinessWindow,
+  type WorkspaceSyncReadinessWindow } from "./workspace-sync-readiness.js";
 
 export interface WorkspaceSyncAccountGrant {
   media: string;
@@ -44,7 +46,6 @@ interface CandidateRow {
   membership_role: AuthRole | null;
   has_qihang_identity: boolean;
   grants: unknown;
-  has_successful_full: boolean;
 }
 
 interface RawGrant {
@@ -95,7 +96,7 @@ function mapCandidate(row: CandidateRow): WorkspaceSyncCandidate {
     membershipRole: row.membership_role,
     hasQihangIdentity: row.has_qihang_identity,
     allowedAccounts: mapGrants(row.grants),
-    hasSuccessfulFull: row.has_successful_full,
+    hasSuccessfulFull: false, // Set from the same RR data snapshot, never from a run status.
   };
 }
 
@@ -129,9 +130,11 @@ export class WorkspaceSyncRepository {
   async loadTickSnapshot(
     workspaceId: string,
     media: string,
+    window: WorkspaceSyncReadinessWindow,
   ): Promise<WorkspaceSyncTickSnapshot> {
     if (!UUID_PATTERN.test(workspaceId)) throw new Error("workspaceId must be a UUID");
     if (!/^[A-Z0-9_]{1,32}$/.test(media)) throw new Error("media is invalid");
+    validateWorkspaceSyncReadinessWindow(window);
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
@@ -159,20 +162,7 @@ export class WorkspaceSyncRepository {
                ) ORDER BY access_grant.media, access_grant.account_id
              ) FILTER (WHERE access_grant.account_id IS NOT NULL),
              '[]'::jsonb
-           ) AS grants,
-           EXISTS (
-             SELECT 1
-             FROM jobs AS completed_job
-             JOIN etl_runs AS completed_run
-               ON completed_run.job_id = completed_job.id
-              AND completed_run.workspace_id = completed_job.workspace_id
-             WHERE completed_job.workspace_id = actor.workspace_id
-               AND completed_job.credential_owner_user_id = actor.id
-               AND completed_job.job_type = 'etl_full'
-               AND completed_job.payload->>'media' = $2
-               AND completed_run.run_kind = 'full'
-               AND completed_run.status = 'done'
-           ) AS has_successful_full
+           ) AS grants
          FROM users AS actor
          LEFT JOIN workspace_memberships AS membership
            ON membership.workspace_id = actor.workspace_id
@@ -194,14 +184,19 @@ export class WorkspaceSyncRepository {
            membership.is_active,
            membership.role,
            identity.is_active
-         ORDER BY actor.id`,
+         ORDER BY actor.id LIMIT 1001`,
         [workspaceId, media],
       );
+      const mapped = candidates.rows.map(mapCandidate);
+      const readiness = await loadWorkspaceSyncReadinessBatch(client, mapped.map(candidate => ({
+        workspaceId, requestingUserId: candidate.userId, allowedAccounts: candidate.allowedAccounts, ...window,
+      })));
+      mapped.forEach((candidate, index) => { candidate.hasSuccessfulFull = readiness[index]!; });
       await client.query("COMMIT");
       return {
         workspaceId,
         workspaceActive: workspace.rows[0]?.is_active ?? null,
-        candidates: candidates.rows.map(mapCandidate),
+        candidates: mapped,
       };
     } catch (error) {
       await rollback(client);

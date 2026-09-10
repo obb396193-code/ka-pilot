@@ -295,6 +295,7 @@ export class AccountListRepository {
         throw new AccountListRepositoryContractError("account list count query returned no row");
       }
       const initialFullComplete = await loadWorkspaceSyncReadiness(client, {
+        dateFrom: query.businessDate, dateTo: query.businessDate,
         workspaceId: query.workspaceId,
         requestingUserId: query.requestingUserId,
         allowedAccounts: query.allowedAccounts,

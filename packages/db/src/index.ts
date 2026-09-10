@@ -76,10 +76,13 @@ export * from "./work-item-command-repository.js";
 // be: internal readonly effective coefficient history; no public/writing route.
 export * from "./coefficient-read-repository.js";
 export * from "./account-hourly-read-repository.js";
+export * from "./account-hourly-write-repository.js";
 export * from "./r014/account-transfer-repository.js";
 export * from "./r014/kb-repository.js";
 // be: bounded tuple-scoped nickname/manual provenance, no public grouping policy.
 export * from "./account-dimension-evidence-repository.js";
+export * from "./account-dimension-rule-repository.js";
+export * from "./dashboard-account-days-repository.js";
 // be: operator-only explicit identity binding; no role/session/grant mutation.
 export * from "./qihang-identity-seed-repository.js";
 export * from "./worker-once-diagnostics-repository.js";

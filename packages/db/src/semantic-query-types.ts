@@ -1,4 +1,4 @@
-import type { RatioValue } from "@ka/domain";
+import type { RatioValue, AccountDayScope } from "@ka/domain";
 
 export type SemanticSortField = "ds" | "accountId" | "cost" | "realCpa" | "computedAt";
 export type SortDirection = "asc" | "desc";
@@ -14,6 +14,8 @@ export interface SemanticFilters {
   accountId?: string;
   accountIds?: string[];
   accountScopes?: SemanticAccountScope[];
+  /** Server-computed subset only; always intersected with accountScopes and date window. */
+  accountDays?: AccountDayScope[];
   ownerUserId?: string;
   media?: string;
   dataAnomaly?: boolean;

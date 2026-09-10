@@ -1,4 +1,5 @@
 import { accountScopeClause } from "./r014/workspace-authority.js";
+import { boundedAccountDaysSchema } from "@ka/domain";
 import type {
   SemanticQueryScope,
   SemanticSortField,
@@ -127,6 +128,21 @@ export function buildMetricFilter(
   }
   if (scope.filters?.ownerUserId) {
     add((placeholder) => `account.owner_user_id = ${placeholder}::uuid`, scope.filters.ownerUserId);
+  }
+  if (scope.filters?.accountDays !== undefined) {
+    const parsed = boundedAccountDaysSchema.safeParse(scope.filters.accountDays);
+    const accounts = scope.filters.accountScopes;
+    const allowed = new Set(accounts?.map(row => JSON.stringify([row.media, row.accountId])));
+    if (!parsed.success || accounts === undefined || parsed.data.some(row =>
+      !allowed.has(JSON.stringify([row.media, row.accountId])) || row.ds < scope.dateFrom || row.ds > scope.dateTo)) {
+      throw new SemanticQueryContractError("Invalid internal account-day scope");
+    }
+    if (parsed.data.length === 0) conditions.push("false");
+    // Business membership at DATE grain, inside the accountScopeClause above;
+    // this row-value semi-join is not a second authorization tuple resolver.
+    else add(placeholder => `(metric.media,metric.account_id,metric.ds) IN (
+      SELECT selected.media,selected."accountId",selected.ds FROM jsonb_to_recordset(${placeholder}::jsonb)
+      AS selected(media text,"accountId" text,ds date))`, JSON.stringify(parsed.data));
   }
   if (scope.filters?.media) {
     add((placeholder) => `account.media = ${placeholder}`, scope.filters.media);
