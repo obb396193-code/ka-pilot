@@ -29,6 +29,7 @@ import { PlatformDataSource } from "./data/platform-data-source.js";
 import { createPlatformWindowQuery } from "./data/platform-window-query.js";
 import { createPlatformDimensionQuery } from "./data/platform-dimension-query.js";
 import { createPlatformPivotQuery } from "./data/platform-pivot-query.js";
+import { createPlatformHourlyQuery } from "./data/platform-hourly-query.js";
 import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
 import { ReadDetailService } from "./data/read-detail-service.js";
@@ -86,6 +87,7 @@ async function main(): Promise<void> {
   const sessionAuthService = new SessionAuthService(authRepository);
   const service = new DataQueryService({
     registry: createDataQueryRegistry(),
+    hourly: createPlatformHourlyQuery(pool),
     kaData: config.kaDataEnabled
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
