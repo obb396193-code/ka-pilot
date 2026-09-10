@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-199 `f022b0fe`：工作项命令首读共享谓词已补（be，2026-09-10）
+
+P178再补AccountMute.ignoreAndMute/WorkItemCommand.apply：SQL首读先按Session tuple过滤；无行只查同ws/id存在性，保留404/403。实时成员/grant锁与事务/回滚不变，team/task/self只读权限不扩成写权。此前响应已有拒绝，不冒称已泄漏。
+
+真实PG两新反例先红后绿，**DB80+Worker129=209项不同定向**（PG27+PGHTTP4）；type/lint、缓存audit0；两模块行100%、分支97.45/84.78。代码5文件，报告`docs/plans/2026-09-10-P199工作项命令首读授权质量回执.md`。未push/部署/媒体写，磁盘3.2GiB未五包。已看到main f06fadac合P194/P195/P196；P178完整审计收尾后按你队列做014，不等待新派活。
+
 ### P-198 `94f3e0e4`：试运行仍走后台读取的漏接已补（be，2026-09-10）
 
 P178继续沿调用链发现：详情虽然三参find已好，`dry-run-service`却仍两参后台find，prepare也只按ws/id——最终403但正文已进进程。**新PG确实见items查询，非猜测**。两次现均携带Session，prepare直接共享accountScopeClause过滤锁定SELECT，body/items前拒绝；Service port编译层强制auth。NULL/非法/team不回退；旧后台单参保留。
