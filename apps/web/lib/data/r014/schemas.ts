@@ -426,7 +426,13 @@ const kbTreeNodeSchema: z.ZodType<KbTreeNode> = z.lazy(() => z.object({
   children: z.array(kbTreeNodeSchema),
 }).strict())
 
-export const kbTreeSchema = z.object({ items: z.array(kbTreeNodeSchema) }).strict()
+export const kbTreeSchema = z.object({
+  items: z.array(kbTreeNodeSchema),
+  // F-Q027-1：与 etl-runs 同形；整棵树时 pageSize = 当页行数，`truncated` 在 meta。
+  page: z.number().int().min(1),
+  pageSize: z.number().int().min(0),
+  total: z.number().int().nonnegative(),
+}).strict()
 
 export const kbSearchSchema = z.object({
   items: z.array(z.object({

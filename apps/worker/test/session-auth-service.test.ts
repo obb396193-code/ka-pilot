@@ -117,20 +117,25 @@ describe("SessionAuthService", () => {
     const view = {
       status: "approved" as const,
       view: {
-        identity: { displayName: "fixture user" },
+        identity: {
+          id: "00000000-0000-4000-8000-0000000000d1",
+          provider: "internal_test" as const,
+          displayName: "fixture user",
+          mustChangePassword: false,
+        },
         activeWorkspace: {
           id: "00000000-0000-4000-8000-000000000401",
           name: "personal",
           kind: "personal" as const,
           role: "admin" as const,
-          readOnly: false,
+          readOnly: false, isDemo: false,
         },
         workspaces: [{
           id: "00000000-0000-4000-8000-000000000401",
           name: "personal",
           kind: "personal" as const,
           role: "admin" as const,
-          readOnly: false,
+          readOnly: false, isDemo: false,
         }],
       },
     };

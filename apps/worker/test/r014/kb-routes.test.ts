@@ -340,6 +340,8 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
     expect(Object.keys(read).sort()).toEqual(Object.keys(frozen("document.json")).sort());
 
     const tree = dataOf(await callRoute(auth, "/api/v1/kb/documents"));
+    // tree.json 只冻了 items，分页三件套是 F-Q027-1 新加的，比对时排除。
+    expect(Object.keys(tree).sort()).toEqual(["items", "page", "pageSize", "total"]);
     const node = (tree.items as Record<string, unknown>[])[0]!;
     const frozenNode = (frozen("tree.json").items as Record<string, unknown>[])[0]!;
     expect(Object.keys(node).sort()).toEqual(Object.keys(frozenNode).sort());
@@ -364,8 +366,10 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
     // 契约里 `page` 是列出来的参数；不收它、也不加任何 LIMIT，
     // 空间文档一多就会把整库正文投影一次性捞出来。
     expect(items).toHaveLength(2);
-    // data 保持 fixture 形状，总数与截断标记在 meta。
-    expect((firstPage.body as { meta: { total: number } }).meta.total).toBe(5);
+    // F-Q027-1：分页三件套在 data 里（与 etl-runs 同形），不在 meta。
+    expect(first.total).toBe(5);
+    expect(first.page).toBe(1);
+    expect(first.pageSize).toBe(2);
 
     const second = dataOf(await callRoute(
       auth, `/api/v1/kb/documents?parent_id=${String(parent.id)}&page=2&page_size=2`));
@@ -376,10 +380,9 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
   });
 
   it("caps the whole-tree read so one workspace cannot return unbounded rows", async () => {
-    const tree = await callRoute(auth, "/api/v1/kb/documents");
-    const meta = (tree.body as { meta: Record<string, unknown> }).meta;
-    // 整棵树没有 parent_id 过滤，同样要有上限；超出时如实告知被截断。
-    expect(typeof meta.total).toBe("number");
-    expect(meta.truncated === true || meta.truncated === false).toBe(true);
+    const tree = dataOf(await callRoute(auth, "/api/v1/kb/documents"));
+    // 整棵树没有 parent_id 过滤，同样要有上限；超出时 meta.truncated 告知被截断。
+    expect(typeof tree.total).toBe("number");
+    expect(tree.page).toBe(1);
   });
 });

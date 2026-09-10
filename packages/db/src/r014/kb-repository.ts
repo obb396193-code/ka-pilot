@@ -69,7 +69,7 @@ export class KbRepository {
       parentId?: string | null; kind?: string; visibility?: string; q?: string;
       page?: number; pageSize?: number;
     } = {},
-  ): Promise<{ items: KbTreeNode[]; total: number; truncated: boolean }> {
+  ): Promise<{ items: KbTreeNode[]; page: number; pageSize: number; total: number; truncated: boolean }> {
     const approved = approveAuth(auth);
     const page = filter.page ?? 1;
     const pageSize = filter.pageSize ?? DEFAULT_PAGE_SIZE;
@@ -127,11 +127,12 @@ export class KbRepository {
     });
     // 过滤过的结果不成树（父可能被筛掉），只有整棵树才嵌套。
     const truncated = !flat && total > rows.length;
+    const paging = { page, pageSize: flat ? pageSize : rows.length, total, truncated };
     if (flat || filter.kind !== undefined || filter.visibility !== undefined
       || (filter.q !== undefined && filter.q.trim() !== "")) {
-      return { items: nodes.map((node) => ({ ...node, children: [] })), total, truncated };
+      return { items: nodes.map((node) => ({ ...node, children: [] })), ...paging };
     }
-    return { items: buildDocumentTree(nodes), total, truncated };
+    return { items: buildDocumentTree(nodes), ...paging };
   }
 
   async get(auth: ApprovedWorkspaceAuthContext, documentId: string): Promise<KbDocument> {

@@ -7,9 +7,9 @@ const PERSONAL_WORKSPACE_ID = "00000000-0000-4000-8000-000000000801"
 const response = {
   ok: true as const,
   data: {
-    identity: { displayName: "内测用户甲" },
-    activeWorkspace: { id: PERSONAL_WORKSPACE_ID, name: "我的工作台", kind: "personal" as const, role: "admin" as const, readOnly: false },
-    workspaces: [{ id: PERSONAL_WORKSPACE_ID, name: "我的工作台", kind: "personal" as const, role: "admin" as const, readOnly: false }],
+    identity: { id: "00000000-0000-4000-8000-0000000000e1", provider: "internal_test", displayName: "内测用户甲", mustChangePassword: false },
+    activeWorkspace: { id: PERSONAL_WORKSPACE_ID, name: "我的工作台", kind: "personal" as const, role: "admin" as const, readOnly: false , isDemo: false},
+    workspaces: [{ id: PERSONAL_WORKSPACE_ID, name: "我的工作台", kind: "personal" as const, role: "admin" as const, readOnly: false , isDemo: false}],
   },
   meta: { requestId: "session-client-001" },
 }

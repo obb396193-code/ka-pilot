@@ -296,13 +296,21 @@ describe("AuthSessionRepository", () => {
     expect(view).toEqual({
       status: "approved",
       view: {
-        identity: { displayName: "repo identity" },
+        // v1.9.15 会话 DTO 定形：identity 四件套 + 空间 isDemo。
+        identity: {
+          id: expect.any(String),
+          provider: "internal_test",
+          displayName: "repo identity",
+          // 这个身份没有密码行 → 不该提示他去改一个不存在的密码。
+          mustChangePassword: false,
+        },
         activeWorkspace: {
           id: workspaceA,
           name: expect.stringContaining("auth-repo-a-"),
           kind: "personal",
           role: "admin",
           readOnly: false,
+          isDemo: false,
         },
         workspaces: expect.arrayContaining([
           expect.objectContaining({ id: workspaceA, kind: "personal", readOnly: false }),

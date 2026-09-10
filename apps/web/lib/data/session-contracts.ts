@@ -16,8 +16,11 @@ export const sessionWorkspaceSchema = z.object({
   id: z.string().uuid(),
   name: z.string().trim().min(1).max(200),
   kind: z.enum(["personal", "team"]),
-  role: z.enum(["optimizer", "operator", "lead", "admin"]),
+  // v1.9.6：viewer = 访客只读角色。
+  role: z.enum(["optimizer", "operator", "lead", "admin", "viewer"]),
   readOnly: z.boolean(),
+  /** v1.9.15：演示空间 = kind team + isDemo；访客只会落在这种空间里。 */
+  isDemo: z.boolean(),
 }).strict().superRefine((workspace, context) => {
   if (workspace.readOnly !== (workspace.kind === "team")) {
     context.addIssue({
@@ -29,7 +32,13 @@ export const sessionWorkspaceSchema = z.object({
 })
 
 export const sessionViewSchema = z.object({
-  identity: z.object({ displayName: z.string().trim().min(1).max(200) }).strict(),
+  identity: z.object({
+    id: z.string().uuid(),
+    provider: z.enum(["internal_test", "buc", "guest"]),
+    displayName: z.string().trim().min(1).max(200),
+    /** v1.9.14：还在用管理员给的初始密码吗；buc/guest 恒 false。 */
+    mustChangePassword: z.boolean(),
+  }).strict(),
   activeWorkspace: sessionWorkspaceSchema,
   workspaces: z.array(sessionWorkspaceSchema).min(1).max(1_000),
 }).strict().superRefine((view, context) => {

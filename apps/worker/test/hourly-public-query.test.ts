@@ -143,9 +143,9 @@ describe("hourly query Registry, scope and source boundary", () => {
     expect(JSON.parse(stdout)).toEqual(expected);
   });
   it("BFF to actual HTTP/Session/Registry consumes hourly and rejects forged scopes", async () => {
-    const token = "synthetic-hourly-service-token-long-enough", workspace = { id: auth.workspaceId, name: "synthetic", kind: "personal", role: "optimizer", readOnly: false };
+    const token = "synthetic-hourly-service-token-long-enough", workspace = { id: auth.workspaceId, name: "synthetic", kind: "personal", role: "optimizer", readOnly: false , isDemo: false};
     const sessionHttpService = { current: async (_token: string, requestId: string) => ({ status: 200,
-      body: { ok: true, data: { identity: { displayName: "synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } } }) } as unknown as SessionHttpService;
+      body: { ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e2", provider: "internal_test", displayName: "synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } } }) } as unknown as SessionHttpService;
     const absent = new Proxy({}, { get() { throw new Error("Unrelated service invoked"); } });
     const server = createDataApiServer({ service: setup(async () => proof()).service, internalToken: token, sessionHttpService,
       sessionAuthService: approvedSessionAuth(auth), detailService: absent, taskListService: absent, accountListService: absent, workItemListService: absent } as unknown as DataApiServerOptions);

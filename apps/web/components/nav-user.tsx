@@ -35,7 +35,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-const roleLabel = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员" } as const
+// viewer = v1.9.6 访客只读角色；不补这一项，角色枚举一扩这里就是 TS 错。
+const roleLabel = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员", viewer: "访客" } as const
 
 // 头像沿用母版 shadcn 官方示例图；身份来自服务端 session，不在浏览器自报。
 
