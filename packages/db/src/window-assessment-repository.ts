@@ -3,6 +3,7 @@ import type { Pool } from "pg";
 import { EXPECTED_METRIC_CTE } from "./semantic-query-metrics.js";
 import { buildMetricFilter, nullableNumber, SemanticQueryContractError } from "./semantic-query-support.js";
 import type { SemanticQueryScope } from "./semantic-query-types.js";
+import { assessmentPriceEffectiveSql } from "./assessment-price-selection.js";
 
 const MAX_GROUPS = 10_000;
 export interface WindowAccountAssessmentCounts { total: number; determinable: number; onTarget: number }
@@ -19,7 +20,7 @@ const assessmentFromSql = `FROM expected_metric AS metric
     SELECT price.id, price.price, price.effective_date
     FROM assessment_price_history AS price
     WHERE price.workspace_id=relation.workspace_id AND price.task_id=relation.task_id
-      AND price.effective_date<=metric.ds
+      AND ${assessmentPriceEffectiveSql("price", "metric.ds")}
     ORDER BY price.effective_date DESC, price.id DESC LIMIT 1
   ) AS assessment ON true`;
 function assessmentFilter(scope: SemanticQueryScope) {

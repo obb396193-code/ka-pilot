@@ -112,13 +112,17 @@ export function createTaskTabRoutes(pool: Pool): R014Route[] {
       const change = await prices.change(context.auth, taskId, {
         price: body?.price,
         effectiveDate: body?.effective_date ?? body?.effectiveDate,
+        // v1.9.28：op 缺省是 set，老调用方（只传 price + effective_date）行为不变。
+        ...(body?.op === undefined ? {} : { op: body.op }),
         ...(body?.evidence_url === undefined && body?.evidenceUrl === undefined
           ? {} : { evidenceUrl: body?.evidence_url ?? body?.evidenceUrl }),
       });
       // 响应键名照契约 v1.5 590 行的 snake_case。
       sendData(context.response, {
         task_id: change.taskId,
+        op: change.op,
         old_price: change.oldPrice,
+        // 作废后这一天生效的是上一段，可能压根没有上一段 → null（不是 0）。
         new_price: change.newPrice,
         effective_date: change.effectiveDate,
         recomputed_days: change.recomputedDays,

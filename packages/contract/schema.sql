@@ -84,7 +84,11 @@ CREATE TABLE tasks (
   rta_flag BOOLEAN, delivery_mode TEXT, placement_pref TEXT, conversion_metric TEXT,
   period_start DATE, period_end DATE, target_volume NUMERIC, budget NUMERIC,
   owner_user_id UUID REFERENCES users(id),
-  status TEXT DEFAULT 'active',        -- preparing|active|ended
+  status TEXT DEFAULT 'active',        -- preparing|active|paused|ended（v1.9.28 加 paused=停投；ended 仍表示任务期结束）
+  -- v1.9.28（migration 027 = be2 Q-043）：任务管理视图要的三个字段。
+  aliases TEXT[] NOT NULL DEFAULT '{}', -- 昵称里没有 task_id 时，命名解析按最长别名命中绑账户
+  monitor_url TEXT,                     -- 监测链接
+  product_name TEXT,                    -- 与账户级 accounts.product_name 独立
   created_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE assessment_price_history (
@@ -93,6 +97,10 @@ CREATE TABLE assessment_price_history (
   FOREIGN KEY (workspace_id, task_id) REFERENCES tasks(workspace_id, task_id),
   price NUMERIC NOT NULL, effective_date DATE NOT NULL,
   changed_by UUID, evidence_url TEXT,  -- 口径对齐台账：业务方确认凭证
+  -- v1.9.28（migration 027 = be2 Q-043）：维持只增不改。op='revoke' 的行作废**同一生效日**的段，
+  -- 取值规则 = effective_date <= D 的最近一条未作废段。revoke 行照抄被作废那段的 price，
+  -- 这样每一行都自解释，读侧也不必为它放宽 price NOT NULL。
+  op TEXT NOT NULL DEFAULT 'set' CHECK (op IN ('set','revoke')),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE channel_coefficients (    -- 返点折算系数，绝不硬编码

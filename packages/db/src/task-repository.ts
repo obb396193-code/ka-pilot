@@ -3,6 +3,7 @@ import type { Pool, PoolClient } from "pg";
 import { queryMetricTrend } from "./semantic-query-metrics.js";
 import type { MetricTrendRow } from "./semantic-query-types.js";
 import { isoTimestamp, nullableNumber } from "./semantic-query-support.js";
+import { assessmentPriceEffectiveSql } from "./assessment-price-selection.js";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -336,9 +337,10 @@ export class TaskRepository {
       `SELECT id, workspace_id, task_id, price,
               to_char(effective_date, 'YYYY-MM-DD') AS effective_date,
               changed_by, evidence_url, created_at
-       FROM assessment_price_history
-       WHERE workspace_id=$1 AND task_id=$2 AND effective_date <= $3
-       ORDER BY effective_date DESC, id DESC LIMIT 1`,
+       FROM assessment_price_history AS price
+       WHERE price.workspace_id=$1 AND price.task_id=$2
+         AND ${assessmentPriceEffectiveSql("price", "$3::date")}
+       ORDER BY price.effective_date DESC, price.id DESC LIMIT 1`,
       [workspaceId, taskId, onDate],
     );
     return result.rows[0] ? mapAssessmentPrice(result.rows[0]) : null;

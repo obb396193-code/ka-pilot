@@ -1,6 +1,7 @@
 import { etlBatchReadableSql } from "./etl-batch-readability.js";
 import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
 import { accountScopeClause } from "./r014/workspace-authority.js";
+import { assessmentPriceEffectiveSql } from "./assessment-price-selection.js";
 
 // P-123 转 be2：活动态集合以 domain 的冻结常量为准（v1.7.5 P-083 把 dispatched 并入活动态）。
 // Only frozen code constants become SQL literals; all request values remain parameters.
@@ -170,7 +171,7 @@ export const TASK_LIST_PAGE_SQL = `
     FROM assessment_price_history AS history
     WHERE history.workspace_id = task.workspace_id
       AND history.task_id = task.task_id
-      AND history.effective_date <= $2::date
+      AND ${assessmentPriceEffectiveSql("history", "$2::date")}
     ORDER BY history.effective_date DESC, history.id DESC
     LIMIT 1
   ) AS assessment ON true
