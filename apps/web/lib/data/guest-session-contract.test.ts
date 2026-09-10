@@ -41,3 +41,13 @@ test("login accepts both shapes and nothing else", () => {
   assert.equal(guestLoginRequestSchema.safeParse({ provider: "guest", username: "admin" }).success, false)
   assert.equal(loginRequestSchema.safeParse({ provider: "buc" }).success, false)
 })
+
+test("v1.9.14 identity.mustChangePassword parses and老形会话不带它也照旧过", () => {
+  const view = sessionViewSchema.parse((fixture("session-http/personal-v1914-must-change-password.json") as { data: unknown }).data)
+  assert.equal(view.identity.mustChangePassword, true)
+  assert.equal(view.identity.provider, "internal_test")
+  assert.equal(view.activeWorkspace.isDemo, false)
+  // be2 Q-032 落地前 personal.json 还是老形，必填的话联调环境会整条会话解析失败
+  const old = sessionViewSchema.parse((fixture("session-http/personal.json") as { data: unknown }).data)
+  assert.equal(old.identity.mustChangePassword, undefined)
+})

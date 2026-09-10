@@ -38,11 +38,15 @@ export const sessionWorkspaceSchema = z.object({
 })
 
 export const sessionViewSchema = z.object({
-  // id / provider 是访客会话带出来的（provider:"guest"）；老的账号密码会话只有 displayName，所以两个都可选
+  // v1.9.14 / v1.9.15 目标形：id / provider / mustChangePassword。
+  // 三个都可选，是因为 be2 的 Q-032 落地前 personal.json / team.json 还是老形（只有 displayName）——
+  // 必填的话联调环境会整条会话解析失败。字段并齐后可以收成必填。
   identity: z.object({
     id: z.string().uuid().optional(),
     displayName: z.string().trim().min(1).max(200),
-    provider: z.string().min(1).max(64).optional(),
+    provider: z.enum(["internal_test", "buc", "guest"]).optional(),
+    // 初始密码还没改过：本人进设置页要看到提示（成员列表只有 admin 能读，普通用户只能从会话拿）
+    mustChangePassword: z.boolean().optional(),
   }).strict(),
   activeWorkspace: sessionWorkspaceSchema,
   workspaces: z.array(sessionWorkspaceSchema).min(1).max(1_000),

@@ -23,3 +23,10 @@ export const mockGuestSessionView: SessionView = {
   activeWorkspace: demo,
   workspaces: [demo],
 }
+
+// v1.9.14 预览（仅 mock，`?session=must-change`）：本人还没改初始密码，设置页顶部出提示条。
+export const mockMustChangePasswordSessionView: SessionView = {
+  identity: { id: "00000000-0000-4000-8000-000000000090", displayName: "内测用户", provider: "internal_test", mustChangePassword: true },
+  activeWorkspace: personal,
+  workspaces: [personal, team],
+}

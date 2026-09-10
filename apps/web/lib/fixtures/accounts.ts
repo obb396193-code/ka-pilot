@@ -84,7 +84,10 @@ export const openFlowFixture = openFlow as unknown as Fixture<{ flowId: string; 
 export type AccountTest = { id: string; media: string; accountId: string; taskId: string | null; purpose: string; hypothesis: string | null; startedAt: string; endAt: string | null; status: "planned" | "running" | "passed" | "failed" | "stopped"; verdictNote: string | null; result: { window: { from: string; to: string }; metrics: MetricsV3; assessment: AssessmentV3 } | null }
 export const testsFixture = tests as unknown as Fixture<{ items: AccountTest[] }>
 
-export const transferFixture = transfer as unknown as Fixture<{ transferId: string; moved: { accounts: number; workItems: number; dispatches: number }; notifiedUserIds: string[] }>
+// v1.9.16：没交接成的逐条列出（reason 三选一 + 必填 detail）。detail 是给人看的一句话，直接显示，
+// 别按 reason 自己拼措辞——同一个 reason 背后的原因可能不一样。
+export type TransferSkipped = { media: string; accountId: string; reason: "blocked_by_changeset" | "not_authorized" | "not_found"; detail: string }
+export const transferFixture = transfer as unknown as Fixture<{ transferId: string; moved: { accounts: number; workItems: number; dispatches: number }; notifiedUserIds: string[]; skipped: TransferSkipped[] }>
 export const replicateFixture = replicate as unknown as Fixture<{ replicationId: string; changesetGroupId: string; plan: { campaigns: number; units: number; fields: string[]; materialsNote: string }; source: { media: string; accountId: string }; target: { media: string; accountId: string; poolStatus: PoolStatus } }>
 export const replicationCompareFixture = replicationCompare as unknown as Fixture<{ days: number; source: { media: string; accountId: string; trend: TrendRow[] }; target: { media: string; accountId: string; trend: TrendRow[] } }>
 

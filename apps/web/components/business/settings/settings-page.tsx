@@ -306,12 +306,25 @@ function WorkloadTab() {
 }
 
 export function SettingsPage() {
-  const { isMock } = useSession()
+  const { isMock, session } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "profile")
+  // F8-11 ③ 后半（契约 v1.9.14）：还在用管理员发的那串初始密码 → 顶部提示，并把人直接送到改密码那一页签。
+  // 这个字段只能从会话拿：成员列表只有 admin 能读，普通用户看不到自己那一行。
+  const mustChangePassword = session?.identity.mustChangePassword === true
   return (
     <PageBody>
       <PageHeader title="设置" description="个人资料与界面偏好 · 三凭证只显绑定状态 · 通知偏好 · 我的负载 · 口径（返点系数 + 统一变更记录）· 个人视图" isMock={isMock} actions={<StateSwitch />} />
+      {mustChangePassword ? (
+        <div className="px-4 lg:px-6">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-status-warning/40 bg-status-warning/10 px-3 py-2.5 text-sm" role="status">
+            <IconKey className="size-4 shrink-0 text-status-warning" />
+            <span className="font-medium">请修改初始密码</span>
+            <span className="text-muted-foreground">你还在用管理员发的那串初始密码，别人拿到就能登你的号。</span>
+            <Button size="sm" variant="outline" className="ml-auto h-7" onClick={() => setTab("credentials")}>去改密码</Button>
+          </div>
+        </div>
+      ) : null}
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="凭证 / 订阅 / 返点系数 / 个人视图接口接入后切换为真数据" empty={{ title: "没有设置项", description: "先绑定凭证。" }}>
