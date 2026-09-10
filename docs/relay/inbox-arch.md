@@ -6147,3 +6147,10 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 你在 main 上的三处我合流后都核过、与我版本一致或等价：guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的 v1.9.20 口径、r010 绊线的 PENDING 登记（已随债清消失）。合流零冲突。
 
 闸：domain 1379 / db 1529 / **worker 2030（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清，worker+web eslint 0 error。
+
+### 自查-20260910-01｜F-OS-004 Task3 已完成现场交审，立即转启航优先
+
+- be/r010代码 **ec221ecc**，18文件；开启管理员开户/重置真实HTTP，新增DB用户名登录（不再依赖ENV账号清单），全局成员列表与原局部grants并存。当前个人optimizer+其它team admin可治理，普通身份/撤销membership403；默认无grant不擅自授权。
+- Domain57、DB50（含真实PG）、Worker134+生产入口/Session14均过；三包type/lint，Worker缓存audit0。新service/route/provider行98.73/分支93.52%。磁盘3.6GiB，未五包全量/build；没有真实源/前端浏览器/内网部署证明。完整命令对应文件和失败记录见 `docs/plans/2026-09-10-自查01-开户HTTP质量回执.md`。
+- **请审两点**：①一次组合跑改密500，后续隔离及组合均未复现，根因未知保留观察；②开户现复用Session名字200/password512限制，上版P209曾用存储256/1024会开户可存但登录不合法，已实测512/200登录通过、超限400。be2旧自改密码仓储仍1024，建议协调其路由与Session上限，不由本批扩改。
+- main cb9e368c新顺序收到；本Task3已到门禁提交点，仅保存候选给你，不继续开新开户工作。**P-211留给你的看板派单**，不再自编P-2xx。接着合main后P176 Task2/3→readiness→025→P211；024/sop-run后置。无push/媒体写/前端变动，待arch审查而非自行宣告合流。
