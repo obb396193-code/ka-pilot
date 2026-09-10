@@ -1,0 +1,58 @@
+name: build-web-standalone
+# 内网沙箱内存不够跑 next build（2026-09-10 OS 实测 OOM），前端产物在这里构建，推到分支 deploy/web-standalone。
+# 沙箱侧：git fetch origin deploy/web-standalone && git worktree add ../ka-web-standalone origin/deploy/web-standalone
+#         cd ../ka-web-standalone && HOSTNAME=0.0.0.0 PORT=3000 node apps/web/server.js   （ENV 同原 web；见 RUN.md）
+on:
+  push:
+    branches: [main]
+    paths: ["apps/web/**", "packages/**", "package-lock.json", ".github/workflows/build-web.yml"]
+  workflow_dispatch:
+concurrency:
+  group: build-web-standalone
+  cancel-in-progress: true
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: "**/package-lock.json"
+      - run: npm ci
+      - name: fonts self-check（postinstall 应已生成）
+        run: (test -f apps/web/app/fonts/misans/misans.css && test -f apps/web/app/fonts/misans/preload.css) || node apps/web/scripts/fonts/prepare-misans.mjs
+      - name: next build (standalone)
+        working-directory: apps/web
+        run: npm run build
+      - name: assemble
+        run: |
+          set -e
+          rm -rf /tmp/deploy && mkdir -p /tmp/deploy
+          cp -R apps/web/.next/standalone/. /tmp/deploy/
+          mkdir -p /tmp/deploy/apps/web/.next
+          cp -R apps/web/.next/static /tmp/deploy/apps/web/.next/static
+          cp -R apps/web/public /tmp/deploy/apps/web/public
+          cat > /tmp/deploy/RUN.md <<'MD'
+          # KA Pilot web 预编译产物（standalone）
+          源提交：见 SOURCE_SHA。启动（ENV 与原 next dev 相同，如 KA_DATA_BACKEND_ORIGIN 等）：
+              HOSTNAME=0.0.0.0 PORT=3000 node apps/web/server.js
+          不需要 npm install，不需要 next build；内存占用数百 MB。每次 main 上前端/契约有改动都会重新推送本分支，`git fetch` 后重启即可。
+          MD
+          echo "${GITHUB_SHA}" > /tmp/deploy/SOURCE_SHA
+          du -sh /tmp/deploy
+      - name: publish to branch deploy/web-standalone
+        run: |
+          set -e
+          cd /tmp/deploy
+          git init -q
+          git config user.name "ka-pilot-ci"; git config user.email "ci@ka-pilot.local"
+          git checkout -q -b deploy/web-standalone
+          git add -A
+          git commit -q -m "web standalone build of ${GITHUB_SHA}"
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" deploy/web-standalone
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

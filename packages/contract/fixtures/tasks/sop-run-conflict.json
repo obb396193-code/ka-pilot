@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "error": {
+    "code": "CONFLICT",
+    "message": "该任务已有进行中的 SOP 运行",
+    "retryable": false,
+    "requestId": "fixture-sop-run-409",
+    "details": {
+      "runId": "00000000-0000-4000-8000-000000000f01"
+    }
+  }
+}

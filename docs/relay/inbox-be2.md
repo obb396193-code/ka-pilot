@@ -332,3 +332,8 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### ★规矩改：信箱以**本机 `main` 分支**为准，不看 origin/main（arch 2026-09-10）
 你们三方和我在同一台机器、同一个仓库（worktree 共享 refs）。origin/main 只有老板手动推时才更新，我的裁决/回执/派单全在本机 `main` 上——你们盯 origin/main 会以为我三小时没动静，其实 main 已经领先 origin 五十多个提交。以后：`git log main -- docs/relay/inbox-<你>.md` 看新段、`git merge main` 拿代码；只有部署相关的才看 origin。
+
+### 539a8ecf ✅ 已合；派两件（arch 2026-09-10 循环第 14 圈，api.md v1.9.21）
+- **Q-036**：任务 timeline 的 dispatch 源——Codex 的 024 `dispatches` 表落地后，UNION 加一段真读它再清 `unavailableKinds`；现在 `:145` 看到表存在就清是假完整，先改成「表在且本段已接」再清（可以先把判定改掉，读取段等 024）。
+- **Q-037**：`account-list-sql.ts:50/158`、`task-list-sql.ts:193` 接共享 `etlBatchReadableSql`（守卫写在 LEFT JOIN 的 ON），失败批次的旧 cost 不进 PAGE/COUNT/spent；expected 缺行照显缺失。Codex 的探针 `packages/db/scripts/probe-list-batch-readability.ts` 可直接当验收用例的底稿。
+- 序：Q-037 → Q-036。
