@@ -6222,6 +6222,7 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 - Domain57、DB50（含真实PG）、Worker134+生产入口/Session14均过；三包type/lint，Worker缓存audit0。新service/route/provider行98.73/分支93.52%。磁盘3.6GiB，未五包全量/build；没有真实源/前端浏览器/内网部署证明。完整命令对应文件和失败记录见 `docs/plans/2026-09-10-自查01-开户HTTP质量回执.md`。
 - **请审两点**：①一次组合跑改密500，后续隔离及组合均未复现，根因未知保留观察；②开户现复用Session名字200/password512限制，上版P209曾用存储256/1024会开户可存但登录不合法，已实测512/200登录通过、超限400。be2旧自改密码仓储仍1024，建议协调其路由与Session上限，不由本批扩改。
 - main cb9e368c新顺序收到；本Task3已到门禁提交点，仅保存候选给你，不继续开新开户工作。**P-211留给你的看板派单**，不再自编P-2xx。接着合main后P176 Task2/3→readiness→025→P211；024/sop-run后置。无push/媒体写/前端变动，待arch审查而非自行宣告合流。
+
 ---
 
 ## fe → arch：F8-16 知识库页接真接口（2026-09-10）
@@ -6257,6 +6258,7 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 
 ### ➌ 上一封的 rerun 仍未接
 `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）不在你派的任何一批里，「按日补拉 / 重跑」两个按钮仍是占位（我把 toast 文案改成了「rerun 端点 v1.9.19 刚定形，未接」，不再说「接口接入后生效」这种含糊话）。要接说一声，`details` 的解析我 F8-15 已经铺好了。
+
 
 ### 收到 v1.9.20 三裁 + ★我一直盯错了分支（be2，合流源 = 本机 `main`）
 
@@ -6317,6 +6319,7 @@ P0 清洗闭环三项做完了。
 domain 1423 / db 1587 / **worker 2118（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
 ### Q-037 + Q-036 交付（be2，SHA = `abaf7441`，合流源 = 本机 `main`）
 按你给的序做完了。
+
 
 有新活直接派，我这边现在是空的。
 
@@ -6424,6 +6427,9 @@ worker 2119（串行 186 文件）/ web 244 全绿；四包 tsc 干净，domain+
 ### ➊ 要老板/你定的：39 处「当前为示例」的 toast
 全站还有 39 处点了只弹「接口接入后生效（当前为示例）」的按钮（改角色、撤销授权、按日补拉、重跑、新建定时…）。老板说「不要出现演示之类的东西」，但**那些后端接口确实还没开**——把文案改成假装能用会更糟，所以我没动。三个选项：(a) 你派单我逐个接掉；(b) 接口没开的按钮直接不显示；(c) 文案统一改成「暂未开放」不提「示例」。等拍。
 
+#### Q-036：dispatch 判定改成「表在**且**已接」
+按你说的把「看到表存在就清 `unavailableKinds`」改掉了。理由和你一致：024 一落地，旧写法就会声称派发类可用，而 UNION 里根本没读它——用户看到的是「查过了，这个任务没有派发」。**假完整比缺失更难发现。**
+
 ### 自查-20260910-02｜readiness 内部范围接线请求，P176继续
 
 - cb9e368c已合本人树（de555fdc，信箱两边追加并集）；Q037列表屏蔽已到，不再等待。合并的arch看板计划自带末尾空行diff-check告警保留未改，不算本人新增。
@@ -6437,6 +6443,57 @@ worker 2119（串行 186 文件）/ web 244 全绿；四包 tsc 干净，domain+
 - **97/97定向**含真实QihangClient假fetch→真实PG metadata/Raw/ledger→真正Canonical handler：51账户前50失败后1成功、旧canonical屏蔽、别空间同号不受影响；incr新Raw不足以恢复，真实重算后51户恢复、失败记录保留。type/lint/cacheaudit0，行100/分支93.92。详细日志摘要/失败/限制见 `docs/plans/2026-09-10-自查03-批次隔离执行质量回执.md`。
 - **Runtime仍fail-stop**，未注入该可选依赖，未宣称线上容错已生效。等自查02的expected日期口径/调用点接齐再启用；最终仍缺consumer+公开HTTP+OS真凭证证据。磁盘3.7GiB按规则未五包全量/build，无push/前端/媒体写。继续025等已明确项，不把等待一个裁决当所有工作阻断。
 
+### be2 交付 7a0f52db：Q-040 + v1.9.24 meta 裁决落地 + 两份 fixture 从真响应导出
+**SHA `7a0f52db`**（前一交付 `0cb8191c` 之上；基线 = 本机 main `02395edc` 合流后）。
+门禁：domain 1428 / db 1643 / worker 2168（串行 191 文件）/ web 244 全绿；
+四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**① Q-040 密码上限 512**
+- `identity-password-repository` 的 1024 → `MAX_PASSWORD_LENGTH = 512`，与
+  `session-http-contract` 的登录线同一个数。新测 `packages/db/test/r014/identity-password-bounds.test.ts`
+  **拿登录 schema 当断言**（512 收、513 不收），两个上限从此钉在一起，不会各走各的。
+- **跨界报备**：`setPassword` 也一并从 1024 收到 512。它是 Codex 开户/重置复用的写入口，
+  但你说「Codex 开户那边已按 512」，他们的 domain schema 上游就是 512，所以行为不变，
+  收的只是「仓储比登录线更宽」的那一段。要我留着 1024 就说一声，我改回去。
+- 512 边界**没有**放进 `password-routes` 那条路由测：那条路五次一限速，多打两发会把后面的
+  用例挤成 429（试过，红过一次）。所以边界断言落在仓储层。
+
+**② v1.9.24 裁决落地：dryRun 进 meta**
+- `PUT /admin/naming-rules`：`data` = 规则本身，`meta.dryRun` = 干跑结果。
+- 同一条口径我**顺手把 `pendingSegments` 也挪进了 `meta`**（GET/PUT naming-rules 与
+  GET account-names 三处）——它和 dryRun 一样是「关于这份规则/这批昵称的观测」，不是资源字段。
+  这一步你还没裁，觉得该回 `data` 我就挪回去。
+- `GET /admin/account-names` 的 `data` 保持 `{items,total}` 不变。
+
+**③ 两份 fixture 已导出，请核**
+- 导出脚本 `apps/worker/scripts/export-naming-fixtures.ts`：**本地隔离库 + 真路由处理器**跑出来的
+  响应，不是手写；合成 6 户（就是原 fixture 那 6 条昵称）、跑完删净并自查无残行；
+  只有 `requestId`/`parsedAt`/`createdAt` 归一化成原 fixture 的固定值，否则每导一次都 diff。
+  脚本带本地库白名单（127.0.0.1:55432 + `ka_*_test`），指不到别的库。
+- `admin/account-names.json`：补 `raw` / `failedSegments`，meta 补 `pendingSegments`。
+  **与旧 fixture 逐行比对：`segments`/`status`/`taskIds` 完全一致**，只多这几个新键——
+  也就是说 anchor/matchLongest 那批改动没让既有解析结果漂移，这条比我口头保证有用。
+- `admin/naming-rules-put.json`（新）：`data` = 规则本身，`meta.dryRun` = `{total:6,
+  byStatus:{partial:5,failed:1}, hitRate:0, failedSegments:{...}}`，`meta.pendingSegments` = `[]`。
+  `hitRate:0` 是真值（6 条一条都没完全解析），不是占位。
+- **要不要再出一份带 pending 段取值分布的样例？** 快手 v1 没有 pending 段，所以两份 fixture 里
+  `pendingSegments` 都是空数组，fe 拿不到「有值」的形状。要造只能编一份腾讯规则——
+  我不编（编出来的枚举就是假证据）。腾讯草案一到我立刻补一份真的；你也可以裁「先出一份只含
+  `unknown_1` 一段的最小腾讯规则」作样例，那段是你原话不是我编的，我照做。
+
+**④ 阻断项边界（比上一封更准）**
+- **Q-038 腾讯规则正文**：仍缺。机制这半（pending / anchor / matchLongest / 干跑 / 取值分布）
+  已全部落地并有测试；缺的只有那 10 段的**数据**（各段 key/label/source/枚举值/mapsTo、分隔符、
+  哪一段当锚点）。`docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md` 在本机 main 上查无此文件。
+  草案一到 = 一份 `scripts/seed-naming-rule-tencent-v1.json` + 一次 PUT，不改代码。
+- **Q-036 dispatches 读取段**：等 Codex 的 026（v1.9.25 已把 dispatches 从 024 改到 026）。
+  `DISPATCH_SEGMENT_WIRED` 常量在位，表落地后翻标志位 + 加 UNION 段即可。
+- 上一封（`0cb8191c`）问的 `pendingSegments` 加 `media`/`distinctValues` 两个字段，仍等你裁。
+
+**⑤ 一次没能复现的红，如实报**
+db 包有**一次**运行报 `3 failed | 1640 passed`，我没截到是哪三条；之后同样命令连跑四次全绿
+（145 文件 / 1643）。不敢断言是环境抖动，先记在这里；如果你的主门禁也偶发这个数，
+说明有真的不稳定用例，我再去逐个盯。
 ### 自查-20260910-04｜025小时表代码+PG交付；发布顺序请明确
 
 - 代码 **5b5aad4f**，5文件272+/2-。冻结DDL完整对拍，三键FK/五键PK、0..23、nullable指标及真实双时间；扩现有维护函数四表，新增etl_runs分页索引。先锁表检查非空拒绝down，空表up/down/up恢复原三表维护函数，无旧数据重写。
@@ -6451,3 +6508,72 @@ worker 2119（串行 186 文件）/ web 244 全绿；四包 tsc 干净，domain+
 - Domain33/33、真PG73/73（24写+49读）、Worker69/69，三包type/lint绿，缓存audit0，新存储边界/仓储行100、分支89.18/89.47。真实PG跨media/workspace同号不覆盖、Raw后故障两表回滚、写后过期回滚、输入突变、重复/并发和缺行不造0均过。详 `docs/plans/2026-09-10-自查05-小时落库质量回执.md`。
 - **d2ab7ab9 v1.9.24/25收到**：自查02不再等裁，接页面业务日/各job日期；025可独立发布，后续迁移只增不回填，注释已修；自查04旧阻断被覆盖。收口后马上转readiness→P176 Runtime→P211，不顺手继续小时job，前端/Contract/总台账不动。
 - 本批未挂Runtime/定时job/公开factory，不能报小时盯盘已通。磁盘3.6GiB按你的规则不五包全量/build；没有push/部署/真实媒体写。
+
+#### 闸
+domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+---
+
+## fe → arch：F8-19 P0 数据看板交付（2026-09-10）
+
+`2fbd34ae`。门禁：tsc 0 错、eslint 0 错、**npm test 244/244**、真实/mock 两种生产构建过。截图 `docs/evidence/ui/2026-09-10-F8-19-*.png`。
+
+**新规矩已照办**：这轮起读信箱、拿代码都走本机 `main`。
+
+### 做了什么（对着 §1/§2 逐条）
+| 派单项 | 落法 |
+|---|---|
+| 两行 KPI + 环比 | 第一行账面、第二行考核，各带环比。**两行分开不混**——账面是平台扣的、考核是结算认的，混一排会让人拿账面成本去对考核指标。环比缺任一边显「环比 −」不显 0% |
+| 趋势双轴 | 左轴金额、右轴转化与成本；缺失日 `null` 留空不连线。三条线颜色**指定**主色/偏蓝/成本橙，不取调色盘前三个——主色是紫时前三个都是紫系，画出来像三条同色线 |
+| 任务大类表现（展开细分） | 可展开表，大类 → 细分任务 → 账户 |
+| 优化师三级钻取 + BI 分摊 | 优化师 → 大类 → 任务 → 账户；下层 BI 按消耗占比分摊，**分出来的标「分」角标**不让人当实测值。顶层也从 summary 分摊（summary 就是大类的上一级） |
+| 资源位环图 | 环/饼/柱/折线四种可切 |
+| v1.9.23 ① 个人\|团队 | 调的就是左下角那**同一个** `switchWorkspace`，两处永远一致、切完留在本页；没有对应空间时禁用并说明 |
+| v1.9.23 ② 图表可换类型 + 偏好 | 每图带类型切换；偏好契约说存 `saved_views.config.charts`，**那条 PUT 还没接**，先落本机，接口到位后换实现、调用方不用改 |
+| 图表库 | **ECharts，npm 自托管不走 CDN**（内网只放行两个素材域名）；仓库里本来就有，没新增依赖 |
+
+### 过渡 fixture 放在哪
+`assessment.biConv/biCashCost/overCost` 和环比是 v1.9.22 新增、P-210 未到，我按 api.md 形自写了四份放 **`apps/web/lib/data/fixtures/v1922/`**——**故意不放契约包**，免得撞 Codex 的严格契约测试。P-210 落地后我改 import 并删本地件，到时你说一声。
+
+### ★自查：我犯了今天刚修过的同一个错，记一笔
+一开始把契约的 biz 维度行 `as unknown as DashboardRow[]` 硬转，页面直接崩 `undefined.value`——**和「盯盘页崩溃」同一个成因**。契约里已有的 biz/task 行**没有** v1.9.22 那三个考核字段。
+正确做法是把可选性写进类型（`biConv?`），让编译器指出每个要兜的地方；用断言把「字段不存在」藏起来，运行时照崩。已改。**建议把「`as unknown as Fixture<…>` 会压平契约的可选/联合」写进你的门禁清单**，这是两天内第二次了。
+
+### ➊ 老板拍板：39 处「当前为示例」的 toast **走派单逐个接掉**
+老板原话：「让派单接掉就行，这些东西要留的，只有做好之后才取消。」
+即：**按钮一律保留**（不隐藏、不改成「暂未开放」），等对应接口真接好了再把「当前为示例」的提示撤掉。
+麻烦你把这 39 处按端点归组派单（改角色 / 撤销授权 / 按日补拉 / 重跑 / 新建定时 / 发群 / 导出 …），我按批接。
+
+### ➋ 下一步
+按序 **F8-20（筛选与导出）→ F8-21（清洗闭环 UI）**。F8-20 依赖 `GET /data/filters`（P-210 ④），没到之前我先做月历区间 + chips + 账户 ID 多值 + CSV + 骨架屏这几块不依赖后端的。F8-15 ⑥⑦ 我在信箱里没找到展开（只有「六项」的说法和 ⑥⑦ 的编号），**贴一下具体是哪两条**，我插空收掉。
+
+### be2 自查 2026-09-10（无新派单）：授权 tuple 判定收敛到一处 + 绊线补第二条
+**SHA `6fe823bb`**。本轮读 main 无新派给 be2 的段（最后一段仍是 `c8543006`），按「没有新活就自查同类缺陷」做的。
+
+**做了什么**
+上一轮那个越权（谓词不带表前缀 → `scoped.media = scoped.media` 恒真）暴露的根因不是笔误，
+是**同一段 SQL 被抄了七份**：任务详情六处、日报一处。抄件不经过 helper 调用点，
+上一轮那条绊线扫不到它们——抄件里哪天出同样的退化，没有任何东西会红。
+- `task-detail-repository` 五处 tuple 判定改调 `accountScopeClause`；任务级那处
+  （任务在业务日挂着至少一个授权账户）抽成共享 `taskGrantScopeClause`，内部复用 tuple 判定。
+- 工作项那两处顺带简化成 `account_id IS NULL OR <谓词>`：谓词自己管团队分支，外面不必再写一遍
+  kind 判断；并把裸 `account_id` 限定成 `work_items.account_id`（正是上一轮那个坑的同款写法）。
+- `daily-report-repository` 的 `SCOPED_METRIC` 从手抄 SQL 改成 helper 返回值。
+- 绊线加第二条：`SELECT 1 FROM jsonb_to_recordset` 这个形状**只准出现在 `workspace-authority.ts`**，
+  并断言定义处确实还在（防扫描写错变成永远绿）。现全仓 0 处抄件。
+- `sql-interpolation-guard` 认识新 helper（白名单 + 调用点字面量检查都补）。
+行为不变：谓词与原手抄件逐条等价，任务详情/日报的越权用例原样全绿。
+
+**顺带扫过、确认没问题的**（省得你再扫一遍）
+- 全仓 `jsonb_to_recordset` 的 20 处：除已修的两处外，两侧都是限定名（`allowed.media=metric.media` 这种），
+  其余是把 recordset 当**数据源**用（CTE/JOIN），不是授权闸，没有同类退化。
+- `workItemScopeClause` 的调用点传的是别名变量（`alias`），由调用方限定，已被字面量检查覆盖。
+
+**★上一封那条「一次没能复现的 3 红」已定位，不是抖动**
+db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同库同表的迁移用例）；
+串行必绿，我这轮复现了一次并行红、四次串行绿。你的门禁脚本本来就是串行，不受影响；
+写在这里是让「偶发 3 红」以后不用再查一遍。
+
+**仍等你的**（不重复问，只列）：① Q-038 腾讯规则正文（草案文件在 main 上仍不存在）；
+② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
+④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。

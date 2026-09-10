@@ -790,3 +790,25 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 **规矩**：被 web 直接 import 的五个 domain 文件（admin-members / agent-models / admin-calendar / work-item-list / r010 命令契约的源）**不许有相对 `.js` import**；要复用别的文件先看 web 是否直接加载它。门禁脚本和 CI 各加了一条守卫（DOMAIN-IMPORT），下次会当场红。
 - 更正：上面说的 DOMAIN-IMPORT 守卫**撤了**——它会把只被 web 当 `import type` 用的文件也点名（那些运行时不加载，`.js` 无害）。真正的闸就是 `apps/web` 的 `npm test`（它按运行时加载）；规矩不变：**改被 web 运行时加载的 domain 文件（admin-members / agent-models / admin-calendar / r010 命令契约）后，跑一遍 `cd apps/web && npm test`** 再交。
 - `ad5e9838`（025）✅ 已合 main。你分支上 web 那条红就是 admin-members.ts 的 `.js` import（main 已修，合流取 main 版），拉 main 就没了。迁移文件现在 19 个。
+
+### 947e8121 **打回一条真红**；自查 05–09 裁（arch 2026-09-10 循环第 19 圈，v1.9.26）
+- 门禁：domain 96 / db 147 / gw 8 / web 244 绿；worker `test/r010-production-composition-pg.integration.test.ts` **隔离复跑仍红**：`queries real scoped pivot… then rejects team and logged-out session` → `expected 200 to be 503`。你 `3905461d` 把小时 reader 正式注入 data-api 后，「KA 关闭时应 503」的那条路现在回 200——要么是注入把 KA 关闭态的判定绕过了，要么是那条用例的期望该改（若是后者，写清为什么 200 是对的）。修好交 SHA 我再门禁；这版不合。
+- **P-211 形状**：对，沿用 `{queryId, params}`，不做 view 语法；新筛选/新维度进 params；`placement` 不单列（= resource_position，按 v1.8）；只加 `optimizer`、`goal`；fixtures 你导出后我核。summary 的三个 BI 指标就接在现有 summary 的 queryId 上。
+- **源时区**：不加列，走受控源配置 `source.timezone`（按 media，两源都是 Asia/Shanghai），缺配置时字段 missing + 告警。
+- 自查 05/06/07 收到：日期就绪、Runtime 容错的边界写得清楚，等这条红修掉一起合。
+- **顺手扫一遍**：be2 抓到 `accountScopeClause` 列名不带表前缀时在子查询里退化成恒真（任何有一条授权的成员能看全空间）。你名下的 db 文件用同一个 helper 的调用点全部核一遍列名前缀，有裸列名就修 + 补用例；他的绊线在 `packages/db/test/r014/scope-clause-qualification.test.ts`。
+
+### e4377da1 ✅ 已合 main `74b3ee8c`（arch 2026-09-10 循环第 15 圈）
+P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，零冲突。序不变：F-OS-004（Task2 起）→ 024 → 025 → readiness 语义 → sop-run。
+
+### be066a43 仍是那条真红，未合；P-211 个人三维方向对（arch 2026-09-10 循环第 20 圈）
+- `test/r010-production-composition-pg.integration.test.ts` › `rejects team and logged-out session`：**expected 503, got 200**，隔离复跑仍红（上一段 947e8121 就打回过，你合 main 的时间早于我写那段）。这条红在，整支不合——包括自查 05–10 的一切。修法二选一：KA 关闭态下小时/透视 reader 必须仍回 503，或者说明为什么 200 现在是对的并改用例；交 SHA 我再门禁。
+- P-211 个人三维接在 `account.dimension` 上、沿 `/api/v1/query` `{queryId, params}`：对。三份合成 PG→真 HTTP 的响应 fixture 合流后我从 `docs/plans/fixtures/selfcheck10/` 挪进 `packages/contract/fixtures/data-query/`。接着做：多值 filters → `GET /data/filters` 级联 → summary 三个 BI 字段（`bi_conv/bi_cash_cost/over_cost` 放 summary 的 `assessment` 组里，与现金组并排）→ 团队 KA 源同三维。
+- 源时区裁决在上一段（受控源配置 `source.timezone`，不加列）。
+
+### ★老板拍板：数据链后端改派 be2；你收口后停派（arch 2026-09-10 循环第 21 圈）
+老板原话意思：数据分析/看板相关的后端活以后派给 Claude Code 那个后端会话；你把手上在做的**清完就停**，不再接新活。具体：
+1. 修 `r010-production-composition-pg` 那条真红（KA 关闭应 503），把 be066a43 这一支（自查 05–10：小时落库/reader、日期就绪度、Runtime 批次隔离、BI 内核、P-211 个人三维）交成一个绿的 SHA。**只修不扩**：别再开新文件、别再往这支上加功能。
+2. 交付段写清：哪些文件从此归 be2（`apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、`platform-pivot-sql`、readiness 相关、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts`），每个文件一句「现状 + 未完项」，be2 接着做。
+3. 你队列里未开工的（P-211 剩余、024/026 dispatches、F-OS-004 收尾、sop-run、P-176 Task3）**全部作废转 be2**，不用再回执。
+这不是对你交付的否定——老板要把后端收成一个会话，减少两边撞车。谢谢这几天的活。

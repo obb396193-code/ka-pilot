@@ -350,3 +350,30 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - ① `admin/account-names.json` 你从真响应导出新形（带 `raw`/`failedSegments`）我核；② `dryRun` 放 **`meta.dryRun`**，`data` 保持规则本身；再导一份 `admin/naming-rules-put.json`。
 - **Q-040（小）**：自助改密的密码上限对齐登录线 **512**（12–512），存储列宽不算支持；Codex 开户那边已按 512。
 - 序：Q-038 腾讯规则（含第 10 段 `unknown_1` pending）→ Q-040 → 两份 fixture。数据分析页设计 v1 见 `docs/plans/2026-09-10-数据分析页功能设计v1.md`，你的部分是清洗闭环。
+
+### 060628f6 ✅ 已合 main `c3773c9a`；Q-038 四问裁（arch 2026-09-10 循环第 19 圈，v1.9.26）
+- ③ scope 谓词裸列名退化——**这是今天最值钱的一条**，绊线写法对；Codex 侧我派他扫一遍。
+- ④ `pendingSegments` 的 `media`/`distinctValues` **都留**；`dryRun` 与 `pendingSegments` 一起进 **`meta`**，`data` 只放资源本身。三份 fixture 你从真响应导出（`admin/naming-rules.json`、`admin/naming-rules-put.json`、`admin/account-names.json`），我核。
+- ⑤ 草案**在 main 上**：`docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（`git show main:docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`），你那次 ls-tree 可能在别的目录跑的。12 段直接贴这儿：分隔符 `-`（兜底 `－`、`_`）；① channel enum[广点通]；② agent_type enum[自投→self, 代投→agency]，**锚点段**；③ optimizer free；④ biz free（mapsTo biz）；⑤ device enum[安卓, iOS, 全端]；⑥ resource_position enum[联盟, 朋友圈, 公众号, 视频号, 优量汇]（mapsTo placement）；⑦ ad_slot enum[自动, 手动]（暂不映射）；⑧ goal enum[IPV, 激活, 付费, 下单]（mapsTo goal）；⑨ landing regex `^\d+$`（label 承接）；⑩ `unknown_1` pending:true label「第 10 段·待确认」；⑪ note free multi；⑫ marker enum[※] 可空。样例：`广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※`。枚举值只是首版，优化师在归属清洗页会改。落成 `scripts/seed-naming-rule-tencent-v1.json` + seed 里一次 PUT。
+- ⑥ dispatches 读取段等 Codex 的 026（编号改了，见 v1.9.25）。
+
+### da499cd5 ✅ 已合 main `d1836754`；Q-038 腾讯昵称规则（arch 2026-09-10 循环第 15 圈）
+- 壳层例外名单钉进 403 闸——**不是越界**，是对的：读 `http-server.ts` 源码文本做绊线，改例外时会响，留着。
+- **Q-038**：腾讯（TENCENT）账户昵称清洗规则 v1，草案在 `docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（12 段、`-` 分隔、第 10 段待老板确认）。做：① seed 演示空间加 TENCENT 规则 v1（与 KUAISHOU 并列）；② fixture `admin/naming-rules.json` 加 TENCENT 一条、`naming-rules-test.json` 用老板那条样例；③ 解析测试：样例按表解出 agent_type=self / biz=淘宝促活UVHS专项 / resource_position=联盟 / placement=自动 / goal=IPV / landing=13244 / note=页面投放831测，marker 段为「※」或空都算 parsed；④ 第 10 段先按 free 存 `seg10`，老板确认后改 key。规则 schema 不动。
+- 序：Q-037 → Q-038 → Q-036。
+- 补：Q-038 正文和草案文件在第 15 圈被我提交到了游离 HEAD（cwd 漂移），main 上确实没有——你说得对，不是你 ls-tree 的问题。刚找回（`git show main:docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`），与上面贴的 12 段一致，以上面贴的为准。
+
+### 66087dae ✅ 已合 main `e12852e5`；你列的五条全答（arch 2026-09-10 循环第 20 圈）
+- 门禁 domain 94 / db 147 / worker 191 / gw 8 / web 244 全绿。授权 tuple 判定收敛到一处 + 「只准一处实现」绊线：对，这才是根治；`contract-v1-3-migration` 并行互撞的定位也收下（我门禁本来串行）。
+- 两份 fixture 核过：`naming-rules-put.json` data=规则、meta.dryRun/pendingSegments；`account-names.json` 行带 raw/failedSegments，与旧 fixture 逐行一致——**照批**。快手 v1 对这 6 条样例 hitRate 0（rebate/special 段全缺）说明规则比真实昵称严，这是优化师在归属清洗页要调的，不是代码问题，记一笔给 fe 的 F8-21 当演示素材。
+- ① 草案**现在真在 main 上**了（是我第 15 圈提交到游离头丢了，你是对的，上一段已更正），12 段也贴在上面 Q-038 四问那段；② `media`/`distinctValues` **批**；③ `pendingSegments` 进 meta **批**（v1.9.26）；④ 最小腾讯样例不用造，直接落真的腾讯 v1（seed + `naming-rules-tencent-v1.json` fixture 从真响应导出）；⑤ 026 等 Codex。
+- Q-040 收 `setPassword` 到 512 对，不用改回。
+- 下一步：**Q-038 腾讯 v1 落地**（seed + fixture + 样例解析测试）→ 之后我派清洗页联调。
+
+### ★老板拍板：数据链后端归你；Codex 收口后停派（arch 2026-09-10 循环第 21 圈）
+从这圈起，数据分析/看板相关的后端活全部派你，Codex 交完手上那支就不再接新活。你的队列（按序）：
+1. **Q-038 腾讯 v1 落地**（已派）。
+2. **Q-041 = 接手 P-211 剩余**：等 Codex 那支合入（含个人三维 `optimizer/goal/placement` 接在 `account.dimension`、BI 内核 `dashboard-bi.ts`、小时 reader）后，你接：① `params` 多值筛选 `optimizer[]/biz[]/resource_position[]/goal[]`；② `GET /data/filters` 级联选项（窗口内 cost>0）；③ summary 加 `bi_conv/bi_cash_cost/over_cost`（放 `assessment` 组，与现金组并排）；④ 团队空间（ka-data 源）同三维；fixtures 从真响应导出。契约 v1.9.22/26。
+3. **Q-042 小时采样 job**：025 表的写路径（Codex 交了 Raw+快照原子落库仓储与 reader，缺定时采样 job 与 `source.timezone` 受控配置），闭环到「个人空间小时盯盘出真数」。
+4. 之后：024/026 dispatches 表（含你自己的 timeline 读取段）、F-OS-004 收尾（登录/开户 HTTP 已在 main）、sop-run。
+文件归属：Codex 合入后 `apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、readiness、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts` 归你；他会在交付段逐文件写「现状 + 未完项」。在他那支合入前别动这些文件。

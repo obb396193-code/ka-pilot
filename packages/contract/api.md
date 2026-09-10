@@ -1374,3 +1374,10 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 ## v1.9.25 追加（2026-09-10 arch；裁 Codex 自查 04 的 025/024 发布顺序）
 - **迁移编号 = 落地时的下一个空号，永不回填**：`account_metrics_hourly` = 025，可以单独发布；`dispatches` 落地时取当时的下一个号（现在看是 **026**），v1.9.21 写的「024」作废，不建空占位、不关 `checkOrder`、不重编号已发布迁移。schema.sql 已同步（025 注释、`work_items (workspace_id, id)` UNIQUE、dispatches 联合 FK）。
+
+## v1.9.26 追加（2026-09-10 arch；裁 be2 Q-038 四问 + Codex P-211 形状/时区 + fe F8-19 三问）
+- **清洗附属统计进 `meta`**：`GET/PUT /admin/naming-rules`、`GET /admin/account-names` 的 `dryRun`、`pendingSegments[]` 都放 `meta`；`data` 保持资源本身。`pendingSegments[]` 形 = `{media, key, label, distinctValues, values:[{value,count}]}`（be2 加的 `media`、`distinctValues` 采纳；单段取值上限 200，截断时 `distinctValues > values.length`）。三份 fixture（`admin/naming-rules.json`、`admin/naming-rules-put.json`、`admin/account-names.json`）由 be2 从真响应导出、arch 核。
+- **P-211 公开形状**：沿用 `POST /api/v1/data/query {queryId, params}`，**不引入 `{view, window, filters}` 第二套语法**（v1.9.22/设计文档 §2 的 view 写法作废）；新增筛选 `optimizer[]/biz[]/resource_position[]/goal[]` 与新维度都进 `params`；`GET /data/filters` 保持独立端点。维度：`placement` 不单列——v1.8 已把业务资源位统一映射为 placement，`resource_position` 即它；本版只新增 **`optimizer`、`goal`**。腾讯昵称里的「版位（自动）」暂作段 `ad_slot`，不进维度。
+- **源时区**：不加列。受控源配置 `source.timezone`（按 media；启航、ka-data 均 `Asia/Shanghai`），reader/采样按它换算 `elapsedDayFraction`/`dataAsOf`；部署默认值不算证据，配置缺失时相关字段 missing 并告警。
+- **「当前为示例」类按钮**：按老板 2026-09-10 拍板，**按钮与提示保留**，对应接口接通后才撤提示；v1.9.24 那条「文案改暂未开放」作废。fe 出清单（页面/按钮/端点），arch 按端点分批派。
+- 前端过渡 fixture 放 `apps/web/lib/data/fixtures/v1922/`（不进契约包），后端 fixture 落地后前端并回。

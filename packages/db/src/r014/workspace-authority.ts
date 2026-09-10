@@ -139,6 +139,28 @@ export function accountScopeClause(
 }
 
 /**
+ * 任务级授权：任务在业务日当天挂着**至少一个**授权账户。团队空间全量。
+ *
+ * 任务详情那几条查询原来各自手抄了这一段（task_accounts 与授权 tuple 的 JOIN）。
+ * 抄出来的每一份都可能各自漂，而且绊线只认调用点、扫不到手抄件——
+ * 谓词退化成恒真那种坑，抄件里出了没人会知道。所以收到这里一处。
+ */
+export function taskGrantScopeClause(
+  kindParam: string, listParam: string, taskAlias: string, dateParam: string,
+): string {
+  // 内层的 kind 写死 'explicit_accounts'：走到这里就已经不是团队空间了。
+  const tupleHit = accountScopeClause(
+    "'explicit_accounts'", listParam, "scoped_relation.media", "scoped_relation.account_id");
+  return `(${kindParam}::text = 'team_workspace_readonly' OR EXISTS (
+    SELECT 1 FROM task_accounts AS scoped_relation
+    WHERE scoped_relation.workspace_id = ${taskAlias}.workspace_id
+      AND scoped_relation.task_id = ${taskAlias}.task_id
+      AND scoped_relation.valid_from <= ${dateParam}::date
+      AND (scoped_relation.valid_to IS NULL OR scoped_relation.valid_to >= ${dateParam}::date)
+      AND ${tupleHit}))`;
+}
+
+/**
  * 工作项可见性（契约 v1.9.11 三类矩阵）。参数：`$kindParam` = scope 种类，
  * `$listParam` = 授权 tuple 数组，`$userParam` = 当前 user id。
  *

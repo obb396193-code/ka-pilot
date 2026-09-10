@@ -1,0 +1,234 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "ka_data",
+    "source": {
+      "queryId": "account.summary",
+      "rowSchemaVersion": "account.summary/v3",
+      "status": "ready",
+      "rows": [
+        {
+          "rowCount": 42,
+          "accountCount": 42,
+          "anomalyRows": 2,
+          "metrics": {
+            "cost": {
+              "value": 147000.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 114836.4,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 1120000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 46666,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 3605,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 3433,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 15617.6,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0773,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.82,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.45,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0477,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "biConv": {
+              "value": 3180,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.11,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": 4820.5,
+              "availability": "available"
+            },
+            "price": {
+              "value": 34.5,
+              "availability": "available"
+            },
+            "priceSource": "ka_daily",
+            "onTarget": false,
+            "costStatus": "yellow",
+            "costStatusReason": "window_over_single_day",
+            "budgetUsageRate": {
+              "value": 0.86,
+              "state": "finite"
+            }
+          },
+          "previous": {
+            "window": {
+              "from": "2026-08-27",
+              "to": "2026-08-31"
+            },
+            "metrics": {
+              "cost": {
+                "value": 132400.0,
+                "availability": "available"
+              },
+              "cashCost": {
+                "value": 103474.8,
+                "availability": "available"
+              },
+              "exposure": {
+                "value": 1043000,
+                "availability": "available"
+              },
+              "click": {
+                "value": 41720,
+                "availability": "available"
+              },
+              "conversion": {
+                "value": 3310,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 3168,
+                "availability": "available"
+              },
+              "costSpace": {
+                "value": 12980.0,
+                "availability": "available"
+              },
+              "wakeUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "potentialUv": {
+                "value": null,
+                "availability": "missing"
+              },
+              "ratios": {
+                "ctr": {
+                  "value": 0.04,
+                  "state": "finite"
+                },
+                "cvr": {
+                  "value": 0.0793,
+                  "state": "finite"
+                },
+                "realCpa": {
+                  "value": 41.79,
+                  "state": "finite"
+                },
+                "cashCpa": {
+                  "value": 32.66,
+                  "state": "finite"
+                },
+                "gap": {
+                  "value": 0.0429,
+                  "state": "finite"
+                },
+                "potentialRate": {
+                  "value": null,
+                  "state": "undefined"
+                },
+                "biConversionRate": {
+                  "value": null,
+                  "state": "undefined"
+                }
+              }
+            },
+            "assessment": {
+              "biConv": {
+                "value": 2960,
+                "availability": "available"
+              },
+              "biCashCost": {
+                "value": 34.96,
+                "state": "finite"
+              },
+              "overCost": {
+                "value": 2110.0,
+                "availability": "available"
+              }
+            }
+          }
+        }
+      ],
+      "returnedRowCount": 1,
+      "wholeResultTotal": {
+        "value": 147000.0,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "ka_data",
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05"
+        },
+        "coverage": {
+          "complete": true,
+          "expectedDays": 5,
+          "actualDays": 5,
+          "missingDays": []
+        },
+        "partial": false,
+        "truncated": false,
+        "metadataAvailability": "known",
+        "sourceMetadata": [
+          {
+            "source": "ka_data",
+            "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+            "businessDate": "2026-09-05"
+          }
+        ]
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture-summary-v1922",
+    "_note": "★fe 过渡 fixture（F8-19）：按 api.md v1.9.22 形自写，Codex P-210 导出 data-query/summary-v1922.json 后并回本文件删除。assessment.biConv/biCashCost/overCost 与 previous 环比是 v1.9.22 新增。"
+  }
+}

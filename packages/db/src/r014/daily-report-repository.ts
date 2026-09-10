@@ -2,7 +2,7 @@ import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import type { Pool } from "pg";
 
 import {
-  R014RepositoryError, approveAuth, requireTimestamp, workItemScopeClause,
+  R014RepositoryError, accountScopeClause, approveAuth, requireTimestamp, workItemScopeClause,
 } from "./workspace-authority.js";
 
 /**
@@ -58,10 +58,14 @@ export interface DailyReportFacts {
   delivery: { status: "not_sent" | "queued" | "sent" | "failed"; at: string | null; target: string | null };
 }
 
-/** 与 `task-list-sql.ts` / 任务详情同源的授权谓词。$3=scope kind，$4=allowed tuples。 */
-const SCOPED_METRIC = `($3::text = 'team_workspace_readonly' OR EXISTS (
-  SELECT 1 FROM jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
-  WHERE allowed.media=metric.media AND allowed.account_id=metric.account_id))`;
+/**
+ * 与 `task-list-sql.ts` / 任务详情同源的授权谓词。$3=scope kind，$4=allowed tuples。
+ *
+ * 原来这里手抄了一份同形 SQL。抄一份就多一处会各自漂的地方，而且**绊线扫不到**——
+ * `scope-clause-qualification` 只认共享谓词的调用点；手抄的那份哪天被人改成不带表前缀的
+ * 裸列名（谓词退化成恒真的那个坑），没有任何东西会红。所以改成调共享谓词，形状不变。
+ */
+const SCOPED_METRIC = accountScopeClause("$3", "$4", "metric.media", "metric.account_id");
 
 interface DailyScope { kind: string; allowed: string }
 
