@@ -5665,3 +5665,14 @@ kb 列表响应改成 `{items,page,pageSize,total}`（与 etl-runs 同形），�
 #### ⑥ 闸
 domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过）** / web 235 全绿，四包 tsc 清。
 ★worker **并发**跑时那批连同一测试库的 PG 集成用例（calendar / worker-once / pivot / hourly）会互相踩出假红，单跑与串行都绿——你验收若见到那几条，先 `--no-file-parallelism` 复跑再判。这台机器串行约十几分钟。
+
+### 自查-2026-09-10：把 `mustChangePassword` 的两处实现钉在一起（be2，SHA `HEAD`）
+本轮 main 无新裁决（最后提交 3 小时前），按规矩做自查项。
+
+查的是**我自己刚引入的风险**：`mustChangePassword` 现在有两处实现——仓储方法（给 Codex 的 members 端点复用）与 `readSessionView` 的内联 SQL。**两处分头写正是 Q-020、日报越权、工作项谓词那三次漏检的共同根因**，趁只有两处、还没漂之前钉住：四个边界（无密码行 / 管理员刚开户 / 本人改过 / `updated_by` 为空）两份实现结论必须一致，谁改歪都会红。
+
+`updated_by` 为空那格我取的是**最保守解 true**（不知道是谁设的，就当他还在用别人给的密码）——你若认为该反过来，说一声。
+
+闸：db 1471 全绿，tsc + eslint 清。
+
+**待你的三条**（都在上一段回执里，不重问）：① `mustChangePassword` 要不要真加 `must_change` 列（我用推导）；② 我越界同步的两处（`session-contracts.ts`、`nav-user.tsx` 的 roleLabel）要不要回退等 fe F8-12；③ 新 fixture `kb/documents-page.json` 请核。
