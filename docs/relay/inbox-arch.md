@@ -5546,3 +5546,33 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
 
 **仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。
+
+### Q-035：核了「契约端点 vs 实现」，补上任务详情三签（be2 `be/r017 @ 0acc171a`）
+本轮 main 仍无新裁决（最后提交 8 小时前）。做了一项此前没做过的核对：**契约声明了但根本没建的端点**——前面几轮查的都是「实现有没有透传」，没查过这一头。
+
+我名下 22 条契约端点，**7 条没建**。逐条triage：
+| 端点 | 归属/依赖 | 处理 |
+|---|---|---|
+| `GET /tasks/:id/timeline` | 我，你补派时点名的四签之一 | ✅ 接了 |
+| `GET /tasks/:id/funnel` | 我 | ✅ 接了 |
+| `GET /tasks/:id/materials`、`GET /tasks/:id/review` | 契约明写一期 **501** | ✅ 真回 501 了（此前是 404） |
+| `POST /tasks/:id/assessment-price` | 我，但要「触发重算」的机制 | ⬜ 需要你说清重算落在哪 |
+| `POST /tasks/:id/sop-run` | 官方模板起 run，R-010b 域 | ⬜ 应该不是我的 |
+| `POST /tasks/:id/review`+`/review/latest` | Agent Deep Research，异步 | ⬜ 应该不是我的 |
+
+后三条请你确认归属，我不擅自动。
+
+#### ★两处缺源如实报了，请你知悉
+1. **`dispatches` 表还没建**（Codex 014）→ timeline 回 `meta.unavailableKinds:["dispatch"]`。空列表会被当成「查过了，这个任务没有派发」，那是两回事。
+2. **契约第五源写的是 `audit_log(action='external_change')`，但全仓没有任何写入方**——我 grep 过，没人写这个 action。照字面实现会永远空、看起来像「没有带外变更」。所以外部变更我取的是 `external_changes`（那里有真数据）。**请你裁**：是补一个 audit_log 写入方，还是把契约这句改成 `external_changes`。
+3. `account_offline` 表也没建 → funnel 线下三项 missing、依赖它的两个比率 undefined，不拿线上数顶替。
+
+#### 另外
+`materials`/`review` 此前是 404 —— 前端分不出「一期不做」和「路径写错」，契约特意点名 501 就是为了让空态显得有据。现在真回 501，BFF 也照样透传下去（不在 BFF 层拦）。
+
+★**我立的两道绊线这轮都响了，值得一提**：BFF 覆盖绊线立刻指出三条新端点没透传；SQL 插值绊线拦下两个新变量名要求过审。它们确实在替我挡事。
+
+闸：domain 1359 / db 1426 / worker 1819（+2 skipped，**串行**）/ web 227 全绿，四包 tsc 清，db+worker eslint 0 error。
+提醒一条环境事实：worker 并发跑时 Codex 的 `worker-once` 租约用例（3 秒硬截止）会假红，串行绿——你验收时若见到那条，先串行复跑再判。
+
+**仍等你的四条**不变（`auth-context.ts` 个人空间不变量／`schema.sql` 补 guest+viewer／会话 DTO 三字段／`http-server.ts:274` 传 clientIp）。
