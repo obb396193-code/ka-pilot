@@ -132,7 +132,8 @@ export async function handleSessionRequest(
   try {
     const upstream = await (dependencies.fetchImpl ?? fetch)(`${config.origin}${PATHS[kind]}`, {
       method,
-      headers: internalApiHeaders({ config, requestId, session, json: method === "POST" }),
+      // F8-15 ③：带上来源 IP —— 登录限速按 IP 算，不透传的话所有人共用一个计数，一个人试错锁全公司
+      headers: internalApiHeaders({ config, requestId, session, json: method === "POST", request }),
       ...(method === "POST" ? { body: JSON.stringify(body) } : {}),
       redirect: "error",
       cache: "no-store",

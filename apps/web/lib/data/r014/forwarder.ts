@@ -102,7 +102,8 @@ export async function forwardToBackend(request: Request, options: ForwardOptions
   try {
     // internalApiHeaders 返回的是 Headers 实例：用对象展开会得到空对象，
     // 把 Authorization 和 Session cookie 全丢掉。必须拿实例再 set。
-    const headers = internalApiHeaders({ config, requestId, session, json: payload !== undefined })
+    // F8-15 ③：来源 IP 一并带过去（改密等按来源限速的端点走这条转发；头缺就不设，纯加法）
+    const headers = internalApiHeaders({ config, requestId, session, json: payload !== undefined, request })
     const response = await (options.fetchImpl ?? fetch)(upstream.toString(), {
       method: options.method,
       headers,
