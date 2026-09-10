@@ -3,8 +3,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   EMPTY_DIMENSIONS_DTO, PARSED_DIMENSIONS, accountDimensionsDtoSchema, accountDimensionsSchema,
-  applyOverride, computeConflicts, extractTaskIds, namingRuleSchema, parseAccountName,
-  pendingSegmentDefs, resolveAccountDimensions, segmentMapsTo, statusWithConflicts, toDimensionsDto,
+  analyzableSegmentDefs, applyOverride, computeConflicts, extractTaskIds, isSegmentAnalyzable,
+  namingRuleSchema, parseAccountName, pendingSegmentDefs, resolveAccountDimensions, segmentMapsTo,
+  statusWithConflicts, toDimensionsDto, withEffectiveAnalyzable,
   type NamingRule,
 } from "../../src/r014/account-name-parse-contract.js";
 
@@ -468,5 +469,68 @@ describe("Q-038 腾讯（广点通）v1 昵称规范", () => {
 
   it("完全不按规范的腾讯户报 failed", () => {
     expect(parseAccountName("没按规范起的腾讯户", TENCENT).status).toBe("failed");
+  });
+});
+
+/**
+ * v1.9.27 ⑩：哪些段能当分析维度（`dimension_type: "segment:<key>"`）。
+ * 老板要「每个清洗字段都能分析」，但**待确认段除外**——含义还没定，
+ * 拿它拆出来的交叉表没人能解释。
+ */
+describe("v1.9.27 ⑩ 可分析段", () => {
+  const rule = (extra: Record<string, unknown>[] = []): NamingRule => namingRuleSchema.parse({
+    media: "TENCENT", version: 1, separators: ["-"],
+    segments: [
+      { key: "biz", label: "业务", order: 0, source: "free", required: true, multi: false, mapsTo: "biz" },
+      { key: "ad_slot", label: "版位", order: 1, source: "enum", values: ["自动", "手动"],
+        required: false, multi: false, mapsTo: null },
+      { key: "unknown_1", label: "第 10 段·待确认", order: 2, source: "free",
+        required: false, multi: false, mapsTo: null, pending: true },
+      ...extra,
+    ],
+  });
+
+  it("默认口径：进了归属维度的段就能分析", () => {
+    expect(analyzableSegmentDefs(rule()).map((segment) => segment.key)).toEqual(["biz"]);
+  });
+
+  it("mapsTo 为空的段可以显式开成可分析", () => {
+    // 腾讯的「版位」段不落任何归属维度，但业务上就是要按它拆数。
+    const opted = namingRuleSchema.parse({
+      ...rule(), segments: rule().segments.map((segment) =>
+        (segment.key === "ad_slot" ? { ...segment, analyzable: true } : segment)),
+    });
+    expect(analyzableSegmentDefs(opted).map((segment) => segment.key)).toEqual(["biz", "ad_slot"]);
+    expect(analyzableSegmentDefs(opted).find((segment) => segment.key === "ad_slot")?.mapsTo).toBeNull();
+  });
+
+  it("待确认段即便被显式开成可分析也不算", () => {
+    const forced = namingRuleSchema.parse({
+      ...rule(), segments: rule().segments.map((segment) =>
+        (segment.key === "unknown_1" ? { ...segment, analyzable: true } : segment)),
+    });
+    expect(analyzableSegmentDefs(forced).map((segment) => segment.key)).not.toContain("unknown_1");
+    expect(isSegmentAnalyzable(forced.segments.find((segment) => segment.key === "unknown_1")!)).toBe(false);
+  });
+
+  it("出到响应里的每一段都写着实际生效的 analyzable", () => {
+    const shaped = withEffectiveAnalyzable(rule());
+    expect(shaped.segments.map((segment) => [segment.key, segment.analyzable])).toEqual([
+      ["biz", true], ["ad_slot", false], ["unknown_1", false],
+    ]);
+    // 物化过的规则再过一遍 schema 仍然合法：fe 原样 PUT 回来不会被拒。
+    expect(() => namingRuleSchema.parse(shaped)).not.toThrow();
+  });
+
+  it("腾讯 v1 seed 的可分析段就是落维度的那几段", () => {
+    const seed = JSON.parse(readFileSync(
+      new URL("../../../../scripts/seed-naming-rule-tencent-v1.json", import.meta.url), "utf8",
+    )) as { media: string; segments: unknown; separators: unknown };
+    const tencent = namingRuleSchema.parse({
+      media: seed.media, version: 1, segments: seed.segments, separators: seed.separators });
+    // 落维度的那几段 + 显式开过的「版位」段（老板要每个清洗字段都能分析，
+    // 版位在草案表里就是筛选维度，只是不落归属维度）。
+    expect(analyzableSegmentDefs(tencent).map((segment) => segment.key))
+      .toEqual(["agent_type", "optimizer", "biz", "device", "resource_position", "ad_slot", "goal", "landing"]);
   });
 });

@@ -1,7 +1,7 @@
 import { AccountNameParseRepository } from "@ka/db";
 import {
   applyOverride, computeConflicts, namingRuleSchema, parseAccountName, statusWithConflicts,
-  toNamingRule, type NamingRule,
+  toNamingRule, withEffectiveAnalyzable, type NamingRule,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -32,9 +32,11 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
         // v1.9.23：规范里的待确认段，连同它现在的取值分布一起回——治理页要在同一屏里
         // 回答「这段还没定义」和「它实际都写了些什么」。
         // v1.9.24 裁决：`data` 只放规范本身，算出来的附加物一律进 `meta`。
+        // v1.9.27 ⑩：每段把**实际生效的** analyzable 显式带出去，fe 不必自己再推一遍
+        // 「mapsTo 非空就算」——推法哪天变了两边就各说各话。
         sendData(
           context.response,
-          current,
+          current === null ? null : withEffectiveAnalyzable(current),
           context.requestId, context.maxResponseBytes,
           current === null
             ? {}
@@ -70,7 +72,7 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       // 两者都是「关于这份规则的观测」，不是规则的字段。
       sendData(
         context.response,
-        saved,
+        withEffectiveAnalyzable(saved),
         context.requestId, context.maxResponseBytes,
         { dryRun, pendingSegments },
       );

@@ -313,4 +313,15 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     }, "?media=KUAISHOU");
     expect(contradiction.status).toBe(400);
   });
+  it("★Q-041 ⑩: every segment in the rule response says whether it can be analysed", async () => {
+    const read = await call("/api/v1/admin/naming-rules", "GET", undefined, "?media=KUAISHOU");
+    const segments = (dataOf(read).segments as { key: string; mapsTo: string | null; analyzable?: boolean }[]);
+    expect(segments.length).toBeGreaterThan(0);
+    for (const segment of segments) {
+      // 老板要「每个清洗字段都能分析」：落了归属维度的段一定可分析；
+      // 没落维度的段要么显式开过，要么就是不可分析——fe 不必自己再推一遍这条规则。
+      expect(typeof segment.analyzable, segment.key).toBe("boolean");
+      if (segment.mapsTo !== null) expect(segment.analyzable, segment.key).toBe(true);
+    }
+  });
 });
