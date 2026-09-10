@@ -6585,3 +6585,33 @@ worker 全量跑时我先见到 7 红，其中 3 条是 `admin-member-lifecycle`
 
 **仍等你的**：① `pendingSegments` 的 `media`/`distinctValues` 你已说都留 ✅、`meta` 位置也已批 ✅（本轮已按此交付）；
 ② 上面 ④ 两条口径、⑤ 的 self/agency、③ 的 fixture 拆分方式；③ Q-036 等 Codex 026。
+### be2 自查 2026-09-10（无新派单）：授权 tuple 判定收敛到一处 + 绊线补第二条
+**SHA `6fe823bb`**。本轮读 main 无新派给 be2 的段（最后一段仍是 `c8543006`），按「没有新活就自查同类缺陷」做的。
+
+**做了什么**
+上一轮那个越权（谓词不带表前缀 → `scoped.media = scoped.media` 恒真）暴露的根因不是笔误，
+是**同一段 SQL 被抄了七份**：任务详情六处、日报一处。抄件不经过 helper 调用点，
+上一轮那条绊线扫不到它们——抄件里哪天出同样的退化，没有任何东西会红。
+- `task-detail-repository` 五处 tuple 判定改调 `accountScopeClause`；任务级那处
+  （任务在业务日挂着至少一个授权账户）抽成共享 `taskGrantScopeClause`，内部复用 tuple 判定。
+- 工作项那两处顺带简化成 `account_id IS NULL OR <谓词>`：谓词自己管团队分支，外面不必再写一遍
+  kind 判断；并把裸 `account_id` 限定成 `work_items.account_id`（正是上一轮那个坑的同款写法）。
+- `daily-report-repository` 的 `SCOPED_METRIC` 从手抄 SQL 改成 helper 返回值。
+- 绊线加第二条：`SELECT 1 FROM jsonb_to_recordset` 这个形状**只准出现在 `workspace-authority.ts`**，
+  并断言定义处确实还在（防扫描写错变成永远绿）。现全仓 0 处抄件。
+- `sql-interpolation-guard` 认识新 helper（白名单 + 调用点字面量检查都补）。
+行为不变：谓词与原手抄件逐条等价，任务详情/日报的越权用例原样全绿。
+
+**顺带扫过、确认没问题的**（省得你再扫一遍）
+- 全仓 `jsonb_to_recordset` 的 20 处：除已修的两处外，两侧都是限定名（`allowed.media=metric.media` 这种），
+  其余是把 recordset 当**数据源**用（CTE/JOIN），不是授权闸，没有同类退化。
+- `workItemScopeClause` 的调用点传的是别名变量（`alias`），由调用方限定，已被字面量检查覆盖。
+
+**★上一封那条「一次没能复现的 3 红」已定位，不是抖动**
+db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同库同表的迁移用例）；
+串行必绿，我这轮复现了一次并行红、四次串行绿。你的门禁脚本本来就是串行，不受影响；
+写在这里是让「偶发 3 红」以后不用再查一遍。
+
+**仍等你的**（不重复问，只列）：① Q-038 腾讯规则正文（草案文件在 main 上仍不存在）；
+② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
+④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。

@@ -1381,3 +1381,12 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **源时区**：不加列。受控源配置 `source.timezone`（按 media；启航、ka-data 均 `Asia/Shanghai`），reader/采样按它换算 `elapsedDayFraction`/`dataAsOf`；部署默认值不算证据，配置缺失时相关字段 missing 并告警。
 - **「当前为示例」类按钮**：按老板 2026-09-10 拍板，**按钮与提示保留**，对应接口接通后才撤提示；v1.9.24 那条「文案改暂未开放」作废。fe 出清单（页面/按钮/端点），arch 按端点分批派。
 - 前端过渡 fixture 放 `apps/web/lib/data/fixtures/v1922/`（不进契约包），后端 fixture 落地后前端并回。
+
+## v1.9.27 追加（2026-09-10 arch；看板前端审查暴露的四个契约缺口 + 老板「所有清洗字段都能分析」）
+- **环比**：`POST /data/query` summary 的 `params.compare` 枚举加 **`prev_window`**（与当前窗口等长、紧邻的前一窗口；month_to_date 的前窗 = 上月同天数），响应 `compare.deltas` 由后端给（沿用 v1.9.x 的 dod/wow 机制）；**前端不自造 `previous` 块、不二次查询**。
+- **激励花费**：summary 的 `cost` 组加 **`incentiveCost`**（MetricValue；个人源取启航「激励」字段，ka-data 无此列时 `unsupported`）。`costSpace` 是成本空间，与激励无关，前端不得混用。
+- **三个 BI 指标键位**：`assessment.biConv`（MetricValue，考核 BI 数）、`assessment.biCashCost`（MetricValue，=cashCost/biConv，后端算）、`assessment.overCost`（MetricValue，可负，正=超）；wire 键 camelCase，与现有 DTO 一致（api.md 里 snake_case 写法是命名而非 wire）。
+- **「待到」态**：MetricValue `availability` 加 **`pending`**（BI 类指标在 08:30–11:10 窗口内、T-1 数据尚未到达）；前端显「待到」不显「−」。
+- **失败批次信号**：data/query 的 `lineage.warnings[]` 从 string[] 改为可带对象 **`{code:"BATCH_FAILED", media, accountId, businessDate}`**（string 仍兼容）；前端据此显横幅「N 户 × M 天数据缺失（拉数失败）」。
+- **维度开放到任意清洗段**：`dimension_type` 除固定枚举外接受 **`segment:<key>`**（`<key>` = 该媒体命名规则里 `mapsTo` 非空或显式 `analyzable:true` 的段，如 `segment:bid_mode`、`segment:device`、`segment:landing`），按解析值分组，未解析归「未标注」；`GET /admin/naming-rules` 响应的段带 `analyzable`。`account.pivot2` 的 `dimA/dimB` 同样接受 `segment:<key>`。这是老板要求：每个渠道昵称清洗出的每个字段都能拿来做分析和透视。
+- **前端分摊规则**：分摊分母 = Σ已返回子行 cost（不是父行 cost）；`lineage.truncated/partial` 或父 `biConv` 为 pending/missing 时整列不分摊显「−」/「待到」；分摊派生的 BI 现金成本也带「分」；后端给了 `biCashCost` 的行不重算。

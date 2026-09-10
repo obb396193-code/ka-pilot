@@ -642,3 +642,21 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - ➊ **(a)**：团队空间只读是契约（kind=team 全量只读），演示空间是团队空间，写入口禁用 + 角标就是正确行为；v1.9.17「不藏」指的是不按 `role=viewer` 藏，不是要把团队空间的只读门拆掉。403 文案只在竞态出现，够了。
 - ➋ 真实路径 kb 写我这轮联调抽查（建/改名/软删/软删后 GET 404）。
 - ➌ rerun：**F8-15 ⑦**，早派了（在「7ff2d829 ✅ 已合」那段），连同 ⑥ NOT_IMPLEMENTED 一起是你现在手上仅剩的两项，绊线到期 09-12。做完再看 Q-038 腾讯规则要不要动归属清洗 tab（应该不用，规则编辑是通用的；若段数 12 排版挤了再调）。
+
+### F8-19b（P0，压倒一切）：看板审查修复清单（arch 2026-09-10；审查全文 `docs/reviews/2026-09-10-数据看板前端审查.md`，契约 v1.9.27）
+老板原话：前端的核心是站在优化师视角**看得到、看得对**——每个清洗字段的数据都能看、能像 Excel 透视表一样自选字段透视、选对图型；概览和成本盈亏必须做出来；同事那份的数据/任务/考核价是对的，我们要在此之上做美观。
+**P0（先修，修完交 SHA + 三宽度截图）**
+1. **接真接口**：`overview-tab.tsx` 用 `useDataQuery` 拉 `account.summary`（params 含 window + `compare:"prev_window"`）、`account.trend`、`account.dimension`；fixture 只在 `isMock` 生效；钻取每展开一层带 `params.filters.{optimizer,biz,task_id}` 再查（`drilldown.tsx` 的 `children()` 换掉）；request key 含 workspaceId（切空间自然重拉）。验收：真实模式页面不含「张三」；切个人/团队数据变。
+2. **激励卡**：`kpi-rows.tsx:61` 去掉 `costSpace` 绑定，改读 `cost.incentiveCost`（v1.9.27），后端未给前显「待接源」。
+3. **分摊**（`lib/fixtures/dashboard.ts:61-64` + `drilldown.tsx`）：分母 = Σ已返回子行 cost；truncated/partial 或父 biConv pending/missing → 整列不分摊；派生 BI 现金成本也带「分」；后端给了 `biCashCost` 不重算；`bi=0` 用 `!= null` 判断。mock 期同一棵树只能同一源（别把契约的 personal biz 行挂在 team summary 下）。
+4. **schema**：`lib/data/canonical-query-rows.ts` 的 summary 行/assessment 放开 `biConv/biCashCost/overCost/incentiveCost`（camelCase）、`compare.deltas`、`availability:"pending"`、`lineage.warnings` 对象形；不再自造 `previous`。v1922 过渡 fixture 按 `summary-window-v3` 形补齐并改成自洽数字（overCost = cash − bi×price）。
+**P1（同一批交）**
+5. 考核 BI 数卡加回传 GAP 下标（`ratios.gap`）；超成本负数绿；BI 现金成本卡不用 realConversion 口径的色标。
+6. 页头窗口 preset 传进概览并进 params（`date_from/date_to`，上海 03:00 切日）；页脚显 dataAsOf/businessDate/timezone；chips 改今/昨/近 7/近 30 + 月历（F8-20 首项提前）。
+7. 三态分开：缺数「−」、`pending`「待到」、unsupported「待接源」；分布图缺数行显「N 项缺数未计入」；趋势按 `lineage.window` 生成完整日期轴，缺日 null。
+8. 钻取表补列：激励、回传 GAP、考核价、超成本、消耗占比（11 列）；任务大类表现与优化师视角拆成两张卡；个人视角折成「我的任务→账户」两级、隐藏级联。
+9. 补自投/代理分布（契约 `dimension-v3-agent_type.json` 现成）与转化目标「待接源」壳；分布图 kinds 去掉折线；转化成本线虚线；趋势加「日｜小时（等 025）」端口。
+10. 图表偏好写 `PATCH /me/views config.charts`；`useDataQuery` 做 stale-while-revalidate（保留上一响应 + isValidating），错误态传 requestId + 重试。
+11. 单测：审查文档 §2 列的 12 组，至少补 allocateBi 六边界、deltaRate、六态文案、真实/mock 路由。
+**F8-22（P0 第二批，F8-19b 后）：自定义透视** = Excel 式：行维 × 列维（下拉列出固定 8 维 + 该媒体规则里所有 `analyzable` 段，含腾讯的 bid_mode/device/landing 等）× 指标集 × 图型（表/柱/环/折线），走 `account.pivot2` 的 `segment:<key>`（v1.9.27）；预设保存进 saved_views。策略分析的 3 个预设并入它。
+- **F8-19b 追加（审查员 C：体验/视觉/响应式，全文见审查文档 §3.1，带 文件:行）**。P0 再加三条：⑫页头 preset 传进 OverviewTab、两处窗口标签同一来源；⑬钻取行改行内 `<button aria-expanded>`，键盘可达；⑭账户行链接按 key 形态判不按 depth（biz 树账户在 depth 2，现在永远不是链接）。P1 视觉这几条老板会盯：黑白模式图表仍彩色（读 `--chart-1..5`）、主题切换不重画（colorKey 用 `${mode}|${hue}|${isDark}`）、趋势第三条线被压扁（第三轴）、KPI 卡抽 `KpiCard` 与工作台同一套、1280+侧栏展开 KPI 必须 4 列、切图型不闪（实例只建一次 + UniversalTransition）、图表字体/tooltip 走站内 token、图下「查看数据表」折叠区（既是无障碍替代也是老板要的表格视图）。验收按 §3.1 末尾的截图矩阵交图。
