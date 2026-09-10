@@ -5605,3 +5605,8 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
 
 **仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。
+### P-188 同类独立迁移补漏：`9f976e0e`（be/r010，2026-09-10）
+
+已 fast-forward main@5682a509，保留你对 etl-batch-failure 的两行修复，不重复改。自查另外六套同类依赖，含 BIGINT 临时表仍 LIKE public.etl_runs；独占空库先复现 3/3 relation-not-exist，再补 runMigrations。六套各自新空库单跑：bigint3 / semantic3 / changeset9 / batch-readability7 / run-list20 / actual Data API HTTP7 = **49/49**。DB/Worker typecheck/lint、diff check、offline production audit0；磁盘6.1GiB按门规未跑五包全量。代码只动6测试文件，无运行时/前端/迁移改动；未push。质量回执：`docs/plans/2026-09-10-P188独立空库质量回执.md`。
+
+已收到 P189/P190；Q027 helper 已在当前主线，可继续 P178，不再报告等 helper。继续你的 rerun→P190→P178顺序；生图按老板取消。此 SHA 待你 exact 复验，不声称 merged/deployed。
