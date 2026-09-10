@@ -6,6 +6,7 @@ import { IconArrowLeft, IconCheck, IconPencil, IconPlayerPlay, IconSparkles } fr
 import { toast } from "sonner"
 
 import { openAgentDrawer } from "@/components/business/command/events"
+import { RelatedDocs } from "@/components/business/knowledge/related-docs"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
@@ -108,6 +109,8 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
           {tab === "overview" ? (
             <div className="flex flex-col gap-4">
               <KpiCards metrics={headline} className="px-0 lg:px-0" />
+              {/* 知识库里挂在这个任务上的文档（契约 kb/by-object）；一条都没有时不占地方 */}
+              <RelatedDocs objectType="task" objectId={taskId} />
               <Card>
                 <CardHeader><CardTitle>SOP 执行进度</CardTitle><CardDescription>准备 → 开户 → 充值 → 基建 → 冷启动 → 跑量监控{ov.sopProgress?.runId ? ` · 绑定运行 ${ov.sopProgress.runId.slice(-4)}` : " · 未绑定 run，按阶段推导"}</CardDescription></CardHeader>
                 <CardContent>
