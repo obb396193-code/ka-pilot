@@ -12,6 +12,7 @@ export type PendingCoverage = z.infer<typeof schema>;
 export const PENDING: readonly PendingCoverage[] = [
   { path: "/api/v1/system/etl-runs", owner: "F8-15", direction: "backend_to_bff", expiresAt: "2026-09-12T00:00:00+08:00" },
   { path: "/api/v1/admin/data/reconcile", owner: "F8-15", direction: "backend_to_bff", expiresAt: "2026-09-12T00:00:00+08:00" },
+  { path: "/api/v1/admin/members/:p/reset-password", owner: "F-OS-004", direction: "bff_to_backend", expiresAt: "2026-09-12T00:00:00+08:00" },
 ];
 
 export function pendingCoveragePaths(
