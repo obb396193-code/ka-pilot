@@ -105,9 +105,10 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     });
     expect(result.status).toBe(200);
     const data = dataOf(result);
-    expect(data.counts).toEqual({ parsed: 1, partial: 1, failed: 1 });
+    // 第二条「DAU-通投-年轻人」只少了可选的承接段 → v1.9.26 起算 parsed（可选段没写不是缺）。
+    expect(data.counts).toEqual({ parsed: 2, partial: 0, failed: 1 });
     // 命中率按「完全解析」算：partial 不计入，否则改规范时看不出到底改好没有。
-    expect(data.hitRate).toEqual({ value: 1 / 3, state: "finite" });
+    expect(data.hitRate).toEqual({ value: 2 / 3, state: "finite" });
     // 干跑绝不写库——老板要在页面上边调边看。
     expect(Number((await pool.query(
       "SELECT count(*)::int AS n FROM naming_rules WHERE workspace_id=$1", [workspaceId],
@@ -138,7 +139,9 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     const result = await call("/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
     expect(result.status).toBe(200);
     expect(dataOf(result)).toMatchObject({ reparsed: 3, skippedNoRule: 0 });
-    expect(dataOf(result).byStatus).toEqual({ parsed: 1, partial: 1, failed: 1 });
+    // a2「DAU-通投-年轻人」只少了可选的承接段 → v1.9.26 起算 parsed：
+    // partial 的含义是「必填段缺了」，可选段没写不该推到优化师面前让他修一个没坏的东西。
+    expect(dataOf(result).byStatus).toEqual({ parsed: 2, failed: 1 });
     const listed = dataOf(await call("/api/v1/admin/account-names", "GET", undefined, "?status=failed"));
     expect((listed.items as { accountId: string }[]).map((item) => item.accountId)).toEqual(["r017h-a3"]);
   });
@@ -170,10 +173,12 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
         { media: "KUAISHOU", accountId: "r017h-a3" },
       ],
     });
-    expect(dataOf(result).confirmed).toBe(1);
-    // partial / overridden 不许被一键过掉。
+    // a1/a2 都是 parsed（a2 只少可选段），a3 已人工改过。
+    expect(dataOf(result).confirmed).toBe(2);
+    // 人工改过的不许被一键过掉。partial / failed 同样不许，那两种在仓储层的用例里钉着
+    //（packages/db 的 confirmBatch：skipped 含 failed 与 overridden）。
     expect(new Set((dataOf(result).skipped as { status: string }[]).map((item) => item.status)))
-      .toEqual(new Set(["partial", "overridden"]));
+      .toEqual(new Set(["overridden"]));
     expect((await call("/api/v1/admin/account-names/confirm", "POST", { items: "nope" })).status).toBe(400);
   });
 
@@ -272,6 +277,12 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
       separators: ["-"], effective_from: "2026-09-01", note: "待确认段",
     }, "?media=KUAISHOU");
     expect(put.status, JSON.stringify(put.body)).toBe(200);
+    // 前面的用例已经把 a1/a2 确认、a3 人工改过，重解析一律绕开它们（这正是「人工结论优先」）。
+    // 所以这条用例自带一个新账户，让待确认段真有值可统计，而不是去动别人的行。
+    await pool.query(
+      "INSERT INTO accounts(workspace_id,media,account_id,account_name) VALUES($1,'KUAISHOU','r017h-a4','DAU-待确认值')",
+      [workspaceId]);
+    auth.scope.accounts.push({ media: "KUAISHOU", accountId: "r017h-a4", accessLevel: "execute" });
     await callRoute(auth, "/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
 
     // v1.9.24：`data` 只放资源本身，算出来的观测值在 `meta`。

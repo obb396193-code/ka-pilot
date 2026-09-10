@@ -6460,6 +6460,36 @@ db 包有**一次**运行报 `3 failed | 1640 passed`，我没截到是哪三条
 - schema.sql仍注释小时迁移021，dispatches仍单列work_item FK且work_items无联合UNIQUE，与P201已批api文字不一致，留你修权威文件；我未改Contract。
 - 小时job+持久化/公开factory仍未实现完整链，不能宣称真数看板已完成。继续已冻小时链路；自查02的readiness日期口径仍待裁，P176 Runtime未放开失败容忍。五包全量/build因磁盘4.6GiB按规则未跑。没有push/生产部署/前端/媒体写；老板取消生图继续有效。
 
+### be2 自查 2026-09-10（无新派单）：授权 tuple 判定收敛到一处 + 绊线补第二条
+**SHA `6fe823bb`**。本轮读 main 无新派给 be2 的段（最后一段仍是 `c8543006`），按「没有新活就自查同类缺陷」做的。
+
+**做了什么**
+上一轮那个越权（谓词不带表前缀 → `scoped.media = scoped.media` 恒真）暴露的根因不是笔误，
+是**同一段 SQL 被抄了七份**：任务详情六处、日报一处。抄件不经过 helper 调用点，
+上一轮那条绊线扫不到它们——抄件里哪天出同样的退化，没有任何东西会红。
+- `task-detail-repository` 五处 tuple 判定改调 `accountScopeClause`；任务级那处
+  （任务在业务日挂着至少一个授权账户）抽成共享 `taskGrantScopeClause`，内部复用 tuple 判定。
+- 工作项那两处顺带简化成 `account_id IS NULL OR <谓词>`：谓词自己管团队分支，外面不必再写一遍
+  kind 判断；并把裸 `account_id` 限定成 `work_items.account_id`（正是上一轮那个坑的同款写法）。
+- `daily-report-repository` 的 `SCOPED_METRIC` 从手抄 SQL 改成 helper 返回值。
+- 绊线加第二条：`SELECT 1 FROM jsonb_to_recordset` 这个形状**只准出现在 `workspace-authority.ts`**，
+  并断言定义处确实还在（防扫描写错变成永远绿）。现全仓 0 处抄件。
+- `sql-interpolation-guard` 认识新 helper（白名单 + 调用点字面量检查都补）。
+行为不变：谓词与原手抄件逐条等价，任务详情/日报的越权用例原样全绿。
+
+**顺带扫过、确认没问题的**（省得你再扫一遍）
+- 全仓 `jsonb_to_recordset` 的 20 处：除已修的两处外，两侧都是限定名（`allowed.media=metric.media` 这种），
+  其余是把 recordset 当**数据源**用（CTE/JOIN），不是授权闸，没有同类退化。
+- `workItemScopeClause` 的调用点传的是别名变量（`alias`），由调用方限定，已被字面量检查覆盖。
+
+**★上一封那条「一次没能复现的 3 红」已定位，不是抖动**
+db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同库同表的迁移用例）；
+串行必绿，我这轮复现了一次并行红、四次串行绿。你的门禁脚本本来就是串行，不受影响；
+写在这里是让「偶发 3 红」以后不用再查一遍。
+
+**仍等你的**（不重复问，只列）：① Q-038 腾讯规则正文（草案文件在 main 上仍不存在）；
+② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
+④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
 
@@ -6498,6 +6528,63 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 ### ➋ 下一步
 按序 **F8-20（筛选与导出）→ F8-21（清洗闭环 UI）**。F8-20 依赖 `GET /data/filters`（P-210 ④），没到之前我先做月历区间 + chips + 账户 ID 多值 + CSV + 骨架屏这几块不依赖后端的。F8-15 ⑥⑦ 我在信箱里没找到展开（只有「六项」的说法和 ⑥⑦ 的编号），**贴一下具体是哪两条**，我插空收掉。
 
+### be2 交付 05547ea1：Q-038 腾讯（广点通）v1 落地（seed + 五份 fixture + 解析测试）
+**SHA `05547ea1`**（基线 = 本机 main `bca78821` 合流后）。门禁：domain 1434 / db 1654（串行 147 文件）/
+worker 2168（串行 191 文件）/ web 244 全绿；四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+草案文件我这次在 main 上看到了，与你贴的 12 段一致，按你贴的那份做。
+
+**① 规范落地**
+- `scripts/seed-naming-rule-tencent-v1.json`：12 段、`-`（兜底 `－`/`_`）、第 2 段 agent_type 为锚点段、
+  第 10 段 `unknown_1` pending、第 11 段 note 为 multi 吸收段、第 12 段 marker 可空。
+- `scripts/seed-demo-data.py` 改成两家渠道并列灌（循环读 seed JSON，脚本仍不认识任何渠道的枚举）。
+  **跨界报备**：这个文件是你的（`0811de64` 等都是你提的），改它是因为 Q-038 ① 明写「seed 演示空间加
+  TENCENT 规则」。改动只有那一段，用回滚事务在测试库验过 13 段 / 12 段两条都能进、分隔符与 note 正确。
+  你原来是直接 INSERT 而不是走 PUT，我没改这个机制（python 脚本里起不了 HTTP）。
+
+**② 解析测试**（`packages/domain/test/r014/account-name-parse-contract.test.ts`）
+直接读 seed JSON——测试与灌进库的是同一份，改一处漏另一处当场红。用老板那条真样例：
+`广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※` 12 段全中、
+`unmatched`/`leftover` 都空；去掉末尾「※」仍 parsed 且前面各段不错位；第 10 段存值但 `mapsTo=null`；
+维度按草案表落（资源位→placement、版位段暂不映射、快手才有的 rta/bid_mode 保持 null 不硬凑）；
+少写渠道段时靠锚点段保住 agent_type/optimizer/goal 不整体错位；完全不按规范的报 failed。
+
+**③ 五份 fixture 全从真响应导出**（导出脚本扩到两家渠道，仍是本地隔离库 + 真路由、跑完删净自查）
+`naming-rules.json`（快手，刷新出 v1.9.24 的 meta）、**`naming-rules-tencent.json`（新）**、
+`naming-rules-put.json`、`naming-rules-test.json`（改用老板样例干跑：2 parsed / 1 failed）、
+`account-names.json`（快手）、**`account-names-tencent.json`（新，3 户全 parsed，含一条没写「※」的）**。
+- 你上一封问的「要不要一份带 pending 取值分布的样例」——**现在是真的有值了**，不用编：
+  `meta.pendingSegments = [{media:"TENCENT", key:"unknown_1", label:"第 10 段·待确认",
+  values:[{value:"10",count:2},{value:"20",count:1}], distinctValues:2}]`。
+- 判断请裁：`naming-rules.json` 是单条规范的响应，塞不下第二个 media，所以腾讯那条我另开了
+  `naming-rules-tencent.json`；`account-names.json` 保持 `?media=KUAISHOU` 的原口径不动，
+  腾讯另开一份。你若要合成一份「不带 media 过滤」的全量列表 fixture，我再导。
+
+**★④ 两处口径修正——行为变更，请你拍板（是你那句「※ 或空都算 parsed」逼出来的）**
+1. **可选段没对上时不再吃掉那个 token**。原来一律往后挪一格，于是快手
+   `…-有R-常规-13177-A` 里可选的「扣量回传」段对不上「常规」却把它吃了，**专项段解不出来——
+   昵称里明明写着的 `常规` 被丢了**。必填段对不上照吃（位置上确实有它、只是值不规范），
+   否则后面全线错位，那正是锚点段要解的问题。
+2. **partial 只看必填段**。可选段没写不是「缺了东西」；报 partial 等于推着优化师去修一个没坏的。
+   你要的「marker 写不写都 parsed」就是这条。
+**影响面（都在 fixture 里可核）**：快手 `account-names.json` 5 行 partial → parsed；
+`account-1` 的 segments 多出 `special: 常规`（就是原来被丢掉的那个值）；快手干跑命中率 0 → 0.8333。
+这两条改的是既有解析结果，不是新增字段——你要收回哪一条我改回去。
+
+**⑤ 一个仍需你定的语义**
+你贴的第 2 段写「enum[自投→self, 代投→agency]」。引擎里**没有值映射这回事**，枚举命中什么就存什么，
+而 `规则 schema 不动` 是你第 15 圈明写的；快手的 `operator` 段同样是 `values:["自投","代投"] + mapsTo:agent_type`，
+存的就是「自投」。所以我按快手同一口径存 `自投`，没有翻成 `self`。
+要真出 `self/agency`，得给段加 `valueMap`（schema 变更）或在维度层做规范化——两条都要你先裁，我没自作主张。
+顺带：第 15 圈说第 10 段「先按 free 存 `seg10`」，第 19 圈说 `unknown_1`+pending；我按**第 19 圈**做（你说以贴的为准）。
+
+**⑥ 门禁上的一个坑，记给你**
+worker 全量跑时我先见到 7 红，其中 3 条是 `admin-member-lifecycle` / `r010-production-composition` /
+`worker-once` 这三个不相干的集成用例。单独跑它们全绿——它们是被前面 4 条 naming-routes 失败**连累**的：
+用例在断言处中断，afterAll 的清场没走完，残行污染了后面同库的集成用例。
+所以以后看到这类「不相干集成用例红」，先看同一次运行里有没有更早的红，别直接当它们自己坏了。
+
+**仍等你的**：① `pendingSegments` 的 `media`/`distinctValues` 你已说都留 ✅、`meta` 位置也已批 ✅（本轮已按此交付）；
+② 上面 ④ 两条口径、⑤ 的 self/agency、③ 的 fixture 拆分方式；③ Q-036 等 Codex 026。
 ### be2 自查 2026-09-10（无新派单）：授权 tuple 判定收敛到一处 + 绊线补第二条
 **SHA `6fe823bb`**。本轮读 main 无新派给 be2 的段（最后一段仍是 `c8543006`），按「没有新活就自查同类缺陷」做的。
 

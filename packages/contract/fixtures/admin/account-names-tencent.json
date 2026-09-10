@@ -1,0 +1,294 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "media": "TENCENT",
+        "accountId": "tencent-1",
+        "accountName": "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※",
+        "ruleVersion": 1,
+        "status": "parsed",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "淘宝促活UVHS专项",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "IPV",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "note": {
+            "key": "note",
+            "value": "页面投放831测",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "marker": {
+            "key": "marker",
+            "value": "※",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "ad_slot": {
+            "key": "ad_slot",
+            "value": "自动",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "广点通",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13244",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "刘晓佳",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "unknown_1": {
+            "key": "unknown_1",
+            "value": "10",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "agent_type": {
+            "key": "agent_type",
+            "value": "自投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "resource_position": {
+            "key": "resource_position",
+            "value": "联盟",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null,
+        "raw": "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※",
+        "failedSegments": []
+      },
+      {
+        "media": "TENCENT",
+        "accountId": "tencent-2",
+        "accountName": "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-朋友圈-自动-IPV-13244-10-页面投放831测",
+        "ruleVersion": 1,
+        "status": "parsed",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "淘宝促活UVHS专项",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "IPV",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "note": {
+            "key": "note",
+            "value": "页面投放831测",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "ad_slot": {
+            "key": "ad_slot",
+            "value": "自动",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "广点通",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13244",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "刘晓佳",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "unknown_1": {
+            "key": "unknown_1",
+            "value": "10",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "agent_type": {
+            "key": "agent_type",
+            "value": "自投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "resource_position": {
+            "key": "resource_position",
+            "value": "朋友圈",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null,
+        "raw": "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-朋友圈-自动-IPV-13244-10-页面投放831测",
+        "failedSegments": [
+          "marker"
+        ]
+      },
+      {
+        "media": "TENCENT",
+        "accountId": "tencent-3",
+        "accountName": "广点通-代投-某代理-淘宝闪购-全端-视频号-手动-付费-13299-20-双十一测-※",
+        "ruleVersion": 1,
+        "status": "parsed",
+        "segments": {
+          "biz": {
+            "key": "biz",
+            "value": "淘宝闪购",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "付费",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "note": {
+            "key": "note",
+            "value": "双十一测",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "全端",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "marker": {
+            "key": "marker",
+            "value": "※",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "ad_slot": {
+            "key": "ad_slot",
+            "value": "手动",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "channel": {
+            "key": "channel",
+            "value": "广点通",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13299",
+            "mapsTo": "landing",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "某代理",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "unknown_1": {
+            "key": "unknown_1",
+            "value": "20",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "agent_type": {
+            "key": "agent_type",
+            "value": "代投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "resource_position": {
+            "key": "resource_position",
+            "value": "视频号",
+            "mapsTo": "placement",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "conflicts": null,
+        "override": null,
+        "parsedAt": "2026-09-05T09:10:00.000+08:00",
+        "confirmedAt": null,
+        "raw": "广点通-代投-某代理-淘宝闪购-全端-视频号-手动-付费-13299-20-双十一测-※",
+        "failedSegments": []
+      }
+    ],
+    "total": 3
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "pendingSegments": [
+      {
+        "media": "TENCENT",
+        "key": "unknown_1",
+        "label": "第 10 段·待确认",
+        "values": [
+          {
+            "value": "10",
+            "count": 2
+          },
+          {
+            "value": "20",
+            "count": 1
+          }
+        ],
+        "distinctValues": 2
+      }
+    ],
+    "_note": "GET /admin/account-names?media=TENCENT：腾讯 3 户的真响应。三条都是 parsed（含一条没写末尾区分符的）；unknown_1 那一段的值照常出现在 segments 里但 mapsTo=null；meta.pendingSegments 带该段的取值分布与 distinctValues；parsedAt 归一化成固定值"
+  }
+}

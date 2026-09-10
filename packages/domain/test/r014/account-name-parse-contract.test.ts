@@ -62,8 +62,12 @@ describe("v1.8 account nickname parsing (two-end anchored)", () => {
     const noRebate = parseAccountName("DAU-通投-自投-李四-双出价-IOS-主站-付费-非R-常规-13177", KUAISHOU);
     expect(noRebate.segments.landing!.value).toBe("13177");
     expect(noRebate.segments.rebate).toBeUndefined();
+    // v1.9.26：可选的扣量回传段没对上「常规」时**不许把它吃掉**——「常规」是专项段的值，
+    // 原来被吃掉后专项段解不出来，昵称里明明写着的值就这么丢了。
+    expect(noRebate.segments.special!.value).toBe("常规");
     expect(noRebate.unmatched).toEqual(["rebate"]);
-    expect(noRebate.status).toBe("partial");
+    // 缺的只是可选段 → 这条昵称完全合规，不该报 partial 去让优化师修一个没坏的东西。
+    expect(noRebate.status).toBe("parsed");
 
     const neither = parseAccountName("DAU-通投-自投-李四-双出价-IOS-主站-付费-非R-常规", KUAISHOU);
     expect(neither.segments.special!.value).toBe("常规");
@@ -387,5 +391,82 @@ describe("v1.9.23 pending segments (腾讯第 10 段·待确认)", () => {
     expect(pendingSegmentDefs(withPending())).toEqual([{ key: "unknown_1", label: "第 10 段·待确认" }]);
     // 没有待确认段的规范返回空数组，不是 null——前端照常渲染一个空区块。
     expect(pendingSegmentDefs(KUAISHOU)).toEqual([]);
+  });
+});
+
+/**
+ * Q-038 腾讯（广点通）v1：12 段。规范本体在 `scripts/seed-naming-rule-tencent-v1.json`，
+ * 这里**直接读那份 seed**——测试和灌进库的规范是同一份，改一处漏另一处会当场红。
+ */
+describe("Q-038 腾讯（广点通）v1 昵称规范", () => {
+  const seed = JSON.parse(readFileSync(
+    new URL("../../../../scripts/seed-naming-rule-tencent-v1.json", import.meta.url), "utf8",
+  )) as { media: string; segments: unknown; separators: unknown };
+  const TENCENT: NamingRule = namingRuleSchema.parse({
+    media: seed.media, version: 1, segments: seed.segments, separators: seed.separators,
+  });
+  /** 老板给的那条真样例（优化师注释：「自动」是版位、「13244」是承接、「※」是他自己加的区分符）。 */
+  const SAMPLE = "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※";
+
+  it("解出老板样例的每一段", () => {
+    const parsed = parseAccountName(SAMPLE, TENCENT);
+    expect(Object.fromEntries(Object.entries(parsed.segments).map(([key, segment]) => [key, segment.value])))
+      .toEqual({
+        channel: "广点通", agent_type: "自投", optimizer: "刘晓佳", biz: "淘宝促活UVHS专项",
+        device: "安卓", resource_position: "联盟", ad_slot: "自动", goal: "IPV",
+        landing: "13244", unknown_1: "10", note: "页面投放831测", marker: "※",
+      });
+    expect(parsed.status).toBe("parsed");
+    expect(parsed.unmatched).toEqual([]);
+    expect(parsed.leftover).toEqual([]);
+  });
+
+  it("末尾区分符「※」写不写都算 parsed", () => {
+    // 规范里 marker 是可选段：没写不是「缺了东西」，不该推到优化师面前让他修。
+    const withoutMarker = parseAccountName(SAMPLE.replace("-※", ""), TENCENT);
+    expect(withoutMarker.status).toBe("parsed");
+    expect(withoutMarker.segments.marker).toBeUndefined();
+    // 前面每一段都不能因为少了末尾这一格而错位。
+    expect(withoutMarker.segments.note?.value).toBe("页面投放831测");
+    expect(withoutMarker.segments.unknown_1?.value).toBe("10");
+  });
+
+  it("第 10 段存值但不进任何维度（pending）", () => {
+    const parsed = parseAccountName(SAMPLE, TENCENT);
+    expect(parsed.segments.unknown_1?.value).toBe("10");
+    // 含义还没确认就映射到维度 = 拿猜的值污染交叉表，比缺这一维更糟。
+    expect(parsed.segments.unknown_1?.mapsTo).toBeNull();
+    expect(pendingSegmentDefs(TENCENT)).toEqual([{ key: "unknown_1", label: "第 10 段·待确认" }]);
+  });
+
+  it("段落按草案表进对应维度：资源位→placement，版位段暂不映射", () => {
+    const parsed = parseAccountName(SAMPLE, TENCENT);
+    const dimensions = resolveAccountDimensions({
+      segments: parsed.segments, overriddenKeys: [], platform: {},
+    });
+    expect(dimensions.placement).toEqual({ value: "联盟", source: "nickname" });
+    expect(dimensions.agent_type).toEqual({ value: "自投", source: "nickname" });
+    expect(dimensions.device).toEqual({ value: "安卓", source: "nickname" });
+    expect(dimensions.goal).toEqual({ value: "IPV", source: "nickname" });
+    expect(dimensions.landing).toEqual({ value: "13244", source: "nickname" });
+    expect(dimensions.optimizer).toEqual({ value: "刘晓佳", source: "nickname" });
+    // 快手有、腾讯规范里没有的维度保持「不知道」，不拿别的段硬凑。
+    expect(dimensions.rta).toEqual({ value: null, source: null });
+    expect(dimensions.bid_mode).toEqual({ value: null, source: null });
+  });
+
+  it("运营方是锚点段：少写前面一段也不整体错位", () => {
+    // 少写渠道段（第 1 段）。按位置硬切会把「自投」当渠道、「刘晓佳」当运营方，全线错一格。
+    const parsed = parseAccountName(SAMPLE.replace("广点通-", ""), TENCENT);
+    expect(parsed.segments.agent_type?.value).toBe("自投");
+    expect(parsed.segments.optimizer?.value).toBe("刘晓佳");
+    expect(parsed.segments.goal?.value).toBe("IPV");
+    // 少写的那段如实记为未匹配；它是必填段，所以这条确实是 partial。
+    expect(parsed.unmatched).toContain("channel");
+    expect(parsed.status).toBe("partial");
+  });
+
+  it("完全不按规范的腾讯户报 failed", () => {
+    expect(parseAccountName("没按规范起的腾讯户", TENCENT).status).toBe("failed");
   });
 });
