@@ -24,3 +24,39 @@ export const adminMembersResponseSchema = z.discriminatedUnion("ok", [z.object({
 export const adminMemberGrantsResponseSchema = z.discriminatedUnion("ok", [z.object({ ok: z.literal(true), data: adminMemberGrantsDataSchema, meta }).strict(), error]);
 export type AdminMembersData = z.infer<typeof adminMembersDataSchema>;
 export type AdminMemberGrantsData = z.infer<typeof adminMemberGrantsDataSchema>;
+
+// v1.9.21: additive until the new provisioning/list HTTP composition is wired.
+// A plain `$` also matches before a final newline in JavaScript: require true end.
+const loginName = z.string().min(1).max(128).regex(/^[A-Za-z0-9._@-]{1,128}$(?![\s\S])/);
+const initialPassword = z.string().min(12).max(1024);
+const createBase = z.object({ display_name: adminMemberSchema.shape.displayName,
+  provider_subject: loginName, role: adminMemberSchema.shape.role }).strict();
+export const adminMemberCreateRequestSchema = z.discriminatedUnion("provider", [
+  createBase.extend({ provider: z.literal("internal_test"), initial_password: initialPassword.optional() }).strict(),
+  createBase.extend({ provider: z.literal("buc") }).strict(),
+]);
+export const adminMemberResetPasswordRequestSchema = z.object({}).strict();
+export const adminMemberV195Schema = adminMemberSchema.extend({ mustChangePassword: z.boolean() }).strict();
+export const adminMembersV195DataSchema = z.object({ items: z.array(adminMemberV195Schema).max(1000) }).strict().refine(({ items }) =>
+  new Set(items.map(x => x.identityId)).size === items.length && new Set(items.map(x => x.userId)).size === items.length, "Duplicate member");
+export const adminMemberCreatedDataSchema = z.discriminatedUnion("provider", [
+  adminMemberV195Schema.extend({ provider: z.literal("internal_test"), loginName, initialPassword }).strict(),
+  adminMemberV195Schema.extend({ provider: z.literal("buc"), loginName }).strict(),
+]);
+export const adminMemberResetPasswordDataSchema = z.object({ identityId: uuid, initialPassword,
+  sessionsRevoked: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER) }).strict();
+const commandError = error.extend({ error: error.shape.error.extend({
+  code: z.enum([...error.shape.error.shape.code.options, "CONFLICT", "READ_ONLY_ROLE"]),
+}).strict() }).strict();
+export const adminMemberCreatedResponseSchema = z.discriminatedUnion("ok", [
+  z.object({ ok: z.literal(true), data: adminMemberCreatedDataSchema, meta }).strict(), commandError,
+]);
+export const adminMemberResetPasswordResponseSchema = z.discriminatedUnion("ok", [
+  z.object({ ok: z.literal(true), data: adminMemberResetPasswordDataSchema, meta }).strict(), commandError,
+]);
+export const adminMembersV195ResponseSchema = z.discriminatedUnion("ok", [
+  z.object({ ok: z.literal(true), data: adminMembersV195DataSchema, meta }).strict(), commandError,
+]);
+export type AdminMemberCreateRequest = z.infer<typeof adminMemberCreateRequestSchema>;
+export type AdminMemberCreatedData = z.infer<typeof adminMemberCreatedDataSchema>;
+export type AdminMemberResetPasswordData = z.infer<typeof adminMemberResetPasswordDataSchema>;
