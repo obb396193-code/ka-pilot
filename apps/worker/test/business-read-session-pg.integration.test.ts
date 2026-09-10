@@ -54,6 +54,7 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
   let personalSelfWorkItemId: string;
   let teamAccountWorkItemId: string;
   let teamPrivateWorkItemId: string;
+  let personalGrantedTaskWorkItemId: string, personalHiddenTaskWorkItemId: string, teamTaskWorkItemId: string;
   const sourceCalls = {
     accounts: 0,
     tasks: 0,
@@ -179,6 +180,9 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
     personalSelfWorkItemId = workItems.rows.find((row) => row.title === "个人无账户工作项")!.id;
     teamAccountWorkItemId = workItems.rows.find((row) => row.title === "团队账户工作项")!.id;
     teamPrivateWorkItemId = workItems.rows.find((row) => row.title === "团队空间私人工作项")!.id;
+    personalGrantedTaskWorkItemId = workItems.rows.find(row => row.title === "个人获授任务工作项")!.id;
+    personalHiddenTaskWorkItemId = workItems.rows.find(row => row.title === "个人隐藏任务工作项")!.id;
+    teamTaskWorkItemId = workItems.rows.find(row => row.title === "团队任务工作项")!.id;
 
     const authRepository = new AuthSessionRepository(pool);
     const sessionAuth = new SessionAuthService(authRepository, { now: () => now });
@@ -234,9 +238,9 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
       service: dataService,
       detailService: new ReadDetailService({
         workItems: {
-          find: async (workspaceId, workItemId) => {
+          findForRead: async (workspaceId, workItemId, auth) => {
             sourceCalls.workItemDetail += 1;
-            return workItemRepository.find(workspaceId, workItemId);
+            return workItemRepository.findForRead(workspaceId, workItemId, auth);
           },
         },
         changeSets: {
@@ -417,6 +421,15 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
     ]);
     expect(JSON.stringify(personalItemsBody)).not.toContain("taskScopeAccount");
 
+    for (const [id, status] of [[personalGrantedTaskWorkItemId, 200], [personalHiddenTaskWorkItemId, 403]] as const) {
+      const detail = await fetch(`${baseUrl}/api/v1/work-items/${id}`, { headers: headers(personalCookie, "personal-task-detail") });
+      expect(detail.status).toBe(status);
+      expect(detail.headers.get("x-request-id")).toBe("personal-task-detail");
+      const body = await detail.text();
+      expect(body).not.toContain("taskScopeAccount");
+      if (status === 403) expect(body).not.toContain("个人隐藏任务工作项");
+    }
+
     const personalDetail = await fetch(
       `${baseUrl}/api/v1/work-items/${personalSelfWorkItemId}`,
       { headers: headers(personalCookie, "task5-personal-detail") },
@@ -510,6 +523,9 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
     const teamItems = await fetch(`${baseUrl}/api/v1/work-items`, {
       headers: headers(teamCookie, "task5-team-items"),
     });
+    const teamTaskDetail = await fetch(`${baseUrl}/api/v1/work-items/${teamTaskWorkItemId}`, { headers: headers(teamCookie, "team-task-detail") });
+    expect(teamTaskDetail.status).toBe(200);
+    expect(await teamTaskDetail.json()).toMatchObject({ data: { workItem: { taskId: teamTaskId, media: null, accountId: null } } });
     expect(teamItems.status).toBe(200);
     expect(await teamItems.json()).toMatchObject({
       ok: true,
@@ -611,6 +627,8 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
       const items = await fetch(`${baseUrl}/api/v1/work-items`, { headers: headers(cookie, "soft-revoke-work-items") });
       expect(items.status).toBe(200);
       expect(await items.json()).toMatchObject({ ok: true, data: { total: 1, items: [{ title: "个人无账户工作项" }] } });
+      const denied = await fetch(`${baseUrl}/api/v1/work-items/${personalGrantedTaskWorkItemId}`, { headers: headers(cookie, "revoked-task-detail") });
+      expect(denied.status).toBe(403);
     } finally {
       // Restore only the synthetic grant created by this suite; never a real grant.
       await pool.query("UPDATE account_access_grants SET revoked_at=NULL WHERE workspace_id=$1 AND identity_id=$2", [personalWorkspaceId, identityId]);
