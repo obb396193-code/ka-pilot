@@ -11,8 +11,7 @@ import { toast } from "sonner"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, useLocalOrder, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { ExampleBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { Badge } from "@/components/ui/badge"
@@ -266,7 +265,6 @@ function CapabilitiesTab() {
 }
 
 export function AutomationPage() {
-  const { isMock } = useSession()
   const state = usePageState()
   const [tab, setTab] = usePageTab<Tab>(tabs, "official")
   const defs = isOk(definitionsFixture) ? definitionsFixture.data : { official: [], mine: [], team: [] }
@@ -282,7 +280,7 @@ export function AutomationPage() {
 
   return (
     <PageBody>
-      <PageHeader title="自动化" description="规则、工作流、运行与原子能力的统一入口；写媒体一律 变更集 → 人工确认 → 执行" isMock={isMock} actions={<><StateSwitch /><Button variant="outline" size="sm" onClick={() => openAgentDrawer("帮我把「新任务开户到基建」改成只处理快手账户的草稿")}><IconSparkles />Agent 帮编</Button><Button asChild size="sm"><Link href={canvasHref("new")}><IconPlus />新建工作流</Link></Button></>} />
+      <PageHeader title="自动化" description="规则、工作流、运行与原子能力的统一入口；写媒体一律 变更集 → 人工确认 → 执行" actions={<><Button variant="outline" size="sm" onClick={() => openAgentDrawer("帮我把「新任务开户到基建」改成只处理快手账户的草稿")}><IconSparkles />Agent 帮编</Button><Button asChild size="sm"><Link href={canvasHref("new")}><IconPlus />新建工作流</Link></Button></>} />
       {cards.length ? <KpiCards metrics={cards} /> : null}
       <PageTabs tabs={tabBadges} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">

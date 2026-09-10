@@ -9,8 +9,7 @@ import { toast } from "sonner"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, useLocalOrder, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
-import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -74,7 +73,6 @@ const columns = helper.columns([
 ])
 
 export function TasksPage() {
-  const { isMock } = useSession()
   const state = usePageState()
   const [status, setStatus] = useState<StatusTab>("all")
   const [scope, setScope] = useState<Scope>("all")
@@ -101,13 +99,13 @@ export function TasksPage() {
 
   return (
     <PageBody>
-      <PageHeader title="投放任务" description="任务是业务信息中心：从准备到投放全过程可追踪（阶段 · 就绪度 · SOP · 阻塞）；达成率与进度由后端算，前端不外推" isMock={isMock} actions={
+      <PageHeader title="投放任务" description="任务是业务信息中心：从准备到投放全过程可追踪（阶段 · 就绪度 · SOP · 阻塞）；达成率与进度由后端算，前端不外推" actions={
         <>
           <Select value={legacyState} onValueChange={(value) => setLegacyState(value as typeof legacyState)}>
             <SelectTrigger size="sm" className="w-40" aria-label="样例"><span className="text-muted-foreground">样例</span><SelectValue /></SelectTrigger>
             <SelectContent align="end"><SelectItem value="v151">标准列表</SelectItem><SelectItem value="ready">四态 · 正常</SelectItem><SelectItem value="partial">四态 · 覆盖不全</SelectItem><SelectItem value="stale">四态 · 数据过期</SelectItem><SelectItem value="empty">四态 · 空</SelectItem></SelectContent>
           </Select>
-          <StateSwitch />
+          
         </>
       } />
       <div className="px-4 lg:px-6">

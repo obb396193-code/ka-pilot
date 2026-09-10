@@ -4,7 +4,7 @@ import { useState } from "react"
 
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
-import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { isOk } from "@/lib/fixtures/contract"
@@ -34,7 +34,7 @@ const tabs = [
 type Tab = (typeof tabs)[number]["value"]
 
 export function DataPage() {
-  const { isMock, session } = useSession()
+  const { session } = useSession()
   const [tab, setTab] = usePageTab<Tab>(tabs, "overview")
   const state = usePageState()
   const [preset, setPreset] = useState<WindowPreset>("month_to_date")
@@ -47,14 +47,13 @@ export function DataPage() {
       <PageHeader
         title="数据分析"
         description="全量明细不聚合不裁剪；指标、环比、达标、色标全部由后端给，前端只展示"
-        isMock={isMock}
         actions={
           <>
             <Select value={preset} onValueChange={(value) => setPreset(value as WindowPreset)}>
               <SelectTrigger size="sm" className="w-40" aria-label="时间窗口"><span className="text-muted-foreground">窗口</span><SelectValue /></SelectTrigger>
               <SelectContent align="end">{windowPresets.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
             </Select>
-            <StateSwitch />
+            
           </>
         }
       />
