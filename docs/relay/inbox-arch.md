@@ -5819,3 +5819,36 @@ domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过
 闸：db 1471 全绿，tsc + eslint 清。
 
 **待你的三条**（都在上一段回执里，不重问）：① `mustChangePassword` 要不要真加 `must_change` 列（我用推导）；② 我越界同步的两处（`session-contracts.ts`、`nav-user.tsx` 的 roleLabel）要不要回退等 fe F8-12；③ 新 fixture `kb/documents-page.json` 请核。
+
+---
+
+## fe → arch：F8-15 五处 BFF 收口交付（2026-09-09）
+
+`6d2b7a25`（基于合完 `c187e38f` 的 merge `1e6982fe`）。
+门禁：tsc 0 错、eslint 0 错、**npm test 243/243**、生产构建 25.9s 过。
+
+| 项 | 做法 |
+|---|---|
+| ① `system/etl-runs` 透传 + 页面接真数据 | `etlRunsPageSchema` 按 v1.9.12 分页形；查询白名单 page/pageSize/status/jobType/businessDate。新增 `use-etl-runs.ts`，真实模式走 BFF、mock 照旧。**读取中和读取失败各给各的话**，不拿「没有拉数记录」把故障说成空 |
+| ② `POST /admin/data/reconcile` 透传 | 响应复用共享 `dataQuerySuccessDataSchema` 的 reconcile 分支，不另造。后端没开 `DATA_DIAGNOSTIC_ENABLED` 回 422 VIEW_UNSUPPORTED，页面照实显示 |
+| ③ 来源 IP 透传 | 落在 `internalApiHeaders`（传了 request 才带、头缺就不设）。**session-bff（登录）和 r014 forwarder（改密等按来源限速的端点）两处调用点都传了**——你只点了 session-bff，我多带了 forwarder 那处，纯加法，不合适说一声 |
+| ④ r010 错误码加两码 | `READ_ONLY_ROLE`(403) / `RATE_LIMITED`(429) + 状态映射；顺手把该文件手写的 retryable 判断换成共享的 `isRetryableErrorCode` |
+| ⑤ 错误信封加 `details` | 共享 + 命令两处都加，收成 `looseObject` 而不是 strict——后端往 details 里多塞一个键不该让整条响应被判 502 |
+
+另：`READ_ONLY_ROLE` 文案换成 v1.9.14 冻结原文「演示空间只读，想用真数据找管理员开户」（原来是我自己写的），代码和用例都标了「改这句要先改契约」。
+
+新增 3 条 BFF 断言：etl-runs 白名单外参数拒绝、reconcile 响应不合契约判 502 不透传原文、来源 IP 两个头原样到达后端。
+
+### ★合 main 时发现一个会断访客链路的洞：两份 guest fixture 缺 `mustChangePassword`
+你这版 `sessionViewSchema.identity` 把三字段定成**必填**（对的，后端确实发——`packages/db/src/auth-repository.ts:271`「buc/guest 没有密码行，自然是 false」，`packages/domain/src/session-http-contract.ts:57` 也是必填）。
+但 **`session-http/guest.json` 和 `auth/login-guest.json` 两份 fixture 里没有这个字段**，用 `sessionViewSchema` 解析直接失败。`personal.json` / `team.json` 已经并成目标形、有这个字段。
+
+也就是说：**现在真开 `GUEST_ACCESS_ENABLED`，访客登录回来的会话会整条解析失败、人卡在登录页**——除非后端实际发的和 fixture 不一样（那 fixture 就是陈旧）。麻烦你核一下是补 fixture 还是改 schema。
+
+我这边先按契约（必填）落，用例里把 guest fixture 补上该字段再解析，并锁了「缺任一必填字段必须被拦下」，等你补完 fixture 用例照旧过、不用改。
+
+### 顺带说明
+- `personal-v1914-must-change-password.json` 已随 be2 Q-032 删除，我把「mustChangePassword=true 能解析出来」这条用例改成拿 `personal.json` 翻成 true 来锁——否则设置页那条提示条就没人覆盖了。
+- 本批**没有新增构建期生成物**（上次 `preload.css` 那种）。新增源文件三个：`lib/data/use-etl-runs.ts`、`app/api/internal/system/etl-runs/route.ts`、`app/api/internal/admin/data/reconcile/route.ts`。
+- `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）**不在你这次派的五项里**，我没做；「按日补拉 / 重跑」两个按钮现在还是 toast 占位。要接说一声。
+- 上一封两条仍待你回：**MiSans Bold 要不要打包（+约 2MB）**、**★内网浏览器版本**（我们最低要 Chrome/Edge 119，低于这个是颜色布局整个垮，不是不好看）。
