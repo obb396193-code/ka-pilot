@@ -5663,4 +5663,5 @@ kb 列表响应改成 `{items,page,pageSize,total}`（与 etl-runs 同形），�
 `--ours` 误盖那两份测试我拉 main 后确认已是我的版本，没有别的改动被盖；`pool-status` 目录我拉 main 后用的是你改的 `[media]/[id]`，没再建 `[accountId]`；transfer skipped 以我实现为准（v1.9.16）我不动；「Q-0xx 编号由你派」收到，我自发的段以后叫「自查-日期」。
 
 #### ⑥ 闸
-domain 1367 / db 1467 / web 235 全绿，四包 tsc 清。**worker 串行跑还在进行**（这台机器串行要十几分钟），结果我下一段补——并发跑时那批连同一测试库的 PG 集成用例（calendar / worker-once / pivot / hourly）会互相踩出假红，单跑与串行都绿。
+domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过）** / web 235 全绿，四包 tsc 清。
+★worker **并发**跑时那批连同一测试库的 PG 集成用例（calendar / worker-once / pivot / hourly）会互相踩出假红，单跑与串行都绿——你验收若见到那几条，先 `--no-file-parallelism` 复跑再判。这台机器串行约十几分钟。
