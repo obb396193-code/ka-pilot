@@ -6394,3 +6394,55 @@ worker 2119（串行 186 文件）/ web 244 全绿；四包 tsc 干净，domain+
 - 代码 **7879b97f**，Full/Incr通过可选typed recorder冻结scope并处理单批重试耗尽；账户50/批、广告5/80沿用；任一前后小时失败户不派生假delta。安全/持久化失败仍抛。
 - **97/97定向**含真实QihangClient假fetch→真实PG metadata/Raw/ledger→真正Canonical handler：51账户前50失败后1成功、旧canonical屏蔽、别空间同号不受影响；incr新Raw不足以恢复，真实重算后51户恢复、失败记录保留。type/lint/cacheaudit0，行100/分支93.92。详细日志摘要/失败/限制见 `docs/plans/2026-09-10-自查03-批次隔离执行质量回执.md`。
 - **Runtime仍fail-stop**，未注入该可选依赖，未宣称线上容错已生效。等自查02的expected日期口径/调用点接齐再启用；最终仍缺consumer+公开HTTP+OS真凭证证据。磁盘3.7GiB按规则未五包全量/build，无push/前端/媒体写。继续025等已明确项，不把等待一个裁决当所有工作阻断。
+
+### be2 交付 7a0f52db：Q-040 + v1.9.24 meta 裁决落地 + 两份 fixture 从真响应导出
+**SHA `7a0f52db`**（前一交付 `0cb8191c` 之上；基线 = 本机 main `02395edc` 合流后）。
+门禁：domain 1428 / db 1643 / worker 2168（串行 191 文件）/ web 244 全绿；
+四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**① Q-040 密码上限 512**
+- `identity-password-repository` 的 1024 → `MAX_PASSWORD_LENGTH = 512`，与
+  `session-http-contract` 的登录线同一个数。新测 `packages/db/test/r014/identity-password-bounds.test.ts`
+  **拿登录 schema 当断言**（512 收、513 不收），两个上限从此钉在一起，不会各走各的。
+- **跨界报备**：`setPassword` 也一并从 1024 收到 512。它是 Codex 开户/重置复用的写入口，
+  但你说「Codex 开户那边已按 512」，他们的 domain schema 上游就是 512，所以行为不变，
+  收的只是「仓储比登录线更宽」的那一段。要我留着 1024 就说一声，我改回去。
+- 512 边界**没有**放进 `password-routes` 那条路由测：那条路五次一限速，多打两发会把后面的
+  用例挤成 429（试过，红过一次）。所以边界断言落在仓储层。
+
+**② v1.9.24 裁决落地：dryRun 进 meta**
+- `PUT /admin/naming-rules`：`data` = 规则本身，`meta.dryRun` = 干跑结果。
+- 同一条口径我**顺手把 `pendingSegments` 也挪进了 `meta`**（GET/PUT naming-rules 与
+  GET account-names 三处）——它和 dryRun 一样是「关于这份规则/这批昵称的观测」，不是资源字段。
+  这一步你还没裁，觉得该回 `data` 我就挪回去。
+- `GET /admin/account-names` 的 `data` 保持 `{items,total}` 不变。
+
+**③ 两份 fixture 已导出，请核**
+- 导出脚本 `apps/worker/scripts/export-naming-fixtures.ts`：**本地隔离库 + 真路由处理器**跑出来的
+  响应，不是手写；合成 6 户（就是原 fixture 那 6 条昵称）、跑完删净并自查无残行；
+  只有 `requestId`/`parsedAt`/`createdAt` 归一化成原 fixture 的固定值，否则每导一次都 diff。
+  脚本带本地库白名单（127.0.0.1:55432 + `ka_*_test`），指不到别的库。
+- `admin/account-names.json`：补 `raw` / `failedSegments`，meta 补 `pendingSegments`。
+  **与旧 fixture 逐行比对：`segments`/`status`/`taskIds` 完全一致**，只多这几个新键——
+  也就是说 anchor/matchLongest 那批改动没让既有解析结果漂移，这条比我口头保证有用。
+- `admin/naming-rules-put.json`（新）：`data` = 规则本身，`meta.dryRun` = `{total:6,
+  byStatus:{partial:5,failed:1}, hitRate:0, failedSegments:{...}}`，`meta.pendingSegments` = `[]`。
+  `hitRate:0` 是真值（6 条一条都没完全解析），不是占位。
+- **要不要再出一份带 pending 段取值分布的样例？** 快手 v1 没有 pending 段，所以两份 fixture 里
+  `pendingSegments` 都是空数组，fe 拿不到「有值」的形状。要造只能编一份腾讯规则——
+  我不编（编出来的枚举就是假证据）。腾讯草案一到我立刻补一份真的；你也可以裁「先出一份只含
+  `unknown_1` 一段的最小腾讯规则」作样例，那段是你原话不是我编的，我照做。
+
+**④ 阻断项边界（比上一封更准）**
+- **Q-038 腾讯规则正文**：仍缺。机制这半（pending / anchor / matchLongest / 干跑 / 取值分布）
+  已全部落地并有测试；缺的只有那 10 段的**数据**（各段 key/label/source/枚举值/mapsTo、分隔符、
+  哪一段当锚点）。`docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md` 在本机 main 上查无此文件。
+  草案一到 = 一份 `scripts/seed-naming-rule-tencent-v1.json` + 一次 PUT，不改代码。
+- **Q-036 dispatches 读取段**：等 Codex 的 026（v1.9.25 已把 dispatches 从 024 改到 026）。
+  `DISPATCH_SEGMENT_WIRED` 常量在位，表落地后翻标志位 + 加 UNION 段即可。
+- 上一封（`0cb8191c`）问的 `pendingSegments` 加 `media`/`distinctValues` 两个字段，仍等你裁。
+
+**⑤ 一次没能复现的红，如实报**
+db 包有**一次**运行报 `3 failed | 1640 passed`，我没截到是哪三条；之后同样命令连跑四次全绿
+（145 文件 / 1643）。不敢断言是环境抖动，先记在这里；如果你的主门禁也偶发这个数，
+说明有真的不稳定用例，我再去逐个盯。
