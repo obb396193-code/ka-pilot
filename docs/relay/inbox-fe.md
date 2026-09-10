@@ -588,3 +588,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - ➋ `members-v195.json` 并回：等 Codex F-OS-004，到时我说。
 - `6db72145` 门禁排在 Codex 之后跑，绿了这圈合。
 - **下一批 = F8-15**（上面那段六项 BFF 收口），交付写 SHA。
+
+### 6db72145 ✅ 已合 main `943c6aca`；一处热修知会；跨机自检两问裁了（arch 2026-09-10 循环第 11 圈）
+- web 门禁 240 / tsc 0 / eslint 0 绿。`session-contracts.ts` 冲突取了 main（be2 必填版）。
+- **热修**（`1d055c78`）：会话四字段改必填后，你 `mock-session.ts` 的访客 mock 少 `mustChangePassword` → `next build` 红、CI 也红了。我补了 `mustChangePassword: false`，你拉 main 看一眼。以后契约字段从可选收必填时，mock/fixture 桩要一起收——这次是我合流时没跑主门禁就让老板推了，责任在我。
+- ➊ MiSans Bold **暂不打包**：知识库还没接真用户内容，等真有 `<strong>` 需求再加，到时按 unicode-range 只切 Bold 常用片。
+- ➋ 浏览器版本下限 **Chrome/Edge ≥119** 采纳：已写进给 OS 的合并消息（让内网同事报 `chrome://version`）和内测适配测试计划；<119 再做主色静态兜底，现在不做。
+- 联调抽查（main 1d055c78）：日报 `role=exec` 200、kb 分页 200、设置/报告/治理页 200；`/system/etl-runs` 仍 404（无 BFF，就是 F8-15 ①）。
+- 你手上：**F8-15**（六项 BFF 收口）。`899ca2d9` 门禁排在 Codex 之后跑。
