@@ -1,4 +1,5 @@
 import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
+import { accountScopeClause } from "./r014/workspace-authority.js";
 
 // P-123 转 be2：活动态集合以 domain 的冻结常量为准（v1.7.5 P-083 把 dispatched 并入活动态）。
 // Only frozen code constants become SQL literals; all request values remain parameters.
@@ -139,6 +140,7 @@ export const TASK_LIST_PAGE_SQL = `
         AND account_task.task_id = task.task_id
         AND account_task.valid_from <= $2::date
         AND (account_task.valid_to IS NULL OR account_task.valid_to >= $2::date)
+        AND ${accountScopeClause("$3", "$4", "account_task.media", "account_task.account_id")}
     ) AS link
     LEFT JOIN account_balance AS balance
       ON balance.workspace_id = task.workspace_id
