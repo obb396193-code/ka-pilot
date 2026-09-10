@@ -4,6 +4,7 @@ import "server-only"
 // 实现放在无副作用的 handlers.ts，测试才导得进来。
 export {
   handleAccountPipeline,
+  handleAssessmentPrice,
   handleAccountPoolStatus,
   handleAccountTransfer,
   handleAuthPassword,
@@ -36,8 +37,10 @@ export {
   handleMeWorkload,
   handleSearch,
   handleTaskBindings,
-  handleTaskDeferredTab,
+  handleTaskMaterials,
   handleTaskFunnel,
+  handleTaskReview,
+  handleTaskReviewLatest,
   handleTaskTimeline,
   handleTaskDetail,
   handleTaskReadiness,

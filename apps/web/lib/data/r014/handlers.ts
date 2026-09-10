@@ -25,6 +25,7 @@ import {
   taskFunnelSchema,
   taskTimelineSchema,
   watchlistSchema,
+  assessmentPriceChangeSchema,
   accountNamesConfirmSchema,
   accountNamesReparseSchema,
   accountTransferSchema,
@@ -363,14 +364,41 @@ export const handleTaskFunnel = (request: Request, taskId: string, deps: Deps): 
   })
 
 /**
- * 契约点名一期 501 的两签。BFF 照样透传，让前端拿到 501 而不是 404——
+ * 契约点名一期 501 的页签。BFF 照样透传，让前端拿到 501 而不是 404——
  * 「一期不做」和「路径写错」必须分得开。
+ * 路径里不放变量段：放了覆盖绊线就抹不平，会被报成「后端不存在」。
  */
-export const handleTaskDeferredTab = (
-  request: Request, taskId: string, tab: "materials" | "review", deps: Deps,
-): Promise<R014BffResult> =>
+export const handleTaskMaterials = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
   forwardToBackend(request, {
-    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/${tab}`,
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/materials`,
+    method: "GET",
+    ...withDeps(deps),
+  })
+
+export const handleAssessmentPrice = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+    method: "POST",
+    dataSchema: assessmentPriceChangeSchema,
+    ...withDeps(deps),
+  })
+
+/**
+ * 一期 501 的 review 两条：照样透传，让前端拿到 501 而不是 404。
+ * 拆成两个函数而不是一个带 `latest` 开关的——路径里塞三元表达式，
+ * 覆盖绊线就抹不平这条路径，反向检查会把它报成「后端不存在」。
+ */
+export const handleTaskReview = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/review`,
+    // GET = 读复盘、POST = 起 run；一期两者都 501，方法照原样透传下去。
+    method: request.method === "POST" ? "POST" : "GET",
+    ...withDeps(deps),
+  })
+
+export const handleTaskReviewLatest = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/review/latest`,
     method: "GET",
     ...withDeps(deps),
   })

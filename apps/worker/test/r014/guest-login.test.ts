@@ -23,13 +23,22 @@ describe("guest login (real PostgreSQL)", () => {
   let guestIdentityId = "";
   const created: string[] = [];
 
-  const service = (enabled: boolean, workspaceId: string | null): SessionHttpService =>
+  /**
+   * 每次都造新实例：限速桶是**实例级**的，所以用例之间天然不串。
+   * `now` 与 `maxPerWindow` 都注入，窗口由用例自己定——不依赖挂钟、也不靠跑满 20 次真请求。
+   */
+  const service = (
+    enabled: boolean, workspaceId: string | null,
+    options: { maxPerWindow?: number; now?: Date } = {},
+  ): SessionHttpService =>
     new SessionHttpService(sessionAuth, { authenticate: async () => null }, {
+      ...(options.now === undefined ? {} : { now: () => options.now! }),
       guest: {
         enabled, workspaceId,
         findGuestIdentity: (id) => guests.findGuestIdentity(id),
         issueSession: (id, identityId, token, expiresAt) =>
           guests.issueGuestSession(id, identityId, token, expiresAt),
+        ...(options.maxPerWindow === undefined ? {} : { maxPerWindow: options.maxPerWindow }),
       },
     });
 
@@ -123,9 +132,13 @@ describe("guest login (real PostgreSQL)", () => {
   });
 
   it("rate-limits guest logins within the hour, per source", async () => {
-    const guestService = service(true, demoWorkspaceId);
-    for (let attempt = 0; attempt < 20; attempt += 1) {
-      await guestService.login({ provider: "guest" }, `req-burst-${attempt}`, "203.0.113.7");
+    // 上限注入成 2、时间钉成一个固定的**将来**时刻：窗口完全由这条用例决定，
+    // 跑多少次别的用例都不影响它。（必须是将来——建会话那道闸要求过期时间在当下之后。）
+    const guestService = service(true, demoWorkspaceId, {
+      maxPerWindow: 2, now: new Date(Date.now() + 60_000),
+    });
+    for (const attempt of ["one", "two"]) {
+      expect((await guestService.login({ provider: "guest" }, `req-${attempt}`, "203.0.113.7")).status).toBe(200);
     }
     expect((await guestService.login({ provider: "guest" }, "req-limited", "203.0.113.7")).status).toBe(403);
     // 换一个来源不受限速——限速是按来源分的。
