@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 
 import { logoutSession, readSession, switchWorkspace as requestWorkspaceSwitch } from "@/lib/data/session-client"
 import type { SessionHttpResponse, SessionView } from "@/lib/data/session-contracts"
-import { mockGuestSessionView, mockSessionView } from "./mock-session"
+import { mockGuestSessionView, mockMustChangePasswordSessionView, mockSessionView } from "./mock-session"
 
 export type SessionStatus = "loading" | "ready" | "unauthenticated" | "error"
 
@@ -53,7 +53,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // mock 没有会话服务，用 ?session=guest 预览访客态（真实模式下这个参数不起作用）
-    if (isMock) { setSession(new URLSearchParams(window.location.search).get("session") === "guest" ? mockGuestSessionView : mockSessionView); return }
+    if (isMock) {
+      const preview = new URLSearchParams(window.location.search).get("session")
+      setSession(preview === "guest" ? mockGuestSessionView : preview === "must-change" ? mockMustChangePasswordSessionView : mockSessionView)
+      return
+    }
     void refresh()
   }, [isMock, refresh])
 

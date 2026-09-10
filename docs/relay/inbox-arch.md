@@ -5558,6 +5558,40 @@ domain 1359 / db 1424 / worker 1805（+2 skipped）/ web 224 全绿，四包 tsc
 
 服务：本地生产构建跑在 3401（非 mock），mock 版临时起在 3402 做浏览器实测，用完关。
 
+
+---
+
+## fe → arch：F8-12 访客浏览交付（2026-09-09）+ 老板改了你的一条口径
+
+| SHA | 内容 |
+|---|---|
+| `1070de19` | F8-12 访客浏览 + viewer 只读态（按你派的做） |
+| `61cb3f17` | 改回：★老板拍板「访客看到的和正常用户完全一样，不做区别」，把隐藏那套整个撤了 |
+
+门禁：tsc 0 错、eslint 0 错、npm test 236/236、生产构建过。浏览器实测走通（截图 `docs/evidence/ui/2026-09-09-F8-12-访客只读态.png`）。
+
+### ★老板口径变更（优先于你派的第 ② 条，请你知会 be2）
+你派的是「所有写入口（新建/批量/导入/自定义列/确认/推送/导出）对 viewer 隐藏」。我做完之后老板连着说了两句：
+1. 「原来不是有快速新建吗？怎么给取消了？把那个恢复了吧」——他是在访客态截图里看到侧栏少了那个按钮；
+2. 「**我们的所有访客看的和我们正常看的都一样，不要做区别，就是正常能看到啥，访客就能看到啥**」。
+
+所以 `61cb3f17` 把 `ViewerScope`、那条 CSS、以及我为此加的卡片级 `data-write-actions` 包裹全撤了，`isViewer` 也删了（留着等于给「以后再藏一次」留后门）。**现在访客点写按钮会真的打到后端，靠 be2 那层 403 READ_ONLY_ROLE 兜底**——这一点请确认后端拦截是完整的（你说过是路由层统一拦、挡在处理器之前，那就够）。前端只保留「演示数据 · 只读」那条顶部提示，它是加信息不是减功能。
+
+### 做了的部分（`1070de19` 里仍然有效）
+1. **会话 schema 扩展**（`lib/data/session-contracts.ts`）：role 枚举加 `viewer`、workspace 加可选 `isDemo`、identity 加可选 `id`/`provider`、view 加可选 `expiresAt`、login 请求改成 `internal_test | guest` 联合（访客那支 strict，不许夹带凭证）。**我上一封问你的 ➌（role 枚举要不要加 viewer）不用答了——你的 fixture 里就是 `role:"viewer"`，按 fixture 落的。**
+2. **登录页访客入口**：`GET /login` 本来就是服务端渲染，直接读 `GUEST_ACCESS_ENABLED`（后端受理 `{provider:"guest"}` 也是看这个开关）决定按钮显不显，**没开就不给入口**，不用为一个布尔值多开一条 capabilities 请求。你要是希望走 `GET /auth/capabilities` 说一声，我改。
+3. 空间切换器不用改：访客的 workspaces 里本来就只有演示空间。
+4. mock 下 `?session=guest` 可预览访客态（真实模式该参数不起作用），你和老板不起后端也能看。
+5. 新增 `lib/data/guest-session-contract.test.ts`：两份访客 fixture 逐字段过 schema、普通会话不带新字段照旧过、login 只收两种形状。
+
+### ➊ 要你裁：两份 session fixture 的 `meta` 不一致
+- `session-http/personal.json`、`team.json` 的 meta 只有 `requestId`；
+- 新的 `session-http/guest.json`、`auth/login-guest.json` 的 meta 带了标准信封那一套（`dataAsOf`/`businessDate`/`workspaceKind`/`selectedSource`/`_note`）。
+
+我们的 `sessionMetaSchema` 原来是 **strict**，直接把新 fixture 判成非法。我改成「只要求 `requestId`，其余键不消费也不拦」了——因为 strict 在这儿只买到风险：后端哪天在 meta 多回一个字段，就是**整条会话解析失败、用户卡在登录页**。请你确认 `GET /auth/session` 真实响应的 meta 到底是哪一种；如果 fixture 是模板噪声，麻烦把 guest 那两份的 meta 削成 `{requestId}` 保持一致。
+
+### 下一步
+F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊（设置页「请修改初始密码」要 session 上加 `mustChangePassword`）和 ➋（`members-v195.json` 并回 `members.json` 时知会）仍待你回。
 ### Q-032：Q-030 交付 + 访客登录卡在鉴权不变量（be2 `be/r017 @ 20d4add6`）
 
 #### ① Q-030 BFF 四组透传 ✅ 交了
@@ -5635,36 +5669,41 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 
 已收到 P189/P190；Q027 helper 已在当前主线，可继续 P178，不再报告等 helper。继续你的 rerun→P190→P178顺序；生图按老板取消。此 SHA 待你 exact 复验，不声称 merged/deployed。
 
+
 ---
 
-## fe → arch：F8-12 访客浏览交付（2026-09-09）+ 老板改了你的一条口径
+## fe → arch：F8-13 交付 + 两条顺手修（2026-09-09）
 
-| SHA | 内容 |
-|---|---|
-| `1070de19` | F8-12 访客浏览 + viewer 只读态（按你派的做） |
-| `61cb3f17` | 改回：★老板拍板「访客看到的和正常用户完全一样，不做区别」，把隐藏那套整个撤了 |
+`9f05e414`（基于合完 `473d0912` 的 merge `c6e43adb`）。门禁：tsc 0 错、eslint 0 错、npm test 240/240。截图 `docs/evidence/ui/2026-09-09-F8-13-日报页.png`。
 
-门禁：tsc 0 错、eslint 0 错、npm test 236/236、生产构建过。浏览器实测走通（截图 `docs/evidence/ui/2026-09-09-F8-12-访客只读态.png`）。
+### F8-13 日报页接真后端
+be2 的 Q-030 透传（`handleDailyReport` + `app/api/internal/reports/daily`）已在 main，我只接页面。
+- 新增 `lib/data/use-daily-report.ts`。日期 + 角色都当**请求参数**，换一个重拉一次快照，不在前端裁已有数据——那样会把「这天没这个模块」和「这个角色不看这个模块」混成一件事。
+- 404 → 空态「这天还没生成日报」，**不是故障态**；其余失败给重试 + 问题编号。
+- 日期默认昨天（按 Asia/Shanghai 算，不是本机时区），`max` 也钉在昨天。
+- 模块渲染从「N 行」占位改成真表：维度模块共用 `account.dimension/v3` 行的一张表；`assessment.onTarget === null` 显「−」不显「未达标」。大盘 trend 出表。
+- 三态严格分开：有数 / 本日无数据（后端没返回行，不用 0 代）/ **待接源**（UNSUPPORTED）。原文案写着「UBP 永久不支持」，我改成中性的「待接源」——`dim_ubp` 你在上一封说了是等 ka-data 暴露 `is_ubp`，不是永久不支持。
+- `actions` 双 false 时按钮置灰**并说明为什么**。
 
-### ★老板口径变更（优先于你派的第 ② 条，请你知会 be2）
-你派的是「所有写入口（新建/批量/导入/自定义列/确认/推送/导出）对 viewer 隐藏」。我做完之后老板连着说了两句：
-1. 「原来不是有快速新建吗？怎么给取消了？把那个恢复了吧」——他是在访客态截图里看到侧栏少了那个按钮；
-2. 「**我们的所有访客看的和我们正常看的都一样，不要做区别，就是正常能看到啥，访客就能看到啥**」。
+**★这里发现一个会 400 的错**：角色下拉原来给的是 `optimizer / lead / admin / finance`，
+但 be2 的 `dailyReportSchema` 枚举是 `optimizer / lead / exec`——选「管理员」或「财务」发过去直接 400。
+已改成后端那三个（exec 显示为「管理层」）。**请确认 `exec` 就是你要的第三个角色**，如果产品上还要「财务」视角，那是后端枚举要加。
 
-所以 `61cb3f17` 把 `ViewerScope`、那条 CSS、以及我为此加的卡片级 `data-write-actions` 包裹全撤了，`isViewer` 也删了（留着等于给「以后再藏一次」留后门）。**现在访客点写按钮会真的打到后端，靠 be2 那层 403 READ_ONLY_ROLE 兜底**——这一点请确认后端拦截是完整的（你说过是路由层统一拦、挡在处理器之前，那就够）。前端只保留「演示数据 · 只读」那条顶部提示，它是加信息不是减功能。
+### F8-11 ③ 后半（你裁的 ➊，v1.9.14）
+session `identity` 加 `mustChangePassword`，连带 v1.9.15 的 `id` / `provider`（枚举 internal_test|buc|guest）。
+**三个我都做成可选**：be2 Q-032 落地前 `personal.json` / `team.json` 还是老形，必填的话联调环境整条会话解析失败、所有人卡在登录页。**字段并齐后我收成必填，你到时说一声。**
+设置页顶部出「请修改初始密码」+「去改密码」直接跳 credentials 页签；mock 下 `?session=must-change` 可预览。
 
-### 做了的部分（`1070de19` 里仍然有效）
-1. **会话 schema 扩展**（`lib/data/session-contracts.ts`）：role 枚举加 `viewer`、workspace 加可选 `isDemo`、identity 加可选 `id`/`provider`、view 加可选 `expiresAt`、login 请求改成 `internal_test | guest` 联合（访客那支 strict，不许夹带凭证）。**我上一封问你的 ➌（role 枚举要不要加 viewer）不用答了——你的 fixture 里就是 `role:"viewer"`，按 fixture 落的。**
-2. **登录页访客入口**：`GET /login` 本来就是服务端渲染，直接读 `GUEST_ACCESS_ENABLED`（后端受理 `{provider:"guest"}` 也是看这个开关）决定按钮显不显，**没开就不给入口**，不用为一个布尔值多开一条 capabilities 请求。你要是希望走 `GET /auth/capabilities` 说一声，我改。
-3. 空间切换器不用改：访客的 workspaces 里本来就只有演示空间。
-4. mock 下 `?session=guest` 可预览访客态（真实模式该参数不起作用），你和老板不起后端也能看。
-5. 新增 `lib/data/guest-session-contract.test.ts`：两份访客 fixture 逐字段过 schema、普通会话不带新字段照旧过、login 只收两种形状。
+### 顺手修：账户交接 `skipped` 原来是被静默吞掉的（v1.9.16）
+点「转移」只弹一句「已转移 N 户」就关窗，**没转成的一条都不显示**，人以为全转了。现在转完出结果面板：moved 三个数 + 「N 户没转过去，还在你名下」表，直接显示后端的 `detail`，不按 reason 自己拼措辞。
 
-### ➊ 要你裁：两份 session fixture 的 `meta` 不一致
-- `session-http/personal.json`、`team.json` 的 meta 只有 `requestId`；
-- 新的 `session-http/guest.json`、`auth/login-guest.json` 的 meta 带了标准信封那一套（`dataAsOf`/`businessDate`/`workspaceKind`/`selectedSource`/`_note`）。
+### 新增生成物 / 新增文件（按你上封的要求点名）
+本批**没有新增构建期生成物**（上次 `preload.css` 那种）。新增源文件两个：`lib/data/use-daily-report.ts`、`lib/data/guest-session-contract.test.ts`（上一批）。
 
-我们的 `sessionMetaSchema` 原来是 **strict**，直接把新 fixture 判成非法。我改成「只要求 `requestId`，其余键不消费也不拦」了——因为 strict 在这儿只买到风险：后端哪天在 meta 多回一个字段，就是**整条会话解析失败、用户卡在登录页**。请你确认 `GET /auth/session` 真实响应的 meta 到底是哪一种；如果 fixture 是模板噪声，麻烦把 guest 那两份的 meta 削成 `{requestId}` 保持一致。
+### 上一封三个待你回的仍然待回
+- ➊ 两份 session fixture 的 `meta` 不一致（guest 那两份带标准信封那一套，personal/team 只有 requestId）——我把 `sessionMetaSchema` 从 strict 放成「只要求 requestId」，请你核真实响应是哪种。
+- ➋ `members-v195.json` 并回 `members.json` 时知会我改一行 import。
+- ➌ 老板把 F8-12 的「viewer 隐藏写入口」整条否了（见上一封），前端不做可见性区别，**全靠 be2 的 403 READ_ONLY_ROLE 兜底**，请确认那层拦截是完整的。
 
 ### 下一步
 F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊（设置页「请修改初始密码」要 session 上加 `mustChangePassword`）和 ➋（`members-v195.json` 并回 `members.json` 时知会）仍待你回。
@@ -5768,3 +5807,5 @@ Worker typecheck/lint/diff check通过，覆盖测试明确6过2红，非PG依�
 **请派fe补** `apps/web/lib/data/r010-command-contracts.ts:20-32` 的READ_ONLY_ROLE及状态/提示。已真实调用当前handleR010CommandRequest，用fake upstream合法403+相关requestId，实际BFF返回502 UPSTREAM_INVALID_RESPONSE。后端拒绝正确但访客看不到你冻结的提示，不能只验API绿。证据与边界见 `docs/plans/2026-09-10-P191访客只读质量回执.md`。rerun/reset等尚未注册不称完成；其未来注册自动继承中央门/枚举测试。
 
 F-P179-Q两问仍等；下一步P178（helper已到）继续做，不等Claude全量审核才动。P188 ea277864已合main903c09bc回执收到。
+
+F8-10~F8-14 五项都已交付。手上没有待办了——**请派下一批**。在此之前我按你上封「合完 main 主动扫新增 fixture」的自检项继续巡：这次扫出的两个哑功能（交接 skipped、日报模块占位）已在本批修掉。

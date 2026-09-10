@@ -107,6 +107,32 @@ function Transfer({ items, onClose }: { items: AccountItem[]; onClose: () => voi
   const [to, setTo] = useState("")
   const [note, setNote] = useState("")
   const result = isOk(transferFixture) ? transferFixture.data : null
+  // 交接完把「哪几户没动、为什么」摆出来（契约 v1.9.16 skipped[].detail）。
+  // 原来只弹一句「已转移 N 户」就关窗，没转成的被静默吞掉——人以为全转了。
+  const [done, setDone] = useState<typeof result | null>(null)
+
+  if (done) {
+    const skipped = done.skipped ?? []
+    return (
+      <>
+        <DialogHeader>
+          <DialogTitle>已转移 {done.moved.accounts} 户</DialogTitle>
+          <DialogDescription>工作项 {done.moved.workItems} · 派发 {done.moved.dispatches} · 已通知 {done.notifiedUserIds.length} 人。</DialogDescription>
+        </DialogHeader>
+        {skipped.length ? (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-medium text-status-warning">{skipped.length} 户没转过去，还在你名下：</p>
+            <Table>
+              <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>原因</TableHead></TableRow></TableHeader>
+              <TableBody>{skipped.map((row) => <TableRow key={`${row.media}-${row.accountId}`}><TableCell className="font-mono text-xs">{row.media} · {row.accountId}</TableCell><TableCell className="text-sm">{row.detail}</TableCell></TableRow>)}</TableBody>
+            </Table>
+          </div>
+        ) : <p className="text-sm text-muted-foreground">全部转移成功，没有跳过的账户。</p>}
+        <DialogFooter><Button onClick={onClose}>知道了</Button></DialogFooter>
+      </>
+    )
+  }
+
   return (
     <>
       <DialogHeader><DialogTitle>转移负责人</DialogTitle><DialogDescription>{items.length} 户 → 目标用户；关联工作项 / 派发单 / 星标一并转移，双方钉钉通知。</DialogDescription></DialogHeader>
@@ -117,7 +143,7 @@ function Transfer({ items, onClose }: { items: AccountItem[]; onClose: () => voi
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>取消</Button>
-        <Button disabled={!to} onClick={() => { toast.success(`已转移 ${result?.moved.accounts ?? items.length} 户`, { description: `工作项 ${result?.moved.workItems ?? "−"} · 派发 ${result?.moved.dispatches ?? "−"} · 通知 ${result?.notifiedUserIds.length ?? 0} 人；有 running 变更集的账户会 409 TRANSFER_BLOCKED_BY_CHANGESET` }); onClose() }}>转移</Button>
+        <Button disabled={!to || !result} onClick={() => setDone(result)}>转移</Button>
       </DialogFooter>
     </>
   )
