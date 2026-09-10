@@ -1,6 +1,6 @@
 import { randomBytes, scryptSync } from "node:crypto";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { InternalTestLoginProvider } from "../src/auth/internal-test-login-provider.js";
 
@@ -56,5 +56,25 @@ describe("InternalTestLoginProvider", () => {
       identityId,
     };
     expect(() => new InternalTestLoginProvider(true, JSON.stringify([duplicate, duplicate]))).toThrow();
+  });
+  it("DB-only identity works without ENV enrollment; wrong password never falls back", async () => {
+    const stored = { passwordSalt, passwordScrypt: scryptSync(password, Buffer.from(passwordSalt, "base64url"), 32).toString("hex"), algo: "scrypt" };
+    const provider = new InternalTestLoginProvider(true, JSON.stringify([{ username: "fixture.user", identityId, ...stored, algo: undefined }]));
+    const lookup = { find: vi.fn(async () => stored), findByLoginName: vi.fn(async () => ({ identityId, password: stored })) };
+    provider.useStoredPasswords(lookup);
+    expect(await provider.authenticate("db.only", password)).toBe(identityId);
+    expect(await provider.authenticate("db.only", "wrong-password")).toBeNull();
+    expect(lookup.find).not.toHaveBeenCalled();
+  });
+  it("disabled login cannot be reenabled by attaching a DB password lookup", async () => {
+    const provider = new InternalTestLoginProvider(false, undefined);
+    const lookup = { find: vi.fn(), findByLoginName: vi.fn() }; provider.useStoredPasswords(lookup);
+    expect(await provider.authenticate("db.only", password)).toBeNull(); expect(lookup.findByLoginName).not.toHaveBeenCalled();
+  });
+  it("a different DB identity without password cannot inherit ENV credentials", async () => {
+    const provider = new InternalTestLoginProvider(true, JSON.stringify([{ username: "fixture.user", identityId, passwordSalt,
+      passwordScrypt: scryptSync(password, Buffer.from(passwordSalt, "base64url"), 32).toString("hex") }]));
+    const lookup = { find: vi.fn(), findByLoginName: vi.fn(async () => ({ identityId: "00000000-0000-4000-8000-000000000812", password: null })) };
+    provider.useStoredPasswords(lookup); expect(await provider.authenticate("fixture.user", password)).toBeNull(); expect(lookup.find).not.toHaveBeenCalled();
   });
 });

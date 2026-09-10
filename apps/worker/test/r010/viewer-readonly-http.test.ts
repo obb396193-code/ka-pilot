@@ -62,6 +62,7 @@ describe("P191 viewer write boundary / actual Data API HTTP", () => {
   it("lets viewers log out, and does not change non-viewer or unauthenticated behavior", async () => {
     const state = await start(); expect((await state.call("DELETE", "/api/v1/auth/session")).status).toBe(200); expect(state.logout).toHaveBeenCalledOnce();
     expect((await state.call("POST", "/api/v1/changesets/:p/dry-run", {})).status).toBe(401);
-    const admin = await start("admin"); expect((await admin.call("POST", "/api/v1/admin/members")).status).toBe(405);
+    // F-OS-004 now registers POST. An unconfigured dependency is 503, not viewer403 or the old405.
+    const admin = await start("admin"); expect((await admin.call("POST", "/api/v1/admin/members")).status).toBe(503);
   });
 });

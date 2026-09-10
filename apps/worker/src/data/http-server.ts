@@ -98,7 +98,7 @@ export interface DataApiServerOptions {
   accountMuteService?: Pick<AccountMuteService, "mute" | "ignoreAndMute">;
   agentModelCatalogService?: Pick<AgentModelCatalogService, "list">;
   adminCalendarService?: Pick<AdminCalendarService, "list">;
-  adminMembersService?: Pick<AdminMembersService, "read">;
+  adminMembersService?: Pick<AdminMembersService, "read" | "create" | "resetPassword">;
   etlRunListService?: Pick<EtlRunListService, "list">;
   etlRunRerunService?: Pick<EtlRunRerunService, "rerun">;
 }
@@ -517,7 +517,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       if (isAdminMembersRoute) {
-        await adminMembersRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
+        await adminMembersRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes, maxRequestBytes });
         return;
       }
       if (accountMuteRoute !== undefined) {
