@@ -20,43 +20,82 @@ const children = (parentKey: string): DashboardRow[] => {
   return table[parentKey] ?? []
 }
 
-/** 账户层的 key 是 `<media>:<accountId>`，点进去要拆开 */
+/**
+ * 账户行按 **key 的形态**判，不按层级深度：`<MEDIA>:<accountId>` 才是账户。
+ * 按 depth 判是错的——优化师树的账户在第 3 层、任务大类树的账户在第 2 层，
+ * 写死 depth 会让后者永远不是链接（审查员 C ⑭）。
+ */
 function accountHref(key: string): string | null {
-  const [media, accountId] = key.split(":")
-  return media && accountId ? `/accounts/${encodeURIComponent(media)}/${encodeURIComponent(accountId)}` : null
+  const match = /^([A-Z0-9_]{1,32}):([A-Za-z0-9_-]{1,128})$/.exec(key)
+  return match ? `/accounts/${encodeURIComponent(match[1])}/${encodeURIComponent(match[2])}` : null
 }
 
-function Row({ row, depth, parentBi, parentCost, path, expanded, onToggle }: {
-  row: DashboardRow; depth: number; parentBi: number | null; parentCost: number | null
-  path: string; expanded: Set<string>; onToggle: (path: string) => void
+const cny2 = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY", maximumFractionDigits: 2 })
+
+/** 「分」= 这个数是按消耗占比从上级分摊来的，不是该层实测值 */
+function Allocated() {
+  return <span className="rounded bg-muted px-1 text-[10px] text-muted-foreground" title="按消耗占比从上级分摊，不是该层实测值">分</span>
+}
+
+function Row({ row, depth, siblings, parentBi, path, expanded, onToggle }: {
+  row: DashboardRow
+  depth: number
+  /** 同级已返回的行：分摊的分母取它们的消耗之和，不是父行消耗 */
+  siblings: DashboardRow[]
+  parentBi: DashboardRow["assessment"]["biConv"] | null
+  path: string
+  expanded: Set<string>
+  onToggle: (path: string) => void
 }) {
   const kids = children(path)
   const open = expanded.has(path)
-  // 下钻层后端不给考核 BI 数，按消耗占比从上一级分摊；**界面上标「分」，不让人当成实测值**
-  // 契约里已有的 biz/task 维度不带 v1.9.22 的考核三项，只有 summary 和新维度带 —— 缺就走分摊
-  const own = row.assessment.biConv?.value ?? null
-  const bi = own ?? allocateBi(parentBi, parentCost, row.metrics.cost.value)
-  const allocated = own === null && bi !== null
+  // 后端给了这一层的考核 BI 数就直接用，不重算；没给才按消耗占比从上级分摊
+  const own = row.assessment.biConv
+  const measured = own && own.availability === "available" ? own.value : null
+  const allocatedBi = measured === null ? allocateBi({ parentBi, siblings, childCost: row.metrics.cost.value }) : null
+  const bi = measured ?? allocatedBi
+  const isAllocated = measured === null && allocatedBi !== null
+  // 后端给了 biCashCost 就用它，别拿分摊值再除一遍——两个口径会打架
+  const backendBiCost = row.assessment.biCashCost
   const cash = row.metrics.cashCost.value
-  const biCost = bi && cash !== null ? cash / bi : null
-  const href = depth === 3 ? accountHref(row.key) : null
+  const derivedBiCost = bi !== null && bi !== 0 && cash !== null ? cash / bi : null
+  const biCost = backendBiCost && backendBiCost.availability === "available" ? backendBiCost.value : derivedBiCost
+  // 派生出来的成本同样是「分」的——它建立在分摊值之上（审查员 D ③）
+  const biCostAllocated = (!backendBiCost || backendBiCost.availability !== "available") && isAllocated
+  const href = accountHref(row.key)
 
   return (
     <>
-      <TableRow className={cn(kids.length > 0 && "cursor-pointer")} onClick={kids.length ? () => onToggle(path) : undefined}>
+      <TableRow>
         <TableCell style={{ paddingLeft: 12 + depth * 18 }}>
           <span className="flex items-center gap-1.5">
-            {kids.length ? <IconChevronRight className={cn("size-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-90")} /> : <span className="w-3.5 shrink-0" />}
-            {href ? <Link href={href} className="underline-offset-4 hover:underline" onClick={(event) => event.stopPropagation()}>{row.label}</Link> : <span className={cn(depth === 0 && "font-medium")}>{row.label}</span>}
+            {kids.length ? (
+              // 整行可点在这里不合适：行内还有账户链接，点链接会连带展开。
+              // 改成行内按钮 + aria-expanded，键盘也能到（审查员 C ⑬）
+              <button
+                type="button"
+                aria-expanded={open}
+                aria-label={`${open ? "收起" : "展开"} ${row.label}`}
+                onClick={() => onToggle(path)}
+                className="rounded p-0.5 text-muted-foreground hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+              >
+                <IconChevronRight className={cn("size-3.5 transition-transform", open && "rotate-90")} />
+              </button>
+            ) : <span className="w-[22px] shrink-0" />}
+            {href ? <Link href={href} className="underline-offset-4 hover:underline">{row.label}</Link> : <span className={cn(depth === 0 && "font-medium")}>{row.label}</span>}
           </span>
         </TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.cost, "money0")}</TableCell>
+        <TableCell className="text-right tabular-nums">{row.metrics.incentiveCost ? mv(row.metrics.incentiveCost, "money0") : <span className="text-muted-foreground">待接源</span>}</TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.cashCost, "money0")}</TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.conversion)}</TableCell>
         <TableCell className="text-right tabular-nums">
-          {bi === null ? "−" : <span className="inline-flex items-center gap-1">{bi.toLocaleString("zh-CN")}{allocated ? <span className="rounded bg-muted px-1 text-[10px] text-muted-foreground" title="上级按消耗占比分摊，不是实测值">分</span> : null}</span>}
+          {bi === null ? "−" : <span className="inline-flex items-center gap-1">{bi.toLocaleString("zh-CN")}{isAllocated ? <Allocated /> : null}</span>}
         </TableCell>
-        <TableCell className="text-right tabular-nums">{biCost === null ? "−" : `¥${biCost.toFixed(2)}`}</TableCell>
+        <TableCell className="text-right tabular-nums">{rv(row.metrics.ratios.gap)}</TableCell>
+        <TableCell className="text-right tabular-nums">
+          {biCost === null ? "−" : <span className="inline-flex items-center gap-1">{cny2.format(biCost)}{biCostAllocated ? <Allocated /> : null}</span>}
+        </TableCell>
         <TableCell className="text-right tabular-nums">{rv(row.metrics.ratios.realCpa, "money")}</TableCell>
         <TableCell>
           {row.assessment.onTarget === null ? <span className="text-muted-foreground">−</span>
@@ -64,18 +103,17 @@ function Row({ row, depth, parentBi, parentCost, path, expanded, onToggle }: {
         </TableCell>
       </TableRow>
       {open ? kids.map((kid) => (
-        <Row key={`${path}|${kid.key}`} row={kid} depth={depth + 1} parentBi={bi} parentCost={row.metrics.cost.value} path={`${path}|${kid.key}`} expanded={expanded} onToggle={onToggle} />
+        <Row key={`${path}|${kid.key}`} row={kid} depth={depth + 1} siblings={kids} parentBi={own ?? parentBi} path={`${path}|${kid.key}`} expanded={expanded} onToggle={onToggle} />
       )) : null}
     </>
   )
 }
 
-export function DrillTable({ rows, caption, rootBi = null, rootCost = null }: {
+export function DrillTable({ rows, caption, rootBi = null }: {
   rows: DashboardRow[]
   caption: string
-  /** 顶层行的上级（= 窗口 summary）的考核 BI 数与消耗：顶层自己没有 biConv 时按占比分摊下来 */
-  rootBi?: number | null
-  rootCost?: number | null
+  /** 顶层行的上级（= 窗口 summary）的考核 BI 数：顶层自己没有时按占比分摊下来 */
+  rootBi?: DashboardRow["assessment"]["biConv"] | null
 }) {
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const toggle = (path: string) => setExpanded((prev) => {
@@ -94,9 +132,11 @@ export function DrillTable({ rows, caption, rootBi = null, rootCost = null }: {
             <TableRow>
               <TableHead className="min-w-48">{caption}</TableHead>
               <TableHead className="text-right">账面花费</TableHead>
+              <TableHead className="text-right">激励</TableHead>
               <TableHead className="text-right">现金花费</TableHead>
               <TableHead className="text-right">转化数</TableHead>
               <TableHead className="text-right">考核 BI 数</TableHead>
+              <TableHead className="text-right">回传 GAP</TableHead>
               <TableHead className="text-right">BI 现金成本</TableHead>
               <TableHead className="text-right">转化成本</TableHead>
               <TableHead>达标</TableHead>
@@ -104,12 +144,12 @@ export function DrillTable({ rows, caption, rootBi = null, rootCost = null }: {
           </TableHeader>
           <TableBody>
             {rows.map((row) => (
-              <Row key={row.key} row={row} depth={0} parentBi={row.assessment.biConv?.value ?? rootBi} parentCost={row.assessment.biConv?.value ? row.metrics.cost.value : rootCost} path={row.key} expanded={expanded} onToggle={toggle} />
+              <Row key={row.key} row={row} depth={0} siblings={rows} parentBi={row.assessment.biConv ?? rootBi} path={row.key} expanded={expanded} onToggle={toggle} />
             ))}
           </TableBody>
         </Table>
       </div>
-      <p className="text-[11px] text-muted-foreground">点行展开下一级；带「分」的考核 BI 数是按消耗占比从上级分摊的，不是该层实测值。账户层可点进账户详情。</p>
+      <p className="text-[11px] text-muted-foreground">点箭头展开下一级；带「分」的数是按消耗占比从上级分摊的，不是该层实测值。账户行可点进账户详情。</p>
     </div>
   )
 }

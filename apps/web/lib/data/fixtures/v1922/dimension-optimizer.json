@@ -16,16 +16,12 @@
               "value": 58800.0,
               "availability": "available"
             },
-            "cashCost": {
-              "value": 45934.6,
-              "availability": "available"
-            },
             "exposure": {
-              "value": 448000,
+              "value": 448056,
               "availability": "available"
             },
             "click": {
-              "value": 18666,
+              "value": 18663,
               "availability": "available"
             },
             "conversion": {
@@ -33,11 +29,19 @@
               "availability": "available"
             },
             "realConversion": {
-              "value": 1373,
+              "value": 1372,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 45934.56,
               "availability": "available"
             },
             "costSpace": {
-              "value": 6247.0,
+              "value": 6244.56,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 4992.12,
               "availability": "available"
             },
             "wakeUv": {
@@ -58,15 +62,15 @@
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.83,
+                "value": 42.86,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 33.46,
+                "value": 33.48,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0479,
+                "value": 0.0485,
                 "state": "finite"
               },
               "potentialRate": {
@@ -80,32 +84,32 @@
             }
           },
           "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
             "biConv": {
               "value": 1272,
               "availability": "available"
             },
             "biCashCost": {
               "value": 36.11,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
               "availability": "available"
             },
-            "priceSource": "ka_daily",
-            "onTarget": true,
-            "costStatus": "green",
-            "costStatusReason": null,
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+            "overCost": {
+              "value": 2050.56,
+              "availability": "available"
             }
           },
-          "anomaly": null
+          "anomaly": false
         },
         {
           "key": "opt-li",
@@ -115,16 +119,12 @@
               "value": 47040.0,
               "availability": "available"
             },
-            "cashCost": {
-              "value": 36747.6,
-              "availability": "available"
-            },
             "exposure": {
-              "value": 358400,
+              "value": 358444,
               "availability": "available"
             },
             "click": {
-              "value": 14933,
+              "value": 14930,
               "availability": "available"
             },
             "conversion": {
@@ -132,11 +132,19 @@
               "availability": "available"
             },
             "realConversion": {
-              "value": 1099,
+              "value": 1097,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 36747.65,
               "availability": "available"
             },
             "costSpace": {
-              "value": 4998.0,
+              "value": 4995.65,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 3993.7,
               "availability": "available"
             },
             "wakeUv": {
@@ -157,15 +165,15 @@
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.8,
+                "value": 42.88,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 33.44,
+                "value": 33.5,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0468,
+                "value": 0.0486,
                 "state": "finite"
               },
               "potentialRate": {
@@ -179,32 +187,32 @@
             }
           },
           "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
             "biConv": {
               "value": 1018,
               "availability": "available"
             },
             "biCashCost": {
               "value": 36.1,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
               "availability": "available"
             },
-            "priceSource": "ka_daily",
-            "onTarget": false,
-            "costStatus": "yellow",
-            "costStatusReason": "window_over_single_day",
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+            "overCost": {
+              "value": 1626.65,
+              "availability": "available"
             }
           },
-          "anomaly": null
+          "anomaly": false
         },
         {
           "key": "opt-wang",
@@ -214,16 +222,12 @@
               "value": 29400.0,
               "availability": "available"
             },
-            "cashCost": {
-              "value": 22967.3,
-              "availability": "available"
-            },
             "exposure": {
-              "value": 224000,
+              "value": 224028,
               "availability": "available"
             },
             "click": {
-              "value": 9333,
+              "value": 9331,
               "availability": "available"
             },
             "conversion": {
@@ -231,11 +235,19 @@
               "availability": "available"
             },
             "realConversion": {
-              "value": 687,
+              "value": 686,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 22967.28,
               "availability": "available"
             },
             "costSpace": {
-              "value": 3123.0,
+              "value": 3122.28,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 2496.06,
               "availability": "available"
             },
             "wakeUv": {
@@ -256,15 +268,15 @@
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.79,
+                "value": 42.86,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 33.43,
+                "value": 33.48,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0472,
+                "value": 0.0485,
                 "state": "finite"
               },
               "potentialRate": {
@@ -278,32 +290,32 @@
             }
           },
           "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
             "biConv": {
               "value": 636,
               "availability": "available"
             },
             "biCashCost": {
               "value": 36.11,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
               "availability": "available"
             },
-            "priceSource": "ka_daily",
-            "onTarget": true,
-            "costStatus": "green",
-            "costStatusReason": null,
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+            "overCost": {
+              "value": 1025.28,
+              "availability": "available"
             }
           },
-          "anomaly": null
+          "anomaly": false
         },
         {
           "key": "unlabeled",
@@ -313,16 +325,12 @@
               "value": 11760.0,
               "availability": "available"
             },
-            "cashCost": {
-              "value": 9186.9,
-              "availability": "available"
-            },
             "exposure": {
-              "value": 89600,
+              "value": 89611,
               "availability": "available"
             },
             "click": {
-              "value": 3734,
+              "value": 3732,
               "availability": "available"
             },
             "conversion": {
@@ -330,11 +338,19 @@
               "availability": "available"
             },
             "realConversion": {
-              "value": 274,
+              "value": 275,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 9186.91,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1249.0,
+              "value": 1248.91,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": 998.42,
               "availability": "available"
             },
             "wakeUv": {
@@ -347,7 +363,7 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.0417,
+                "value": 0.0416,
                 "state": "finite"
               },
               "cvr": {
@@ -355,15 +371,15 @@
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.92,
+                "value": 42.76,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 33.53,
+                "value": 33.41,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0519,
+                "value": 0.0484,
                 "state": "finite"
               },
               "potentialRate": {
@@ -377,32 +393,32 @@
             }
           },
           "assessment": {
+            "priceSource": "ka_daily",
+            "price": {
+              "value": 34.5,
+              "effectiveDate": null
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
             "biConv": {
               "value": 254,
               "availability": "available"
             },
             "biCashCost": {
               "value": 36.17,
-              "state": "finite"
-            },
-            "overCost": {
-              "value": null,
-              "availability": "missing"
-            },
-            "price": {
-              "value": 34.5,
               "availability": "available"
             },
-            "priceSource": "ka_daily",
-            "onTarget": true,
-            "costStatus": "green",
-            "costStatusReason": null,
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+            "overCost": {
+              "value": 423.91,
+              "availability": "available"
             }
           },
-          "anomaly": null
+          "anomaly": false
         }
       ],
       "returnedRowCount": 4,
@@ -415,7 +431,8 @@
         "workspaceKind": "team",
         "window": {
           "from": "2026-09-01",
-          "to": "2026-09-05"
+          "to": "2026-09-05",
+          "preset": "month_to_date"
         },
         "coverage": {
           "complete": true,
@@ -439,6 +456,6 @@
   },
   "meta": {
     "requestId": "fixture-dimension-optimizer",
-    "_note": "★fe 过渡 fixture（F8-19）：按 api.md v1.9.22 形自写；Codex P-210 导出后并回删除。未解析出该段的账户归「未标注」，不丢行也不并进别人。"
+    "_note": "★fe 过渡 fixture（F8-19b）：按 api.md v1.9.27 形自写并过 zod 校验；后端导出真 fixture 后删本文件。未解析出该段的账户归「未标注」，不丢行也不并进别人。"
   }
 }

@@ -5,7 +5,8 @@ import { IconArrowDownRight, IconArrowUpRight, IconMinus } from "@tabler/icons-r
 import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { mv, rv } from "@/lib/fixtures/contract"
-import { deltaRate, type DashboardSummaryRow } from "@/lib/fixtures/dashboard"
+import type { DashboardSummaryRow } from "@/lib/fixtures/dashboard"
+import type { RatioValue } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 
 // F8-19 两行 KPI：第一行**账面**口径、第二行**考核**口径。
@@ -21,8 +22,13 @@ const money0 = (value: number | null) => (value === null ? "−" : cny0.format(v
 const money2 = (value: number | null) => (value === null ? "−" : cny2.format(value))
 const int = (value: number | null) => (value === null ? "−" : num.format(value))
 
-/** 环比角标。缺任一边显「环比 −」，不显 0%——「没数」和「没变化」是两件事 */
-function Delta({ rate, goodWhenDown }: { rate: number | null; goodWhenDown?: boolean }) {
+/**
+ * 环比角标。数据来自**后端算好的** `compare.deltas`（RatioValue）——
+ * 前端不自己相减：窗口口径、缺数怎么处理、除零怎么办全在后端，自己算必然和日报/结算对不上。
+ * 后端没给（或 state 不是 finite）就显「环比 −」，不显 0%——「没数」和「没变化」是两件事。
+ */
+function Delta({ delta, goodWhenDown }: { delta?: RatioValue; goodWhenDown?: boolean }) {
+  const rate = delta && delta.state === "finite" ? delta.value : null
   if (rate === null) return <span className="text-xs text-muted-foreground">环比 −</span>
   const up = rate > 0
   const good = goodWhenDown ? !up : up
@@ -34,7 +40,7 @@ function Delta({ rate, goodWhenDown }: { rate: number | null; goodWhenDown?: boo
   )
 }
 
-function Kpi({ label, value, delta, hint, tone }: { label: string; value: string; delta?: React.ReactNode; hint?: string; tone?: "critical" | "warning" }) {
+function Kpi({ label, value, delta, hint, tone }: { label: string; value: string; delta?: React.ReactNode; hint?: string; tone?: "critical" | "warning" | "success" }) {
   return (
     <Card className="gap-0 p-3">
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -46,7 +52,7 @@ function Kpi({ label, value, delta, hint, tone }: { label: string; value: string
         ) : label}
       </div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
-        <span className={cn("text-xl font-semibold tabular-nums", tone === "critical" && "text-status-critical", tone === "warning" && "text-status-warning")}>{value}</span>
+        <span className={cn("text-xl font-semibold tabular-nums", tone === "critical" && "text-status-critical", tone === "warning" && "text-status-warning", tone === "success" && "text-status-success")}>{value}</span>
         {delta}
       </div>
     </Card>
@@ -60,40 +66,54 @@ export function KpiRows({ row, windowed }: {
 }) {
   const scoped = windowed ?? null
   const now = row.metrics
-  const before = row.previous?.metrics
   const assess = row.assessment
-  const beforeAssess = row.previous?.assessment
+  const deltas = row.compare?.deltas
+  // 窗口是用户临时选的时候，后端那份 compare 对不上这个区间——**宁可不显，也不拿别的窗口的环比冒充**
+  const showDelta = !scoped
 
   return (
     <div className="flex flex-col gap-3">
       <section aria-label="账面口径">
         <p className="mb-1.5 text-xs font-medium text-muted-foreground">
           账面口径 · 平台侧扣费与转化
-          {/* 环比只有在用后端那份 summary 时才成立：窗口是用户临时选的，后端没算对应的上一窗口，
-              这时**不显环比**，而不是拿别的窗口的环比冒充 */}
-          {scoped ? <span className="ml-1 font-normal">（本窗口 {scoped.days} 天；换窗口后暂不显环比，接后端重查后恢复）</span>
-            : row.previous ? <span className="ml-1 font-normal">（环比 {row.previous.window.from} ~ {row.previous.window.to}）</span> : null}
+          {scoped ? <span className="ml-1 font-normal">（本窗口 {scoped.days} 天；换窗口后暂不显环比，接后端重查后恢复）</span> : null}
         </p>
         <div className="grid gap-2 @2xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-          <Kpi label="账面花费" value={scoped ? money0(scoped.cost) : mv(now.cost, "money0")} delta={scoped ? undefined : <Delta rate={deltaRate(now.cost.value, before?.cost.value)} />} />
-          <Kpi label="激励花费" value={mv(now.costSpace, "money0")} hint="账面花费里由平台激励承担的部分；不进结算。" delta={<Delta rate={deltaRate(now.costSpace.value, before?.costSpace.value)} />} />
-          <Kpi label="转化数" value={scoped ? int(scoped.conversion) : mv(now.conversion)} delta={scoped ? undefined : <Delta rate={deltaRate(now.conversion.value, before?.conversion.value)} />} />
-          <Kpi label="转化成本" value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")} hint="账面花费 / 真实转化数。" delta={<Delta rate={deltaRate(now.ratios.realCpa.value, before?.ratios.realCpa.value)} goodWhenDown />} />
+          <Kpi label="账面花费" value={scoped ? money0(scoped.cost) : mv(now.cost, "money0")} delta={showDelta ? <Delta delta={deltas?.cost} /> : undefined} />
+          {/* ★激励花费读 `incentiveCost`，不是 costSpace——costSpace 是「离考核线还剩多少」，
+              两者含义无关；后端没给这个字段时显「待接源」而不是拿别的数顶上 */}
+          <Kpi
+            label="激励花费"
+            value={now.incentiveCost ? mv(now.incentiveCost, "money0") : "待接源"}
+            hint="账面花费里由平台激励承担的部分；不进结算。"
+          />
+          <Kpi label="转化数" value={scoped ? int(scoped.conversion) : mv(now.conversion)} delta={showDelta ? <Delta delta={deltas?.realConversion} /> : undefined} />
+          <Kpi label="转化成本" value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")} hint="账面花费 / 真实转化数。" delta={showDelta ? <Delta delta={deltas?.cashCpa} goodWhenDown /> : undefined} />
         </div>
       </section>
 
       <section aria-label="考核口径">
         <p className="mb-1.5 text-xs font-medium text-muted-foreground">考核口径 · 结算认的数</p>
         <div className="grid gap-2 @2xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-          <Kpi label="现金花费" value={scoped ? money0(scoped.cashCost) : mv(now.cashCost, "money0")} hint="扣掉激励后自己真花的钱，结算按它算。" delta={<Delta rate={deltaRate(now.cashCost.value, before?.cashCost.value)} />} />
-          <Kpi label="考核 BI 数" value={mv(assess.biConv)} hint="回传给 BI 并被认可的转化数；与平台转化数之间的差就是回传 GAP。" delta={<Delta rate={deltaRate(assess.biConv.value, beforeAssess?.biConv.value)} />} />
-          <Kpi label="BI 现金成本" value={rv(assess.biCashCost, "money")} hint="现金花费 / 考核 BI 数。考核看的就是这个成本。" tone={assess.costStatus === "red" ? "critical" : assess.costStatus === "yellow" ? "warning" : undefined} delta={<Delta rate={deltaRate(assess.biCashCost.value, beforeAssess?.biCashCost.value)} goodWhenDown />} />
+          <Kpi label="现金花费" value={scoped ? money0(scoped.cashCost) : mv(now.cashCost, "money0")} hint="扣掉激励后自己真花的钱，结算按它算。" delta={showDelta ? <Delta delta={deltas?.cashCost} /> : undefined} />
+          <Kpi
+            label="考核 BI 数"
+            value={assess.biConv ? mv(assess.biConv) : "待接源"}
+            // 回传 GAP：平台转化和 BI 认可之间差了多少，优化师最关心这个缺口
+            hint={`回传给 BI 并被认可的转化数。与平台转化数的缺口（回传 GAP）：${rv(now.ratios.gap)}。`}
+          />
+          <Kpi
+            label="BI 现金成本"
+            value={assess.biCashCost ? mv(assess.biCashCost, "money") : "待接源"}
+            hint="现金花费 / 考核 BI 数。考核看的就是这个成本。"
+            tone={assess.costStatus === "red" ? "critical" : assess.costStatus === "yellow" ? "warning" : undefined}
+          />
           <Kpi
             label="超成本金额"
-            value={mv(assess.overCost, "money0")}
-            hint="现金花费 − Σ（当日考核 BI 数 × 当日生效考核价）。正数 = 超出考核价的部分。"
-            tone={(assess.overCost.value ?? 0) > 0 ? "critical" : undefined}
-            delta={<Delta rate={deltaRate(assess.overCost.value, beforeAssess?.overCost.value)} goodWhenDown />}
+            value={assess.overCost ? mv(assess.overCost, "money0") : "待接源"}
+            hint="现金花费 − Σ（当日考核 BI 数 × 当日生效考核价）。正数 = 超出考核价；负数 = 还有余量。"
+            // 负数是「还有余量」，是好事——不能和超成本一样标红
+            tone={(assess.overCost?.value ?? 0) > 0 ? "critical" : (assess.overCost?.value ?? 0) < 0 ? "success" : undefined}
           />
         </div>
       </section>

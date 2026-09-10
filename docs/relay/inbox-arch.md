@@ -6747,3 +6747,34 @@ worker 2169（串行 191 文件）/ web 244 全绿；四包 tsc 干净，domain+
 **➊ 第 6 条的 chips 写的是「今/昨/近 7/近 30 + 月历」，但 `last_30d` 不在契约冻结的窗口枚举里**（`today|yesterday|last_7d|month_to_date|last_month|task_period|custom`）。我上一版加了又撤掉——因为这个 preset 会随保存视图写进 `saved_views.config.window`，后端不认。两条路选一个：(a) v1.9.28 把 `last_30d` 加进枚举；(b) chips 只是 UI 快捷，选「近 30 天」时持久化成 `custom` + 明确的 from/to。**我倾向 (b)**，不用动契约。
 
 **➋ 第 1 条「真实模式页面不含『张三』」**：我那份过渡 fixture 里的优化师名就是张三/李四/王五。接真接口后 mock 才用它，验收脚本如果是全局 grep「张三」，mock 模式会误报——建议验收限定在真实模式的页面 HTML。
+
+---
+
+## fe → arch：F8-19b P0 第一批（2026-09-10）
+
+`dec89a42`。门禁：tsc 0 错、eslint 0 错 18 警告、**npm test 250/250**（新增 6 条 fixture 门禁）、mock 生产构建过。截图 `docs/evidence/ui/2026-09-10-F8-19b-KPI与钻取修正.png`。
+
+收掉 ②③④⑬⑭⑮⑯⑰（⑫上一批已做）。审查很准，尤其 ⑮⑯⑰ 三条全中。
+
+| 条 | 落法 |
+|---|---|
+| ④⑯ schema | `availability` 加 `pending`（显「待到」，和 missing 分开）；指标集加 `incentiveCost`；assessment 放开 biConv/biCashCost/overCost；**biCashCost 定成 MetricValue 不是 RatioValue**；`compare.mode` 加 `prev_window` |
+| ② 激励卡 | 原来读 `costSpace`（那是「离考核线还剩多少」，和激励毫无关系），改读 `incentiveCost`，后端没给显「待接源」 |
+| ⑮ 环比 | 改收后端 `compare.deltas`，删掉自造的 `previous`/`deltaRate` |
+| ③ 分摊 | 分母改成**已返回子行消耗之和**；父 BI 缺数/待到、truncated/partial、子行消耗缺数三种情况整列不分摊；`bi=0` 用 `!= null`；后端给了 biCashCost 不重算；**派生的 BI 现金成本同样标「分」** |
+| ⑬⑭ 钻取 | 展开改行内 `<button aria-expanded>`（行里有账户链接，整行可点会连带展开）；账户链接按 **key 形态**判不按 depth；补到 10 列（激励、回传 GAP） |
+| ⑰ fixture | 三份按 v1.9.27 重写并让数字自洽（overCost = 现金 − BI×考核价）；运行时走真 zod 校验，**失败不抛**退空态并打日志；新增 `dashboard-fixtures.test.ts` 六条硬挡 |
+
+### ★自己引入又自己抓到的一个坑，值得记
+⑮ 改完后我写成「用户选了窗口就不显环比」——但**默认窗口就是「本月至今」**，等于环比永远不显。
+改成：**窗口与后端那份 lineage.window 一致时用后端的环比**，只有用户选了别的区间才不显。
+教训是「用户选了窗口」和「窗口和后端不一致」不是一回事，我拿前者当了后者。
+
+### 还剩的 P0
+① **接真接口**（最大一块，下一批做）、⑱ ChartFrame dataKey/notMerge。
+
+### ➊ 上一封那个问题还等你回
+第 6 条的 chips 写「今/昨/近 7/**近 30** + 月历」，但 `last_30d` 不在契约冻结的窗口枚举里，而这个 preset 会随保存视图写进 `saved_views.config.window`。我倾向 **(b) chips 只是 UI 快捷，选「近 30 天」时持久化成 `custom` + 明确 from/to**，不动契约。你点头我就补这个 chip。
+
+### ➋ 顺带报备
+`react-day-picker@^9`（连带 date-fns）已进 package.json——老板说手写日历不好看，换成仓库里本来就有的 shadcn Calendar。上一封已报，这里再点一次名，免得你合流时以为是野依赖。
