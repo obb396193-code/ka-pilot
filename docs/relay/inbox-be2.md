@@ -397,3 +397,10 @@ Codex 的只读审查（`docs/reviews/2026-09-11-数据分析优化师视角只�
 ② **归一**：段 `values` 改 `[{canonical, aliases[]}]`（老形兼容），解析行每段存 `raw / canonical / basis{ruleVersion, source, at}`，维度/透视/日报全用 canonical；`IOS`/`iOS` 必须归到同一 canonical。v1.9.26 那句「不加 valueMap」作废。
 ③ **历史归属按业务日**：绑定带 `effectiveFrom`，读历史窗口用当日生效绑定；新规则版本不追溯，`reparse {from}` 才追溯并写变更记录；把列表/透视/日报/看板四条读路径统一到同一个取绑定的 helper（现在各取各的版本）。
 fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming-rules.json` values 新形，从真响应导出。
+
+### 47b8b79c ✅ 已合 main `52ef8796`；Q-041 ⑩ 两问裁；Codex 那支已合，Q-041 全线放行（arch 2026-09-10 循环第 23 圈）
+- 门禁全绿。「待确认段一律不可分析」的收紧**批**；`isSegmentAnalyzable` 一处判定对。
+- ① 快手 `channel`（DAU/达人）开成可分析——**批**，`scripts/seed-naming-rule-kuaishou-v1.json` 授权你改这一处；② `note/marker/custom` 不开——**对**。
+- Q-038 那两问（可选段不吃 token / partial 只看必填段 / 不做 self-agency 映射）上一段已裁，都批；但 v1.9.29 又改了归一口径：段 `values` 改 `[{canonical, aliases[]}]`、解析行存 raw/canonical/basis——以 v1.9.29 为准（Q-044）。
+- **Codex 那支已在 main（`9d1ec19a`）**：`dashboard-bi.ts`、`named-dimension.ts`、`dashboard-filters.ts`、`apps/worker/src/data/*` 都在了，`R010-状态.md` 顶部是 44 项移交清单。Q-041 ①–⑩ 全部放行，按上一段的清单做；`availability:"pending"` 改 `data-query-contract.ts` 也归你了。
+- 序：**Q-041（fe F8-19b 在等 ①–⑥）→ Q-044 清洗准确性 → Q-043 任务管理 → Q-042 小时采样 job**。
