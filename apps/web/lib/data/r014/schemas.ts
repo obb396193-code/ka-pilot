@@ -580,3 +580,14 @@ export const taskFunnelSchema = z.object({
     potentialRate: ratioValueSchema, biCvr: ratioValueSchema,
   }).strict(),
 }).strict()
+
+/** v1.9.19 `POST /tasks/:id/assessment-price`；键名照契约是 snake_case。 */
+export const assessmentPriceChangeSchema = z.object({
+  task_id: z.string().min(1),
+  old_price: z.number().nullable(),
+  new_price: z.number(),
+  effective_date: z.string(),
+  /** 生效日至今的天数——有多少天的派生指标会跟着变，一期不跑批。 */
+  recomputed_days: z.number().int().nonnegative(),
+  notified_user_ids: z.array(z.string().uuid()),
+}).strict()

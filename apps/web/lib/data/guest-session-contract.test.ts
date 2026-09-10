@@ -28,10 +28,14 @@ test("the guest login fixture parses, including its TTL", () => {
   assert.equal(view.expiresAt, "2026-09-05T11:15:00.000+08:00")
 })
 
-test("普通会话没有 isDemo / provider 也要照旧过", () => {
+test("普通会话也带上定形后的四字段（v1.9.15 之后三份 fixture 统一）", () => {
+  // 这条原来断言 personal.json「没有 isDemo / provider」——那是 v1.9.15 定形之前的形状。
+  // 定形后三份 session fixture 一致：identity 四件套 + 空间 isDemo，普通会话的
+  // isDemo 是 false（不是缺省），provider 是 internal_test。
   const view = sessionViewSchema.parse((fixture("session-http/personal.json") as { data: unknown }).data)
-  assert.equal(view.activeWorkspace.isDemo, undefined)
-  assert.equal(view.identity.provider, undefined)
+  assert.equal(view.activeWorkspace.isDemo, false)
+  assert.equal(view.identity.provider, "internal_test")
+  assert.equal(view.identity.mustChangePassword, false)
 })
 
 test("login accepts both shapes and nothing else", () => {

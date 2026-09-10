@@ -50,6 +50,11 @@ export interface GuestAccessOptions {
   findGuestIdentity: (workspaceId: string) => Promise<string | null>;
   /** 建会话另走一条路：常规路径强制要求个人空间，访客没有。见仓储注释。 */
   issueSession: (workspaceId: string, identityId: string, token: string, expiresAt: Date) => Promise<boolean>;
+  /**
+   * 每小时上限，默认 20（契约）。**开出来是给测试注入的**——
+   * 让用例自己定窗口，而不是靠「跑 20 次真请求」去撞默认值。
+   */
+  maxPerWindow?: number;
   /** 契约定的 2 小时，比常规会话短——访客不该长期挂着。 */
   ttlSeconds?: number;
 }
@@ -66,9 +71,10 @@ const GUEST_MAX_PER_WINDOW = 20;
 class GuestLoginLimiter {
   private readonly hits = new Map<string, number[]>();
 
-  allow(key: string, now: number): boolean {
+  /** 桶是**每个服务实例一份**，不是模块级——两个实例互不影响，用例之间也就不会串。 */
+  allow(key: string, now: number, max = GUEST_MAX_PER_WINDOW): boolean {
     const recent = (this.hits.get(key) ?? []).filter((at) => now - at < GUEST_WINDOW_MS);
-    if (recent.length >= GUEST_MAX_PER_WINDOW) return false;
+    if (recent.length >= max) return false;
     recent.push(now);
     this.hits.set(key, recent);
     if (this.hits.size > 10_000) {
@@ -198,7 +204,8 @@ export class SessionHttpService {
     }
     if (!guestLoginRequestSchema.safeParse(body).success) return sessionInputError(requestId);
     // 限速键：有 IP 用 IP，没有就退化成全局桶（见 GuestLoginLimiter 注释）。
-    if (!this.guestLimiter.allow(clientIp ?? "global", this.now().getTime())) {
+    // 时间从 `this.now()` 来（可注入），不直接读挂钟——用例才能自己定窗口。
+    if (!this.guestLimiter.allow(clientIp ?? "global", this.now().getTime(), guest.maxPerWindow)) {
       return error(403, "FORBIDDEN", "Too many guest logins, try again later", requestId);
     }
 

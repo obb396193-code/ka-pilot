@@ -24,7 +24,7 @@ export const mockSessionView: SessionView = {
 const demo = { id: "00000000-0000-4000-8000-0000000000de", name: "演示空间", kind: "team" as const, role: "viewer" as const, readOnly: true, isDemo: true }
 
 export const mockGuestSessionView: SessionView = {
-  identity: { id: "00000000-0000-4000-8000-00000000009e", displayName: "访客", provider: "guest" },
+  identity: { id: "00000000-0000-4000-8000-00000000009e", displayName: "访客", provider: "guest", mustChangePassword: false },
   activeWorkspace: demo,
   workspaces: [demo],
 }
