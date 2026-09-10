@@ -28,8 +28,16 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       const media = context.url.searchParams.get("media");
       if (media === null) throw new R014HttpError(400, "INVALID_REQUEST", "media is required");
       if (method === "GET") {
-        sendData(context.response, await repository.currentRule(context.auth, media),
-          context.requestId, context.maxResponseBytes);
+        const current = await repository.currentRule(context.auth, media);
+        // v1.9.23：规范里的待确认段，连同它现在的取值分布一起回——治理页要在同一屏里
+        // 回答「这段还没定义」和「它实际都写了些什么」。没配规范就没有段，回 null 照旧。
+        sendData(
+          context.response,
+          current === null
+            ? null
+            : { ...current, pendingSegments: await repository.pendingSegmentDistribution(context.auth, { media }) },
+          context.requestId, context.maxResponseBytes,
+        );
         return;
       }
       const body = await readJsonBody(context.request, 1_048_576) as Record<string, unknown> | undefined;
@@ -49,9 +57,16 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       } catch {
         dryRun = null;
       }
+      // 同理：新版规范加了待确认段时，存完立刻能看见这段现在的取值分布。
+      let pendingSegments: unknown = null;
+      try {
+        pendingSegments = await repository.pendingSegmentDistribution(context.auth, { media });
+      } catch {
+        pendingSegments = null;
+      }
       sendData(
         context.response,
-        { ...saved, dryRun },
+        { ...saved, dryRun, pendingSegments },
         context.requestId, context.maxResponseBytes,
       );
     }),
@@ -110,14 +125,22 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
     guardedRoute((pathname) => pathname === "/api/v1/admin/account-names", async (context) => {
       requireMethod(context.request, ["GET"]);
       const page = context.url.searchParams.get("page");
+      const media = context.url.searchParams.get("media");
+      const listed = await repository.list(context.auth, {
+        ...(context.url.searchParams.get("status") === null ? {} : { status: context.url.searchParams.get("status")! }),
+        ...(media === null ? {} : { media }),
+        ...(context.url.searchParams.get("q") === null ? {} : { q: context.url.searchParams.get("q")! }),
+        ...(page === null ? {} : { page: Number(page) }),
+      });
+      // v1.9.23：待确认段分布跟着 media 过滤走，但**不跟 status/q/翻页走**——
+      // 它是给「每月确认」用的全量口径，被搜索词或某一页裁过就不能拿来下结论了。
       sendData(
         context.response,
-        await repository.list(context.auth, {
-          ...(context.url.searchParams.get("status") === null ? {} : { status: context.url.searchParams.get("status")! }),
-          ...(context.url.searchParams.get("media") === null ? {} : { media: context.url.searchParams.get("media")! }),
-          ...(context.url.searchParams.get("q") === null ? {} : { q: context.url.searchParams.get("q")! }),
-          ...(page === null ? {} : { page: Number(page) }),
-        }),
+        {
+          ...listed,
+          pendingSegments: await repository.pendingSegmentDistribution(
+            context.auth, media === null ? {} : { media }),
+        },
         context.requestId, context.maxResponseBytes,
       );
     }),
