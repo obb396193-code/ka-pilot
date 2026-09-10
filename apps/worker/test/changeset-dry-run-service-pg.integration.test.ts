@@ -40,6 +40,55 @@ describe("dry-run service to actual PG (synthetic preflight port, no media)", ()
     initiator: ws === workspaceId ? userId : otherUser, credentialOwnerUserId: ws === workspaceId ? userId : otherUser,
     ttlExpireAt: expires, reasonCode: "synthetic", items: [{ targetType: "unit", targetId: "u1", field: "bid",
       fromValue: { type: "number", value: 30 }, toValue: { type: "number", value: 29 } }] });
+  it("denies unauthorized preflight before reading item content, not merely before returning it", async () => {
+    const draft = await create("TENCENT"), statements: string[] = [];
+    const observed = new Proxy(pool, { get(target, key) {
+      if (key === "query") return (sql: string, values?: unknown[]) => { statements.push(sql); return target.query(sql, values); };
+      if (key === "connect") return async () => {
+        const client = await target.connect();
+        return new Proxy(client, { get(connection, prop) {
+          if (prop === "query") return (sql: string, values?: unknown[]) => { statements.push(sql); return connection.query(sql, values); };
+          const value = Reflect.get(connection, prop); return typeof value === "function" ? value.bind(connection) : value;
+        } });
+      };
+      const value = Reflect.get(target, key); return typeof value === "function" ? value.bind(target) : value;
+    } });
+    const check = vi.fn();
+    const service = new ChangeSetDryRunService({ store: new ChangeSetRepository(observed), now: () => now, preflight: { check } });
+    await expect(service.run(draft.id, auth)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(statements.some(sql => sql.includes("FROM changeset_items"))).toBe(false);
+    expect(check).not.toHaveBeenCalled(); expect(await runs(draft.id)).toEqual([]);
+  });
+  it("applies the same tuple guard to the locked preparation read, preserving internal legacy use", async () => {
+    const draft = await create("TENCENT"), input = { workspaceId, changeSetId: draft.id, now };
+    await expect(store.prepareDryRun(input, auth)).rejects.toThrow("not authorized");
+    await expect(store.prepareDryRun(input, undefined)).rejects.toThrow("not authorized");
+    await expect(store.prepareDryRun(input, { ...auth, workspaceId: other })).rejects.toThrow("not authorized");
+    await expect(store.prepareDryRun(input, { workspaceId, userId, role: "admin", workspaceKind: "team", scope: { kind: "team_workspace_readonly" } })).rejects.toThrow("not authorized");
+    expect((await store.prepareDryRun(input)).changeset.id).toBe(draft.id);
+    const allowed = { ...auth, scope: { kind: "explicit_accounts", accounts: [{ media: "TENCENT", accountId: "same", accessLevel: "preview" }] } };
+    expect((await store.prepareDryRun(input, allowed)).changeset.id).toBe(draft.id);
+  });
+  it("rechecks tuple after a source is retargeted between initial read and locked preparation", async () => {
+    const draft = await create(), check = vi.fn();
+    const service = new ChangeSetDryRunService({ now: () => now, preflight: { check }, store: {
+      find: async (ws, id, approved) => {
+        const result = await store.find(ws, id, approved);
+        const client = await pool.connect();
+        try {
+          await client.query("BEGIN");
+          await client.query("UPDATE changesets SET media='TENCENT' WHERE workspace_id=$1 AND id=$2", [ws, id]);
+          await client.query("UPDATE changeset_items SET media='TENCENT' WHERE workspace_id=$1 AND changeset_id=$2", [ws, id]);
+          await client.query("COMMIT");
+        } catch (error) { await client.query("ROLLBACK"); throw error; }
+        finally { client.release(); }
+        return result;
+      },
+      prepareDryRun: store.prepareDryRun.bind(store), recordDryRun: store.recordDryRun.bind(store),
+    } });
+    await expect(service.run(draft.id, auth)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(check).not.toHaveBeenCalled(); expect(await runs(draft.id)).toEqual([]);
+  });
   function evidence(input: ChangeSetPreflightInput, status: "success" | "unknown" = "success") {
     return { workspaceId: input.workspaceId, media: input.media, accountId: input.accountId,
       credentialOwnerUserId: input.credentialOwnerUserId, draftHash: input.draftHash,

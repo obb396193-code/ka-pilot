@@ -255,12 +255,27 @@ export class ChangeSetRepository {
   constructor(private readonly pool: Pool) {}
 
   /** Preparation and result persistence never hold a DB lock during media preflight. */
-  async prepareDryRun(input: { workspaceId: string; changeSetId: string; now: Date }): Promise<{ changeset: ChangeSetRecord; hash: string }> {
+  async prepareDryRun(input: { workspaceId: string; changeSetId: string; now: Date }, authInput?: unknown): Promise<{ changeset: ChangeSetRecord; hash: string }> {
     requireValidClock(input.now);
+    // One argument is the legacy internal path; public preflight must supply
+    // Session auth. Explicit undefined must never silently select legacy mode.
+    const sessionRead = arguments.length >= 2;
+    const values: unknown[] = [input.workspaceId, input.changeSetId];
+    let predicate = "";
+    if (sessionRead) {
+      const parsed = approvedWorkspaceAuthContextSchema.safeParse(authInput);
+      if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.workspaceId !== input.workspaceId) {
+        throw new ChangeSetAuthorizationError();
+      }
+      const scope = accountScopeParams(parsed.data);
+      values.push(scope.kind, scope.allowed);
+      predicate = ` AND ${accountScopeClause("$3", "$4", "changesets.media", "changesets.account_id")}`;
+    }
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
-      const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId, input.changeSetId]);
+      const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2${predicate} FOR UPDATE`, values);
+      if (sessionRead && row.rows.length === 0) throw new ChangeSetAuthorizationError();
       const header = requireHeader(row.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
       if (header.status !== "draft" || header.ttl_expire_at === null || header.ttl_expire_at <= input.now) {

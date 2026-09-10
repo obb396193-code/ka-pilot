@@ -56,7 +56,7 @@ describe("D6 source-off real HTTP composition", () => {
     expect(response.status).toBe(503); expect(body).toEqual(fixture);
     expect(response.headers.get("x-request-id")).toBe("d6-request");
     expect(response.headers.get("cache-control")).toBe("no-store");
-    expect(c.store.find).toHaveBeenCalledWith(ws, id);
+    expect(c.store.find).toHaveBeenCalledWith(ws, id, auth);
     expect(c.store.prepareDryRun).not.toHaveBeenCalled(); expect(c.store.recordDryRun).not.toHaveBeenCalled();
   });
   it.each([{}, { authorization: `Bearer ${token}` }, { cookie: businessHeaders(token).cookie! }])("requires both credentials", async headers => {
