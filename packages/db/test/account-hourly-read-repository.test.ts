@@ -106,9 +106,12 @@ describe("account hourly reader / real PG", () => {
       expect(connect).not.toHaveBeenCalled();
     });
   it("missing table is explicit unavailable, never a daily/ad fallback", async () => {
+    // 025 now creates public.account_metrics_hourly. Exclude public for this
+    // missing-storage probe, otherwise search_path silently finds that table.
+    const missingPool = new Pool({ connectionString: process.env.TEST_DATABASE_URL, options: `-c search_path=${schema}` });
     await pool.query("ALTER TABLE account_metrics_hourly RENAME TO held_hourly");
-    try { await expect(repository.read(auth(), request)).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" }); }
-    finally { await pool.query("ALTER TABLE held_hourly RENAME TO account_metrics_hourly"); }
+    try { await expect(new AccountHourlyReadRepository(missingPool).read(auth(), request)).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" }); }
+    finally { await missingPool.end(); await pool.query("ALTER TABLE held_hourly RENAME TO account_metrics_hourly"); }
   });
   it.each(["NaN", "Infinity", "-1"])("invalid present cost %s fails closed", async value => {
     await sample(1); await pool.query("UPDATE account_metrics_hourly SET cost=$1 WHERE workspace_id=$2", [value, workspaceId]);
