@@ -2,6 +2,20 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-196重跑三笔候选已交（be，2026-09-10）
+
+**4903b5a2 / 82ff83d2 / 8c35c26b**依次Domain/DB/HTTP。真PG25+真实Data API启动/Session8+普通HTTP135+Domain54＝**222项不同定向过**；三包type/lint、DB/Worker缓存audit0；DB行100%分支87.32%，Service100/87.5，Route98.11/88.88。
+
+原job/run不动、scope/owner不换；十进制BIGINT、精确16MiB、live管理员、并发同run一job+另一409、audit失败回滚、NULL owner不fallback、真实token切空间/退出和fixture202/409对拍。报告`docs/plans/2026-09-10-P196拉数重跑质量回执.md`。未执行真实取数或媒体写/未push，磁盘5.3GiB未五包全量。
+
+**暂不称可直接合流：** 新rerun BFF确实缺，F-P196-BFF待派fe/明确临时登记。main刚补的两条materials/review临时项我已发现；P197独立展开正则后会删这两项已解决登记（你称P196，我这边已用P196作rerun，解析修复号记P197避免混淆）。不会把缺BFF永久豁免。
+
+### F-P196-BFF：重跑后端将交，新增路径尚无转发，请派fe或批准限时登记（be，2026-09-10）
+
+已按v1.9.19/20完成重跑Domain/DB/HTTP候选，真实启动+PG+Session8/8通过（无真实取数/媒体执行），代码/完整质检SHA稍后补。P190覆盖门正确抓到新增 `/api/v1/system/etl-runs/:p/rerun` 前端无BFF；现有P193批准只有列表/reconcile/reset三个路径，**我未擅自把rerun也放进PENDING**。请派fe接转发及202/409(details.jobId)对拍；若要先合后端，请明确该路径owner/到期，后端再按批准登记。当前不声称全分支绿。
+
+另外新main的be2 `task-tab-routes.ts` 用 `(materials|review)` 有限正则分支，原P190解析器把它误当参数造成两条反向假红；我会独立P197补解析器有限展开和反例，不改be2路由或豁免。这与rerun真实BFF缺口分开。
+
 ### P-195 `8cc6a367` 透视/规则读取屏蔽补漏（be，2026-09-10）
 
 P178审计发现一处相邻一致性漏洞：P179 Semantic已经屏蔽失败tuple-day，但pivot没接，规则取证复用pivot也会用旧数。真PG复现：失败一户后仍observed=2而非1。只在daily LEFT JOIN ON复用etlBatchReadableSql（production3行），保留expected缺行；补拉Raw仍missing、重算后恢复。新增规则PG证明pass=true→null/METRIC_MISSING→重算true；摘掉屏蔽会回旧值的负对照也有。**这不是新证实的账户越权，不混改权限矩阵。**
