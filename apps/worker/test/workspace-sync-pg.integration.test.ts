@@ -13,6 +13,7 @@ import {
 import { WorkspaceSyncTickService } from "../src/scheduling/workspace-sync-service.js";
 import { JobConsumer } from "../src/jobs/consumer.js";
 import { withQihangIdentity } from "../src/jobs/identity.js";
+import { JOB_PRIORITY } from "../src/jobs/priorities.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -56,6 +57,7 @@ describe("workspace sync scheduler with PostgreSQL", () => {
   });
 
   afterAll(async () => {
+    await pool.query("DELETE FROM account_metrics_daily WHERE workspace_id = $1", [workspaceId]);
     await pool.query("DELETE FROM etl_runs WHERE workspace_id = $1", [workspaceId]);
     await pool.query("DELETE FROM jobs WHERE workspace_id = $1", [workspaceId]);
     await pool.query("DELETE FROM account_access_grants WHERE workspace_id = $1", [workspaceId]);
@@ -147,14 +149,14 @@ describe("workspace sync scheduler with PostgreSQL", () => {
     });
   });
 
-  it("does not schedule incremental work before full success, then freezes granted tuples", async () => {
+  it("requires canonical data after full success, then freezes granted tuples", async () => {
     const first = await pool.query<{ id: string }>(
       "SELECT id FROM jobs WHERE workspace_id = $1 AND job_type = 'etl_full'",
       [workspaceId],
     );
     await pool.query(
-      "UPDATE jobs SET status = 'done', finished_at = now(), run_after = now() WHERE id = $1",
-      [first.rows[0]!.id],
+      "UPDATE jobs SET status = 'done', finished_at = now(), run_after = now(), priority=$2 WHERE id = $1",
+      [first.rows[0]!.id, JOB_PRIORITY.DEFAULT],
     );
     await pool.query(
       `INSERT INTO etl_runs (
@@ -162,12 +164,16 @@ describe("workspace sync scheduler with PostgreSQL", () => {
        ) VALUES ($1, $2, 'full', '{}'::jsonb, now(), now(), 'done', 1)`,
       [workspaceId, first.rows[0]!.id],
     );
-    const result = await service.execute({
+    const request = {
       workspaceId,
       media: "KUAISHOU",
       mode: "auto",
       triggeredAt: "2026-08-25T20:00:00Z",
-    });
+    };
+    expect((await service.execute(request)).jobs[0]).toMatchObject({ jobType: "etl_full" });
+    await pool.query(`INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,computed_at)
+      VALUES($1,'KUAISHOU','account-1','2026-08-25',now()),($1,'KUAISHOU','account-1','2026-08-26',now())`, [workspaceId]);
+    const result = await service.execute(request);
     expect(result.jobs[0]).toMatchObject({ jobType: "etl_incr", status: "queued" });
     const stored = await pool.query<{ payload: Record<string, unknown> }>(
       "SELECT payload FROM jobs WHERE id = $1",

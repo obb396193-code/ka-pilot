@@ -349,6 +349,7 @@ export class TaskListRepository {
       const count = countResult.rows[0];
       if (!count) throw new Error("task list count query returned no row");
       const initialFullComplete = await loadWorkspaceSyncReadiness(client, {
+        dateFrom: query.businessDate, dateTo: query.businessDate,
         workspaceId: query.workspaceId,
         requestingUserId: query.requestingUserId,
         allowedAccounts: query.allowedAccounts,
