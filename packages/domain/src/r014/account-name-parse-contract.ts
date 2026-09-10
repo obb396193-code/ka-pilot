@@ -241,7 +241,12 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
     const token = at >= 0 ? tokens[at] : undefined;
     if (token === undefined || !matchesSegment(segment, token)) {
       unmatched.push(segment.key);
-      head = Math.max(head, at + 1);
+      // **可选段没对上 = 这条昵称压根没写它，那个 token 不属于它，不能吃掉**。
+      // 原来一律往后挪一格：快手「…-有R-常规-13177-A」里可选的「扣量回传」段对不上「常规」，
+      // 却把「常规」吃了，于是专项段解不出来——昵称里明明写着的值就这么丢了。
+      // 必填段对不上是另一回事：位置上确实有它，只是值不规范，那一格照吃，
+      // 否则后面全线错位（这正是锚点段要解的问题）。
+      if (segment.required) head = Math.max(head, at + 1);
       continue;
     }
     record(segment, token);
@@ -286,10 +291,17 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
   const leftover = absorb === null ? tokens.slice(head, end + 1) : [];
   const taskIds = [...new Set(Object.values(segments).flatMap((segment) => segment.taskIds))];
   const matchedCount = Object.keys(segments).length;
+  /**
+   * partial 的含义是「**该有的没有**」，不是「可选的没写」。
+   * 可选段（规范明写可不写，如快手的扣量回传、腾讯的区分符「※」）缺了还报 partial，
+   * 等于把一条完全合规的昵称推到优化师面前让他修一个没坏的东西。
+   */
+  const required = new Set(ordered.filter((segment) => segment.required).map((segment) => segment.key));
+  const missingRequired = unmatched.filter((key) => required.has(key));
 
   return {
-    // 一段都没认出来 = 这条昵称压根不按规范写，报 failed；认出一部分就是 partial，成功的段照用。
-    status: matchedCount === 0 ? "failed" : unmatched.length === 0 ? "parsed" : "partial",
+    // 一段都没认出来 = 这条昵称压根不按规范写，报 failed；必填段缺了才是 partial，成功的段照用。
+    status: matchedCount === 0 ? "failed" : missingRequired.length === 0 ? "parsed" : "partial",
     segments,
     taskIds,
     unmatched: [...new Set(unmatched)],

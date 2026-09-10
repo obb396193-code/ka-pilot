@@ -141,8 +141,12 @@ print("\n全部完成：账户 6 / 任务 3 / 指标 186 行 / 工作项 7 / 变
 # ---------- ⑥ 演示账号升 admin + 快手 v1 命名规范（归属清洗页要有东西）----------
 import os
 sql(f"UPDATE workspace_memberships SET role='admin' WHERE identity_id='{IDENTITY}' AND workspace_id='{WS_P}'")
-rule=json.load(open(os.path.join(os.path.dirname(__file__),'seed-naming-rule-kuaishou-v1.json'),encoding='utf-8'))
-sql(f"DELETE FROM naming_rules WHERE workspace_id='{WS_P}' AND media='KUAISHOU'")
-sql(f"""INSERT INTO naming_rules(workspace_id,media,version,segments,separators,effective_from,note)
-  VALUES('{WS_P}','KUAISHOU',1,$${json.dumps(rule['segments'],ensure_ascii=False)}$$::jsonb,ARRAY['-','－','_'],'2026-09-01','快手 v1，来源 ka-src-0003 §4.3')""")
-print("⑥ 演示账号 → admin；快手 v1 命名规范（13 段）已写入。解析结果需起服务后 POST /api/v1/admin/account-names/reparse {media:KUAISHOU}")
+# 两家渠道的规范并列灌：段/枚举全在 JSON 里，脚本不认识任何渠道的枚举（与解析器同一条规矩）。
+for seed_file in ('seed-naming-rule-kuaishou-v1.json','seed-naming-rule-tencent-v1.json'):
+    rule=json.load(open(os.path.join(os.path.dirname(__file__),seed_file),encoding='utf-8'))
+    media=rule['media']; seps=','.join("'"+x+"'" for x in rule['separators'])
+    sql(f"DELETE FROM naming_rules WHERE workspace_id='{WS_P}' AND media='{media}'")
+    sql(f"""INSERT INTO naming_rules(workspace_id,media,version,segments,separators,effective_from,note)
+      VALUES('{WS_P}','{media}',1,$${json.dumps(rule['segments'],ensure_ascii=False)}$$::jsonb,ARRAY[{seps}],'{rule['effective_from']}',$${rule['note']}$$)""")
+    print(f"   {media} v1 命名规范（{len(rule['segments'])} 段）已写入")
+print("⑥ 演示账号 → admin；快手 / 腾讯 v1 命名规范已写入。解析结果需起服务后 POST /api/v1/admin/account-names/reparse {media:KUAISHOU|TENCENT}")

@@ -201,13 +201,12 @@
     "dryRun": {
       "total": 6,
       "byStatus": {
-        "partial": 5,
+        "parsed": 5,
         "failed": 1
       },
-      "hitRate": 0,
+      "hitRate": 0.8333,
       "failedSegments": {
         "rebate": 6,
-        "special": 6,
         "channel": 1,
         "biz": 1,
         "operator": 1,
@@ -218,7 +217,8 @@
         "goal": 1,
         "rta": 1,
         "custom": 1,
-        "landing": 1
+        "landing": 1,
+        "special": 1
       }
     },
     "pendingSegments": [],

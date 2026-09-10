@@ -198,6 +198,7 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "GET /admin/naming-rules?media=KUAISHOU：快手 v1 规范（scripts/seed-naming-rule-kuaishou-v1.json 灌入，联调第十轮实测响应）；segments 按 order，source=enum 带 values，mapsTo=null 表示不映射到归属字段"
+    "pendingSegments": [],
+    "_note": "GET /admin/naming-rules?media=KUAISHOU：快手 v1 规范（scripts/seed-naming-rule-kuaishou-v1.json）的真响应，由 apps/worker/scripts/export-naming-fixtures.ts 对本地隔离库 + 真路由处理器导出。segments 按 order，source=enum 带 values，mapsTo=null 表示不映射到归属字段；v1.9.23/24 meta.pendingSegments = 待确认段取值分布（快手 v1 无 pending 段，故为 []）；createdAt 归一化成固定值以免每次导出都 diff"
   }
 }

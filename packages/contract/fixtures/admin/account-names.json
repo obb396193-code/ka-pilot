@@ -7,7 +7,7 @@
         "accountId": "account-1",
         "accountName": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
         "ruleVersion": 1,
-        "status": "partial",
+        "status": "parsed",
         "segments": {
           "biz": {
             "key": "biz",
@@ -51,6 +51,12 @@
             "mapsTo": "landing",
             "taskIds": []
           },
+          "special": {
+            "key": "special",
+            "value": "常规",
+            "mapsTo": "special",
+            "taskIds": []
+          },
           "bid_mode": {
             "key": "bid_mode",
             "value": "单出价",
@@ -83,8 +89,7 @@
         "confirmedAt": null,
         "raw": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
         "failedSegments": [
-          "rebate",
-          "special"
+          "rebate"
         ]
       },
       {
@@ -92,7 +97,7 @@
         "accountId": "account-2",
         "accountName": "DAU-CVR有端-自投-张三-单出价-IOS-上下滑-激活-有R-常规-13178-B",
         "ruleVersion": 1,
-        "status": "partial",
+        "status": "parsed",
         "segments": {
           "biz": {
             "key": "biz",
@@ -136,6 +141,12 @@
             "mapsTo": "landing",
             "taskIds": []
           },
+          "special": {
+            "key": "special",
+            "value": "常规",
+            "mapsTo": "special",
+            "taskIds": []
+          },
           "bid_mode": {
             "key": "bid_mode",
             "value": "单出价",
@@ -168,8 +179,7 @@
         "confirmedAt": null,
         "raw": "DAU-CVR有端-自投-张三-单出价-IOS-上下滑-激活-有R-常规-13178-B",
         "failedSegments": [
-          "rebate",
-          "special"
+          "rebate"
         ]
       },
       {
@@ -177,7 +187,7 @@
         "accountId": "account-3",
         "accountName": "DAU-M运动-代投-某代理-双出价-双端-联盟-付费-非R-一户一品-13179-C",
         "ruleVersion": 1,
-        "status": "partial",
+        "status": "parsed",
         "segments": {
           "biz": {
             "key": "biz",
@@ -221,6 +231,12 @@
             "mapsTo": "landing",
             "taskIds": []
           },
+          "special": {
+            "key": "special",
+            "value": "一户一品",
+            "mapsTo": "special",
+            "taskIds": []
+          },
           "bid_mode": {
             "key": "bid_mode",
             "value": "双出价",
@@ -253,8 +269,7 @@
         "confirmedAt": null,
         "raw": "DAU-M运动-代投-某代理-双出价-双端-联盟-付费-非R-一户一品-13179-C",
         "failedSegments": [
-          "rebate",
-          "special"
+          "rebate"
         ]
       },
       {
@@ -262,7 +277,7 @@
         "accountId": "account-4",
         "accountName": "DAU-M运动-代投-某代理-单出价-安卓-主站-付费-非R-常规-13180-D",
         "ruleVersion": 1,
-        "status": "partial",
+        "status": "parsed",
         "segments": {
           "biz": {
             "key": "biz",
@@ -306,6 +321,12 @@
             "mapsTo": "landing",
             "taskIds": []
           },
+          "special": {
+            "key": "special",
+            "value": "常规",
+            "mapsTo": "special",
+            "taskIds": []
+          },
           "bid_mode": {
             "key": "bid_mode",
             "value": "单出价",
@@ -338,8 +359,7 @@
         "confirmedAt": null,
         "raw": "DAU-M运动-代投-某代理-单出价-安卓-主站-付费-非R-常规-13180-D",
         "failedSegments": [
-          "rebate",
-          "special"
+          "rebate"
         ]
       },
       {
@@ -347,7 +367,7 @@
         "accountId": "account-5",
         "accountName": "DAU-闲鱼DAU-自投-李四-单出价-安卓-搜索-唤起-有R-常规-13181-E",
         "ruleVersion": 1,
-        "status": "partial",
+        "status": "parsed",
         "segments": {
           "biz": {
             "key": "biz",
@@ -391,6 +411,12 @@
             "mapsTo": "landing",
             "taskIds": []
           },
+          "special": {
+            "key": "special",
+            "value": "常规",
+            "mapsTo": "special",
+            "taskIds": []
+          },
           "bid_mode": {
             "key": "bid_mode",
             "value": "单出价",
@@ -423,8 +449,7 @@
         "confirmedAt": null,
         "raw": "DAU-闲鱼DAU-自投-李四-单出价-安卓-搜索-唤起-有R-常规-13181-E",
         "failedSegments": [
-          "rebate",
-          "special"
+          "rebate"
         ]
       },
       {
