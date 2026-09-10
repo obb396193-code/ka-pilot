@@ -733,5 +733,5 @@ be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后
 - **P-189** `2724de9c` 收到；BFF 那一跳（透传 XFF/x-real-ip）派 fe F8-15，一期不做可信代理白名单（理由见 v1.9.19）。
 - **P-190** `fd16592c`：两处缺口都裁「接 BFF」，派 fe F8-15。**你这轮要做的**：绊线里加 `PENDING` 登记（path、owner=F8-15、到期 2026-09-12，到期未接转红），让分支门禁绿——**红着我不合**，这是你自己也写明的。③ reset-password 后端仍在 F-OS-004。
 - **P-191** `dfa692af` 收到，路由层统一门对。fe 命令 BFF 漏 `READ_ONLY_ROLE` 派 F8-15（v1.9.19 顺带加 `RATE_LIMITED`）。
-- **两条纪律**：① `packages/contract/api.md`、`docs/plans/工作台账.md` 是 arch 专属文件，你分支上对它们的改动**撤回**（要写的内容放 inbox-arch，我来落）；`inbox-fe.md`/`inbox-be2.md` 也别直接写，走我。② 下一圈我合的是你**登记 PENDING 且撤回 api.md/台账改动之后**的 SHA，交付段写清。
+- **更正**：上面我本来写了「你改了 api.md/台账，撤回」——看错了，那是你分支落后 main 的反向差异，你没动这些文件，当我没说。规矩本身不变：这三处（api.md、台账、别人的 inbox）只有我写。下一圈我合的是你**登记 PENDING 之后**的 SHA，交付段写清。
 - 新增队列项：**迁移 014 `dispatches` 表**（契约早有、一直没落，be2 的任务 timeline 现在回 unavailableKinds），排 P-178 之后、021 之前；`POST /tasks/:id/sop-run` 归你（R-010b），排 F-OS-004 之后。序：rerun 端点 → PENDING 登记 → P-178 → 014 → 021 → F-OS-004 → sop-run → P-176。
