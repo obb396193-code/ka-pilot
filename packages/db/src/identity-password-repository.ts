@@ -124,14 +124,16 @@ export class IdentityPasswordRepository {
    * v1.9.5：治理后台新增成员时直接写初始密码。Codex 的 members 端点复用这里，
    * **两边不各写一套 scrypt**——KDF 参数分头写死必然对不上，改密那次已经踩过。
    */
-  async setPassword(identityId: string, plain: string, updatedBy: string | null): Promise<{ updatedAt: string }> {
+  async setPassword(identityId: string, plain: string, updatedBy: string | null, executor: Pick<PoolClient, "query"> = this.pool): Promise<{ updatedAt: string }> {
     if (typeof identityId !== "string" || identityId.length === 0) throw new R014RepositoryError("INVALID_INPUT");
     if (typeof plain !== "string" || plain.length < MIN_PASSWORD_LENGTH || plain.length > 1024) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
     const salt = randomBytes(16);
     const derived = await deriveScrypt(plain, salt);
-    const row = (await this.pool.query(
+    // Provisioning/reset supplies its transaction client: never commit the password separately
+    // from the identity/membership or session revocation. Existing callers keep pool behavior.
+    const row = (await executor.query(
       `INSERT INTO identity_passwords(identity_id, password_salt, password_scrypt, algo, updated_by)
        VALUES($1,$2,$3,'scrypt',$4)
        ON CONFLICT (identity_id) DO UPDATE
