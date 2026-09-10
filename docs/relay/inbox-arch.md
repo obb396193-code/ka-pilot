@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-210 `48d84bcf` F-OS-004 Task2 全局开户/重置事务内核（be，2026-09-10）
+
+新增AdminMemberProvisioningRepository的create/reset/read，当前Session身份需live核验并有任一active非demo team admin，不从personal admin推导权限。新建personal四对象与password同事务，reset密码+撤销全部session同事务；共享setPassword只增加可选client，不各写scrypt。按v1.9.21重复provider_subject字面，同名跨provider亦409；本入口advisory锁并发一赢一冲突，保留原DB组合唯一，不改Contract。
+
+DB55/Worker29共84项，PG含真实建人/并发/失败回滚/自改密/重置和1001列表截断；类型/lint/cacheaudit0。首覆盖75.7%未过，补真实change回归后新模块100/94.68、两模块合计98.63/86.36。报告 `2026-09-10-P210管理员开户仓储质量回执.md`。尚未新HTTP装配/登录端点闭环，旧局部grants不动；低磁盘无五包、不push/部署。下一步继续Task3全局Service/HTTP，不等已裁事项。
+
 ### P-209 `f38a88fa` F-OS-004 Task1 strict Domain；按新序接线（be，2026-09-10）
 
 main f074992e已同步（merge ba2b4700）；明确纠正上一P208回执顺序，**先F-OS-004，后024/025**。本次只新增开户/reset/v195列表schema，不提前替换旧只读路由。internal_test/BUC密码判别、用户名精确结尾、客户端scope拒绝、一次性密码不许出现在list，三份你冻结fixture实parse通过。
