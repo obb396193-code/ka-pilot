@@ -380,3 +380,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### Q-041 增补（v1.9.27，看板审查暴露的后端信号；排在 Q-038 之后、Q-041 原四项一起）
 ⑤ summary `params.compare:"prev_window"` → `compare.deltas`（等长紧邻前窗；month_to_date 前窗=上月同天数）；⑥ `cost.incentiveCost`（启航「激励」字段；ka-data 无 → unsupported）；⑦ 三 BI 指标键位 `assessment.biConv/biCashCost/overCost`（camelCase MetricValue，overCost 可负）；⑧ MetricValue `availability:"pending"`（BI 类指标 08:30–11:10 未到）；⑨ `lineage.warnings[]` 带 `{code:"BATCH_FAILED", media, accountId, businessDate}`（用你 Q-037 的 etlBatchReadableSql 反推）；⑩ **`dimension_type` / pivot2 dimA/dimB 接受 `segment:<key>`**（规则段 `analyzable:true` 或 mapsTo 非空的段；`GET naming-rules` 段带 `analyzable`）——老板要每个清洗字段都能分析。fixtures 从真响应导出。这些是 fe F8-19b/F8-22 的依赖，**优先级高于 Q-042**。
+
+### Q-043：任务管理维护（v1.9.28，排 Q-041 增补之后、Q-042 之前）
+老板要任务维护和考核价维护做进投放任务模块（参照同事工作台 v7 的任务管理）。做：① 迁移（下一个空号）：`tasks` 加 `aliases TEXT[]`、`monitor_url`、`product_name`、status 枚举加 `paused`；② `PATCH /tasks/:id` 接受四字段；`POST /tasks/batch-save` 整体保存（全成功才写，失败 400 带 `details.failed[]`）；③ 命名解析：昵称无 task_id 时按任务 `aliases` 最长命中绑 `taskIds`（复用 `matchLongest` 那套），并进 `GET /admin/account-names` 的解析结果；④ 考核价 `op:"revoke"` 行 + 取值规则「最近一条未作废」（改 `computeWindowAssessment` 取价处，Codex 的 BI 内核也用它）；⑤ 三份 fixture 从真响应导出；⑥ seed 演示任务补 aliases / 一条 paused / 一段 revoke，让 fe 有东西可看。

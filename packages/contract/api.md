@@ -1390,3 +1390,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **失败批次信号**：data/query 的 `lineage.warnings[]` 从 string[] 改为可带对象 **`{code:"BATCH_FAILED", media, accountId, businessDate}`**（string 仍兼容）；前端据此显横幅「N 户 × M 天数据缺失（拉数失败）」。
 - **维度开放到任意清洗段**：`dimension_type` 除固定枚举外接受 **`segment:<key>`**（`<key>` = 该媒体命名规则里 `mapsTo` 非空或显式 `analyzable:true` 的段，如 `segment:bid_mode`、`segment:device`、`segment:landing`），按解析值分组，未解析归「未标注」；`GET /admin/naming-rules` 响应的段带 `analyzable`。`account.pivot2` 的 `dimA/dimB` 同样接受 `segment:<key>`。这是老板要求：每个渠道昵称清洗出的每个字段都能拿来做分析和透视。
 - **前端分摊规则**：分摊分母 = Σ已返回子行 cost（不是父行 cost）；`lineage.truncated/partial` 或父 `biConv` 为 pending/missing 时整列不分摊显「−」/「待到」；分摊派生的 BI 现金成本也带「分」；后端给了 `biCashCost` 的行不重算。
+
+## v1.9.28 追加（2026-09-10 老板问「任务/考核价维护是不是也要做、放投放任务？」；参照同事工作台 v7 任务管理）
+- **放哪**：投放任务页加「任务管理」视图 tab（按视图收敛原则不进侧栏）；单任务的考核价/日预算编辑留在任务详情·总览（已有）。任务管理视图 = 按业务大类（`biz_name`）分卡片 → 卡内细分任务表：名称 + 在投/停投胶囊 · 别名 chips · 预算 · 考核价（当前值 + 「历史」弹层）· 监测链接 · 产品名 · 行删除；停投沉底；超过 8 条折叠；按大类整体保存。
+- **tasks 表/DTO 加字段**：`aliases TEXT[]`（昵称里没有 task_id 时，命名解析按**最长别名命中**把账户绑到任务，写进解析行 `taskIds`）、`monitor_url TEXT`、`product_name TEXT`（与账户级 `accounts.product_name` 独立）、`status` 枚举加 **`paused`**（停投；`ended` 仍表示任务期结束）。`PATCH /tasks/:id` 接受这四个；新增 **`POST /tasks/batch-save {items:[{task_id, ...可编辑字段}]}`**（一个大类整体保存，逐条校验、全部成功才写，任一失败 400 带 `details.failed[]`）。「新建任务大类」= 新建任务时填新的 `biz_name`，大类本身不建表。
+- **考核价分段**：维持只增不改；加 **`op:"revoke"`** 行（`POST /tasks/:id/assessment-price {op:"revoke", effective_date}`）表示作废某段，取值规则 = effective_date ≤ D 的最近一条**未作废**段；历史弹层 = `GET /settings/change-log?kinds=assessment_price&task_id=`，显示生效日 / 值 / 改的人 / 证据链接 / 作废标记。fixtures：`tasks/list-manage.json`（含 aliases/status paused/monitor_url/product_name）、`tasks/batch-save.json`、`tasks/assessment-price-revoke.json`。
+- 归属：后端 be2（Q-043），前端 fe（F8-23）。
