@@ -257,4 +257,46 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     if ((dryRun!.total as number) > 0) expect(typeof dryRun!.hitRate).toBe("number");
     else expect(dryRun!.hitRate).toBeNull();
   });
+  it("★Q-038: the pending segment's value distribution rides along on both governance reads", async () => {
+    // 腾讯第 10 段这类「位置固定、含义没定」的段：解析照常存值，但不进任何维度，
+    // 治理页靠取值分布让优化师每月确认它到底是什么。
+    const put = await callRoute(auth, "/api/v1/admin/naming-rules", "PUT", {
+      segments: [
+        { key: "channel", label: "渠道", order: 0, source: "enum", values: ["DAU"],
+          required: true, multi: false, mapsTo: null },
+        { key: "unknown_1", label: "第 10 段·待确认", order: 1, source: "free",
+          required: false, multi: false, mapsTo: null, pending: true },
+      ],
+      separators: ["-"], effective_from: "2026-09-01", note: "待确认段",
+    }, "?media=KUAISHOU");
+    expect(put.status, JSON.stringify(put.body)).toBe(200);
+    await callRoute(auth, "/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
+
+    const distribution = (result: Captured): Record<string, unknown>[] =>
+      (result.body as { data: { pendingSegments: Record<string, unknown>[] } }).data.pendingSegments;
+
+    const listed = await call("/api/v1/admin/account-names", "GET", undefined, "?media=KUAISHOU");
+    const [pending, ...rest] = distribution(listed);
+    // 只有标了 pending 的段进来：渠道段是正式段，不该出现在「待确认」清单里。
+    expect(rest).toEqual([]);
+    expect(pending).toMatchObject({ media: "KUAISHOU", key: "unknown_1", label: "第 10 段·待确认" });
+    const values = pending!.values as { value: string; count: number }[];
+    expect(values.length).toBeGreaterThan(0);
+    expect(values.every((entry) => typeof entry.value === "string" && entry.count > 0)).toBe(true);
+    // 截断了要说出来，别让人以为看见的就是全部取值。
+    expect(pending!.distinctValues).toBe(values.length);
+
+    // GET/PUT 规范也带同一份分布：治理页在一屏里既看得到段定义又看得到实际取值。
+    expect(distribution(await call("/api/v1/admin/naming-rules", "GET", undefined, "?media=KUAISHOU"))[0])
+      .toMatchObject({ key: "unknown_1" });
+    expect(distribution(put)).toBeDefined();
+
+    // 待确认段声明 mapsTo 就是自相矛盾（规则说映射、运行时忽略），写入这一关直接拒。
+    const contradiction = await callRoute(auth, "/api/v1/admin/naming-rules", "PUT", {
+      segments: [{ key: "unknown_1", label: "第 10 段·待确认", order: 0, source: "free",
+        required: false, multi: false, mapsTo: "placement", pending: true }],
+      separators: ["-"], effective_from: "2026-09-01",
+    }, "?media=KUAISHOU");
+    expect(contradiction.status).toBe(400);
+  });
 });

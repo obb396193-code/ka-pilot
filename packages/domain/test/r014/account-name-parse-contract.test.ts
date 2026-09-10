@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   EMPTY_DIMENSIONS_DTO, PARSED_DIMENSIONS, accountDimensionsDtoSchema, accountDimensionsSchema,
   applyOverride, computeConflicts, extractTaskIds, namingRuleSchema, parseAccountName,
-  resolveAccountDimensions, statusWithConflicts, toDimensionsDto,
+  pendingSegmentDefs, resolveAccountDimensions, segmentMapsTo, statusWithConflicts, toDimensionsDto,
   type NamingRule,
 } from "../../src/r014/account-name-parse-contract.js";
 
@@ -330,5 +330,62 @@ describe("v1.9.22 ① anchor segments and longest-alias matching", () => {
     // 两个别名共享前缀时，「谁先匹配算谁」会把长的截成短的；开了最长命中就该完整命中。
     expect(parseAccountName("优选广告位", longest).segments.placement?.value).toBe("优选广告位");
     expect(parseAccountName("优选", longest).segments.placement?.value).toBe("优选");
+  });
+});
+
+describe("v1.9.23 pending segments (腾讯第 10 段·待确认)", () => {
+  /** 腾讯规则的形状：前面几段照常，末尾一段含义还没定，先占位。 */
+  const withPending = (mapsTo: string | null = null): NamingRule => namingRuleSchema.parse({
+    media: "TENCENT",
+    version: 1,
+    separators: ["-"],
+    segments: [
+      { key: "operator", label: "运营方", order: 1, source: "enum", required: true, multi: false,
+        mapsTo: "agent_type", values: ["自投", "代投"] },
+      { key: "optimizer", label: "优化师", order: 2, source: "free", required: true, multi: false,
+        mapsTo: "optimizer" },
+      { key: "unknown_1", label: "第 10 段·待确认", order: 3, source: "free", required: false,
+        multi: false, mapsTo, pending: true },
+    ],
+  });
+
+  it("keeps the pending segment's value but never maps it to a dimension", () => {
+    const parsed = parseAccountName("自投-张三-XYZ", withPending());
+    // 值要存下来——优化师就是靠这些取值来确认这段是什么。
+    expect(parsed.segments.unknown_1?.value).toBe("XYZ");
+    // 但它不许带 mapsTo：带了就会进 resolveAccountDimensions，交叉表里出现一列猜出来的维度。
+    expect(parsed.segments.unknown_1?.mapsTo).toBeNull();
+    expect(parsed.status).toBe("parsed");
+  });
+
+  it("refuses a rule that maps a pending segment to a dimension", () => {
+    // 规则上写着映射、运行时又忽略，是两份互相矛盾的事实，直接在校验闸拦掉。
+    expect(() => withPending("placement")).toThrow();
+  });
+
+  it("ignores a mapsTo smuggled past the schema into stored JSONB", () => {
+    // 库里的 JSONB 是能手写的：旧规则带着 pending + mapsTo 读回来，运行时也不认。
+    const smuggled = { key: "unknown_1", label: "第 10 段·待确认", order: 3, source: "free" as const,
+      required: false, multi: false, mapsTo: "placement", pending: true };
+    expect(segmentMapsTo(smuggled)).toBeNull();
+  });
+
+  it("keeps a manual override on a pending segment out of the dimensions too", () => {
+    const rule = withPending();
+    const parsed = parseAccountName("自投-张三-XYZ", rule);
+    const applied = applyOverride(parsed, { unknown_1: "人工填的值" }, rule);
+    // 人改的是「这段写的是什么」，不是「这段算哪个维度」——后者要等段被确认。
+    expect(applied.segments.unknown_1?.value).toBe("人工填的值");
+    expect(applied.segments.unknown_1?.mapsTo).toBeNull();
+    const dimensions = resolveAccountDimensions({
+      segments: applied.segments, overriddenKeys: ["unknown_1"], platform: {},
+    });
+    expect(dimensions.placement).toEqual({ value: null, source: null });
+  });
+
+  it("lists pending segments in order for the cleaning page", () => {
+    expect(pendingSegmentDefs(withPending())).toEqual([{ key: "unknown_1", label: "第 10 段·待确认" }]);
+    // 没有待确认段的规范返回空数组，不是 null——前端照常渲染一个空区块。
+    expect(pendingSegmentDefs(KUAISHOU)).toEqual([]);
   });
 });

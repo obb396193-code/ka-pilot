@@ -25,6 +25,13 @@ export const namingSegmentSchema = z.object({
    * 默认那套「谁先匹配算谁」会把长的截成短的；开了它就按长度倒序试，先长后短。
    */
   matchLongest: z.boolean().optional(),
+  /**
+   * v1.9.23：**未知段**。渠道规范里位置固定、含义还没定的那一段（腾讯第 10 段），
+   * 先原样占位：解析照常把值存进 `segments[key]`，但**不进任何维度**——
+   * 含义没确认就往维度里塞，等于拿猜的值污染交叉表和日报，比缺这一维更糟。
+   * 归属清洗页列它的取值分布，优化师每月确认后再改成正式 key + `mapsTo`。
+   */
+  pending: z.boolean().optional(),
   pattern: z.string().min(1).optional(),
   required: z.boolean().default(false),
   /** 允许一段里塞多个值（快手的「专项」用 `-` 连多个）；**整条规范里最多一个**。 */
@@ -37,6 +44,15 @@ export const namingSegmentSchema = z.object({
   }
   if (segment.source === "regex" && segment.pattern === undefined) {
     context.addIssue({ code: "custom", message: "a regex segment must carry its pattern", path: ["pattern"] });
+  }
+  // 待确认的段不许声明 mapsTo：规则上写着映射、运行时又忽略它，是两份互相矛盾的事实，
+  // 迟早有人照规则去查维度然后发现全空。要映射就先把这段确认下来、去掉 pending。
+  if (segment.pending === true && segment.mapsTo !== null) {
+    context.addIssue({
+      code: "custom",
+      message: "a pending segment must not map to a dimension until it is confirmed",
+      path: ["mapsTo"],
+    });
   }
 });
 export type NamingSegment = z.infer<typeof namingSegmentSchema>;
@@ -70,6 +86,29 @@ export function toNamingRule(record: NamingRule): NamingRule {
     segments: record.segments,
     separators: record.separators,
   });
+}
+
+/**
+ * 段实际生效的维度映射。**待确认段一律 null**——即便库里存着一版 `pending:true` 又带
+ * `mapsTo` 的旧规则（schema 现在不收，但 JSONB 是能手写进去的），运行时也不认它。
+ * 校验闸 + 运行时各挡一层，因为这两处的失效方式不一样：schema 挡的是新规则，
+ * 这里挡的是已经躺在库里的旧规则。
+ */
+export function segmentMapsTo(segment: NamingSegment): string | null {
+  return segment.pending === true ? null : segment.mapsTo;
+}
+
+export interface PendingSegmentDef {
+  key: string;
+  label: string;
+}
+
+/** 规则里所有待确认段，按 order。归属清洗页照这个列「第 N 段·待确认」。 */
+export function pendingSegmentDefs(rule: NamingRule): PendingSegmentDef[] {
+  return [...rule.segments]
+    .sort((left, right) => left.order - right.order)
+    .filter((segment) => segment.pending === true)
+    .map((segment) => ({ key: segment.key, label: segment.label }));
 }
 
 export const parseStatusSchema = z.enum(["parsed", "partial", "failed", "conflict", "confirmed", "overridden"]);
@@ -166,7 +205,7 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
   const unmatched: string[] = [];
   const record = (segment: NamingSegment, token: string): void => {
     const { bare, taskIds } = extractTaskIds(token);
-    segments[segment.key] = { key: segment.key, value: bare, mapsTo: segment.mapsTo, taskIds };
+    segments[segment.key] = { key: segment.key, value: bare, mapsTo: segmentMapsTo(segment), taskIds };
   };
 
   /**
@@ -235,7 +274,7 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
         segments[absorb.key] = {
           key: absorb.key,
           value: joined,
-          mapsTo: absorb.mapsTo,
+          mapsTo: segmentMapsTo(absorb),
           taskIds: middle.flatMap((token) => extractTaskIds(token).taskIds),
         };
       } else {
@@ -335,7 +374,9 @@ export function applyOverride(
   const override = parseOverrideSchema.parse(rawOverride);
   const keys = Object.keys(override);
   if (keys.length === 0) return parse;
-  const mapsToByKey = new Map(rule.segments.map((segment) => [segment.key, segment.mapsTo]));
+  // 人工改一个待确认段的值也照样不进维度：人改的是「这一段写的是什么」，
+  // 不是「这一段该算哪个维度」——后者要等优化师确认段的含义。
+  const mapsToByKey = new Map(rule.segments.map((segment) => [segment.key, segmentMapsTo(segment)]));
   const segments = { ...parse.segments };
   for (const [key, value] of Object.entries(override)) {
     const existing = segments[key];

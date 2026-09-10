@@ -1,6 +1,6 @@
 import {
   EMPTY_DIMENSIONS_DTO, applyOverride, namingRuleSchema, parseAccountName, parsedSegmentsSchema,
-  parseOverrideSchema, parseStatusSchema,
+  parseOverrideSchema, parseStatusSchema, pendingSegmentDefs,
   resolveAccountDimensions, toDimensionsDto, toNamingRule,
   type AccountDimensionsDto, type ApprovedWorkspaceAuthContext, type NamingRule,
   type ParseConflict, type ParseStatus,
@@ -53,6 +53,24 @@ export interface AccountNameParseRow extends AccountNameParseRecord {
   failedSegments: string[];
 }
 
+/**
+ * v1.9.23：待确认段的取值分布。优化师每月看这个来确认「第 10 段到底是什么」，
+ * 所以口径是**该媒体在他可见范围内的全量**，不跟着列表的 status/q/翻页走——
+ * 被搜索词裁过的分布会让人按半份数据下结论。
+ */
+export interface PendingSegmentDistribution {
+  /** 段 key 在不同媒体下可能重名（两家都叫 `unknown_1`），所以带上 media。 */
+  media: string;
+  key: string;
+  label: string;
+  values: { value: string; count: number }[];
+  /** 去重后的取值总数；大于 `values.length` 就是被下面的上限截过。 */
+  distinctValues: number;
+}
+
+/** 单个待确认段最多回多少种取值：free 段的取值可能上千，全回等于把响应撑爆。 */
+const PENDING_VALUE_LIMIT = 200;
+
 export interface ReparseCandidate {
   media: string;
   accountId: string;
@@ -64,12 +82,30 @@ export interface ReparseCandidate {
 const PARSE_COLUMNS = `workspace_id, media, account_id, account_name, rule_version, status,
   segments, task_ids, conflicts, override, parsed_at, confirmed_by, confirmed_at`;
 
+/**
+ * v1.9.23：读回来的规则里，待确认段身上的 `mapsTo` 一律抹掉。
+ *
+ * 写入那道闸（`putRule` 走 `namingRuleSchema`）已经拒了「pending 又声明 mapsTo」这种
+ * 自相矛盾的规则，但 `segments` 是 JSONB——历史行、手写 SQL 都能塞进来。读的时候
+ * **抹掉而不是报错**：报错会让这个 media 的账户列表维度整体 500，
+ * 打击面比「少一个还没确认的维度」大得多。
+ */
+function sanitizeStoredSegments(segments: unknown): unknown {
+  if (!Array.isArray(segments)) return segments;
+  return segments.map((segment) => (
+    typeof segment === "object" && segment !== null
+      && (segment as { pending?: unknown }).pending === true
+      ? { ...(segment as Record<string, unknown>), mapsTo: null }
+      : segment
+  ));
+}
+
 function mapRule(row: Record<string, unknown>, workspaceId: string): NamingRuleRecord {
   requireOwnWorkspace(row, workspaceId);
   const parsed = namingRuleSchema.safeParse({
     media: row.media,
     version: Number(row.version),
-    segments: row.segments,
+    segments: sanitizeStoredSegments(row.segments),
     separators: row.separators,
   });
   if (!parsed.success) throw new R014RepositoryError("INVALID_RESULT");
@@ -207,20 +243,23 @@ export class AccountNameParseRepository {
       ? null
       : `%${options.q.trim().replace(/[\\%_]/g, (char) => `\\${char}`)}%`;
     const scope = accountScopeParams(approved);
-    const where = `WHERE workspace_id=$1
-       AND ($2::text IS NULL OR status=$2)
-       AND ($3::text IS NULL OR media=$3)
-       AND ($4::text IS NULL OR account_id ILIKE $4 ESCAPE '\\' OR account_name ILIKE $4 ESCAPE '\\')
+    // 表必须起别名：谓词里的 `media`/`account_id` 不带前缀时，PG 会先在
+    // `jsonb_to_recordset(...) AS scoped(media, account_id)` 这一层里找到同名列，
+    // 于是条件退化成 `scoped.media = scoped.media` —— 恒真，闸等于没装。
+    const where = `WHERE parse.workspace_id=$1
+       AND ($2::text IS NULL OR parse.status=$2)
+       AND ($3::text IS NULL OR parse.media=$3)
+       AND ($4::text IS NULL OR parse.account_id ILIKE $4 ESCAPE '\\' OR parse.account_name ILIKE $4 ESCAPE '\\')
        -- v1.9.9：成员看得到列表，但只看得到自己授权内的账户。
-       AND ${accountScopeClause("$5", "$6", "media", "account_id")}`;
+       AND ${accountScopeClause("$5", "$6", "parse.media", "parse.account_id")}`;
     const values = [approved.workspaceId, options.status ?? null, options.media ?? null, like,
       scope.kind, scope.allowed];
     const total = Number((await this.pool.query(
-      `SELECT count(*)::int AS n FROM account_name_parses ${where}`, values,
+      `SELECT count(*)::int AS n FROM account_name_parses AS parse ${where}`, values,
     )).rows[0].n);
     const result = await this.pool.query(
-      `SELECT ${PARSE_COLUMNS} FROM account_name_parses ${where}
-       ORDER BY media, account_id LIMIT $7 OFFSET $8`,
+      `SELECT ${PARSE_COLUMNS} FROM account_name_parses AS parse ${where}
+       ORDER BY parse.media, parse.account_id LIMIT $7 OFFSET $8`,
       [...values, pageSize, (page - 1) * pageSize],
     );
     // 每行的失败段要对着**它自己那版规则**推：规则改过之后，旧行不能拿新规则算缺了什么。
@@ -245,6 +284,60 @@ export class AccountNameParseRepository {
       });
     }
     return { items, total };
+  }
+
+  /**
+   * v1.9.23：待确认段的取值分布（`GET /admin/account-names` 与 naming-rules 都回它）。
+   *
+   * 取值优先用**人工覆盖值**：优化师确认段含义时看的应该是这段现在实际是什么，
+   * 而不是解析器当初切出来的原值——人已经纠正过的行还按旧值统计会把分布带偏。
+   *
+   * 可见范围与列表同一套谓词：成员只统计得到自己授权内的账户，
+   * 否则「取值分布」会变成一条绕过授权看全空间昵称的旁路。
+   */
+  async pendingSegmentDistribution(
+    auth: ApprovedWorkspaceAuthContext,
+    options: { media?: string } = {},
+  ): Promise<PendingSegmentDistribution[]> {
+    const approved = approveAuth(auth);
+    if (options.media !== undefined && !MEDIA.test(options.media)) {
+      throw new R014RepositoryError("INVALID_INPUT");
+    }
+    // 只有配过规范的媒体才谈得上待确认段；没配过的媒体连段定义都没有。
+    const media = options.media !== undefined
+      ? [options.media]
+      : (await this.pool.query(
+        "SELECT DISTINCT media FROM naming_rules WHERE workspace_id=$1 ORDER BY media",
+        [approved.workspaceId],
+      )).rows.map((row: { media: string }) => String(row.media));
+
+    const scope = accountScopeParams(approved);
+    const distributions: PendingSegmentDistribution[] = [];
+    for (const item of media) {
+      const stored = await this.currentRule(approved, item);
+      if (stored === null) continue;
+      for (const segment of pendingSegmentDefs(toNamingRule(stored))) {
+        const rows = (await this.pool.query(
+          `SELECT COALESCE(parse.override->>$3::text, parse.segments->$3::text->>'value') AS value,
+                  count(*)::int AS n
+           FROM account_name_parses AS parse
+           WHERE parse.workspace_id=$1 AND parse.media=$2
+             AND COALESCE(parse.override->>$3::text, parse.segments->$3::text->>'value') IS NOT NULL
+             AND ${accountScopeClause("$4", "$5", "parse.media", "parse.account_id")}
+           GROUP BY 1 ORDER BY n DESC, value ASC`,
+          [approved.workspaceId, item, segment.key, scope.kind, scope.allowed],
+        )).rows as { value: string; n: number }[];
+        distributions.push({
+          media: item,
+          key: segment.key,
+          label: segment.label,
+          values: rows.slice(0, PENDING_VALUE_LIMIT).map((row) => ({ value: String(row.value), count: Number(row.n) })),
+          // 截断了就说出来，别让人以为看见的就是全部取值。
+          distinctValues: rows.length,
+        });
+      }
+    }
+    return distributions;
   }
 
   /**
