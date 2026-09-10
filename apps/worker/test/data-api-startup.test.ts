@@ -119,6 +119,13 @@ describe("Data API production composition", () => {
     });
     expect(dryRun.status).toBe(401); // Registered, but no session: never old 404 or preflight access.
     await expect(dryRun.json()).resolves.toMatchObject({ ok: false, error: { code: "UNAUTHORIZED", requestId: "startup-d6" } });
+    for (const path of ["admin/members", "admin/members/00000000-0000-4000-8000-000000000211/reset-password"]) {
+      const command = await fetch(`http://127.0.0.1:${port}/api/v1/${path}`, {
+        method: "POST", headers: { authorization: `Bearer ${internalToken}`, "x-request-id": "startup-p211" }, body: "{}",
+      });
+      expect(command.status).toBe(401); // New routes are mounted; no session means no provisioning.
+      await expect(command.json()).resolves.toMatchObject({ ok: false, error: { code: "UNAUTHORIZED", requestId: "startup-p211" } });
+    }
   }, 20_000);
 
   it("fails startup when KA Data is explicitly enabled without its credentials", async () => {

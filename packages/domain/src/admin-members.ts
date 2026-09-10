@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { internalTestLoginRequestSchema, sessionViewSchema } from "./session-http-contract.js";
 const uuid = z.string().uuid();
 const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(v => {
   const d = new Date(`${v}T00:00:00Z`); return !v.startsWith("0000-") && Number.isFinite(d.valueOf()) && d.toISOString().slice(0, 10) === v;
@@ -28,8 +29,10 @@ export type AdminMemberGrantsData = z.infer<typeof adminMemberGrantsDataSchema>;
 // v1.9.21: additive until the new provisioning/list HTTP composition is wired.
 // A plain `$` also matches before a final newline in JavaScript: require true end.
 const loginName = z.string().min(1).max(128).regex(/^[A-Za-z0-9._@-]{1,128}$(?![\s\S])/);
-const initialPassword = z.string().min(12).max(1024);
-const createBase = z.object({ display_name: adminMemberSchema.shape.displayName,
+// New identities must be able to pass the EXISTING login/session wire contract:
+// password max512, displayName max200. Storage's wider bounds are not login support.
+const initialPassword = internalTestLoginRequestSchema.shape.password.min(12);
+const createBase = z.object({ display_name: sessionViewSchema.shape.identity.shape.displayName,
   provider_subject: loginName, role: adminMemberSchema.shape.role }).strict();
 export const adminMemberCreateRequestSchema = z.discriminatedUnion("provider", [
   createBase.extend({ provider: z.literal("internal_test"), initial_password: initialPassword.optional() }).strict(),

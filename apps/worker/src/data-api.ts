@@ -7,6 +7,7 @@ import {
   AgentModelCatalogRepository,
   AdminCalendarRepository,
   AdminMembersRepository,
+  AdminMemberProvisioningRepository,
   EtlRunListRepository,
   EtlRunRerunRepository,
   ChangeSetRepository,
@@ -104,7 +105,7 @@ async function main(): Promise<void> {
     accountMuteService: new AccountMuteService(new AccountMuteRepository(pool)),
     agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
     adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
-    adminMembersService: new AdminMembersService(new AdminMembersRepository(pool)),
+    adminMembersService: new AdminMembersService(new AdminMembersRepository(pool), undefined, new AdminMemberProvisioningRepository(pool)),
     etlRunListService: new EtlRunListService(new EtlRunListRepository(pool)),
     etlRunRerunService: new EtlRunRerunService(new EtlRunRerunRepository(pool)),
     detailService: new ReadDetailService({

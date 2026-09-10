@@ -6173,6 +6173,13 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
 
+
+### 自查-20260910-01｜F-OS-004 Task3 已完成现场交审，立即转启航优先
+
+- be/r010代码 **ec221ecc**，18文件；开启管理员开户/重置真实HTTP，新增DB用户名登录（不再依赖ENV账号清单），全局成员列表与原局部grants并存。当前个人optimizer+其它team admin可治理，普通身份/撤销membership403；默认无grant不擅自授权。
+- Domain57、DB50（含真实PG）、Worker134+生产入口/Session14均过；三包type/lint，Worker缓存audit0。新service/route/provider行98.73/分支93.52%。磁盘3.6GiB，未五包全量/build；没有真实源/前端浏览器/内网部署证明。完整命令对应文件和失败记录见 `docs/plans/2026-09-10-自查01-开户HTTP质量回执.md`。
+- **请审两点**：①一次组合跑改密500，后续隔离及组合均未复现，根因未知保留观察；②开户现复用Session名字200/password512限制，上版P209曾用存储256/1024会开户可存但登录不合法，已实测512/200登录通过、超限400。be2旧自改密码仓储仍1024，建议协调其路由与Session上限，不由本批扩改。
+- main cb9e368c新顺序收到；本Task3已到门禁提交点，仅保存候选给你，不继续开新开户工作。**P-211留给你的看板派单**，不再自编P-2xx。接着合main后P176 Task2/3→readiness→025→P211；024/sop-run后置。无push/媒体写/前端变动，待arch审查而非自行宣告合流。
 ---
 
 ## fe → arch：F8-16 知识库页接真接口（2026-09-10）
@@ -6312,3 +6319,16 @@ domain 1423 / db 1587 / **worker 2118（+2 skipped，串行 186/186 文件）** 
 
 ### ➊ 要老板/你定的：39 处「当前为示例」的 toast
 全站还有 39 处点了只弹「接口接入后生效（当前为示例）」的按钮（改角色、撤销授权、按日补拉、重跑、新建定时…）。老板说「不要出现演示之类的东西」，但**那些后端接口确实还没开**——把文案改成假装能用会更糟，所以我没动。三个选项：(a) 你派单我逐个接掉；(b) 接口没开的按钮直接不显示；(c) 文案统一改成「暂未开放」不提「示例」。等拍。
+
+### 自查-20260910-02｜readiness 内部范围接线请求，P176继续
+
+- cb9e368c已合本人树（de555fdc，信箱两边追加并集）；Q037列表屏蔽已到，不再等待。合并的arch看板计划自带末尾空行diff-check告警保留未改，不算本人新增。
+- 当前 `loadWorkspaceSyncReadiness` 只收workspace/user/allowedAccounts，无日期；account-list-repository:297、task-list-repository:351、work-item-list-repository:234 均未传已有query.businessDate，`qihang-job-recovery.ts:70` 又把多businessDate job共用一次readiness。另scheduler `workspace-sync-repository.ts` 的hasSuccessfulFull独立复制旧done-full判断。仅替换helperSQL会缺expected日期，不能自称全expected tuple-day可读。
+- 建议最小接线：helper增加明确dateFrom/dateTo（不默认当前时间、不从最近任意run猜日期），列表三调用传该请求businessDate单日；scheduler/recovery按各job冻结businessDate/日期区间传值，同RR快照复用canonical+etlBatchReadableSql，空scope/缺行/失败未重算false。请确认“首次完整”需覆盖的是**页面业务日**还是**初次full冻结窗口**（后者需依初始run.batchScope，而不是页面date）。两者会决定旧完整首次同步到了新的一天是否仍initialFullComplete=true。
+- 若采用页面业务日，请将三处repository仅传日期的hunk授权本人或派be2（不改其查询DTO/SQL/业务规则）；本人不擅改其它人文件。P176 Task3只在该守卫未接线前维持fail-stop，继续做明确范围的假上游串联/失败记录测试，不拿run done假装就绪。
+
+### 自查-20260910-03｜Full/Incr执行接线+真实PG恢复证据（未注入Runtime）
+
+- 代码 **7879b97f**，Full/Incr通过可选typed recorder冻结scope并处理单批重试耗尽；账户50/批、广告5/80沿用；任一前后小时失败户不派生假delta。安全/持久化失败仍抛。
+- **97/97定向**含真实QihangClient假fetch→真实PG metadata/Raw/ledger→真正Canonical handler：51账户前50失败后1成功、旧canonical屏蔽、别空间同号不受影响；incr新Raw不足以恢复，真实重算后51户恢复、失败记录保留。type/lint/cacheaudit0，行100/分支93.92。详细日志摘要/失败/限制见 `docs/plans/2026-09-10-自查03-批次隔离执行质量回执.md`。
+- **Runtime仍fail-stop**，未注入该可选依赖，未宣称线上容错已生效。等自查02的expected日期口径/调用点接齐再启用；最终仍缺consumer+公开HTTP+OS真凭证证据。磁盘3.7GiB按规则未五包全量/build，无push/前端/媒体写。继续025等已明确项，不把等待一个裁决当所有工作阻断。

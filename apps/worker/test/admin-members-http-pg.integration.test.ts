@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { Server } from "node:http";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { AdminMembersRepository, AuthSessionRepository, runMigrations } from "@ka/db";
+import { AdminMembersRepository, AdminMemberProvisioningRepository, AuthSessionRepository, runMigrations } from "@ka/db";
 import { AdminMembersService } from "../src/admin/members-service.js";
 import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
 import { SessionAuthService } from "../src/auth/session-auth-service.js";
@@ -28,7 +28,7 @@ describe("admin member/grant real HTTP Session PG", { timeout: 30_000 }, () => {
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$4,'KUAISHOU','same','execute'),($1,$4,'TENCENT','same','read'),($2,$4,'KUAISHOU','same','execute'),($3,$5,'KUAISHOU','same','preview')", [personal, team, foreign, identity, outsider]);
     const unused = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
     server = createDataApiServer({ service: unused, detailService: unused, taskListService: unused, accountListService: unused, workItemListService: unused,
-      internalToken, sessionAuthService: sessions, adminMembersService: new AdminMembersService(repo),
+      internalToken, sessionAuthService: sessions, adminMembersService: new AdminMembersService(repo, undefined, new AdminMemberProvisioningRepository(pool)),
     } as unknown as DataApiServerOptions);
     await new Promise<void>((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
     const address = server.address(); if (!address || typeof address === "string") throw new Error("No listener"); origin = `http://127.0.0.1:${address.port}`;
@@ -52,9 +52,10 @@ describe("admin member/grant real HTTP Session PG", { timeout: 30_000 }, () => {
       ...(token ? { cookie: `ka_session=${token}` } : {}), "x-request-id": "pg-members", "x-ka-workspace-id": foreign, "x-ka-role": "admin" } });
     return { status: response.status, body: await response.json() };
   }
-  it("limits member profile/session evidence and tuple grants to active workspace; no secret columns", async () => {
+  it("global governance lists personal members but tuple grants remain in active workspace; no secret columns", async () => {
     const token = await issue(), members = await call(token); expect(members.status).toBe(200);
-    expect(members.body.data.items).toHaveLength(1); expect(members.body.data.items[0]).toMatchObject({ identityId: identity, userId: user, grantsCount: 2 });
+    expect(members.body.data.items.find((row: { identityId: string }) => row.identityId === identity)).toMatchObject({ identityId: identity, userId: user, grantsCount: 2 });
+    expect(members.body.data.items.some((row: { identityId: string }) => row.identityId === outsider)).toBe(true);
     expect(JSON.stringify(members.body)).not.toMatch(/provider_subject|token_hash|qihang|secret_ref/); expect(members.body.meta.dataAsOf).toBeNull();
     const grants = await call(token, identity); expect(grants.status).toBe(200); expect(grants.body.data.items.map((r: { media: string; accountId: string; accessLevel: string }) => [r.media, r.accountId, r.accessLevel])).toEqual([["KUAISHOU", "same", "execute"], ["TENCENT", "same", "read"]]);
     expect((await call(token, outsider)).status).toBe(404);
@@ -62,14 +63,14 @@ describe("admin member/grant real HTTP Session PG", { timeout: 30_000 }, () => {
   it("team suppresses persisted grants, scope rotates, old and revoked tokens stop before repo", async () => {
     const token = await issue(), nextToken = randomUUID() + randomUUID();
     expect((await sessions.switchWorkspace({ token, nextToken, targetWorkspaceId: team, expiresAt: new Date(Date.now() + 300000) })).status).toBe("approved");
-    const members = await call(nextToken); expect(members.body.data.items[0]).toMatchObject({ userId: teamUser, grantsCount: 0 });
+    const members = await call(nextToken); expect(members.body.data.items.find((row: { identityId: string }) => row.identityId === identity)).toMatchObject({ userId: user, grantsCount: 2 });
     expect((await call(nextToken, identity)).body.data.items).toEqual([]);
     read.mockClear(); expect((await call(token)).status).toBe(401); expect((await call()).status).toBe(401); expect(read).not.toHaveBeenCalled();
     await sessions.logout(nextToken); expect((await call(nextToken, identity)).status).toBe(401); expect(read).not.toHaveBeenCalled();
   });
-  it.each(["optimizer", "operator", "lead"])("rejects %s despite forged header before repo", async role => {
+  it.each(["optimizer", "operator", "lead"])("global team admin remains authorized from personal %s; local grants gate unchanged", async role => {
     await pool.query("UPDATE workspace_memberships SET role=$2 WHERE workspace_id=$1", [personal, role]);
-    try { const token = await issue(); read.mockClear(); expect((await call(token)).status).toBe(403); expect((await call(token, identity)).status).toBe(403); expect(read).not.toHaveBeenCalled(); }
+    try { const token = await issue(); read.mockClear(); expect((await call(token)).status).toBe(200); expect((await call(token, identity)).status).toBe(403); expect(read).not.toHaveBeenCalled(); }
     finally { await pool.query("UPDATE workspace_memberships SET role='admin' WHERE workspace_id=$1", [personal]); }
   });
   it("actual oversized name is rejected rather than exposed/truncated", async () => {
@@ -82,21 +83,22 @@ describe("admin member/grant real HTTP Session PG", { timeout: 30_000 }, () => {
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id) SELECT $1,$2,'KUAISHOU','bulk-'||n FROM generate_series(1,1000) n", [team, identity]);
     const token = await issue(), nextToken = randomUUID() + randomUUID();
     expect((await sessions.switchWorkspace({ token, nextToken, targetWorkspaceId: team, expiresAt: new Date(Date.now() + 300000) })).status).toBe("approved");
-    expect((await call(nextToken)).body.data.items[0].grantsCount).toBe(0); expect((await call(nextToken, identity)).body.data.items).toEqual([]);
+    expect((await call(nextToken)).body.data.items.find((row: { identityId: string }) => row.identityId === identity).grantsCount).toBe(2); expect((await call(nextToken, identity)).body.data.items).toEqual([]);
   });
   it("revoked membership blocks both readers before repository", async () => {
     const token = await issue(); await pool.query("UPDATE workspace_memberships SET is_active=false WHERE workspace_id=$1", [personal]);
     try { read.mockClear(); expect((await call(token)).status).toBe(403); expect((await call(token, identity)).status).toBe(403); expect(read).not.toHaveBeenCalled(); }
     finally { await pool.query("UPDATE workspace_memberships SET is_active=true WHERE workspace_id=$1", [personal]); }
   });
-  it("real SQL permits1000 members and uses1001 as overflow sentinel", async () => {
+  it("team-only legacy rows do not masquerade as personal global member rows", async () => {
     const bulk = async (count: number) => pool.query(`WITH fresh AS MATERIALIZED (SELECT gen_random_uuid() iid,gen_random_uuid() uid FROM generate_series(1,$2::integer)),
       identities AS (INSERT INTO auth_identities(id,provider,provider_subject,display_name) SELECT iid,'internal_test',iid::text,'synthetic bulk' FROM fresh RETURNING id),
       actors AS (INSERT INTO users(id,workspace_id,name,role) SELECT uid,$1,'synthetic bulk','optimizer' FROM fresh RETURNING id)
       INSERT INTO workspace_memberships(workspace_id,identity_id,user_id,role) SELECT $1,f.iid,f.uid,'optimizer' FROM fresh f JOIN identities i ON i.id=f.iid JOIN actors a ON a.id=f.uid`, [team, count]);
     const token = await issue(), nextToken = randomUUID() + randomUUID();
     expect((await sessions.switchWorkspace({ token, nextToken, targetWorkspaceId: team, expiresAt: new Date(Date.now() + 300000) })).status).toBe("approved");
-    await bulk(999); const exact = await call(nextToken); expect(exact.status, JSON.stringify(exact.body.error)).toBe(200); expect(exact.body.data.items).toHaveLength(1000);
-    await bulk(1); const overflow = await call(nextToken); expect(overflow).toMatchObject({ status: 502, body: { error: { code: "SOURCE_TRUNCATED" } } }); expect(overflow.body).not.toHaveProperty("data");
+    const before = await call(nextToken); expect(before.status).toBe(200);
+    await bulk(1001); const after = await call(nextToken); expect(after.status).toBe(200);
+    expect(after.body.data.items.map((row: { identityId: string }) => row.identityId)).toEqual(before.body.data.items.map((row: { identityId: string }) => row.identityId));
   });
 });
