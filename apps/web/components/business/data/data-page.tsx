@@ -6,9 +6,12 @@ import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
 import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { isOk } from "@/lib/fixtures/contract"
-import { viewsFixture, windowPresets, type SavedView, type WindowPreset } from "@/lib/fixtures/data-analysis"
+import { viewsFixture, type SavedView } from "@/lib/fixtures/data-analysis"
+import { WindowPicker, resolvePreset, type DataWindow } from "@/components/business/data/dashboard/window-picker"
+
+// 示例数据的数据日；接真后端后从会话/健康条取
+const DATA_DATE = "2026-09-05"
 import { AttributionTab } from "./tabs/attribution-tab"
 import { GapTab } from "./tabs/gap-tab"
 import { IntelTab } from "./tabs/intel-tab"
@@ -37,9 +40,11 @@ export function DataPage() {
   const { session } = useSession()
   const [tab, setTab] = usePageTab<Tab>(tabs, "overview")
   const state = usePageState()
-  const [preset, setPreset] = useState<WindowPreset>("month_to_date")
+  // 数据日：所有预设都以它为终点往前推，不是以今天——今天的数还没跑完
+  // TODO(F8-20)：接 `/me/counts` 或健康条的 dataAsOf 后改成从会话取
+  const [dataWindow, setDataWindow] = useState<DataWindow>(() => resolvePreset("month_to_date", DATA_DATE, { preset: "month_to_date", from: DATA_DATE, to: DATA_DATE }))
   const [views, setViews] = useState<SavedView[]>(() => (isOk(viewsFixture) ? viewsFixture.data.items : []))
-  const saveView = (name: string, columns: string[]) => setViews((prev) => [{ id: `local-${Date.now()}`, page: "data.table", name, config: { version: "view/v1", filters: {}, columns, sort: [], window: { preset } }, isShared: false, updatedAt: new Date().toISOString() }, ...prev])
+  const saveView = (name: string, columns: string[]) => setViews((prev) => [{ id: `local-${Date.now()}`, page: "data.table", name, config: { version: "view/v1", filters: {}, columns, sort: [], window: { preset: dataWindow.preset, from: dataWindow.from, to: dataWindow.to } }, isShared: false, updatedAt: new Date().toISOString() }, ...prev])
   const colorKey = session?.activeWorkspace.id
 
   return (
@@ -49,10 +54,7 @@ export function DataPage() {
         description="全量明细不聚合不裁剪；指标、环比、达标、色标全部由后端给，前端只展示"
         actions={
           <>
-            <Select value={preset} onValueChange={(value) => setPreset(value as WindowPreset)}>
-              <SelectTrigger size="sm" className="w-40" aria-label="时间窗口"><span className="text-muted-foreground">窗口</span><SelectValue /></SelectTrigger>
-              <SelectContent align="end">{windowPresets.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
-            </Select>
+            <WindowPicker value={dataWindow} dataDate={DATA_DATE} onChange={setDataWindow} />
             
           </>
         }
@@ -60,7 +62,7 @@ export function DataPage() {
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
-          {tab === "overview" ? <OverviewTab colorKey={colorKey} /> : null}
+          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} /> : null}
           {tab === "table" ? <TableTab onSaveView={saveView} /> : null}
           {tab === "pivot" ? <PivotTab /> : null}
           {tab === "hourly" ? <HourlyTab /> : null}

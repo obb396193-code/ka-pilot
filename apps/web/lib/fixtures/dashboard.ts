@@ -68,3 +68,35 @@ export function deltaRate(current: number | null | undefined, previous: number |
   if (current === null || current === undefined || previous === null || previous === undefined || previous === 0) return null
   return (current - previous) / previous
 }
+
+/**
+ * 按选中的窗口从**按天**的趋势行重算汇总。
+ * 为什么要重算而不是直接显示后端给的那份 summary：窗口是用户选的，
+ * 选了之后数字不动的话，这个选择器就是个摆设（老板 2026-09-10 正是问这个）。
+ * 真实模式下换窗口 = 重发一次 `POST /data/query`，由后端算；
+ * 这里是过渡期用手上的按天数据自己合，口径与后端一致（求和的求和、比率重算而不是平均）。
+ */
+export function aggregateDays(days: { ds: string; metrics: DashboardMetrics }[], from: string, to: string) {
+  const inWindow = days.filter((day) => day.ds >= from && day.ds <= to)
+  if (inWindow.length === 0) return null
+  const sum = (pick: (m: DashboardMetrics) => MetricValue) =>
+    inWindow.reduce<number | null>((total, day) => {
+      const value = pick(day.metrics).value
+      // 只要有一天缺数，和就是「不完整」——返回 null 而不是把缺的当 0 加进去
+      return total === null || value === null ? null : total + value
+    }, 0)
+  const cost = sum((m) => m.cost)
+  const cashCost = sum((m) => m.cashCost)
+  const conversion = sum((m) => m.conversion)
+  const realConversion = sum((m) => m.realConversion)
+  const costSpace = sum((m) => m.costSpace)
+  // 比率必须用「总和 ÷ 总和」重算，**不能对每天的比率取平均**——那会被小消耗日拉偏
+  const ratio = (numerator: number | null, denominator: number | null) =>
+    numerator === null || !denominator ? null : numerator / denominator
+  return {
+    days: inWindow.length,
+    cost, cashCost, conversion, realConversion, costSpace,
+    realCpa: ratio(cost, realConversion),
+    cashCpa: ratio(cashCost, realConversion),
+  }
+}
