@@ -30,13 +30,15 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       if (method === "GET") {
         const current = await repository.currentRule(context.auth, media);
         // v1.9.23：规范里的待确认段，连同它现在的取值分布一起回——治理页要在同一屏里
-        // 回答「这段还没定义」和「它实际都写了些什么」。没配规范就没有段，回 null 照旧。
+        // 回答「这段还没定义」和「它实际都写了些什么」。
+        // v1.9.24 裁决：`data` 只放规范本身，算出来的附加物一律进 `meta`。
         sendData(
           context.response,
-          current === null
-            ? null
-            : { ...current, pendingSegments: await repository.pendingSegmentDistribution(context.auth, { media }) },
+          current,
           context.requestId, context.maxResponseBytes,
+          current === null
+            ? {}
+            : { pendingSegments: await repository.pendingSegmentDistribution(context.auth, { media }) },
         );
         return;
       }
@@ -64,10 +66,13 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       } catch {
         pendingSegments = null;
       }
+      // v1.9.24 裁决：`dryRun` 放 `meta`，`data` 保持规则本身。`pendingSegments` 同理——
+      // 两者都是「关于这份规则的观测」，不是规则的字段。
       sendData(
         context.response,
-        { ...saved, dryRun, pendingSegments },
+        saved,
         context.requestId, context.maxResponseBytes,
+        { dryRun, pendingSegments },
       );
     }),
 
@@ -134,14 +139,15 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       });
       // v1.9.23：待确认段分布跟着 media 过滤走，但**不跟 status/q/翻页走**——
       // 它是给「每月确认」用的全量口径，被搜索词或某一页裁过就不能拿来下结论了。
+      // 同 v1.9.24 口径：`data` 只放列表（items/total），观测值进 `meta`。
       sendData(
         context.response,
+        listed,
+        context.requestId, context.maxResponseBytes,
         {
-          ...listed,
           pendingSegments: await repository.pendingSegmentDistribution(
             context.auth, media === null ? {} : { media }),
         },
-        context.requestId, context.maxResponseBytes,
       );
     }),
 

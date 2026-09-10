@@ -80,7 +80,12 @@
         "conflicts": null,
         "override": null,
         "parsedAt": "2026-09-05T09:10:00.000+08:00",
-        "confirmedAt": null
+        "confirmedAt": null,
+        "raw": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
+        "failedSegments": [
+          "rebate",
+          "special"
+        ]
       },
       {
         "media": "KUAISHOU",
@@ -160,7 +165,12 @@
         "conflicts": null,
         "override": null,
         "parsedAt": "2026-09-05T09:10:00.000+08:00",
-        "confirmedAt": null
+        "confirmedAt": null,
+        "raw": "DAU-CVR有端-自投-张三-单出价-IOS-上下滑-激活-有R-常规-13178-B",
+        "failedSegments": [
+          "rebate",
+          "special"
+        ]
       },
       {
         "media": "KUAISHOU",
@@ -240,7 +250,12 @@
         "conflicts": null,
         "override": null,
         "parsedAt": "2026-09-05T09:10:00.000+08:00",
-        "confirmedAt": null
+        "confirmedAt": null,
+        "raw": "DAU-M运动-代投-某代理-双出价-双端-联盟-付费-非R-一户一品-13179-C",
+        "failedSegments": [
+          "rebate",
+          "special"
+        ]
       },
       {
         "media": "KUAISHOU",
@@ -320,7 +335,12 @@
         "conflicts": null,
         "override": null,
         "parsedAt": "2026-09-05T09:10:00.000+08:00",
-        "confirmedAt": null
+        "confirmedAt": null,
+        "raw": "DAU-M运动-代投-某代理-单出价-安卓-主站-付费-非R-常规-13180-D",
+        "failedSegments": [
+          "rebate",
+          "special"
+        ]
       },
       {
         "media": "KUAISHOU",
@@ -400,7 +420,12 @@
         "conflicts": null,
         "override": null,
         "parsedAt": "2026-09-05T09:10:00.000+08:00",
-        "confirmedAt": null
+        "confirmedAt": null,
+        "raw": "DAU-闲鱼DAU-自投-李四-单出价-安卓-搜索-唤起-有R-常规-13181-E",
+        "failedSegments": [
+          "rebate",
+          "special"
+        ]
       },
       {
         "media": "KUAISHOU",
@@ -413,7 +438,23 @@
         "conflicts": null,
         "override": null,
         "parsedAt": "2026-09-05T09:10:00.000+08:00",
-        "confirmedAt": null
+        "confirmedAt": null,
+        "raw": "没按规范起的名字_测试户",
+        "failedSegments": [
+          "channel",
+          "biz",
+          "operator",
+          "optimizer",
+          "bid_mode",
+          "device",
+          "placement",
+          "goal",
+          "rta",
+          "rebate",
+          "special",
+          "landing",
+          "custom"
+        ]
       }
     ],
     "total": 6
@@ -424,6 +465,7 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "GET /admin/account-names?media=KUAISHOU：灌数 6 户实测响应；5 partial（业务段无括号任务 ID、可选段缺）+ 1 failed（account-6 故意乱名）；segments 按段 key 给 value/mapsTo/taskIds；conflicts=null 表示无冲突；override=null 表示未人工改"
+    "pendingSegments": [],
+    "_note": "GET /admin/account-names?media=KUAISHOU：合成 6 户的真响应（apps/worker/scripts/export-naming-fixtures.ts 对本地隔离库 + 真路由处理器导出）。v1.9.22 每行带 raw（原昵称）与 failedSegments（该行按**它自己那版规则**没解析出来的段，规则改过后旧行不拿新规则算）；segments 按段 key 给 value/mapsTo/taskIds；conflicts=null 表示无冲突、override=null 表示未人工改；v1.9.23/24 meta.pendingSegments = 待确认段取值分布（快手 v1 无 pending 段，故为 []）；parsedAt 归一化成固定值以免每次导出都 diff"
   }
 }

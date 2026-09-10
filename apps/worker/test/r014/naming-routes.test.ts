@@ -247,7 +247,9 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     }, "?media=KUAISHOU");
     expect(result.status, JSON.stringify(result.body)).toBe(200);
 
-    const dryRun = (result.body as { data: { dryRun: Record<string, unknown> | null } }).data.dryRun;
+    // v1.9.24 裁决：`dryRun` 在 `meta`，`data` 保持规则本身。
+    const dryRun = (result.body as { meta: { dryRun: Record<string, unknown> | null } }).meta.dryRun;
+    expect((result.body as { data: Record<string, unknown> }).data.dryRun, "data 里不该再有 dryRun").toBeUndefined();
     // 改规则的人当场看见「这版能解析出多少、还差哪几段」，不用再点一次干跑。
     expect(dryRun, "保存规则后应带回干跑结果").not.toBeNull();
     expect(typeof dryRun!.total).toBe("number");
@@ -272,8 +274,9 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     expect(put.status, JSON.stringify(put.body)).toBe(200);
     await callRoute(auth, "/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
 
+    // v1.9.24：`data` 只放资源本身，算出来的观测值在 `meta`。
     const distribution = (result: Captured): Record<string, unknown>[] =>
-      (result.body as { data: { pendingSegments: Record<string, unknown>[] } }).data.pendingSegments;
+      (result.body as { meta: { pendingSegments: Record<string, unknown>[] } }).meta.pendingSegments;
 
     const listed = await call("/api/v1/admin/account-names", "GET", undefined, "?media=KUAISHOU");
     const [pending, ...rest] = distribution(listed);
