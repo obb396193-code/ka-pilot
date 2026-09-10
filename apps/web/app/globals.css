@@ -145,6 +145,15 @@
   }
   html {
     @apply font-sans;
+    /* 跨机一致性（fe 2026-09-09 自检）：
+       ① color-scheme: light —— 不声明的话，同事把 Windows 设成系统深色时，
+          原生控件（日期选择器弹层、下拉、滚动条）会按深色渲染，页面是浅色，两边打架。
+          我们的三档配色是「颜色用到哪一步」，不是明暗主题，所以这里钉死浅色。
+       ② scrollbar-gutter: stable —— macOS 的滚动条是浮层不占宽，Windows 的永久占 ~15px。
+          不预留的话，内容长短一变滚动条来回出现，整页横向抖 15px；Mac 上我们永远看不到这个。
+          预留后 Windows 宽度恒定；Mac 浮层滚动条不参与布局，观感不变。 */
+    color-scheme: light;
+    scrollbar-gutter: stable;
   }
 }
 /* ===== 主题：模式（颜色用到哪一步）× 主色 --hue（右上角色卡）=====
