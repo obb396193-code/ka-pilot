@@ -26,6 +26,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.9.13：加 skipped[]（没动的账户逐条列原因：blocked_by_changeset|not_authorized|not_found）；只有一户都没动才 409"
+    "_note": "v1.9.16：skipped[] = {media, accountId, reason: blocked_by_changeset|not_authorized|not_found, detail(人话一句，前端直接显示)}；只有一户都没动才 409。（v1.9.13 写的 not_granted|already_owned/无 detail 作废，以已落地实现为准）"
   }
 }

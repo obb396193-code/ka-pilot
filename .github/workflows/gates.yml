@@ -34,11 +34,12 @@ jobs:
           cache: npm
           cache-dependency-path: "**/package-lock.json"
       - name: psql client
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client >/dev/null
+        # runner 镜像自带 psql；只有缺的时候才装，且 apt 带重试（2026-09-09 CI 第 7 跑因 apt 镜像抖动 exit 100）
+        run: command -v psql >/dev/null || (for i in 1 2 3; do sudo apt-get update -qq -o Acquire::Retries=3 && sudo apt-get install -y -qq postgresql-client >/dev/null && break || sleep 15; done; command -v psql)
       - name: Install (locked, serial; postinstall 允许——前端字体切片靠它生成)
         run: bash scripts/install-all.sh
       - name: 前端字体切片自检（I-003）
-        run: test -f apps/web/app/fonts/misans/misans.css || node apps/web/scripts/fonts/prepare-misans.mjs
+        run: (test -f apps/web/app/fonts/misans/misans.css && test -f apps/web/app/fonts/misans/preload.css) || node apps/web/scripts/fonts/prepare-misans.mjs
 
       - name: packages/domain
         run: cd packages/domain && npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
@@ -54,6 +55,11 @@ jobs:
         run: |
           psql -h 127.0.0.1 -p 55432 -U ka -d postgres -c "DROP DATABASE IF EXISTS ka_be_ci_gw_test" -c "CREATE DATABASE ka_be_ci_gw_test"
           cd apps/dingtalk-gateway && TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_be_ci_gw_test npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
+      - name: Route slug guard (sibling dynamic segments must share a name)
+        working-directory: apps/web
+        run: |
+          bad=$(find app -type d -name '\[*\]' | sed -E 's|/\[[^]]+\]$||' | sort | uniq -d | while read d; do n=$(ls -d "$d"/\[*\] | xargs -n1 basename | sort -u | wc -l | tr -d ' '); [ "$n" -gt 1 ] && echo "SLUG-CONFLICT $d: $(ls -d "$d"/\[*\] | xargs -n1 basename | tr '\n' ' ')"; done)
+          if [ -n "$bad" ]; then echo "$bad"; exit 1; fi
       - name: apps/web
         run: cd apps/web && npm test && npx tsc --noEmit && npx eslint .
       - name: 迁移计数自检（部署前同样要做）

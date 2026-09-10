@@ -42,13 +42,15 @@ describe("my fixtures still fit my schemas (drift detector)", () => {
     });
   }
 
-  it("accepts accounts/transfer.json now that skipped is frozen (v1.9.13)", () => {
-    // 我提的 `skipped` arch 采纳进了 fixture，同时把 reason 枚举定成
-    // blocked_by_changeset|not_authorized|not_found 并加了 detail —— 与我原来那版
-    // （not_granted / already_owned、无 detail）不同，已按 fixture 对齐。
-    const frozen = fixture("accounts/transfer.json").data;
-    const result = accountTransferResultSchema.safeParse(frozen);
-    expect(result.success, JSON.stringify(result.success ? {} : result.error.issues.slice(0, 3))).toBe(true);
+  it("A7 response and the frozen fixture agree (arch v1.9.13 added skipped to the fixture)", () => {
+    const frozen = fixture("accounts/transfer.json").data as Record<string, unknown>;
+    // v1.9.13（2026-09-10）：arch 裁「skipped 加进 fixture」，分歧已消——此处改为断言一致。
+    expect(Array.isArray(frozen.skipped), "fixture 应含 skipped[]").toBe(true);
+    expect(accountTransferResultSchema.safeParse(frozen).success).toBe(true);
+    // 反过来：我的响应必须是 fixture 的超集，键一个都不能少。
+    for (const key of Object.keys(frozen)) {
+      expect(Object.keys(accountTransferResultSchema.shape)).toContain(key);
+    }
   });
 
   it("accepts every row of the list-shaped fixtures", () => {

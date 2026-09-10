@@ -14,7 +14,7 @@ import {
   type FetchLike,
   type InternalApiEnvironment,
 } from "../internal-api-bff.ts"
-import { requestIdSchema, stableDataQueryErrorSchema } from "../contracts.ts"
+import { requestIdSchema, stableDataQueryErrorSchema, stableErrorStatus, type StableDataQueryErrorCode } from "../contracts.ts"
 
 /**
  * R-014 的 BFF 转发器。17 条端点如果各抄一遍 task-list-bff 的 fetch/相关性/边界逻辑，
@@ -26,16 +26,9 @@ import { requestIdSchema, stableDataQueryErrorSchema } from "../contracts.ts"
  */
 export type R014BffResult = { status: number; body: unknown; requestId: string }
 
-/**
- * r014 后端除了那 11 个稳定码，还会返 NOT_FOUND / CONFLICT / RATE_LIMITED
- * （kb 单读、账户交接、任务详情、改密限速都在用）。共享的 stableDataQueryError 枚举
- * 认不出它们，于是**合法的 404/409/429 会被判成 502「上游不合契约」**——
- * 用户看到「上游坏了」，而不是「这篇文档不存在」。这里就地扩，不动共享枚举。
- */
-const r014ErrorSchema = stableDataQueryErrorSchema.omit({ code: true }).extend({
-  code: z.union([stableDataQueryErrorSchema.shape.code, z.enum(["NOT_FOUND", "CONFLICT", "RATE_LIMITED", "INVALID_CREDENTIALS", "READ_ONLY_ROLE"])]),
-}).strict()
-const errorEnvelopeSchema = z.object({ ok: z.literal(false), error: r014ErrorSchema }).strict()
+// NOT_FOUND / CONFLICT / RATE_LIMITED / INVALID_CREDENTIALS / READ_ONLY_ROLE 原来在这里就地扩，
+// F8-14 已并进共享的 stableDataQueryError 枚举（别处解析同样会认），这里直接用共享的。
+const errorEnvelopeSchema = z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict()
 
 /** 成功信封：`data` 交给每条路由自己的 schema，`meta` 只要求带回相关的 requestId。 */
 export function successEnvelope<T extends z.ZodTypeAny>(data: T) {
@@ -50,27 +43,15 @@ export function envelope<T extends z.ZodTypeAny>(data: T) {
   return z.union([successEnvelope(data), errorEnvelopeSchema])
 }
 
-function error(code: z.infer<typeof stableDataQueryErrorSchema>["code"], message: string, retryable: boolean, requestId: string): unknown {
+function error(code: StableDataQueryErrorCode, message: string, retryable: boolean, requestId: string): unknown {
   return errorEnvelopeSchema.parse({ ok: false, error: { code, message, retryable, requestId } })
 }
 
 function expectedStatus(body: unknown): number | null {
   const parsed = errorEnvelopeSchema.safeParse(body)
   if (!parsed.success) return 200
-  const code = parsed.data.error.code
-  if (code === "UNAUTHORIZED") return 401
-  if (code === "FORBIDDEN") return 403
-  if (code === "UPSTREAM_INVALID_RESPONSE" || code === "SOURCE_TRUNCATED") return 502
-  if (code === "SOURCE_UNAVAILABLE") return 503
-  if (code === "UPSTREAM_TIMEOUT") return 504
-  if (code === "INTERNAL_ERROR") return 500
-  if (code === "NOT_FOUND") return 404
-  if (code === "CONFLICT") return 409
-  if (code === "RATE_LIMITED") return 429
-  if (code === "INVALID_CREDENTIALS") return 401
-  if (code === "READ_ONLY_ROLE") return 403
-  // 其余（405/410 等）状态码由后端决定，BFF 不再二次判定，只要求 body 是合法 envelope。
-  return null
+  // 映射表在共享 contracts.ts；null = 状态由后端定（405/410 等），BFF 不二次判定，只要求 body 是合法信封。
+  return stableErrorStatus[parsed.data.error.code]
 }
 
 export type ForwardOptions = {

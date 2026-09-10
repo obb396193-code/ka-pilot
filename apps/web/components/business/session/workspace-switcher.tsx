@@ -15,7 +15,7 @@ export function WorkspaceSwitcher() {
 
   return (
     <SidebarGroup className="p-0">
-      <SidebarGroupContent>
+      <SidebarGroupContent className="group-data-[collapsible=icon]:hidden">
         <Select
           value={active?.id ?? ""}
           disabled={status !== "ready" || switching || !session}
@@ -37,7 +37,7 @@ export function WorkspaceSwitcher() {
             ))}
           </SelectContent>
         </Select>
-        <p className="px-1 pt-1.5 text-[11px] leading-4 text-muted-foreground">
+        <p className="px-1 pt-1.5 text-[11px] leading-4 text-muted-foreground group-data-[collapsible=icon]:hidden">
           {active ? kindLabel[active.kind] : status === "error" ? "会话服务未就绪" : "登录后可切换个人 / 团队空间"}
         </p>
       </SidebarGroupContent>

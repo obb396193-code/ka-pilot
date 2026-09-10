@@ -75,7 +75,62 @@ export const sourceLineageSchema = z.object({
 })
 export type BackendSourceLineage = z.infer<typeof sourceLineageSchema>
 
-export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "DIMENSION_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR"])
+/**
+ * F8-14（契约 v1.9.10 / v1.9.13）：后端除了原来 11 个稳定码，还会返后 5 个
+ * （kb 单读、账户交接撞变更集、任务详情越权、登录/改密限速、viewer 写入拦截）。
+ * 它们不在枚举里时，**合法的 404/409/429 会被 BFF 判成「上游不合契约」502**，
+ * 用户看到「上游坏了」而不是「这篇文档不存在」「操作太频繁」。
+ */
+export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "DIMENSION_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR", "NOT_FOUND", "CONFLICT", "RATE_LIMITED", "INVALID_CREDENTIALS", "READ_ONLY_ROLE"])
+export type StableDataQueryErrorCode = z.infer<typeof stableDataQueryErrorCodeSchema>
+
+/**
+ * 稳定码 → 期望的 HTTP 状态，BFF 用它校验「状态码和 body 自洽」。
+ * `null` = 状态由后端定（同一个码可能配 400/405/410），BFF 不二次判定，只要求 body 是合法信封。
+ */
+export const stableErrorStatus: Record<StableDataQueryErrorCode, number | null> = {
+  INVALID_REQUEST: null, QUERY_NOT_ALLOWED: null, VIEW_UNSUPPORTED: null, DIMENSION_UNSUPPORTED: null,
+  UNAUTHORIZED: 401, FORBIDDEN: 403, INTERNAL_ERROR: 500,
+  SOURCE_TRUNCATED: 502, UPSTREAM_INVALID_RESPONSE: 502, SOURCE_UNAVAILABLE: 503, UPSTREAM_TIMEOUT: 504,
+  NOT_FOUND: 404, CONFLICT: 409, RATE_LIMITED: 429, INVALID_CREDENTIALS: 401, READ_ONLY_ROLE: 403,
+}
+
+/**
+ * BFF 自己造错误时的 `retryable`：以前几个 handler 写死 false，
+ * 于是上游超时、数据源暂时不可用、限速这些「等会儿真能好」的情况也让人干等。
+ * 上游自己返回的 `retryable` 照旧透传，不被这里覆盖。
+ */
+const retryableCodes: ReadonlySet<string> = new Set(["SOURCE_UNAVAILABLE", "UPSTREAM_TIMEOUT", "RATE_LIMITED"])
+export function isRetryableErrorCode(code: string): boolean { return retryableCodes.has(code) }
+
+/**
+ * 稳定码 → 用户能看懂的中文。没列的返 null，调用方用自己那句兜底文案
+ * （别把没映射的码显成「未知错误」，也别把后端英文原文直接甩给用户）。
+ */
+const errorCopy: Record<string, string> = {
+  RATE_LIMITED: "操作太频繁，15 分钟后再试",
+  INVALID_CREDENTIALS: "用户名或密码错误",
+  READ_ONLY_ROLE: "你现在是只读身份，这一步要管理员开权限",
+  NOT_FOUND: "这条记录不存在，或者已经被删了",
+  CONFLICT: "这条刚被别人改过，刷新后再试一次",
+  UNAUTHORIZED: "登录已过期，请重新登录",
+  FORBIDDEN: "你没有做这一步的权限",
+  UPSTREAM_TIMEOUT: "上游超时了，稍后重试",
+  SOURCE_UNAVAILABLE: "数据源暂时不可用，稍后重试",
+}
+export function stableErrorCopy(code: string): string | null { return errorCopy[code] ?? null }
+
+/**
+ * 我们自己定死文案、不让上游 message 覆盖的码：
+ * 限速要说清「还要等多久」，只读身份要说清「找谁开权限」——后端那句英文/泛化提示说不了这些。
+ * 其余码上游 message 更贴场景（同是 INVALID_CREDENTIALS，登录是「用户名或密码错误」、改密是「当前密码不正确」），以上游为准。
+ */
+const enforcedCopyCodes: ReadonlySet<string> = new Set(["RATE_LIMITED", "READ_ONLY_ROLE"])
+export function resolveErrorMessage(code: string, upstream?: string | null): string {
+  const copy = stableErrorCopy(code)
+  if (copy !== null && (enforcedCopyCodes.has(code) || !upstream)) return copy
+  return upstream ?? "这一步没成功，稍后再试"
+}
 export const requestIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/)
 export const stableDataQueryErrorSchema = z.object({ code: stableDataQueryErrorCodeSchema, message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema }).strict()
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>
@@ -225,7 +280,8 @@ export const findingDetailSchema = z.object({ findingId: z.string(), media: z.st
 export type FindingDetailData = z.infer<typeof findingDetailSchema>
 export const changeSetPreviewSchema = z.object({ changeSetId: z.string(), accountId: z.string(), accountName: z.string(), status: z.literal("preview_only"), expiresAt: z.string().datetime({ offset: true }), items: z.array(z.object({ field: z.string(), from: z.string(), to: z.string(), reason: z.string() })), riskChecks: z.array(z.object({ label: z.string(), passed: z.boolean(), detail: z.string() })), executionEndpointConfigured: z.literal(false) })
 export type ChangeSetPreviewData = z.infer<typeof changeSetPreviewSchema>
-const readDetailErrorSchema = z.object({ code: z.union([stableDataQueryErrorCodeSchema, z.literal("NOT_FOUND")]), message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema }).strict()
+// NOT_FOUND 已并进共享枚举（F8-14），这里不再单独扩
+const readDetailErrorSchema = stableDataQueryErrorSchema
 const jsonObjectSchema = z.record(z.string(), z.unknown())
 export const workItemReadModelSchema = z.object({
   id: z.string().uuid(), workspaceId: z.string().uuid(), media: z.string().min(1).nullable(), accountId: z.string().min(1).nullable(),

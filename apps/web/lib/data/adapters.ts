@@ -5,6 +5,7 @@ import {
   findingDetailSchema,
   changeSetPreviewSchema,
   stableDataQueryErrorSchema,
+  resolveErrorMessage,
   workbenchSchema,
   type AccountDetailData,
   type AnalysisData,
@@ -53,8 +54,10 @@ function canonicalSourceMetrics(row: AccountDailyRow | undefined) {
 const missingSource = () => ({ spend: metric(undefined, undefined), conversions: metric(undefined, undefined), cpa: metric(undefined, undefined) })
 
 function errorState(error: StableDataQueryError): DataState {
-  if (error.code === "UNAUTHORIZED") return "unauthorized"
-  if (error.code === "FORBIDDEN") return "forbidden"
+  if (error.code === "UNAUTHORIZED" || error.code === "INVALID_CREDENTIALS") return "unauthorized"
+  if (error.code === "FORBIDDEN" || error.code === "READ_ONLY_ROLE") return "forbidden"
+  // 「查的这条不存在」是空态不是故障态：别让用户以为系统坏了去找排障（F8-14）
+  if (error.code === "NOT_FOUND") return "empty"
   if (error.code === "UPSTREAM_TIMEOUT") return "timeout"
   if (error.code === "UPSTREAM_INVALID_RESPONSE" && /16\s?MB/i.test(error.message)) return "too-large"
   if (error.code === "SOURCE_UNAVAILABLE") return "unavailable"
@@ -182,10 +185,10 @@ export function adaptWorkItemDetail(response: WorkItemDetailResponse | null, fin
   const empty = findingDetailSchema.parse({ findingId, media: null, accountId: "unknown", accountName: "脱敏账户", title: "诊断详情暂不可用", severity: "warning", deterministicConclusion: "只读工作项详情接口尚未返回确定性结论。", evidence: [], aiInterpretation: null, aiConfidence: null, changeSetId: null })
   if (loading || response === null) return { state: "loading", lineage: placeholderLineage("platform"), data: empty, message: "正在读取工作项详情", isMock }
   if (!response.ok) {
-    const normalizedError = stableDataQueryErrorSchema.parse(response.error.code === "NOT_FOUND"
-      ? { code: "SOURCE_UNAVAILABLE", message: response.error.message, retryable: response.error.retryable, requestId: response.error.requestId }
-      : response.error)
-    return { state: errorState(normalizedError), lineage: placeholderLineage("platform", normalizedError), data: empty, message: response.error.message, error: normalizedError, isMock }
+    // 原来 NOT_FOUND 要洗成 SOURCE_UNAVAILABLE 才过共享枚举，「这条不存在」被显成「来源不可用」；
+    // F8-14 并进枚举后原样传下去，errorState 把它落到空态。
+    const error = stableDataQueryErrorSchema.parse(response.error)
+    return { state: errorState(error), lineage: placeholderLineage("platform", error), data: empty, message: resolveErrorMessage(error.code, error.message), error, isMock }
   }
   const workItem = response.data.workItem
   const severity = workItem.severity === "P0" ? "critical" : workItem.severity === "P2" || workItem.severity === "opportunity" ? "info" : "warning"

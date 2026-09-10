@@ -28,9 +28,10 @@ export const splitPanels: { value: SplitPanel; label: string; source: string; hi
   { value: "threads", label: "C2-5 · 线场", source: "React Bits Threads", hint: "黑底细线随鼠标起伏；最素的一档" },
 ]
 
-// 示例图（Unsplash License 免费商用；正式版换老板生图）
-const IMAGE_WAVES = "https://images.unsplash.com/photo-1627637819794-fba32f82be16?auto=format&fit=crop&w=2000&q=80" // SIMON LEE · 深蓝层叠波浪
-const IMAGE_CUBES = "https://images.unsplash.com/photo-1671519821564-ced7e41ee7ae?auto=format&fit=crop&w=1600&q=80" // Milad Fakurian · 金属立方体
+// F8-10：内网出网只放行两个素材 CDN，任何运行时外链都拉不到 → 背景改纯 CSS 渐变，不引图片文件。
+// （原来是两张 Unsplash 示例图；老板 2026-09-07 定案登录页不用生图，这两档也不再需要真图。）
+const BG_WAVES = "radial-gradient(120% 90% at 20% 15%, oklch(0.38 0.13 258) 0%, transparent 60%), radial-gradient(100% 80% at 85% 80%, oklch(0.32 0.11 285) 0%, transparent 65%), linear-gradient(160deg, oklch(0.16 0.04 260) 0%, oklch(0.10 0.02 265) 100%)"
+const BG_CUBES = "conic-gradient(from 210deg at 60% 40%, oklch(0.55 0.02 260) 0deg, oklch(0.28 0.01 260) 120deg, oklch(0.62 0.03 250) 240deg, oklch(0.30 0.01 265) 360deg), linear-gradient(180deg, oklch(0.20 0.01 260) 0%, oklch(0.12 0.01 265) 100%)"
 
 function Wordmark({ className, inverted = false }: { className?: string; inverted?: boolean }) {
   return (
@@ -80,7 +81,7 @@ function Slogan({ dark, size = "md" }: { dark: boolean; size?: "md" | "lg" }) {
 function Bleed() {
   return (
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-black text-white">
-      <div aria-hidden className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${IMAGE_WAVES}")` }} />
+      <div aria-hidden className="absolute inset-0" style={{ backgroundImage: BG_WAVES }} />
       <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-black/10" />
       <div className="relative flex items-center justify-between px-6 py-5 md:px-10">
         <Wordmark inverted />
@@ -107,7 +108,7 @@ function PanelBackground({ panel }: { panel: SplitPanel }) {
     case "image":
       return (
         <>
-          <div aria-hidden className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${IMAGE_CUBES}")` }} />
+          <div aria-hidden className="absolute inset-0" style={{ backgroundImage: BG_CUBES }} />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
         </>
       )

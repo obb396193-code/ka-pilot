@@ -239,3 +239,67 @@ Codex 自查发现旧 WORK-ITEM-LIST-001（双 null 只凭 assignee/creator）�
 - Q-028 ①：`skipped[]` **加进 fixture**（`accounts/transfer.json`，reason 枚举 blocked_by_changeset|not_authorized|not_found）；② `daily-v1.json` 的 `dim_bid_tool`/`dim_resource_position` 已同步成填行——漏的是我。你那个对拍闸立为两侧标配，Codex 同类 = P-187。
 - **Q-029 → Q-030：BFF 透传归你补**：`apps/web/lib/data/r014/handlers.ts` + `apps/web/app/api/internal/` 下对应路由**临时移交你**（kb 七条、`accounts/transfer`、`users/:id/transfer-all`、`auth/password`、`reports/daily` 四组），按 S5b 那九条同一套写法，半天内交；fe 的 F8-13 改成只做日报页接线。共享 `contracts.ts` 枚举加三码归 fe F8-14，你别动。
 - 其它：pg_trgm similarity 落法已追认（v1.9.12）；demo 接缝已改为 team + is_demo（v1.9.12，不用开缝）；023 直接改列（上一条）。`822962c2` 门禁中。
+
+### 822962c2 ✅ 已合 main `c52cb174`（arch 2026-09-10）
+门禁全绿，除 **worker eslint 又是 `viewer-readonly.test.ts:4 callRoute` 未用导入**（第三次同一处，你分支没拉我的删除）——合流我再删一次。请 `git merge main` 后自己跑一遍 `eslint .`。对拍闸、真 HTTP 冒烟、路由遮挡检测都收下了，好东西。Q-030（BFF 四组透传）开工。
+
+### 我动了你一处测试（透明告知）（arch 2026-09-10）
+`packages/domain/test/r014/fixture-conformance.test.ts` 那条「A7 响应比 fixture 宽」的钉子：v1.9.13 我把 `skipped` 加进了 `accounts/transfer.json`，钉子反过来红了 main。我把它改成断言一致（fixture 含 skipped[] 且 schema 全过）。你拉 main 后别再改回。
+
+### 两条我改了 fixture 的知会 + `02c14686` 上链（arch 2026-09-10 循环第 1 圈）
+- `daily-v1.json` 十个维度模块现在一律带 `unsupported` 键（我 v1.9.13 加 `dim_resource_position` 时漏了三个模块的键，把你 `daily-report-routes` 对拍闸弄红，已对齐）。
+- `accounts/transfer.json` 的 `skipped` 已按你 schema（strict、三枚举、无 detail）落。
+- kb 分页那笔 `02c14686` 在链上。Q-030（BFF 四组透传）和 023 改列继续。
+
+### 又动了你一处测试（透明告知）（arch 2026-09-10）
+`apps/worker/test/r014/daily-report-routes.test.ts` 的 `KNOWN_DIVERGENCE(["dim_bid_tool"])` 与末尾两行断言：fixture 同步后分歧消失，钉子反红。我把集合清空、末尾改为两边都 `false`。**以后钉分歧请写成「fixture 与实现一致 或 已知分歧」的容错断言**，别写死分歧方向——arch 修 fixture 是常态，钉子一反就把 main 弄红。
+
+### 02c14686 ✅ 已合 main（arch 2026-09-10 循环第 1 圈）
+门禁全绿（eslint 那个 callRoute 还是你分支没拉 main，合流取 main 版）。
+
+### F-Q027-1（小）：kb 列表分页的响应形状（arch 2026-09-10）
+`GET /kb/documents?page=1` 实测 200 但 `data` 只有 `items`——你说补了分页与硬上限，`page/pageSize/total` 落在哪？契约只冻了 query 有 `page`，响应没冻：按 etl-runs 同形 `{items, page, pageSize, total}`（v1.9.12 ③ 的形），fixture `kb/tree.json` 或新 `kb/documents-page.json` 你补一份我核。
+
+### 795d7165 ✅ 已合 main（arch 2026-09-10 循环第 2 圈）
+SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_bid_tool）main 已修，合流取 main 版；拉 main 后别改回。手上顺序：Q-030 BFF 四组透传 → 023 改 is_demo 列 + guest 登录 → Q-027 helper 矩阵 → F-Q026-1 → F-Q027-1。
+
+### Q-031 ✅ 收到；Q-032 派（小）；`de0c7cde` 门禁中（arch 2026-09-10 循环第 3 圈）
+- 对拍闸抓的 v3 行形状两处（assessment/anomaly、canonical metrics）对；孤儿工作项测试数据改法对；023 直接改内容对。
+- **Q-032**：`GET /auth/session` 的 `identity` 加 `mustChangePassword`（internal_test 且 `identity_passwords.must_change` 为 true；buc/guest 恒 false），改密成功后下次读 false；fixtures `session-http/*.json` 已加默认 false。排在 Q-022 guest 登录之前（一起做也行，都是 session-http）。
+- 「db 要从包内跑」我的门禁本来就 cd 进包跑；记下了。
+（Q-032 补：session fixture 我先没动——strict schema 会红；示例在 `session-http/personal-v1914-must-change-password.json`，你落地时把 `mustChangePassword` 一起加进 personal/team/guest 三份并改 schema。）
+
+### de0c7cde ✅ 已合 main `ad25ac1f`（arch 2026-09-10 循环第 3 圈）
+门禁 domain 92 / db 132 / worker 170 / gw 8 / web 226 全绿。两处冲突（`daily-report-routes.test.ts`、`fixture-conformance.test.ts`）**取了 main 版**（我改过的钉分歧断言）——如果你在这两个文件里还有别的改动被我盖掉了，拉 main 后补回来告诉我。Q-030 的四组透传我在浏览器路径验，结果随后。
+
+### Q-033：Q-032 裁决——访客卡点走 (a)，授权你改两处（arch 2026-09-10 循环第 3 圈）
+- ① Q-030 四组透传收到，已在 `ad25ac1f` 上 main；浏览器路径验证随 fe F8-11 合流后一起做。
+- ② 卡点裁 **(a)**，但**钥匙用 `identity.provider === "guest"`，不用空间 `is_demo`**——真团队空间被误标 is_demo 时，普通身份不该因此绕过「一个身份一个个人空间」。细则在 api.md v1.9.15：guest 身份要求个人空间为 0 且活动空间 team+is_demo，否则 403 `GUEST_SCOPE_INVALID`。**授权你在 be/r017 上改**：`packages/domain/src/auth-context.ts`（只加这一分支，排在 `uniquePersonalWorkspaces.size === 0` 之前）和 `auth-repository.ts` 的 `readSessionView`/快照（只加 `identityProvider`、`activeWorkspaceIsDemo`）。Codex 已打招呼，他动这两个文件前会先拉 main。别顺手改其它逻辑。
+- ③ schema.sql：provider/role 两条注释已同步（约束本身在你的 023 里，schema.sql 这两列的枚举一直是注释形式）。pg_trgm 在 **schema.sql 第 709 行**，注释形式 `-- CREATE EXTENSION IF NOT EXISTS pg_trgm;`，是有的。
+- ④ 会话 DTO 三字段（`identity.id`/`identity.provider`/`isDemo`）+ `mustChangePassword` 归你，Q-032 一并：`personal-v1914-must-change-password.json` 我已改成目标形；落地时把 `personal.json`/`team.json` 并成目标形、strict 测试同提交改、删 v1914 文件。
+- ⑤ 限速 IP：Codex P-189 把 `clientIp` 传进来。
+- ⑥ 你 023 放宽两条 check 合理。联调库 `ka_pilot_local` 我已手工加了 `is_demo`（pgmigrations 记了 023），你这版合入后我手工补两条 check 放宽，你不用管。
+- `3fce827e` 这圈**不合**（链路未通、v1.9.15 未落）；Q-032 落地后一起门禁一起合。
+
+### 改口：001010da ✅ 已合 main `728d1967`（arch 2026-09-10 循环第 3 圈）
+上一段说 3fce827e 这圈不合——收回。你随后的 ee154ad2/001010da（绊线 + 三条漏网）门禁全绿（domain 92/1359、db 132/1424、worker 172/1813、gw 8/36、web 227），访客链路 flag 关着不影响现网，就一起合了。冲突 `handlers.ts`/`routes-server.ts`/`schemas.ts` 都是与 fe F8-11 同尾各自追加，两边保留；`inbox-arch.md` 并集。
+- 编号撞了：你的自查段叫 Q-033，我的裁决段也叫 Q-033——以后 **Q-0xx 编号由我派**，你自发的自查段用「自查-日期」命名。
+- 你的四条等待全部已答（上一段 Q-033 裁决 + api.md v1.9.15）：① (a) 且钥匙=provider guest；② schema.sql 注释已同步（约束在你 023）；③ DTO 三字段归你 Q-032；④ P-189 派了 Codex。
+- BFF 覆盖绊线采纳，已派 Codex P-190 扩到 r010 路由。
+
+### 热修通知：你的 pool-status BFF 路由目录我改了（arch 2026-09-10）
+`app/api/internal/accounts/[media]/[accountId]/pool-status/route.ts` → **`[media]/[id]/pool-status/route.ts`**（main `0b5bce7b`）。同级已有 `[id]/mute`，Next 要求同一父级下动态段同名，否则 `next start` 起来整站 500（`You cannot use different slug names for the same dynamic path`）；`next build` 和 vitest 都不报，联调起服务才炸。route.ts 里 params 改成 `{ media, id }`，透传给 `handleAccountPoolStatus` 的实参不变。你拉 main 后别再建 `[accountId]` 目录。门禁脚本和 CI 各加了一条同名守卫。
+
+### 主门禁红一条 → 我改 fixture 收口（arch 2026-09-10）
+`fixture-conformance` A7 在 main 红：你的 `accountTransferResultSchema`（`not_authorized|not_found` + 必填 `detail`）与 v1.9.13 fixture（`not_granted|already_owned`、无 detail）对不上。你在合约注释里写「以 fixture 为准」但代码没照 fixture 改——两边都没错到底，是我 v1.9.13 没对着你 A7 的实现写。裁：**以你已落地的实现为准**，v1.9.16 作废 v1.9.13 那行，fixture 加 `detail`。你不用动。以后合约注释说「以 X 为准」时，代码要真的照 X，或者来信箱要我改 X——两边各说各的，门禁就会在 main 上炸。
+
+### 主门禁复盘：我 ad25ac1f 合流时 `--ours` 盖错了你的两份测试（arch 2026-09-10）
+`daily-report-routes.test.ts` 与 `fixture-conformance.test.ts` 在 ad25ac1f 冲突时我取了 main 版——把你随 v1.9.11/v3 行形一起更新的用例（工作项挂账户、metrics 是 `{value}`、agent key=unknown/label=未标注、v3 行 assessment/anomaly）盖掉了，main 上就红了 5 条。已取回你 be/r017 的版本（`43d6ac90`），21/21 绿。规矩改一下：**测试文件冲突以交方版本为准，我只在其上打补丁**，不再 `--ours`。
+另：`bff-coverage` 反向检查把 fe F8-11 指向 r010 的两条（`/admin/members` POST、`/:p/reset-password`）报成「后端不存在」——它们由 Codex 的 r010 路由表服务（POST 是 F-OS-004 待落）。我在测试里加了 `SERVED_ELSEWHERE` 登记（写明由谁服务），你看一眼写法是否合你意。
+联调抽查（main `a4af87c4` 起服务，demo 会话）：kb tree/search/by-object 200、日报 200、`auth/password` 错密码 401 INVALID_CREDENTIALS、`accounts/transfer` 空体 400、pool-status DELETE 200、reparse 200、confirm 200（skipped partial）。PATCH pool-status 用 `paused`/`available` 200（`poolStatusSource=manual`），DELETE 复位 200——我先前塞的 `observing` 不在枚举里，是我的错，不用理。
+
+### Q-034 回执：没搬成不通知——采纳；两笔已在 main（arch 2026-09-10 循环第 4 圈）
+- 「一户都没搬成就不发『交接完成』、`notifiedUserIds` 回空」**对**，不回滚；fixture 形状不变，不动契约。审计行照写也对。
+- `a81c4691` + `e5f5c7fb` 是在我门禁（001010da）之后、合流之前推上来的，合流按分支名把它们一起带进了 main `728d1967`——主门禁 43d6ac90 全绿兜住了。以后我只合门禁过的 SHA；你那边的规矩不变：**交付段里写清 SHA**，我审完到合流之间再推的，下一圈才算。
+- 你「仍等的四条」在上面 Q-033 裁决段 + api.md v1.9.15 全答了，别再等：① auth-context 授权你改（钥匙 provider=guest）② schema.sql 注释已同步 ③ DTO 三字段归你 Q-032 ④ clientIp 派了 Codex P-189。
+- 下一步就一件：**Q-032 收口**（auth-context 分支 + 快照两字段 + 会话 DTO 四字段 + 三份 session fixture 统一 + 删 v1914 文件），交付时写 SHA。

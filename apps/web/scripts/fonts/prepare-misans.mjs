@@ -20,6 +20,14 @@ const outDir = resolve(here, "../../app/fonts/misans")
 const filesDir = join(outDir, "files")
 mkdirSync(filesDir, { recursive: true })
 
+// 首屏预载的切片（F8-10）：Windows 上 300 片按需加载，首屏先用微软雅黑排版、切片到了再换 → 行宽变、换行跳。
+// 用界面里实际出现的 917 个汉字反查落点，Regular 的 115–119 五片覆盖 88% 的字（合计 105KB）。
+// Next 会给 app/ 下的字体加内容哈希，preload 的 href 拿不到，所以这五片另拷一份到 public/（路径稳定）。
+const PRELOAD_SLICES = [115, 116, 117, 118, 119]
+const publicDir = resolve(here, "../../public/fonts/misans")
+mkdirSync(publicDir, { recursive: true })
+
+let regularCss = ""
 let css = "/* 自动生成：scripts/fonts/prepare-misans.mjs（勿手改）。MiSans © Xiaomi，免费商用许可见 node_modules/misans/LICENSE */\n"
 let copied = 0
 for (const [name, from, to] of weights) {
@@ -30,9 +38,23 @@ for (const [name, from, to] of weights) {
     .replaceAll("font-family:MiSans", 'font-family:"MiSans"')
     .replaceAll(/url\('(MiSans-[^']+\.woff2)'\)/g, "url('./files/$1')")
   css += `\n/* ${name} → ${to} */\n${text}\n`
+  if (name === "Regular") regularCss = text
   for (const woff of readdirSync(src).filter((entry) => entry.startsWith(`MiSans-${name}.`) && entry.endsWith(".woff2"))) {
     copyFileSync(join(src, woff), join(filesDir, woff)); copied += 1
   }
 }
 writeFileSync(join(outDir, "misans.css"), css)
-console.log(`[fonts] MiSans 就绪：${copied} 个切片 → app/fonts/misans/`)
+
+// preload.css 复用原切片的 unicode-range，只把 src 改成 public 稳定路径；
+// 在 layout 里 misans.css 之后引入，覆盖同 range 的规则，避免同一段字被请求两次。
+let preload = "/* 自动生成：scripts/fonts/prepare-misans.mjs（勿手改）。首屏预载切片，覆盖 misans.css 里同 unicode-range 的规则。 */\n"
+let preloaded = 0
+for (const index of PRELOAD_SLICES) {
+  const woff = `MiSans-Regular.${index}.woff2`
+  const rule = (regularCss.match(/@font-face\{[^}]*\}/g) ?? []).find((item) => item.includes(`/${woff}'`))
+  if (!rule || !existsSync(join(src, woff))) { console.warn(`[fonts] 缺预载切片 ${woff}，跳过`); continue }
+  preload += `${rule.replace(/url\('[^']+'\)/, `url('/fonts/misans/${woff}')`)}\n`
+  copyFileSync(join(src, woff), join(publicDir, woff)); preloaded += 1
+}
+writeFileSync(join(outDir, "preload.css"), preload)
+console.log(`[fonts] MiSans 就绪：${copied} 个切片 → app/fonts/misans/，其中 ${preloaded} 片预载 → public/fonts/misans/`)

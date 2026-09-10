@@ -3,13 +3,14 @@ import { adminCalendarResponseSchema, type AdminCalendarResponse } from "../../.
 import { bodyRequestId, createRequestId, hasCorrelatedRequestId, internalApiHeaders, isTimeoutCause,
   resolveInternalApiConfig, resolveSessionCookie, type FetchLike, type InternalApiEnvironment } from "./internal-api-bff.ts"
 import { readBoundedResponseBody } from "./bounded-response.ts"
+import { isRetryableErrorCode } from "./contracts.ts"
 
 type ErrorCode = Extract<AdminCalendarResponse, { ok: false }>["error"]["code"]
 type Result = { status: number; body: AdminCalendarResponse; requestId: string }
 const statuses: Record<ErrorCode, number> = { INVALID_REQUEST: 400, UNAUTHORIZED: 401, FORBIDDEN: 403,
   SOURCE_UNAVAILABLE: 503, SOURCE_TRUNCATED: 502, UPSTREAM_INVALID_RESPONSE: 502, UPSTREAM_TIMEOUT: 504, INTERNAL_ERROR: 500 }
 function fail(status: number, code: ErrorCode, requestId: string): Result {
-  return { status, requestId, body: { ok: false, error: { code, message: "Calendar request could not be completed", retryable: false, requestId } } }
+  return { status, requestId, body: { ok: false, error: { code, message: "Calendar request could not be completed", retryable: isRetryableErrorCode(code), requestId } } }
 }
 export async function handleAdminCalendarRequest(request: Request, dependencies: {
   environment: InternalApiEnvironment; fetchImpl?: FetchLike; requestId?: () => string
