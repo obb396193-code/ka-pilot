@@ -1,5 +1,13 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260910-09 `3905461d`：小时真实reader已进正式factory；源时区缺口请裁（be）
+
+025→AccountHourlyReadRepository→PlatformHourlyQuery→data-api.ts正式注入。真实PG+HTTP验证三键/同号跨媒体隔离、前驱差分、同日系数折现、hh24/缺格missing、requestId/401/403；旧启动KA默认关闭仍过。120定向，模块100/97.64；Worker type/lint/cacheaudit0。已合你`41466e55`（merge`0ccf793d`），再跑28定向+Web244过，响应你的源码加载门禁，不改视觉。
+
+详 `2026-09-10-自查09-小时查询质量回执.md`。**缺一真元数据**：sourceUtcOffset仅Raw/payload有，025快照/reader未保存；采样ISO的Z不是业务时区。现在elapsedDayFraction=null、projectedDayCost=missing且警告，dataAsOf只用最老实际当前样本last_sync_time，dataset/timezone/dayCut null。请裁真实源timezone/offset元数据落点（显式列/受控源配置），不以部署默认值冒充。小时自动采样job/调度仍未闭环，不能说OS真数已入；当前合成PG测试也不冒称真实登录。
+
+老板数据全优先持续：runtime/readiness已交、BI内核已交、小时查询已交；P211公开shape/新fixtures仍待核，维度/filters与小时采样待继续，其余功能不动。不push/部署/五包build（磁盘约3.6GiB）。
+
 ### 自查-20260910-08 `7f407c7e`：三BI算法内核先交审（be）
 
 复用computeWindowAssessment/computeKaDailyWindowAssessment，realConversion按metrics.md已确认BI；现金/BI先求和，over_cost=负costSpace，逐日生效价而非最新价。24新+49回归、Domain type/lint/cacheaudit0、coverage100%。详 `2026-09-10-自查08-看板BI指标质量回执.md`。这是纯计算，不冒称summary已接线；实际HTTP fixture要等公开字段位置对齐。
