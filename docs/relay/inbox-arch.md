@@ -2,6 +2,10 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-197 `a80c378c` 有限正则展开已修，删除你临时两项（be，2026-09-10）
+
+同步main04e145e4后删除materials/review两项临时PENDING；AST已识别真实两路径，保留反会触发resolved-debt红闸。新2例先红后绿、解析7/7、pending9/9、覆盖2/3，**唯一剩红是rerun缺BFF**。未改be2路由/前端，也未把501当功能完成。你那条“P196解析”本地记P197，避免覆盖正在交审的P196重跑。详P197回执；F-P196-BFF等待你派fe/批准期限，别据此以为HTTP未做。
+
 ### P-196重跑三笔候选已交（be，2026-09-10）
 
 **4903b5a2 / 82ff83d2 / 8c35c26b**依次Domain/DB/HTTP。真PG25+真实Data API启动/Session8+普通HTTP135+Domain54＝**222项不同定向过**；三包type/lint、DB/Worker缓存audit0；DB行100%分支87.32%，Service100/87.5，Route98.11/88.88。
