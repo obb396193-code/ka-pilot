@@ -1,16 +1,24 @@
-import { TaskDetailRepository, buildTaskDetailReadiness } from "@ka/db";
+import { TaskDetailRepository, TaskManageRepository, buildTaskDetailReadiness } from "@ka/db";
 import {
   TASK_DETAIL_TABS, computeTaskPacing, deriveSopProgressFromStage, metricValue,
-  shanghaiTaskBusinessDate, taskDetailSchema, type ApprovedWorkspaceAuthContext,
+  shanghaiTaskBusinessDate, taskBatchSaveRequestSchema, taskDetailSchema,
+  type ApprovedWorkspaceAuthContext,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
 import { createPlatformWindowQuery } from "../data/platform-window-query.js";
-import { R014HttpError, guardedRoute, requireMethod, sendData } from "./http.js";
+import { R014HttpError, guardedRoute, readJsonBody, requireMethod, sendData } from "./http.js";
 import type { R014Route } from "./routes.js";
 
 // v1.5.1 ② `GET /tasks/:id`（D5）。八页签的 overview 读；其余签由各自端点供数。
+// v1.9.28 加 `PATCH`（任务管理视图改四个字段）与 `POST /tasks/batch-save`（整类保存）。
+// **`batch-save` 长得就像一个 task_id**：详情路由先匹配上的话整条端点会变成 405。
+// 靠的是「batch-save 那条排在数组前面」（findR014Route 取第一个匹配），
+// 正则里不写零宽断言——三份路径扫描绊线（r014/r010 的 BFF 覆盖、访客写闸）都是按
+// 「捕获组 → :p」抹平的，断言会被它们抹成一段假路径，换来一串假红。
+// 顺序这件事本身由 task-manage.test.ts 的第一条用例钉住，改顺序就会红。
 const TASK_DETAIL = /^\/api\/v1\/tasks\/([^/]{1,128})$/;
+const TASK_BATCH_SAVE = "/api/v1/tasks/batch-save";
 
 const ratio = (numerator: number | null, denominator: number | null) =>
   numerator === null || denominator === null || denominator === 0
@@ -32,6 +40,7 @@ function monthToDate(businessDate: string): { from: string; to: string; preset: 
 
 export function createTaskDetailRoutes(pool: Pool): R014Route[] {
   const repository = new TaskDetailRepository(pool);
+  const manage = new TaskManageRepository(pool);
   const windowQuery = createPlatformWindowQuery(pool);
 
   /**
@@ -83,9 +92,40 @@ export function createTaskDetailRoutes(pool: Pool): R014Route[] {
   }
 
   return [
+    /**
+     * v1.9.28：整类保存。**全部成功才写**——一半写进去一半没写，页面上看不出是哪一半，
+     * 用户只会再点一次保存，把成功的那半又写一遍。
+     */
+    guardedRoute((pathname) => pathname === TASK_BATCH_SAVE, async (context) => {
+      requireMethod(context.request, ["POST"]);
+      const body = await readJsonBody(context.request, 262_144);
+      const parsed = taskBatchSaveRequestSchema.safeParse(body);
+      if (!parsed.success) throw new R014HttpError(400, "INVALID_REQUEST", "items must be a non-empty array");
+      const result = await manage.batchSave(
+        context.auth, parsed.data.items as { task_id: string }[], shanghaiTaskBusinessDate(new Date()));
+      if ("failed" in result) {
+        // 契约 v1.9.28：失败清单进 details.failed[]，调用方要知道是哪几条、为什么。
+        throw new R014HttpError(400, "INVALID_REQUEST", "batch save rejected", {
+          failed: result.failed.map((entry) => ({
+            task_id: entry.taskId, code: entry.code, message: entry.message,
+          })),
+        });
+      }
+      sendData(context.response, { saved: result.saved }, context.requestId, context.maxResponseBytes);
+    }),
+
     guardedRoute((pathname) => TASK_DETAIL.test(pathname), async (context) => {
-      requireMethod(context.request, ["GET"]);
+      const method = requireMethod(context.request, ["GET", "PATCH"]);
       const taskId = decodeURIComponent(TASK_DETAIL.exec(context.url.pathname)![1]!);
+      if (method === "PATCH") {
+        const body = await readJsonBody(context.request, 32_768);
+        sendData(
+          context.response,
+          await manage.patch(context.auth, taskId, body, shanghaiTaskBusinessDate(new Date())),
+          context.requestId, context.maxResponseBytes,
+        );
+        return;
+      }
       const businessDate = shanghaiTaskBusinessDate(new Date());
       const facts = await repository.facts(context.auth, taskId, businessDate);
 

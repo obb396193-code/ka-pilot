@@ -23,7 +23,9 @@ import {
   namingRuleSchema,
   namingRulesTestSchema,
   taskBindingsSchema,
+  taskBatchSaveResponseSchema,
   taskDetailSchema,
+  taskManageRecordSchema,
   taskFunnelSchema,
   taskTimelineSchema,
   watchlistSchema,
@@ -133,6 +135,23 @@ export const handleTaskDetail = (request: Request, taskId: string, deps: Deps): 
     path: `/api/v1/tasks/${encodeURIComponent(taskId)}`,
     method: "GET",
     dataSchema: taskDetailSchema,
+    ...withDeps(deps),
+  })
+
+// v1.9.28 任务管理视图（后端 be2 Q-043 ②；浏览器侧的 app/api 路由由 fe F8-23 接）。
+export const handleTaskPatch = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}`,
+    method: "PATCH",
+    dataSchema: taskManageRecordSchema,
+    ...withDeps(deps),
+  })
+
+export const handleTaskBatchSave = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/tasks/batch-save",
+    method: "POST",
+    dataSchema: taskBatchSaveResponseSchema,
     ...withDeps(deps),
   })
 

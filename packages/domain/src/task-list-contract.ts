@@ -16,7 +16,45 @@ export const taskListCalendarDateSchema = z
     return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
   }, "date must be a real calendar date");
 
-export const taskListStatusSchema = z.enum(["preparing", "active", "ended"]);
+/** v1.9.28：加 `paused`（停投）。`ended` 仍表示任务期结束，两者不是一回事。 */
+export const taskListStatusSchema = z.enum(["preparing", "active", "paused", "ended"]);
+
+/**
+ * v1.9.28 任务管理视图可编辑的四个字段（`PATCH /tasks/:id` 与 `POST /tasks/batch-save` 共用）。
+ * 全部可选，但**至少要给一个**——空 patch 是调用方写错了，不是「什么都不改」。
+ */
+export const taskManageFieldsSchema = z.object({
+  aliases: z.array(z.string().trim().min(1).max(128)).max(50).optional(),
+  monitor_url: z.string().trim().max(2048).nullable().optional(),
+  product_name: z.string().trim().max(200).nullable().optional(),
+  status: taskListStatusSchema.optional(),
+}).strict().refine(
+  (fields) => Object.values(fields).some((value) => value !== undefined),
+  "at least one field must be given",
+);
+export type TaskManageFields = z.infer<typeof taskManageFieldsSchema>;
+
+/**
+ * 整体保存一个业务大类下的若干任务。**全部成功才写**：一半写进去一半没写，
+ * 页面上看不出是哪一半，用户只会再点一次保存，把成功的那半又写一遍。
+ */
+export const taskBatchSaveRequestSchema = z.object({
+  items: z.array(z.object({ task_id: z.string().min(1).max(128) }).passthrough()).min(1).max(200),
+}).strict();
+
+/** 写回后的任务行（`PATCH /tasks/:id` 的 data，也是 batch-save 里 saved[] 的元素）。 */
+export const taskManageRecordSchema = z.object({
+  taskId: z.string().min(1).max(128),
+  taskName: z.string().nullable(),
+  bizName: z.string().nullable(),
+  status: taskListStatusSchema,
+  aliases: z.array(z.string()),
+  monitorUrl: z.string().nullable(),
+  productName: z.string().nullable(),
+}).strict();
+export const taskBatchSaveResponseSchema = z.object({
+  saved: z.array(taskManageRecordSchema),
+}).strict();
 
 /** v1.5.1 ② 投放阶段七态；与 status 三态并存，不是同一维度（status 是任务生命周期）。 */
 export const taskStageSchema = z.enum([

@@ -64,6 +64,8 @@ function writePathSamples(): { path: string; method: string }[] {
       if (pattern === null) continue;
       // 正则 → 一个能匹配的具体路径样本。
       const path = pattern[1]!
+        // 零宽断言不吃字符（`(?!batch-save$)`）：先去掉，再按捕获组造样本路径。
+        .replace(/\(\?[!=][^)]*\)/g, "")
         .replace(/\\\//g, "/")
         .replace(/\(\[0-9a-fA-F-\]\{36\}\)/g, UUID)
         .replace(/\(\[A-Z0-9_\]\{1,32\}\)/g, "KUAISHOU")
