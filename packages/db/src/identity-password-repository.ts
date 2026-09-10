@@ -34,6 +34,12 @@ export interface StoredPassword { passwordSalt: string; passwordScrypt: string; 
 
 /** 新密码规则（v1.7.6）：≥12 位、不得等于当前密码。 */
 export const MIN_PASSWORD_LENGTH = 12;
+/**
+ * 上限对齐**登录线**（`session-http-contract` 的 `password` ≤512，v1.9.24 / Q-040）。
+ * 原来这里放到 1024：存得下 ≠ 登得上——设了一个 513 位的密码，改密成功、下次登录被
+ * 登录契约挡在门外，等于自己把自己锁死。存储列宽不算「支持」。
+ */
+export const MAX_PASSWORD_LENGTH = 512;
 
 export class IdentityPasswordRepository {
   constructor(private readonly pool: Pool) {}
@@ -83,7 +89,7 @@ export class IdentityPasswordRepository {
     const currentPassword = String(input.currentPassword ?? "");
     const newPassword = String(input.newPassword ?? ""); // Freeze caller input before the first await.
     if (typeof identityId !== "string" || identityId.length === 0) throw new R014RepositoryError("INVALID_INPUT");
-    if (newPassword.length < MIN_PASSWORD_LENGTH || newPassword.length > 1024) {
+    if (newPassword.length < MIN_PASSWORD_LENGTH || newPassword.length > MAX_PASSWORD_LENGTH) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
     // 新旧相同直接拒：改了个寂寞，还会让人以为已经换过了。
@@ -140,7 +146,8 @@ export class IdentityPasswordRepository {
    */
   async setPassword(identityId: string, plain: string, updatedBy: string | null, executor: Pick<PoolClient, "query"> = this.pool): Promise<{ updatedAt: string }> {
     if (typeof identityId !== "string" || identityId.length === 0) throw new R014RepositoryError("INVALID_INPUT");
-    if (typeof plain !== "string" || plain.length < MIN_PASSWORD_LENGTH || plain.length > 1024) {
+    // 同一条登录线：开户/重置写下的初始密码也不能长到登不上（Q-040）。
+    if (typeof plain !== "string" || plain.length < MIN_PASSWORD_LENGTH || plain.length > MAX_PASSWORD_LENGTH) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
     const salt = randomBytes(16);

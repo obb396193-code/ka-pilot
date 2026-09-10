@@ -147,6 +147,8 @@ describe("POST /auth/password (real PostgreSQL)", () => {
   it("enforces the length rule and rejects reusing the current password", async () => {
     expect((await change({ currentPassword: OLD_PASSWORD, newPassword: "short" })).status).toBe(400);
     expect((await change({ currentPassword: OLD_PASSWORD, newPassword: OLD_PASSWORD })).status).toBe(400);
+    // Q-040 的 512 边界放在仓储那层测（identity-password-bounds）：这条路由五次一限速，
+    // 在这里再多打两发会把后面的用例挤成 429。
   });
 
   it("stays closed to a BUC identity", async () => {
