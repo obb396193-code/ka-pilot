@@ -340,3 +340,7 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### Q-039（P0，排 Q-038 之后）：清洗闭环后端（arch 2026-09-10，api.md v1.9.22）
 ① 规则段加 `anchor`/`matchLongest`；② `GET /admin/account-names` 行带 `raw`/`parsed`/`failedSegments[]`；③ `PUT naming-rules` 后自动对本空间全部昵称干跑回命中率。目的：fe 做「未归属样例一键加进别名 → 干跑 → 重解析」的闭环（借同事工作台 v7 的标签定义）。详 `docs/plans/2026-09-10-数据看板P0-借鉴工作台v7.md`。
+
+### 94f75103 ✅ 已合 main；Q-038 加一条（arch 2026-09-10，v1.9.23）
+- Q-037/Q-036 做法对（守卫在 ON、`DISPATCH_SEGMENT_WIRED` 常量钉住）。门禁 domain 93 / db 139 / worker 186 / gw 8 / web 244。
+- **Q-038 补**：腾讯第 10 段用 `key:"unknown_1", pending:true, label:"第 10 段·待确认"`；规则 schema 加 `pending?`/`label?`（v1.9.23），解析照常存值不进维度；`GET /admin/account-names` 与 naming-rules 响应带 pending 段的取值分布（`pendingSegments:[{key,label,values:[{value,count}]}]`），优化师每月确认。Q-039 的 `raw/parsed/failedSegments` 一并。

@@ -1357,3 +1357,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **`GET /api/v1/data/filters?window_from&window_to&media&optimizer[]&biz[]&task_id[]`** → `{optimizers:[{key,label,cost}], bizs:[…], tasks:[…], resource_positions:[…]}`，只列窗口内 cost>0 的项，下游随上游 filter 收窄。fixture `data-query/filters.json`。
 - 命名规则段加 **`anchor?: boolean`**（锚点段：命中后其余段按相对位置切，用于「自投/代投」这类稳定锚）、**`matchLongest?: boolean`**（enum 值按最长别名命中）。`GET /admin/account-names` 行加 `raw`（原昵称）、`parsed`（段→值）、`failedSegments[]`。
 - 优化师视角的 BI 分摊：优化师/大类级 `bi_conv` 按消耗占比分摊到下级（前端算，口径与 v7 同）；账户级同。
+
+## v1.9.23 追加（2026-09-10 老板拍板：看板双开门优先 + 页内切换 + 图表可换 + 未知段）
+- **优先级**：数据看板先做「双开门」——团队空间走 ka-data、个人空间走启航（`queryDataReport`/`account_realtime` → ETL → canonical）两条源都要在数据分析页出真数；启航链路（ETL 全量/增量、失败批次屏蔽、就绪度、hourly 025）**排在开户 F-OS-004 之前**。其余可等。
+- **个人 / 团队页内切换**：数据分析页顶部加「个人 | 团队」切换，语义 = 同一个会话级 `switchWorkspace`（与左下角切换器同一动作、互相同步），切完停留在本页。个人视角默认只看本人授权账户的一个渠道（任务 / 版位 / 资源位 / 成本）；团队视角开级联筛选（渠道 / 优化师 / 任务 / 资源位）。
+- **图表组件可换类型**：概览里每个图表组件（资源位分布、趋势、任务大类、优化师）带「图表类型」切换（柱 / 饼 / 环 / 折线，按组件给合法集合），选择记在 `saved_views.config.charts: { <widgetKey>: "bar"|"pie"|"donut"|"line" }`（`view/v1` 可选新键，不升版本）。图表库由 fe 定（ECharts 允许，须自托管不走 CDN）。
+- **命名规则的未知段**：段可标 `pending: true` + `label`（如「第 10 段·待确认」），解析照常存值到 `parsed[key]`，不进任何维度；归属清洗 tab 列出所有 pending 段与该段的取值分布，供优化师**每月确认**后改 key。腾讯规则第 10 段先用 `key:"unknown_1", pending:true`。

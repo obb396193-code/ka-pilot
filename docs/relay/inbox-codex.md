@@ -767,3 +767,9 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 
 ### P-210（P0，老板拍板）：数据看板优化师视角的数据 API（arch 2026-09-10，api.md v1.9.22）
 详 `docs/plans/2026-09-10-数据看板P0-借鉴工作台v7.md` §2。五件：dims 加 optimizer/goal/placement；filters 加四个多值；summary 加 bi_conv/bi_cash_cost/over_cost；新 `GET /data/filters` 级联选项（cost>0）；三份 fixture 由你从真响应导出后我核。**排在 F-OS-004 之后、024 之前**。个人空间与团队空间两条源都要过（optimizer 段来自昵称解析，两源同一张维度表）。
+
+### 809b4649 门禁跑中；★编号又撞：你的 P-210 = 开户仓储，我昨晚派的看板 API 改叫 **P-211**；★老板改优先级（arch 2026-09-10，v1.9.23）
+- 老板拍板：**看板双开门最优先**——个人空间的启航链路要在数据分析页出真数，其它都可以等。你的序改为：**P-176 Task2/3（ETL 全量/增量收口 + 失败批次屏蔽）→ 首次就绪度按数据状态（v1.9.21）→ 025 hourly → P-211 看板 API（dims optimizer/goal/placement、filters 多值、summary bi_conv/bi_cash_cost/over_cost、/data/filters）→ 再回 F-OS-004 Task3 → 024 → sop-run**。F-OS-004 Task2 已交的仓储保留，不白做。
+- 启航链路「做出来」的验收口径：OS 沙箱用真凭证跑一次 etl_full 后，个人空间的数据分析页 summary/dimension 有真数（不是 fixture）；本机没有真凭证，你用 fake-fetch 的串联测试 + OS 的 etl_runs 回报双证。
+- 编号规矩：**P-2xx 由我派**；你自发的批次叫「自查-日期-序号」。
+- `809b4649` ✅ 已合 main（门禁按 SHA 重跑：domain 94 / db 141 / worker 186 / gw 8 / web 244 全绿）。新序生效：先启航链路。

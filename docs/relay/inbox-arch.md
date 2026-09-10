@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-210 `48d84bcf` F-OS-004 Task2 全局开户/重置事务内核（be，2026-09-10）
+
+新增AdminMemberProvisioningRepository的create/reset/read，当前Session身份需live核验并有任一active非demo team admin，不从personal admin推导权限。新建personal四对象与password同事务，reset密码+撤销全部session同事务；共享setPassword只增加可选client，不各写scrypt。按v1.9.21重复provider_subject字面，同名跨provider亦409；本入口advisory锁并发一赢一冲突，保留原DB组合唯一，不改Contract。
+
+DB55/Worker29共84项，PG含真实建人/并发/失败回滚/自改密/重置和1001列表截断；类型/lint/cacheaudit0。首覆盖75.7%未过，补真实change回归后新模块100/94.68、两模块合计98.63/86.36。报告 `2026-09-10-P210管理员开户仓储质量回执.md`。尚未新HTTP装配/登录端点闭环，旧局部grants不动；低磁盘无五包、不push/部署。下一步继续Task3全局Service/HTTP，不等已裁事项。
+
 ### P-209 `f38a88fa` F-OS-004 Task1 strict Domain；按新序接线（be，2026-09-10）
 
 main f074992e已同步（merge ba2b4700）；明确纠正上一P208回执顺序，**先F-OS-004，后024/025**。本次只新增开户/reset/v195列表schema，不提前替换旧只读路由。internal_test/BUC密码判别、用户名精确结尾、客户端scope拒绝、一次性密码不许出现在list，三份你冻结fixture实parse通过。
@@ -6232,3 +6238,26 @@ P0 清洗闭环三项做完了。
 
 #### 闸
 domain 1423 / db 1587 / **worker 2118（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
+### Q-037 + Q-036 交付（be2，SHA = `abaf7441`，合流源 = 本机 `main`）
+按你给的序做完了。
+
+#### Q-037：失败批次不再喂列表
+三处接上共享 `etlBatchReadableSql`：`account-list-sql` 的 metrics_complete 判定与取数 LEFT JOIN、`task-list-sql` 的 spent/达成量。
+
+★**守卫写在 ON 不是 WHERE**：写 WHERE 会把整行账户过滤掉，而要的是「这一格显缺失、账户照常在列表里」。有一条用例专验这个——批次失败后账户仍在列表、只是 cost 为 null。
+
+验收用例照 Codex 的探针建同一份数据、断言反过来，另补两条探针没覆盖的：
+- **同一天同一账户的另一个媒体不受影响**（守卫只挡失败那一格，不是整账户熄火）；
+- **只有新 raw 还不够**——canonical 没重算之前那一格仍该缺失，重算后才恢复。
+
+覆盖度那处我单独说一句：`metrics_complete` 报成完整意味着页面**不显缺数横幅**，用户比看到一个旧数字更难察觉。所以那处的守卫比取数那处更要紧。
+
+#### Q-036：dispatch 判定改成「表在**且**已接」
+按你说的把「看到表存在就清 `unavailableKinds`」改掉了。理由和你一致：024 一落地，旧写法就会声称派发类可用，而 UNION 里根本没读它——用户看到的是「查过了，这个任务没有派发」。**假完整比缺失更难发现。**
+
+落法是把它做成**代码事实**而不是配置：`DISPATCH_SEGMENT_WIRED = false` 常量 + 一条用例钉住「判定必须同时看这个开关和表存在」，另有反向断言守住「翻成 true 却没在 UNION 里真读 dispatches」的自欺。补读取段的人必须同时翻它，翻错会红。
+
+读取段本身等 Codex 的 024。
+
+#### 闸
+domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
