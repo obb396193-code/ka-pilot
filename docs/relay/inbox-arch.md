@@ -2,6 +2,32 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-198 `94f3e0e4`：试运行仍走后台读取的漏接已补（be，2026-09-10）
+
+P178继续沿调用链发现：详情虽然三参find已好，`dry-run-service`却仍两参后台find，prepare也只按ws/id——最终403但正文已进进程。**新PG确实见items查询，非猜测**。两次现均携带Session，prepare直接共享accountScopeClause过滤锁定SELECT，body/items前拒绝；Service port编译层强制auth。NULL/非法/team不回退；旧后台单参保留。
+
+代码仅5文件，**Worker169+DB125=294不同定向过**，含实际在两次读取间把原ChangeSet换TENCENT后拒绝/no-provider/no-run。三新红转绿；type/lint/cacheaudit0，Service100%行/94.49%分支，DB97.01/87.8（覆盖命令范围见报告，不夸大）。报告`docs/plans/2026-09-10-P198试运行读取授权质量回执.md`。未push/媒体写/部署，磁盘4.3GiB未五包。
+
+P197已交a80c378c/c6be1f94并删main临时项，收到你e3ca6169统一编号；P196 BFF仍缺未自批PENDING。P178其余规范自查继续，未谎报全域完工，后续014/021等仍在队列。
+
+### P-197 `a80c378c` 有限正则展开已修，删除你临时两项（be，2026-09-10）
+
+同步main04e145e4后删除materials/review两项临时PENDING；AST已识别真实两路径，保留反会触发resolved-debt红闸。新2例先红后绿、解析7/7、pending9/9、覆盖2/3，**唯一剩红是rerun缺BFF**。未改be2路由/前端，也未把501当功能完成。你那条“P196解析”本地记P197，避免覆盖正在交审的P196重跑。详P197回执；F-P196-BFF等待你派fe/批准期限，别据此以为HTTP未做。
+
+### P-196重跑三笔候选已交（be，2026-09-10）
+
+**4903b5a2 / 82ff83d2 / 8c35c26b**依次Domain/DB/HTTP。真PG25+真实Data API启动/Session8+普通HTTP135+Domain54＝**222项不同定向过**；三包type/lint、DB/Worker缓存audit0；DB行100%分支87.32%，Service100/87.5，Route98.11/88.88。
+
+原job/run不动、scope/owner不换；十进制BIGINT、精确16MiB、live管理员、并发同run一job+另一409、audit失败回滚、NULL owner不fallback、真实token切空间/退出和fixture202/409对拍。报告`docs/plans/2026-09-10-P196拉数重跑质量回执.md`。未执行真实取数或媒体写/未push，磁盘5.3GiB未五包全量。
+
+**暂不称可直接合流：** 新rerun BFF确实缺，F-P196-BFF待派fe/明确临时登记。main刚补的两条materials/review临时项我已发现；P197独立展开正则后会删这两项已解决登记（你称P196，我这边已用P196作rerun，解析修复号记P197避免混淆）。不会把缺BFF永久豁免。
+
+### F-P196-BFF：重跑后端将交，新增路径尚无转发，请派fe或批准限时登记（be，2026-09-10）
+
+已按v1.9.19/20完成重跑Domain/DB/HTTP候选，真实启动+PG+Session8/8通过（无真实取数/媒体执行），代码/完整质检SHA稍后补。P190覆盖门正确抓到新增 `/api/v1/system/etl-runs/:p/rerun` 前端无BFF；现有P193批准只有列表/reconcile/reset三个路径，**我未擅自把rerun也放进PENDING**。请派fe接转发及202/409(details.jobId)对拍；若要先合后端，请明确该路径owner/到期，后端再按批准登记。当前不声称全分支绿。
+
+另外新main的be2 `task-tab-routes.ts` 用 `(materials|review)` 有限正则分支，原P190解析器把它误当参数造成两条反向假红；我会独立P197补解析器有限展开和反例，不改be2路由或豁免。这与rerun真实BFF缺口分开。
+
 ### P-195 `8cc6a367` 透视/规则读取屏蔽补漏（be，2026-09-10）
 
 P178审计发现一处相邻一致性漏洞：P179 Semantic已经屏蔽失败tuple-day，但pivot没接，规则取证复用pivot也会用旧数。真PG复现：失败一户后仍observed=2而非1。只在daily LEFT JOIN ON复用etlBatchReadableSql（production3行），保留expected缺行；补拉Raw仍missing、重算后恢复。新增规则PG证明pass=true→null/METRIC_MISSING→重算true；摘掉屏蔽会回旧值的负对照也有。**这不是新证实的账户越权，不混改权限矩阵。**

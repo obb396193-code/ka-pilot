@@ -62,12 +62,23 @@ function render(raw: ts.Expression, bindings: Bindings, aliases: Map<string, ts.
   if (ts.isIdentifier(node)) return parameterValues(node, aliases) ?? [":p"];
   return [":p"];
 }
-function regexPath(text: string): string | undefined {
+function regexPaths(text: string): string[] | undefined {
   if (!text.startsWith("/^\\/api\\/v1")) return undefined;
   if (!text.endsWith("$/")) throw new Error(`Unresolved route regex: ${text}`);
-  const result = text.slice(2, -2).replace(/\([^)]*\)/g, ":p").replace(/\\\//g, "/");
-  if (!/^\/api\/v1\/(?:[A-Za-z0-9_.:-]+\/?)+$/.test(result)) throw new Error(`Unresolved route regex: ${text}`);
-  return result;
+  const source = text.slice(2, -2);
+  let values = [""], end = 0;
+  for (const match of source.matchAll(/\(([^()]*)\)/g)) {
+    const prefix = source.slice(end, match.index), inner = match[1]!.replace(/^\?:/, "");
+    // Only plain finite literal alternatives are expanded; arbitrary regex
+    // capture content still represents a parameter, never executable regex.
+    const choices = /^[A-Za-z0-9_-]+(?:\|[A-Za-z0-9_-]+)*$/.test(inner) ? inner.split("|") : [":p"];
+    if (values.length * choices.length > 100) throw new Error("Route regex expansion overflow");
+    values = values.flatMap(value => choices.map(choice => value + prefix + choice));
+    end = match.index + match[0].length;
+  }
+  const paths = values.map(value => (value + source.slice(end)).replace(/\\\//g, "/"));
+  if (paths.some(value => !/^\/api\/v1\/(?:[A-Za-z0-9_.:-]+\/?)+$/.test(value))) throw new Error(`Unresolved route regex: ${text}`);
+  return paths;
 }
 
 /** Syntax-only inventory: never execute browser modules, read secrets or call services. */
@@ -85,7 +96,7 @@ export function sourcePaths(source: string): PathInventory {
     else if (ts.isTemplateExpression(node) && node.getText().includes("/api/v1/")) {
       for (const bindings of enclosingGuards(node)) for (const value of render(node, bindings, aliases)) add(value);
     } else if (node.kind === ts.SyntaxKind.RegularExpressionLiteral) {
-      try { const path = regexPath(node.getText()); if (path) paths.add(path); }
+      try { for (const path of regexPaths(node.getText()) ?? []) paths.add(path); }
       catch (error) { unresolved.push((error as Error).message); }
     }
   });

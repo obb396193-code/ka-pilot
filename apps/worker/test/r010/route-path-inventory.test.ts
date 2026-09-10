@@ -2,6 +2,18 @@ import { describe, expect, it } from "vitest";
 import { sourcePaths } from "./route-path-inventory.js";
 
 describe("R010 route inventory parser", () => {
+  it("expands finite regex suffix alternatives without losing literal routes", () => {
+    expect(sourcePaths('const p=/^\\/api\\/v1\\/tasks\\/([^/]{1,128})\\/(materials|review)$/')).toEqual({
+      paths: ["/api/v1/tasks/:p/materials", "/api/v1/tasks/:p/review"], unresolved: [] });
+    expect(sourcePaths('const p=/^\\/api\\/v1\\/(?:tasks|accounts)\\/([^/]+)\\/(?:materials|review)$/').paths).toEqual([
+      "/api/v1/accounts/:p/materials", "/api/v1/accounts/:p/review", "/api/v1/tasks/:p/materials", "/api/v1/tasks/:p/review",
+    ]);
+  });
+  it("rejects regex expansion overflow and nested unresolved groups", () => {
+    const choices = Array.from({ length: 101 }, (_, i) => `kind${i}`).join("|");
+    expect(sourcePaths(`const p=/^\\/api\\/v1\\/(${choices})$/`).unresolved).toHaveLength(1);
+    expect(sourcePaths('const p=/^\\/api\\/v1\\/(foo(bar|baz))$/').unresolved).toHaveLength(1);
+  });
   it("finds literals and regex while excluding comments", () => {
     const source = 'const a="/api/v1/tasks"; const b=/^\\/api\\/v1\\/work-items\\/([^/]+)$/; // "/api/v1/fake"';
     expect(sourcePaths(source)).toEqual({ paths: ["/api/v1/tasks", "/api/v1/work-items/:p"], unresolved: [] });

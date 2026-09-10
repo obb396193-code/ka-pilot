@@ -87,6 +87,8 @@ describe("ChangeSetDryRunService", () => {
   it("records trusted complete preflight without confirming or enqueuing", async () => {
     const c = setup();
     await expect(c.service.run(id, auth)).resolves.toMatchObject({ executionRunId: id, status: "success", hash });
+    expect(c.store.find).toHaveBeenCalledWith(ws, id, auth);
+    expect(c.store.prepareDryRun).toHaveBeenCalledWith({ workspaceId: ws, changeSetId: id, now }, auth);
     expect(c.store.recordDryRun).toHaveBeenCalledWith({ workspaceId: ws, changeSetId: id,
       expectedHash: hash, now, items: [{ itemId: 1, status: "success" }],
       expectedScope: { media: "KUAISHOU", accountId: "a1", initiatorUserId: user, credentialOwnerUserId: user } });

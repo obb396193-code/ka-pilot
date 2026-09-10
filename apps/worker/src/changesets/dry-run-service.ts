@@ -17,7 +17,12 @@ export interface ChangeSetPreflightPort {
   check(input: ChangeSetPreflightInput): Promise<unknown>;
 }
 export interface DryRunServiceDependencies {
-  store: Pick<ChangeSetRepository, "find" | "prepareDryRun" | "recordDryRun">;
+  // This HTTP-facing port deliberately does not expose the repository's legacy
+  // auth-less overloads. Forgetting Session context must also fail typecheck.
+  store: Pick<ChangeSetRepository, "recordDryRun"> & {
+    find(workspaceId: string, changeSetId: string, auth: ApprovedWorkspaceAuthContext): ReturnType<ChangeSetRepository["find"]>;
+    prepareDryRun(input: Parameters<ChangeSetRepository["prepareDryRun"]>[0], auth: ApprovedWorkspaceAuthContext): ReturnType<ChangeSetRepository["prepareDryRun"]>;
+  };
   preflight?: ChangeSetPreflightPort;
   now?: () => Date;
   timeoutMs?: number;
@@ -77,11 +82,11 @@ export class ChangeSetDryRunService {
     }
     const auth = parsed.data; // Zod clone stays private, never passed to provider.
     try {
-      const found = await this.dependencies.store.find(auth.workspaceId, changeSetId);
+      const found = await this.dependencies.store.find(auth.workspaceId, changeSetId, auth);
       if (found === null) throw new DryRunServiceError("NOT_FOUND");
       authorize(found, changeSetId, auth, clock(this.now));
       if (!this.dependencies.preflight) throw new DryRunServiceError("SOURCE_UNAVAILABLE");
-      const prepared = await this.dependencies.store.prepareDryRun({ workspaceId: auth.workspaceId, changeSetId, now: clock(this.now) });
+      const prepared = await this.dependencies.store.prepareDryRun({ workspaceId: auth.workspaceId, changeSetId, now: clock(this.now) }, auth);
       const draft = structuredClone(prepared.changeset);
       authorize(draft, changeSetId, auth, clock(this.now));
       if (!/^[a-f0-9]{64}$/.test(prepared.hash)) throw new DryRunServiceError("UPSTREAM_INVALID_RESPONSE");
