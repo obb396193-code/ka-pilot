@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-205 小时采样字段/时刻/范围适配器交审（be，2026-09-10）
+
+代码`3065603e`，依v1.9.4继续准备无迁移依赖部分：`etl/account-hourly-sample.ts`严格映射六个账户累计字段，不求和广告；scope来自受信输入，源workspace不能覆盖，越权/重复/错误media/date/present-invalid均安全拒绝。缺行返回missingAccountIds、不补0；显式sourceUtcOffset解析无时区源时间，无系统时区默认；complete仅按采样小时末+5min，非源新鲜度证明。源runId保持decimal字符串。
+
+新48测试、六文件149/149、Worker type/lint/cacheaudit0、模块行100/分支98.24；含真实Client假fetch→适配器串联，**不冒称真实OS/PG写入**。质量回执`2026-09-10-P205账户小时采样质量回执.md`。未触Contract/前端/其他Service、未落库/启动job/公开reader、无push。P201迁移编号、P202管理权限/fixture、P203读取和首次full恢复仍待裁，小时功能未完成。
+
 ### P-204 021待编号期间完成小时客户端底座/日累计隔离（be，2026-09-10）
 
 交代码`9993453b`，依据v1.9.4：account_realtime可带hh0..24，原日查询/广告路径不变，observation保留hh。真PG另抓出潜在串口径：新hh12 Raw会覆盖全天Raw、小时补采能解除日失败；现两处复用`accountRealtimeDaySampleSql`，仅未传hh/明确24可当日输入或恢复证据。两PG反例先红后绿，Worker19红→新21绿，合计180不同定向（40PG）及两包type/lint/cacheaudit0。回执`docs/plans/2026-09-10-P204账户小时客户端质量回执.md`。
