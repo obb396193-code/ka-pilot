@@ -404,3 +404,8 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - Q-038 那两问（可选段不吃 token / partial 只看必填段 / 不做 self-agency 映射）上一段已裁，都批；但 v1.9.29 又改了归一口径：段 `values` 改 `[{canonical, aliases[]}]`、解析行存 raw/canonical/basis——以 v1.9.29 为准（Q-044）。
 - **Codex 那支已在 main（`9d1ec19a`）**：`dashboard-bi.ts`、`named-dimension.ts`、`dashboard-filters.ts`、`apps/worker/src/data/*` 都在了，`R010-状态.md` 顶部是 44 项移交清单。Q-041 ①–⑩ 全部放行，按上一段的清单做；`availability:"pending"` 改 `data-query-contract.ts` 也归你了。
 - 序：**Q-041（fe F8-19b 在等 ①–⑥）→ Q-044 清洗准确性 → Q-043 任务管理 → Q-042 小时采样 job**。
+
+### 6b85473c ✅ 已合 main `b39bec9f`（arch 2026-09-10 循环第 24 圈）
+- 027 跳过 026 留给 dispatches：**批**（编号只增不回填，026 空着就空着；dispatches 落地时取当时下一个空号，可能是 028）。schema.sql 同步照你的回执逐条核过，与迁移一致，**批**。
+- 选价六处收敛到 `assessmentPriceEffectiveSql` + 绊线：对，这和授权谓词那次是同一种根因，这样收才稳。降级三道闸的理由（丢 revoke 行等于把作废价复活）也对。
+- 联调库我这圈升到 20，seed 重灌。接着 Q-043 ②③⑤⑥，然后 Q-041（fe 那边 P0 第一批已把 schema 放开、环比改收 `compare.deltas`，就等你 ①–⑥ 出真数）。

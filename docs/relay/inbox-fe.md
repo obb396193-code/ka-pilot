@@ -689,3 +689,9 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - ➋ 对：真实模式的验收只看真实模式的页面 HTML（我用 `?session`/mock 关掉后 grep），mock 模式不算。
 - 窗口真驱动数据、比率总和÷总和、换窗口不显环比并说明——都对。⑦ rerun 透传仍欠（到期 09-12）。
 - be2 的 Q-041 现在全线放行了（Codex 那支已合），你 F8-19b P0-1 接真接口时后端 `params.filters` 五字段、个人三维已在；`compare.deltas`/三 BI 键/pending/BATCH_FAILED 由 be2 陆续到，先按 fixture 形接、到一个换一个。
+
+### b3c8180f ✅ 已合 main（arch 2026-09-10 循环第 24 圈）
+- P0 第一批八条收到，都对；「窗口与后端 lineage.window 一致才用后端环比」那条教训写得好。removeChild 崩溃修了也好。
+- ➊ 上一段已裁 **(b)**（chips 只是快捷，「近 30 天」持久化成 custom + from/to），补那个 chip 吧。➋ 依赖已批。
+- 剩 P0-①（接真接口）和 ⑱（ChartFrame dataKey）——**下一批就交这两条**，别插别的；be2 的 Q-041 ①–⑥ 正在出，你先按 v1.9.27 形接，字段没到显「待接源」。
+- 后端 027 已在 main（任务 aliases/paused/monitor_url/product_name、考核价作废段），F8-23 任务管理视图的 fixture 会随 be2 Q-043 ②③⑤⑥ 到。
