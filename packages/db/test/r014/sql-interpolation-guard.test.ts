@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
  */
 const ALLOWED: RegExp[] = [
   /^[A-Z][A-Z0-9_]*$/,                                   // 模块常量：SELECT_COLUMNS / VISIBLE / SCOPED_METRIC …
-  /^(accountScopeClause|workItemScopeClause)\(/,          // 授权谓词 helper：入参全是字面量（调用点已核）
+  /^(accountScopeClause|workItemScopeClause|taskGrantScopeClause)\(/, // 授权谓词 helper：入参全是字面量（调用点已核）
   /^params\.length(\s*\+\s*\d+)?$/,                       // 参数序号
   /^conditions\.join\("\s*AND\s*"\)$/,                    // 条件片段，值一律走 $N
   /^where$/, /^kindClause$/, /^scoreColumn$/, /^metricColumns$/, // 本文件内拼的片段，均只含 $N 与列名
@@ -28,6 +28,9 @@ const ALLOWED: RegExp[] = [
  */
 const HELPER_DEFINITION_SLOTS = new Set([
   "kindParam", "listParam", "alias", "mediaExpression", "accountExpression",
+  // taskGrantScopeClause 的形参；`tupleHit` 装的是 accountScopeClause 的返回值（同一个文件里
+  // 用字面量调的），不是外来数据。
+  "taskAlias", "dateParam", "tupleHit",
 ]);
 
 const SQL_TEMPLATE = /`([^`]*?(?:SELECT|INSERT|UPDATE|DELETE)[^`]*?)`/gs;
@@ -68,7 +71,7 @@ describe("no request data is ever concatenated into R-014 SQL", () => {
       for (const name of readdirSync(base)) {
         if (!name.endsWith(".ts") || name === "workspace-authority.ts") continue;
         const source = readFileSync(new URL(name, base), "utf8");
-        for (const call of source.matchAll(/(?:accountScopeClause|workItemScopeClause)\(([^)]*)\)/g)) {
+        for (const call of source.matchAll(/(?:accountScopeClause|workItemScopeClause|taskGrantScopeClause)\(([^)]*)\)/g)) {
           callSites.push(`${name}: ${call[1]!.trim()}`);
         }
       }

@@ -51,4 +51,26 @@ describe("account scope predicates compare against the row, not against themselv
     expect(calls).toBeGreaterThan(10);
     expect(offenders).toEqual([]);
   });
+
+  /**
+   * 第二条：授权 tuple 判定**只准有一处实现**。
+   *
+   * 上面那条只管调用点传了什么；手抄一份同形 SQL 的人根本不经过调用点，绊线就扫不到他。
+   * 任务详情原来抄了六份、日报抄了一份——每一份都可能各自漂成恒真，而且抄件出事没人会知道。
+   * 所以直接禁掉这个形状：`EXISTS` + `jsonb_to_recordset(... media/account_id ...)` 的写法
+   * 只能出现在 `workspace-authority.ts` 里。要新的判定就往那里加函数，别就地抄。
+   */
+  it("keeps the tuple gate itself in exactly one file", () => {
+    const handwritten: string[] = [];
+    for (const file of sources(SRC)) {
+      const source = readFileSync(file, "utf8");
+      for (const match of source.matchAll(/SELECT 1\s+FROM jsonb_to_recordset/g)) {
+        handwritten.push(`${file.pathname.split("/src/")[1]}: ${match[0]}`);
+      }
+    }
+    expect(handwritten).toEqual([]);
+    // 定义处必须还在——扫描目录写错会让这条空转。
+    expect(readFileSync(new URL(`r014/${DEFINITION}`, SRC), "utf8"))
+      .toContain("SELECT 1 FROM jsonb_to_recordset");
+  });
 });
