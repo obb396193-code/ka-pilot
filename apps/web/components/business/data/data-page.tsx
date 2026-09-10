@@ -62,7 +62,7 @@ export function DataPage() {
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
-          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} /> : null}
+          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
           {tab === "table" ? <TableTab onSaveView={saveView} /> : null}
           {tab === "pivot" ? <PivotTab /> : null}
           {tab === "hourly" ? <HourlyTab /> : null}

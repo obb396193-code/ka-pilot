@@ -10,8 +10,9 @@ import { TrendChart, type TrendPoint } from "@/components/business/data/dashboar
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { isOk } from "@/lib/fixtures/contract"
-import { dimensionFixtures, trendFixture } from "@/lib/fixtures/data-analysis"
-import { aggregateDays, dashboardSummaryFixture, optimizerDimensionFixture, resourcePositionFixture, type DashboardRow } from "@/lib/fixtures/dashboard"
+import { trendFixture } from "@/lib/fixtures/data-analysis"
+import { aggregateDays, dashboardSummaryFixture } from "@/lib/fixtures/dashboard"
+import { mockBizRows, mockOptimizerRows, mockResourcePositionRows, useDashboardDimension, useDashboardSummary } from "@/lib/data/use-dashboard"
 import { windowPresetLabel, type DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -27,19 +28,21 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
  * 数据源：`assessment.biConv/biCashCost/overCost` 与环比是契约 v1.9.22 新增，后端 Codex P-210 未到，
  * 现读 `lib/data/fixtures/v1922/` 的过渡 fixture（自写、按 api.md 形，落地后并回删除）。
  */
-export function OverviewTab({ colorKey, window }: { colorKey?: string; window: DataWindow }) {
-  const summary = isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.rows[0] : null
+export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: string; window: DataWindow; workspaceId?: string }) {
+  // 取数全在 `use-dashboard`：组件不再自己判断走 fixture 还是走接口（审查员 D 的 P1）
+  const summaryQuery = useDashboardSummary(window, workspaceId)
+  const summary = summaryQuery.data
   const lineage = (isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.lineage : null) as
     (Parameters<typeof LineageFooter>[0]["lineage"] & { window?: { from: string; to: string; preset?: string } }) | null
 
-  const optimizerRows = isOk(optimizerDimensionFixture) ? optimizerDimensionFixture.data.source.rows : []
-  const resourceRows = isOk(resourcePositionFixture) ? resourcePositionFixture.data.source.rows : []
-  // 任务大类走契约里已有的 biz 维度 fixture（不是我写的过渡件）。
-  // ★不用 `as unknown as DashboardRow[]` 硬转：那正是「盯盘页崩溃」的成因——
-  //   契约的 biz 行没有 v1.9.22 的考核三项，硬转过去运行时就是 undefined.value。
-  //   DashboardRow 的这三项现在是可选的，结构化匹配即可，缺了由钻取表按分摊处理。
-  const bizFixture = dimensionFixtures.biz
-  const bizRows: DashboardRow[] = "unsupported" in bizFixture || !isOk(bizFixture) ? [] : bizFixture.data.source.rows
+  const optimizerQuery = useDashboardDimension("optimizer", window, workspaceId, mockOptimizerRows())
+  const resourceQuery = useDashboardDimension("resource_position", window, workspaceId, mockResourcePositionRows())
+  const optimizerRows = optimizerQuery.data ?? []
+  const resourceRows = resourceQuery.data ?? []
+  // ★任务大类顶层行走**和 summary 同源**的那份，不用契约里那份 personal 的 biz fixture：
+  //   两者口径不同，挂在一起会让分摊的分母整个错（审查 ③ 点名）。
+  const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows())
+  const bizRows = bizQuery.data ?? []
 
   // 按天的原始行：趋势和「窗口重算」都从这里来
   const days = useMemo(() => (isOk(trendFixture) ? trendFixture.data.source.rows : []), [])
@@ -69,7 +72,15 @@ export function OverviewTab({ colorKey, window }: { colorKey?: string; window: D
     [sameAsBackend, days, window.from, window.to],
   )
 
-  if (!summary) return <p className="rounded-lg border border-dashed px-3 py-10 text-center text-sm text-muted-foreground">概览暂无数据</p>
+  if (summaryQuery.loading) return <p className="rounded-lg border border-dashed px-3 py-10 text-center text-sm text-muted-foreground">正在读取概览…</p>
+  if (summaryQuery.error) return (
+    <div className="rounded-lg border border-dashed px-3 py-10 text-center text-sm text-muted-foreground">
+      <p className="mb-2 text-status-critical">读取失败：{summaryQuery.error.message}</p>
+      {summaryQuery.error.requestId ? <p className="mb-2 text-xs">问题编号 {summaryQuery.error.requestId}</p> : null}
+      <button type="button" onClick={summaryQuery.reload} className="underline underline-offset-2">重试</button>
+    </div>
+  )
+  if (!summary) return <p className="rounded-lg border border-dashed px-3 py-10 text-center text-sm text-muted-foreground">这个窗口没有数据</p>
 
   return (
     <div className="flex flex-col gap-5">
@@ -106,10 +117,10 @@ export function OverviewTab({ colorKey, window }: { colorKey?: string; window: D
               <TabsTrigger value="optimizer">优化师视角</TabsTrigger>
             </TabsList>
             <TabsContent value="biz" className="mt-3">
-              <DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv} />
+              <DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" levels={["biz", "task", "account"]} window={window} workspaceId={workspaceId} rootBi={summary.assessment.biConv} />
             </TabsContent>
             <TabsContent value="optimizer" className="mt-3">
-              <DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv} />
+              <DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" levels={["optimizer", "biz", "task", "account"]} window={window} workspaceId={workspaceId} rootBi={summary.assessment.biConv} />
             </TabsContent>
           </Tabs>
         </CardContent>

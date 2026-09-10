@@ -51,7 +51,7 @@ test("环比走后端 compare.deltas，不再自造 previous", () => {
 })
 
 test("两份维度 fixture 的每一行都过 dimension schema", () => {
-  for (const name of ["dimension-optimizer.json", "dimension-resource-position.json"]) {
+  for (const name of ["dimension-optimizer.json", "dimension-resource-position.json", "dimension-biz.json"]) {
     for (const row of rowsOf(load(name))) dimensionWindowRowSchema.parse(row)
   }
 })
@@ -74,4 +74,14 @@ test("账户层的 key 是 <MEDIA>:<accountId> —— 账户链接靠它判，�
   const accountKeys = Object.values(byParent).flat().map((row) => row.key).filter((key) => key.includes(":"))
   assert.ok(accountKeys.length > 0)
   for (const key of accountKeys) assert.match(key, /^[A-Z0-9_]{1,32}:[A-Za-z0-9_-]{1,128}$/)
+})
+
+test("任务大类顶层行与 summary 同源：消耗之和 = summary 的账面花费", () => {
+  // ★审查 ③ 点名的坑：把契约里那份 personal 的 biz 行挂在 team summary 下，
+  // 分摊的分母就整个错了。这条把「同源」钉死。
+  const summary = accountSummaryRowSchema.parse(rowsOf(load("summary.json"))[0])
+  const total = rowsOf(load("dimension-biz.json"))
+    .map((row) => dimensionWindowRowSchema.parse(row))
+    .reduce((sum, row) => sum + (row.metrics.cost.value ?? 0), 0)
+  assert.equal(Math.round(total), Math.round(summary.metrics.cost.value ?? -1))
 })

@@ -1,5 +1,6 @@
 import summary from "@/lib/data/fixtures/v1922/summary.json"
 import optimizerDim from "@/lib/data/fixtures/v1922/dimension-optimizer.json"
+import bizDim from "@/lib/data/fixtures/v1922/dimension-biz.json"
 import resourceDim from "@/lib/data/fixtures/v1922/dimension-resource-position.json"
 import drill from "@/lib/data/fixtures/v1922/drill.json"
 import { z } from "zod"
@@ -75,6 +76,7 @@ function checked<T>(payload: unknown, rows: z.ZodTypeAny, label: string): Fixtur
 
 export const dashboardSummaryFixture = checked<{ mode: string; source: { rows: DashboardSummaryRow[]; lineage: unknown } }>(summary, accountSummaryRowSchema, "summary")
 export const optimizerDimensionFixture = checked<{ mode: string; source: { rows: DashboardRow[]; dimension: string; lineage: unknown } }>(optimizerDim, dimensionWindowRowSchema, "dimension-optimizer")
+export const bizDimensionFixture = checked<{ mode: string; source: { rows: DashboardRow[]; dimension: string; lineage: unknown } }>(bizDim, dimensionWindowRowSchema, "dimension-biz")
 export const resourcePositionFixture = checked<{ mode: string; source: { rows: DashboardRow[]; dimension: string; lineage: unknown } }>(resourceDim, dimensionWindowRowSchema, "dimension-resource-position")
 export const drillFixture = drill as unknown as Fixture<{ byParent: Record<string, DashboardRow[]> }>
 
