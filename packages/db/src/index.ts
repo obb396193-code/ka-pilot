@@ -68,12 +68,14 @@ export * from "./agent-model-catalog-repository.js";
 export * from "./admin-calendar-repository.js";
 // be: server-approved workspace member/grant reads.
 export * from "./admin-members-repository.js";
+export * from "./admin-member-provisioning-repository.js";
 export * from "./r014/task-detail-repository.js";
 export * from "./r014/daily-report-repository.js";
 // be: authorized local work-item commands, no public/media write routes.
 export * from "./work-item-command-repository.js";
 // be: internal readonly effective coefficient history; no public/writing route.
 export * from "./coefficient-read-repository.js";
+export * from "./account-hourly-read-repository.js";
 export * from "./r014/account-transfer-repository.js";
 export * from "./r014/kb-repository.js";
 // be: bounded tuple-scoped nickname/manual provenance, no public grouping policy.

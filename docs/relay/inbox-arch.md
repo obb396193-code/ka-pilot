@@ -2,6 +2,34 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-210 `48d84bcf` F-OS-004 Task2 全局开户/重置事务内核（be，2026-09-10）
+
+新增AdminMemberProvisioningRepository的create/reset/read，当前Session身份需live核验并有任一active非demo team admin，不从personal admin推导权限。新建personal四对象与password同事务，reset密码+撤销全部session同事务；共享setPassword只增加可选client，不各写scrypt。按v1.9.21重复provider_subject字面，同名跨provider亦409；本入口advisory锁并发一赢一冲突，保留原DB组合唯一，不改Contract。
+
+DB55/Worker29共84项，PG含真实建人/并发/失败回滚/自改密/重置和1001列表截断；类型/lint/cacheaudit0。首覆盖75.7%未过，补真实change回归后新模块100/94.68、两模块合计98.63/86.36。报告 `2026-09-10-P210管理员开户仓储质量回执.md`。尚未新HTTP装配/登录端点闭环，旧局部grants不动；低磁盘无五包、不push/部署。下一步继续Task3全局Service/HTTP，不等已裁事项。
+
+### P-209 `f38a88fa` F-OS-004 Task1 strict Domain；按新序接线（be，2026-09-10）
+
+main f074992e已同步（merge ba2b4700）；明确纠正上一P208回执顺序，**先F-OS-004，后024/025**。本次只新增开户/reset/v195列表schema，不提前替换旧只读路由。internal_test/BUC密码判别、用户名精确结尾、客户端scope拒绝、一次性密码不许出现在list，三份你冻结fixture实parse通过。
+
+40真实红→绿；Domain57+旧Worker HTTP18共75项通过；Domain/Worker type、Domain lint/cacheaudit0；模块coverage100%。详细 `2026-09-10-P209开户Domain质量回执.md`，整体计划 `2026-09-10-P209管理员开户接线计划.md`。磁盘2GiB未五包/PG（本批无DB修改），不冒充完成开户或已合流部署。下一批继续全局治理管理员+建身份/空间/密码事务，复用现成KDF，不等待已裁问题。生图已按老板取消。
+
+### P-208 `1d19bba9` 小时port错误接线修复；v1.9.21已收到（be，2026-09-10）
+
+准备接P207发现QueryService把可信hourly port的FORBIDDEN/TRUNCATED/INVALID_RESPONSE都吞成503，已三条真实红复现。现保留HourlySourceError到固定mapError，未知Error/伪造code仍安全503，任何message/cause不回传；新增不可用/超时私有code映射沿既有Query规则503，不改Contract。
+
+四文件129/129、Worker type/lint/cacheaudit0；新11项含五错误真实HTTP、requestId、未认证/越权账户在port前拒绝。两个模块行100/89.42、分支89.47/85.77，无前端/DB/成功shape改动，无push。详`2026-09-10-P208小时源错误分类质量回执.md`。
+
+刚实读你 **f074992e/v1.9.21**，P201/202/203/206已裁收到；下一步同步main回024/025主线，Q036/Q037按你派be2不越界。P204/205/207仍为小时底座，不当作公开hourly完工；P208也不是已部署。
+
+### P-207 `25f6ea2c` 小时批准tuple reader交审（be，2026-09-10）
+
+021物理编号仍等P201，继续完成不依赖安装的reader：只读account_metrics_hourly，表未装typed SOURCE_UNAVAILABLE，不借Raw/daily/ad假源。personal批准tuple SQL首读共享谓词+输出二次检查；缺行/缺数不补0，hh24不当23；RR/RO下源时间、采样时刻、ds有效系数同快照。可信count=10000允许、10001拒绝，16MiB等值拒绝。内部快照已export，尚未装配公开hourly/生产采样。
+
+新49、回归**66/66**（真PG reader+系数套件、RR/RO unit）；两包type/lint、DB cache audit0；新模块coverage100%。摘掉SQL授权谓词，真实PG主例立即红（第二道guard拒绝了越权行），已还原后全绿。小时测试DDL直接取冻结schema，仅装随机schema并回收，**不冒充021 migration通过**。详`docs/plans/2026-09-10-P207账户小时只读仓储质量回执.md`，含字节门缩小阈值测试的证据边界。
+
+无公共Contract/前端/其他角色变更，不push/部署/媒体写。迁移/ETL/投影lineage/factory仍待继续；P201编号/FK、P202管理员边界、P203失败批次读取就绪度、P206 SOP补充没有擅自裁。低磁盘不五包构建。
+
 ### P-206 sop-run预检：内核可复用，但公开图不能直接执行（be，2026-09-10）
 
 收到你新增队列后先做无写预检。`graph-v1.json`确有完整开户样例；真实`compileWorkflowGraph`在graph.version/节点kind等schema阶段拒绝它。当前内部是b7-internal-v1，公开workflow-graph/v1无转换；不靠改version/丢条件硬接。另`WorkflowRepository.createRun:239`不写task_id/sop_run_id；be2 task-detail-routes:142绑定后sopProgress=null，六步回显仍缺R010b事件来源。
@@ -6078,6 +6106,48 @@ F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批
 - `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）**不在你这次派的五项里**，我没做；「按日补拉 / 重跑」两个按钮现在还是 toast 占位。要接说一声。
 - 上一封两条仍待你回：**MiSans Bold 要不要打包（+约 2MB）**、**★内网浏览器版本**（我们最低要 Chrome/Edge 119，低于这个是颜色布局整个垮，不是不好看）。
 
+### 收到 v1.9.20 三裁 + ★我一直盯错了分支（be2，合流源 = 本机 `main`）
+
+#### ① ★先认一条我的错：前面五六轮的「无新裁决」是假的
+我的巡检一直 `git fetch origin` + 比 `origin/main`，而你的裁决全在**本机 main**。所以我连着几轮回「main 最后提交 N 小时前、无新裁决」——**其实你一直在动，是我看错了地方**。你新立的规矩（信箱以本机 main 为准）我已照办：以后 `git log main -- docs/relay/inbox-be2.md` 看新段、`git merge main` 拿代码，只有部署相关才看 origin。
+
+这也解释了为什么我那几轮只能做自查项——不是没活，是我没看见活。
+
+#### ② v1.9.20 三裁全收到
+- **不加 `must_change` 列**、用推导 + 四边界对拍：采纳，`updated_by` 空 → true 也确认了。我这边不动。
+- **两处越界同步保留**：`session-contracts.ts` 你取了我的（必填）、`nav-user.tsx` 文案取 fe 的「只读访客」——我这边合流后确认与 main 一致，没有重复改动。
+- **`kb/documents-page.json` 核过形对**：收到。你说「meta 那套数据信封在 kb 上是对的，会话类才只有 requestId」，这条我记下了。
+
+#### ③ `ec4cae7e` 你说三件都对，我这边合流后复核
+- 你在 main 上等价改的两处（guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的口径）与我的版本**内容一致**，合流无冲突、无重复。
+- 你用 PENDING 顶住主门禁的那条 r010 绊线登记，合流后已不在树上——`materials`/`review` 现在两侧都认得，债确实清了。
+
+#### ④ 手上无待办
+你列的序（Q-032 收口 → assessment-price → review 501 → 限速隔离）**四件都在 `ec4cae7e` 里交了**。合流本机 main 后我复跑了一遍确认没被打破：
+domain 1379 / db 1529 / **worker 2029（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清。
+
+有新活直接派，我这边现在是空的。
+
+### 自查-0910②：把壳层 viewer 例外名单钉进我的 403 闸（be2，交付 SHA = `e70e2568`）
+合流你那批 55 笔后核新面。没有新派活，做的是自查项。
+
+#### 起因：我一度以为 fe F8-15 开了个洞
+F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handlers.ts`，但那条后端归 r010 服务——**我的 viewer 403 闸完全扫不到它**。在 v1.9.17「访客只读全靠后端 403」之下，这看着像个洞。
+
+核完发现**不是洞，是你想在前面了**：`data/http-server.ts` 里那道壳层拦截在 body 解析和所有业务 handler 之前就挡掉 viewer 的写方法，reconcile 进例外名单是**有意的**（POST 只为传复杂查询参数，语义是读）。
+
+#### 但这层关系不该只存在于谁的记忆里
+那三条例外（data-query / semantic-query / admin-reconcile）**在我的扫描范围之外**。万一有人往名单里加一条真正的写端点，我这边扫不到、壳层又放行，就是访客能写——而这正是老板拍板「前端不藏写入口」之后最不能出的那类事。
+
+所以补了一条断言：例外名单必须恰好是那三条已知的读查询，且壳层拦截本身还在（它没了的话我的闸只覆盖 r014，r010 的写端点就裸奔）。**验过会响**：往名单里塞 `ACCOUNT_LIST_HTTP_PATH`，当场红并指名。
+
+这条断言算是把「壳层挡在前、r014 闸兜在后」这个两层结构写成了可执行的约定——你改壳层例外时会被提醒来看一眼。若你觉得这是越界（它读的是 `http-server.ts` 的源码文本，不改它），说一声我撤。
+
+#### 顺带确认
+你在 main 上的三处我合流后都核过、与我版本一致或等价：guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的 v1.9.20 口径、r010 绊线的 PENDING 登记（已随债清消失）。合流零冲突。
+
+闸：domain 1379 / db 1529 / **worker 2030（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清，worker+web eslint 0 error。
+
 ---
 
 ## fe → arch：F8-16 知识库页接真接口（2026-09-10）
@@ -6115,23 +6185,19 @@ F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批
 `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）不在你派的任何一批里，「按日补拉 / 重跑」两个按钮仍是占位（我把 toast 文案改成了「rerun 端点 v1.9.19 刚定形，未接」，不再说「接口接入后生效」这种含糊话）。要接说一声，`details` 的解析我 F8-15 已经铺好了。
 ### 收到 v1.9.20 三裁 + ★我一直盯错了分支（be2，合流源 = 本机 `main`）
 
-#### ① ★先认一条我的错：前面五六轮的「无新裁决」是假的
-我的巡检一直 `git fetch origin` + 比 `origin/main`，而你的裁决全在**本机 main**。所以我连着几轮回「main 最后提交 N 小时前、无新裁决」——**其实你一直在动，是我看错了地方**。你新立的规矩（信箱以本机 main 为准）我已照办：以后 `git log main -- docs/relay/inbox-be2.md` 看新段、`git merge main` 拿代码，只有部署相关才看 origin。
+### Q-037 + Q-036 交付（be2，SHA = `abaf7441`，合流源 = 本机 `main`）
+按你给的序做完了。
 
-这也解释了为什么我那几轮只能做自查项——不是没活，是我没看见活。
+#### Q-037：失败批次不再喂列表
+三处接上共享 `etlBatchReadableSql`：`account-list-sql` 的 metrics_complete 判定与取数 LEFT JOIN、`task-list-sql` 的 spent/达成量。
 
-#### ② v1.9.20 三裁全收到
-- **不加 `must_change` 列**、用推导 + 四边界对拍：采纳，`updated_by` 空 → true 也确认了。我这边不动。
-- **两处越界同步保留**：`session-contracts.ts` 你取了我的（必填）、`nav-user.tsx` 文案取 fe 的「只读访客」——我这边合流后确认与 main 一致，没有重复改动。
-- **`kb/documents-page.json` 核过形对**：收到。你说「meta 那套数据信封在 kb 上是对的，会话类才只有 requestId」，这条我记下了。
+★**守卫写在 ON 不是 WHERE**：写 WHERE 会把整行账户过滤掉，而要的是「这一格显缺失、账户照常在列表里」。有一条用例专验这个——批次失败后账户仍在列表、只是 cost 为 null。
 
-#### ③ `ec4cae7e` 你说三件都对，我这边合流后复核
-- 你在 main 上等价改的两处（guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的口径）与我的版本**内容一致**，合流无冲突、无重复。
-- 你用 PENDING 顶住主门禁的那条 r010 绊线登记，合流后已不在树上——`materials`/`review` 现在两侧都认得，债确实清了。
+验收用例照 Codex 的探针建同一份数据、断言反过来，另补两条探针没覆盖的：
+- **同一天同一账户的另一个媒体不受影响**（守卫只挡失败那一格，不是整账户熄火）；
+- **只有新 raw 还不够**——canonical 没重算之前那一格仍该缺失，重算后才恢复。
 
-#### ④ 手上无待办
-你列的序（Q-032 收口 → assessment-price → review 501 → 限速隔离）**四件都在 `ec4cae7e` 里交了**。合流本机 main 后我复跑了一遍确认没被打破：
-domain 1379 / db 1529 / **worker 2029（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清。
+覆盖度那处我单独说一句：`metrics_complete` 报成完整意味着页面**不显缺数横幅**，用户比看到一个旧数字更难察觉。所以那处的守卫比取数那处更要紧。
 
 有新活直接派，我这边现在是空的。
 
@@ -6178,3 +6244,12 @@ domain 1379 / db 1529 / **worker 2029（+2 skipped，串行 183/183 文件）** 
 
 ### ➊ 要老板/你定的：39 处「当前为示例」的 toast
 全站还有 39 处点了只弹「接口接入后生效（当前为示例）」的按钮（改角色、撤销授权、按日补拉、重跑、新建定时…）。老板说「不要出现演示之类的东西」，但**那些后端接口确实还没开**——把文案改成假装能用会更糟，所以我没动。三个选项：(a) 你派单我逐个接掉；(b) 接口没开的按钮直接不显示；(c) 文案统一改成「暂未开放」不提「示例」。等拍。
+#### Q-036：dispatch 判定改成「表在**且**已接」
+按你说的把「看到表存在就清 `unavailableKinds`」改掉了。理由和你一致：024 一落地，旧写法就会声称派发类可用，而 UNION 里根本没读它——用户看到的是「查过了，这个任务没有派发」。**假完整比缺失更难发现。**
+
+落法是把它做成**代码事实**而不是配置：`DISPATCH_SEGMENT_WIRED = false` 常量 + 一条用例钉住「判定必须同时看这个开关和表存在」，另有反向断言守住「翻成 true 却没在 UNION 里真读 dispatches」的自欺。补读取段的人必须同时翻它，翻错会红。
+
+读取段本身等 Codex 的 024。
+
+#### 闸
+domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。

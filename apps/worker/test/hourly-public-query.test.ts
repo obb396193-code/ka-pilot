@@ -10,6 +10,7 @@ import { DataQueryService, createDataQueryHttpHandler, type DataQueryServiceDepe
 import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
 import { approvedSessionAuth, businessHeaders } from "./business-auth-fixtures.js";
 import type { SessionHttpService } from "../src/auth/session-http.js";
+import { HourlySourceError } from "../src/data/hourly-public-source.js";
 
 const auth: ApprovedWorkspaceAuthContext = { workspaceKind: "personal", workspaceId: "00000000-0000-4000-8000-000000000001",
   userId: "00000000-0000-4000-8000-000000000002", role: "optimizer", scope: { kind: "explicit_accounts", accounts: [
@@ -33,6 +34,55 @@ function setup(hourly?: (resolved: unknown, approved: ApprovedWorkspaceAuthConte
   return { query, service: new DataQueryService(dependencies as DataQueryServiceDependencies) };
 }
 describe("hourly query Registry, scope and source boundary", () => {
+  it.each([
+    ["FORBIDDEN", 403], ["SOURCE_TRUNCATED", 502], ["UPSTREAM_INVALID_RESPONSE", 502],
+    ["SOURCE_UNAVAILABLE", 503], ["UPSTREAM_TIMEOUT", 503],
+  ] as const)("keeps typed hourly port error %s instead of replacing it with unavailable", async (code, status) => {
+    const { service, query } = setup(async () => { throw Object.assign(new HourlySourceError(code), {
+      message: "synthetic-private-sql-token", cause: { secret: "synthetic-private-cause" },
+    }); });
+    const result = await createDataQueryHttpHandler(service)({ method: "POST", body: request, auth, requestId: "hourly-port-error" });
+    expect(result).toMatchObject({ status, body: { ok: false, error: { code, requestId: "hourly-port-error", retryable: code === "UPSTREAM_TIMEOUT" } } });
+    expect(dataQueryResponseSchema.safeParse(result.body).success).toBe(true);
+    expect(JSON.stringify(result)).not.toContain("synthetic-private");
+    expect(query).not.toHaveBeenCalled();
+  });
+  it.each([new Error("synthetic-private-message"), { code: "FORBIDDEN", message: "synthetic-private-message" },
+    { code: "UPSTREAM_TIMEOUT", requestId: "forged", message: "synthetic-private-message" }, null, "synthetic-private-string"])(
+    "unknown exception cannot impersonate typed error %j", async error => {
+      const { service, query } = setup(async () => { throw error; });
+      expect(await createDataQueryHttpHandler(service)({ method: "POST", body: request, auth, requestId: "hourly-safe" }))
+        .toEqual({ status: 503, body: { ok: false, error: { code: "SOURCE_UNAVAILABLE", message: "Account hourly source is unavailable",
+          retryable: false, requestId: "hourly-safe" } } });
+      expect(query).not.toHaveBeenCalled();
+    });
+  it("real HTTP preserves typed hourly failures and denies auth/scope before reading", async () => {
+    const token = "synthetic-hourly-service-token-long-enough";
+    let code: ConstructorParameters<typeof HourlySourceError>[0] = "FORBIDDEN";
+    const read = vi.fn(async () => { throw new HourlySourceError(code); });
+    const { service, query } = setup(read);
+    const absent = new Proxy({}, { get() { throw new Error("Unrelated service invoked"); } });
+    const server = createDataApiServer({ service, internalToken: token, sessionAuthService: approvedSessionAuth(auth),
+      detailService: absent, taskListService: absent, accountListService: absent, workItemListService: absent } as unknown as DataApiServerOptions);
+    server.listen(0, "127.0.0.1"); await once(server, "listening");
+    try {
+      const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+      const post = (body: unknown, headers: Record<string, string>) => fetch(`${base}/api/v1/query`, {
+        method: "POST", headers: { "content-type": "application/json", ...headers, "x-request-id": "hourly-wire-error" }, body: JSON.stringify(body),
+      });
+      for (const [failure, status] of [["FORBIDDEN", 403], ["SOURCE_TRUNCATED", 502], ["UPSTREAM_INVALID_RESPONSE", 502],
+        ["SOURCE_UNAVAILABLE", 503], ["UPSTREAM_TIMEOUT", 503]] as const) {
+        code = failure;
+        const response = await post(request, businessHeaders(token));
+        expect(response.status).toBe(status); expect(response.headers.get("x-request-id")).toBe("hourly-wire-error");
+        expect(await response.json()).toMatchObject({ ok: false, error: { code, requestId: "hourly-wire-error" } });
+      }
+      read.mockClear();
+      expect((await post(request, {})).status).toBe(401);
+      expect((await post({ ...request, params: { ...request.params, accountIds: ["unapproved"] } }, businessHeaders(token))).status).toBe(403);
+      expect(read).not.toHaveBeenCalled(); expect(query).not.toHaveBeenCalled();
+    } finally { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(e => e ? reject(e) : resolve())); }
+  });
   it("registers hourly using frozen syntax without creating a KA SQL path", () => {
     const registry = createDataQueryRegistry(), resolved = registry.resolve(request.queryId, request.params, "platform");
     expect(resolved).toMatchObject({ queryId: "account.hourly", rowSchemaVersion: "account.hourly/v1", maxRows: 10000,
