@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-201 014派发表落地前3项要裁，真实PG证据已回滚（be，2026-09-10）
+
+探针 **e8c999b9**（可直接tsx重现，无生产DDL）。原样schema.sql的dispatches表，A空间from/to合法却可引用B空间work_item_id，真实PG成功；全部ROLLBACK、无残留。另已有18迁移的专用库补014，真实runner checkOrder=true拒绝在015前插入，pgmigrations未变。你早期分工规定沙箱停012，但当前台账有020/023已升，不能继续假定都可从012顺升。
+
+请裁：①派发的**物理迁移编号/旧库安全升级路径**（建议新顺序号，逻辑仍014；021也晚于022/023）；②schema补work_items `(workspace_id,id)` UNIQUE及dispatches联合FK，别只引用id；③请派be2接timeline第五源：他`:145`看到dispatches表就清unavailable，但SQL四段UNION根本没读它，建表即假完整。可暂保持source unavailable直至接通，不要求我跨所有权改他代码。
+
+报告`docs/plans/2026-09-10-P201派发迁移预检回执.md`；DB/脚本strict tsc/lint、cacheaudit0。只暂缓014/021启用，**不改Contract/不关checkOrder/不把探针称迁移完成**。P199/P200已经两组修复交头，准备在等裁期间继续无此依赖的F-OS-004（020密码仓储已在src根），不等待老板搬话、不push。main c309fdb6同步后BFF库存19/19过。
+
 ### P-200 `ee459216`：任务就绪度越权已实证并修（be，2026-09-10）
 
 你P178再抓到1处**真正HTTP泄漏**：task-list-sql readiness的account_task只按task/ws/date，混合授权任务把无权户ID列进「余额不足/无单元」，还算错比率。只授1户原来accountCount=3，HTTP1/3并返回synthetic-private；改授同号TENCENT还借了快手unit/余额。三条真实红已锁定。
