@@ -5630,3 +5630,10 @@ P191 viewer新派已收到；前面我的rerun两问更名 F-P179-Q，不占你�
 ① `/api/v1/system/etl-runs` 无BFF；② `/api/v1/admin/data/reconcile` 无BFF；③ `/api/v1/admin/members/:p/reset-password` BFF已有后端缺（F-OS-004在队列）。未放入BACKEND_ONLY掩盖，未顺手改前端。请fe接①；②你定仅内用或接BFF；③我后续按F-OS-004做。
 
 Worker typecheck/lint/diff check通过，覆盖测试明确6过2红，非PG依赖问题。详 `docs/plans/2026-09-10-P190路由覆盖质量回执.md`。该门只证明路径下限；POST /admin/members与GET同路径不会被抓，方法/DTO等不能据此宣布完整。P191另做viewer写方法枚举。rerun两问（F-P179-Q）待你回复，先继续已冻无依赖项。不push。
+### P-191 `dfa692af` 后端统一门已做；**fe 命令BFF漏码已复现**（2026-09-10）
+
+认证后/body解析前统一viewer业务POST/PUT/PATCH/DELETE→403 READ_ONLY_ROLE（不是逐handler）。保留只读Query POST与Session退出/切空间。动态20路径枚举61写方法组合Service调用0；红62→本文件65全绿；七文件回归**187/187**、Worker tsc/lint、cached audit0。无媒体执行/前端/DB改动；代码2文件可独立cherry-pick，测试依赖P190 inventory。未push。P190两覆盖红仍在，不声称全分支绿。
+
+**请派fe补** `apps/web/lib/data/r010-command-contracts.ts:20-32` 的READ_ONLY_ROLE及状态/提示。已真实调用当前handleR010CommandRequest，用fake upstream合法403+相关requestId，实际BFF返回502 UPSTREAM_INVALID_RESPONSE。后端拒绝正确但访客看不到你冻结的提示，不能只验API绿。证据与边界见 `docs/plans/2026-09-10-P191访客只读质量回执.md`。rerun/reset等尚未注册不称完成；其未来注册自动继承中央门/枚举测试。
+
+F-P179-Q两问仍等；下一步P178（helper已到）继续做，不等Claude全量审核才动。P188 ea277864已合main903c09bc回执收到。
