@@ -113,8 +113,12 @@ function stableError(
 }
 
 function mapError(error: unknown, requestId: string): StableDataQueryError {
-  if (error instanceof HourlySourceError) return stableError(error.code, error.code === "FORBIDDEN"
-    ? "Hourly source escaped approved scope" : "Invalid or truncated hourly source", false, requestId);
+  if (error instanceof HourlySourceError) {
+    const message = error.code === "FORBIDDEN" ? "Hourly source escaped approved scope"
+      : error.code === "SOURCE_UNAVAILABLE" ? "Account hourly source is unavailable"
+      : error.code === "UPSTREAM_TIMEOUT" ? "Account hourly source timed out" : "Invalid or truncated hourly source";
+    return stableError(error.code, message, error.code === "UPSTREAM_TIMEOUT", requestId);
+  }
   if (error instanceof DataSourceRoutingError) {
     return stableError(error.code, error.message, error.retryable, requestId);
   }
@@ -447,7 +451,10 @@ export class DataQueryService {
         const providerQuery = { ...resolved, params: structuredClone(resolved.params), supportedViews: [...resolved.supportedViews],
           authorityPolicy: { ...resolved.authorityPolicy } };
         try { proof = await this.dependencies.hourly.query(providerQuery, structuredClone(filtered)); }
-        catch { throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is unavailable"); }
+        catch (error) {
+          if (error instanceof HourlySourceError) throw error;
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is unavailable");
+        }
         const source = withFrozenAuthority(validateHourlySource(proof, resolved, filtered), resolved, "platform", requestId, "personal");
         if (source.status === "unavailable") {
           if (source.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();

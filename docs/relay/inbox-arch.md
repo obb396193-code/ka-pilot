@@ -2,6 +2,28 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-209 `f38a88fa` F-OS-004 Task1 strict Domain；按新序接线（be，2026-09-10）
+
+main f074992e已同步（merge ba2b4700）；明确纠正上一P208回执顺序，**先F-OS-004，后024/025**。本次只新增开户/reset/v195列表schema，不提前替换旧只读路由。internal_test/BUC密码判别、用户名精确结尾、客户端scope拒绝、一次性密码不许出现在list，三份你冻结fixture实parse通过。
+
+40真实红→绿；Domain57+旧Worker HTTP18共75项通过；Domain/Worker type、Domain lint/cacheaudit0；模块coverage100%。详细 `2026-09-10-P209开户Domain质量回执.md`，整体计划 `2026-09-10-P209管理员开户接线计划.md`。磁盘2GiB未五包/PG（本批无DB修改），不冒充完成开户或已合流部署。下一批继续全局治理管理员+建身份/空间/密码事务，复用现成KDF，不等待已裁问题。生图已按老板取消。
+
+### P-208 `1d19bba9` 小时port错误接线修复；v1.9.21已收到（be，2026-09-10）
+
+准备接P207发现QueryService把可信hourly port的FORBIDDEN/TRUNCATED/INVALID_RESPONSE都吞成503，已三条真实红复现。现保留HourlySourceError到固定mapError，未知Error/伪造code仍安全503，任何message/cause不回传；新增不可用/超时私有code映射沿既有Query规则503，不改Contract。
+
+四文件129/129、Worker type/lint/cacheaudit0；新11项含五错误真实HTTP、requestId、未认证/越权账户在port前拒绝。两个模块行100/89.42、分支89.47/85.77，无前端/DB/成功shape改动，无push。详`2026-09-10-P208小时源错误分类质量回执.md`。
+
+刚实读你 **f074992e/v1.9.21**，P201/202/203/206已裁收到；下一步同步main回024/025主线，Q036/Q037按你派be2不越界。P204/205/207仍为小时底座，不当作公开hourly完工；P208也不是已部署。
+
+### P-207 `25f6ea2c` 小时批准tuple reader交审（be，2026-09-10）
+
+021物理编号仍等P201，继续完成不依赖安装的reader：只读account_metrics_hourly，表未装typed SOURCE_UNAVAILABLE，不借Raw/daily/ad假源。personal批准tuple SQL首读共享谓词+输出二次检查；缺行/缺数不补0，hh24不当23；RR/RO下源时间、采样时刻、ds有效系数同快照。可信count=10000允许、10001拒绝，16MiB等值拒绝。内部快照已export，尚未装配公开hourly/生产采样。
+
+新49、回归**66/66**（真PG reader+系数套件、RR/RO unit）；两包type/lint、DB cache audit0；新模块coverage100%。摘掉SQL授权谓词，真实PG主例立即红（第二道guard拒绝了越权行），已还原后全绿。小时测试DDL直接取冻结schema，仅装随机schema并回收，**不冒充021 migration通过**。详`docs/plans/2026-09-10-P207账户小时只读仓储质量回执.md`，含字节门缩小阈值测试的证据边界。
+
+无公共Contract/前端/其他角色变更，不push/部署/媒体写。迁移/ETL/投影lineage/factory仍待继续；P201编号/FK、P202管理员边界、P203失败批次读取就绪度、P206 SOP补充没有擅自裁。低磁盘不五包构建。
+
 ### P-206 sop-run预检：内核可复用，但公开图不能直接执行（be，2026-09-10）
 
 收到你新增队列后先做无写预检。`graph-v1.json`确有完整开户样例；真实`compileWorkflowGraph`在graph.version/节点kind等schema阶段拒绝它。当前内部是b7-internal-v1，公开workflow-graph/v1无转换；不靠改version/丢条件硬接。另`WorkflowRepository.createRun:239`不写task_id/sop_run_id；be2 task-detail-routes:142绑定后sopProgress=null，六步回显仍缺R010b事件来源。
