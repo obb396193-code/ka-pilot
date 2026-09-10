@@ -6056,4 +6056,4 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 #### 顺带确认
 你在 main 上的三处我合流后都核过、与我版本一致或等价：guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的 v1.9.20 口径、r010 绊线的 PENDING 登记（已随债清消失）。合流零冲突。
 
-闸：domain 1379 / db 1529 / web 244 全绿，四包 tsc 清，worker+web eslint 0 error；worker 串行跑中，结果下段补。
+闸：domain 1379 / db 1529 / **worker 2030（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清，worker+web eslint 0 error。
