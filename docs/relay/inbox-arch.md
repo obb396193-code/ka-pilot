@@ -5610,3 +5610,17 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 已 fast-forward main@5682a509，保留你对 etl-batch-failure 的两行修复，不重复改。自查另外六套同类依赖，含 BIGINT 临时表仍 LIKE public.etl_runs；独占空库先复现 3/3 relation-not-exist，再补 runMigrations。六套各自新空库单跑：bigint3 / semantic3 / changeset9 / batch-readability7 / run-list20 / actual Data API HTTP7 = **49/49**。DB/Worker typecheck/lint、diff check、offline production audit0；磁盘6.1GiB按门规未跑五包全量。代码只动6测试文件，无运行时/前端/迁移改动；未push。质量回执：`docs/plans/2026-09-10-P188独立空库质量回执.md`。
 
 已收到 P189/P190；Q027 helper 已在当前主线，可继续 P178，不再报告等 helper。继续你的 rerun→P190→P178顺序；生图按老板取消。此 SHA 待你 exact 复验，不声称 merged/deployed。
+### F-P179-Q rerun 接线前两处冻结缺口（be/r010，2026-09-10）
+
+已读 v1.9.12④，准备以原 etl_run/job 行锁串行请求，同事务复用 JobRepository.enqueue + audit_log，保留原 payload/workspace/type/credentialOwner，不启动执行器。两点请给 exact 形状，避免 P187 对拍再漂移：
+1. CONFLICT 要带已有 jobId，但共享 stableDataQueryErrorSchema 为 strict 四字段且不允许 jobId/details；system 下还没有 rerun success/conflict fixture。建议局部 rerun 错误 `error` 增 `jobId`（仅 code=CONFLICT 必需），其它错误仍稳定四字段；success `{ok:true,data:{jobId,sourceRunId},meta:{requestId}}`。是否采纳？
+2. “写 timeline 一条”当前没有 ETL 专属 timeline 表/端点；拟复用 audit_log：action=`etl_run.rerun`、object_type=`etl_run`、object_id=sourceRunId，detail 仅 `{sourceJobId,jobId}`，不存 payload/凭证。该行也用于找同源已 queued/leased/running 的 rerun。你是否认可它就是一期留痕位置？若要展示进 task/account timeline，请指定归属（旧 run 未必有 task/account）。
+
+正在做无该依赖的 P189 clientIp 接线；不扩大稳定错误公共枚举/形状，不伪称 rerun 已接通。
+### P-189 已接后端：`2724de9c`；BFF 缺 IP 转发一跳（2026-09-10）
+
+HTTP壳路径 `apps/worker/src/data/http-server.ts` 已传 login 第三参（首段 trim + isIP，否则socket）。真实HTTP壳 + be2真实GuestLimiter测试：同IP20次/21挡、第二IP独立；无bearer/错bearer/GET不进login；9红→10绿。旧data/session/ETL合计 **123/123**，Worker tsc/lint、cached audit0；不改be2限速器/前端/迁移，不push。质量见 `docs/plans/2026-09-10-P189登录IP质量回执.md`。
+
+**请转fe/部署补一跳**：`apps/web/lib/data/session-bff.ts:132-134` 现在只传 internalApiHeaders(config/requestId/session/json)，没有 x-forwarded-for，真实浏览器仍会退化BFF socket共桶。请从可信反向代理取实际clientIP、覆盖客户端伪造XFF后传；不能盲信浏览器首段。后端不越权改web，此SHA不代表端到端限流上线。既有限速器单进程Map/多副本问题不在本批。
+
+P191 viewer新派已收到；前面我的rerun两问更名 F-P179-Q，不占你的编号。继续队列，不开启真实写。
