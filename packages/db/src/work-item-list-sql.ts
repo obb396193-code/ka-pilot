@@ -1,30 +1,15 @@
 import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
+import { accountScopeClause, workItemScopeClause } from "./r014/workspace-authority.js";
 
 // Only frozen code constants become SQL literals; all request values remain parameters.
 const activeStates = ACTIVE_WORK_ITEM_STATUSES.map(status => `'${status}'`).join(", ");
 const FILTERED_WORK_ITEMS_CTE = `
-  allowed_scope AS (
-    SELECT allowed.media, allowed.account_id
-    FROM jsonb_to_recordset($4::jsonb)
-      AS allowed(media text, account_id text)
-  ),
   filtered_work_items AS (
     SELECT item.*
     FROM work_items AS item
     WHERE item.workspace_id = $1::uuid
-      AND (
-        (item.media IS NOT NULL AND item.account_id IS NOT NULL AND (
-          $3::text = 'team_workspace_readonly'
-          OR EXISTS (
-            SELECT 1 FROM allowed_scope AS allowed
-            WHERE allowed.media = item.media AND allowed.account_id = item.account_id
-          )
-        ))
-        OR
-        ($3::text = 'explicit_accounts'
-          AND item.media IS NULL AND item.account_id IS NULL
-          AND (item.assignee = $2::uuid OR item.creator = $2::uuid))
-      )
+      AND (item.media IS NULL) = (item.account_id IS NULL)
+      AND ${workItemScopeClause("$3", "$4", "item", "$2")}
       AND ($5::text IS NULL OR strpos(lower(item.title), lower($5::text)) > 0)
       AND (
         ($6::text IS NULL AND item.status IN (${activeStates}))
@@ -60,6 +45,8 @@ export const WORK_ITEM_LIST_PAGE_SQL = `
     account.account_name,
     item.task_id,
     task.task_name,
+    task_scope.media AS task_scope_media,
+    task_scope.account_id AS task_scope_account_id,
     item.assignee,
     assignee.name AS assignee_display_name,
     item.creator,
@@ -74,6 +61,17 @@ export const WORK_ITEM_LIST_PAGE_SQL = `
   LEFT JOIN tasks AS task
     ON task.workspace_id = item.workspace_id
    AND task.task_id = item.task_id
+  -- Internal proof for the output scope guard, not a public account relation.
+  LEFT JOIN LATERAL (
+    SELECT link.media, link.account_id
+    FROM task_accounts AS link
+    WHERE $3::text = 'explicit_accounts'
+      AND item.account_id IS NULL AND item.task_id IS NOT NULL
+      AND link.workspace_id = item.workspace_id AND link.task_id = item.task_id
+      AND ${accountScopeClause("$3", "$4", "link.media", "link.account_id")}
+    ORDER BY link.media COLLATE "C", link.account_id COLLATE "C"
+    LIMIT 1
+  ) AS task_scope ON true
   LEFT JOIN users AS assignee
     ON assignee.workspace_id = item.workspace_id
    AND assignee.id = item.assignee

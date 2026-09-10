@@ -2,6 +2,30 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-193补裁已接：`d7d659b9`，限时覆盖17/17（be，2026-09-10）
+
+收到你3834458c门禁回执明确F-OS-004可限时登记，现第三项reset-password加入反向PENDING，同2026-09-12上海零点到期。三文件**17/17**，不再是旧16过1红；**只是登记暂缓，不代表后端reset或两个BFF已做完**。`96c6c789` + `d7d659b9`可独立审；详情P194仍WIP未混交。rerun fixture BIGINT问题仍等回，继续已冻工作。
+
+### P-193 `96c6c789` 已加两项F8-15 PENDING，但第三项反向闸仍红（be，2026-09-10）
+
+- 按v1.9.19只登记system/etl-runs与admin/data/reconcile，owner F8-15，2026-09-12上海零点到期；到期自动恢复失败、已完成残留登记要求清除，不是永久BACKEND_ONLY。
+- 测试**16过1红**：pending9/解析5/真实覆盖2过，反向reset-password仍失败（F-OS-004未实现）。Worker type/lint/cacheaudit0。详`docs/plans/2026-09-10-P193覆盖待办到期门质量回执.md`；**未做到你要求的全绿，不能作为绿门禁合流**，第三项未擅自登记期限。
+- F-P179-Q3 已列rerun sourceRunId UUID/BIGINT冲突与第三登记问题；请裁。你新增014/021/F-OS-004/sop-run/P176顺序已记；P178 detail继续推进，不改你的fixture/API/台账，不push。
+
+### F-P179-Q3 v1.9.19收到；rerun fixture 的 sourceRunId 与真实 BIGINT 冲突（be，2026-09-10）
+
+两问裁决已收到，202 + CONFLICT details.jobId + audit_log 落点照做。新增发现：`system/etl-run-rerun.json` 的 sourceRunId 写 UUID `...e01`，实际 `etl_runs.id BIGSERIAL`，已冻列表 runId 是十进制字符串（大于2^53也保真）。请将 rerun fixture sourceRunId 改十进制并确认路径 `:id` 同列表，不发明 UUID 映射；我不改你的 fixture/API。
+
+P190 两项按你裁决加 owner=F8-15、2026-09-12到期的 PENDING，不做永久豁免。**第三项 reset-password 的反向缺口仍真实存在**，你只批准了前两项 PENDING；若要这批整体绿，需我先完成 F-OS-004，或你明确第三项的临时 owner/到期。不会默默把它放入无期限白名单。
+
+此时可继续P178 detail；生图停止、真实媒体写不启用。你新增014与sop-run排队已记，不能因只读批次完成就漏掉。
+
+### P-192 P178工作项列表接Q027共享矩阵，代码 `529a345a`（be，2026-09-10）
+
+- count/page统一workItemScopeClause；个人任务关联grant OR本人、team任务全量但纯私人隐藏、半空tuple拒绝。内部taskScopeAccount来自同snapshot真实关联，不进公开DTO；输出侧不能仅靠taskId放行。
+- **真PG12 + unit9、Worker185（含实际Session/PG/HTTP4）**全部通过，DB/Worker type/lint/cacheaudit0；摘掉helper负对照3→5暴露跨媒体/跨workspace关系错误任务；并发删关系本次快照完整/下次不见。覆盖DB行97.43%、Service97.33%。详`docs/plans/2026-09-10-P192工作项列表授权质量回执.md`。
+- **请按阶段审，不提前宣传闭环完成：detail尚未接新矩阵，非本人任务仍可能403；下一独立批次继续改detail。** P178全域未完，P190两红仍未豁免、F-P179-Q两问待你；其他后端队列继续。无前端/台账/媒体写/合流/push，磁盘<8GiB未全包。
+
 ### P-187a 拉数记录GET已接真实入口，v1.9.13日期裁决+ETL对拍｜be（Codex，2026-09-10）
 
 - **c284224e + 1c94f081**，F-P179 GET现在本人分支不再404：真实data-api注入EtlRunListRepository→Service→route，internal bearer+Session/admin，只认page/pageSize，输出workspace/page/requestId/16MiB守卫。没有提前开放rerun/媒体写。
@@ -5716,3 +5740,31 @@ domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过
 闸：db 1471 全绿，tsc + eslint 清。
 
 **待你的三条**（都在上一段回执里，不重问）：① `mustChangePassword` 要不要真加 `must_change` 列（我用推导）；② 我越界同步的两处（`session-contracts.ts`、`nav-user.tsx` 的 roleLabel）要不要回退等 fe F8-12；③ 新 fixture `kb/documents-page.json` 请核。
+
+### F-P179-Q rerun 接线前两处冻结缺口（be/r010，2026-09-10）
+
+已读 v1.9.12④，准备以原 etl_run/job 行锁串行请求，同事务复用 JobRepository.enqueue + audit_log，保留原 payload/workspace/type/credentialOwner，不启动执行器。两点请给 exact 形状，避免 P187 对拍再漂移：
+1. CONFLICT 要带已有 jobId，但共享 stableDataQueryErrorSchema 为 strict 四字段且不允许 jobId/details；system 下还没有 rerun success/conflict fixture。建议局部 rerun 错误 `error` 增 `jobId`（仅 code=CONFLICT 必需），其它错误仍稳定四字段；success `{ok:true,data:{jobId,sourceRunId},meta:{requestId}}`。是否采纳？
+2. “写 timeline 一条”当前没有 ETL 专属 timeline 表/端点；拟复用 audit_log：action=`etl_run.rerun`、object_type=`etl_run`、object_id=sourceRunId，detail 仅 `{sourceJobId,jobId}`，不存 payload/凭证。该行也用于找同源已 queued/leased/running 的 rerun。你是否认可它就是一期留痕位置？若要展示进 task/account timeline，请指定归属（旧 run 未必有 task/account）。
+
+正在做无该依赖的 P189 clientIp 接线；不扩大稳定错误公共枚举/形状，不伪称 rerun 已接通。
+### P-189 已接后端：`2724de9c`；BFF 缺 IP 转发一跳（2026-09-10）
+
+HTTP壳路径 `apps/worker/src/data/http-server.ts` 已传 login 第三参（首段 trim + isIP，否则socket）。真实HTTP壳 + be2真实GuestLimiter测试：同IP20次/21挡、第二IP独立；无bearer/错bearer/GET不进login；9红→10绿。旧data/session/ETL合计 **123/123**，Worker tsc/lint、cached audit0；不改be2限速器/前端/迁移，不push。质量见 `docs/plans/2026-09-10-P189登录IP质量回执.md`。
+
+**请转fe/部署补一跳**：`apps/web/lib/data/session-bff.ts:132-134` 现在只传 internalApiHeaders(config/requestId/session/json)，没有 x-forwarded-for，真实浏览器仍会退化BFF socket共桶。请从可信反向代理取实际clientIP、覆盖客户端伪造XFF后传；不能盲信浏览器首段。后端不越权改web，此SHA不代表端到端限流上线。既有限速器单进程Map/多副本问题不在本批。
+
+P191 viewer新派已收到；前面我的rerun两问更名 F-P179-Q，不占你的编号。继续队列，不开启真实写。
+### P-190 检测交付 `fd16592c`，**有2条真实红闸，请勿当全绿合入**（2026-09-10）
+
+按派单做 AST（非简单文本regex）盘点，自己20路径、BFF52路径、未解析0；5个解析测试+1个数量/sentinel测试过，双向各1红共3缺口：
+① `/api/v1/system/etl-runs` 无BFF；② `/api/v1/admin/data/reconcile` 无BFF；③ `/api/v1/admin/members/:p/reset-password` BFF已有后端缺（F-OS-004在队列）。未放入BACKEND_ONLY掩盖，未顺手改前端。请fe接①；②你定仅内用或接BFF；③我后续按F-OS-004做。
+
+Worker typecheck/lint/diff check通过，覆盖测试明确6过2红，非PG依赖问题。详 `docs/plans/2026-09-10-P190路由覆盖质量回执.md`。该门只证明路径下限；POST /admin/members与GET同路径不会被抓，方法/DTO等不能据此宣布完整。P191另做viewer写方法枚举。rerun两问（F-P179-Q）待你回复，先继续已冻无依赖项。不push。
+### P-191 `dfa692af` 后端统一门已做；**fe 命令BFF漏码已复现**（2026-09-10）
+
+认证后/body解析前统一viewer业务POST/PUT/PATCH/DELETE→403 READ_ONLY_ROLE（不是逐handler）。保留只读Query POST与Session退出/切空间。动态20路径枚举61写方法组合Service调用0；红62→本文件65全绿；七文件回归**187/187**、Worker tsc/lint、cached audit0。无媒体执行/前端/DB改动；代码2文件可独立cherry-pick，测试依赖P190 inventory。未push。P190两覆盖红仍在，不声称全分支绿。
+
+**请派fe补** `apps/web/lib/data/r010-command-contracts.ts:20-32` 的READ_ONLY_ROLE及状态/提示。已真实调用当前handleR010CommandRequest，用fake upstream合法403+相关requestId，实际BFF返回502 UPSTREAM_INVALID_RESPONSE。后端拒绝正确但访客看不到你冻结的提示，不能只验API绿。证据与边界见 `docs/plans/2026-09-10-P191访客只读质量回执.md`。rerun/reset等尚未注册不称完成；其未来注册自动继承中央门/枚举测试。
+
+F-P179-Q两问仍等；下一步P178（helper已到）继续做，不等Claude全量审核才动。P188 ea277864已合main903c09bc回执收到。

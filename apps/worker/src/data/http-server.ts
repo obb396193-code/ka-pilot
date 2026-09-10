@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import { isIP } from "node:net";
 
 import {
   dataQueryResponseSchema,
@@ -274,7 +275,11 @@ async function executeSessionRoute(
   if (!sessionMethodAllowed(pathname, method)) return sessionMethodError(requestId);
   const token = parseSessionCookie(header(request, "cookie"));
   if (pathname === AUTH_LOGIN_HTTP_PATH) {
-    return service.login(await readJson(request, maxRequestBytes), requestId);
+    // This branch is reachable only after internal-bearer verification. The BFF
+    // must overwrite client-supplied forwarding headers with its trusted source.
+    const forwarded = header(request, "x-forwarded-for")?.split(",", 1)[0]?.trim();
+    const clientIp = forwarded && isIP(forwarded) ? forwarded : request.socket.remoteAddress;
+    return service.login(await readJson(request, maxRequestBytes), requestId, clientIp);
   }
   if (pathname === AUTH_WORKSPACE_HTTP_PATH) {
     return service.switchWorkspace(
@@ -476,6 +481,17 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      // v1.9.17: visible UI actions are not authorization. Stop viewer mutations
+      // here, before body parsing and every business handler (including R014).
+      // Query POSTs are reads; their independent source/diagnostic guards still apply.
+      const isReadQueryPost = request.method === "POST" &&
+        [DATA_QUERY_HTTP_PATH, SEMANTIC_QUERY_HTTP_PATH, ADMIN_RECONCILE_HTTP_PATH].includes(url.pathname);
+      if (authentication.auth.role === "viewer" && ["POST", "PUT", "PATCH", "DELETE"].includes(request.method ?? "") && !isReadQueryPost) {
+        request.resume();
+        sendJson(response, 403, { ok: false, error: { code: "READ_ONLY_ROLE", message: "This role is read-only",
+          retryable: false, requestId } }, requestId);
         return;
       }
       if (isAgentModelRoute) {

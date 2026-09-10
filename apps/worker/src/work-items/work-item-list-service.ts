@@ -40,6 +40,9 @@ export class WorkItemListSourceError extends Error {
 }
 
 class WorkItemListScopeViolation extends Error {}
+const taskScopeProofSchema = z.object({
+  media: z.string().trim().min(1), accountId: z.string().trim().min(1),
+}).strict().nullable();
 
 export interface WorkItemListRepositoryPort {
   list(query: WorkItemListRepositoryQuery): Promise<WorkItemListRepositoryResult>;
@@ -137,6 +140,12 @@ function assertRepositoryResult(
     if (ids.has(row.workItemId)) throw new Error("duplicate work item identity");
     ids.add(row.workItemId);
 
+    const proof = taskScopeProofSchema.parse(row.taskScopeAccount);
+    if (proof !== null && (row.media !== null || row.accountId !== null || row.taskId === null ||
+      auth.workspaceKind !== "personal" || !tupleAllowed(auth, proof.media, proof.accountId))) {
+      throw new WorkItemListScopeViolation();
+    }
+
     const isAccountItem = row.media !== null || row.accountId !== null;
     if (isAccountItem) {
       pageAccountItems += 1;
@@ -144,11 +153,13 @@ function assertRepositoryResult(
         row.media === null || row.accountId === null ||
         !tupleAllowed(auth, row.media, row.accountId)
       ) throw new WorkItemListScopeViolation();
-    } else if (
-      auth.workspaceKind === "team" ||
-      (row.assigneeUserId !== auth.userId && row.creatorUserId !== auth.userId)
-    ) {
-      throw new WorkItemListScopeViolation();
+    } else {
+      const mine = row.assigneeUserId === auth.userId || row.creatorUserId === auth.userId;
+      if (row.taskId !== null) {
+        if (auth.workspaceKind === "personal" && !mine && proof === null) throw new WorkItemListScopeViolation();
+      } else if (auth.workspaceKind === "team" || !mine) {
+        throw new WorkItemListScopeViolation();
+      }
     }
     if (row.media === null && row.accountName !== null) {
       throw new Error("accountName requires account identity");

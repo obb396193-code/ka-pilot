@@ -49,6 +49,8 @@ export interface WorkItemListRepositoryRow {
   accountName: string | null;
   taskId: string | null;
   taskName: string | null;
+  /** Same-snapshot authorized task/account link. Never part of the public DTO. */
+  taskScopeAccount: WorkItemListAccountScope | null;
   assigneeUserId: string | null;
   assigneeDisplayName: string | null;
   creatorUserId: string | null;
@@ -87,6 +89,8 @@ interface ListRow extends QueryResultRow {
   account_name: string | null;
   task_id: string | null;
   task_name: string | null;
+  task_scope_media: string | null;
+  task_scope_account_id: string | null;
   assignee: string | null;
   assignee_display_name: string | null;
   creator: string | null;
@@ -172,6 +176,15 @@ function timestamp(value: Date | string | null): string | null {
 
 function mapRow(row: ListRow): WorkItemListRepositoryRow {
   try {
+    let taskScopeAccount: WorkItemListAccountScope | null = null;
+    if (row.task_scope_media !== null || row.task_scope_account_id !== null) {
+      if (typeof row.task_scope_media !== "string" || row.task_scope_media.trim() === "" ||
+          typeof row.task_scope_account_id !== "string" || row.task_scope_account_id.trim() === "" ||
+          row.account_id !== null || row.task_id === null) {
+        throw new WorkItemListRepositoryContractError("Invalid task scope evidence");
+      }
+      taskScopeAccount = { media: row.task_scope_media, accountId: row.task_scope_account_id };
+    }
     return {
       workItemId: row.id,
       workspaceId: row.workspace_id,
@@ -184,6 +197,7 @@ function mapRow(row: ListRow): WorkItemListRepositoryRow {
       accountName: row.account_name,
       taskId: row.task_id,
       taskName: row.task_name,
+      taskScopeAccount,
       assigneeUserId: row.assignee,
       assigneeDisplayName: row.assignee_display_name,
       creatorUserId: row.creator,
@@ -192,7 +206,7 @@ function mapRow(row: ListRow): WorkItemListRepositoryRow {
       resolvedAt: timestamp(row.resolved_at),
     };
   } catch {
-    throw new WorkItemListRepositoryContractError("Work item row timestamps are invalid");
+    throw new WorkItemListRepositoryContractError("Work item row timestamps or task scope evidence are invalid");
   }
 }
 

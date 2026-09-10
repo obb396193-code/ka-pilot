@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { QueryResult, QueryResultRow } from "pg";
 import { WORK_ITEM_LIST_COUNT_SQL, WORK_ITEM_LIST_PAGE_SQL } from "../src/work-item-list-sql.js";
+import { workItemScopeClause } from "../src/r014/workspace-authority.js";
 
 import {
   WorkItemListRepository,
@@ -16,13 +17,40 @@ function result<Row extends QueryResultRow>(rows: Row[]): QueryResult<Row> {
 }
 
 describe("WorkItemListRepository unit boundary", () => {
+  it.each([
+    { task_scope_media: undefined, task_scope_account_id: undefined },
+    { task_scope_media: "KUAISHOU", task_scope_account_id: null },
+    { task_scope_media: null, task_scope_account_id: "account-1" },
+    { task_scope_media: 3, task_scope_account_id: "account-1" },
+    { task_scope_media: "", task_scope_account_id: "account-1" },
+  ])("rejects malformed DB task link evidence: %j", async (proof) => {
+    const client: WorkItemListRepositoryClient = {
+      query: async <Row extends QueryResultRow>(sql: string): Promise<QueryResult<Row>> => {
+        if (sql.includes("work-item-list-total")) return result([{
+          total: "1", account_item_count: "0", data_as_of: "2026-08-25T12:00:00Z", coverage_complete: true,
+        }] as unknown as Row[]);
+        if (sql.includes("workspace-sync-initial-full-readiness")) {
+          return result([{ initial_full_complete: false }] as unknown as Row[]);
+        }
+        if (sql.includes("LIMIT $11")) return result([{
+          media: null, account_id: null, task_id: "task-linked", ...proof,
+        }] as unknown as Row[]);
+        return result([] as Row[]);
+      }, release: vi.fn(),
+    };
+    await expect(new WorkItemListRepository({ connect: async () => client }).list({
+      workspaceId, requestingUserId: userId, businessDate: "2026-08-25", scopeKind: "explicit_accounts",
+      allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
+    })).rejects.toBeInstanceOf(WorkItemListRepositoryContractError);
+    expect(client.release).toHaveBeenCalledOnce();
+  });
+
   it("uses the same four active states for count/page, preserving tuple and personal-item guards", () => {
     for (const sql of [WORK_ITEM_LIST_COUNT_SQL, WORK_ITEM_LIST_PAGE_SQL]) {
       expect(sql).toContain("item.status IN ('open', 'processing', 'dispatched', 'escalated')");
       expect(sql).toContain("item.workspace_id = $1::uuid");
-      expect(sql).toContain("allowed.media = item.media AND allowed.account_id = item.account_id");
-      expect(sql).toContain("$3::text = 'explicit_accounts'");
-      expect(sql).toContain("item.assignee = $2::uuid OR item.creator = $2::uuid");
+      expect(sql).toContain(workItemScopeClause("$3", "$4", "item", "$2"));
+      expect(sql).toContain("(item.media IS NULL) = (item.account_id IS NULL)");
       expect(sql).toContain("OR item.status = $6::text");
     }
   });
@@ -42,7 +70,8 @@ describe("WorkItemListRepository unit boundary", () => {
           id: "00000000-0000-4000-8000-000000000201", workspace_id: workspaceId,
           type: "diagnosis", status: "open", severity: "P1", title: "异常",
           media: "KUAISHOU", account_id: "account-1", account_name: null,
-          task_id: null, task_name: null, assignee: null, assignee_display_name: null,
+          task_id: null, task_name: null, task_scope_media: null, task_scope_account_id: null,
+          assignee: null, assignee_display_name: null,
           creator: userId, sla_due: null, created_at: new Date("2026-08-25T12:00:00Z"), resolved_at: null,
         }] as unknown as Row[]);
         return result([] as Row[]);
