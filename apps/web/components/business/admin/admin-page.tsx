@@ -131,7 +131,7 @@ const etlColumns = etlHelper.columns([
     <span className="tabular-nums">{row.original.rows.raw ?? <MissingValue />} / {row.original.rows.canonical ?? <MissingValue />}</span>
   ) }),
   etlHelper.accessor((row) => row.warnings.map((warning) => warning.code).join(","), { id: "warnings", header: "警告", meta: { label: "警告" }, cell: ({ row }) => row.original.warnings.length ? <span className="flex flex-wrap gap-1">{row.original.warnings.map((warning) => <Badge key={warning.code} variant="outline" title={warning.message ?? undefined} className="text-[10px] text-status-warning">{warning.code}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
-  actionsColumn<EtlRun>((run) => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `接口接入后生效（当前为示例）` })}><IconRefresh />重跑</DropdownMenuItem>),
+  actionsColumn<EtlRun>(() => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `接口接入后生效（rerun 端点 v1.9.19 刚定形，未接）` })}><IconRefresh />重跑</DropdownMenuItem>),
 ])
 
 function EtlTab() {

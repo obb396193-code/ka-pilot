@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
 import { businessRefHref, businessRefLabel, flattenTree, kbKindLabel, kbSearchFixture, businessRefName } from "@/lib/fixtures/knowledge"
 import { cn } from "@/lib/utils"
-import { kbActions, useKnowledgeStore } from "./knowledge-store"
+import { hydrateKnowledge, kbActions, loadKnowledgeDoc, useKnowledgeStore } from "./knowledge-store"
+import { useKbBacklinks, useKbSearch } from "@/lib/data/use-kb-search"
 
 // BlockNote / react-arborist 依赖 DOM：关 SSR（ContentRadar 里编辑器只在 react-query 拿到数据后才挂载，天然不 SSR；这里 fixture 同步可得，须显式 ssr:false）
 const KnowledgeEditor = dynamic(() => import("./knowledge-editor").then((m) => m.KnowledgeEditor), { ssr: false, loading: () => <LoadingBlock /> })
@@ -37,10 +38,19 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
   const doc = selId ? store.docs[selId] ?? null : null
   const allNodes = useMemo(() => flattenTree(store.tree), [store.tree])
   const backlinkCounts = useMemo(() => { const counts: Record<string, number> = {}; Object.values(store.docs).forEach((item) => item.documentLinks.forEach((link) => { counts[link.toId] = (counts[link.toId] ?? 0) + 1 })); return counts }, [store.docs])
-  const backlinks = useMemo(() => (selId ? Object.values(store.docs).filter((item) => item.documentLinks.some((link) => link.toId === selId)) : []), [store.docs, selId])
+  // mock 下反链从本地 store 按 documentLinks 反推；真实模式走后端（本地只有拉过的那几篇，反推必然漏）
+  const localBacklinks = useMemo(() => (selId ? Object.values(store.docs).filter((item) => item.documentLinks.some((link) => link.toId === selId)) : []), [store.docs, selId])
+  const remoteBacklinks = useKbBacklinks(selId, isMock)
+  const backlinks = isMock ? localBacklinks : remoteBacklinks
   const q = search.trim().toLowerCase()
-  const hits = useMemo(() => { if (!q) return []; const local = Object.values(store.docs).filter((item) => item.title.toLowerCase().includes(q) || item.contentText.toLowerCase().includes(q)).map((item) => ({ id: item.id, title: item.title, kind: item.kind, snippet: item.contentText ? item.contentText.slice(0, 60) + (item.contentText.length > 60 ? "…" : "") : "（无正文）", score: null as number | null })); const fixture = isOk(kbSearchFixture) ? kbSearchFixture.data.items.filter((hit) => hit.title.toLowerCase().includes(q) && !local.some((item) => item.id === hit.id)) : []; return [...local, ...fixture] }, [q, store.docs])
+  const localHits = useMemo(() => { if (!q) return []; const local = Object.values(store.docs).filter((item) => item.title.toLowerCase().includes(q) || item.contentText.toLowerCase().includes(q)).map((item) => ({ id: item.id, title: item.title, kind: item.kind, snippet: item.contentText ? item.contentText.slice(0, 60) + (item.contentText.length > 60 ? "…" : "") : "（无正文）", score: null as number | null })); const fixture = isOk(kbSearchFixture) ? kbSearchFixture.data.items.filter((hit) => hit.title.toLowerCase().includes(q) && !local.some((item) => item.id === hit.id)) : []; return [...local, ...fixture] }, [q, store.docs])
+  // 真实模式的搜索走后端 FTS（`GET /kb/search`）：内存里只有拉过正文的那几篇，用它搜等于漏掉大半个库
+  const remoteHits = useKbSearch(q, isMock)
+  const hits = isMock ? localHits : remoteHits
 
+  // 真实模式：挂载时拉整棵树；选中某篇时按需拉正文（树只给目录节点）
+  useEffect(() => { void hydrateKnowledge() }, [])
+  useEffect(() => { if (selId) void loadKnowledgeDoc(selId) }, [selId])
   // 编辑器里点双链派 kb-navigate → 切文档
   useEffect(() => { const h = (e: Event) => { const id = (e as CustomEvent).detail; if (typeof id === "string") setSelId(id) }; window.addEventListener("kb-navigate", h); return () => window.removeEventListener("kb-navigate", h) }, [])
   // 选中 ↔ URL 同步（/knowledge/[id]；replace 不堆历史）
@@ -48,7 +58,7 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
 
   return (
     <PageBody>
-      <PageHeader title="知识库" description={<span>SOP · AI 报告归档 · 案例库 · 错题本；富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入文档双链或业务对象；双链解析在后端保存时重建</span>} isMock={isMock} actions={<><StateSwitch />{readOnly ? <StatusChip tone="muted">团队空间只读</StatusChip> : null}<Button variant="outline" size="sm" onClick={() => openAgentDrawer(doc ? `把文档「${doc.title}」归纳成三句话，并列出关联任务` : "把今天的日报归档到知识库")}><IconSparkles />问 AI</Button><Button size="sm" disabled={readOnly} onClick={() => { const id = kbActions.createDoc(null, "manual", "新文档"); setSelId(id); toast("已建文档", { description: "接口接入后生效（当前为示例）" }) }}><IconPlus />新建文档</Button></>} />
+      <PageHeader title="知识库" description={<span>SOP · AI 报告归档 · 案例库 · 错题本；富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入文档双链或业务对象；双链解析在后端保存时重建</span>} isMock={isMock} actions={<><StateSwitch />{readOnly ? <StatusChip tone="muted">团队空间只读</StatusChip> : null}<Button variant="outline" size="sm" onClick={() => openAgentDrawer(doc ? `把文档「${doc.title}」归纳成三句话，并列出关联任务` : "把今天的日报归档到知识库")}><IconSparkles />问 AI</Button><Button size="sm" disabled={readOnly} onClick={() => { void kbActions.createDoc(null, "manual", "新文档").then((id) => { if (id) { setSelId(id); toast("已建文档") } }) }}><IconPlus />新建文档</Button></>} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="知识库接口（文档 / 搜索 / 修订 / 双链 / 业务关联）接入后切换为真数据" empty={{ title: "知识库还是空的", description: "新建文档，或从报告页把日报归档进来。" }}>
           <div className="grid min-h-[640px] gap-0 rounded-xl border bg-card @3xl/main:grid-cols-[280px_minmax(0,1fr)]">
@@ -56,6 +66,10 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
               <div className="relative mb-2 shrink-0"><IconSearch className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={(e) => setSearch(e.target.value)} aria-label="搜文档" placeholder="搜文档（按关键词，不走 AI）" className="h-8 pl-8 text-xs" /></div>
               {q ? (
                 <div className="flex flex-col gap-1 overflow-auto">{hits.length ? hits.map((hit) => <button key={hit.id} type="button" onClick={() => { setSelId(hit.id); setSearch("") }} className="rounded-md px-2 py-1.5 text-left hover:bg-muted"><span className="flex items-center gap-2 text-sm font-medium">{hit.title}<TypeChip className="text-[10px]">{kbKindLabel[hit.kind]}</TypeChip>{hit.score !== null ? <span className="ml-auto text-[10px] text-muted-foreground tabular-nums">{hit.score.toFixed(2)}</span> : null}</span><span className="block truncate text-xs text-muted-foreground">{hit.snippet}</span></button>) : <p className="px-2 py-6 text-center text-xs text-muted-foreground">没有匹配「{search}」的文档</p>}</div>
+              ) : store.status === "loading" ? (
+                <p className="px-2 py-10 text-center text-xs text-muted-foreground">正在读取知识库…</p>
+              ) : store.status === "error" ? (
+                <div className="px-2 py-10 text-center text-xs text-muted-foreground"><p className="mb-2 text-status-critical">读取失败：{store.error}</p><Button size="sm" variant="outline" onClick={() => void hydrateKnowledge()}>重试</Button></div>
               ) : allNodes.length ? (
                 <KnowledgeTree items={store.tree} selectedId={selId} onSelect={setSelId} readOnly={readOnly} backlinkCounts={backlinkCounts} />
               ) : (
