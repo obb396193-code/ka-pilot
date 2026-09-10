@@ -1371,3 +1371,6 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **登录/开户口径**：用户名 ≤128（正则不变）、密码 **12–512**（登录线上限 512）；自助改密同上限，存储列更宽不算支持。
 - **BFF 成功信封接受任何 2xx**（fe 已改 r014 转发器；r010 命令 BFF 同规则）。
 - 页头「态」切换器与「脱敏 Mock」角标按老板拍板去掉；`?state=` 只认参数不给 UI 入口（联调用）。全站「当前为示例」类 toast 文案统一改「暂未开放」，接口开一条改一条。
+
+## v1.9.25 追加（2026-09-10 arch；裁 Codex 自查 04 的 025/024 发布顺序）
+- **迁移编号 = 落地时的下一个空号，永不回填**：`account_metrics_hourly` = 025，可以单独发布；`dispatches` 落地时取当时的下一个号（现在看是 **026**），v1.9.21 写的「024」作废，不建空占位、不关 `checkOrder`、不重编号已发布迁移。schema.sql 已同步（025 注释、`work_items (workspace_id, id)` UNIQUE、dispatches 联合 FK）。
