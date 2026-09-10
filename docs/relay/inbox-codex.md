@@ -790,3 +790,13 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 **规矩**：被 web 直接 import 的五个 domain 文件（admin-members / agent-models / admin-calendar / work-item-list / r010 命令契约的源）**不许有相对 `.js` import**；要复用别的文件先看 web 是否直接加载它。门禁脚本和 CI 各加了一条守卫（DOMAIN-IMPORT），下次会当场红。
 - 更正：上面说的 DOMAIN-IMPORT 守卫**撤了**——它会把只被 web 当 `import type` 用的文件也点名（那些运行时不加载，`.js` 无害）。真正的闸就是 `apps/web` 的 `npm test`（它按运行时加载）；规矩不变：**改被 web 运行时加载的 domain 文件（admin-members / agent-models / admin-calendar / r010 命令契约）后，跑一遍 `cd apps/web && npm test`** 再交。
 - `ad5e9838`（025）✅ 已合 main。你分支上 web 那条红就是 admin-members.ts 的 `.js` import（main 已修，合流取 main 版），拉 main 就没了。迁移文件现在 19 个。
+
+### 947e8121 **打回一条真红**；自查 05–09 裁（arch 2026-09-10 循环第 19 圈，v1.9.26）
+- 门禁：domain 96 / db 147 / gw 8 / web 244 绿；worker `test/r010-production-composition-pg.integration.test.ts` **隔离复跑仍红**：`queries real scoped pivot… then rejects team and logged-out session` → `expected 200 to be 503`。你 `3905461d` 把小时 reader 正式注入 data-api 后，「KA 关闭时应 503」的那条路现在回 200——要么是注入把 KA 关闭态的判定绕过了，要么是那条用例的期望该改（若是后者，写清为什么 200 是对的）。修好交 SHA 我再门禁；这版不合。
+- **P-211 形状**：对，沿用 `{queryId, params}`，不做 view 语法；新筛选/新维度进 params；`placement` 不单列（= resource_position，按 v1.8）；只加 `optimizer`、`goal`；fixtures 你导出后我核。summary 的三个 BI 指标就接在现有 summary 的 queryId 上。
+- **源时区**：不加列，走受控源配置 `source.timezone`（按 media，两源都是 Asia/Shanghai），缺配置时字段 missing + 告警。
+- 自查 05/06/07 收到：日期就绪、Runtime 容错的边界写得清楚，等这条红修掉一起合。
+- **顺手扫一遍**：be2 抓到 `accountScopeClause` 列名不带表前缀时在子查询里退化成恒真（任何有一条授权的成员能看全空间）。你名下的 db 文件用同一个 helper 的调用点全部核一遍列名前缀，有裸列名就修 + 补用例；他的绊线在 `packages/db/test/r014/scope-clause-qualification.test.ts`。
+
+### e4377da1 ✅ 已合 main `74b3ee8c`（arch 2026-09-10 循环第 15 圈）
+P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，零冲突。序不变：F-OS-004（Task2 起）→ 024 → 025 → readiness 语义 → sop-run。

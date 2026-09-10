@@ -1,0 +1,444 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "ka_data",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "dimension": "optimizer",
+      "rows": [
+        {
+          "key": "opt-zhang",
+          "label": "张三",
+          "metrics": {
+            "cost": {
+              "value": 58800.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 45934.6,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 448000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 18666,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 1442,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1373,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 6247.0,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0773,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.83,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.46,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0479,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "biConv": {
+              "value": 1272,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.11,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "price": {
+              "value": 34.5,
+              "availability": "available"
+            },
+            "priceSource": "ka_daily",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": null,
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": null
+        },
+        {
+          "key": "opt-li",
+          "label": "李四",
+          "metrics": {
+            "cost": {
+              "value": 47040.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 36747.6,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 358400,
+              "availability": "available"
+            },
+            "click": {
+              "value": 14933,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 1153,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1099,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 4998.0,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0772,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.8,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.44,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0468,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "biConv": {
+              "value": 1018,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.1,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "price": {
+              "value": 34.5,
+              "availability": "available"
+            },
+            "priceSource": "ka_daily",
+            "onTarget": false,
+            "costStatus": "yellow",
+            "costStatusReason": "window_over_single_day",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": null
+        },
+        {
+          "key": "opt-wang",
+          "label": "王五",
+          "metrics": {
+            "cost": {
+              "value": 29400.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 22967.3,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 224000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 9333,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 721,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 687,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 3123.0,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0773,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.79,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.43,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0472,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "biConv": {
+              "value": 636,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.11,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "price": {
+              "value": 34.5,
+              "availability": "available"
+            },
+            "priceSource": "ka_daily",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": null,
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": null
+        },
+        {
+          "key": "unlabeled",
+          "label": "未标注",
+          "metrics": {
+            "cost": {
+              "value": 11760.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 9186.9,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 89600,
+              "availability": "available"
+            },
+            "click": {
+              "value": 3734,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 289,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 274,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 1249.0,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0774,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.92,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.53,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0519,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "biConv": {
+              "value": 254,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 36.17,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "price": {
+              "value": 34.5,
+              "availability": "available"
+            },
+            "priceSource": "ka_daily",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": null,
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": null
+        }
+      ],
+      "returnedRowCount": 4,
+      "wholeResultTotal": {
+        "value": 147000.0,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "ka_data",
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05"
+        },
+        "coverage": {
+          "complete": true,
+          "expectedDays": 5,
+          "actualDays": 5,
+          "missingDays": []
+        },
+        "partial": false,
+        "truncated": false,
+        "metadataAvailability": "known",
+        "sourceMetadata": [
+          {
+            "source": "ka_data",
+            "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+            "businessDate": "2026-09-05"
+          }
+        ]
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture-dimension-optimizer",
+    "_note": "★fe 过渡 fixture（F8-19）：按 api.md v1.9.22 形自写；Codex P-210 导出后并回删除。未解析出该段的账户归「未标注」，不丢行也不并进别人。"
+  }
+}
