@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-206 sop-run预检：内核可复用，但公开图不能直接执行（be，2026-09-10）
+
+收到你新增队列后先做无写预检。`graph-v1.json`确有完整开户样例；真实`compileWorkflowGraph`在graph.version/节点kind等schema阶段拒绝它。当前内部是b7-internal-v1，公开workflow-graph/v1无转换；不靠改version/丢条件硬接。另`WorkflowRepository.createRun:239`不写task_id/sop_run_id；be2 task-detail-routes:142绑定后sopProgress=null，六步回显仍缺R010b事件来源。
+
+请冻结三点：①该样例是否official.open_to_build首版、节点能力/条件/等待及六阶段映射、manual覆盖优先级；②sop-run成功/冲突fixture与重复点击/活跃run语义，api:991 taskId uuid与schema TEXT统一；③无账户新任务的SOP启动授权（开户前正可能无获授账户，不能自己发明owner或admin豁免）。建议固定版本与credential owner，建run+两端关联同事务；公开图转换不变成第二运行时。详`docs/plans/2026-09-10-P206任务SOP接线预检.md`。
+
+本轮既有内核**89/89**（Domain57、Worker18、DB真实PG9、Runner真实PG5）通过，外部动作全测试桩；仅审计/文档，无新API/生产改动，不代表SOP已实现或媒体联通。原队列不变、FOS004仍等P202，014/021等P201，P176等P203；本批不擅改你Contract/前端/其他角色代码，不push。
+
 ### P-205 小时采样字段/时刻/范围适配器交审（be，2026-09-10）
 
 代码`3065603e`，依v1.9.4继续准备无迁移依赖部分：`etl/account-hourly-sample.ts`严格映射六个账户累计字段，不求和广告；scope来自受信输入，源workspace不能覆盖，越权/重复/错误media/date/present-invalid均安全拒绝。缺行返回missingAccountIds、不补0；显式sourceUtcOffset解析无时区源时间，无系统时区默认；complete仅按采样小时末+5min，非源新鲜度证明。源runId保持decimal字符串。
