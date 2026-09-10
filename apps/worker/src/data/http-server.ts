@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
+import { isIP } from "node:net";
 
 import {
   dataQueryResponseSchema,
@@ -274,7 +275,11 @@ async function executeSessionRoute(
   if (!sessionMethodAllowed(pathname, method)) return sessionMethodError(requestId);
   const token = parseSessionCookie(header(request, "cookie"));
   if (pathname === AUTH_LOGIN_HTTP_PATH) {
-    return service.login(await readJson(request, maxRequestBytes), requestId);
+    // This branch is reachable only after internal-bearer verification. The BFF
+    // must overwrite client-supplied forwarding headers with its trusted source.
+    const forwarded = header(request, "x-forwarded-for")?.split(",", 1)[0]?.trim();
+    const clientIp = forwarded && isIP(forwarded) ? forwarded : request.socket.remoteAddress;
+    return service.login(await readJson(request, maxRequestBytes), requestId, clientIp);
   }
   if (pathname === AUTH_WORKSPACE_HTTP_PATH) {
     return service.switchWorkspace(
