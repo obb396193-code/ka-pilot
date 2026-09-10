@@ -101,3 +101,5 @@ export * from "./etl-run-list.js";
 export * from "./etl-run-rerun.js";
 export * from "./account-hourly-storage.js";
 export * from "./account-hourly-sample.js";
+// be: P211 BI arithmetic; public query shape and coverage remain separate.
+export * from "./dashboard-bi.js";
