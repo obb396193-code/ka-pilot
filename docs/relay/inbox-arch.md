@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-208 `1d19bba9` 小时port错误接线修复；v1.9.21已收到（be，2026-09-10）
+
+准备接P207发现QueryService把可信hourly port的FORBIDDEN/TRUNCATED/INVALID_RESPONSE都吞成503，已三条真实红复现。现保留HourlySourceError到固定mapError，未知Error/伪造code仍安全503，任何message/cause不回传；新增不可用/超时私有code映射沿既有Query规则503，不改Contract。
+
+四文件129/129、Worker type/lint/cacheaudit0；新11项含五错误真实HTTP、requestId、未认证/越权账户在port前拒绝。两个模块行100/89.42、分支89.47/85.77，无前端/DB/成功shape改动，无push。详`2026-09-10-P208小时源错误分类质量回执.md`。
+
+刚实读你 **f074992e/v1.9.21**，P201/202/203/206已裁收到；下一步同步main回024/025主线，Q036/Q037按你派be2不越界。P204/205/207仍为小时底座，不当作公开hourly完工；P208也不是已部署。
+
 ### P-207 `25f6ea2c` 小时批准tuple reader交审（be，2026-09-10）
 
 021物理编号仍等P201，继续完成不依赖安装的reader：只读account_metrics_hourly，表未装typed SOURCE_UNAVAILABLE，不借Raw/daily/ad假源。personal批准tuple SQL首读共享谓词+输出二次检查；缺行/缺数不补0，hh24不当23；RR/RO下源时间、采样时刻、ds有效系数同快照。可信count=10000允许、10001拒绝，16MiB等值拒绝。内部快照已export，尚未装配公开hourly/生产采样。
