@@ -281,3 +281,54 @@ describe("R-017 T5 dimensions DTO (v1.9.3)", () => {
     }
   });
 });
+
+describe("v1.9.22 ① anchor segments and longest-alias matching", () => {
+  const anchoredRule = (): NamingRule => namingRuleSchema.parse({
+    media: "KUAISHOU",
+    version: 1,
+    separators: ["-"],
+    segments: [
+      { key: "biz", label: "业务", order: 1, source: "free", required: false, multi: false, mapsTo: "biz" },
+      { key: "agent", label: "运营方", order: 2, source: "enum", required: false, multi: false,
+        mapsTo: "agent_type", values: ["自投", "代投"], anchor: true },
+      { key: "optimizer", label: "优化师", order: 3, source: "free", required: false, multi: false,
+        mapsTo: "optimizer" },
+    ],
+  });
+
+  it("realigns the remaining segments when a leading segment is missing", () => {
+    // 昵称少写了业务段：按位置硬切会把「自投」当业务、把优化师当运营方，全线错位。
+    const parsed = parseAccountName("自投-张三", anchoredRule());
+    expect(parsed.segments.agent?.value).toBe("自投");
+    expect(parsed.segments.optimizer?.value).toBe("张三");
+    // 少写的那段如实记为未匹配，不拿别的段顶上。
+    expect(parsed.unmatched).toContain("biz");
+  });
+
+  it("still parses the full-length nickname the same way", () => {
+    const parsed = parseAccountName("CVR有端-代投-李四", anchoredRule());
+    expect(parsed.segments.biz?.value).toBe("CVR有端");
+    expect(parsed.segments.agent?.value).toBe("代投");
+    expect(parsed.segments.optimizer?.value).toBe("李四");
+  });
+
+  it("falls back to positional slicing when the anchor value is absent", () => {
+    // 找不到锚点就退回原来的纯位置切法——不猜，也不因此整条失败。
+    const parsed = parseAccountName("CVR有端-未知运营方-王五", anchoredRule());
+    expect(parsed.segments.biz?.value).toBe("CVR有端");
+    expect(parsed.unmatched).toContain("agent");
+  });
+
+  it("prefers the longest alias so a long value is not cut short by a shorter one", () => {
+    const longest = namingRuleSchema.parse({
+      media: "KUAISHOU", version: 1, separators: ["-"],
+      segments: [{
+        key: "placement", label: "版位", order: 1, source: "enum", required: false, multi: false,
+        mapsTo: "placement", values: ["优选", "优选广告位"], matchLongest: true,
+      }],
+    });
+    // 两个别名共享前缀时，「谁先匹配算谁」会把长的截成短的；开了最长命中就该完整命中。
+    expect(parseAccountName("优选广告位", longest).segments.placement?.value).toBe("优选广告位");
+    expect(parseAccountName("优选", longest).segments.placement?.value).toBe("优选");
+  });
+});

@@ -14,6 +14,17 @@ export const namingSegmentSchema = z.object({
   order: z.number().int().nonnegative(),
   source: namingSegmentSourceSchema,
   values: z.array(z.string().min(1)).optional(),
+  /**
+   * v1.9.22 ①：**锚点段**。昵称里位置飘的时候（少写一段、多写一段），按位置硬切必错；
+   * 锚点段先在全串里找到自己，其余段再按**相对它的位置**切。
+   * 典型是「自投/代投」这种值域小又必出现的段。
+   */
+  anchor: z.boolean().optional(),
+  /**
+   * v1.9.22 ①：**最长别名命中**。别名里既有「优选」又有「优选广告位」时，
+   * 默认那套「谁先匹配算谁」会把长的截成短的；开了它就按长度倒序试，先长后短。
+   */
+  matchLongest: z.boolean().optional(),
   pattern: z.string().min(1).optional(),
   required: z.boolean().default(false),
   /** 允许一段里塞多个值（快手的「专项」用 `-` 连多个）；**整条规范里最多一个**。 */
@@ -117,12 +128,20 @@ function splitTokens(name: string, separators: readonly string[]): string[] {
   return name.split(new RegExp(`[${escaped}]`)).map((token) => token.trim()).filter((token) => token.length > 0);
 }
 
+/** 枚举候选：开了 `matchLongest` 就按长度倒序，先长后短，避免长别名被短的截胡。 */
+function enumValues(segment: NamingSegment): readonly string[] {
+  const values = segment.values ?? [];
+  return segment.matchLongest === true
+    ? [...values].sort((left, right) => right.length - left.length)
+    : values;
+}
+
 function matchesSegment(segment: NamingSegment, token: string): boolean {
   const { bare } = extractTaskIds(token);
   if (segment.source === "free") return token.length > 0;
   if (segment.source === "regex") return new RegExp(segment.pattern!).test(token);
   // 枚举值自带括号（如「CVR有端(1803240580)」），所以裸值与原值都试一次。
-  return segment.values!.some((value) => {
+  return enumValues(segment).some((value) => {
     const candidate = extractTaskIds(value).bare;
     return value === token || candidate === bare;
   });
@@ -150,19 +169,44 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
     segments[segment.key] = { key: segment.key, value: bare, mapsTo: segment.mapsTo, taskIds };
   };
 
+  /**
+   * v1.9.22 ① 锚点：昵称里少写或多写一段时，按位置硬切会整体错位。
+   * 先让锚点段在全串里找到自己，再把 token 游标对齐到它——**它之前的段按位置切，
+   * 它之后的段从它往后接着切**。找不到锚点就退回原来的纯位置切法，不猜。
+   */
+  const anchorSegment = ordered.find((segment) => segment.anchor === true && segment.source === "enum");
+  let anchorTokenIndex = -1;
+  let anchorOrderIndex = -1;
+  if (anchorSegment !== undefined) {
+    anchorTokenIndex = tokens.findIndex((token) => matchesSegment(anchorSegment, token));
+    anchorOrderIndex = ordered.indexOf(anchorSegment);
+  }
+
   const absorbIndex = ordered.findIndex((segment) => segment.multi);
   const front = absorbIndex < 0 ? ordered : ordered.slice(0, absorbIndex);
   const tail = absorbIndex < 0 ? [] : ordered.slice(absorbIndex + 1);
   const absorb = absorbIndex < 0 ? null : ordered[absorbIndex]!;
 
-  // 前段：按位置逐个锚定。token 不够或枚举对不上都只记这一段没匹配，不整条丢。
+  /**
+   * 前段：按位置逐个锚定，token 不够或枚举对不上都只记这一段没匹配，不整条丢。
+   *
+   * 有锚点时**以锚点段为基准反推**：锚点在段序里排第 `anchorOrderIndex`、
+   * 在 token 里落在第 `anchorTokenIndex` 位，那么它前面每一段都往前数一格；
+   * 数不到（昵称少写了前面的段）就记未匹配，**不把后面的段拽上来顶位**——
+   * 顶位正是没有锚点时会全线错位的原因。
+   */
+  const useAnchor = anchorTokenIndex >= 0 && anchorOrderIndex >= 0;
   let head = 0;
-  for (const segment of front) {
-    const token = tokens[head];
-    if (token === undefined) { unmatched.push(segment.key); continue; }
-    if (!matchesSegment(segment, token)) { unmatched.push(segment.key); head += 1; continue; }
+  for (const [index, segment] of front.entries()) {
+    const at = useAnchor ? anchorTokenIndex - (anchorOrderIndex - index) : head;
+    const token = at >= 0 ? tokens[at] : undefined;
+    if (token === undefined || !matchesSegment(segment, token)) {
+      unmatched.push(segment.key);
+      head = Math.max(head, at + 1);
+      continue;
+    }
     record(segment, token);
-    head += 1;
+    head = at + 1;
   }
 
   // 尾段：从末尾倒着认，每段可缺省。
