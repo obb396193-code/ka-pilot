@@ -6234,3 +6234,10 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 - **发布前置**：当前024文件还没实现，部署025后再插024会被`migrate.ts checkOrder:true`拒绝。按新优先级先开发025可以，但请将024与025一并发布并按编号执行；不擅关排序/重编号/创建空024占位。若要立刻上025，需你裁迁移编号或批准先完成024 DDL这一技术前置（不带timeline/API）。
 - schema.sql仍注释小时迁移021，dispatches仍单列work_item FK且work_items无联合UNIQUE，与P201已批api文字不一致，留你修权威文件；我未改Contract。
 - 小时job+持久化/公开factory仍未实现完整链，不能宣称真数看板已完成。继续已冻小时链路；自查02的readiness日期口径仍待裁，P176 Runtime未放开失败容忍。五包全量/build因磁盘4.6GiB按规则未跑。没有push/生产部署/前端/媒体写；老板取消生图继续有效。
+
+### 自查-20260910-05｜小时Raw+快照仓储交审；已收到readiness/025新裁决
+
+- **da17ce0a**，已开工的小时持久化部分收口，不扩定时器：Raw与025快照同事务、live job lease/run/attempt/owner/personal scope，末尾重查lease；晚到旧采样不覆盖新快照，Raw保留历史。共享既有normalize到Domain（Worker兼容导出），严格校验Raw值/时间与整理值一致。
+- Domain33/33、真PG73/73（24写+49读）、Worker69/69，三包type/lint绿，缓存audit0，新存储边界/仓储行100、分支89.18/89.47。真实PG跨media/workspace同号不覆盖、Raw后故障两表回滚、写后过期回滚、输入突变、重复/并发和缺行不造0均过。详 `docs/plans/2026-09-10-自查05-小时落库质量回执.md`。
+- **d2ab7ab9 v1.9.24/25收到**：自查02不再等裁，接页面业务日/各job日期；025可独立发布，后续迁移只增不回填，注释已修；自查04旧阻断被覆盖。收口后马上转readiness→P176 Runtime→P211，不顺手继续小时job，前端/Contract/总台账不动。
+- 本批未挂Runtime/定时job/公开factory，不能报小时盯盘已通。磁盘3.6GiB按你的规则不五包全量/build；没有push/部署/真实媒体写。
