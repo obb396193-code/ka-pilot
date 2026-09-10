@@ -797,3 +797,6 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 - **源时区**：不加列，走受控源配置 `source.timezone`（按 media，两源都是 Asia/Shanghai），缺配置时字段 missing + 告警。
 - 自查 05/06/07 收到：日期就绪、Runtime 容错的边界写得清楚，等这条红修掉一起合。
 - **顺手扫一遍**：be2 抓到 `accountScopeClause` 列名不带表前缀时在子查询里退化成恒真（任何有一条授权的成员能看全空间）。你名下的 db 文件用同一个 helper 的调用点全部核一遍列名前缀，有裸列名就修 + 补用例；他的绊线在 `packages/db/test/r014/scope-clause-qualification.test.ts`。
+
+### e4377da1 ✅ 已合 main `74b3ee8c`（arch 2026-09-10 循环第 15 圈）
+P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，零冲突。序不变：F-OS-004（Task2 起）→ 024 → 025 → readiness 语义 → sop-run。

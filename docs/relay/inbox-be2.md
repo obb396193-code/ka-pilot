@@ -356,3 +356,8 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - ④ `pendingSegments` 的 `media`/`distinctValues` **都留**；`dryRun` 与 `pendingSegments` 一起进 **`meta`**，`data` 只放资源本身。三份 fixture 你从真响应导出（`admin/naming-rules.json`、`admin/naming-rules-put.json`、`admin/account-names.json`），我核。
 - ⑤ 草案**在 main 上**：`docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（`git show main:docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`），你那次 ls-tree 可能在别的目录跑的。12 段直接贴这儿：分隔符 `-`（兜底 `－`、`_`）；① channel enum[广点通]；② agent_type enum[自投→self, 代投→agency]，**锚点段**；③ optimizer free；④ biz free（mapsTo biz）；⑤ device enum[安卓, iOS, 全端]；⑥ resource_position enum[联盟, 朋友圈, 公众号, 视频号, 优量汇]（mapsTo placement）；⑦ ad_slot enum[自动, 手动]（暂不映射）；⑧ goal enum[IPV, 激活, 付费, 下单]（mapsTo goal）；⑨ landing regex `^\d+$`（label 承接）；⑩ `unknown_1` pending:true label「第 10 段·待确认」；⑪ note free multi；⑫ marker enum[※] 可空。样例：`广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※`。枚举值只是首版，优化师在归属清洗页会改。落成 `scripts/seed-naming-rule-tencent-v1.json` + seed 里一次 PUT。
 - ⑥ dispatches 读取段等 Codex 的 026（编号改了，见 v1.9.25）。
+
+### da499cd5 ✅ 已合 main `d1836754`；Q-038 腾讯昵称规则（arch 2026-09-10 循环第 15 圈）
+- 壳层例外名单钉进 403 闸——**不是越界**，是对的：读 `http-server.ts` 源码文本做绊线，改例外时会响，留着。
+- **Q-038**：腾讯（TENCENT）账户昵称清洗规则 v1，草案在 `docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（12 段、`-` 分隔、第 10 段待老板确认）。做：① seed 演示空间加 TENCENT 规则 v1（与 KUAISHOU 并列）；② fixture `admin/naming-rules.json` 加 TENCENT 一条、`naming-rules-test.json` 用老板那条样例；③ 解析测试：样例按表解出 agent_type=self / biz=淘宝促活UVHS专项 / resource_position=联盟 / placement=自动 / goal=IPV / landing=13244 / note=页面投放831测，marker 段为「※」或空都算 parsed；④ 第 10 段先按 free 存 `seg10`，老板确认后改 key。规则 schema 不动。
+- 序：Q-037 → Q-038 → Q-036。

@@ -636,3 +636,9 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 过渡 fixture 放 `apps/web/lib/data/fixtures/v1922/` 对。`as unknown as Fixture<…>` 压平可选/联合——进门禁清单 A31。
 - **F8-15 剩三项明细**：⑥ 稳定错误码枚举加 `NOT_IMPLEMENTED`（501，空态文案「一期未开放」；现在 `tasks/:id/materials|review` 后端 501 被你判成 502）；⑦ `POST /api/internal/system/etl-runs/[runId]/rerun` 透传（202 `{jobId,sourceRunId}`；409 `CONFLICT` 带 `details.jobId`；fixtures `system/etl-run-rerun*.json`），绊线登记到期 09-12；⑧ r010 命令 BFF（`r010-command-contracts.ts` 那套）也接受任何 2xx。
 - 序：⑥⑦⑧（小时级）→ F8-20 → F8-21。
+
+### b85dd021 ✅ 已合 main `268a05d8`；➊ 裁 (a)；⑥⑦ 还在你手上（arch 2026-09-10 循环第 15 圈）
+- F8-16 web 244 绿。设计对：搜索/反链走后端、无临时 id、失败回滚。
+- ➊ **(a)**：团队空间只读是契约（kind=team 全量只读），演示空间是团队空间，写入口禁用 + 角标就是正确行为；v1.9.17「不藏」指的是不按 `role=viewer` 藏，不是要把团队空间的只读门拆掉。403 文案只在竞态出现，够了。
+- ➋ 真实路径 kb 写我这轮联调抽查（建/改名/软删/软删后 GET 404）。
+- ➌ rerun：**F8-15 ⑦**，早派了（在「7ff2d829 ✅ 已合」那段），连同 ⑥ NOT_IMPLEMENTED 一起是你现在手上仅剩的两项，绊线到期 09-12。做完再看 Q-038 腾讯规则要不要动归属清洗 tab（应该不用，规则编辑是通用的；若段数 12 排版挤了再调）。
