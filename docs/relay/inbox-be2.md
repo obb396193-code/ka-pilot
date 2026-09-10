@@ -377,3 +377,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 3. **Q-042 小时采样 job**：025 表的写路径（Codex 交了 Raw+快照原子落库仓储与 reader，缺定时采样 job 与 `source.timezone` 受控配置），闭环到「个人空间小时盯盘出真数」。
 4. 之后：024/026 dispatches 表（含你自己的 timeline 读取段）、F-OS-004 收尾（登录/开户 HTTP 已在 main）、sop-run。
 文件归属：Codex 合入后 `apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、readiness、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts` 归你；他会在交付段逐文件写「现状 + 未完项」。在他那支合入前别动这些文件。
+
+### Q-041 增补（v1.9.27，看板审查暴露的后端信号；排在 Q-038 之后、Q-041 原四项一起）
+⑤ summary `params.compare:"prev_window"` → `compare.deltas`（等长紧邻前窗；month_to_date 前窗=上月同天数）；⑥ `cost.incentiveCost`（启航「激励」字段；ka-data 无 → unsupported）；⑦ 三 BI 指标键位 `assessment.biConv/biCashCost/overCost`（camelCase MetricValue，overCost 可负）；⑧ MetricValue `availability:"pending"`（BI 类指标 08:30–11:10 未到）；⑨ `lineage.warnings[]` 带 `{code:"BATCH_FAILED", media, accountId, businessDate}`（用你 Q-037 的 etlBatchReadableSql 反推）；⑩ **`dimension_type` / pivot2 dimA/dimB 接受 `segment:<key>`**（规则段 `analyzable:true` 或 mapsTo 非空的段；`GET naming-rules` 段带 `analyzable`）——老板要每个清洗字段都能分析。fixtures 从真响应导出。这些是 fe F8-19b/F8-22 的依赖，**优先级高于 Q-042**。
