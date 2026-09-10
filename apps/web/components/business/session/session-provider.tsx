@@ -15,8 +15,6 @@ type SessionContextValue = {
   status: SessionStatus
   session: SessionView | null
   isMock: boolean
-  /** 访客/只读身份：写类请求后端一律 403 READ_ONLY_ROLE，界面上对应把写入口藏掉 */
-  isViewer: boolean
   /** 当前空间是演示空间（契约 v1.9.12：team + isDemo，不是单独的 kind） */
   isDemo: boolean
   switching: boolean
@@ -83,9 +81,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     router.replace("/login")
   }, [isMock, router])
 
-  const isViewer = session?.activeWorkspace.role === "viewer"
   const isDemo = session?.activeWorkspace.isDemo === true
-  const value = useMemo<SessionContextValue>(() => ({ status, session, isMock, isViewer, isDemo, switching, switchWorkspace, logout, refresh }), [status, session, isMock, isViewer, isDemo, switching, switchWorkspace, logout, refresh])
+  const value = useMemo<SessionContextValue>(() => ({ status, session, isMock, isDemo, switching, switchWorkspace, logout, refresh }), [status, session, isMock, isDemo, switching, switchWorkspace, logout, refresh])
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }
 

@@ -6,8 +6,9 @@ import { useSession } from "@/components/business/session/session-provider"
 
 // F8-12（契约 v1.9.6 / v1.9.12 改口）：访客浏览。
 // 演示空间 = kind:"team" + isDemo:true；只读身份 = role:"viewer"，后端对写类请求一律 403 READ_ONLY_ROLE。
-// 界面这一侧只做两件事：把「这是演示数据」说在前面，把点了也没用的写入口藏掉——
-// 让访客点一个必然 403 的按钮，比不给按钮更劝退。
+// 界面这一侧只做一件事：把「这是演示数据」说在前面。
+// ★老板 2026-09-09 拍板：访客看到的和正常用户完全一样，不隐藏任何入口——
+// 写类请求由后端 403 READ_ONLY_ROLE 兜底，前端不做可见性区别。
 
 /** 顶部常驻条：演示空间才出。放在页头下面、内容之上，和移动端值守条同一位置。 */
 export function DemoBanner() {
@@ -23,13 +24,4 @@ export function DemoBanner() {
       </p>
     </div>
   )
-}
-
-/**
- * 包住内容区：viewer 身份时隐藏带 data-write-actions 的写入口（新建 / 批量 / 导入 / 自定义列 / 确认 / 推送 / 导出）。
- * 样式在 globals.css，和 F8-1 的移动端值守用同一个标记，不额外给页面加 DOM。
- */
-export function ViewerScope({ children }: { children: React.ReactNode }) {
-  const { isViewer } = useSession()
-  return <div data-session-role={isViewer ? "viewer" : undefined} className="flex flex-1 flex-col">{children}</div>
 }
