@@ -13,8 +13,8 @@ function incoming(body: unknown = ordinary) {
   return new Request("http://localhost/api/internal/data-query", { method: "POST", headers: { cookie, "x-ka-workspace-kind": "team", "x-ka-workspace-id": "forged", "x-ka-role": "admin" }, body: JSON.stringify(body) })
 }
 function session(kind: "personal" | "team") {
-  const workspace = { id: workspaceId, name: "Synthetic workspace", kind, role: "admin", readOnly: kind === "team" }
-  return { ok: true, data: { identity: { displayName: "Synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: id } }
+  const workspace = { id: workspaceId, name: "Synthetic workspace", kind, role: "admin", readOnly: kind === "team" , isDemo: false}
+  return { ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e1", provider: "internal_test", displayName: "Synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: id } }
 }
 function json(body: unknown, status = 200) { return Response.json(body, { status, headers: { "x-request-id": id } }) }
 function success(kind: "personal" | "team", table = false) {

@@ -1,13 +1,19 @@
 {
   "ok": true,
   "data": {
-    "identity": {"displayName": "内测用户甲"},
+    "identity": {
+      "id": "00000000-0000-4000-8000-000000000090",
+      "displayName": "内测用户甲",
+      "provider": "internal_test",
+      "mustChangePassword": false
+    },
     "activeWorkspace": {
       "id": "00000000-0000-4000-8000-000000000801",
       "name": "我的工作台",
       "kind": "personal",
       "role": "admin",
-      "readOnly": false
+      "readOnly": false,
+      "isDemo": false
     },
     "workspaces": [
       {
@@ -15,16 +21,20 @@
         "name": "我的工作台",
         "kind": "personal",
         "role": "admin",
-        "readOnly": false
+        "readOnly": false,
+        "isDemo": false
       },
       {
         "id": "00000000-0000-4000-8000-000000000802",
         "name": "团队数据",
         "kind": "team",
         "role": "optimizer",
-        "readOnly": true
+        "readOnly": true,
+        "isDemo": false
       }
     ]
   },
-  "meta": {"requestId": "fixture-session-personal-001"}
+  "meta": {
+    "requestId": "fixture-session-personal-001"
+  }
 }

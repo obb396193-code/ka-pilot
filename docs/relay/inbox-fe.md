@@ -558,3 +558,26 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 
 ### 知会：`accounts/transfer.json` 的 `skipped[]` 加了 `detail`（v1.9.16，arch 2026-09-10）
 枚举定为 `blocked_by_changeset|not_authorized|not_found` + 必填 `detail`（人话一句直接显示）。你 mock 侧若渲染 skipped 行，直接显示 `detail`，别自己按 reason 拼措辞。be2 的 web 镜像 `accountTransferSchema` 本来就是这个形，不用改。
+
+### F8-12 改口（老板 2026-09-10 拍板 → v1.9.17）：访客界面与正常用户**完全一样**，不藏任何写入口
+老板已经直接跟你说了，这里把派单和契约对齐，以老板为准：
+- **作废** F8-12 ②里的「所有写入口对 viewer 隐藏、治理后台入口隐藏」以及 v1.9.12 的「按 role=viewer 藏写入口」。按钮照常显示、照常可点，不置灰。
+- 只读靠后端 403 `READ_ONLY_ROLE`；你只需把这个码的固定文案接好（v1.9.14：「演示空间只读，想用真数据找管理员开户」），toast/内联提示都行，别弹阻断式对话框。
+- 顶部细条「演示数据 · 只读」保留（不是藏东西）。空间切换器不特殊处理。
+- 已经写了隐藏逻辑的，撤掉；别留 `role === "viewer"` 的分支在 UI 层，以后没人记得它为什么在。
+- 其余不变：登录页「访客浏览」按钮、`isDemo` 显示、F8-12 合并前提仍是 be2 Q-032 先合 main。
+
+### F8-12 532fdf5b ✅ 已合 main `e204b98a`；➊ 裁了（arch 2026-09-10 循环第 9 圈）
+- 门禁 web 236 / tsc 0 / eslint 0 绿。老板口径已进契约 v1.9.17（你改回那版正好对上）；be2/Codex 已各领「viewer 打每个写端点都 403」的用例任务，后端拦截完整性由他们的用例兜，你不用管。
+- ➊ 会话 meta：**后端只回 `{requestId}`**（实测 + 源码），两份 guest fixture 的 meta 我已削成一致（v1.9.18）；你把 `sessionMetaSchema` 放宽到只要求 requestId 的做法采纳。
+- 登录页读 `GUEST_ACCESS_ENABLED` 决定按钮显隐——可以，不另开 capabilities 请求；但**联调/沙箱两处 ENV 都还没开**（be2 Q-032 未收口），所以现在真实模式看不到按钮是正常的，mock `?session=guest` 预览就行。
+- 你上上封的 ➊（session 上 `mustChangePassword`）已裁 v1.9.14、be2 Q-032 落地；➋（members-v195 并回）到时我知会——两条都在上面「三问裁了 → v1.9.14」段，你拉 main 看。
+- 下一步：**F8-13 日报页**。be2 Q-030 的 `reports/daily` BFF 透传已在 main（`GET /api/internal/reports/daily?date=&role=`，联调实测 200），不用等，直接接真数据。
+
+### F8-15（小，排 F8-13 之后；arch 2026-09-10 循环第 10 圈）：五处 BFF 收口
+1. `GET /api/internal/system/etl-runs` 透传 → `/api/v1/system/etl-runs`（分页形按 `system/etl-runs-page.json`，你已接页，现在接真数据）。
+2. `POST /api/internal/admin/data/reconcile` 透传（admin，治理后台·对账诊断的触发按钮）。
+3. BFF 转发时把收到的 `x-forwarded-for`、`x-real-ip` 原样带给后端（`session-bff.ts` 的 internalApiHeaders 那一处；登录限速按 IP 靠它）。
+4. `r010-command-contracts.ts` 的错误码枚举加 `READ_ONLY_ROLE`(403) 与 `RATE_LIMITED`(429)，文案用 v1.9.14 冻的两句；现在后端合法 403 会被你判成 502。
+5. 共享错误 schema 与命令错误 schema 加可选 `details: object`（v1.9.19；rerun 的 409 带 `details.jobId`）。
+交付写 SHA。你上一笔 `c6e43adb` 只是合 origin/main 的 merge，无新内容，我不单独合；下次交付时它自然带上。

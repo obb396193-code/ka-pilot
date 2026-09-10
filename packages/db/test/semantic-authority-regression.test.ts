@@ -5,6 +5,7 @@ import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
 import { WindowAssessmentRepository } from "../src/window-assessment-repository.js";
 import { accountScopeClause } from "../src/r014/workspace-authority.js";
 import { buildMetricFilter } from "../src/semantic-query-support.js";
+import { runMigrations } from "../src/migrate.js";
 
 describe("shared semantic authority / synthetic PG", () => {
   let pool: Pool;
@@ -13,6 +14,7 @@ describe("shared semantic authority / synthetic PG", () => {
   beforeAll(async () => {
     const value = process.env.TEST_DATABASE_URL ?? "", url = new URL(value);
     if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated synthetic test DB required");
+    await runMigrations({ databaseUrl: value });
     pool = new Pool({ connectionString: value });
     for (const ws of [workspaceId, foreign]) {
       await pool.query("INSERT INTO workspaces(id,name) VALUES($1,'synthetic authority')", [ws]);
@@ -23,7 +25,7 @@ describe("shared semantic authority / synthetic PG", () => {
           VALUES($1,$2,'same-id',$3,$4,$4,1)`, [ws, media, ds, cost]);
       }
     }
-  });
+  }, 30_000);
   afterAll(async () => {
     if (!pool) return;
     for (const table of ["account_metrics_daily", "accounts", "workspaces"]) await pool.query(

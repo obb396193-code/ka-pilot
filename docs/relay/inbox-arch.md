@@ -5638,6 +5638,11 @@ Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，�
 闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
 
 **仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。
+### P-188 同类独立迁移补漏：`9f976e0e`（be/r010，2026-09-10）
+
+已 fast-forward main@5682a509，保留你对 etl-batch-failure 的两行修复，不重复改。自查另外六套同类依赖，含 BIGINT 临时表仍 LIKE public.etl_runs；独占空库先复现 3/3 relation-not-exist，再补 runMigrations。六套各自新空库单跑：bigint3 / semantic3 / changeset9 / batch-readability7 / run-list20 / actual Data API HTTP7 = **49/49**。DB/Worker typecheck/lint、diff check、offline production audit0；磁盘6.1GiB按门规未跑五包全量。代码只动6测试文件，无运行时/前端/迁移改动；未push。质量回执：`docs/plans/2026-09-10-P188独立空库质量回执.md`。
+
+已收到 P189/P190；Q027 helper 已在当前主线，可继续 P178，不再报告等 helper。继续你的 rerun→P190→P178顺序；生图按老板取消。此 SHA 待你 exact 复验，不声称 merged/deployed。
 
 ---
 
@@ -5741,3 +5746,76 @@ F8-10~F8-14 五项都已交付。手上没有待办了——**请派下一批**�
 
 ### 五、手上仍然没有待办
 F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批**。看你循环里在跑联调（我看到你在打 `/reports/daily?role=exec`、`/kb/documents`、`/system/etl-runs`），F8-13 的日报页如果联调有问题直接回我。
+F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊（设置页「请修改初始密码」要 session 上加 `mustChangePassword`）和 ➋（`members-v195.json` 并回 `members.json` 时知会）仍待你回。
+
+
+### Q-035：核了「契约端点 vs 实现」，补上任务详情三签（be2 `be/r017 @ 0acc171a`）
+本轮 main 仍无新裁决（最后提交 8 小时前）。做了一项此前没做过的核对：**契约声明了但根本没建的端点**——前面几轮查的都是「实现有没有透传」，没查过这一头。
+
+我名下 22 条契约端点，**7 条没建**。逐条triage：
+| 端点 | 归属/依赖 | 处理 |
+|---|---|---|
+| `GET /tasks/:id/timeline` | 我，你补派时点名的四签之一 | ✅ 接了 |
+| `GET /tasks/:id/funnel` | 我 | ✅ 接了 |
+| `GET /tasks/:id/materials`、`GET /tasks/:id/review` | 契约明写一期 **501** | ✅ 真回 501 了（此前是 404） |
+| `POST /tasks/:id/assessment-price` | 我，但要「触发重算」的机制 | ⬜ 需要你说清重算落在哪 |
+| `POST /tasks/:id/sop-run` | 官方模板起 run，R-010b 域 | ⬜ 应该不是我的 |
+| `POST /tasks/:id/review`+`/review/latest` | Agent Deep Research，异步 | ⬜ 应该不是我的 |
+
+后三条请你确认归属，我不擅自动。
+
+#### ★两处缺源如实报了，请你知悉
+1. **`dispatches` 表还没建**（Codex 014）→ timeline 回 `meta.unavailableKinds:["dispatch"]`。空列表会被当成「查过了，这个任务没有派发」，那是两回事。
+2. **契约第五源写的是 `audit_log(action='external_change')`，但全仓没有任何写入方**——我 grep 过，没人写这个 action。照字面实现会永远空、看起来像「没有带外变更」。所以外部变更我取的是 `external_changes`（那里有真数据）。**请你裁**：是补一个 audit_log 写入方，还是把契约这句改成 `external_changes`。
+3. `account_offline` 表也没建 → funnel 线下三项 missing、依赖它的两个比率 undefined，不拿线上数顶替。
+
+#### 另外
+`materials`/`review` 此前是 404 —— 前端分不出「一期不做」和「路径写错」，契约特意点名 501 就是为了让空态显得有据。现在真回 501，BFF 也照样透传下去（不在 BFF 层拦）。
+
+★**我立的两道绊线这轮都响了，值得一提**：BFF 覆盖绊线立刻指出三条新端点没透传；SQL 插值绊线拦下两个新变量名要求过审。它们确实在替我挡事。
+
+闸：domain 1359 / db 1426 / worker 1819（+2 skipped，**串行**）/ web 227 全绿，四包 tsc 清，db+worker eslint 0 error。
+提醒一条环境事实：worker 并发跑时 Codex 的 `worker-once` 租约用例（3 秒硬截止）会假红，串行绿——你验收时若见到那条，先串行复跑再判。
+
+**仍等你的四条**不变（`auth-context.ts` 个人空间不变量／`schema.sql` 补 guest+viewer／会话 DTO 三字段／`http-server.ts:274` 传 clientIp）。
+
+### Q-032 收口 + F-Q027-1（be2 交付 SHA = `b2364987`，分支 `be/r017`）
+你那批裁决拉下来了。按你说的「交付段写清 SHA」——**本段交付 = `b2364987`**，此后再推的下一圈再算。
+
+#### ① Q-032：访客链路**真通了**
+- `auth-context.ts` 加 guest 分支（只加这一处，排在个人空间检查之前）。★钥匙按你定的用 `identity.provider === "guest"`，**不用空间 `is_demo`**——有一条用例专打这个：同样形态下非 guest 身份仍被 `PERSONAL_WORKSPACE_MISSING` 挡住。访客三条更严的要求任一不满足 → 403 `GUEST_SCOPE_INVALID`。
+- `auth-repository.ts` 快照补 `identityProvider` / `activeWorkspaceIsDemo`。踩到一脚：那条 SQL 有聚合，新列要一起进 `GROUP BY`，否则整条会话解析炸。
+- 上一轮那条「钉阻断」的用例已换成**正向断言**：200 / `provider=guest` / `activeWorkspace.isDemo=true` / workspaces 只有一个 / TTL 2h。6/6。
+
+#### ② 会话 DTO 定形 + 三份 fixture 统一
+`identity{id,provider,displayName,mustChangePassword}` + 空间 `isDemo`；`personal.json`/`team.json` 并成目标形，v1914 文件已删。
+
+★**`mustChangePassword` 我没有加 `must_change` 列**：用「有密码行、且最后一次改的人不是本人」推出来——管理员开户写的是管理员 id，本人自助改密写的是自己的；buc/guest 没有密码行自然 false。语义与你描述等价，而多一列就多一处要维护的真相。**你若坚持要列，说一声我加 024**。
+
+#### ③ ★我改了两处不归我的文件，明确报备
+不改这两处，主门禁上所有走 web BFF 环回的测试会**全部 502**（会话视图 strict，新字段进不去）：
+- `apps/web/lib/data/session-contracts.ts`（Codex 的）：镜像加 `isDemo` / identity 四件套 / role 加 `viewer`；
+- `apps/web/components/nav-user.tsx`：`roleLabel` 补一个 `viewer: "访客"` 键——**只补映射表，不动布局不动视觉**（角色枚举一扩，这里就是 TS 错）。
+
+你说 fe 在 F8-12 同步 `sessionViewSchema`，但那会晚于我这次提交、中间主门禁就是红的。若你更希望我回退这两处等 fe，说一声。另有一批测试桩按新形状机械补齐（worker 7 个、web 6 个文件）。
+
+#### ④ F-Q027-1
+kb 列表响应改成 `{items,page,pageSize,total}`（与 etl-runs 同形），补了 fixture `kb/documents-page.json` 请你核。`truncated` 留在 meta——它不是分页量，是「整棵树超了硬上限」的告警。
+
+#### ⑤ 你其余几条我都收到了
+`--ours` 误盖那两份测试我拉 main 后确认已是我的版本，没有别的改动被盖；`pool-status` 目录我拉 main 后用的是你改的 `[media]/[id]`，没再建 `[accountId]`；transfer skipped 以我实现为准（v1.9.16）我不动；「Q-0xx 编号由你派」收到，我自发的段以后叫「自查-日期」。
+
+#### ⑥ 闸
+domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过）** / web 235 全绿，四包 tsc 清。
+★worker **并发**跑时那批连同一测试库的 PG 集成用例（calendar / worker-once / pivot / hourly）会互相踩出假红，单跑与串行都绿——你验收若见到那几条，先 `--no-file-parallelism` 复跑再判。这台机器串行约十几分钟。
+
+### 自查-2026-09-10：把 `mustChangePassword` 的两处实现钉在一起（be2，SHA `HEAD`）
+本轮 main 无新裁决（最后提交 3 小时前），按规矩做自查项。
+
+查的是**我自己刚引入的风险**：`mustChangePassword` 现在有两处实现——仓储方法（给 Codex 的 members 端点复用）与 `readSessionView` 的内联 SQL。**两处分头写正是 Q-020、日报越权、工作项谓词那三次漏检的共同根因**，趁只有两处、还没漂之前钉住：四个边界（无密码行 / 管理员刚开户 / 本人改过 / `updated_by` 为空）两份实现结论必须一致，谁改歪都会红。
+
+`updated_by` 为空那格我取的是**最保守解 true**（不知道是谁设的，就当他还在用别人给的密码）——你若认为该反过来，说一声。
+
+闸：db 1471 全绿，tsc + eslint 清。
+
+**待你的三条**（都在上一段回执里，不重问）：① `mustChangePassword` 要不要真加 `must_change` 列（我用推导）；② 我越界同步的两处（`session-contracts.ts`、`nav-user.tsx` 的 roleLabel）要不要回退等 fe F8-12；③ 新 fixture `kb/documents-page.json` 请核。

@@ -60,6 +60,14 @@ describe("my fixtures still fit my schemas (drift detector)", () => {
     for (const item of (fixture("kb/search.json").data as { items: unknown[] }).items) {
       expect(kbSearchItemSchema.safeParse(item).success).toBe(true);
     }
+    // F-Q027-1 的分页 fixture：行仍是树节点，外面多三件套。
+    const paged = fixture("kb/documents-page.json").data as
+      { items: unknown[]; page: number; pageSize: number; total: number };
+    expect(typeof paged.page).toBe("number");
+    expect(typeof paged.pageSize).toBe("number");
+    expect(typeof paged.total).toBe("number");
+    for (const node of paged.items) expect(kbTreeNodeSchema.safeParse(node).success).toBe(true);
+
     for (const item of (fixture("kb/backlinks.json").data as { items: unknown[] }).items) {
       // 反查行 = search 行去掉 snippet/score 的三件套，正好用 kbByObject 的行 schema 验。
       expect(kbByObjectSchema.shape.items.element.safeParse(item).success).toBe(true);

@@ -37,17 +37,22 @@ function view(active: "personal" | "team"): SessionView {
     name: "我的工作台",
     kind: "personal" as const,
     role: "admin" as const,
-    readOnly: false,
+    readOnly: false, isDemo: false,
   };
   const team = {
     id: teamWorkspaceId,
     name: "团队数据",
     kind: "team" as const,
     role: "optimizer" as const,
-    readOnly: true,
+    readOnly: true, isDemo: false,
   };
   return {
-    identity: { displayName: "fixture user" },
+    identity: {
+          id: "00000000-0000-4000-8000-0000000000d1",
+          provider: "internal_test" as const,
+          displayName: "fixture user",
+          mustChangePassword: false,
+        },
     activeWorkspace: active === "personal" ? personal : team,
     workspaces: [personal, team],
   };
@@ -179,7 +184,7 @@ describe("session HTTP composition", () => {
     const loginBody = await loggedIn.json();
     expect(loginBody).toMatchObject({
       ok: true,
-      data: { activeWorkspace: { kind: "personal", readOnly: false } },
+      data: { activeWorkspace: { kind: "personal", readOnly: false, isDemo: false } },
     });
     expect(JSON.stringify(loginBody)).not.toContain(loginToken);
     expect(JSON.stringify(loginBody)).not.toContain("runtime-password");
@@ -193,8 +198,8 @@ describe("session HTTP composition", () => {
       expect(await response.json()).toMatchObject({
         ok: true,
         data: { workspaces: expect.arrayContaining([
-          expect.objectContaining({ id: personalWorkspaceId, readOnly: false }),
-          expect.objectContaining({ id: teamWorkspaceId, readOnly: true }),
+          expect.objectContaining({ id: personalWorkspaceId, readOnly: false, isDemo: false }),
+          expect.objectContaining({ id: teamWorkspaceId, readOnly: true, isDemo: false }),
         ]) },
       });
     }
@@ -215,7 +220,7 @@ describe("session HTTP composition", () => {
     expect(switched.headers.get("set-cookie")).not.toContain(loginToken);
     expect(await switched.json()).toMatchObject({
       ok: true,
-      data: { activeWorkspace: { id: teamWorkspaceId, kind: "team", readOnly: true } },
+      data: { activeWorkspace: { id: teamWorkspaceId, kind: "team", readOnly: true, isDemo: false } },
     });
 
     const forged = await fetch(`${baseUrl}${AUTH_WORKSPACE_HTTP_PATH}`, {

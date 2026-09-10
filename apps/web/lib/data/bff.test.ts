@@ -15,9 +15,9 @@ const SERVICE_TOKEN = "server-secret-000000000000000000000000"
 function withPersonalSession(fetchImpl: typeof fetch | undefined) {
   return async (url: string, init?: RequestInit) => {
     if (url.endsWith("/api/v1/auth/session")) {
-      const workspace = { id: authContext.workspaceId, name: "Synthetic personal", kind: "personal", role: "optimizer", readOnly: false }
+      const workspace = { id: authContext.workspaceId, name: "Synthetic personal", kind: "personal", role: "optimizer", readOnly: false, isDemo: false }
       const requestId = new Headers(init?.headers).get("x-request-id")
-      return Response.json({ ok: true, data: { identity: { displayName: "Synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } }, { headers: { "x-request-id": requestId! } })
+      return Response.json({ ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e1", provider: "internal_test", displayName: "Synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } }, { headers: { "x-request-id": requestId! } })
     }
     return fetchImpl!(url, init)
   }

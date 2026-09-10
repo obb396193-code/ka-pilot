@@ -33,7 +33,7 @@ test("hourly full envelope binds date/source/time metadata and rejects fixture c
 
 test("hourly BFF keeps body requestId correlated and exact16MiB fail-closed", async () => {
   const good = await syntheticEnvelope()
-  const workspace = { id: "00000000-0000-4000-8000-000000000001", name: "synthetic", kind: "personal", role: "optimizer", readOnly: false }
+  const workspace = { id: "00000000-0000-4000-8000-000000000001", name: "synthetic", kind: "personal", role: "optimizer", readOnly: false, isDemo: false }
   for (const fault of ["none", "body-request-id", "exact-size"] as const) {
     const payload = structuredClone(good)
     if (fault === "body-request-id") payload.meta.requestId = "wrong-request"
@@ -42,7 +42,7 @@ test("hourly BFF keeps body requestId correlated and exact16MiB fail-closed", as
       body: JSON.stringify({ queryId: "account.hourly", params: { date: "2026-09-05", media: "KUAISHOU" } }),
     }), { requestId: () => "hourly-web", environment: { KA_DATA_BACKEND_ORIGIN: "https://backend.example", KA_DATA_SERVICE_TOKEN: "synthetic-service-token-0000000000000000" },
       fetchImpl: async (url) => {
-        if (String(url).endsWith("/auth/session")) return Response.json({ ok: true, data: { identity: { displayName: "synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: "hourly-web" } }, { headers: { "x-request-id": "hourly-web" } })
+        if (String(url).endsWith("/auth/session")) return Response.json({ ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e1", provider: "internal_test", displayName: "synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: "hourly-web" } }, { headers: { "x-request-id": "hourly-web" } })
         return Response.json(payload, { headers: { "x-request-id": "hourly-web", ...(fault === "exact-size" ? { "content-length": String(MAX_UPSTREAM_BODY_BYTES) } : {}) } })
       },
     })

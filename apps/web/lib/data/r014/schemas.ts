@@ -426,7 +426,13 @@ const kbTreeNodeSchema: z.ZodType<KbTreeNode> = z.lazy(() => z.object({
   children: z.array(kbTreeNodeSchema),
 }).strict())
 
-export const kbTreeSchema = z.object({ items: z.array(kbTreeNodeSchema) }).strict()
+export const kbTreeSchema = z.object({
+  items: z.array(kbTreeNodeSchema),
+  // F-Q027-1：与 etl-runs 同形；整棵树时 pageSize = 当页行数，`truncated` 在 meta。
+  page: z.number().int().min(1),
+  pageSize: z.number().int().min(0),
+  total: z.number().int().nonnegative(),
+}).strict()
 
 export const kbSearchSchema = z.object({
   items: z.array(z.object({
@@ -539,4 +545,38 @@ export const accountNamesReparseSchema = z.object({
   /** 该 media 没配命名规范 → 跳过；不拿一份默认规范硬解，硬解出来的段全是错的。 */
   skippedNoRule: z.number().int().nonnegative(),
   byStatus: z.record(z.string(), z.number().int().nonnegative()),
+}).strict()
+
+// ── 任务详情补的两签（timeline / funnel）─────────────────────────────────────
+
+const timelineActorSchema = z.union([
+  z.object({ userId: z.string().uuid(), name: z.string().nullable() }).strict(),
+  z.literal("system"),
+  z.literal("external"),
+])
+
+export const taskTimelineSchema = z.object({
+  items: z.array(z.object({
+    at: z.string(),
+    kind: z.enum(["changeset", "assessment_price", "dispatch", "external_change", "work_item", "escalation"]),
+    actor: timelineActorSchema,
+    summary: z.string().min(1),
+    ref: z.object({ type: z.string().min(1), id: z.string().min(1) }).strict(),
+  }).strict()),
+  nextCursor: z.string().nullable(),
+}).strict()
+
+export const taskFunnelSchema = z.object({
+  online: z.object({
+    exposure: metricValueSchema, click: metricValueSchema,
+    conversion: metricValueSchema, realConversion: metricValueSchema,
+  }).strict(),
+  /** 线下链路的源（account_offline）还没有 → 三项 missing，不拿线上数顶替。 */
+  offline: z.object({
+    wakeUv: metricValueSchema, potentialUv: metricValueSchema, realConversion: metricValueSchema,
+  }).strict(),
+  rates: z.object({
+    ctr: ratioValueSchema, cvr: ratioValueSchema, gap: ratioValueSchema,
+    potentialRate: ratioValueSchema, biCvr: ratioValueSchema,
+  }).strict(),
 }).strict()

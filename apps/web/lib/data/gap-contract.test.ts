@@ -33,14 +33,14 @@ test("Gap version/grouping/unique rows/zero denominator reject malformed data", 
 })
 test("Gap BFF correlates success/error requestId and propagates source-off", async () => {
   const raw = await syntheticGap()
-  const workspace = { id: "00000000-0000-4000-8000-000000000001", name: "synthetic", kind: "personal", role: "optimizer", readOnly: false }
+  const workspace = { id: "00000000-0000-4000-8000-000000000001", name: "synthetic", kind: "personal", role: "optimizer", readOnly: false, isDemo: false }
   for (const fault of ["none", "request-id", "source-off"] as const) {
     const result = await handleSemanticQueryRequest(new Request("https://web.example/api/internal/query", {
       method: "POST", headers: { "content-type": "application/json", cookie: "ka_session=synthetic-gap-cookie-00000000000000001" },
       body: JSON.stringify({ queryId: "account.gap", params: { date_from: "2026-09-01", date_to: "2026-09-05", media: "KUAISHOU", groupBy: "account" } }),
     }), { requestId: () => "gap-web", environment: { KA_DATA_BACKEND_ORIGIN: "https://backend.example", KA_DATA_SERVICE_TOKEN: "synthetic-service-token-0000000000000000" },
       fetchImpl: async (url) => {
-        if (String(url).endsWith("/auth/session")) return Response.json({ ok: true, data: { identity: { displayName: "synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: "gap-web" } }, { headers: { "x-request-id": "gap-web" } })
+        if (String(url).endsWith("/auth/session")) return Response.json({ ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e1", provider: "internal_test", displayName: "synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: "gap-web" } }, { headers: { "x-request-id": "gap-web" } })
         if (fault === "source-off") return Response.json({ ok: false, error: { code: "SOURCE_UNAVAILABLE", message: "Versioned Gap source is not configured", requestId: "gap-web", retryable: true } }, { status: 503, headers: { "x-request-id": "gap-web" } })
         return Response.json({ ...raw, meta: { ...raw.meta, requestId: fault === "none" ? "gap-web" : "wrong" } }, { headers: { "x-request-id": "gap-web" } })
       },

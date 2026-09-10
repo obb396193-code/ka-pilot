@@ -22,11 +22,11 @@ export const sessionWorkspaceSchema = z.object({
   id: z.string().uuid(),
   name: z.string().trim().min(1).max(200),
   kind: z.enum(["personal", "team"]),
-  // viewer = 访客/只读身份（be2 在后端加的角色，写类请求一律 403 READ_ONLY_ROLE）
+  // v1.9.6：viewer = 访客只读角色。
   role: z.enum(["optimizer", "operator", "lead", "admin", "viewer"]),
   readOnly: z.boolean(),
-  // 演示空间（契约 v1.9.12 改口：不再有 demo kind，就是 team + isDemo）。老会话不带这个字段。
-  isDemo: z.boolean().optional(),
+  /** v1.9.15：演示空间 = kind team + isDemo；访客只会落在这种空间里。 */
+  isDemo: z.boolean(),
 }).strict().superRefine((workspace, context) => {
   if (workspace.readOnly !== (workspace.kind === "team")) {
     context.addIssue({
@@ -38,15 +38,12 @@ export const sessionWorkspaceSchema = z.object({
 })
 
 export const sessionViewSchema = z.object({
-  // v1.9.14 / v1.9.15 目标形：id / provider / mustChangePassword。
-  // 三个都可选，是因为 be2 的 Q-032 落地前 personal.json / team.json 还是老形（只有 displayName）——
-  // 必填的话联调环境会整条会话解析失败。字段并齐后可以收成必填。
   identity: z.object({
-    id: z.string().uuid().optional(),
+    id: z.string().uuid(),
+    provider: z.enum(["internal_test", "buc", "guest"]),
     displayName: z.string().trim().min(1).max(200),
-    provider: z.enum(["internal_test", "buc", "guest"]).optional(),
-    // 初始密码还没改过：本人进设置页要看到提示（成员列表只有 admin 能读，普通用户只能从会话拿）
-    mustChangePassword: z.boolean().optional(),
+    /** v1.9.14：还在用管理员给的初始密码吗；buc/guest 恒 false。 */
+    mustChangePassword: z.boolean(),
   }).strict(),
   activeWorkspace: sessionWorkspaceSchema,
   workspaces: z.array(sessionWorkspaceSchema).min(1).max(1_000),

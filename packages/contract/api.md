@@ -1320,3 +1320,21 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 ## v1.9.16 追加（2026-09-10 arch；修 v1.9.13 与已落地实现的分歧）
 - `POST /accounts/transfer` 的 `skipped[]` 定为 **`{media, accountId, reason: "blocked_by_changeset"|"not_authorized"|"not_found", detail: string}`**（strict；`detail` 必填、人话一句，前端直接显示不自己拼措辞）。v1.9.13 写的 `not_granted|already_owned`/无 detail **作废**——be2 的 domain 合约、仓储、worker 用例与 web 镜像四处已按本形落地，fixture 是唯一的异类，改 fixture 不改代码。`already_owned`（目标方已持有）不单列：仓储按"无有效授权"或正常移交处理。fixture `accounts/transfer.json` 已改。
+
+## v1.9.17 追加（2026-09-10 老板拍板；推翻 v1.9.12 的「藏写入口」）
+- **访客（viewer）与正常用户看到的界面完全一样**：所有写入口（新建/批量/导入/自定义列/确认/推送/导出/治理后台入口）**照常显示、照常可点**，不隐藏、不置灰。v1.9.12 里「按 `role=viewer` 藏写入口、治理后台入口隐藏」作废；F8-12 的 ② 相应作废。
+- 只读由**后端**兜：viewer 的任何写请求 403 `READ_ONLY_ROLE`（be2 Q-022 已有的写类拦截不变、一条都不能漏）；前端收到该码显示固定文案「演示空间只读，想用真数据找管理员开户」（v1.9.14 已定 READ_ONLY_ROLE 文案归前端）。
+- 顶部细条「演示数据 · 只读」**保留**——它是加一条提示，不是藏东西；老板若也不要，去掉即可。
+- 空间切换器不做特殊处理：访客的 `workspaces[]` 本来只有演示空间，显示出来就是一项。
+
+## v1.9.18 追加（2026-09-10 arch；裁 fe F8-12 ➊）
+- `POST /auth/login`、`GET /auth/session` 的 `meta` **只有 `requestId`**（后端 `session-http.ts` 实测如此；没有 dataAsOf/businessDate/workspaceKind/selectedSource——那套是数据类响应的信封）。`session-http/guest.json`、`auth/login-guest.json` 的 meta 已削成一致。前端 `sessionMetaSchema` 只要求 `requestId`、其余键不拦——采纳（strict 在这里只买到「后端多回一个键就卡登录页」的风险）。
+
+## v1.9.19 追加（2026-09-10 arch；裁 Codex F-P179-Q/P-189/P-190/P-191 + be2 Q-035）
+- **错误信封加可选 `details`**：`{code, message, retryable, requestId, details?: object}`；`details` 只在该码明确声明时出现，其它错误照旧四字段。前端共享错误 schema 与 r010 命令错误 schema 都加 `details: object?`（不 strict 到把它拦成 502）。
+- **`POST /system/etl-runs/:id/rerun` 定形**：成功 **202** `{ok:true, data:{jobId, sourceRunId}, meta:{requestId}}`；同源已有 queued/leased/running 的重跑 → **409 `CONFLICT`，`details:{jobId}`**（那个已存在的 job）；原状态不允许 → 409 `INVALID_STATE`（四字段）。留痕 = `audit_log(action="etl_run.rerun", object_type="etl_run", object_id=sourceRunId, detail={sourceJobId, jobId})`，这就是一期的「写 timeline 一条」，**不进任务/账户 timeline**（旧 run 未必挂任务）；同源查重也用这行。fixtures `system/etl-run-rerun.json`、`system/etl-run-rerun-conflict.json`。
+- **登录来源 IP**：BFF 把收到的 `x-forwarded-for`、`x-real-ip` 原样透传给后端；后端取 XFF 首段（已实现）。信任边界 = 内网反向代理（Aone/Pages 网关会覆盖 XFF）；一期**不做**可信代理白名单——它只护演示访客的限速，伪造的下场是多试几次登录。
+- **r010 命令类 BFF 错误码**加 `READ_ONLY_ROLE`（403，文案归前端 v1.9.14）与 `RATE_LIMITED`（429）。
+- **BFF 覆盖绊线两处缺口归属**：`GET /system/etl-runs`（治理后台·连接与拉数）和 `POST /admin/data/reconcile`（治理后台·对账诊断）都**接 BFF**（fe F8-15）。落地前 Codex 的绊线用 `PENDING` 登记（owner=F8-15、到期 2026-09-12），到期未接转红；fe 落地后删登记。`POST /admin/members`、`/:p/reset-password` 后端 = Codex F-OS-004（不变）。
+- **任务 timeline 第五源改为 `external_changes` 表**（原写的 `audit_log(action='external_change')` 全仓无写入方，作废）。`dispatches` 表 = Codex 迁移 **014**（未落）→ 落地前 timeline 回 `meta.unavailableKinds:["dispatch"]`（be2 已如此）。`account_offline` 表暂无 → funnel 线下三项 missing、两比率 undefined（不拿线上数顶替），等 M1b 线下源接入再建。
+- **任务写端点归属**：`POST /tasks/:id/assessment-price` = **be2**（写 `assessment_prices` 行；一期「重算」= 派生指标读时按新价算，不跑批；`recomputed_days` = effective_date 至今的天数；`notified_user_ids` = 任务 owner，通知走交接同一套）。`POST /tasks/:id/sop-run` = **Codex**（R-010b 工作流域，排 F-OS-004 之后）。`POST /tasks/:id/review` 与 `GET /tasks/:id/review/latest` = 二期 Agent，一期 **501**（与 GET materials/review 同）。

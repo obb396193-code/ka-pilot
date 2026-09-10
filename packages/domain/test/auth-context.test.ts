@@ -266,3 +266,63 @@ describe("approved workspace auth context contract", () => {
     }).success).toBe(false);
   });
 });
+
+describe("v1.9.15 guest identity relaxes the personal-workspace invariant, but only for guests", () => {
+  const base = {
+    sessionId: "00000000-0000-4000-8000-0000000000f1",
+    identityId: "00000000-0000-4000-8000-0000000000f2",
+    activeWorkspaceId: "00000000-0000-4000-8000-0000000000f3",
+    workspaceKind: "team" as const,
+    activePersonalWorkspaceIds: [] as string[],
+    activeWorkspaceMemberCount: 1,
+    expiresAt: new Date(Date.now() + 60_000),
+    revokedAt: null,
+    identityActive: true,
+    membershipWorkspaceId: "00000000-0000-4000-8000-0000000000f3",
+    membershipIdentityId: "00000000-0000-4000-8000-0000000000f2",
+    membershipUserId: "00000000-0000-4000-8000-0000000000f4",
+    membershipRole: "viewer" as const,
+    membershipActive: true,
+    userWorkspaceId: "00000000-0000-4000-8000-0000000000f3",
+    userId: "00000000-0000-4000-8000-0000000000f4",
+    userActive: true,
+    grants: [] as never[],
+  };
+
+  it("approves a guest with no personal workspace in a demo team space", () => {
+    const result = resolveApprovedAuthContext(
+      { ...base, identityProvider: "guest", activeWorkspaceIsDemo: true }, new Date());
+    expect(result.status).toBe("approved");
+    if (result.status !== "approved") return;
+    expect(result.context.workspaceKind).toBe("team");
+    expect(result.context.scope.kind).toBe("team_workspace_readonly");
+  });
+
+  it("refuses a guest whose active workspace is not a demo space", () => {
+    // 配错 GUEST_WORKSPACE_ID 就会走到这里——宁可拒登，也不能把匿名会话放进真数据。
+    const result = resolveApprovedAuthContext(
+      { ...base, identityProvider: "guest", activeWorkspaceIsDemo: false }, new Date());
+    expect(result.status).toBe("rejected");
+    if (result.status !== "rejected") return;
+    expect(result.reason).toBe("GUEST_SCOPE_INVALID");
+  });
+
+  it("refuses a guest that somehow owns a personal workspace", () => {
+    const result = resolveApprovedAuthContext({
+      ...base, identityProvider: "guest", activeWorkspaceIsDemo: true,
+      activePersonalWorkspaceIds: ["00000000-0000-4000-8000-0000000000f5"],
+    }, new Date());
+    expect(result.status).toBe("rejected");
+    if (result.status !== "rejected") return;
+    expect(result.reason).toBe("GUEST_SCOPE_INVALID");
+  });
+
+  it("★leaves the invariant untouched for a non-guest identity in the very same shape", () => {
+    // 钥匙是身份不是空间：真团队空间被误标 is_demo 时，普通身份仍要过原来那条不变量。
+    const result = resolveApprovedAuthContext(
+      { ...base, identityProvider: "internal_test", activeWorkspaceIsDemo: true }, new Date());
+    expect(result.status).toBe("rejected");
+    if (result.status !== "rejected") return;
+    expect(result.reason).toBe("PERSONAL_WORKSPACE_MISSING");
+  });
+});

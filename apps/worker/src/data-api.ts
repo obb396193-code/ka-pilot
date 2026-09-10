@@ -47,6 +47,7 @@ import { createMeRoutes } from "./r014/me-routes.js";
 import { createNamingRoutes } from "./r014/naming-routes.js";
 import { createDailyReportRoutes } from "./r014/daily-report-routes.js";
 import { createTaskDetailRoutes } from "./r014/task-detail-routes.js";
+import { createTaskTabRoutes } from "./r014/task-tab-routes.js";
 import { createKbRoutes } from "./r014/kb-routes.js";
 import { createPasswordRoutes } from "./r014/password-routes.js";
 import { createTransferRoutes } from "./r014/transfer-routes.js";
@@ -72,6 +73,7 @@ async function main(): Promise<void> {
     ...createWorkspaceRoutes(pool),
     ...createNamingRoutes(pool),
     ...createTaskDetailRoutes(pool),
+    ...createTaskTabRoutes(pool),
     ...createDailyReportRoutes(pool),
     ...createTransferRoutes(pool),
     ...createKbRoutes(pool),

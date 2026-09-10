@@ -303,3 +303,19 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - `a81c4691` + `e5f5c7fb` 是在我门禁（001010da）之后、合流之前推上来的，合流按分支名把它们一起带进了 main `728d1967`——主门禁 43d6ac90 全绿兜住了。以后我只合门禁过的 SHA；你那边的规矩不变：**交付段里写清 SHA**，我审完到合流之间再推的，下一圈才算。
 - 你「仍等的四条」在上面 Q-033 裁决段 + api.md v1.9.15 全答了，别再等：① auth-context 授权你改（钥匙 provider=guest）② schema.sql 注释已同步 ③ DTO 三字段归你 Q-032 ④ clientIp 派了 Codex P-189。
 - 下一步就一件：**Q-032 收口**（auth-context 分支 + 快照两字段 + 会话 DTO 四字段 + 三份 session fixture 统一 + 删 v1914 文件），交付时写 SHA。
+
+### 知会（老板 2026-09-10 拍板 → v1.9.17）：前端不再藏写入口，只读全靠你的 403
+访客界面与正常用户完全一样，所有写按钮照常可点。意味着 viewer 的**每一条写路由**都必须在后端被 `READ_ONLY_ROLE` 拦住——Q-022 的写类拦截要覆盖 r014 全部写端点（含 kb 建/改/删、交接、改密、pool-status、归属清洗 confirm/reparse、导出、推送）；Codex r010 侧的写端点（changesets/batch、mute、admin 等）我另知会他。Q-032 收口时把这条也钉进用例：viewer 打每个写端点都 403，用 bff-coverage 那套路由扫描列全量，别手写清单。
+
+### 你的 `guest-login` 限速用例在全量跑时红（arch 2026-09-10 循环第 9 圈）
+`guest login (real PostgreSQL) > rate-limits guest logins within the hour, per source` 在 Codex 头 ea277864 的全量门禁里红，单独跑两次 6/6 绿——是跨用例的共享状态（限速桶是模块级 Map？）或整点边界。Q-032 收口时一并修：桶给个 `reset()`/按 `now` 注入，用例自己清桶、自己定时间，不依赖别的用例没跑过。另：fe F8-12 已合 main，前端不藏写入口了，**viewer 的 403 全覆盖用例现在是唯一的闸**，Q-032 交付必须带。
+
+### Q-035 裁决（arch 2026-09-10 循环第 10 圈；`16f09fe0` 门禁跑中）
+- 第五源改契约：timeline 的 external_change 取 **`external_changes` 表**（v1.9.19），`audit_log(action='external_change')` 那句作废——你做对了。
+- `dispatches` = Codex 迁移 014，从没落地；已排进他队列（P-178 之后）。落地前你回 `meta.unavailableKinds:["dispatch"]` 对。`account_offline` 暂无表，funnel 线下 missing 对，等 M1b 线下源接入再建。
+- 归属：`POST /tasks/:id/assessment-price` **归你**（v1.9.19 写了一期「重算」的口径：写 `assessment_prices` 行，派生指标读时按新价算，`recomputed_days`=effective_date 至今天数，通知走交接那套）；`sop-run` 归 Codex；`POST review` 与 `review/latest` 一期 501（同 GET）。
+- 「仍等你的四条」：**Q-033 裁决段 + api.md v1.9.15 早就答了**，你合的 origin/main 473d0912 里就有；下次交付前先读 inbox-be2 最新段再写「仍等」。
+- 序：**Q-032 收口**（auth-context guest 分支 + 快照两字段 + 会话 DTO + 三份 fixture 统一 + viewer 全量 403 用例 + 限速用例隔离）→ assessment-price → review 两条 501。
+
+### 16f09fe0 ✅ 已合 main `f07891dc`（arch 2026-09-10 循环第 10 圈）
+门禁 domain 92 / db 135 / worker 176 / gw 8 / web 235 全绿；只有 inbox-arch 一处并集，代码零冲突。联调抽查随后。
