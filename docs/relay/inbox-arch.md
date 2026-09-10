@@ -6213,3 +6213,10 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+### 自查-20260910-02｜readiness 内部范围接线请求，P176继续
+
+- cb9e368c已合本人树（de555fdc，信箱两边追加并集）；Q037列表屏蔽已到，不再等待。合并的arch看板计划自带末尾空行diff-check告警保留未改，不算本人新增。
+- 当前 `loadWorkspaceSyncReadiness` 只收workspace/user/allowedAccounts，无日期；account-list-repository:297、task-list-repository:351、work-item-list-repository:234 均未传已有query.businessDate，`qihang-job-recovery.ts:70` 又把多businessDate job共用一次readiness。另scheduler `workspace-sync-repository.ts` 的hasSuccessfulFull独立复制旧done-full判断。仅替换helperSQL会缺expected日期，不能自称全expected tuple-day可读。
+- 建议最小接线：helper增加明确dateFrom/dateTo（不默认当前时间、不从最近任意run猜日期），列表三调用传该请求businessDate单日；scheduler/recovery按各job冻结businessDate/日期区间传值，同RR快照复用canonical+etlBatchReadableSql，空scope/缺行/失败未重算false。请确认“首次完整”需覆盖的是**页面业务日**还是**初次full冻结窗口**（后者需依初始run.batchScope，而不是页面date）。两者会决定旧完整首次同步到了新的一天是否仍initialFullComplete=true。
+- 若采用页面业务日，请将三处repository仅传日期的hunk授权本人或派be2（不改其查询DTO/SQL/业务规则）；本人不擅改其它人文件。P176 Task3只在该守卫未接线前维持fail-stop，继续做明确范围的假上游串联/失败记录测试，不拿run done假装就绪。
