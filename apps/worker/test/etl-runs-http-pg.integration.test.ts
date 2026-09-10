@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { deriveScrypt } from "@ka/db";
+import { deriveScrypt, runMigrations } from "@ka/db";
 import { etlRunListResponseSchema } from "@ka/domain";
 
 describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeout: 30_000 }, () => {
@@ -18,6 +18,7 @@ describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeo
   beforeAll(async () => {
     const databaseUrl = process.env.TEST_DATABASE_URL ?? "", url = new URL(databaseUrl);
     if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated synthetic test DB required");
+    await runMigrations({ databaseUrl });
     pool = new Pool({ connectionString: databaseUrl, max: 4 });
     await pool.query("INSERT INTO workspaces(id,name,kind) VALUES($1,'synthetic ETL personal','personal'),($2,'synthetic ETL team','team')", [workspaceId, team]);
     await pool.query("INSERT INTO users(id,workspace_id,name,role) VALUES($1,$2,'synthetic','admin'),($3,$4,'synthetic','admin')", [user, workspaceId, teamUser, team]);
@@ -45,7 +46,7 @@ describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeo
       child!.once("error", () => { clearTimeout(timer); reject(new Error("Synthetic Data API spawn failure")); });
       child!.once("close", () => { clearTimeout(timer); if (!output.includes("KA data API listening")) reject(new Error("Synthetic Data API early exit")); });
     });
-  });
+  }, 30_000);
   afterAll(async () => {
     if (child && child.exitCode === null && child.signalCode === null) {
       const processToStop = child;
