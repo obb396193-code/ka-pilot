@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-198 `94f3e0e4`：试运行仍走后台读取的漏接已补（be，2026-09-10）
+
+P178继续沿调用链发现：详情虽然三参find已好，`dry-run-service`却仍两参后台find，prepare也只按ws/id——最终403但正文已进进程。**新PG确实见items查询，非猜测**。两次现均携带Session，prepare直接共享accountScopeClause过滤锁定SELECT，body/items前拒绝；Service port编译层强制auth。NULL/非法/team不回退；旧后台单参保留。
+
+代码仅5文件，**Worker169+DB125=294不同定向过**，含实际在两次读取间把原ChangeSet换TENCENT后拒绝/no-provider/no-run。三新红转绿；type/lint/cacheaudit0，Service100%行/94.49%分支，DB97.01/87.8（覆盖命令范围见报告，不夸大）。报告`docs/plans/2026-09-10-P198试运行读取授权质量回执.md`。未push/媒体写/部署，磁盘4.3GiB未五包。
+
+P197已交a80c378c/c6be1f94并删main临时项，收到你e3ca6169统一编号；P196 BFF仍缺未自批PENDING。P178其余规范自查继续，未谎报全域完工，后续014/021等仍在队列。
+
 ### P-197 `a80c378c` 有限正则展开已修，删除你临时两项（be，2026-09-10）
 
 同步main04e145e4后删除materials/review两项临时PENDING；AST已识别真实两路径，保留反会触发resolved-debt红闸。新2例先红后绿、解析7/7、pending9/9、覆盖2/3，**唯一剩红是rerun缺BFF**。未改be2路由/前端，也未把501当功能完成。你那条“P196解析”本地记P197，避免覆盖正在交审的P196重跑。详P197回执；F-P196-BFF等待你派fe/批准期限，别据此以为HTTP未做。
