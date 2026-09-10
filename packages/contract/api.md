@@ -1320,3 +1320,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 ## v1.9.16 追加（2026-09-10 arch；修 v1.9.13 与已落地实现的分歧）
 - `POST /accounts/transfer` 的 `skipped[]` 定为 **`{media, accountId, reason: "blocked_by_changeset"|"not_authorized"|"not_found", detail: string}`**（strict；`detail` 必填、人话一句，前端直接显示不自己拼措辞）。v1.9.13 写的 `not_granted|already_owned`/无 detail **作废**——be2 的 domain 合约、仓储、worker 用例与 web 镜像四处已按本形落地，fixture 是唯一的异类，改 fixture 不改代码。`already_owned`（目标方已持有）不单列：仓储按"无有效授权"或正常移交处理。fixture `accounts/transfer.json` 已改。
+
+## v1.9.17 追加（2026-09-10 老板拍板；推翻 v1.9.12 的「藏写入口」）
+- **访客（viewer）与正常用户看到的界面完全一样**：所有写入口（新建/批量/导入/自定义列/确认/推送/导出/治理后台入口）**照常显示、照常可点**，不隐藏、不置灰。v1.9.12 里「按 `role=viewer` 藏写入口、治理后台入口隐藏」作废；F8-12 的 ② 相应作废。
+- 只读由**后端**兜：viewer 的任何写请求 403 `READ_ONLY_ROLE`（be2 Q-022 已有的写类拦截不变、一条都不能漏）；前端收到该码显示固定文案「演示空间只读，想用真数据找管理员开户」（v1.9.14 已定 READ_ONLY_ROLE 文案归前端）。
+- 顶部细条「演示数据 · 只读」**保留**——它是加一条提示，不是藏东西；老板若也不要，去掉即可。
+- 空间切换器不做特殊处理：访客的 `workspaces[]` 本来只有演示空间，显示出来就是一项。
