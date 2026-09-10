@@ -13,6 +13,9 @@ const ALLOWED: RegExp[] = [
   /^params\.length(\s*\+\s*\d+)?$/,                       // 参数序号
   /^conditions\.join\("\s*AND\s*"\)$/,                    // 条件片段，值一律走 $N
   /^where$/, /^kindClause$/, /^scoreColumn$/, /^metricColumns$/, // 本文件内拼的片段，均只含 $N 与列名
+  // 时间线里两个源各自的授权谓词：装的是 accountScopeClause 的返回值（只含 $N 与列名），
+  // 调用点传的是字面量列名，下面第二条用例会逐个验。
+  /^allowedChangeset$/, /^allowedExternal$/,
   /^visible\.sql$/, /^mediaIndex$/,                       // 可见性子句与它的参数序号
   /^SELECT_COLUMNS\.replace\(/,                           // 去表别名，纯字符串变换
   /^hasBoundAt \? ", bound_at" : ""$/,                    // 列存在与否的二选一，两边都是字面量

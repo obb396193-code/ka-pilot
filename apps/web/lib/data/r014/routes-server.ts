@@ -36,6 +36,9 @@ export {
   handleMeWorkload,
   handleSearch,
   handleTaskBindings,
+  handleTaskDeferredTab,
+  handleTaskFunnel,
+  handleTaskTimeline,
   handleTaskDetail,
   handleTaskReadiness,
 } from "./handlers.ts"

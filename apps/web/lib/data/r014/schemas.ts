@@ -540,3 +540,37 @@ export const accountNamesReparseSchema = z.object({
   skippedNoRule: z.number().int().nonnegative(),
   byStatus: z.record(z.string(), z.number().int().nonnegative()),
 }).strict()
+
+// ── 任务详情补的两签（timeline / funnel）─────────────────────────────────────
+
+const timelineActorSchema = z.union([
+  z.object({ userId: z.string().uuid(), name: z.string().nullable() }).strict(),
+  z.literal("system"),
+  z.literal("external"),
+])
+
+export const taskTimelineSchema = z.object({
+  items: z.array(z.object({
+    at: z.string(),
+    kind: z.enum(["changeset", "assessment_price", "dispatch", "external_change", "work_item", "escalation"]),
+    actor: timelineActorSchema,
+    summary: z.string().min(1),
+    ref: z.object({ type: z.string().min(1), id: z.string().min(1) }).strict(),
+  }).strict()),
+  nextCursor: z.string().nullable(),
+}).strict()
+
+export const taskFunnelSchema = z.object({
+  online: z.object({
+    exposure: metricValueSchema, click: metricValueSchema,
+    conversion: metricValueSchema, realConversion: metricValueSchema,
+  }).strict(),
+  /** 线下链路的源（account_offline）还没有 → 三项 missing，不拿线上数顶替。 */
+  offline: z.object({
+    wakeUv: metricValueSchema, potentialUv: metricValueSchema, realConversion: metricValueSchema,
+  }).strict(),
+  rates: z.object({
+    ctr: ratioValueSchema, cvr: ratioValueSchema, gap: ratioValueSchema,
+    potentialRate: ratioValueSchema, biCvr: ratioValueSchema,
+  }).strict(),
+}).strict()

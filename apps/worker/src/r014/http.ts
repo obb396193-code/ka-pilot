@@ -14,7 +14,9 @@ export type R014ErrorCode =
   /** v1.9.9 F-Q024-1：当前密码不正确（401）。fixture `auth/password-error.json` 冻的就是它。 */
   | "INVALID_CREDENTIALS"
   /** v1.9.6：访客（viewer）只读，任何写请求 403。 */
-  | "READ_ONLY_ROLE";
+  | "READ_ONLY_ROLE"
+  /** 契约点名「一期不做」的页签：501 让前端能把「不做」和「路径写错」分开。 */
+  | "NOT_IMPLEMENTED";
 
 /** 只有「等会儿再来能成」的才是 retryable；限速属于这一类，其余一律 false。 */
 const RETRYABLE_CODES = new Set<R014ErrorCode>(["RATE_LIMITED", "SOURCE_UNAVAILABLE", "INVALID_CREDENTIALS"]);
@@ -130,6 +132,7 @@ const MESSAGES: Record<R014ErrorCode, string> = {
   // 分开说等于告诉外人这个身份有没有设过密码。
   INVALID_CREDENTIALS: "当前密码不正确",
   READ_ONLY_ROLE: "访客账号只能查看，不能修改",
+  NOT_IMPLEMENTED: "This capability is not part of the first release",
 };
 
 export function requireMethod(request: IncomingMessage, allowed: readonly string[]): string {
