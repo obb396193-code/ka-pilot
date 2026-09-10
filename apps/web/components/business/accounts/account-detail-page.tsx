@@ -11,6 +11,7 @@ import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
 import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
+import { RelatedDocs } from "@/components/business/knowledge/related-docs"
 import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -87,6 +88,8 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
         <StateFrame state={state} unlock="账户小传 / 操作史 / 结构接口接入后切换为真数据" empty={{ title: "没有这个账户", description: "检查媒体与账户 ID，或回账户池重新选。" }}>
           <div className="flex flex-col gap-4">
             <KpiCards metrics={kpis} className="px-0 lg:px-0" />
+            {/* 知识库里挂在这个账户上的文档（契约 kb/by-object）；一条都没有时不占地方 */}
+            <RelatedDocs objectType="account" objectId={accountId} />
 
             <div className="grid gap-4 @5xl/main:grid-cols-12">
               <Card className="@5xl/main:col-span-8">

@@ -33,6 +33,9 @@ describe("task detail tabs (real PostgreSQL)", () => {
   const call = (path: string, accounts = ["tab-mine"], search = ""): Promise<Captured> =>
     callRoute(auth(accounts), path, "GET", undefined, search);
 
+  const post = (path: string, body: unknown, accounts = ["tab-mine"]): Promise<Captured> =>
+    callRoute(auth(accounts), path, "POST", body);
+
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
     registerR014Routes(createTaskTabRoutes(pool));
@@ -161,5 +164,51 @@ describe("task detail tabs (real PostgreSQL)", () => {
       expect(result.status, tab).toBe(501);
       expect((result.body as { error: { code: string } }).error.code).toBe("NOT_IMPLEMENTED");
     }
+  });
+
+  it("records an assessment price change and reports how many days it re-prices", async () => {
+    const result = await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { price: 42, effective_date: DATE, evidence_url: "https://example.invalid/evidence" });
+    expect(result.status, JSON.stringify(result.body)).toBe(200);
+    const data = dataOf(result);
+    // 之前有一条 38 的价（beforeAll 灌的），所以 old_price 是 38 不是 null。
+    expect(data.old_price).toBe(38);
+    expect(data.new_price).toBe(42);
+    // recomputedDays = 生效日至今的天数：表示「有多少天的派生指标会跟着变」，
+    // 不是「已经重算了多少天」——一期不跑批。
+    expect(typeof data.recomputed_days).toBe("number");
+    expect(data.recomputed_days as number).toBeGreaterThan(0);
+
+    const rows = (await pool.query(
+      "SELECT price, evidence_url FROM assessment_price_history WHERE workspace_id=$1 AND task_id=$2 ORDER BY id DESC LIMIT 1",
+      [workspaceId, taskId])).rows;
+    expect(Number(rows[0]!.price)).toBe(42);
+    expect(rows[0]!.evidence_url).toBe("https://example.invalid/evidence");
+  });
+
+  it("★refuses to re-price a task the caller cannot see", async () => {
+    // 与任务详情同一口径：列表里看不见的任务，价也不能改；404 不是 403。
+    const result = await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { price: 50, effective_date: DATE }, []);
+    expect(result.status).toBe(404);
+  });
+
+  it("rejects a non-positive price instead of treating it as not on target", async () => {
+    for (const price of [0, -1, "abc"]) {
+      expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+        { price, effective_date: DATE })).status, String(price)).toBe(400);
+    }
+  });
+
+  it("refuses a change that sets the very same price", async () => {
+    const body = { price: 77, effective_date: DATE };
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`, body)).status).toBe(200);
+    // 改成同一个价什么也没变；再写一行只会让历史里堆无意义的「调整」。
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`, body)).status).toBe(409);
+  });
+
+  it("answers 501 for the review endpoints too (v1.9.19)", async () => {
+    expect((await call(`/api/v1/tasks/${encodeURIComponent(taskId)}/review/latest`)).status).toBe(501);
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/review`, {})).status).toBe(501);
   });
 });

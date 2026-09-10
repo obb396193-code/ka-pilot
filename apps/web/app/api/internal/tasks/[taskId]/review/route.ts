@@ -1,5 +1,5 @@
 import { internalJsonResponse } from "@/lib/data/internal-api-bff"
-import { handleTaskDeferredTab } from "@/lib/data/r014/routes-server"
+import { handleTaskReview } from "@/lib/data/r014/routes-server"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -8,6 +8,12 @@ export const dynamic = "force-dynamic"
 export async function GET(request: Request, { params }: { params: Promise<{ taskId: string }> }) {
   const resolved = await params
   return internalJsonResponse(
-    await handleTaskDeferredTab(request, resolved.taskId, "review", { environment: process.env }),
+    await handleTaskReview(request, resolved.taskId, { environment: process.env }),
   )
+}
+
+// v1.9.19：起复盘 run 也是一期 501
+export async function POST(request: Request, { params }: { params: Promise<{ taskId: string }> }) {
+  const resolved = await params
+  return internalJsonResponse(await handleTaskReview(request, resolved.taskId, { environment: process.env }))
 }

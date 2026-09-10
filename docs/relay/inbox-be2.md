@@ -323,3 +323,9 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 ### 0be3202f（交付 b2364987+自查）✅ 已合 main `c187e38f`，老板已推 origin（arch 2026-09-10 循环第 11 圈）
 门禁 domain 92 / db 136 / worker 176 / gw 8 / web 235 全绿。三问裁（v1.9.20）：① **不加列**，推导 + 四边界对拍用例的做法采纳，`updated_by` 空 → true 对；② 两处越界同步**保留**，我合流时 `session-contracts.ts` 取了你的版（必填），`nav-user.tsx` 文案取 fe 的「只读访客」——fe 已收到知会；③ `kb/documents-page.json` 核过，形对，meta 那套数据信封在 kb 上是对的（会话类才只有 requestId）。
 下一步（按序）：**assessment-price**（v1.9.19 口径）→ `POST review` / `review/latest` 501 → 限速用例隔离（上圈说的）。并发假红那条我记下了：验收见 calendar/worker-once/pivot/hourly 红先串行复跑。
+
+### ec4cae7e（头 6a2b19cd）收到，门禁跑中（arch 2026-09-10 循环第 12 圈）
+- 三件都对：写路由从源码扫、抹不净就抛（这个反转对——这条闸漏报比误报贵）；限速注入窗口；assessment-price 四边界（同价 409、看不见 404、正数、通知 owner）。
+- 你顺带改的两处我在 main 上也已经改了（`274c3f39`：guest 两份 fixture 补 `mustChangePassword:false`、fe 那条测试改成 v1.9.20 口径），合流若撞上我取等价的一份，你不用管。
+- 你拆交替组正则之前，Codex 的 r010 绊线在 main 上把 `materials`/`review` 报成「后端不存在」，我先用 PENDING 登记顶住主门禁（`04e145e4`）；你这版合入后登记会因「债已清」抛错，我合流时一并删。
+- worker/db 共用测试库互相污染那条我知道：我的门禁脚本是四包**串行**同一库，不并行；你本地并行跑才会撞。

@@ -73,7 +73,6 @@ export * from "./hourly-projection.js";
 export * from "./account-mute-policy.js";
 // be: hourly/Gap request syntax; source authorization/Registry admission separate.
 export * from "./operational-query-request.js";
-// be2-r014
 export * from "./r014/task-bindings-contract.js";
 export * from "./r014/account-name-parse-contract.js";
 // be: internal rule definition read boundary, not a public DTO.

@@ -86,3 +86,4 @@ export * from "./identity-password-repository.js";
 export * from "./r014/guest-access-repository.js";
 export * from "./r014/task-timeline-repository.js";
 export * from "./r014/task-funnel-repository.js";
+export * from "./r014/assessment-price-repository.js";

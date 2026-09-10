@@ -1,8 +1,8 @@
-import { TaskFunnelRepository, TaskTimelineRepository } from "@ka/db";
+import { AssessmentPriceRepository, TaskFunnelRepository, TaskTimelineRepository } from "@ka/db";
 import { metricValue, shanghaiTaskBusinessDate } from "@ka/domain";
 import type { Pool } from "pg";
 
-import { R014HttpError, guardedRoute, requireMethod, sendData } from "./http.js";
+import { R014HttpError, guardedRoute, readJsonBody, requireMethod, sendData } from "./http.js";
 import type { R014Route } from "./routes.js";
 
 /**
@@ -14,7 +14,16 @@ import type { R014Route } from "./routes.js";
  */
 const TIMELINE = /^\/api\/v1\/tasks\/([^/]{1,128})\/timeline$/;
 const FUNNEL = /^\/api\/v1\/tasks\/([^/]{1,128})\/funnel$/;
-const NOT_IMPLEMENTED = /^\/api\/v1\/tasks\/([^/]{1,128})\/(materials|review)$/;
+// v1.9.19：review 的两条（POST 起 run、GET latest）也是一期 501，与 GET materials/review 同。
+// 三条各自一个正则而不是一个交替组——交替组在覆盖绊线抹平路径时成不了独立路径，
+// 会被反向检查报成「后端不存在」。
+const DEFERRED_MATERIALS = /^\/api\/v1\/tasks\/([^/]{1,128})\/materials$/;
+const DEFERRED_REVIEW = /^\/api\/v1\/tasks\/([^/]{1,128})\/review$/;
+const DEFERRED_REVIEW_LATEST = /^\/api\/v1\/tasks\/([^/]{1,128})\/review\/latest$/;
+const NOT_IMPLEMENTED = (pathname: string): boolean =>
+  DEFERRED_MATERIALS.test(pathname) || DEFERRED_REVIEW.test(pathname)
+  || DEFERRED_REVIEW_LATEST.test(pathname);
+const ASSESSMENT_PRICE = /^\/api\/v1\/tasks\/([^/]{1,128})\/assessment-price$/;
 
 const TIMELINE_KINDS = ["changeset", "assessment_price", "dispatch", "external_change", "work_item", "escalation"];
 
@@ -29,6 +38,7 @@ function ratio(numerator: number | null, denominator: number | null):
 export function createTaskTabRoutes(pool: Pool): R014Route[] {
   const timelines = new TaskTimelineRepository(pool);
   const funnels = new TaskFunnelRepository(pool);
+  const prices = new AssessmentPriceRepository(pool);
 
   return [
     guardedRoute((pathname) => TIMELINE.test(pathname), async (context) => {
@@ -95,8 +105,30 @@ export function createTaskTabRoutes(pool: Pool): R014Route[] {
       facts.offlineAvailable ? {} : { unavailableSources: ["account_offline"] });
     }),
 
-    guardedRoute((pathname) => NOT_IMPLEMENTED.test(pathname), async (context) => {
-      requireMethod(context.request, ["GET"]);
+    guardedRoute((pathname) => ASSESSMENT_PRICE.test(pathname), async (context) => {
+      requireMethod(context.request, ["POST"]);
+      const taskId = decodeURIComponent(ASSESSMENT_PRICE.exec(context.url.pathname)![1]!);
+      const body = await readJsonBody(context.request, 8_192) as Record<string, unknown> | undefined;
+      const change = await prices.change(context.auth, taskId, {
+        price: body?.price,
+        effectiveDate: body?.effective_date ?? body?.effectiveDate,
+        ...(body?.evidence_url === undefined && body?.evidenceUrl === undefined
+          ? {} : { evidenceUrl: body?.evidence_url ?? body?.evidenceUrl }),
+      });
+      // 响应键名照契约 v1.5 590 行的 snake_case。
+      sendData(context.response, {
+        task_id: change.taskId,
+        old_price: change.oldPrice,
+        new_price: change.newPrice,
+        effective_date: change.effectiveDate,
+        recomputed_days: change.recomputedDays,
+        notified_user_ids: change.notifiedUserIds,
+      }, context.requestId, context.maxResponseBytes);
+    }),
+
+    guardedRoute((pathname) => NOT_IMPLEMENTED(pathname), async (context) => {
+      // POST /tasks/:id/review 也在这条上（v1.9.19），所以两种方法都放行到 501。
+      requireMethod(context.request, ["GET", "POST"]);
       // 契约（api.md 任务域）明写这两签一期 501，前端据此显空态而不是显假数据。
       throw new R014HttpError(501, "NOT_IMPLEMENTED", "This tab is not part of the first release");
     }),

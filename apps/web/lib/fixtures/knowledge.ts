@@ -5,6 +5,7 @@ import { materialsFixture } from "@/lib/fixtures/materials"
 import tree from "@contract/fixtures/kb/tree.json"
 import document from "@contract/fixtures/kb/document.json"
 import search from "@contract/fixtures/kb/search.json"
+import byObject from "@contract/fixtures/kb/by-object.json"
 
 // 知识库（F-007 §8，契约 v1.4 8.x kb 四表）fixture 读取层；编辑器代码复制自 ContentRadar（/Users/aik/cr-r128 只读）
 export type KbKind = "sop" | "ai_report" | "case" | "manual"
@@ -18,6 +19,12 @@ export type KbDocument = { id: string; title: string; kind: KbKind; parentId: st
 export const kbDocumentFixture = document as unknown as Fixture<KbDocument>
 export type KbSearchHit = { id: string; title: string; kind: KbKind; snippet: string; score: number }
 export const kbSearchFixture = search as unknown as Fixture<{ items: KbSearchHit[] }>
+
+// 反查：某个业务对象关联了哪些知识库文档（`GET /kb/by-object/:type/:id`）。
+// 行 = 反链三件套 {id,title,kind}；**无关联返回 items:[]，不是 404**——所以「没有关联」是空态不是错误。
+export type KbObjectType = "task" | "account" | "material" | "work_item"
+export type KbRefRow = { id: string; title: string; kind: KbKind }
+export const kbByObjectFixture = byObject as unknown as Fixture<{ objectType: KbObjectType; objectId: string; items: KbRefRow[] }>
 
 export const flattenTree = (nodes: KbTreeNode[]): KbTreeNode[] => nodes.flatMap((node) => [node, ...flattenTree(node.children ?? [])])
 export const findNode = (nodes: KbTreeNode[], id: string): KbTreeNode | null => { for (const node of nodes) { if (node.id === id) return node; const hit = findNode(node.children ?? [], id); if (hit) return hit } return null }

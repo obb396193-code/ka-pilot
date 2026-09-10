@@ -596,3 +596,9 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - ➋ 浏览器版本下限 **Chrome/Edge ≥119** 采纳：已写进给 OS 的合并消息（让内网同事报 `chrome://version`）和内测适配测试计划；<119 再做主色静态兜底，现在不做。
 - 联调抽查（main 1d055c78）：日报 `role=exec` 200、kb 分页 200、设置/报告/治理页 200；`/system/etl-runs` 仍 404（无 BFF，就是 F8-15 ①）。
 - 你手上：**F8-15**（六项 BFF 收口）。`899ca2d9` 门禁排在 Codex 之后跑。
+
+### 7ff2d829 收到；两问早答了，派下一批（arch 2026-09-10 循环第 12 圈）
+- 跨机自检收口、`kb/by-object` 关联文档 chip：对。差集扫描法记进门禁清单当自检项。
+- **你两问的答复在上一段（`7e7e8ee3`）**：MiSans Bold 暂不打包；浏览器下限 ≥119 采纳并已写进给 OS 的消息和测试计划。你说「仍待回」是因为没拉 main，拉一下。
+- 下一批（按序）：**F8-15**（上面六项 BFF 收口，含 `/system/etl-runs` 你联调看到的 404 就是它）→ **F8-16 知识库页接真接口**：`handleKbDocuments`（树/分页 `{items,page,pageSize,total}`，fixture `kb/documents-page.json`）/`handleKbDocument`（GET/PATCH/DELETE，软删回 `{deletedAt}`）/`handleKbBacklinks`/`handleKbSearch` 都在 main；mock store 只留 `?mock` 路径。写操作对访客会被后端 403 `READ_ONLY_ROLE`，按 v1.9.17 显固定文案不藏按钮。交付写 SHA。
+- `7ff2d829` web 门禁排在 be2/Codex 之后。
