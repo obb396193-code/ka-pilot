@@ -6142,4 +6142,4 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 读取段本身等 Codex 的 024。
 
 #### 闸
-domain 1379 / db 1538（含新 5 条）/ web 244 全绿，四包 tsc 清，db+worker eslint 0 error；worker 串行跑中，结果下段补。
+domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
