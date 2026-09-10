@@ -5,7 +5,7 @@ import { createServer } from "node:net";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { deriveScrypt, runMigrations } from "@ka/db";
-import { etlRunListResponseSchema } from "@ka/domain";
+import { etlRunListResponseSchema, etlRunRerunResponseSchema } from "@ka/domain";
 
 describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeout: 30_000 }, () => {
   const workspaceId = randomUUID(), team = randomUUID(), identity = randomUUID(), user = randomUUID(), teamUser = randomUUID();
@@ -25,6 +25,10 @@ describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeo
     await pool.query("INSERT INTO auth_identities(id,provider,provider_subject,display_name) VALUES($1,'internal_test',$2,'synthetic')", [identity, username]);
     await pool.query("INSERT INTO workspace_memberships(workspace_id,user_id,identity_id,role) VALUES($1,$2,$5,'admin'),($3,$4,$5,'admin')", [workspaceId, user, team, teamUser, identity]);
     await pool.query("INSERT INTO jobs(id,workspace_id,job_type,payload,status,attempts) VALUES($1,$2,'etl_incr','{}','done',9),($3,$4,'etl_incr','{}','done',9)", [job, workspaceId, teamJob, team]);
+    for (const [jobId, ws, owner] of [[job, workspaceId, user], [teamJob, team, teamUser]]) {
+      await pool.query("UPDATE jobs SET payload=$2,credential_owner_user_id=$3 WHERE id=$1", [jobId,
+        { workspaceId: ws, media: "KUAISHOU", accountIds: ["synthetic"], ds: "2026-09-08", initiatorUserId: owner }, owner]);
+    }
     const insert = async (ws: string, jobId: string) => (await pool.query(`INSERT INTO etl_runs(workspace_id,job_id,run_kind,scope,started_at,finished_at,status,rows_ingested,error_summary)
       VALUES($1,$2,'incr','{"ds":"2026-09-08"}','2026-09-08T01:00:00Z','2026-09-08T01:03:00Z','done',2,'synthetic private') RETURNING id`, [ws, jobId])).rows[0].id as string;
     runId = await insert(workspaceId, job); teamRunId = await insert(team, teamJob);
@@ -58,7 +62,7 @@ describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeo
     if (!pool) return;
     try {
       await pool.query("DELETE FROM auth_sessions WHERE identity_id=$1", [identity]);
-      for (const table of ["etl_runs", "jobs", "workspace_memberships", "users", "workspaces"]) await pool.query(
+      for (const table of ["audit_log", "etl_runs", "jobs", "workspace_memberships", "users", "workspaces"]) await pool.query(
         `DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=ANY($1::uuid[])`, [[workspaceId, team]]);
       await pool.query("DELETE FROM auth_identities WHERE id=$1", [identity]);
     } finally { await pool.end(); }
@@ -125,5 +129,40 @@ describe("real data-api entry + ETL runs + login + PG / synthetic only", { timeo
     try { expect(await query(cookie)).toMatchObject({ status: 502, body: { error: { code: "UPSTREAM_INVALID_RESPONSE" } } }); }
     finally { await pool.query("UPDATE etl_runs SET scope=scope-'execution' WHERE id=$1 AND workspace_id=$2", [runId, workspaceId]); }
     expect(output).not.toContain(password); expect(output).not.toContain(internalToken);
+  });
+  it("queues only the original owner's job, matches rerun fixtures and enforces rotated/logout sessions", async () => {
+    const post = async (cookie: string, id: string) => {
+      const response = await fetch(`${origin}/api/v1/system/etl-runs/${id}/rerun`, { method: "POST", headers: headers(cookie), body: "{}" });
+      const body = await response.json();
+      expect(etlRunRerunResponseSchema.safeParse(body).success).toBe(true);
+      expect(response.headers.get("x-request-id")).toBe("etl-pg-http");
+      return { status: response.status, body };
+    };
+    const cookie = await login();
+    expect((await post(cookie, teamRunId)).status).toBe(404);
+    const queued = await post(cookie, runId);
+    expect(queued.status).toBe(202);
+    const fixture = JSON.parse(readFileSync(new URL("../../../packages/contract/fixtures/system/etl-run-rerun.json", import.meta.url), "utf8"));
+    delete fixture.meta._note;
+    fixture.data = { jobId: queued.body.data.jobId, sourceRunId: runId }; fixture.meta.requestId = "etl-pg-http";
+    expect(queued.body).toEqual(fixture);
+    const original = (await pool.query("SELECT payload,credential_owner_user_id FROM jobs WHERE id=$1", [job])).rows[0];
+    const copy = (await pool.query("SELECT payload,credential_owner_user_id,status,attempts FROM jobs WHERE id=$1", [queued.body.data.jobId])).rows[0];
+    expect(copy).toEqual({ ...original, status: "queued", attempts: 0 });
+    const conflict = await post(cookie, runId);
+    const expected = JSON.parse(readFileSync(new URL("../../../packages/contract/fixtures/system/etl-run-rerun-conflict.json", import.meta.url), "utf8"));
+    expected.error.requestId = "etl-pg-http"; expected.error.details.jobId = queued.body.data.jobId;
+    expect(conflict).toEqual({ status: 409, body: expected });
+    const switched = await fetch(`${origin}/api/v1/auth/workspace`, { method: "POST", headers: headers(cookie), body: JSON.stringify({ workspaceId: team }) });
+    expect(switched.status).toBe(200); await switched.json();
+    const teamCookie = switched.headers.get("set-cookie")!.split(";")[0]!;
+    expect((await post(cookie, runId)).status).toBe(401);
+    expect((await post(teamCookie, runId)).status).toBe(404);
+    const teamQueued = await post(teamCookie, teamRunId); expect(teamQueued.status).toBe(202);
+    expect((await pool.query("SELECT workspace_id,credential_owner_user_id FROM jobs WHERE id=$1", [teamQueued.body.data.jobId])).rows[0])
+      .toEqual({ workspace_id: team, credential_owner_user_id: teamUser });
+    const logout = await fetch(`${origin}/api/v1/auth/session`, { method: "DELETE", headers: headers(teamCookie) });
+    expect(logout.status).toBe(200); await logout.json(); expect((await post(teamCookie, teamRunId)).status).toBe(401);
+    expect((await pool.query("SELECT count(*)::int AS n FROM audit_log WHERE workspace_id=ANY($1::uuid[]) AND action='etl_run.rerun'", [[workspaceId, team]])).rows[0].n).toBe(2);
   });
 });

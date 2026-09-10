@@ -1,5 +1,6 @@
 import {
   ACTIVE_WORK_ITEM_STATUSES,
+  approvedWorkspaceAuthContextSchema,
   assertWorkItemTransition,
   decideDuplicate,
   workItemDedupeKey,
@@ -8,6 +9,18 @@ import {
   type WorkItemStatus,
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
+import { accountScopeClause, accountScopeParams, workItemScopeClause } from "./r014/workspace-authority.js";
+import { withSemanticReadSnapshot } from "./semantic-read-snapshot.js";
+
+export class WorkItemAuthorizationError extends Error {
+  constructor() { super("Work item is outside the approved scope"); this.name = "WorkItemAuthorizationError"; }
+}
+
+export interface WorkItemReadResult {
+  record: WorkItemRecord;
+  /** Server-only, same-snapshot task/account relationship proof. Never serialize as detail. */
+  taskScopeAccount: { media: string; accountId: string } | null;
+}
 
 export type WorkItemType =
   | "diagnosis"
@@ -312,6 +325,54 @@ export class WorkItemRepository {
       [workspaceId, workItemId],
     );
     return result.rows[0] === undefined ? null : toRecord(result.rows[0]);
+  }
+
+  /** HTTP must use this entry; find() remains the explicitly separate background job lookup. */
+  async findForRead(workspaceId: string, workItemId: string, authInput: unknown): Promise<WorkItemReadResult | null> {
+    const parsed = approvedWorkspaceAuthContextSchema.safeParse(authInput);
+    if (!parsed.success || parsed.data.workspaceId !== workspaceId ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(workItemId)) {
+      throw new WorkItemAuthorizationError();
+    }
+    const auth = parsed.data, scope = accountScopeParams(auth);
+    const clause = workItemScopeClause("$3", "$4", "work_items", "$5");
+    const shape = "(work_items.media IS NULL) = (work_items.account_id IS NULL)";
+    const values = [workspaceId, workItemId, scope.kind, scope.allowed, auth.userId];
+    return withSemanticReadSnapshot(this.pool, async client => {
+      // Only existence, permission and one scope tuple; no evidence/diagnosis/title before authorization.
+      const preflight = await client.query(`/* work-item-detail-authorization */
+        SELECT work_items.id,work_items.workspace_id,COALESCE((${shape} AND ${clause}),false) AS allowed,
+          (SELECT jsonb_build_object('media',link.media,'accountId',link.account_id)
+           FROM task_accounts AS link
+           WHERE $3::text='explicit_accounts' AND work_items.account_id IS NULL AND work_items.task_id IS NOT NULL
+             AND link.workspace_id=work_items.workspace_id AND link.task_id=work_items.task_id
+             AND ${accountScopeClause("$3", "$4", "link.media", "link.account_id")}
+           ORDER BY link.media COLLATE "C",link.account_id COLLATE "C" LIMIT 1) AS task_scope_account
+        FROM work_items WHERE workspace_id=$1 AND id=$2`, values);
+      if (preflight.rows.length === 0) return null;
+      const row = preflight.rows[0];
+      if (preflight.rows.length !== 1 || row.id !== workItemId || row.workspace_id !== workspaceId || typeof row.allowed !== "boolean") {
+        throw new Error("Invalid work item detail authorization");
+      }
+      if (!row.allowed) throw new WorkItemAuthorizationError();
+      const proof: unknown = row.task_scope_account;
+      let taskScopeAccount: WorkItemReadResult["taskScopeAccount"] = null;
+      if (proof !== null) {
+        if (typeof proof !== "object" || Array.isArray(proof) || Object.keys(proof).length !== 2 ||
+          !("media" in proof) || typeof proof.media !== "string" || proof.media.trim() === "" ||
+          !("accountId" in proof) || typeof proof.accountId !== "string" || proof.accountId.trim() === "") {
+          throw new Error("Invalid work item task proof");
+        }
+        taskScopeAccount = { media: proof.media, accountId: proof.accountId };
+      }
+      const result = await client.query<WorkItemRow>(`/* work-item-detail-content */
+        SELECT ${columns} FROM work_items WHERE workspace_id=$1 AND id=$2 AND ${shape} AND ${clause}`, values);
+      const record = result.rows[0];
+      if (result.rows.length !== 1 || !record || record.id !== workItemId || record.workspace_id !== workspaceId) {
+        throw new Error("Invalid work item detail content identity");
+      }
+      return { record: toRecord(record), taskScopeAccount };
+    });
   }
 
   async transition(input: WorkItemTransitionInput): Promise<WorkItemRecord> {

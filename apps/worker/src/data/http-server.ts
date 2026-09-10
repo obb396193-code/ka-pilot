@@ -74,6 +74,8 @@ import type { AdminMembersService } from "../admin/members-service.js";
 import { createAdminMembersRoutes } from "../r010/admin-members-routes.js";
 import type { EtlRunListService } from "../admin/etl-run-list-service.js";
 import { createEtlRunListRoute } from "../r010/etl-run-list-route.js";
+import type { EtlRunRerunService } from "../admin/etl-run-rerun-service.js";
+import { createEtlRunRerunRoute } from "../r010/etl-run-rerun-route.js";
 
 
 // arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
@@ -98,6 +100,7 @@ export interface DataApiServerOptions {
   adminCalendarService?: Pick<AdminCalendarService, "list">;
   adminMembersService?: Pick<AdminMembersService, "read">;
   etlRunListService?: Pick<EtlRunListService, "list">;
+  etlRunRerunService?: Pick<EtlRunRerunService, "rerun">;
 }
 
 export type { ServerDataSourcePolicy as DataQueryAccessPolicy } from "./data-source-routing.js";
@@ -314,6 +317,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
   const adminCalendarRoute = createAdminCalendarRoute(options.adminCalendarService);
   const adminMembersRoute = createAdminMembersRoutes(options.adminMembersService);
   const etlRunListRoute = createEtlRunListRoute(options.etlRunListService);
+  const etlRunRerunRoute = createEtlRunRerunRoute(options.etlRunRerunService);
 
   return createServer(async (request, response) => {
     const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
@@ -409,6 +413,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isAdminCalendarRoute = adminCalendarRoute.matches(url.pathname);
       const isAdminMembersRoute = adminMembersRoute.matches(url.pathname);
       const isEtlRunListRoute = etlRunListRoute.matches(url.pathname);
+      const isEtlRunRerunRoute = etlRunRerunRoute.matches(url.pathname);
       // arch 开的缝：R-014 由 be2 在 src/r014/routes.ts 注册，壳层不认识具体路径，只问一句归不归它。
       const r014Route = findR014Route(url.pathname);
       if (
@@ -425,6 +430,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         !isAdminCalendarRoute &&
         !isAdminMembersRoute &&
         !isEtlRunListRoute &&
+        !isEtlRunRerunRoute &&
         r014Route === null
       ) {
         sendJson(
@@ -465,7 +471,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           sendJson(response, taskListHttpStatus(result), result, requestId);
           return;
         }
-        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute || isEtlRunListRoute) {
+        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute || isEtlRunListRoute || isEtlRunRerunRoute) {
           sendJson(
             response,
             401,
@@ -500,6 +506,10 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       }
       if (isEtlRunListRoute) {
         await etlRunListRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
+        return;
+      }
+      if (isEtlRunRerunRoute) {
+        await etlRunRerunRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes, maxRequestBytes });
         return;
       }
       if (isAdminCalendarRoute) {

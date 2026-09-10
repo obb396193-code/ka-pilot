@@ -76,7 +76,7 @@ function dataService(): DataQueryService {
 
 function detailService(): ReadDetailService {
   return new ReadDetailService({
-    workItems: { find: async () => null },
+    workItems: { findForRead: async () => null },
     changeSets: { find: async () => null },
   });
 }

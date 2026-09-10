@@ -1,5 +1,5 @@
-import type { ChangeSetRecord, WorkItemRecord } from "@ka/db";
-import { ChangeSetAuthorizationError } from "@ka/db";
+import type { ChangeSetRecord, WorkItemRecord, WorkItemReadResult } from "@ka/db";
+import { ChangeSetAuthorizationError, WorkItemAuthorizationError } from "@ka/db";
 import {
   readDetailResponseSchema,
   type ChangeSetDetail,
@@ -16,9 +16,10 @@ import {
 import { resolveRequestId } from "./request-id.js";
 
 const idSchema = z.string().uuid();
+const taskProofSchema = z.object({ media: z.string().min(1), accountId: z.string().min(1) }).strict().nullable();
 
 export interface WorkItemDetailPort {
-  find(workspaceId: string, workItemId: string): Promise<WorkItemRecord | null>;
+  findForRead(workspaceId: string, workItemId: string, auth: BusinessReadAuth): Promise<WorkItemReadResult | null>;
 }
 
 export interface ChangeSetDetailPort {
@@ -43,10 +44,10 @@ function authorized(
   return tupleAllowed(auth, media, accountId);
 }
 
-type WorkItemScope = "account" | "personal" | "invalid";
+type WorkItemScope = "account" | "task" | "personal" | "invalid";
 
 function workItemScope(record: WorkItemRecord): WorkItemScope {
-  if (record.media === null && record.accountId === null) return "personal";
+  if (record.media === null && record.accountId === null) return record.taskId === null ? "personal" : "task";
   if (record.media === null || record.accountId === null) return "invalid";
   return "account";
 }
@@ -115,8 +116,9 @@ export class ReadDetailService {
       return error("FORBIDDEN", "Approved authentication context is invalid", requestId);
     }
     try {
-      const record = await this.dependencies.workItems.find(auth.workspaceId, id);
-      if (record === null) return error("NOT_FOUND", "Work item was not found", requestId);
+      const result = await this.dependencies.workItems.findForRead(auth.workspaceId, id, auth);
+      if (result === null) return error("NOT_FOUND", "Work item was not found", requestId);
+      const { record } = result;
       if (record.id !== id || record.workspaceId !== auth.workspaceId) {
         return error("INTERNAL_ERROR", "Work item detail identity could not be verified", requestId);
       }
@@ -124,9 +126,14 @@ export class ReadDetailService {
       if (scope === "invalid") {
         return error("INTERNAL_ERROR", "Work item detail scope could not be verified", requestId);
       }
+      const proof = taskProofSchema.parse(result.taskScopeAccount);
+      if (proof !== null && (scope !== "task" || auth.workspaceKind !== "personal" || !tupleAllowed(auth, proof.media, proof.accountId))) {
+        return error("FORBIDDEN", "Work item is outside the approved scope", requestId);
+      }
       if (
         (scope === "account" && !authorized(record.media, record.accountId, auth)) ||
-        (scope === "personal" && !personalWorkItemAuthorized(record, auth))
+        (scope === "personal" && !personalWorkItemAuthorized(record, auth)) ||
+        (scope === "task" && auth.workspaceKind === "personal" && !personalWorkItemAuthorized(record, auth) && proof === null)
       ) {
         return error("FORBIDDEN", "Work item is outside the approved scope", requestId);
       }
@@ -134,7 +141,8 @@ export class ReadDetailService {
         ok: true,
         data: { kind: "work_item", workItem: workItemDetail(record) },
       });
-    } catch {
+    } catch (cause) {
+      if (cause instanceof WorkItemAuthorizationError) return error("FORBIDDEN", "Work item is outside the approved scope", requestId);
       return error("INTERNAL_ERROR", "Work item detail could not be loaded", requestId);
     }
   }

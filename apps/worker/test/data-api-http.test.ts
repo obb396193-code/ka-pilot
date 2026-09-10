@@ -61,7 +61,7 @@ function authHeaders(token = internalToken): Record<string, string> {
 
 function emptyDetailService(): ReadDetailService {
   return new ReadDetailService({
-    workItems: { find: async () => null },
+    workItems: { findForRead: async () => null },
     changeSets: { find: async () => null },
   });
 }
@@ -803,7 +803,7 @@ describe("data API HTTP composition", () => {
     const id = "00000000-0000-4000-8000-000000000202";
     const find = vi.fn().mockRejectedValue(new ChangeSetAuthorizationError());
     const baseUrl = await start({ detailService: new ReadDetailService({
-      workItems: { find: async () => null }, changeSets: { find },
+      workItems: { findForRead: async () => null }, changeSets: { find },
     }) });
     const response = await fetch(`${baseUrl}/api/v1/changesets/${id}`, {
       headers: { ...authHeaders(), "x-request-id": "changeset-repo-denial", "x-ka-account-scope": "forged" },
@@ -820,7 +820,7 @@ describe("data API HTTP composition", () => {
     const userId = "00000000-0000-4000-8000-000000000203";
     const detailService = new ReadDetailService({
       workItems: {
-        find: async () => ({
+        findForRead: async () => ({ record: {
           id: workItemId,
           workspaceId: auth.workspaceId,
           type: "diagnosis",
@@ -843,7 +843,7 @@ describe("data API HTTP composition", () => {
           t1Result: { checked: true },
           createdAt: new Date("2026-08-25T01:00:00Z"),
           resolvedAt: null,
-        }),
+        }, taskScopeAccount: null }),
       },
       changeSets: {
         find: async () => ({
@@ -901,7 +901,7 @@ describe("data API HTTP composition", () => {
     const workItemId = "00000000-0000-4000-8000-000000000208";
     const detailService = new ReadDetailService({
       workItems: {
-        find: async () => ({
+        findForRead: async () => ({ record: {
           id: workItemId,
           workspaceId: auth.workspaceId,
           type: "self",
@@ -924,7 +924,7 @@ describe("data API HTTP composition", () => {
           t1Result: null,
           createdAt: new Date("2026-08-28T01:00:00Z"),
           resolvedAt: null,
-        }),
+        }, taskScopeAccount: null }),
       },
       changeSets: { find: async () => null },
     });
@@ -953,7 +953,7 @@ describe("data API HTTP composition", () => {
     const id = "00000000-0000-4000-8000-000000000204";
     const forbidden = new ReadDetailService({
       workItems: {
-        find: async () => ({
+        findForRead: async () => ({ record: {
           id,
           workspaceId: auth.workspaceId,
           type: "diagnosis",
@@ -976,7 +976,7 @@ describe("data API HTTP composition", () => {
           t1Result: null,
           createdAt: new Date("2026-08-25T01:00:00Z"),
           resolvedAt: null,
-        }),
+        }, taskScopeAccount: null }),
       },
       changeSets: { find: async () => null },
     });
@@ -1010,7 +1010,7 @@ describe("data API HTTP composition", () => {
     const id = "00000000-0000-4000-8000-000000000205";
     const detailService = new ReadDetailService({
       workItems: {
-        find: async () => ({
+        findForRead: async () => ({ record: {
           id,
           workspaceId: auth.workspaceId,
           type: "diagnosis",
@@ -1033,7 +1033,7 @@ describe("data API HTTP composition", () => {
           t1Result: null,
           createdAt: new Date("2026-08-25T01:00:00Z"),
           resolvedAt: null,
-        }),
+        }, taskScopeAccount: null }),
       },
       changeSets: { find: async () => null },
     });
@@ -1054,7 +1054,7 @@ describe("data API HTTP composition", () => {
   it("fails closed when a changeset detail exactly reaches the response limit", async () => {
     const id = "00000000-0000-4000-8000-000000000206";
     const detailService = new ReadDetailService({
-      workItems: { find: async () => null },
+      workItems: { findForRead: async () => null },
       changeSets: {
         find: async () => ({
           id,
