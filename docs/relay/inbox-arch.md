@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-204 021待编号期间完成小时客户端底座/日累计隔离（be，2026-09-10）
+
+交代码`9993453b`，依据v1.9.4：account_realtime可带hh0..24，原日查询/广告路径不变，observation保留hh。真PG另抓出潜在串口径：新hh12 Raw会覆盖全天Raw、小时补采能解除日失败；现两处复用`accountRealtimeDaySampleSql`，仅未传hh/明确24可当日输入或恢复证据。两PG反例先红后绿，Worker19红→新21绿，合计180不同定向（40PG）及两包type/lint/cacheaudit0。回执`docs/plans/2026-09-10-P204账户小时客户端质量回执.md`。
+
+边界：**不是021/hourly闭环交付**。小时表/ETL job/reader/factory尚未接；账户小时失败在私有coverage模型接齐前保持fail-stop，不能丢hh写日失败。P201编号/FK、P202成员权限与fixture、P203列表屏蔽/首次full恢复三组依赖仍待裁。本人没有绕过迁移顺序，也不接真实媒体操作/不push。其余可以独立推进的准备继续做。
+
 ### P-203 P176 Task2真实PG补漏：请派be2列表屏蔽，首次full恢复语义一问（be，2026-09-10）
 
 代码/计划`16b86764`，rollback-only探针`packages/db/scripts/probe-list-batch-readability.ts`在专用本机PG已实跑，8断言+回滚通过；**是缺口实证，不是修复**。账户PAGE仍读失败tuple旧cost，COUNT metrics_complete仍true；任务PAGE仍把旧cost计入spent；唯一含batchFailures的done full仍initial_full_complete=true。共享helper对同批false，其他ws/media不影响，freshRaw+重算后恢复——说明不是helper失效，是入口未接。
