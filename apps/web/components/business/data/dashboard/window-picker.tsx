@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import type { DateRange } from "react-day-picker"
 import { IconCalendar } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
-import { DateRangeCalendar } from "@/components/ui/date-range-calendar"
+import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
@@ -34,6 +35,18 @@ export const windowPresetLabel: Record<WindowPreset, string> = {
 function iso(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
+/**
+ * 字符串 ↔ Date 的边界只在这两处。
+ * 内部一律用 `YYYY-MM-DD` 字符串：Date 带时区，`new Date("2026-09-01")` 会按 UTC 解析，
+ * 用户机器在 UTC-7 时退成 8 月 31 日；所以转 Date 时**按本地年月日构造**，不走字符串解析。
+ */
+function toDate(day: string): Date {
+  const [year, month, date] = day.split("-").map(Number)
+  return new Date(year, month - 1, date)
+}
+function fromDate(date: Date): string {
+  return iso(date)
+}
 function shiftDays(day: string, delta: number): string {
   const [year, month, date] = day.split("-").map(Number)
   return iso(new Date(year, month - 1, date + delta))
@@ -59,10 +72,16 @@ export function WindowPicker({ value, dataDate, onChange, className }: {
   className?: string
 }) {
   const [open, setOpen] = useState(false)
+  // 日历里正在选的区间。每次打开都从当前窗口起步，关掉不保留半截选择
+  const [draft, setDraft] = useState<DateRange | undefined>(undefined)
+  const toggle = (next: boolean) => {
+    setOpen(next)
+    if (next) setDraft({ from: toDate(value.from), to: toDate(value.to) })
+  }
   const presets: WindowPreset[] = ["yesterday", "last_7d", "month_to_date", "last_month"]
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={toggle}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className={cn("gap-2", className)} aria-label="时间窗口">
           <IconCalendar className="size-3.5 text-muted-foreground" />
@@ -89,11 +108,22 @@ export function WindowPicker({ value, dataDate, onChange, className }: {
           </div>
           <div className="border-l pl-4">
             <p className="mb-1 text-[11px] text-muted-foreground">自己选区间</p>
-            <DateRangeCalendar
-              from={value.from}
-              to={value.to}
-              max={dataDate}
-              onChange={(range) => { onChange({ preset: "custom", ...range }); setOpen(false) }}
+            <Calendar
+              mode="range"
+              defaultMonth={toDate(value.to)}
+              selected={draft}
+              // 数据只到数据日，之后的日期没有数——直接禁掉，别让人选出一片空
+              disabled={{ after: toDate(dataDate) }}
+              onSelect={(range, clicked) => {
+                // ★已有完整区间时再点一天，rdp 默认是「收窄现有区间」；
+                //   但在窗口选择器里人的预期是「重新选一个」——所以这里自己重起。
+                if (draft?.from && draft?.to) { setDraft({ from: clicked, to: undefined }); return }
+                setDraft(range)
+                // 只点了起点先不收窗：等点到终点再提交，避免中途把窗口刷成单日
+                if (!range?.from || !range.to) return
+                onChange({ preset: "custom", from: fromDate(range.from), to: fromDate(range.to) })
+                setOpen(false)
+              }}
             />
             <p className="mt-1 text-[11px] text-muted-foreground">数据只到 {dataDate}，之后的日期选了也没有数</p>
           </div>
