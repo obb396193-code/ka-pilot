@@ -9,6 +9,7 @@ import {
   R014RepositoryError, accountScopeClause, approveAuth, requireOwnWorkspace, requireTimestamp,
   taskGrantScopeClause,
 } from "./workspace-authority.js";
+import { assessmentPriceEffectiveSql } from "../assessment-price-selection.js";
 
 /**
  * v1.5.1 ② 任务详情（D5）的读侧。
@@ -229,7 +230,8 @@ export class TaskDetailRepository {
               (SELECT count(*)::int FROM assessment_price_history AS all_rows
                WHERE all_rows.workspace_id=$1 AND all_rows.task_id=$2) AS history_count
        FROM assessment_price_history AS history
-       WHERE history.workspace_id=$1 AND history.task_id=$2 AND history.effective_date <= $3::date
+       WHERE history.workspace_id=$1 AND history.task_id=$2
+         AND ${assessmentPriceEffectiveSql("history", "$3::date")}
        ORDER BY history.effective_date DESC, history.id DESC LIMIT 1`,
       [workspaceId, taskId, businessDate],
     )).rows[0] as Record<string, unknown> | undefined;

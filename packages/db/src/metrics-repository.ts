@@ -1,4 +1,5 @@
 import type { Pool } from "pg";
+import { assessmentPriceEffectiveSql } from "./assessment-price-selection.js";
 
 export interface EffectiveMetricSettings {
   channelCoefficient: number | null;
@@ -170,7 +171,7 @@ export class MetricsRepository {
          FROM assessment_price_history AS price
          WHERE price.workspace_id = relation.workspace_id
            AND price.task_id = relation.task_id
-           AND price.effective_date <= requested.ds
+           AND ${assessmentPriceEffectiveSql("price", "requested.ds")}
          ORDER BY price.effective_date DESC, price.id DESC
          LIMIT 1
        ) AS assessment ON true
