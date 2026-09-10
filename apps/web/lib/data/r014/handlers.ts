@@ -23,6 +23,18 @@ import {
   taskBindingsSchema,
   taskDetailSchema,
   watchlistSchema,
+  accountNamesConfirmSchema,
+  accountNamesReparseSchema,
+  accountTransferSchema,
+  dailyReportSchema,
+  kbBacklinksSchema,
+  kbByObjectSchema,
+  kbDeletedSchema,
+  kbDocumentSchema,
+  kbSearchSchema,
+  kbTreeSchema,
+  passwordChangedSchema,
+  poolStatusRecordSchema,
 } from "./schemas.ts"
 
 type Environment = Record<string, string | undefined>
@@ -203,6 +215,88 @@ export const handleAdminAccountNamePatch = (request: Request, media: string, acc
     ...withDeps(deps),
   })
 
+// ── Q-030（arch 临时移交）：kb 七条 / 账户交接两条 / 自助改密 / 日报 ──────────
+// 与上面九条同一套写法。`allowedQuery` 是白名单：没列的查询参数会被 forwarder 挡成
+// 400，免得浏览器侧随手加个参数就越过后端的入参校验。
+
+export const handleKbDocuments = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/kb/documents",
+    method: request.method === "POST" ? "POST" : "GET",
+    allowedQuery: ["parent_id", "kind", "visibility", "q", "page", "page_size"],
+    // 建文档回单篇，列表回树——两种形状，按方法选。
+    dataSchema: request.method === "POST" ? kbDocumentSchema : kbTreeSchema,
+    ...withDeps(deps),
+  })
+
+export const handleKbDocument = (request: Request, documentId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/kb/documents/${encodeURIComponent(documentId)}`,
+    method: request.method === "PATCH" ? "PATCH" : request.method === "DELETE" ? "DELETE" : "GET",
+    dataSchema: request.method === "DELETE" ? kbDeletedSchema : kbDocumentSchema,
+    ...withDeps(deps),
+  })
+
+export const handleKbBacklinks = (request: Request, documentId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/kb/documents/${encodeURIComponent(documentId)}/backlinks`,
+    method: "GET",
+    dataSchema: kbBacklinksSchema,
+    ...withDeps(deps),
+  })
+
+export const handleKbSearch = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/kb/search",
+    method: "GET",
+    allowedQuery: ["q", "kind"],
+    dataSchema: kbSearchSchema,
+    ...withDeps(deps),
+  })
+
+export const handleKbByObject = (
+  request: Request, objectType: string, objectId: string, deps: Deps,
+): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/kb/by-object/${encodeURIComponent(objectType)}/${encodeURIComponent(objectId)}`,
+    method: "GET",
+    dataSchema: kbByObjectSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAccountTransfer = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/accounts/transfer",
+    method: "POST",
+    dataSchema: accountTransferSchema,
+    ...withDeps(deps),
+  })
+
+export const handleTransferAll = (request: Request, userId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/users/${encodeURIComponent(userId)}/transfer-all`,
+    method: "POST",
+    dataSchema: accountTransferSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAuthPassword = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/auth/password",
+    method: "POST",
+    dataSchema: passwordChangedSchema,
+    ...withDeps(deps),
+  })
+
+export const handleDailyReport = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/reports/daily",
+    method: "GET",
+    allowedQuery: ["date", "role"],
+    dataSchema: dailyReportSchema,
+    ...withDeps(deps),
+  })
+
 /* 新增成员 / 重置密码（契约 v1.9.5）——F8-11 */
 export const handleAdminMemberCreate = (request: Request, deps: Deps): Promise<R014BffResult> =>
   forwardToBackend(request, {
@@ -218,5 +312,32 @@ export const handleAdminMemberResetPassword = (request: Request, identityId: str
     path: `/api/v1/admin/members/${encodeURIComponent(identityId)}/reset-password`,
     method: "POST",
     dataSchema: memberPasswordResetSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAccountPoolStatus = (
+  request: Request, media: string, accountId: string, deps: Deps,
+): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/accounts/${encodeURIComponent(media)}/${encodeURIComponent(accountId)}/pool-status`,
+    method: request.method === "DELETE" ? "DELETE" : "PATCH",
+    dataSchema: poolStatusRecordSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAdminAccountNamesConfirm = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/account-names/confirm",
+    method: "POST",
+    dataSchema: accountNamesConfirmSchema,
+    ...withDeps(deps),
+  })
+
+export const handleAdminAccountNamesReparse = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/account-names/reparse",
+    method: "POST",
+    allowedQuery: ["media"],
+    dataSchema: accountNamesReparseSchema,
     ...withDeps(deps),
   })

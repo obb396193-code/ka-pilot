@@ -153,9 +153,9 @@ export class MeWorkspaceRepository {
       `SELECT id, severity, title, coalesce(last_triggered_at, created_at) AS at
        FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])
          -- 通知是「我的」通知：别人账户上的告警不该推给他。
-         AND ${workItemScopeClause("$3", "$4", "work_items")}
+         AND ${workItemScopeClause("$3", "$4", "work_items", "$5")}
        ORDER BY coalesce(last_triggered_at, created_at) DESC LIMIT 200`,
-      [approved.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES], scope.kind, scope.allowed],
+      [approved.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES], scope.kind, scope.allowed, approved.userId],
     );
     for (const row of workItems.rows as Record<string, unknown>[]) {
       candidates.push({
@@ -230,8 +230,8 @@ export class MeWorkspaceRepository {
               count(*) FILTER (WHERE severity='P1')::int AS p1,
               count(*) FILTER (WHERE severity='opportunity')::int AS opportunity
        FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])
-         AND ${workItemScopeClause("$3", "$4", "work_items")}`,
-      [auth.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES], scope.kind, scope.allowed],
+         AND ${workItemScopeClause("$3", "$4", "work_items", "$5")}`,
+      [auth.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES], scope.kind, scope.allowed, auth.userId],
     );
     const row = result.rows[0] as Record<string, unknown> | undefined;
     if (row === undefined) throw new R014RepositoryError("INVALID_RESULT");

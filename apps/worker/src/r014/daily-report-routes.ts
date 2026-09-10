@@ -1,8 +1,9 @@
 import { AccountNameParseRepository, DailyReportRepository } from "@ka/db";
 import {
-  DAILY_REPORT_MODULES, UNLABELLED_DIMENSION, dailyReportSchema, divideMetricValues,
-  groupRowsByDimension, metricValue, shanghaiTaskBusinessDate, unsupportedModule,
-  type DailyReportModule,
+  AGENT_TYPE_LABELS, DAILY_REPORT_MODULES, UNLABELLED_DIMENSION, agentTypeKeyOf, assessDailyRow,
+  canonicalRowMetrics, dailyReportSchema,
+  divideMetricValues, groupRowsByDimension, metricValue, shanghaiTaskBusinessDate,
+  unsupportedModule, type DailyReportModule,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -57,6 +58,35 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
         throw new R014HttpError(400, "INVALID_REQUEST", "date must be YYYY-MM-DD");
       }
+      /**
+       * v1.9.2 的「行复用 account.dimension/v3 结构」在 v1.9.13 的 fixture 里具体化了：
+       * 每行除 metrics 外还带 assessment 与 anomaly。达标判定与大盘六卡同源同式，
+       * 不另算一套——两处分头算迟早出现「卡说达标、行说没达标」。
+       */
+      const withAssessment = <Row extends {
+        metrics: Record<string, number | null>; price?: number | null; priceEffectiveDate?: string | null;
+      }>(row: Row): Row & { assessment: unknown; anomaly: boolean } => {
+        const assessment = assessDailyRow({
+          cashCost: row.metrics.cashCost ?? null,
+          realConversion: row.metrics.realConversion ?? null,
+          price: row.price ?? null,
+          priceEffectiveDate: row.priceEffectiveDate ?? null,
+        });
+        const { price, priceEffectiveDate, metrics, ...rest } = row as Row & {
+          price?: number | null; priceEffectiveDate?: string | null;
+        };
+        void price; void priceEffectiveDate; // 价是算 assessment 的输入，不进 DTO。
+        // metrics 出 canonical 形状（fixture 冻的是 {value, availability} 与七个 ratios），
+        // 不是裸数字——裸数字会让前端分不出「0」和「没有数据」。
+        // `anomaly` 只表示「这一行没达标」这个事实，不生成措辞（异常清单另有来源）。
+        return {
+          ...(rest as Row),
+          metrics: canonicalRowMetrics(metrics as never),
+          assessment,
+          anomaly: assessment.onTarget === false,
+        } as never;
+      };
+
       const role = requestedRole(context.url.searchParams.get("role"));
       const facts = await repository.facts(context.auth, date);
 
@@ -119,7 +149,8 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
           return { key: "overview", title: definition.title, trend: facts.trend };
         }
         if (definition.key === "dim_task") {
-          return { key: definition.key, title: definition.title, rows: facts.dimensions.task, unsupported: false };
+          return { key: definition.key, title: definition.title,
+            rows: facts.dimensions.task.map(withAssessment), unsupported: false };
         }
         if (definition.key === "dim_biz") {
           // 走归并而不是直接用 SQL 那份：这样任务没填 biz_name 时能回落到昵称解析的业务段，
@@ -128,17 +159,28 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
             facts.bizByAccount[row.key] ?? parsedBiz.get(row.key) ?? null);
           return {
             key: definition.key, title: definition.title, unsupported: false,
-            rows: rows.map((row) => (row.key === UNLABELLED_DIMENSION
+            rows: rows.map((row) => withAssessment(row.key === UNLABELLED_DIMENSION
               ? { ...row, key: "未标注业务", label: "未标注业务" } : row)),
           };
         }
         if (definition.key === "dim_account") {
-          return { key: definition.key, title: definition.title, rows: facts.dimensions.account, unsupported: false };
+          return { key: definition.key, title: definition.title,
+            rows: facts.dimensions.account.map(withAssessment), unsupported: false };
         }
         const parsedKey = PARSED_DIMENSION_MODULES[definition.key as keyof typeof PARSED_DIMENSION_MODULES];
         if (parsedKey !== undefined) {
-          const rows = groupRowsByDimension(facts.dimensions.account, (row) =>
-            dimensionOf.get(row.key)?.[parsedKey]?.value ?? null);
+          // F-Q026-1：dim_agent 的 key 是冻结枚举（self|agency|unknown），label 才是中文原文；
+          // 其余两个维度的 key 直接用解析段值。
+          const asAgent = definition.key === "dim_agent";
+          const rows = groupRowsByDimension(facts.dimensions.account, (row) => {
+            const value = dimensionOf.get(row.key)?.[parsedKey]?.value ?? null;
+            return asAgent ? agentTypeKeyOf(value) : value;
+          }).map((row) => {
+            const assessed = withAssessment(row);
+            if (!asAgent) return assessed;
+            // 分组后 key 已是枚举，只需补中文 label 与 agent_type 字段。
+            return { ...assessed, label: AGENT_TYPE_LABELS[row.key] ?? UNLABELLED_DIMENSION, agent_type: row.key };
+          });
           return { key: definition.key, title: definition.title, rows, unsupported: false };
         }
         return unsupportedModule(definition.key);

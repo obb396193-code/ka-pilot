@@ -2,6 +2,22 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-187a 拉数记录GET已接真实入口，v1.9.13日期裁决+ETL对拍｜be（Codex，2026-09-10）
+
+- **c284224e + 1c94f081**，F-P179 GET现在本人分支不再404：真实data-api注入EtlRunListRepository→Service→route，internal bearer+Session/admin，只认page/pageSize，输出workspace/page/requestId/16MiB守卫。没有提前开放rerun/媒体写。
+- 收到`e32892a5`：旧缺日保留null+LEGACY_NO_DATE；021索引授权记好待该迁移做。全端点对拍P187已登记，本笔只覆盖ETL GET，不能称你名下全部端点都通过。
+- **真实启动证明**：子进程直接data-api.ts，无任何KA env/凭证；真实KDF登录、PG个人记录、团队切换/旧token/注销/降权/撤权、旧日期未知全部过。真HTTP键集和legacy warning code/message与`system/etl-runs-page.json`对拍通过；新增默认16MiB有效大响应拒绝。
+- 门禁：Worker111、真启动/PG10、治理目录83、Domain61、DB41；三包type/lint/cacheaudit0。新Service/route行/分支100%、函数85.71%。磁盘<8GiB未整包。报告`docs/plans/2026-09-10-P187拉数记录HTTP质量回执.md`。
+- **未合流/未内网部署/未push**。下一步独立做rerun新job、原owner、runId幂等、timeline；其余P187对拍和总信箱任务继续。Q027矩阵helper仍未交，不复制替代实现。
+
+### P-186 已接v1.9.12：拉数记录分页+真实读仓储候选｜be（Codex，2026-09-10）
+
+- 已merge `eb4fd37b` 到本人分支（merge `c67e7050`）；代码 **d40b14ca + dcf97510**。旧attempt null+LEGACY、计数字段独立null、page/pageSize/total与默认上限、同snapshot真实finished时间均落地。`etl-runs.json`按你授权升级分页，`etl-runs-page.json`原形通过。**尚未挂GET/未开rerun**，继续下一纵切片，不等待本小批批准。
+- DB管理员仓储：RR/RO两条SQL，workspace参数化+输出反查，稳定started_at/id降序，真实PG超2^53相邻ID排序；只公开warning投影、不拉error_summary/完整scope；SQL保守page存储估计命中16MiB拒绝，公开投影再守卫。
+- 证据：Domain60、DB62（新增PG19+原PG3、unit40）、Worker71；三包typecheck/lint/cacheaudit0。新Domain覆盖100%、DB行100%/分支98.68%。报告`docs/plans/2026-09-10-P186拉数记录分页质量回执.md`。7.4GiB未整包门，不称全量；无本人前端diff、未push/部署。
+- 如实列接线边界：旧errorSummary没有错误类型，不能从当前job状态反推旧attempt BLOCKED_AUTH；旧run若连scope日期都无，当前严格businessDate无法表示，返回受控坏源而不拼今天。真实6类handler日期来源已逐个核过；需放宽历史缺日时请冻nullable+warning。etl_runs分页索引尚无，精确count/sort规模增长风险已登记，不擅抢迁移号。
+- 收到你`8e5fdcfb`对P180–185回执。Q027矩阵helper仍未交，不复制另一套；F-P179继续GET/rerun，P176/密码/021/BI等总目标不缩减。
+
 ### P-185 F-P179运行记录：先做严格响应，历史证据/重跑请裁｜be（Codex，2026-09-10）
 
 - 响应基础代码 **70187851**已交：38个运行记录测试+19批次warning测试，共57过；新模块覆盖100%，Domain/DB/Worker typecheck/lint过。既有fixture未改，真实barrel导出已测。报告`docs/plans/2026-09-10-P185运行记录响应质量回执.md`。**未接GET、未开rerun**，下面四问仍须裁；不以schema绿代替Runtime完成。
@@ -5384,6 +5400,97 @@ v1.9.6 写明 UBP 的源是 `ads_rta_media_daily_report_base_adgroup.is_ubp`，*
 domain 1296 / db 1352 / worker 1740（+2 skipped）/ web 224 全绿，四包 tsc 清。
 `be/r017` 领先 main 若干笔，**未 push**、**未部署**。
 
+### Q-028：加了 fixture 对拍闸，当场揪出两处 fixture 与实现的分歧（be2 `be/r017 @ 7fc7e915`）
+等你回 Q-027 的空档，做了一件防返工的事。
+
+**动因**：你每轮联调都在人工核「顶层与 overview 键和 fixture 逐一相同」，而 F-Q019-2（标题还是英文）、F-Q024-1（错误码不是 fixture 冻的那个）都是同一类漏网——**形状对不上，靠人眼看漏了**。这种检查该在我这边的闸里跑，轮不到你去发现。
+
+已加两层：domain 用严格 schema 过我名下每份 fixture；worker 拿**端点实际响应**的键集与 fixture 对拍（改密连 `code`/`message`/`retryable` 都照冻的原话比）。
+
+#### ★揪出两处真分歧，请你裁
+**① `accounts/transfer.json` 没有 `skipped`**
+fixture 冻的是 `{transferId, moved, notifiedUserIds}`。`skipped` 是我在 A7 里加的：没有它，调用方只看到「请求 2 户、`moved.accounts=1`」，**不知道哪一户没动、为什么**（被未终态变更集挡了？还是压根没授权？）。A7 已随 `897ed11` 合进 main，也就是说线上返的比 fixture 多这一个键。
+请裁：**加进 fixture**（我的建议）**还是我去掉**。我已把这个分歧钉进用例，免得下次谁对着 fixture 以为我多返字段是 bug。
+
+**② `reports/daily-v1.json` 处在半更新状态**
+| 模块 | fixture | 我的实现 |
+|---|---|---|
+| `dim_agent` | `unsupported:false` ✅ | false |
+| `dim_bid_tool` | **`unsupported:true`** ❌ | false（按 F-Q023-2 填了行）|
+| `dim_resource_position` | **没有这个键** ❌ | false（同上）|
+F-Q023-2 是你让我把这三个一起填的，但 fixture 只改了 `dim_agent` 一个。同样钉进用例了，请你同步另外两个。
+
+#### 顺带
+修了一处测试间耦合：改密限速器是进程内按 identity 计数、跨用例累积，新用例先重注册路由拿干净窗口。
+
+闸：domain 1302 / db 1352 / worker 1744（+2 skipped）/ web 224 全绿，四包 tsc 清。
+
+**我这边仍在等你**：Q-027 的 demo 接缝（guest 登录的唯一阻断）、pg_trgm 的 similarity 落法确认、以及上面两处 fixture。这期间我继续找同类可自查的项。
+
+### Q-029：★我最近交付的端点**在 BFF 里一条透传都没有**，前端调不到（be2 `be/r017 @ fe0d917f`）
+继续自查时发现的，这条比前面几条都要紧。
+
+`apps/web/lib/data/r014/handlers.ts` 里共 21 条透传，但下面这些**一条都没有**：
+| 端点 | 状态 |
+|---|---|
+| `GET/POST /kb/documents`、`GET/PATCH/DELETE /kb/documents/:id` | ❌ 无透传 |
+| `GET /kb/documents/:id/backlinks`、`GET /kb/by-object/:type/:id`、`GET /kb/search` | ❌ 无透传 |
+| `POST /accounts/transfer`、`POST /users/:id/transfer-all` | ❌ 无透传 |
+| `POST /auth/password` | ❌ 无透传 |
+| `GET /reports/daily` | ❌ 无透传 |
+
+也就是说：**kb 七端点、账户交接、自助改密、日报，浏览器侧全部够不着**。后端接通了、联调也验过，但前端页面接不上——F8 那边真要做知识库页或改密表单时会当场卡住。
+
+**为什么我没直接补**：这个文件是我和 fe 共用的（最初九条 `151cb418` 是我写的 S5b，`5883b317` 是 fe 的 F8-9 加的四条），而 fe 刚在里面动过。按你立的规矩「共享文件的功能性改造靠所有权临时移交」，所以我停下来问：
+- **要我补**：说一声临时移交，我按 S5b 那九条的同一套写法补齐（含 `apps/web/app/api/internal/` 下对应路由文件），半天内交；
+- **归 fe**：那就当 F8 的一条派下去，我把端点契约（路径/方法/请求体键名/错误码）整理给他。
+
+顺带说一句：`RATE_LIMITED` / `INVALID_CREDENTIALS` / `READ_ONLY_ROLE` 三个码我已在 r014 forwarder 里认了，但**共享的 `stableDataQueryErrorCodeSchema` 仍然没有它们**——如果 fe 别处直接用那个共享枚举解析错误，还是会当未知错误。你 v1.9.9 说「稳定错误码加 RATE_LIMITED」，这一步在 `apps/web/lib/data/contracts.ts` 里还没落。
+
+#### 另外补了两层此前没验过的闸（`fe0d917f`）
+- **真 HTTP 壳层冒烟**：此前全是路由替身测的，替身不走鉴权/真 cookie/壳层 404-401 分支。现在真服务器 + 真会话跑通，其中一条专门验 **Q-020 的越权收口端到端有效**（只挂未授权账户的任务经真壳层仍 404）。
+- **路由遮挡检测**：`findR014Route` 首个匹配胜出，两条都认同一路径时后一条永远调不到——端点看着接好实际是死的。按真实注册顺序 20 条路径逐条断言「恰好一个认领」，另验六条边界必须落空。当前表干净。
+
+闸：worker 1751（+2 skipped）全绿。
+
+### Q-031 回执：v1.9.11/1.9.12/1.9.13 + F-Q026-1 四条落地（be2 `be/r017 @ 45cf44e5`）
+你那批裁决拉下来了，按序做完四条。**Q-030（BFF 透传）是下一件，还没开始**。
+
+| 派活 | 状态 |
+|---|---|
+| Q-027 工作项可见性矩阵（v1.9.11） | ✅ 三类矩阵 + 5 条真 PG 用例 |
+| 023 改 is_demo（v1.9.12） | ✅ 直接改内容，未另起 024 |
+| transfer `skipped` 对齐（v1.9.13） | ✅ 按你的枚举与 `detail` 改 |
+| F-Q026-1 dim_agent 枚举 | ✅ 顺带补齐 v3 行形状，见 ③ |
+| Q-030 BFF 四组透传 | ⬜ **下一件** |
+| Q-022 后半 guest 登录 | ⬜ 排在 Q-030 之后 |
+
+#### ① 工作项矩阵：两处容易写错的都钉进断言了
+- **任务型「派给我」必须可见**——派发本身就是授权动作，派给谁谁就得看得到，哪怕那个任务我一个户都没有；
+- **team 分支不能直接 TRUE**——纯私人项不是团队对象，团队空间不该出现别人的备忘。
+
+顺带消灭了第二份实现：日报里那份工作项谓词是我早前写的旧版（`account_id IS NULL` 就无条件放行，比矩阵宽），已改成引用共享 helper。**散着写正是 Q-020 和日报两次漏检的根因**，现在全仓只剩一份。
+
+★日报三条测试跟着红了，是**新矩阵下的正确行为**：那批种子工作项既无账户、无任务、也无 assignee，是不归任何人的孤儿行，谁都看不到。改的是测试数据不是代码。
+
+#### ② `is_demo`：按你说的直接改 023
+回滚闸是「还有演示空间时拒绝删列」——丢了标记，那个空间就变成一个看起来是真数据的团队空间，访客会落进去。
+
+#### ③ ★F-Q026-1 做的时候，我的对拍闸又揪出两处
+你只提了 dim_agent 的 key/label/agent_type，但 v1.9.13 的 fixture 把 v1.9.2 那句「行复用 `account.dimension/v3` 结构」**具体化**了，而我此前只出 `{key,label,metrics}`：
+1. 每行还要带 **`assessment` + `anomaly`**。已补，达标判定与大盘六卡同源同式；**缺考核价/现金/转化时 `onTarget` 是 null 不是 false**——那是「不知道」不是「没达标」，`anomaly` 随之 false。
+2. metrics 要 **canonical 形状**（`{value,availability}` + 七个 ratios），我出的是裸数字——**裸数字让前端分不出「0」和「没有数据」**。已补；比率现算，分母为 0 → infinite/undefined；`wakeUv`/`potentialUv` canonical 日表没这两列 → 恒 missing，不拿别的量顶替。
+
+这两处你没点名，是对拍闸自己抓的——它现在确实在替联调挡事了。
+
+#### ④ 你提醒的两条，这轮都照做了
+- **交审前跑 eslint**：db 与 worker 两包都跑了，干净。（前两次让你删 import，抱歉。）
+- **移动文件要点名删了哪条导出**：这轮没有移动文件，无删除。上次那条（`identity-password-repository` 从 `r014/` 移到 `src/` 根、旧导出没删导致 TS2307）我记住了，谢谢你顺手修。
+
+#### ⑤ 闸
+domain 1359 / db 1424 / worker 1805（+2 skipped）/ web 224 全绿，四包 tsc 清，db+worker eslint 清。
+**db 要从包内跑**（`cd packages/db && npx vitest`）：Codex 新的 seed CLI 用例会 `node --import tsx`，从仓库根跑时 node 在根目录找 tsx 找不到——我这个工作树根没装。串行 `--no-file-parallelism` 那条老规矩不变。
+
 ---
 
 ## fe → arch：F8-10 收尾 + F8-14 + F8-11 三批交付（2026-09-09）
@@ -5460,3 +5567,74 @@ domain 1296 / db 1352 / worker 1740（+2 skipped）/ web 224 全绿，四包 tsc
 
 ### 下一步
 F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊（设置页「请修改初始密码」要 session 上加 `mustChangePassword`）和 ➋（`members-v195.json` 并回 `members.json` 时知会）仍待你回。
+### Q-032：Q-030 交付 + 访客登录卡在鉴权不变量（be2 `be/r017 @ 20d4add6`）
+
+#### ① Q-030 BFF 四组透传 ✅ 交了
+kb 七条、`accounts/transfer`、`users/:id/transfer-all`、`auth/password`、`reports/daily` 全通。按 S5b 那九条同一套织法：schemas 镜像 → handlers → routes-server → `app/api/internal` 路由文件。
+
+两条刻意的：`allowedQuery` 白名单（没列的参数在 BFF 就 400，否则浏览器侧随手加个参数就绕过后端入参校验，有用例专打）；同一路径按方法选 schema（新建回单篇、列表回树、软删回 `{deletedAt}`）。日报模块形状各异，前端镜像只锁到「有 key 和 title」+ passthrough——把十三个模块内部形状再镜像一遍只会多出第二处要同步的真相。
+
+用例逐条断言**真打到了正确的后端路径与方法**（11 条一次对齐），不只是「函数能调」。web 226 绿。
+
+#### ② ★访客登录：链路通到最后一步，卡在一条鉴权不变量
+按 v1.9.12（team + is_demo）接完了 ENV 闸、固定 guest 身份、落演示空间、viewer 只读、TTL 2h、限速。**但登录后读回会话被拒**。
+
+做的过程中撞出**三处 v1.9.12 没覆盖的前置**，前两处我补进 023（它还没在任何库应用过）：
+| # | 前置 | 处理 |
+|---|---|---|
+| 1 | `auth_identities_provider_ck` 只认 `internal_test\|buc` | 访客身份**建都建不出来** → 023 放宽加 `guest` |
+| 2 | `workspace_memberships_role_ck` 只认 optimizer\|operator\|lead\|admin | viewer 成员行同上 → 023 放宽加 `viewer` |
+| 3 | **`packages/domain/src/auth-context.ts:213` 要求每个会话的身份有且仅有一个 personal 空间** | ★真正的阻断，**请你裁** |
+
+第 3 条原文：`uniquePersonalWorkspaces.size === 0 → rejected(403, "PERSONAL_WORKSPACE_MISSING")`，而且这一关排在 `snapshot.workspaceKind === "team"` 分支**之前**。访客一个个人空间都没有，所以会话建得出来、读不回来。
+
+**这不是 demo 枚举那一层**（那个你已经绕开了），是更深的鉴权模型前提——"一个身份一个个人空间"。我没有单方面放宽：它影响的远不止访客。三个改法供你选：
+- **(a) 放宽不变量**：`activeWorkspaceId` 指向的空间是 `is_demo` 时跳过个人空间检查。改动最小、语义最准，但动的是共享契约文件；
+- **(b) 给访客身份也建一个个人空间**：零改代码，但访客能 `switchWorkspace` 切进那个空空间，与「workspaces 只有演示空间」矛盾；
+- **(c) 访客走完全独立的会话解析路径**：最干净也最重，等于两套鉴权。
+
+我倾向 **(a)**，且建议由你在 main 上改（`auth-context.ts` 不在我名下）。
+
+其余闸我都验了并钉进用例：功能关闭回 **404 不是 403**（不透露入口存在）；`GUEST_WORKSPACE_ID` 指向真实团队空间 → 拒（配错一个变量就把匿名会话放进真数据）；预置身份不存在时**绝不现建**（那等于在真库造一个没人审过的可登录主体）；夹带 username/password 的请求体 400。
+
+**限速**：契约要按 IP，但壳层 `http-server.ts`（不是我的文件）没把 IP 传进 `login()`。我加了**可选**第三参——传了按 IP、没传退化成全局桶，不假装限速到位。你让 Codex 在 `http-server.ts:274` 那行把 `clientIp` 传进来，同一段代码自动变成按 IP。
+
+#### ③ 还有两处要你补
+- **`schema.sql` 少三样**：`auth_identities.provider` 的 `guest`、`workspace_memberships.role` 的 `viewer`（我 023 已实现），以及 022 的 pg_trgm 可选 DDL（你说以注释形式记了，我没在文件里找到 `CREATE EXTENSION`，麻烦确认）。
+- **会话 DTO 少三个字段**：guest fixture 有 `identity.id`、`identity.provider`、`workspace.isDemo`，但 `sessionViewSchema` 与 `readSessionView`（`auth-repository.ts`，Codex 的）都没有。而且 `session-http/personal.json`、`team.json` 也没这三项——**三份 fixture 不一致**。这块我没动，等你定归属。
+
+#### ④ 闸
+domain 1359 / db 1424 / worker 1811（+2 skipped）/ web 226 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+### Q-033：BFF 覆盖绊线上线，当场又抓出三条够不着的端点（be2 `be/r017 @ ee154ad2`）
+本轮 main 无新裁决，按循环规矩做自查项（不硬造活）。
+
+Q-029 那个缺口是我**肉眼**发现的——靠人看下次照样会漏，所以立成绊线：后端每条 R-014 路由都必须在 BFF 有对应透传，例外要显式登记并写明理由。两边把路径参数抹成 `:p` 后逐条对上，另验反向（BFF 不许指向后端不存在的路径，那会让调用方拿到 404 却以为是数据没有）。
+
+**上来就抓出三条 Q-029 之外的漏网**，都是我自己 S5b / R-017 时漏的：
+| 端点 | 影响 |
+|---|---|
+| `PATCH/DELETE /accounts/:media/:id/pool-status` | 账户池状态**人工改写与撤销**，前端点不动 |
+| `POST /admin/account-names/confirm` | 归属清洗**批量确认**用不了 |
+| `POST /admin/account-names/reparse` | **批量重解析**用不了 |
+
+后两条正是你 F8-9 那批归属清洗页面要用的写操作——页面做出来会点不动。三条都补齐了（schema 镜像 + 透传 + 路由文件 + 路径断言）。加上 Q-030 的十条，**R-014 的浏览器侧现在是全覆盖，而且以后漏一条就红**。
+
+建议把这条绊线也立成两侧标配（同你把对拍闸立成标配那样）：Codex 那边的端点我扫不到，同类漏网他那边大概率也有。
+
+闸：worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清，web eslint 0 error。
+
+**仍等你的四条**（不重问，只列边界）：① Q-032 的 `auth-context.ts` 个人空间不变量（访客登录唯一阻断，我倾向放宽为「`is_demo` 空间跳过该检查」）；② `schema.sql` 补 `guest`/`viewer` 两个枚举值；③ 会话 DTO 的 `identity.id`/`provider`/`isDemo` 三字段与三份 session fixture 不一致；④ `http-server.ts:274` 把 `clientIp` 传进 `login()`，访客限速才是按 IP。
+
+### Q-034：自查并发写，修一处「通知了一件没发生的事」（be2 `be/r017 @ HEAD`）
+本轮 main 仍无新裁决。按循环规矩做自查，这次查一类此前没碰过的：**并发写**。
+
+- **kb 并发编辑本来就是对的**：五次并发 PATCH 全部成功、修订号连续无重复（行锁串行 + `(document_id, revision)` 唯一约束兜底），一次都没吞。
+- **交接的竞态也是对的**（只搬一次、软撤权行正确），但露出一处真问题：★**一个户都没搬成时，仍然给交出方和接手人各发一条「账户交接完成」**。并发下输的那次什么也没做，双方却都收到通知。已修：`moved.length === 0` 不发通知，`notifiedUserIds` 如实回空。
+- 审计行仍两次都写：「有人试过」值得留痕，且没搬成那条 `moved.accounts=0`、`items` 为空，不谎称搬过。
+
+这条会不会改到你冻的形状：`notifiedUserIds` 在 fixture 里是两个 uuid（真搬成的情形），我只在**一个都没搬成**时回空数组，形状不变。若你认为「没搬成也该通知」，说一声我回滚。
+
+闸：domain 1359 / db 1426 / worker 1813（+2 skipped）/ web 227 全绿，四包 tsc 清。
+
+**仍等你的四条**（边界同 Q-033，不重复展开）：`auth-context.ts` 个人空间不变量（访客登录唯一阻断）／`schema.sql` 补 `guest`+`viewer`／会话 DTO 三字段与三份 fixture 不一致／`http-server.ts:274` 传 `clientIp`。

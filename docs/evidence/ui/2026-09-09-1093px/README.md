@@ -30,3 +30,6 @@
 | 1440 | `/admin` | 0px |
 
 截图：`1093-*.jpg`（工作项详情 / 账户池 / 任务详情），`1280-work_items_inbox.jpg` 对照。
+
+## 修后复验（2026-09-10，fe F8-10 合 main `9c84581a`，web build stOIE0Y1xlLUiLnhLcRHT）
+1093 / 1280 / 1440 三档 × 8 页 = 24 项**横向溢出全部 0px**（`scripts/ui/overflow-check.mjs` 实跑）。修后截图 `after-1093-*.jpg`。内网 Win 机 100% 缩放真机验收待 OS 部署新版。

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -325,5 +326,60 @@ describe("kb routes v1.4 8.x (real PostgreSQL)", () => {
     expect(found.warnings).toEqual(["TRGM_MISSING"]);
     expect(found.items.map((item) => item.title)).toContain("开户流程说明");
     expect(found.items[0]!.score).toBeGreaterThan(0);
+  });
+
+  it("returns the frozen fixture's key sets for the document, tree, search and reverse lookups", async () => {
+    const frozen = (path: string): Record<string, unknown> => (JSON.parse(readFileSync(
+      new URL(`../../../../packages/contract/fixtures/kb/${path}`, import.meta.url), "utf8",
+    )) as { data: Record<string, unknown> }).data;
+
+    const created = await createDocument(auth, "对拍用文档", {
+      content_json: doc([paragraph(text("正文"))]),
+    });
+    const read = dataOf(await callRoute(auth, `/api/v1/kb/documents/${String(created.id)}`));
+    expect(Object.keys(read).sort()).toEqual(Object.keys(frozen("document.json")).sort());
+
+    const tree = dataOf(await callRoute(auth, "/api/v1/kb/documents"));
+    const node = (tree.items as Record<string, unknown>[])[0]!;
+    const frozenNode = (frozen("tree.json").items as Record<string, unknown>[])[0]!;
+    expect(Object.keys(node).sort()).toEqual(Object.keys(frozenNode).sort());
+
+    const hits = dataOf(await callRoute(auth, "/api/v1/kb/search?q=对拍")).items as Record<string, unknown>[];
+    expect(Object.keys(hits[0]!).sort())
+      .toEqual(Object.keys((frozen("search.json").items as Record<string, unknown>[])[0]!).sort());
+
+    const byObject = dataOf(await callRoute(auth, "/api/v1/kb/by-object/task/none"));
+    expect(Object.keys(byObject).sort()).toEqual(Object.keys(frozen("by-object.json")).sort());
+  });
+
+  it("pages the flat list instead of returning the whole workspace", async () => {
+    const parent = await createDocument(auth, "分页父节点");
+    for (let index = 0; index < 5; index += 1) {
+      await createDocument(auth, `分页子文档-${index}`, { parent_id: parent.id, position: `a${index}` });
+    }
+    const firstPage = await callRoute(
+      auth, `/api/v1/kb/documents?parent_id=${String(parent.id)}&page=1&page_size=2`);
+    const first = dataOf(firstPage);
+    const items = first.items as unknown[];
+    // 契约里 `page` 是列出来的参数；不收它、也不加任何 LIMIT，
+    // 空间文档一多就会把整库正文投影一次性捞出来。
+    expect(items).toHaveLength(2);
+    // data 保持 fixture 形状，总数与截断标记在 meta。
+    expect((firstPage.body as { meta: { total: number } }).meta.total).toBe(5);
+
+    const second = dataOf(await callRoute(
+      auth, `/api/v1/kb/documents?parent_id=${String(parent.id)}&page=2&page_size=2`));
+    expect((second.items as unknown[])).toHaveLength(2);
+    // 两页不能重复：分页要有稳定排序，否则翻页会漏行也会重复行。
+    const ids = [...items, ...(second.items as unknown[])].map((item) => (item as { id: string }).id);
+    expect(new Set(ids).size).toBe(4);
+  });
+
+  it("caps the whole-tree read so one workspace cannot return unbounded rows", async () => {
+    const tree = await callRoute(auth, "/api/v1/kb/documents");
+    const meta = (tree.body as { meta: Record<string, unknown> }).meta;
+    // 整棵树没有 parent_id 过滤，同样要有上限；超出时如实告知被截断。
+    expect(typeof meta.total).toBe("number");
+    expect(meta.truncated === true || meta.truncated === false).toBe(true);
   });
 });

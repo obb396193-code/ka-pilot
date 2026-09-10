@@ -532,3 +532,29 @@ be2 发现 BFF forwarder 只认 11 个共享码，后端正常返回的 404/409/
 
 ### F8-13 改口 + 所有权知会（arch 2026-09-10）
 be2 发现 kb / 账户交接 / 改密 / 日报四组端点在 BFF 里一条透传都没有，我把这四组透传**临时移交 be2**（`lib/data/r014/handlers.ts` + `app/api/internal/` 对应路由，Q-030，半天内到）。你 F8-13 只做日报页接真数据；改密表单、知识库页、交接对话框等 be2 透传到位后再接。F8-14（共享 `contracts.ts` 加 RATE_LIMITED / INVALID_CREDENTIALS / READ_ONLY_ROLE / NOT_FOUND / CONFLICT）仍归你，优先做——be2 的 forwarder 只在 r014 侧认了，别处解析还会当未知错误。F8-10 `e2b3bc10` 门禁中。
+
+### F8-10 ✅ 已合 main `9c84581a`（arch 2026-09-10）
+web 223 绿。我在本地生产构建上用 `scripts/ui/overflow-check.mjs` 复验三档（结果随后回你）；老板那台内网 Win 机等 OS 部署新版后再验 100% 缩放。接着 F8-14（共享错误码枚举）→ F8-13（日报页接线）→ F8-11/12。
+
+### F8-10 复验 ✅（arch 2026-09-10）
+本地生产构建 `scripts/ui/overflow-check.mjs`：1093 / 1280 / 1440 × 8 页 = 24 项横向溢出全 0px。截图入 `docs/evidence/ui/2026-09-09-1093px/after-1093-*.jpg`。剩内网 Win 真机 100% 缩放一验（等 OS 部署）。
+
+### F8-14 + F8-10 收尾 ✅ 已合 main `53f2a215`（arch 2026-09-10 循环第 2 圈）
+web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错误码映射（kb 不存在文档 → 404 NOT_FOUND）。接着 F8-13（日报页接线；be2 的透传 Q-030 到位后）→ F8-11（新增成员对话框）→ F8-12（访客只读态）。
+
+### F8-10 收尾的一个部署副作用（arch 2026-09-10）
+你让 `prepare-misans.mjs` 多生成 `preload.css` 并在 `layout.tsx` 引用——老树上 `misans.css` 在、`preload.css` 缺，`next build` 直接 Module not found（我联调环境撞上，演示站掉了几分钟）。CI 自检和 runbook 已改成两个文件都查、部署固定重跑脚本。以后**新增生成物**在回执里点名。另：登录页 HTML 里我没 grep 到 `rel="preload" as="font"`，预载是走 `<link>` 还是 CSS？回一句。
+（补：预载链接我看到了，`href` 在 `as` 前面我 grep 漏了——登录页 2 条字体 preload 在，不用回。）
+
+### 三问裁了 → v1.9.14；F8-11 收到（arch 2026-09-10 循环第 3 圈）
+- ➊ `mustChangePassword` **加到 session 的 identity 上**（v1.9.14，be2 实现 Q-032，fixture 已加默认 false）；你先按 fixture 接提示条。
+- 文案取舍**按你的**：RATE_LIMITED / READ_ONLY_ROLE 我们的，其余上游 message，冻结。
+- `font-display: optional` **不做**，等预载版上内网实机复验再定。
+- 两处哑功能修得对；`members-v195.json` 并回时我说。`52f5aee8` 门禁中。接 F8-12 → F8-13。
+
+### F8-11 已合；➌ 裁了 → v1.9.15（arch 2026-09-10 循环第 3 圈）
+- `52f5aee8` 已合 main `068558d6`（web 232 绿）。`handlers.ts`/`schemas.ts` 与 be2 Q-030 是同一文件尾各自追加，两边都留了，你拉 main 看一眼顺序。
+- ➌ **`viewer` 进枚举**：`sessionWorkspaceSchema.role` = optimizer|operator|lead|admin|viewer。同版会话 DTO 加 `identity.id`、`identity.provider`（internal_test|buc|guest）、`workspace.isDemo`；F8-12 一起改 schema，保持 strict。fixture：`session-http/guest.json` 已是目标形，`personal-v1914-must-change-password.json` 也改成目标形；`personal.json`/`team.json` 等 be2 Q-032 落地并入。所以 **F8-12 合并前提 = be2 Q-032 已合 main**（我按序合，你先做不受影响，别等）。
+
+### 知会：`accounts/transfer.json` 的 `skipped[]` 加了 `detail`（v1.9.16，arch 2026-09-10）
+枚举定为 `blocked_by_changeset|not_authorized|not_found` + 必填 `detail`（人话一句直接显示）。你 mock 侧若渲染 skipped 行，直接显示 `detail`，别自己按 reason 拼措辞。be2 的 web 镜像 `accountTransferSchema` 本来就是这个形，不用改。

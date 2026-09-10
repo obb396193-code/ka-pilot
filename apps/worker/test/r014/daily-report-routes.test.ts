@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -21,6 +22,7 @@ describe("D7 daily report route (real PostgreSQL)", () => {
   const pool = new Pool({ connectionString: databaseUrl });
   let auth: AuthContext;
   let workspaceId = "";
+  let identityId = "";
   let runId = "";
 
   const call = (search = `?date=${DATE}`): Promise<Captured> =>
@@ -36,7 +38,7 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     workspaceId = (await pool.query(
       "INSERT INTO workspaces(name,kind) VALUES($1,'team') RETURNING id", [`d7-${randomUUID()}`],
     )).rows[0].id;
-    const identityId = (await pool.query(
+    identityId = (await pool.query(
       "INSERT INTO auth_identities(provider,provider_subject,display_name) VALUES('internal_test',$1,'synthetic') RETURNING id",
       [`d7-${randomUUID()}`],
     )).rows[0].id;
@@ -60,9 +62,11 @@ describe("D7 daily report route (real PostgreSQL)", () => {
       );
     }
     await pool.query(
-      `INSERT INTO work_items(workspace_id,type,severity,title,status)
-       VALUES($1,'diagnosis','P1','account-2 成本超考核','open'),
-              ($1,'diagnosis','P2','早处理完了','done')`,
+      // v1.9.11：工作项必须归得到某处——挂账户（账户型）、挂任务（任务型）或有 assignee（私人）。
+      // 三者皆空的行不归任何人，按矩阵谁都看不到，那种数据本来就不该存在。
+      `INSERT INTO work_items(workspace_id,type,severity,title,status,media,account_id)
+       VALUES($1,'diagnosis','P1','account-2 成本超考核','open','KUAISHOU','d7-a1'),
+              ($1,'diagnosis','P2','早处理完了','done','KUAISHOU','d7-a1')`,
       [workspaceId],
     );
     runId = (await pool.query(
@@ -79,7 +83,8 @@ describe("D7 daily report route (real PostgreSQL)", () => {
       await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspaceId]);
     }
     await pool.query("DELETE FROM workspaces WHERE id=$1", [workspaceId]);
-    await pool.query("DELETE FROM auth_identities WHERE display_name='synthetic' AND provider_subject LIKE 'd7-%'");
+    // 只删本套件建的那一个：按 display_name/前缀批删会连带别的用例还在用的行（外键当场报错）。
+    await pool.query("DELETE FROM auth_identities WHERE id=$1", [identityId]);
     await pool.end();
   });
 
@@ -121,8 +126,8 @@ describe("D7 daily report route (real PostgreSQL)", () => {
   it("grades health by the highest open severity instead of defaulting to healthy", async () => {
     expect(moduleOf(dataOf(await call()), "health").status).toBe("p1_pending");
     await pool.query(
-      `INSERT INTO work_items(workspace_id,type,severity,title,status)
-       VALUES($1,'diagnosis','P0','更严重的','open')`, [workspaceId],
+      `INSERT INTO work_items(workspace_id,type,severity,title,status,media,account_id)
+       VALUES($1,'diagnosis','P0','更严重的','open','KUAISHOU','d7-a1')`, [workspaceId],
     );
     expect(moduleOf(dataOf(await call()), "health").status).toBe("p0_pending");
     await pool.query("DELETE FROM work_items WHERE workspace_id=$1 AND severity='P0'", [workspaceId]);
@@ -150,15 +155,16 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     const modules = dataOf(await call()).modules as Record<string, unknown>[];
     const account = modules.find((module) => module.key === "dim_account")!;
     const rows = account.rows as { key: string; label: string; media: string; accountId: string;
-      metrics: Record<string, number | null> }[];
+      metrics: Record<string, { value: number | null }> }[];
     expect(rows.length).toBeGreaterThan(0);
     expect(rows[0]!.key).toBe(`${rows[0]!.media}:${rows[0]!.accountId}`);
-    expect(rows[0]!.metrics.cost).not.toBeUndefined();
+    // metrics 是 canonical 形状：裸数字分不出「0」和「没有数据」。
+    expect(rows[0]!.metrics.cost!.value).not.toBeUndefined();
 
     // 维度行加总必须等于大盘卡——不同源就说明两处口径已经分叉。
     const summary = modules.find((module) => module.key === "executive_summary")!;
     const cardCost = (summary.cards as { cost: { value: number | null } }).cost.value;
-    const rowSum = rows.reduce((total, row) => total + (row.metrics.cost ?? 0), 0);
+    const rowSum = rows.reduce((total, row) => total + (row.metrics.cost!.value ?? 0), 0);
     expect(rowSum).toBeCloseTo(cardCost ?? 0, 6);
   });
 
@@ -211,15 +217,20 @@ describe("D7 daily report route (real PostgreSQL)", () => {
   it("groups the parse-driven dimensions and puts unparsed accounts under 未标注", async () => {
     const modules = dataOf(await call()).modules as Record<string, unknown>[];
     const agent = modules.find((module) => module.key === "dim_agent")!;
-    const rows = agent.rows as { key: string; label: string; metrics: Record<string, number | null> }[];
+    const rows = agent.rows as {
+      key: string; label: string; agent_type: string; metrics: Record<string, { value: number | null }>;
+    }[];
     expect(rows.length).toBeGreaterThan(0);
-    // 这批账户没有解析行 → 全部归「未标注」，不硬塞进某个真实取值里。
-    expect(rows.map((row) => row.key)).toEqual(["未标注"]);
+    // F-Q026-1：key 是冻结枚举 self|agency|unknown，**不是原文**；label 才是中文，
+    // 认不出的显「未标注」。这批账户没有解析行 → unknown。
+    expect(rows.map((row) => row.key)).toEqual(["unknown"]);
+    expect(rows[0]!.label).toBe("未标注");
+    expect(rows[0]!.agent_type).toBe("unknown");
 
     // 归并只是把账户行合并，不重算指标：加总必须仍等于大盘卡。
     const summary = modules.find((module) => module.key === "executive_summary")!;
     const cardCost = (summary.cards as { cost: { value: number | null } }).cost.value;
-    expect(rows.reduce((total, row) => total + (row.metrics.cost ?? 0), 0)).toBeCloseTo(cardCost ?? 0, 6);
+    expect(rows.reduce((total, row) => total + (row.metrics.cost!.value ?? 0), 0)).toBeCloseTo(cardCost ?? 0, 6);
   });
 
   it("leaves dim_ubp unsupported rather than guessing which segment UBP means", async () => {
@@ -250,16 +261,68 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     await pool.query("UPDATE tasks SET biz_name='CVR有端' WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
     const after = (dataOf(await call()).modules as Record<string, unknown>[])
       .find((module) => module.key === "dim_biz")!;
-    const rows = after.rows as { key: string; metrics: Record<string, number | null> }[];
+    const rows = after.rows as { key: string; metrics: Record<string, { value: number | null }> }[];
     expect(rows.map((row) => row.key)).toContain("CVR有端");
 
     // 归并加总仍等于大盘卡：归属换了口径，钱不能变多也不能变少。
     const summary = (dataOf(await call()).modules as Record<string, unknown>[])
       .find((module) => module.key === "executive_summary")!;
     const cardCost = (summary.cards as { cost: { value: number | null } }).cost.value;
-    expect(rows.reduce((total, row) => total + (row.metrics.cost ?? 0), 0)).toBeCloseTo(cardCost ?? 0, 6);
+    expect(rows.reduce((total, row) => total + (row.metrics.cost!.value ?? 0), 0)).toBeCloseTo(cardCost ?? 0, 6);
 
     await pool.query("DELETE FROM task_accounts WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
     await pool.query("DELETE FROM tasks WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
+  });
+
+  it("returns exactly the frozen fixture's module list and per-module key sets", async () => {
+    const frozen = JSON.parse(readFileSync(
+      new URL("../../../../packages/contract/fixtures/reports/daily-v1.json", import.meta.url), "utf8",
+    )) as { data: { modules: Record<string, unknown>[] } & Record<string, unknown> };
+    const live = dataOf(await call());
+
+    expect(Object.keys(live).sort()).toEqual(Object.keys(frozen.data).sort());
+
+    const liveModules = live.modules as Record<string, unknown>[];
+    expect(liveModules.map((module) => module.key)).toEqual(frozen.data.modules.map((module) => module.key));
+
+    for (const frozenModule of frozen.data.modules) {
+      const liveModule = liveModules.find((module) => module.key === frozenModule.key)!;
+      // 键只允许多出 `unsupported`（「源没接」的标记，fixture 只在部分模块上冻了它）。
+      const extra = Object.keys(liveModule).filter((key) => !(key in frozenModule));
+      expect(extra, String(frozenModule.key)).toEqual(extra.filter((key) => key === "unsupported"));
+      for (const key of Object.keys(frozenModule)) {
+        expect(Object.keys(liveModule), `${String(frozenModule.key)} 缺 ${key}`).toContain(key);
+      }
+    }
+
+    // fixture 声明了 unsupported 的模块，取值必须和我一致。
+    // （v1.9.13 起 arch 已把 dim_bid_tool / dim_resource_position 同步成填行，
+    //  我上一轮钉的「已知分歧」到此作废，改成直接严格比对。）
+    for (const frozenModule of frozen.data.modules) {
+      if (frozenModule.unsupported === undefined) continue;
+      expect(liveModules.find((module) => module.key === frozenModule.key)!.unsupported,
+        String(frozenModule.key)).toBe(frozenModule.unsupported);
+    }
+  });
+
+  it("carries the v3 row shape: every dimension row has assessment and anomaly", async () => {
+    const modules = dataOf(await call()).modules as Record<string, unknown>[];
+    for (const key of ["dim_account", "dim_biz", "dim_agent", "dim_resource_position", "dim_bid_tool"]) {
+      for (const row of (modules.find((module) => module.key === key)!.rows as Record<string, unknown>[])) {
+        const assessment = row.assessment as Record<string, unknown>;
+        expect(assessment, `${key} 行缺 assessment`).toBeDefined();
+        expect(typeof row.anomaly).toBe("boolean");
+        // 达标判定与六卡同源：现金消耗 ≤ 考核价 × 真实转化。
+        const metrics = row.metrics as Record<string, { value: number | null }>;
+        const price = (assessment.price as { value: number } | null)?.value ?? null;
+        if (price !== null && metrics.cashCost!.value !== null && metrics.realConversion!.value !== null) {
+          expect(assessment.onTarget).toBe(metrics.cashCost!.value <= price * metrics.realConversion!.value);
+        } else {
+          // 缺任一项时是「不知道」，不是「不达标」。
+          expect(assessment.onTarget).toBeNull();
+          expect(row.anomaly).toBe(false);
+        }
+      }
+    }
   });
 });

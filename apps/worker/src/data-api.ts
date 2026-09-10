@@ -2,10 +2,12 @@ import {
   AccountListRepository,
   AccountMuteRepository,
   AccountNameParseRepository,
+  GuestAccessRepository,
   IdentityPasswordRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
   AdminMembersRepository,
+  EtlRunListRepository,
   ChangeSetRepository,
   AuthSessionRepository,
   createPool,
@@ -38,6 +40,7 @@ import { AccountMuteService } from "./work-items/account-mute-service.js";
 import { AgentModelCatalogService } from "./agent/model-catalog-service.js";
 import { AdminCalendarService } from "./admin/calendar-service.js";
 import { AdminMembersService } from "./admin/members-service.js";
+import { EtlRunListService } from "./admin/etl-run-list-service.js";
 // be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
 import { createAccountRoutes } from "./r014/account-routes.js";
 import { createMeRoutes } from "./r014/me-routes.js";
@@ -98,6 +101,7 @@ async function main(): Promise<void> {
     agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
     adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
     adminMembersService: new AdminMembersService(new AdminMembersRepository(pool)),
+    etlRunListService: new EtlRunListService(new EtlRunListRepository(pool)),
     detailService: new ReadDetailService({
       workItems: new WorkItemRepository(pool),
       changeSets: new ChangeSetRepository(pool),
@@ -116,7 +120,18 @@ async function main(): Promise<void> {
     sessionHttpService: new SessionHttpService(
       sessionAuthService,
       internalTestLoginProvider,
-      { ttlSeconds: config.sessionTtlSeconds },
+      {
+        ttlSeconds: config.sessionTtlSeconds,
+        // v1.9.6 访客登录。这两个 ENV 还没进 data-api-config.ts 的解析器（那是共用文件），
+        // 先在这里读；已在回执请 arch 把它们并进去。
+        guest: {
+          enabled: process.env.GUEST_ACCESS_ENABLED === "1",
+          workspaceId: process.env.GUEST_WORKSPACE_ID ?? null,
+          findGuestIdentity: (workspaceId) => new GuestAccessRepository(pool).findGuestIdentity(workspaceId),
+          issueSession: (workspaceId, identityId, token, expiresAt) =>
+            new GuestAccessRepository(pool).issueGuestSession(workspaceId, identityId, token, expiresAt),
+        },
+      },
     ),
     sessionAuthService,
     internalToken: config.internalToken,

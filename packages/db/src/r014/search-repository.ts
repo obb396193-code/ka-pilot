@@ -117,9 +117,9 @@ export class SearchRepository {
       `SELECT id, title, severity, status FROM work_items
        WHERE workspace_id=$1 AND coalesce(title,'') ILIKE $2 ESCAPE '\\'
          -- 工作项标题里常带账户名与成本；不收口等于把别人的经营数据做成可搜索索引。
-         AND ${workItemScopeClause("$3", "$4", "work_items")}
+         AND ${workItemScopeClause("$3", "$4", "work_items", "$5")}
        ORDER BY created_at DESC LIMIT ${SEARCH_LIMIT_PER_TYPE}`,
-      [auth.workspaceId, pattern, scope.kind, scope.allowed],
+      [auth.workspaceId, pattern, scope.kind, scope.allowed, auth.userId],
     );
     return (result.rows as Record<string, unknown>[]).map((row) => ({
       type: "work_item" as const,

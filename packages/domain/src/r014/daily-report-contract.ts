@@ -131,3 +131,110 @@ export function groupRowsByDimension<Row extends { key: string; metrics: Record<
   return [...buckets.values()].sort((left, right) =>
     (right.metrics.cost ?? 0) - (left.metrics.cost ?? 0) || left.key.localeCompare(right.key));
 }
+
+/**
+ * v1.9.2「维度行复用 `account.dimension/v3` 行结构」的具体化（fixture `reports/daily-v1.json`）：
+ * 每行除 metrics 外还带 `assessment` 与 `anomaly`。
+ *
+ * 达标判定与大盘六卡**同源同式**：现金消耗 ≤ 考核价 × 真实转化 → 达标。
+ * 两处分头算迟早会出现「卡说达标、行说没达标」。
+ */
+export interface DailyRowAssessment {
+  price: { value: number; effectiveDate: string | null } | null;
+  priceSource: "history" | "ka_daily";
+  onTarget: boolean | null;
+  costStatus: "green" | "red" | null;
+  costStatusReason: "window_ok" | "window_over" | "cash_missing" | "conversion_missing" | "assessment_missing";
+  budgetUsageRate: { value: null; state: "undefined" };
+}
+
+export function assessDailyRow(input: {
+  cashCost: number | null; realConversion: number | null;
+  price: number | null; priceEffectiveDate: string | null;
+}): DailyRowAssessment {
+  const budgetUsageRate = { value: null, state: "undefined" } as const;
+  const price = input.price === null
+    ? null
+    : { value: input.price, effectiveDate: input.priceEffectiveDate };
+  // 缺哪一项就说缺哪一项，**不拿 0 顶替**：没有考核价时「达标与否」是不知道，不是不达标。
+  if (input.price === null) {
+    return { price, priceSource: "history", onTarget: null, costStatus: null,
+      costStatusReason: "assessment_missing", budgetUsageRate };
+  }
+  if (input.cashCost === null) {
+    return { price, priceSource: "history", onTarget: null, costStatus: null,
+      costStatusReason: "cash_missing", budgetUsageRate };
+  }
+  if (input.realConversion === null) {
+    return { price, priceSource: "history", onTarget: null, costStatus: null,
+      costStatusReason: "conversion_missing", budgetUsageRate };
+  }
+  const onTarget = input.cashCost <= input.price * input.realConversion;
+  return {
+    price, priceSource: "history", onTarget,
+    costStatus: onTarget ? "green" : "red",
+    costStatusReason: onTarget ? "window_ok" : "window_over",
+    budgetUsageRate,
+  };
+}
+
+/**
+ * v1.9.8 F-Q026-1：昵称里的运营方值 → 冻结枚举 `self|agency|unknown`。
+ * **key 是枚举，不是原文**；label 用规范中文名，认不出的显「未标注」。
+ *
+ * 归并会把「代投」「代理」并成同一行，所以 label 取规范名而不是某一条的原文
+ * ——否则同一行的名字会随哪条先进来而变。
+ */
+export const AGENT_TYPE_LABELS: Record<string, string> = {
+  self: "自投", agency: "代投", unknown: UNLABELLED_DIMENSION,
+};
+
+export function agentTypeKeyOf(nicknameValue: string | null): "self" | "agency" | "unknown" {
+  const value = (nicknameValue ?? "").trim();
+  if (value === "自投") return "self";
+  if (value === "代投" || value === "代理") return "agency";
+  return "unknown";
+}
+
+/**
+ * 维度行的 metrics 必须是 canonical metric set（fixture 冻的是 `{value, availability}`
+ * 与七个 ratios），不是裸数字。比率一律由分子分母现算：
+ * **分母为 0 或缺数时是 undefined/infinite，不是 0**。
+ *
+ * `wakeUv` / `potentialUv` canonical 日表没有这两列 → 恒 missing，不拿别的量顶替。
+ */
+export function canonicalRowMetrics(raw: {
+  cost: number | null; cashCost: number | null; exposure: number | null; click: number | null;
+  conversion: number | null; realConversion: number | null; costSpace: number | null;
+}): Record<string, unknown> {
+  const value = (amount: number | null): { value: number | null; availability: "available" | "missing" } =>
+    amount === null ? { value: null, availability: "missing" } : { value: amount, availability: "available" };
+  const ratio = (numerator: number | null, denominator: number | null):
+  { value: number | null; state: "finite" | "infinite" | "undefined" } => {
+    if (numerator === null || denominator === null) return { value: null, state: "undefined" };
+    if (denominator === 0) return numerator === 0
+      ? { value: null, state: "undefined" }
+      : { value: null, state: "infinite" };
+    return { value: Number((numerator / denominator).toFixed(6)), state: "finite" };
+  };
+
+  return {
+    cost: value(raw.cost), exposure: value(raw.exposure), click: value(raw.click),
+    conversion: value(raw.conversion), realConversion: value(raw.realConversion),
+    cashCost: value(raw.cashCost), costSpace: value(raw.costSpace),
+    // canonical 日表没有这两列；不拿别的量顶替。
+    wakeUv: value(null), potentialUv: value(null),
+    ratios: {
+      ctr: ratio(raw.click, raw.exposure),
+      cvr: ratio(raw.conversion, raw.click),
+      realCpa: ratio(raw.cashCost, raw.realConversion),
+      cashCpa: ratio(raw.cashCost, raw.conversion),
+      // 扣量 gap = 真实转化 / 平台转化 − 1；缺任一边都是 undefined。
+      gap: raw.realConversion === null || raw.conversion === null || raw.conversion === 0
+        ? { value: null, state: "undefined" as const }
+        : { value: Number((raw.realConversion / raw.conversion - 1).toFixed(6)), state: "finite" as const },
+      potentialRate: ratio(null, null),
+      biConversionRate: ratio(null, null),
+    },
+  };
+}

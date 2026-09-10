@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 
 import {
+  guestLoginRequestSchema,
   internalTestLoginRequestSchema,
   logoutSuccessResponseSchema,
   sessionErrorResponseSchema,
@@ -38,10 +39,50 @@ export interface SessionHttpServiceOptions {
   now?: () => Date;
   token?: () => string;
   ttlSeconds?: number;
+  /** v1.9.6 访客登录；不配就是关闭，`POST /auth/login {provider:"guest"}` 一律 404。 */
+  guest?: GuestAccessOptions;
+}
+
+export interface GuestAccessOptions {
+  enabled: boolean;
+  /** 演示空间 id；仓储会再核一次它确实是 `kind=team + is_demo`，配错不放行。 */
+  workspaceId: string | null;
+  findGuestIdentity: (workspaceId: string) => Promise<string | null>;
+  /** 建会话另走一条路：常规路径强制要求个人空间，访客没有。见仓储注释。 */
+  issueSession: (workspaceId: string, identityId: string, token: string, expiresAt: Date) => Promise<boolean>;
+  /** 契约定的 2 小时，比常规会话短——访客不该长期挂着。 */
+  ttlSeconds?: number;
+}
+
+const GUEST_TTL_SECONDS = 2 * 60 * 60;
+const GUEST_WINDOW_MS = 60 * 60 * 1000;
+const GUEST_MAX_PER_WINDOW = 20;
+
+/**
+ * 访客登录限速。契约说按 IP 20 次/小时；壳层当前没有把 IP 传进 `login()`
+ * （那要改 `http-server.ts`，不是我的文件），所以**没有 IP 时退化成全局桶**——
+ * 弱一些，但不假装限速到位。壳层哪天把 IP 传进来，同一段代码自动变成按 IP。
+ */
+class GuestLoginLimiter {
+  private readonly hits = new Map<string, number[]>();
+
+  allow(key: string, now: number): boolean {
+    const recent = (this.hits.get(key) ?? []).filter((at) => now - at < GUEST_WINDOW_MS);
+    if (recent.length >= GUEST_MAX_PER_WINDOW) return false;
+    recent.push(now);
+    this.hits.set(key, recent);
+    if (this.hits.size > 10_000) {
+      for (const [existing, at] of this.hits) {
+        if (at.every((time) => now - time >= GUEST_WINDOW_MS)) this.hits.delete(existing);
+      }
+    }
+    return true;
+  }
 }
 
 function error(
-  status: 400 | 401 | 403 | 405 | 500 | 502,
+  // 404 是 v1.9.6 访客登录关闭时用的：功能没开就当这条路不存在，不透露有这么个入口。
+  status: 400 | 401 | 403 | 404 | 405 | 500 | 502,
   code: "INVALID_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "INTERNAL_ERROR" | "SOURCE_TRUNCATED",
   message: string,
   requestId: string,
@@ -88,6 +129,8 @@ export class SessionHttpService {
   private readonly now: () => Date;
   private readonly token: () => string;
   private readonly ttlSeconds: number;
+  private readonly guest: GuestAccessOptions | undefined;
+  private readonly guestLimiter = new GuestLoginLimiter();
 
   constructor(
     private readonly auth: SessionAuthService,
@@ -97,6 +140,7 @@ export class SessionHttpService {
     this.now = options.now ?? (() => new Date());
     this.token = options.token ?? (() => randomBytes(32).toString("base64url"));
     this.ttlSeconds = options.ttlSeconds ?? 8 * 60 * 60;
+    this.guest = options.guest;
     if (!Number.isInteger(this.ttlSeconds) || this.ttlSeconds < 60 || this.ttlSeconds > 7 * 24 * 60 * 60) {
       throw new Error("session ttl must be an integer between 60 seconds and 7 days");
     }
@@ -115,7 +159,10 @@ export class SessionHttpService {
     };
   }
 
-  async login(body: unknown, requestId: string): Promise<SessionHttpResult> {
+  async login(body: unknown, requestId: string, clientIp?: string): Promise<SessionHttpResult> {
+    if ((body as { provider?: unknown } | null)?.provider === "guest") {
+      return this.guestLogin(body, requestId, clientIp);
+    }
     const parsed = internalTestLoginRequestSchema.safeParse(body);
     if (!parsed.success) return sessionInputError(requestId);
     const identityId = await this.loginProvider.authenticate(parsed.data.username, parsed.data.password);
@@ -138,6 +185,40 @@ export class SessionHttpService {
       return result;
     }
     return { ...result, sessionToken: token, cookieMaxAgeSeconds: this.ttlSeconds };
+  }
+
+  /**
+   * v1.9.6 访客登录：匿名会话落到演示空间，viewer 只读，TTL 2 小时。
+   * **关闭时回 404 而不是 403**——功能没开就当这条路不存在，不透露有这么个入口。
+   */
+  private async guestLogin(body: unknown, requestId: string, clientIp?: string): Promise<SessionHttpResult> {
+    const guest = this.guest;
+    if (guest === undefined || !guest.enabled || guest.workspaceId === null) {
+      return error(404, "INVALID_REQUEST", "Guest access is not enabled", requestId);
+    }
+    if (!guestLoginRequestSchema.safeParse(body).success) return sessionInputError(requestId);
+    // 限速键：有 IP 用 IP，没有就退化成全局桶（见 GuestLoginLimiter 注释）。
+    if (!this.guestLimiter.allow(clientIp ?? "global", this.now().getTime())) {
+      return error(403, "FORBIDDEN", "Too many guest logins, try again later", requestId);
+    }
+
+    const identityId = await guest.findGuestIdentity(guest.workspaceId);
+    // 找不到预置的访客身份 = 演示空间没灌好；**不现建身份**，那会在真库里造出一个
+    // 谁也没审过的可登录主体。
+    if (identityId === null) return error(404, "INVALID_REQUEST", "Guest access is not enabled", requestId);
+
+    const token = this.token();
+    const ttlSeconds = guest.ttlSeconds ?? GUEST_TTL_SECONDS;
+    const issued = await guest.issueSession(
+      guest.workspaceId, identityId, token, new Date(this.now().getTime() + ttlSeconds * 1_000),
+    );
+    if (!issued) return loginFailure(requestId);
+    const result = await this.view(token, requestId);
+    if (result.status !== 200) {
+      await this.auth.logout(token);
+      return result;
+    }
+    return { ...result, sessionToken: token, cookieMaxAgeSeconds: ttlSeconds };
   }
 
   async current(token: string | null, requestId: string): Promise<SessionHttpResult> {

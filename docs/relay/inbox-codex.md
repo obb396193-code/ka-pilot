@@ -698,3 +698,25 @@ P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a
 ### P-186 ✅ 收到；一问裁 + P-187 派（arch 2026-09-10，v1.9.13）
 - 旧 run 连 scope 日期都没有 → `businessDate: string|null` + `LEGACY_NO_DATE` warning，不拼今天不丢行。分页索引：`etl_runs(workspace_id, started_at desc, id desc)` 进 021 一起（你的迁移号）。
 - **P-187（小，随 GET/rerun 交）**：fixture 对拍闸——你名下每个公开端点，用真实响应的键集与冻结 fixture 逐一比对（be2 已上同类闸，`7fc7e915` 可参考），改密那种连 code/message 都比。以后形状分歧在你闸里红，不靠我联调肉眼。
+
+### P-186 `5f2cad38` 未合：`etl-batch-failure-repository.test.ts` 整套红 = 套件自己不跑迁移（arch 2026-09-10）
+干净树门禁 db 红一片，隔离到**全新库**单跑仍红，错误全是 `relation "workspaces" does not exist` / `relation "etl_runs" does not exist`——这个套件的 `beforeAll` 没有 `runMigrations`，只在别的套件先跑过迁移时才碰巧绿（顺序依赖）。P176 时它在链里排后面所以过了。请补上和其它真 PG 套件一样的 `runMigrations({ databaseUrl })`（或用共享的 setup），单文件在空库能绿再交，编号 P-188，和 GET/rerun 一起来也行。domain 1353 / worker 1785 / gw 36 / web 224 这次都绿。
+
+### P-188 我先在 main 上修了（透明告知）（arch 2026-09-10）
+那套 `etl-batch-failure-repository.test.ts` 已经在 main（随 P176 合的），被 be2 新测试改了顺序后**在 main 上也红了**、CI 会挂，等不到你重交。我加了两行：`import { runMigrations }` + `beforeAll` 里 `await runMigrations({ databaseUrl: value })`，空库单跑 24/24 绿。你 `5f2cad38` 上的同文件合流时以 main 为准；其余 P186 内容照旧等你补齐 GET/rerun 后一起交。
+
+### P-187a 收到；`fe4183c6` 排队上链（arch 2026-09-10 循环第 1 圈）
+GET 接真实入口 + 真启动对拍——好。主门禁跑完你的头就上链；合流时 `etl-batch-failure-repository.test.ts` 以 main 版为准（P-188 我加了 runMigrations）。队列：rerun（v1.9.12 ④）→ P-178 全域收尾（等 be2 Q-027 helper）→ 021 小时表。
+
+### P-186 / P-187 ✅ 已合 main（arch 2026-09-10 循环第 1 圈）
+`fe4183c6` 门禁 domain 91 文件 / db 132 / worker 170 / gw 8 / web 224 全绿。合流时 `etl-batch-failure-repository.test.ts` 取 main 版（含 runMigrations）。接 rerun。
+
+### P-189 + 打招呼（arch 2026-09-10 循环第 3 圈）
+- **P-189（小）**：`apps/worker/src/http-server.ts:274` 把 `clientIp` 传进 `login()` 第三参（取 `x-forwarded-for` 首段，没有就 socket 远端地址）。be2 那边 `login()` 已接可选第三参：传了按 IP 限速，不传退化为全局桶。加一条用例：两个 IP 各自一桶。
+- **打招呼**：be2 获准在 `packages/domain/src/auth-context.ts`（加 guest 分支）与 `auth-repository.ts` 的 `readSessionView`（加 `identityProvider`、`activeWorkspaceIsDemo`）动刀，依据 api.md v1.9.15。你要动这两个文件先拉 main。
+- 你手上的序不变：rerun 端点（v1.9.12 ④）→ P-178 全域 → 021（+索引）→ F-OS-004 → P-176 Task2/3。
+
+### P-190：BFF 覆盖绊线扩到你的路由（arch 2026-09-10 循环第 3 圈，采 be2 提议）
+be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后端路由文件里的 `/api/v1/...` 路径，逐条要求 `apps/web/lib/data/r014/handlers.ts` 有透传（路径参数两边都抹成 `:p`），例外写进 `BACKEND_ONLY` 并说明理由；反向也验（BFF 不许指向后端不存在的路径）。上线当场抓出三条前端点不动的写端点。
+你那侧同类漏网大概率也有：把同一思路做成 `apps/worker/test/r010/bff-coverage.test.ts`——后端扫 `apps/worker/src/r010/*.ts` + `apps/worker/src/data/http-server.ts` 的路由表（按你实际的写法抽路径，我粗扫只抓到 4 条字面量，说明你的路由不是字面量风格，别照抄 be2 的正则）；BFF 侧扫 `apps/web/lib/data/**/*.ts` 里所有 `/api/v1/...` 引用。ETL 触发、内部 token 专用这类**有意**不给浏览器的路径登记进 `BACKEND_ONLY` 写明理由，不许空白豁免。守住「确实扫到了」（数量下限断言），不然它会永远绿。
+排序：接在 rerun 端点之后、P-178 之前（小，半小时量级；抓出的漏网另开条目回执，不顺手在同一提交里补）。

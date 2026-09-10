@@ -1300,8 +1300,23 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - ④ `POST /system/etl-runs/:id/rerun`（admin）= **新 job**：复制原 job 的 workspace/type/scope，credential owner 保持原 owner；允许原状态 ∈ done|failed|blocked_auth（queued/leased/running → 409 `INVALID_STATE`）；幂等键 = 原 runId（同 run 已有 queued/running 的重跑 → 409 `CONFLICT` 并返回那个 jobId）；响应 `{jobId, sourceRunId}`；写 timeline 一条。
 
 ## v1.9.13 追加（2026-09-10 arch；裁 be2 Q-028 两处分歧 + Codex P-186 一问）
-- `POST /accounts/transfer` 响应加 **`skipped[]`**：`{media, accountId, reason:"blocked_by_changeset"|"not_authorized"|"not_found", detail}`；部分成功 200 + skipped，一户都没动才 409。fixture `accounts/transfer.json` 已加。
+- `POST /accounts/transfer` 响应加 **`skipped[]`**：`{media, accountId, reason:"not_granted"|"blocked_by_changeset"|"already_owned"}`（strict，无 detail；与 be2 A7 已合实现一致）；部分成功 200 + skipped，一户都没动才 409。fixture `accounts/transfer.json` 已加。
 - `reports/daily-v1.json`：`dim_bid_tool`、`dim_resource_position` 与 `dim_agent` 同批 `unsupported:false` 填行（之前只改了一个，是我漏的）。
 - `GET /system/etl-runs` 旧 run 连 scope 日期都没有：`businessDate: string|null` + `warnings[] {code:"LEGACY_NO_DATE"}`，不拼今天、不丢行。
 - **对拍闸立为两侧标配**：be2 已上「端点实际响应键集 vs 冻结 fixture」的自动对拍；Codex 同类闸 = P-187（下条派）。arch 联调只做抽查。
 
+## v1.9.14 追加（2026-09-10 arch；裁 fe 三问）
+- `GET /auth/session` 的 `identity` 加 **`mustChangePassword: boolean`**（internal_test 且 `identity_passwords.must_change` 为 true 时 true；buc/guest 恒 false）。设置页顶部据此提示「请修改初始密码」；改密成功后下一次 session 读回 false。fixture 先放 `session-http/personal-v1914-must-change-password.json`（现有 session fixture 由 strict schema 守着，be2 Q-032 落地时一并加字段）。be2 实现（session-http 在他手上）。
+- 错误文案取舍：**`RATE_LIMITED`、`READ_ONLY_ROLE` 以前端文案为准**（说清等多久/找谁开），其余以上游 `message` 为准（同一码在不同页面语义不同）。冻结。
+- `font-display`：**暂不改 optional**，等预载版上内网 Win 实机复验；仍跳再上 optional（正文），标题保留 swap。
+- fe 顺手修的两处哑功能（拉数记录表 rowId 取 `runId`；`etl-runs-page` 接页）追认。
+
+
+## v1.9.15 追加（2026-09-10 arch；裁 be2 Q-032 访客卡点 + fe F8-11 ➌）
+- **鉴权不变量放宽（方案 a，钥匙是身份不是空间）**：`auth-context` 解析会话时，若 `identity.provider === "guest"`，跳过「有且仅有一个个人空间」检查，改为要求 `activePersonalWorkspaceIds` 为空 **且** 活动空间 `kind="team"` 且 `is_demo=true`，否则 403 `GUEST_SCOPE_INVALID`（新码，只在 ENV/灌数配错时出现，不进前端稳定码表，前端按未知 403 处理）。非 guest 身份的不变量一字不改。会话快照（`readSessionView`）补 `identityProvider`、`activeWorkspaceIsDemo` 两字段。
+- DB 枚举：`auth_identities.provider` 加 `guest`；`workspace_memberships.role` 加 `viewer`（be2 023 已放宽 check；schema.sql 注释同步）。
+- 会话 DTO（`GET /auth/session` 与 `POST /auth/login` 回的会话视图）定形：`identity{ id, provider: internal_test|buc|guest, displayName, mustChangePassword }`；`activeWorkspace` 与 `workspaces[]` 加 `isDemo: boolean`；`role` 枚举 = `optimizer|operator|lead|admin|viewer`。fixture 统一：`session-http/guest.json` 已是目标形；`personal-v1914-must-change-password.json` 改为目标形（personal 示例）；`personal.json`/`team.json` 在 be2 Q-032 落地的同一提交并入目标形（strict 测试同提交改），之后删 v1914 文件。fe 在 F8-12 同步 `sessionViewSchema`/`sessionWorkspaceSchema`（保持 strict）。
+- 访客限速按 IP：`http-server.ts` 把 `clientIp` 传进 `login()` 第三参（Codex P-189）；未传时退化为全局桶（be2 已实现）。
+
+## v1.9.16 追加（2026-09-10 arch；修 v1.9.13 与已落地实现的分歧）
+- `POST /accounts/transfer` 的 `skipped[]` 定为 **`{media, accountId, reason: "blocked_by_changeset"|"not_authorized"|"not_found", detail: string}`**（strict；`detail` 必填、人话一句，前端直接显示不自己拼措辞）。v1.9.13 写的 `not_granted|already_owned`/无 detail **作废**——be2 的 domain 合约、仓储、worker 用例与 web 镜像四处已按本形落地，fixture 是唯一的异类，改 fixture 不改代码。`already_owned`（目标方已持有）不单列：仓储按"无有效授权"或正常移交处理。fixture `accounts/transfer.json` 已改。

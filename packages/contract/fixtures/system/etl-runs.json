@@ -32,7 +32,10 @@
         ],
         "failedStage": "raw"
       }
-    ]
+    ],
+    "page": 1,
+    "pageSize": 50,
+    "total": 2
   },
   "meta": {
     "requestId": "fixture",
@@ -40,6 +43,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.7.5：一行 = 一次 attempt（etl_runs 行，runId=BIGSERIAL 字符串；同 jobId 可多 attempt）；rows.raw/canonical = 本 attempt 各阶段计数，阶段未到 → null"
+    "_note": "v1.9.12：正式分页；一行一次 attempt；各阶段计数只来自本 run；dataAsOf 为运行观测时间，不是 canonical 数据新鲜度"
   }
 }
