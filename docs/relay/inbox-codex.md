@@ -788,3 +788,4 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 ### 热修知会 + 一条硬规矩（arch 2026-09-10）
 你 `76d1ca1c` 在 `packages/domain/src/admin-members.ts` 里加了 `import … from "./session-http-contract.js"`，主门禁 web 红：这个文件被 `apps/web` 的 `node --test` **直接按源码加载**，node 不会把 `./x.js` 改写成 `./x.ts`，整个 `admin-members-bff.test.ts` 直接 ERR_MODULE_NOT_FOUND。你的 tsc/vitest 看不到，因为它们会改写。我已热修（`02395edc`：上限常量内联，语义不变）。
 **规矩**：被 web 直接 import 的五个 domain 文件（admin-members / agent-models / admin-calendar / work-item-list / r010 命令契约的源）**不许有相对 `.js` import**；要复用别的文件先看 web 是否直接加载它。门禁脚本和 CI 各加了一条守卫（DOMAIN-IMPORT），下次会当场红。
+- 更正：上面说的 DOMAIN-IMPORT 守卫**撤了**——它会把只被 web 当 `import type` 用的文件也点名（那些运行时不加载，`.js` 无害）。真正的闸就是 `apps/web` 的 `npm test`（它按运行时加载）；规矩不变：**改被 web 运行时加载的 domain 文件（admin-members / agent-models / admin-calendar / r010 命令契约）后，跑一遍 `cd apps/web && npm test`** 再交。
