@@ -1,5 +1,17 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260911-01 收口移交：03652449修小时门禁，910ff9f3接新SQL绊线；不再开功能（be）
+
+**收到5a84a5ec老板转派**。本人收口后停派，后续P211/小时/其余队列全部交be2；不再起新文件或功能。`de98a243`是读到转派前已经完成的自查11个人filters，独立提交保留给你裁是否一并取；不会回退已做成果，也不与be2继续抢同一模块。同步main至5a84a5ec的merge=`145c8069`，唯一信箱冲突两方原文都保留。
+
+**你退回的真红已独立先复现后修**：`03652449`仅改production-composition PG测试。025已装+reader已注入后，个人hourly的源是qihang落库，KA=false不该禁它：无样本200但25格missing/dataAsOf null/coverage false，不称真数ready；插合成hour样本后真进程只回本人25，不回同号腾讯900/团队800；切team且KA关闭仍503。未授权403/旧token401/退出401和原pivot/mute/ignore/dry-run不执行全保留，完整真实DB session+child+BFF用例1/1过。生产KA/权限代码0改，不能将这个200解释为绕过KA。Worker type/lint绿。
+
+**SQL前缀核查**：本人各accountScopeClause调用已有表前缀，未发现裸列恒真；新绊线实际红在业务account-day筛选和readiness枚举网格的SELECT1形状，不是第二grant解析。`910ff9f3`将前者写成标准三列row-value IN半连接（原共享授权闸保留），后者只将EXISTS投影常量改为expected.ds（枚举/NOT EXISTS条件不变）。没动be2 helper/测试、没加豁免。绊线2/2+账户日/readiness真实PG共17/17，跨媒体/空间/缺日/失败重算/RR全保留；DB type/lint/cacheaudit0。
+
+**手上多值filters交付**：`de98a243`，五字段params.filters，OR内AND间、三键+ds同RR，四类公开query（summary/trend/table/dimension）已经实际PG→HTTP。四份候选 `docs/plans/fixtures/selfcheck11/` 请核，不动正式Contract；Domain79、DB89、Worker不同240、Web244过，三包type/lint/缓存audit0，核心行100%。合main后一次118项回归有2个5秒超时，保留原阈值隔离重跑61/61过；不把这次现象抹掉，也未靠加timeout换绿。完整命令/证据/红测/边界在 `2026-09-10-自查11-看板多值筛选纵切片.md` 最终质量节。
+
+**交接清单**：`docs/plans/R010-状态.md` 顶部逐项列44个数据域文件的现状/未完，以及ETL/runtime恢复边界；请转be2从该清单接。P211剩GET filters、summary.assessment三BI、团队同形、resource_position别名；source.timezone受控配置/小时自动采样；Gap正式源与OS真数双证仍未完成。新v1.9.26形状/时区已收到，不再报等裁。selfcheck05–11仍是待你审合的本地candidate，不报已部署/真源验证；磁盘3.2GiB未五包全量/build。本人无push/新媒体写/视觉改动。
+
 ### 自查-20260910-10 `f612282a`：P211个人三命名维度已接HTTP，响应候选请核（be）
 
 按现有 canonical `{queryId:"account.dimension",params:{dateFrom,dateTo,dimensionType}}` 增 optimizer/goal/placement；沿 `/api/v1/query`，不另造view入口。三键读parse绑定的历史规则，manual优先、pending忽略、改名不复用旧昵称；同RR聚合每日生效考核价与metrics，来源按账户计数，mixed不拆行。正式factory/Registry已挂，非法事实502、超限SOURCE_TRUNCATED、DB故障unavailable，不回落KA。
