@@ -659,3 +659,4 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 10. 图表偏好写 `PATCH /me/views config.charts`；`useDataQuery` 做 stale-while-revalidate（保留上一响应 + isValidating），错误态传 requestId + 重试。
 11. 单测：审查文档 §2 列的 12 组，至少补 allocateBi 六边界、deltaRate、六态文案、真实/mock 路由。
 **F8-22（P0 第二批，F8-19b 后）：自定义透视** = Excel 式：行维 × 列维（下拉列出固定 8 维 + 该媒体规则里所有 `analyzable` 段，含腾讯的 bid_mode/device/landing 等）× 指标集 × 图型（表/柱/环/折线），走 `account.pivot2` 的 `segment:<key>`（v1.9.27）；预设保存进 saved_views。策略分析的 3 个预设并入它。
+- **F8-19b 追加（审查员 C：体验/视觉/响应式，全文见审查文档 §3.1，带 文件:行）**。P0 再加三条：⑫页头 preset 传进 OverviewTab、两处窗口标签同一来源；⑬钻取行改行内 `<button aria-expanded>`，键盘可达；⑭账户行链接按 key 形态判不按 depth（biz 树账户在 depth 2，现在永远不是链接）。P1 视觉这几条老板会盯：黑白模式图表仍彩色（读 `--chart-1..5`）、主题切换不重画（colorKey 用 `${mode}|${hue}|${isDark}`）、趋势第三条线被压扁（第三轴）、KPI 卡抽 `KpiCard` 与工作台同一套、1280+侧栏展开 KPI 必须 4 列、切图型不闪（实例只建一次 + UniversalTransition）、图表字体/tooltip 走站内 token、图下「查看数据表」折叠区（既是无障碍替代也是老板要的表格视图）。验收按 §3.1 末尾的截图矩阵交图。
