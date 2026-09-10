@@ -81,7 +81,7 @@ export type BackendSourceLineage = z.infer<typeof sourceLineageSchema>
  * 它们不在枚举里时，**合法的 404/409/429 会被 BFF 判成「上游不合契约」502**，
  * 用户看到「上游坏了」而不是「这篇文档不存在」「操作太频繁」。
  */
-export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "DIMENSION_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR", "NOT_FOUND", "CONFLICT", "RATE_LIMITED", "INVALID_CREDENTIALS", "READ_ONLY_ROLE"])
+export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "DIMENSION_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR", "NOT_FOUND", "CONFLICT", "RATE_LIMITED", "INVALID_CREDENTIALS", "READ_ONLY_ROLE", "NOT_IMPLEMENTED"])
 export type StableDataQueryErrorCode = z.infer<typeof stableDataQueryErrorCodeSchema>
 
 /**
@@ -93,6 +93,9 @@ export const stableErrorStatus: Record<StableDataQueryErrorCode, number | null> 
   UNAUTHORIZED: 401, FORBIDDEN: 403, INTERNAL_ERROR: 500,
   SOURCE_TRUNCATED: 502, UPSTREAM_INVALID_RESPONSE: 502, SOURCE_UNAVAILABLE: 503, UPSTREAM_TIMEOUT: 504,
   NOT_FOUND: 404, CONFLICT: 409, RATE_LIMITED: 429, INVALID_CREDENTIALS: 401, READ_ONLY_ROLE: 403,
+  // 501：后端明说「这条一期不做」。不进枚举的话它会被判成 502「上游坏了」，
+  // 用户看到的是故障，其实是功能没排期——这两件事不能混。
+  NOT_IMPLEMENTED: 501,
 }
 
 /**
@@ -116,6 +119,7 @@ const errorCopy: Record<string, string> = {
   CONFLICT: "这条刚被别人改过，刷新后再试一次",
   UNAUTHORIZED: "登录已过期，请重新登录",
   FORBIDDEN: "你没有做这一步的权限",
+  NOT_IMPLEMENTED: "这一块一期未开放",
   UPSTREAM_TIMEOUT: "上游超时了，稍后重试",
   SOURCE_UNAVAILABLE: "数据源暂时不可用，稍后重试",
 }
@@ -126,7 +130,7 @@ export function stableErrorCopy(code: string): string | null { return errorCopy[
  * 限速要说清「还要等多久」，只读身份要说清「找谁开权限」——后端那句英文/泛化提示说不了这些。
  * 其余码上游 message 更贴场景（同是 INVALID_CREDENTIALS，登录是「用户名或密码错误」、改密是「当前密码不正确」），以上游为准。
  */
-const enforcedCopyCodes: ReadonlySet<string> = new Set(["RATE_LIMITED", "READ_ONLY_ROLE"])
+const enforcedCopyCodes: ReadonlySet<string> = new Set(["RATE_LIMITED", "READ_ONLY_ROLE", "NOT_IMPLEMENTED"])
 export function resolveErrorMessage(code: string, upstream?: string | null): string {
   const copy = stableErrorCopy(code)
   if (copy !== null && (enforcedCopyCodes.has(code) || !upstream)) return copy

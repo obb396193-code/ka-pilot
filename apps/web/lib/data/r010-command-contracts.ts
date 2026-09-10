@@ -23,7 +23,7 @@ export const commandSuccessSchema = z.object({
 export const commandErrorCodeSchema = z.enum([
   "INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "INVALID_STATE", "FROM_VALUE_CHANGED",
   "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_TIMEOUT", "UPSTREAM_INVALID_RESPONSE", "INTERNAL_ERROR",
-  "READ_ONLY_ROLE", "RATE_LIMITED",
+  "READ_ONLY_ROLE", "RATE_LIMITED", "NOT_IMPLEMENTED",
 ])
 export const commandErrorSchema = z.object({ ok: z.literal(false), error: z.object({
   code: commandErrorCodeSchema, message: z.string().min(1).max(4096), retryable: z.boolean(), requestId: requestIdSchema,
@@ -36,5 +36,5 @@ export type CommandResponse = ((z.infer<typeof commandSuccessSchema> | Preflight
 export const commandErrorStatus: Record<CommandErrorCode, number> = {
   INVALID_REQUEST: 400, UNAUTHORIZED: 401, FORBIDDEN: 403, NOT_FOUND: 404, INVALID_STATE: 409, FROM_VALUE_CHANGED: 409,
   SOURCE_UNAVAILABLE: 503, SOURCE_TRUNCATED: 502, UPSTREAM_TIMEOUT: 504, UPSTREAM_INVALID_RESPONSE: 502, INTERNAL_ERROR: 500,
-  READ_ONLY_ROLE: 403, RATE_LIMITED: 429,
+  READ_ONLY_ROLE: 403, RATE_LIMITED: 429, NOT_IMPLEMENTED: 501,
 }
