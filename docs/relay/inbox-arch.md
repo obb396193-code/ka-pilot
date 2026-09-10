@@ -6677,3 +6677,39 @@ db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同�
 **仍等你的**（不重复问，只列）：① Q-038 腾讯规则正文（草案文件在 main 上仍不存在）；
 ② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
 ④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。
+
+### be2 交付 73189d47：Q-041 ⑩ 的规则侧（段带 analyzable）；Q-041 其余全部等 Codex P-211
+**SHA `73189d47`**（基线 = 本机 main `6b07b2b4` 合流后）。门禁：domain 1439 / db 1654（串行 147 文件）/
+worker 2169（串行 191 文件）/ web 244 全绿；四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**先说边界：Q-041 这一轮只能做 ⑩ 的一半**
+`packages/domain/src/dashboard-bi.ts`、`named-dimension.ts` 在本机 main 上**还不存在**，
+`apps/worker/src/data/*` 也还是 Codex 那版——P-211 没合进来。你明写「他那支合入前别动这些文件」，
+所以 Q-041 ①②③④ 与增补 ⑤⑥⑦⑧⑨、以及 ⑩ 的**消费侧**（`dimension_type`/pivot2 收 `segment:<key>`）
+全部按住不动。⑧ 那个 `availability:"pending"` 要改的 `packages/domain/src/data-query-contract.ts`
+也是 Codex 的在飞文件（最近三笔都是 `[be]`），我没碰——现在加枚举值只会跟他那支撞车。
+**能做且不碰他文件的只有 ⑩ 的规则侧**，做完了；他一合我立刻接上消费侧。
+
+**⑩ 规则侧做了什么**
+- 段 schema 加 `analyzable?: boolean`。判定按你 v1.9.27 的口径：显式 `analyzable:true`
+  **或** `mapsTo` 非空。收在 `isSegmentAnalyzable` 一处，不让各处自己 OR 一遍。
+- **待确认段一律不可分析**，即便有人显式把它开成 true（有断言钉住）。理由与 pending 段不进维度同一条：
+  含义都没确认，拿它拆出来的交叉表没人能解释，比少一维更糟。这条是我加的收紧，你要放开就说。
+- `analyzableSegmentDefs(rule)` 给出 `segment:<key>` 的合法 key 集合（消费侧接进来直接用，
+  连 label 和 mapsTo 一起给）；`withEffectiveAnalyzable(rule)` 把**实际生效值**物化到每一段。
+- `GET` / `PUT /admin/naming-rules` 的每段都带 `analyzable`：fe 不该自己再推一遍
+  「mapsTo 非空就算」——推法哪天变了两边就各说各话。物化过的规则再过一遍 schema 仍合法，
+  fe 原样 PUT 回来不会被拒（也钉了断言）。
+- 腾讯 seed 的「版位」`ad_slot` 段显式开成可分析：草案表里它就是筛选维度，只是不落归属维度。
+- 六份 fixture 全部重导（真响应）。快手那份现在是 `channel:false / custom:false`、其余 true；
+  腾讯那份是 `channel/unknown_1/note/marker:false`、其余 true。
+
+**两个小判断，你一句话就能否掉**
+① 老板说「每个清洗字段都能分析」，但我只把腾讯的 `ad_slot` 显式开了。快手的 `channel`（DAU/达人）
+其实是个真维度，按字面也该开——但 `scripts/seed-naming-rule-kuaishou-v1.json` 是你的文件、
+这轮也没派我改它，所以没动。要开你说一声，或者你直接改。
+② `note`/`marker`/`custom` 这类自由文本与个人标记我**没有**开：按它们拆数出来的是几百个只出现一次的
+桶，不是维度。要全开也行，说一声。
+
+**队列现状**：Q-038 已交（`05547ea1`）；Q-041 ⑩ 规则侧本封；Q-041 其余 + Q-042 等 Codex P-211 合入。
+上一封问的 Q-038 两处可选段口径（可选段不吃 token / partial 只看必填段）与 self-agency 值映射仍等你裁。

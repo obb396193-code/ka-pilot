@@ -14,7 +14,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": null
+        "mapsTo": null,
+        "analyzable": false
       },
       {
         "key": "agent_type",
@@ -28,7 +29,8 @@
         "anchor": true,
         "required": true,
         "multi": false,
-        "mapsTo": "agent_type"
+        "mapsTo": "agent_type",
+        "analyzable": true
       },
       {
         "key": "optimizer",
@@ -37,7 +39,8 @@
         "source": "free",
         "required": true,
         "multi": false,
-        "mapsTo": "optimizer"
+        "mapsTo": "optimizer",
+        "analyzable": true
       },
       {
         "key": "biz",
@@ -46,7 +49,8 @@
         "source": "free",
         "required": true,
         "multi": false,
-        "mapsTo": "biz"
+        "mapsTo": "biz",
+        "analyzable": true
       },
       {
         "key": "device",
@@ -60,7 +64,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "device"
+        "mapsTo": "device",
+        "analyzable": true
       },
       {
         "key": "resource_position",
@@ -76,7 +81,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "placement"
+        "mapsTo": "placement",
+        "analyzable": true
       },
       {
         "key": "ad_slot",
@@ -87,6 +93,7 @@
           "自动",
           "手动"
         ],
+        "analyzable": true,
         "required": true,
         "multi": false,
         "mapsTo": null
@@ -104,7 +111,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "goal"
+        "mapsTo": "goal",
+        "analyzable": true
       },
       {
         "key": "landing",
@@ -114,7 +122,8 @@
         "pattern": "^\\d+$",
         "required": false,
         "multi": false,
-        "mapsTo": "landing"
+        "mapsTo": "landing",
+        "analyzable": true
       },
       {
         "key": "unknown_1",
@@ -124,7 +133,8 @@
         "pending": true,
         "required": false,
         "multi": false,
-        "mapsTo": null
+        "mapsTo": null,
+        "analyzable": false
       },
       {
         "key": "note",
@@ -133,7 +143,8 @@
         "source": "free",
         "required": false,
         "multi": true,
-        "mapsTo": null
+        "mapsTo": null,
+        "analyzable": false
       },
       {
         "key": "marker",
@@ -145,7 +156,8 @@
         ],
         "required": false,
         "multi": false,
-        "mapsTo": null
+        "mapsTo": null,
+        "analyzable": false
       }
     ],
     "separators": [

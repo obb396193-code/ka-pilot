@@ -32,6 +32,13 @@ export const namingSegmentSchema = z.object({
    * 归属清洗页列它的取值分布，优化师每月确认后再改成正式 key + `mapsTo`。
    */
   pending: z.boolean().optional(),
+  /**
+   * v1.9.27 ⑩：这一段可不可以当**分析维度**用（`dimension_type: "segment:<key>"`）。
+   * 默认口径是「进了归属维度的段就能分析」（`mapsTo` 非空）；这个开关是给
+   * `mapsTo` 为空、但业务上确实想按它拆数的段用的（腾讯的「版位」段就是这种）。
+   * 判定统一走 `isSegmentAnalyzable`，别在各处自己 OR 一遍。
+   */
+  analyzable: z.boolean().optional(),
   pattern: z.string().min(1).optional(),
   required: z.boolean().default(false),
   /** 允许一段里塞多个值（快手的「专项」用 `-` 连多个）；**整条规范里最多一个**。 */
@@ -96,6 +103,41 @@ export function toNamingRule(record: NamingRule): NamingRule {
  */
 export function segmentMapsTo(segment: NamingSegment): string | null {
   return segment.pending === true ? null : segment.mapsTo;
+}
+
+/**
+ * 段能不能当分析维度。**待确认段一律不能**：含义都还没定，拿它拆出来的交叉表
+ * 没人能解释，比少一个维度更糟（与 `segmentMapsTo` 同一条理由）。
+ */
+export function isSegmentAnalyzable(segment: NamingSegment): boolean {
+  if (segment.pending === true) return false;
+  return segment.analyzable === true || segment.mapsTo !== null;
+}
+
+export interface AnalyzableSegmentDef {
+  key: string;
+  label: string;
+  /** 进哪个归属维度；null = 只能按段自己分析，不落维度。 */
+  mapsTo: string | null;
+}
+
+/** 规则里所有可分析段，按 order。`dimension_type: "segment:<key>"` 的合法 key 集合就是它。 */
+export function analyzableSegmentDefs(rule: NamingRule): AnalyzableSegmentDef[] {
+  return [...rule.segments]
+    .sort((left, right) => left.order - right.order)
+    .filter((segment) => isSegmentAnalyzable(segment))
+    .map((segment) => ({ key: segment.key, label: segment.label, mapsTo: segmentMapsTo(segment) }));
+}
+
+/**
+ * 把每段**实际生效的** `analyzable` 显式写出来，给出到响应里的那一份用。
+ * fe 不该自己再推一遍「mapsTo 非空就算」——推法哪天变了，两边就各说各话。
+ */
+export function withEffectiveAnalyzable<T extends NamingRule>(rule: T): T {
+  return {
+    ...rule,
+    segments: rule.segments.map((segment) => ({ ...segment, analyzable: isSegmentAnalyzable(segment) })),
+  };
 }
 
 export interface PendingSegmentDef {
