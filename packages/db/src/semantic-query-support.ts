@@ -138,9 +138,11 @@ export function buildMetricFilter(
       throw new SemanticQueryContractError("Invalid internal account-day scope");
     }
     if (parsed.data.length === 0) conditions.push("false");
-    else add(placeholder => `EXISTS (SELECT 1 FROM jsonb_to_recordset(${placeholder}::jsonb)
-      AS selected(media text,"accountId" text,ds date)
-      WHERE selected.media=metric.media AND selected."accountId"=metric.account_id AND selected.ds=metric.ds)`, JSON.stringify(parsed.data));
+    // Business membership at DATE grain, inside the accountScopeClause above;
+    // this row-value semi-join is not a second authorization tuple resolver.
+    else add(placeholder => `(metric.media,metric.account_id,metric.ds) IN (
+      SELECT selected.media,selected."accountId",selected.ds FROM jsonb_to_recordset(${placeholder}::jsonb)
+      AS selected(media text,"accountId" text,ds date))`, JSON.stringify(parsed.data));
   }
   if (scope.filters?.media) {
     add((placeholder) => `account.media = ${placeholder}`, scope.filters.media);

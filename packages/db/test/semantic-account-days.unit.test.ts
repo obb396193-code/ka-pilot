@@ -6,9 +6,10 @@ const scope = { workspaceId: "00000000-0000-4000-8000-000000000041", dateFrom: "
 describe("internal account-day intersection SQL", () => {
   it("keeps approved tuple and exact day predicates together, no interpolated selectors", () => {
     const result = buildMetricFilter(scope);
-    expect(result.whereSql).toContain('selected."accountId"=metric.account_id');
-    expect(result.whereSql).toContain('selected.media=metric.media');
-    expect(result.whereSql).toContain('selected.ds=metric.ds');
+    expect(result.whereSql).toContain('(metric.media,metric.account_id,metric.ds) IN');
+    expect(result.whereSql).toContain('SELECT selected.media,selected."accountId",selected.ds');
+    expect(result.whereSql).toContain('scoped.media = metric.media');
+    expect(result.whereSql).toContain('scoped.account_id = metric.account_id');
     expect(result.values).toContain(JSON.stringify(scope.filters.accountDays));
   });
   it("explicit empty date selection is false, never all approved accounts", () => {

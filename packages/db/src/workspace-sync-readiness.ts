@@ -32,7 +32,7 @@ export interface WorkspaceSyncReadinessInput extends WorkspaceSyncReadinessWindo
 // Both queries use the same code-owned alias; external values are always parameters.
 const READABLE_WINDOW_SQL = `r.requesting_user_id IS NOT NULL
   AND jsonb_array_length(r.accounts) > 0 AND NOT EXISTS (
-    SELECT 1 FROM jsonb_to_recordset(r.accounts) allowed(media text, account_id text)
+    SELECT expected.ds FROM jsonb_to_recordset(r.accounts) allowed(media text, account_id text)
     CROSS JOIN generate_series(r.date_from::timestamp, r.date_to::timestamp, interval '1 day') expected(ds)
     WHERE NOT EXISTS (
       SELECT 1 FROM account_metrics_daily metric
