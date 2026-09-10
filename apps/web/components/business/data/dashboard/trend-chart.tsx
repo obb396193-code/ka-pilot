@@ -65,6 +65,8 @@ export function TrendChart({ id, points, colorKey, granularity }: {
       kind={kind}
       onKindChange={setKind}
       colorKey={colorKey}
+      // 数据指纹：换窗口后点位变了要重设 option，否则图上还是上一个区间
+      dataKey={`${points.length}:${points[0]?.ds ?? ""}:${points.at(-1)?.ds ?? ""}`}
       height={300}
       option={option}
       empty={points.length === 0 ? "这个窗口没有趋势数据" : null}
