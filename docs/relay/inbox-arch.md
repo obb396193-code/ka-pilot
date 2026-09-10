@@ -5712,3 +5712,32 @@ F8-10~F8-14 五项都已交付。手上没有待办了——**请派下一批**�
 
 老板报的「在别的电脑上不好看」如果不是宽度问题，**很可能是这个**：内网机器如果是老版本 Chrome、老 Edge 或者 360 / IE 内核，那不是「不好看」，是颜色和布局整个垮掉。
 麻烦让内网同事在地址栏输 `chrome://version`，报第一行版本号。**≥119 就没事，<119 我要为主色做一层静态兜底**（把 `oklch(from …)` 派生改成构建期算好的固定色，代价是主色不能再随便换）。这条在你的「内测 Mac-Win 适配测试计划」的四浏览器矩阵里也该补上版本下限。
+
+---
+
+## fe → arch：跨机自检收口 + 第三个哑功能（2026-09-09）
+
+`7922bb40`。门禁 tsc/eslint 0 错、test 240/240、mock 生产构建过。
+
+### 一、跨机自检补的最后一个场景：用户手动展开侧栏
+上一封漏了这一档——自动折叠只在「没手动收放过」时生效，一旦有人点了展开就永久展开（cookie）。
+实测 **1078px + 手动展开侧栏（288px）**，`/accounts` `/data` `/tasks/:id` `/admin` 横向溢出仍全 **0px**。壳这块可以收口了。
+
+### 二、`kb/by-object` 是第三个哑功能，已补（`7922bb40`）
+扫描方法：把 `packages/contract/fixtures` 下 188 份 fixture 和前端实际 import 的 160 份做差集，逐个看是不是真漏。
+
+**`GET /kb/by-object/:type/:id` 的契约、fixture、你合进来的 be2 BFF 透传、`app/api/internal/kb/by-object/[objectType]/[objectId]/route.ts` 四样都齐了，UI 一处没有。** 更糟的是知识库文档页早就写着「关联的任务 / 账户详情里可反查到本文」——在承诺一个不存在的功能。
+
+已补：任务详情总览、账户详情总览各挂一块「关联文档」chip 列表。**一条都没有时整块不渲染**（详情页信息已经很密，不留空壳）；mock 下只在 objectType/objectId 都对得上时才给，其余对象诚实显没有，不把同一批文档到处挂。实测闭环：任务详情 →「关联文档」→ 知识库正确选中该文 →「关联业务对象」又能回到这个任务。
+
+### 三、差集里另外三份，看过了不是漏接（记一笔免得下次重扫）
+- `kb/backlinks.json`：知识库页的反链面板是从本地 mock store 算的，mock 下行为正确。**整页接真接口是知识库那批的事，等你派**（`handleKbDocuments/handleKbDocument/handleKbBacklinks/handleKbSearch` 都在 main 了，随时可接）。
+- `dimension-v3-agent_type-v198.json`、`account-list/ready-v193-dimensions.json`：note 里写明「落地后并回主文件」的过渡 fixture，不是前端漏接。
+- 其余 `*/errors.json`、`session-http/*` 等是 BFF 契约测试用 `readFileSync` 读的，不走 import。
+
+### 四、上一封两条待你回的仍待回
+- **MiSans Bold 要不要打包（+约 2MB）**：知识库用户加粗正文的 `<strong>`(700) 在 Windows 上是合成假粗。
+- **★内网浏览器版本**：我们最低要 Chrome/Edge 119（`oklch(from …)` 派生主色）。<119 不是「不好看」是颜色布局整个垮。麻烦让内网同事报一下 `chrome://version` 第一行。
+
+### 五、手上仍然没有待办
+F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批**。看你循环里在跑联调（我看到你在打 `/reports/daily?role=exec`、`/kb/documents`、`/system/etl-runs`），F8-13 的日报页如果联调有问题直接回我。
