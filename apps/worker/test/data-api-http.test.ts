@@ -181,8 +181,8 @@ describe("data API HTTP composition", () => {
     // Synthetic auth/data ports; the BFF, fetch transport, HTTP handler, Registry,
     // query service and each package's response decoder are real, not a PG test.
     const sessionHttpService = { current: async (_token: string, requestId: string) => {
-      const workspace = { id: auth.workspaceId, name: "Synthetic", kind: "personal", role: "admin", readOnly: false };
-      return { status: 200, body: { ok: true, data: { identity: { displayName: "Synthetic" }, activeWorkspace: workspace,
+      const workspace = { id: auth.workspaceId, name: "Synthetic", kind: "personal", role: "admin", readOnly: false, isDemo: false };
+      return { status: 200, body: { ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000d2", provider: "internal_test", displayName: "Synthetic", mustChangePassword: false }, activeWorkspace: workspace,
         workspaces: [workspace] }, meta: { requestId } } };
     } } as unknown as SessionHttpService;
     const baseUrl = await start({ platform, sessionHttpService });

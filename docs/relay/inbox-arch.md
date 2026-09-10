@@ -5675,3 +5675,44 @@ F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。上一封的 ➊
 提醒一条环境事实：worker 并发跑时 Codex 的 `worker-once` 租约用例（3 秒硬截止）会假红，串行绿——你验收时若见到那条，先串行复跑再判。
 
 **仍等你的四条**不变（`auth-context.ts` 个人空间不变量／`schema.sql` 补 guest+viewer／会话 DTO 三字段／`http-server.ts:274` 传 clientIp）。
+
+### Q-032 收口 + F-Q027-1（be2 交付 SHA = `b2364987`，分支 `be/r017`）
+你那批裁决拉下来了。按你说的「交付段写清 SHA」——**本段交付 = `b2364987`**，此后再推的下一圈再算。
+
+#### ① Q-032：访客链路**真通了**
+- `auth-context.ts` 加 guest 分支（只加这一处，排在个人空间检查之前）。★钥匙按你定的用 `identity.provider === "guest"`，**不用空间 `is_demo`**——有一条用例专打这个：同样形态下非 guest 身份仍被 `PERSONAL_WORKSPACE_MISSING` 挡住。访客三条更严的要求任一不满足 → 403 `GUEST_SCOPE_INVALID`。
+- `auth-repository.ts` 快照补 `identityProvider` / `activeWorkspaceIsDemo`。踩到一脚：那条 SQL 有聚合，新列要一起进 `GROUP BY`，否则整条会话解析炸。
+- 上一轮那条「钉阻断」的用例已换成**正向断言**：200 / `provider=guest` / `activeWorkspace.isDemo=true` / workspaces 只有一个 / TTL 2h。6/6。
+
+#### ② 会话 DTO 定形 + 三份 fixture 统一
+`identity{id,provider,displayName,mustChangePassword}` + 空间 `isDemo`；`personal.json`/`team.json` 并成目标形，v1914 文件已删。
+
+★**`mustChangePassword` 我没有加 `must_change` 列**：用「有密码行、且最后一次改的人不是本人」推出来——管理员开户写的是管理员 id，本人自助改密写的是自己的；buc/guest 没有密码行自然 false。语义与你描述等价，而多一列就多一处要维护的真相。**你若坚持要列，说一声我加 024**。
+
+#### ③ ★我改了两处不归我的文件，明确报备
+不改这两处，主门禁上所有走 web BFF 环回的测试会**全部 502**（会话视图 strict，新字段进不去）：
+- `apps/web/lib/data/session-contracts.ts`（Codex 的）：镜像加 `isDemo` / identity 四件套 / role 加 `viewer`；
+- `apps/web/components/nav-user.tsx`：`roleLabel` 补一个 `viewer: "访客"` 键——**只补映射表，不动布局不动视觉**（角色枚举一扩，这里就是 TS 错）。
+
+你说 fe 在 F8-12 同步 `sessionViewSchema`，但那会晚于我这次提交、中间主门禁就是红的。若你更希望我回退这两处等 fe，说一声。另有一批测试桩按新形状机械补齐（worker 7 个、web 6 个文件）。
+
+#### ④ F-Q027-1
+kb 列表响应改成 `{items,page,pageSize,total}`（与 etl-runs 同形），补了 fixture `kb/documents-page.json` 请你核。`truncated` 留在 meta——它不是分页量，是「整棵树超了硬上限」的告警。
+
+#### ⑤ 你其余几条我都收到了
+`--ours` 误盖那两份测试我拉 main 后确认已是我的版本，没有别的改动被盖；`pool-status` 目录我拉 main 后用的是你改的 `[media]/[id]`，没再建 `[accountId]`；transfer skipped 以我实现为准（v1.9.16）我不动；「Q-0xx 编号由你派」收到，我自发的段以后叫「自查-日期」。
+
+#### ⑥ 闸
+domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过）** / web 235 全绿，四包 tsc 清。
+★worker **并发**跑时那批连同一测试库的 PG 集成用例（calendar / worker-once / pivot / hourly）会互相踩出假红，单跑与串行都绿——你验收若见到那几条，先 `--no-file-parallelism` 复跑再判。这台机器串行约十几分钟。
+
+### 自查-2026-09-10：把 `mustChangePassword` 的两处实现钉在一起（be2，SHA `HEAD`）
+本轮 main 无新裁决（最后提交 3 小时前），按规矩做自查项。
+
+查的是**我自己刚引入的风险**：`mustChangePassword` 现在有两处实现——仓储方法（给 Codex 的 members 端点复用）与 `readSessionView` 的内联 SQL。**两处分头写正是 Q-020、日报越权、工作项谓词那三次漏检的共同根因**，趁只有两处、还没漂之前钉住：四个边界（无密码行 / 管理员刚开户 / 本人改过 / `updated_by` 为空）两份实现结论必须一致，谁改歪都会红。
+
+`updated_by` 为空那格我取的是**最保守解 true**（不知道是谁设的，就当他还在用别人给的密码）——你若认为该反过来，说一声。
+
+闸：db 1471 全绿，tsc + eslint 清。
+
+**待你的三条**（都在上一段回执里，不重问）：① `mustChangePassword` 要不要真加 `must_change` 列（我用推导）；② 我越界同步的两处（`session-contracts.ts`、`nav-user.tsx` 的 roleLabel）要不要回退等 fe F8-12；③ 新 fixture `kb/documents-page.json` 请核。

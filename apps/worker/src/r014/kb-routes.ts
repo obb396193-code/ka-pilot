@@ -40,10 +40,14 @@ export function createKbRoutes(pool: Pool): R014Route[] {
             ...positive("pageSize", context.url.searchParams.get("page_size")
               ?? context.url.searchParams.get("pageSize")),
         });
-        // `data` 严格保持 fixture 冻的形状（tree.json 只有 items）；
-        // 总数与截断标记是分页信号，放 meta —— 与 TRGM_MISSING 同一处理。
-        sendData(context.response, { items: listed.items }, context.requestId, context.maxResponseBytes,
-          { total: listed.total, truncated: listed.truncated });
+        // F-Q027-1：响应形状按 arch 裁的 `{items, page, pageSize, total}`（与 etl-runs 同形）。
+        // `truncated` 仍放 meta——它不是分页量，是「整棵树超了硬上限」的告警。
+        sendData(
+          context.response,
+          { items: listed.items, page: listed.page, pageSize: listed.pageSize, total: listed.total },
+          context.requestId, context.maxResponseBytes,
+          listed.truncated ? { truncated: true } : {},
+        );
         return;
       }
       const body = await readJsonBody(context.request, 4_194_304) as Record<string, unknown> | undefined;

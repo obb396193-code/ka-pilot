@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000002701",
+        "title": "SOP",
+        "kind": "sop",
+        "parentId": null,
+        "position": "a",
+        "children": []
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002703",
+        "title": "AI 报告归档",
+        "kind": "ai_report",
+        "parentId": null,
+        "position": "b",
+        "children": []
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002705",
+        "title": "案例库",
+        "kind": "case",
+        "parentId": null,
+        "position": "c",
+        "children": []
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002706",
+        "title": "错题本",
+        "kind": "manual",
+        "parentId": null,
+        "position": "d",
+        "children": []
+      }
+    ],
+    "page": 1,
+    "pageSize": 50,
+    "total": 4
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "GET /kb/documents?parent_id=&page=&page_size= 扁平分页（F-Q027-1，与 etl-runs 同形 {items,page,pageSize,total}）；不带 parent_id 时是整棵树，children 嵌套且 pageSize=当页行数，超硬上限时 meta.truncated=true"
+  }
+}
