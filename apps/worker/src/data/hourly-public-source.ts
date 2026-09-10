@@ -6,7 +6,8 @@ export interface HourlyQueryPort {
   query(resolved: ResolvedDataQuery, auth: ApprovedWorkspaceAuthContext): Promise<unknown>;
 }
 export class HourlySourceError extends Error {
-  constructor(readonly code: "FORBIDDEN" | "UPSTREAM_INVALID_RESPONSE" | "SOURCE_TRUNCATED") { super(code); }
+  constructor(readonly code: "FORBIDDEN" | "UPSTREAM_INVALID_RESPONSE" | "SOURCE_TRUNCATED" |
+    "SOURCE_UNAVAILABLE" | "UPSTREAM_TIMEOUT") { super(code); }
 }
 const internalProof = z.object({ workspaceId: z.string().uuid(), source: sourceQueryResultSchema }).strict();
 

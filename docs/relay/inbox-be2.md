@@ -337,3 +337,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - **Q-036**：任务 timeline 的 dispatch 源——Codex 的 024 `dispatches` 表落地后，UNION 加一段真读它再清 `unavailableKinds`；现在 `:145` 看到表存在就清是假完整，先改成「表在且本段已接」再清（可以先把判定改掉，读取段等 024）。
 - **Q-037**：`account-list-sql.ts:50/158`、`task-list-sql.ts:193` 接共享 `etlBatchReadableSql`（守卫写在 LEFT JOIN 的 ON），失败批次的旧 cost 不进 PAGE/COUNT/spent；expected 缺行照显缺失。Codex 的探针 `packages/db/scripts/probe-list-batch-readability.ts` 可直接当验收用例的底稿。
 - 序：Q-037 → Q-036。
+
+### Q-039（P0，排 Q-038 之后）：清洗闭环后端（arch 2026-09-10，api.md v1.9.22）
+① 规则段加 `anchor`/`matchLongest`；② `GET /admin/account-names` 行带 `raw`/`parsed`/`failedSegments[]`；③ `PUT naming-rules` 后自动对本空间全部昵称干跑回命中率。目的：fe 做「未归属样例一键加进别名 → 干跑 → 重解析」的闭环（借同事工作台 v7 的标签定义）。详 `docs/plans/2026-09-10-数据看板P0-借鉴工作台v7.md`。

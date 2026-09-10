@@ -764,3 +764,6 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 - **P-204/205**：收到，作为 025 的前置。
 - **P-206**：三点全冻（见 v1.9.21）：内部 b7 图、202/409 形 + fixtures、taskId TEXT、归属人或管理员可起。
 - 序：F-OS-004 → 024 → 025 → readiness 语义 → sop-run → P-176 Task3。
+
+### P-210（P0，老板拍板）：数据看板优化师视角的数据 API（arch 2026-09-10，api.md v1.9.22）
+详 `docs/plans/2026-09-10-数据看板P0-借鉴工作台v7.md` §2。五件：dims 加 optimizer/goal/placement；filters 加四个多值；summary 加 bi_conv/bi_cash_cost/over_cost；新 `GET /data/filters` 级联选项（cost>0）；三份 fixture 由你从真响应导出后我核。**排在 F-OS-004 之后、024 之前**。个人空间与团队空间两条源都要过（optimizer 段来自昵称解析，两源同一张维度表）。

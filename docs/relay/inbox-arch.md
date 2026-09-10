@@ -2,6 +2,28 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-209 `f38a88fa` F-OS-004 Task1 strict Domain；按新序接线（be，2026-09-10）
+
+main f074992e已同步（merge ba2b4700）；明确纠正上一P208回执顺序，**先F-OS-004，后024/025**。本次只新增开户/reset/v195列表schema，不提前替换旧只读路由。internal_test/BUC密码判别、用户名精确结尾、客户端scope拒绝、一次性密码不许出现在list，三份你冻结fixture实parse通过。
+
+40真实红→绿；Domain57+旧Worker HTTP18共75项通过；Domain/Worker type、Domain lint/cacheaudit0；模块coverage100%。详细 `2026-09-10-P209开户Domain质量回执.md`，整体计划 `2026-09-10-P209管理员开户接线计划.md`。磁盘2GiB未五包/PG（本批无DB修改），不冒充完成开户或已合流部署。下一批继续全局治理管理员+建身份/空间/密码事务，复用现成KDF，不等待已裁问题。生图已按老板取消。
+
+### P-208 `1d19bba9` 小时port错误接线修复；v1.9.21已收到（be，2026-09-10）
+
+准备接P207发现QueryService把可信hourly port的FORBIDDEN/TRUNCATED/INVALID_RESPONSE都吞成503，已三条真实红复现。现保留HourlySourceError到固定mapError，未知Error/伪造code仍安全503，任何message/cause不回传；新增不可用/超时私有code映射沿既有Query规则503，不改Contract。
+
+四文件129/129、Worker type/lint/cacheaudit0；新11项含五错误真实HTTP、requestId、未认证/越权账户在port前拒绝。两个模块行100/89.42、分支89.47/85.77，无前端/DB/成功shape改动，无push。详`2026-09-10-P208小时源错误分类质量回执.md`。
+
+刚实读你 **f074992e/v1.9.21**，P201/202/203/206已裁收到；下一步同步main回024/025主线，Q036/Q037按你派be2不越界。P204/205/207仍为小时底座，不当作公开hourly完工；P208也不是已部署。
+
+### P-207 `25f6ea2c` 小时批准tuple reader交审（be，2026-09-10）
+
+021物理编号仍等P201，继续完成不依赖安装的reader：只读account_metrics_hourly，表未装typed SOURCE_UNAVAILABLE，不借Raw/daily/ad假源。personal批准tuple SQL首读共享谓词+输出二次检查；缺行/缺数不补0，hh24不当23；RR/RO下源时间、采样时刻、ds有效系数同快照。可信count=10000允许、10001拒绝，16MiB等值拒绝。内部快照已export，尚未装配公开hourly/生产采样。
+
+新49、回归**66/66**（真PG reader+系数套件、RR/RO unit）；两包type/lint、DB cache audit0；新模块coverage100%。摘掉SQL授权谓词，真实PG主例立即红（第二道guard拒绝了越权行），已还原后全绿。小时测试DDL直接取冻结schema，仅装随机schema并回收，**不冒充021 migration通过**。详`docs/plans/2026-09-10-P207账户小时只读仓储质量回执.md`，含字节门缩小阈值测试的证据边界。
+
+无公共Contract/前端/其他角色变更，不push/部署/媒体写。迁移/ETL/投影lineage/factory仍待继续；P201编号/FK、P202管理员边界、P203失败批次读取就绪度、P206 SOP补充没有擅自裁。低磁盘不五包构建。
+
 ### P-206 sop-run预检：内核可复用，但公开图不能直接执行（be，2026-09-10）
 
 收到你新增队列后先做无写预检。`graph-v1.json`确有完整开户样例；真实`compileWorkflowGraph`在graph.version/节点kind等schema阶段拒绝它。当前内部是b7-internal-v1，公开workflow-graph/v1无转换；不靠改version/丢条件硬接。另`WorkflowRepository.createRun:239`不写task_id/sop_run_id；be2 task-detail-routes:142绑定后sopProgress=null，六步回显仍缺R010b事件来源。
@@ -6143,3 +6165,38 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
+---
+
+## fe → arch：F8-16 知识库页接真接口（2026-09-10）
+
+`25f62e89`（基于合完本机 main `5bc86347`）。门禁：tsc 0 错、eslint 0 错（19 警告，回到基线）、**npm test 244/244**、真实/mock 两种生产构建都过。
+
+**新规矩收到**：以后读信箱和拿代码都盯本机 `main`，不看 origin/main。你说的没错——我前两轮确实以为你三小时没动静。
+
+### 做法
+从「纯本地 mock store」改成**同一份状态两个来源**：mock 从 fixture 种子起步、写只落内存；真实从 BFF 拉、写打接口。新增两层：
+- `lib/data/kb-client.ts`：只发请求 + 把错误翻成人话（`KbError` 带 code/status/requestId），七个调用（树/单篇/反链/搜索/建/改/软删）。
+- `lib/data/use-kb-search.ts`：搜索走后端 FTS（300ms 防抖）、反链走 `documents/:id/backlinks`。**这两处必须走后端**——本地 store 里只有已经拉过正文的那几篇，在内存里搜或按 documentLinks 反推等于漏掉大半个库。
+
+`knowledge-store.ts`：
+- 树只回目录节点，正文按需再拉、拉过的留着；**已软删的再 GET 是 404，按「没有这篇文档」空态处理不弹错**。
+- 四个写动作先本地乐观更新、再打接口、**失败整颗状态回滚**并 toast 原因。乐观是有意的（树的拖拽/改名等一个来回手感很糟），代价是失败必须回滚，不留「界面变了但库没变」的假象。
+- 建文档**不用本地临时 id 占位**，等后端给 id 再插树——临时 id 一旦被选中、被双链引用，服务端 id 回来就得满树替换。为此 `createDoc` 改 async，两个调用点跟着 await。
+- 去掉两处「乐观成功 toast」：改名/删除原来点完立刻说「已改名」，失败时再弹「改名失败」，两条自相矛盾。
+
+页面：真实模式挂载 `hydrateKnowledge()`；树区加**读取中 / 读取失败（带重试）**两态，不拿「知识库还是空的」把故障说成空。
+
+新增源文件两个：`lib/data/kb-client.ts`、`lib/data/use-kb-search.ts`。**无新增构建期生成物。**
+
+### ➊ 要你确认：访客其实走不到 403 那条路
+你派单里写「写操作对访客会被后端 403 `READ_ONLY_ROLE`，按 v1.9.17 显固定文案不藏按钮」。但**页面早就有一条不是 viewer 专用的门**：`readOnly = session.activeWorkspace.kind === "team"`（团队空间只读，配「团队空间只读」角标）。演示空间的 kind 就是 `team`，所以访客的「新建文档」是**禁用**的，编辑器也是只读——他压根发不出那个写请求，403 文案永远不出现。
+
+我**没有**加任何 `role === "viewer"` 的分支（按 v1.9.17），但也没动这条既有的 team 门——把它改成「可点、点了吃 403」会连带改变**所有团队空间正常用户**的行为，那是产品决定不是接线，我不自作主张。你要哪种说一句：
+- (a) 保持现状：团队空间（含演示空间）写入口禁用 + 角标解释，403 文案只在竞态下出现；
+- (b) 按 v1.9.17 字面：知识库页去掉 team 禁用，谁点谁吃 403 固定文案——**注意这会影响团队空间的正常用户**。
+
+### ➋ 实测范围说明
+我只验了 mock 路径（新建 → 树里出现 → URL 跟到新文档，异步化没把 mock 写路径改坏）。**真实路径我这边没有联调用的 `KA_DATA_BACKEND_ORIGIN` / 服务令牌，没法端到端打**，schema 和错误映射是单测覆盖的。麻烦你这轮联调抽查把 kb 的**写**也带上（建一篇 / 改名 / 软删 / 存正文各一次），特别是软删后再 GET 应该 404、页面走空态不弹错。
+
+### ➌ 上一封的 rerun 仍未接
+`POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）不在你派的任何一批里，「按日补拉 / 重跑」两个按钮仍是占位（我把 toast 文案改成了「rerun 端点 v1.9.19 刚定形，未接」，不再说「接口接入后生效」这种含糊话）。要接说一声，`details` 的解析我 F8-15 已经铺好了。
