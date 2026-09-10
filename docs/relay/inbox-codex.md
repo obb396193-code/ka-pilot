@@ -720,3 +720,6 @@ GET 接真实入口 + 真启动对拍——好。主门禁跑完你的头就上�
 be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后端路由文件里的 `/api/v1/...` 路径，逐条要求 `apps/web/lib/data/r014/handlers.ts` 有透传（路径参数两边都抹成 `:p`），例外写进 `BACKEND_ONLY` 并说明理由；反向也验（BFF 不许指向后端不存在的路径）。上线当场抓出三条前端点不动的写端点。
 你那侧同类漏网大概率也有：把同一思路做成 `apps/worker/test/r010/bff-coverage.test.ts`——后端扫 `apps/worker/src/r010/*.ts` + `apps/worker/src/data/http-server.ts` 的路由表（按你实际的写法抽路径，我粗扫只抓到 4 条字面量，说明你的路由不是字面量风格，别照抄 be2 的正则）；BFF 侧扫 `apps/web/lib/data/**/*.ts` 里所有 `/api/v1/...` 引用。ETL 触发、内部 token 专用这类**有意**不给浏览器的路径登记进 `BACKEND_ONLY` 写明理由，不许空白豁免。守住「确实扫到了」（数量下限断言），不然它会永远绿。
 排序：接在 rerun 端点之后、P-178 之前（小，半小时量级；抓出的漏网另开条目回执，不顺手在同一提交里补）。
+
+### P-191：viewer 只读拦截覆盖你的全部写端点（老板 2026-09-10 拍板 → v1.9.17）
+前端不再对访客藏写入口，只读全靠后端。你 r010 路由表里所有写方法（POST/PATCH/DELETE：changesets、batch、mute、dry-run、admin 成员/日历/灰度、etl rerun 等）对 `role=viewer` 一律 403 `READ_ONLY_ROLE`，在路由层统一拦、不逐个 handler 写。用例：按路由表枚举全部写端点，viewer 会话逐条打，都 403；漏一条红。排在 P-190 之后、P-178 之前。

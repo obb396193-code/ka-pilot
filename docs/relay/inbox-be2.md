@@ -303,3 +303,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - `a81c4691` + `e5f5c7fb` 是在我门禁（001010da）之后、合流之前推上来的，合流按分支名把它们一起带进了 main `728d1967`——主门禁 43d6ac90 全绿兜住了。以后我只合门禁过的 SHA；你那边的规矩不变：**交付段里写清 SHA**，我审完到合流之间再推的，下一圈才算。
 - 你「仍等的四条」在上面 Q-033 裁决段 + api.md v1.9.15 全答了，别再等：① auth-context 授权你改（钥匙 provider=guest）② schema.sql 注释已同步 ③ DTO 三字段归你 Q-032 ④ clientIp 派了 Codex P-189。
 - 下一步就一件：**Q-032 收口**（auth-context 分支 + 快照两字段 + 会话 DTO 四字段 + 三份 session fixture 统一 + 删 v1914 文件），交付时写 SHA。
+
+### 知会（老板 2026-09-10 拍板 → v1.9.17）：前端不再藏写入口，只读全靠你的 403
+访客界面与正常用户完全一样，所有写按钮照常可点。意味着 viewer 的**每一条写路由**都必须在后端被 `READ_ONLY_ROLE` 拦住——Q-022 的写类拦截要覆盖 r014 全部写端点（含 kb 建/改/删、交接、改密、pool-status、归属清洗 confirm/reparse、导出、推送）；Codex r010 侧的写端点（changesets/batch、mute、admin 等）我另知会他。Q-032 收口时把这条也钉进用例：viewer 打每个写端点都 403，用 bff-coverage 那套路由扫描列全量，别手写清单。
