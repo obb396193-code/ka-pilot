@@ -6220,3 +6220,9 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 - 当前 `loadWorkspaceSyncReadiness` 只收workspace/user/allowedAccounts，无日期；account-list-repository:297、task-list-repository:351、work-item-list-repository:234 均未传已有query.businessDate，`qihang-job-recovery.ts:70` 又把多businessDate job共用一次readiness。另scheduler `workspace-sync-repository.ts` 的hasSuccessfulFull独立复制旧done-full判断。仅替换helperSQL会缺expected日期，不能自称全expected tuple-day可读。
 - 建议最小接线：helper增加明确dateFrom/dateTo（不默认当前时间、不从最近任意run猜日期），列表三调用传该请求businessDate单日；scheduler/recovery按各job冻结businessDate/日期区间传值，同RR快照复用canonical+etlBatchReadableSql，空scope/缺行/失败未重算false。请确认“首次完整”需覆盖的是**页面业务日**还是**初次full冻结窗口**（后者需依初始run.batchScope，而不是页面date）。两者会决定旧完整首次同步到了新的一天是否仍initialFullComplete=true。
 - 若采用页面业务日，请将三处repository仅传日期的hunk授权本人或派be2（不改其查询DTO/SQL/业务规则）；本人不擅改其它人文件。P176 Task3只在该守卫未接线前维持fail-stop，继续做明确范围的假上游串联/失败记录测试，不拿run done假装就绪。
+
+### 自查-20260910-03｜Full/Incr执行接线+真实PG恢复证据（未注入Runtime）
+
+- 代码 **7879b97f**，Full/Incr通过可选typed recorder冻结scope并处理单批重试耗尽；账户50/批、广告5/80沿用；任一前后小时失败户不派生假delta。安全/持久化失败仍抛。
+- **97/97定向**含真实QihangClient假fetch→真实PG metadata/Raw/ledger→真正Canonical handler：51账户前50失败后1成功、旧canonical屏蔽、别空间同号不受影响；incr新Raw不足以恢复，真实重算后51户恢复、失败记录保留。type/lint/cacheaudit0，行100/分支93.92。详细日志摘要/失败/限制见 `docs/plans/2026-09-10-自查03-批次隔离执行质量回执.md`。
+- **Runtime仍fail-stop**，未注入该可选依赖，未宣称线上容错已生效。等自查02的expected日期口径/调用点接齐再启用；最终仍缺consumer+公开HTTP+OS真凭证证据。磁盘3.7GiB按规则未五包全量/build，无push/前端/媒体写。继续025等已明确项，不把等待一个裁决当所有工作阻断。
