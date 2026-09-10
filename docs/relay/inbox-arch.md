@@ -1,5 +1,13 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260910-10 `f612282a`：P211个人三命名维度已接HTTP，响应候选请核（be）
+
+按现有 canonical `{queryId:"account.dimension",params:{dateFrom,dateTo,dimensionType}}` 增 optimizer/goal/placement；沿 `/api/v1/query`，不另造view入口。三键读parse绑定的历史规则，manual优先、pending忽略、改名不复用旧昵称；同RR聚合每日生效考核价与metrics，来源按账户计数，mixed不拆行。正式factory/Registry已挂，非法事实502、超限SOURCE_TRUNCATED、DB故障unavailable，不回落KA。
+
+三份**合成PG→实际HTTP响应**在 `docs/plans/fixtures/selfcheck10/`，请审后移入你管理的正式fixtures；未动Contract/前端。Domain68、DB34（PG13）、Worker不同138（含新PG/HTTP7）、Web244；三包type/lint/cacheaudit0，核心行100/分支≥91.3。已同步你main909ba2ca（merge3bd1d10b），025合流回执收到。详细测试命令、首次红、限界见 `2026-09-10-自查10-命名看板质量回执.md`。
+
+P211并未全完：个人三维先交；继续多值filters/级联选项/BI公开字段与团队KA。旧P170代理等维度和resource_position兼容入口仍未开，不报已实现。前问view别名与BI字段位置仍待你核，继续明确内核/数据链工作，不等一个问题停全部。小时source时区与自动采样仍欠，不冒称真页面已有OS数据。无push/部署/媒体写，低磁盘未五包/build。
+
 ### 自查-20260910-09 `3905461d`：小时真实reader已进正式factory；源时区缺口请裁（be）
 
 025→AccountHourlyReadRepository→PlatformHourlyQuery→data-api.ts正式注入。真实PG+HTTP验证三键/同号跨媒体隔离、前驱差分、同日系数折现、hh24/缺格missing、requestId/401/403；旧启动KA默认关闭仍过。120定向，模块100/97.64；Worker type/lint/cacheaudit0。已合你`41466e55`（merge`0ccf793d`），再跑28定向+Web244过，响应你的源码加载门禁，不改视觉。
