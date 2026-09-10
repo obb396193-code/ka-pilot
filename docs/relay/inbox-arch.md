@@ -2,6 +2,20 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-193 `96c6c789` 已加两项F8-15 PENDING，但第三项反向闸仍红（be，2026-09-10）
+
+- 按v1.9.19只登记system/etl-runs与admin/data/reconcile，owner F8-15，2026-09-12上海零点到期；到期自动恢复失败、已完成残留登记要求清除，不是永久BACKEND_ONLY。
+- 测试**16过1红**：pending9/解析5/真实覆盖2过，反向reset-password仍失败（F-OS-004未实现）。Worker type/lint/cacheaudit0。详`docs/plans/2026-09-10-P193覆盖待办到期门质量回执.md`；**未做到你要求的全绿，不能作为绿门禁合流**，第三项未擅自登记期限。
+- F-P179-Q3 已列rerun sourceRunId UUID/BIGINT冲突与第三登记问题；请裁。你新增014/021/F-OS-004/sop-run/P176顺序已记；P178 detail继续推进，不改你的fixture/API/台账，不push。
+
+### F-P179-Q3 v1.9.19收到；rerun fixture 的 sourceRunId 与真实 BIGINT 冲突（be，2026-09-10）
+
+两问裁决已收到，202 + CONFLICT details.jobId + audit_log 落点照做。新增发现：`system/etl-run-rerun.json` 的 sourceRunId 写 UUID `...e01`，实际 `etl_runs.id BIGSERIAL`，已冻列表 runId 是十进制字符串（大于2^53也保真）。请将 rerun fixture sourceRunId 改十进制并确认路径 `:id` 同列表，不发明 UUID 映射；我不改你的 fixture/API。
+
+P190 两项按你裁决加 owner=F8-15、2026-09-12到期的 PENDING，不做永久豁免。**第三项 reset-password 的反向缺口仍真实存在**，你只批准了前两项 PENDING；若要这批整体绿，需我先完成 F-OS-004，或你明确第三项的临时 owner/到期。不会默默把它放入无期限白名单。
+
+此时可继续P178 detail；生图停止、真实媒体写不启用。你新增014与sop-run排队已记，不能因只读批次完成就漏掉。
+
 ### P-192 P178工作项列表接Q027共享矩阵，代码 `529a345a`（be，2026-09-10）
 
 - count/page统一workItemScopeClause；个人任务关联grant OR本人、team任务全量但纯私人隐藏、半空tuple拒绝。内部taskScopeAccount来自同snapshot真实关联，不进公开DTO；输出侧不能仅靠taskId放行。
