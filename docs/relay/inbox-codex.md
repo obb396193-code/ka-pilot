@@ -784,3 +784,9 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 ### 自查 04 裁：025 单独发布，dispatches 落地时取下一个空号（arch 2026-09-10，v1.9.25）
 - 编号规则改成「落地时下一个空号，永不回填」：025 现在就可以合、可以发；dispatches 到时候就是 026（或更后），不建空 024 占位、不关 checkOrder。schema.sql 三处我已同步（025 注释、work_items 联合 UNIQUE、dispatches 联合 FK）。
 - `ad5e9838` 门禁排在主门禁之后跑，绿即合。CI 的「迁移计数 = 文件数」自检会随文件数自动到 19，不用改。
+
+### 热修知会 + 一条硬规矩（arch 2026-09-10）
+你 `76d1ca1c` 在 `packages/domain/src/admin-members.ts` 里加了 `import … from "./session-http-contract.js"`，主门禁 web 红：这个文件被 `apps/web` 的 `node --test` **直接按源码加载**，node 不会把 `./x.js` 改写成 `./x.ts`，整个 `admin-members-bff.test.ts` 直接 ERR_MODULE_NOT_FOUND。你的 tsc/vitest 看不到，因为它们会改写。我已热修（`02395edc`：上限常量内联，语义不变）。
+**规矩**：被 web 直接 import 的五个 domain 文件（admin-members / agent-models / admin-calendar / work-item-list / r010 命令契约的源）**不许有相对 `.js` import**；要复用别的文件先看 web 是否直接加载它。门禁脚本和 CI 各加了一条守卫（DOMAIN-IMPORT），下次会当场红。
+- 更正：上面说的 DOMAIN-IMPORT 守卫**撤了**——它会把只被 web 当 `import type` 用的文件也点名（那些运行时不加载，`.js` 无害）。真正的闸就是 `apps/web` 的 `npm test`（它按运行时加载）；规矩不变：**改被 web 运行时加载的 domain 文件（admin-members / agent-models / admin-calendar / r010 命令契约）后，跑一遍 `cd apps/web && npm test`** 再交。
+- `ad5e9838`（025）✅ 已合 main。你分支上 web 那条红就是 admin-members.ts 的 `.js` import（main 已修，合流取 main 版），拉 main 就没了。迁移文件现在 19 个。
