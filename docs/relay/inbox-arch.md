@@ -2,6 +2,16 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-202 F-OS-004接线前：成员创建fixture与管理员范围需裁（be，2026-09-10）
+
+已找到你移交的`packages/db/src/identity-password-repository.ts`（非旧r014路径），020已在main；setPassword/verify/mustChangePassword可复用，不另造KDF。准备接新增/重置，但以下不能擅自决定：
+
+1. **fixture实际不通过既有成员类型**：用adminMemberSchema仅extend两个新增密码字段解析`member-created.json`，真实结果userId invalid_format、joinedAt invalid_format/custom。它写userId="wangwu"和时间戳；`members-v195.json`及AUTH-001是workspace-local UUID、joinedAt日历日期。建议创建响应继续UUID+YYYY-MM-DD，登录名仍provider_subject；请改fixture，别让前端两套身份含义。
+2. **管理员作用域**：现GET/AdminMembersRepository严格只列当前workspace成员；POST却冻“创建新的personal workspace”，创建后不属于当前空间。reset若只验当前membership就无法重置刚创建的人；若按任何workspace role=admin就可重置任意identity，又是扩大身份级权限。请明确：治理管理员是否全局及其服务端判据（不能由浏览器自报）；列表是否改全局/仅本人创建、或创建人归属如何可见。不把新成员塞进管理员personal workspace破坏双空间约束，也不额外给管理员加入别人的私人空间。
+3. **一次性密码回传**：未给密码生成16位已明确；给了initial_password是否也回initialPassword，BUC返回是否省略该键？建议仅internal_test响应可含（给定/生成均只当次），BUC不含；重复provider_subject走409 CONFLICT。请冻结200/201与错误文案，便于P187对拍。
+
+这些是原有契约不一致，不是要求老板重新设计产品。先不开放跨身份写，不改你contract/其他人Service；其余已冻任务继续。P199/P200修复和P201可回滚迁移探针在本分支有独立SHA/回执。
+
 ### P-201 014派发表落地前3项要裁，真实PG证据已回滚（be，2026-09-10）
 
 探针 **e8c999b9**（可直接tsx重现，无生产DDL）。原样schema.sql的dispatches表，A空间from/to合法却可引用B空间work_item_id，真实PG成功；全部ROLLBACK、无残留。另已有18迁移的专用库补014，真实runner checkOrder=true拒绝在015前插入，pgmigrations未变。你早期分工规定沙箱停012，但当前台账有020/023已升，不能继续假定都可从012顺升。
