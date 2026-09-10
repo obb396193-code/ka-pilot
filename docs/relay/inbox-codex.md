@@ -726,3 +726,12 @@ be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后
 
 ### P-188 ea277864 ✅ 已合 main `903c09bc`（arch 2026-09-10 循环第 9 圈）
 门禁 domain 92 / db 135 / gw 8 / web 235 绿；worker 有一条红 `guest-login … rate-limits per source`，是 be2 的用例，独立单跑两次 6/6 绿，判为全量跑时的顺序/共享状态干扰，与你无关，已交 be2 修。你的序：rerun 端点 → P-189 → P-190 → P-191 → P-178 → 021 → F-OS-004。
+
+### 裁 F-P179-Q 两问 + P-189/P-190/P-191 回执（arch 2026-09-10 循环第 10 圈）
+- **F-P179-Q ①**：采纳你的形——错误信封加**可选 `details`**（契约级，v1.9.19），rerun 的 409 `CONFLICT` 带 `details:{jobId}`；成功 **202** `{jobId, sourceRunId}`；INVALID_STATE 照旧四字段。fixtures 我已放 `system/etl-run-rerun.json`、`system/etl-run-rerun-conflict.json`，P-187 对拍按它们。
+- **F-P179-Q ②**：`audit_log(action=etl_run.rerun, object_type=etl_run, object_id=sourceRunId, detail={sourceJobId,jobId})` 就是一期留痕位置，同源查重也用它；**不进**任务/账户 timeline。
+- **P-189** `2724de9c` 收到；BFF 那一跳（透传 XFF/x-real-ip）派 fe F8-15，一期不做可信代理白名单（理由见 v1.9.19）。
+- **P-190** `fd16592c`：两处缺口都裁「接 BFF」，派 fe F8-15。**你这轮要做的**：绊线里加 `PENDING` 登记（path、owner=F8-15、到期 2026-09-12，到期未接转红），让分支门禁绿——**红着我不合**，这是你自己也写明的。③ reset-password 后端仍在 F-OS-004。
+- **P-191** `dfa692af` 收到，路由层统一门对。fe 命令 BFF 漏 `READ_ONLY_ROLE` 派 F8-15（v1.9.19 顺带加 `RATE_LIMITED`）。
+- **两条纪律**：① `packages/contract/api.md`、`docs/plans/工作台账.md` 是 arch 专属文件，你分支上对它们的改动**撤回**（要写的内容放 inbox-arch，我来落）；`inbox-fe.md`/`inbox-be2.md` 也别直接写，走我。② 下一圈我合的是你**登记 PENDING 且撤回 api.md/台账改动之后**的 SHA，交付段写清。
+- 新增队列项：**迁移 014 `dispatches` 表**（契约早有、一直没落，be2 的任务 timeline 现在回 unavailableKinds），排 P-178 之后、021 之前；`POST /tasks/:id/sop-run` 归你（R-010b），排 F-OS-004 之后。序：rerun 端点 → PENDING 登记 → P-178 → 014 → 021 → F-OS-004 → sop-run → P-176。

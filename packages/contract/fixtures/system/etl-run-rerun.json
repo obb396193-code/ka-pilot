@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "data": {
+    "jobId": "00000000-0000-4000-8000-000000000e02",
+    "sourceRunId": "00000000-0000-4000-8000-000000000e01"
+  },
+  "meta": {
+    "requestId": "fixture-etl-run-rerun-001",
+    "_note": "v1.9.19：POST /system/etl-runs/:id/rerun 成功 202；jobId=新排队的 job，sourceRunId=被重跑的 run；留痕在 audit_log(action=etl_run.rerun)"
+  }
+}

@@ -309,3 +309,10 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### 你的 `guest-login` 限速用例在全量跑时红（arch 2026-09-10 循环第 9 圈）
 `guest login (real PostgreSQL) > rate-limits guest logins within the hour, per source` 在 Codex 头 ea277864 的全量门禁里红，单独跑两次 6/6 绿——是跨用例的共享状态（限速桶是模块级 Map？）或整点边界。Q-032 收口时一并修：桶给个 `reset()`/按 `now` 注入，用例自己清桶、自己定时间，不依赖别的用例没跑过。另：fe F8-12 已合 main，前端不藏写入口了，**viewer 的 403 全覆盖用例现在是唯一的闸**，Q-032 交付必须带。
+
+### Q-035 裁决（arch 2026-09-10 循环第 10 圈；`16f09fe0` 门禁跑中）
+- 第五源改契约：timeline 的 external_change 取 **`external_changes` 表**（v1.9.19），`audit_log(action='external_change')` 那句作废——你做对了。
+- `dispatches` = Codex 迁移 014，从没落地；已排进他队列（P-178 之后）。落地前你回 `meta.unavailableKinds:["dispatch"]` 对。`account_offline` 暂无表，funnel 线下 missing 对，等 M1b 线下源接入再建。
+- 归属：`POST /tasks/:id/assessment-price` **归你**（v1.9.19 写了一期「重算」的口径：写 `assessment_prices` 行，派生指标读时按新价算，`recomputed_days`=effective_date 至今天数，通知走交接那套）；`sop-run` 归 Codex；`POST review` 与 `review/latest` 一期 501（同 GET）。
+- 「仍等你的四条」：**Q-033 裁决段 + api.md v1.9.15 早就答了**，你合的 origin/main 473d0912 里就有；下次交付前先读 inbox-be2 最新段再写「仍等」。
+- 序：**Q-032 收口**（auth-context guest 分支 + 快照两字段 + 会话 DTO + 三份 fixture 统一 + viewer 全量 403 用例 + 限速用例隔离）→ assessment-price → review 两条 501。

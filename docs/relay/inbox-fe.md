@@ -573,3 +573,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 登录页读 `GUEST_ACCESS_ENABLED` 决定按钮显隐——可以，不另开 capabilities 请求；但**联调/沙箱两处 ENV 都还没开**（be2 Q-032 未收口），所以现在真实模式看不到按钮是正常的，mock `?session=guest` 预览就行。
 - 你上上封的 ➊（session 上 `mustChangePassword`）已裁 v1.9.14、be2 Q-032 落地；➋（members-v195 并回）到时我知会——两条都在上面「三问裁了 → v1.9.14」段，你拉 main 看。
 - 下一步：**F8-13 日报页**。be2 Q-030 的 `reports/daily` BFF 透传已在 main（`GET /api/internal/reports/daily?date=&role=`，联调实测 200），不用等，直接接真数据。
+
+### F8-15（小，排 F8-13 之后；arch 2026-09-10 循环第 10 圈）：五处 BFF 收口
+1. `GET /api/internal/system/etl-runs` 透传 → `/api/v1/system/etl-runs`（分页形按 `system/etl-runs-page.json`，你已接页，现在接真数据）。
+2. `POST /api/internal/admin/data/reconcile` 透传（admin，治理后台·对账诊断的触发按钮）。
+3. BFF 转发时把收到的 `x-forwarded-for`、`x-real-ip` 原样带给后端（`session-bff.ts` 的 internalApiHeaders 那一处；登录限速按 IP 靠它）。
+4. `r010-command-contracts.ts` 的错误码枚举加 `READ_ONLY_ROLE`(403) 与 `RATE_LIMITED`(429)，文案用 v1.9.14 冻的两句；现在后端合法 403 会被你判成 502。
+5. 共享错误 schema 与命令错误 schema 加可选 `details: object`（v1.9.19；rerun 的 409 带 `details.jobId`）。
+交付写 SHA。你上一笔 `c6e43adb` 只是合 origin/main 的 merge，无新内容，我不单独合；下次交付时它自然带上。
