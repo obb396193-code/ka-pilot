@@ -110,7 +110,8 @@ export function isRetryableErrorCode(code: string): boolean { return retryableCo
 const errorCopy: Record<string, string> = {
   RATE_LIMITED: "操作太频繁，15 分钟后再试",
   INVALID_CREDENTIALS: "用户名或密码错误",
-  READ_ONLY_ROLE: "你现在是只读身份，这一步要管理员开权限",
+  // 契约 v1.9.14 冻结原文，别改：访客点写按钮时唯一的解释
+  READ_ONLY_ROLE: "演示空间只读，想用真数据找管理员开户",
   NOT_FOUND: "这条记录不存在，或者已经被删了",
   CONFLICT: "这条刚被别人改过，刷新后再试一次",
   UNAUTHORIZED: "登录已过期，请重新登录",
@@ -132,7 +133,11 @@ export function resolveErrorMessage(code: string, upstream?: string | null): str
   return upstream ?? "这一步没成功，稍后再试"
 }
 export const requestIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/)
-export const stableDataQueryErrorSchema = z.object({ code: stableDataQueryErrorCodeSchema, message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema }).strict()
+/**
+ * v1.9.19：错误信封加可选 `details`（只在该码明确声明时出现，例如 rerun 撞车的 409 CONFLICT 带 `details.jobId`）。
+ * 故意收成 `looseObject`：后端往 details 里多塞一个键不该让整条响应被判成「上游不合契约」502。
+ */
+export const stableDataQueryErrorSchema = z.object({ code: stableDataQueryErrorCodeSchema, message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema, details: z.looseObject({}).optional() }).strict()
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>
 
 export const dataQueryRequestSchema = z.object({

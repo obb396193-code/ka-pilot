@@ -1,4 +1,5 @@
 import { forwardToBackend, type R014BffResult } from "./forwarder.ts"
+import { dataQuerySuccessDataSchema } from "../contracts.ts"
 import {
   accountPipelineSchema,
   capabilityListSchema,
@@ -16,6 +17,7 @@ import {
   searchResultSchema,
   accountNamePatchSchema,
   accountNamesSchema,
+  etlRunsPageSchema,
   memberCreatedSchema,
   memberPasswordResetSchema,
   namingRuleSchema,
@@ -372,5 +374,30 @@ export const handleTaskDeferredTab = (
   forwardToBackend(request, {
     path: `/api/v1/tasks/${encodeURIComponent(taskId)}/${tab}`,
     method: "GET",
+    ...withDeps(deps),
+  })
+
+/* F8-15：治理后台两条收口 */
+
+/** 拉数记录（契约 v1.9.12 分页形，startedAt 倒序） */
+export const handleEtlRuns = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/system/etl-runs",
+    method: "GET",
+    allowedQuery: ["page", "pageSize", "status", "jobType", "businessDate"],
+    dataSchema: etlRunsPageSchema,
+    ...withDeps(deps),
+  })
+
+/**
+ * 对账诊断（治理后台·诊断 tab 的触发按钮）。
+ * 响应就是 data-query 的 reconcile 分支，复用共享 schema，不另造一份。
+ * 需要后端开 DATA_DIAGNOSTIC_ENABLED 且命中授权名单；没开时后端回 422 VIEW_UNSUPPORTED，页面照实显示。
+ */
+export const handleAdminReconcile = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/data/reconcile",
+    method: "POST",
+    dataSchema: dataQuerySuccessDataSchema,
     ...withDeps(deps),
   })

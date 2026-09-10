@@ -10,6 +10,7 @@ import {
   preflightPresentationResponseSchema,
   type CommandErrorCode, type CommandResponse,
 } from "./r010-command-contracts.ts"
+import { isRetryableErrorCode } from "./contracts.ts"
 
 type Command = { kind: "mute" | "ignore" | "dry-run"; upstreamPath: string }
 const targetSchema = z.object({ media: z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/),
@@ -19,6 +20,8 @@ const messages: Record<CommandErrorCode, string> = {
   NOT_FOUND: "Object not found", INVALID_STATE: "Object state does not allow this operation", FROM_VALUE_CHANGED: "Current value changed",
   SOURCE_UNAVAILABLE: "Source unavailable", SOURCE_TRUNCATED: "Response exceeds the safe limit",
   UPSTREAM_TIMEOUT: "Upstream request timed out", UPSTREAM_INVALID_RESPONSE: "Invalid upstream response", INTERNAL_ERROR: "Internal error",
+  // 这张表是 BFF 自己造错误时的兜底英文；到用户眼前的中文走 contracts.ts 的 resolveErrorMessage
+  READ_ONLY_ROLE: "Read-only role", RATE_LIMITED: "Too many requests",
 }
 
 function commandPath(pathname: string): Command | "invalid" | null {
@@ -77,7 +80,7 @@ export async function handleR010CommandRequest(request: Request, deps: {
   function fail(code: CommandErrorCode, status = commandErrorStatus[code]): InternalBffResult<CommandResponse> {
     const message = code === "SOURCE_UNAVAILABLE" && kind === "dry-run" ? "媒体只读通道未接入，试运行无法读取现值" : messages[code]
     return { status, requestId, body: { ok: false, error: { code, message,
-      retryable: code === "SOURCE_UNAVAILABLE" || code === "UPSTREAM_TIMEOUT", requestId } } }
+      retryable: isRetryableErrorCode(code), requestId } } }
   }
   if (command === null) return fail("NOT_FOUND")
   if (command === "invalid") return fail("INVALID_REQUEST")

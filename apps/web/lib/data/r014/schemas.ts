@@ -580,3 +580,25 @@ export const taskFunnelSchema = z.object({
     potentialRate: ratioValueSchema, biCvr: ratioValueSchema,
   }).strict(),
 }).strict()
+
+/* F8-15 ①：拉数记录分页形（契约 v1.9.12，`GET /system/etl-runs`） */
+const etlWarningSchema = z.union([z.string().min(1), z.looseObject({ code: z.string().min(1) })])
+export const etlRunsPageSchema = z.object({
+  items: z.array(z.looseObject({
+    runId: z.string().min(1),
+    jobId: z.string().min(1),
+    // 旧 run 没有 execution 记录 → null（同时带 LEGACY_NO_ATTEMPT 警告），别当 1
+    attempt: z.number().int().positive().nullable(),
+    jobType: z.string().min(1),
+    status: z.enum(["done", "failed", "running", "queued"]),
+    businessDate: z.string().min(1),
+    startedAt: z.string().min(1),
+    finishedAt: z.string().nullable(),
+    // 阶段未到 → 整个 rows 为 null；只跑到 raw → canonical 为 null。两种都不是 0
+    rows: z.object({ raw: z.number().int().nonnegative().nullable(), canonical: z.number().int().nonnegative().nullable() }).nullable(),
+    warnings: z.array(etlWarningSchema),
+  })),
+  page: z.number().int().positive(),
+  pageSize: z.number().int().positive(),
+  total: z.number().int().nonnegative(),
+})
