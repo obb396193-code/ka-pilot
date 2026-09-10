@@ -7,6 +7,8 @@ import { RawMetricsRepository } from "../src/raw-metrics-repository.js";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
 import { etlBatchReadableSql } from "../src/etl-batch-readability.js";
 import { runMigrations } from "../src/migrate.js";
+import { PlatformPivotRepository } from "../src/platform-pivot-repository.js";
+import { RuleEvidenceRepository } from "../src/rule-evidence-repository.js";
 
 // Synthetic local PG only. Each test owns its workspace; no shared table cleanup.
 describe("failed tuple-day readability / real PG", () => {
@@ -49,7 +51,7 @@ describe("failed tuple-day readability / real PG", () => {
     });
   });
   afterEach(async () => {
-    for (const table of ["etl_runs", "jobs", "metrics_raw", "account_metrics_daily", "accounts", "workspaces"]) {
+    for (const table of ["alert_rules", "etl_runs", "jobs", "metrics_raw", "account_metrics_daily", "accounts", "workspaces"]) {
       await pool.query(`DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=ANY($1::uuid[])`, [[workspaceId, foreignId]]);
     }
   });
@@ -78,6 +80,76 @@ describe("failed tuple-day readability / real PG", () => {
     expect(await new RawMetricsRepository(pool).loadMergeInputs({ ...scope(), reportDate: ds })).toMatchObject([{ accountId: "a", realtime: {} }]);
     await pool.query("UPDATE account_metrics_daily SET computed_at=clock_timestamp() WHERE workspace_id=$1", [workspaceId]);
     expect((await semantic.querySummary(scope())).cost).toBe(20);
+  });
+  it("pivot retains failed expected rows as missing until matching Raw and canonical recomputation", async () => {
+    const pivot = new PlatformPivotRepository(pool);
+    const auth = { workspaceId, userId: randomUUID(), role: "optimizer", workspaceKind: "personal",
+      scope: { kind: "explicit_accounts", accounts: [
+        { media: "KUAISHOU", accountId: "a", accessLevel: "read" },
+        { media: "KUAISHOU", accountId: "b", accessLevel: "read" },
+      ] } };
+    const window = { from: ds, to: ds, preset: "custom" };
+    expect((await pivot.read(auth, window)).members.map(row => row.observed)).toEqual([true, true]);
+    const withheld = async () => {
+      const result = await pivot.read(auth, window);
+      expect(result.observation).toMatchObject({ expectedAccountDays: 2, observedAccountDays: 1, observedAccounts: 1 });
+      expect(result.members.map(row => [row.accountId, row.observed, row.metrics.cost.value, row.computedAt === null]))
+        .toEqual([["a", false, null, true], ["b", true, 10, false]]);
+    };
+    await fail(); await withheld();
+    const otherMedium = { ...auth, scope: { ...auth.scope, accounts: [
+      { media: "TENCENT", accountId: "a", accessLevel: "read" },
+    ] } };
+    expect((await pivot.read(otherMedium, window)).members[0]).toMatchObject({ observed: true, metrics: { cost: { value: 10 } } });
+    expect((await pivot.read({ ...auth, workspaceId: foreignId }, window)).members.map(row => row.observed)).toEqual([true, true]);
+    await raw(); await withheld();
+    await pool.query("UPDATE account_metrics_daily SET computed_at=clock_timestamp() WHERE workspace_id=$1", [workspaceId]);
+    expect((await pivot.read(auth, window)).members.map(row => row.observed)).toEqual([true, true]);
+  });
+  it("rule evidence becomes undeterminable for a failed day and recovers only after recomputation", async () => {
+    await pool.query("UPDATE account_metrics_daily SET cash_cost=10 WHERE workspace_id=$1", [workspaceId]);
+    const rule = await pool.query(`INSERT INTO alert_rules(workspace_id,name,scope,condition_tree)
+      VALUES($1,'synthetic failed batch rule','{}',$2) RETURNING id::text`,
+    [workspaceId, { version: "v1", all: [{ metric: "cash_cost", operator: ">", threshold: 5 }] }]);
+    const auth = { workspaceId, userId: randomUUID(), role: "optimizer", workspaceKind: "personal",
+      scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a", accessLevel: "read" }] } };
+    const target = { ruleId: rule.rows[0].id, media: "KUAISHOU", accountId: "a", ds };
+    const evidence = new RuleEvidenceRepository(pool), window = { from: ds, to: ds, preset: "custom" };
+    expect(await evidence.read(auth, target, window)).toMatchObject({ evaluation: { pass: true } });
+    await fail();
+    const missing = async () => {
+      expect(await evidence.read(auth, target, window)).toMatchObject({
+        evaluation: { pass: null, reason: "METRIC_MISSING" },
+        evidence: { observation: { expectedAccountDays: 1, observedAccountDays: 0 }, members: [
+          { observed: false, metrics: { cashCost: { value: null, availability: "missing" } } },
+        ] },
+      });
+    };
+    await missing(); await raw(); await missing();
+    await pool.query("UPDATE account_metrics_daily SET computed_at=clock_timestamp() WHERE workspace_id=$1", [workspaceId]);
+    expect(await evidence.read(auth, target, window)).toMatchObject({ evaluation: { pass: true } });
+  });
+  it("removing only the pivot readability predicate exposes the failed old value (negative control)", async () => {
+    await fail();
+    let removed = 0;
+    const unmasked = new PlatformPivotRepository({ connect: async () => {
+      const client = await pool.connect();
+      return { on: client.on.bind(client), removeListener: client.removeListener.bind(client), release: client.release.bind(client),
+        query: async (sql: string, values?: unknown[]) => {
+          if (sql.includes("platform-pivot-members")) {
+            const predicate = etlBatchReadableSql("metric");
+            expect(sql).toContain(predicate);
+            sql = sql.replace(predicate, "TRUE"); removed++;
+          }
+          return client.query(sql, values);
+        },
+      };
+    } } as never);
+    const auth = { workspaceId, userId: randomUUID(), role: "optimizer", workspaceKind: "personal",
+      scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a", accessLevel: "read" }] } };
+    const result = await unmasked.read(auth, { from: ds, to: ds, preset: "custom" });
+    expect(removed).toBe(1);
+    expect(result.members[0]).toMatchObject({ observed: true, metrics: { cost: { value: 10 } } });
   });
   it("wrong resource/date/media/workspace cannot resolve a failed account request", async () => {
     await fail();

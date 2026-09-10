@@ -1,3 +1,5 @@
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
+
 export const PIVOT_METRIC_FIELDS = ["cost", "cash_cost", "exposure", "click", "conversion", "real_conversion", "wake_uv", "potential_uv"] as const;
 
 /** Identifiers are code-owned. The only account population is the bound approved tuple list. */
@@ -20,6 +22,7 @@ LEFT JOIN accounts AS account
 LEFT JOIN account_metrics_daily AS metric
   ON metric.workspace_id = expected.workspace_id AND metric.media = expected.media
  AND metric.account_id = expected.account_id AND metric.ds = expected.ds
+ AND ${etlBatchReadableSql("metric")}
 LEFT JOIN task_accounts AS relation
   ON relation.workspace_id = expected.workspace_id AND relation.media = expected.media
  AND relation.account_id = expected.account_id
