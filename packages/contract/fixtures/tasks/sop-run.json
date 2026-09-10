@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "data": {
+    "runId": "00000000-0000-4000-8000-000000000f01",
+    "taskId": "1803240580",
+    "sopRunId": "00000000-0000-4000-8000-000000000f01",
+    "template": "official.open_to_build",
+    "templateVersion": "b7-internal-v1",
+    "status": "queued"
+  },
+  "meta": {
+    "requestId": "fixture-sop-run-001",
+    "_note": "v1.9.21：POST /tasks/:id/sop-run 成功 202；runId=workflow run，sopRunId 同值回绑在任务上；不执行公开 graph-v1，模板固定 b7-internal-v1"
+  }
+}

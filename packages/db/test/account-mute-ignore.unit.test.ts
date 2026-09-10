@@ -74,6 +74,8 @@ describe("ignore + account mute atomic boundary", () => {
     const s = setup(), context = structuredClone(auth), args = { ...input };
     const result = s.repo.ignoreAndMute(context, args); context.workspaceId = userId; args.workItemId = userId; args.mutedUntil = "2099-01-01";
     expect(await result).toMatchObject({ workspaceId, mutedUntil: input.mutedUntil });
-    expect(s.query.mock.calls.find(([sql]) => sql.includes("FOR UPDATE"))?.[1]).toEqual([workspaceId, workItemId]);
+    expect(s.query.mock.calls.find(([sql]) => sql.includes("FOR UPDATE"))?.[1]).toEqual([
+      workspaceId, workItemId, "explicit_accounts", '[{"media":"KUAISHOU","account_id":"synthetic"}]',
+    ]);
   });
 });

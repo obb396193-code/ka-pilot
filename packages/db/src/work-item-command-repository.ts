@@ -3,6 +3,7 @@ import {
   assertWorkItemTransition, workItemCommandSchema, WORK_ITEM_STATUSES, type WorkItemStatus,
 } from "@ka/domain";
 import type { Pool } from "pg";
+import { accountScopeClause, accountScopeParams } from "./r014/workspace-authority.js";
 
 export class WorkItemCommandError extends Error {
   constructor(readonly code: "FORBIDDEN" | "INVALID_INPUT" | "NOT_FOUND" | "INVALID_STATE" |
@@ -24,6 +25,7 @@ export class WorkItemCommandRepository {
     if (!parsed.success) throw new WorkItemCommandError("INVALID_INPUT");
     // Both parse calls produce private copies before any await.
     const auth = authorization.data, command = parsed.data;
+    const scope = accountScopeParams(auth);
     const client = await this.pool.connect().catch(() => { throw new WorkItemCommandError("SOURCE_UNAVAILABLE"); });
     try {
       await client.query("BEGIN");
@@ -31,8 +33,13 @@ export class WorkItemCommandRepository {
       await client.query("SET LOCAL lock_timeout = '3s'");
       const selected = await client.query(`/* authorized-work-item-lock */
         SELECT id, workspace_id, media, account_id, status FROM work_items
-        WHERE workspace_id=$1::uuid AND id=$2::uuid FOR UPDATE`, [auth.workspaceId, command.workItemId]);
-      if (selected.rows.length === 0) throw new WorkItemCommandError("NOT_FOUND");
+        WHERE workspace_id=$1::uuid AND id=$2::uuid
+          AND ${accountScopeClause("$3", "$4", "work_items.media", "work_items.account_id")} FOR UPDATE`,
+      [auth.workspaceId, command.workItemId, scope.kind, scope.allowed]);
+      if (selected.rows.length === 0) {
+        const exists = await client.query("SELECT id FROM work_items WHERE workspace_id=$1 AND id=$2", [auth.workspaceId, command.workItemId]);
+        throw new WorkItemCommandError(exists.rows.length === 0 ? "NOT_FOUND" : "FORBIDDEN");
+      }
       if (selected.rows.length !== 1) throw new WorkItemCommandError("INVALID_RESULT");
       const item = selected.rows[0]!;
       if (item.id !== command.workItemId || item.workspace_id !== auth.workspaceId || !WORK_ITEM_STATUSES.includes(item.status))

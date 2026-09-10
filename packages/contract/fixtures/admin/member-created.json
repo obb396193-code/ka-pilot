@@ -4,14 +4,15 @@
     "identityId": "00000000-0000-4000-8000-000000000201",
     "displayName": "王五",
     "provider": "internal_test",
-    "userId": "wangwu",
+    "userId": "00000000-0000-4000-8000-0000000000a7",
     "role": "optimizer",
     "isActive": true,
-    "joinedAt": "2026-09-05T09:15:00.000+08:00",
+    "joinedAt": "2026-09-10",
     "grantsCount": 0,
     "lastSeenAt": null,
     "mustChangePassword": true,
-    "initialPassword": "Kp7v-Qm2x-Ln9s-Ab3d"
+    "initialPassword": "Kp7v-Qm2x-Ln9s-Ab3d",
+    "loginName": "wangwu"
   },
   "meta": {
     "requestId": "fixture",
@@ -19,6 +20,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "POST /admin/members 建 internal_test 成员：initialPassword 只在本响应回一次（未传 initial_password 时服务端生成 16 位）；之后任何接口不再返回"
+    "_note": "v1.9.21：userId=workspace-local UUID、joinedAt=日历日期（与 members 行同形）；登录名放 loginName（=provider_subject）；initialPassword 只在 internal_test 且仅本次响应出现；201 Created。"
   }
 }

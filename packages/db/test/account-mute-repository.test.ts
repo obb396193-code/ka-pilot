@@ -55,6 +55,26 @@ describe("account mute PostgreSQL scope and authority", () => {
   beforeEach(async () => {
     const a = await seed(); const b = await seed(); first = a.auth; second = b.auth; identityId = a.identityId;
   });
+  it("shared SQL scope keeps denied media metadata out of the command's first read", async () => {
+    const workItemId = await item(first, "TENCENT"), observed: unknown[] = [];
+    const guarded = new AccountMuteRepository(new Proxy(pool, { get(target, key) {
+      if (key === "connect") return async () => {
+        const client = await target.connect();
+        return new Proxy(client, { get(connection, prop) {
+          if (prop === "query") return async (sql: string, values?: unknown[]) => {
+            const result = await connection.query(sql, values);
+            if (sql.includes("FROM work_items")) observed.push(...result.rows);
+            return result;
+          };
+          const value = Reflect.get(connection, prop); return typeof value === "function" ? value.bind(connection) : value;
+        } });
+      };
+      return Reflect.get(target, key);
+    } }));
+    const scoped = { ...first, workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: input.accountId, accessLevel: "read" }] } } as ApprovedWorkspaceAuthContext;
+    await expect(guarded.ignoreAndMute(scoped, { workItemId, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(observed.some(row => (row as { media?: string }).media === "TENCENT")).toBe(false);
+  });
   it("isolates same account ID across media/workspaces and idempotently replays concurrent writes", async () => {
     await Promise.all([repo.set(first, input), repo.set(first, input)]);
     await repo.set(first, { ...input, media: "TENCENT", mutedUntil: "2026-09-10" });

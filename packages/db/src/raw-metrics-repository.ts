@@ -1,5 +1,5 @@
 import type { Pool, PoolClient } from "pg";
-import { etlBatchReadableSql } from "./etl-batch-readability.js";
+import { accountRealtimeDaySampleSql, etlBatchReadableSql } from "./etl-batch-readability.js";
 
 export type RawMetricResource =
   | "account"
@@ -210,6 +210,7 @@ export class RawMetricsRepository {
        WHERE workspace_id = $1
          AND ds BETWEEN $2::date AND $3::date
          AND resource IN ('account_offline', 'account_realtime')
+         AND ${accountRealtimeDaySampleSql("raw")}
          AND ${etlBatchReadableSql("raw", "raw")}
        ORDER BY workspace_id, media, account_id, ds, resource, fetched_at DESC, id DESC`,
       [scope.workspaceId, scope.dateFrom, scope.dateTo],

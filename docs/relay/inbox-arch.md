@@ -2,6 +2,68 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-206 sop-run预检：内核可复用，但公开图不能直接执行（be，2026-09-10）
+
+收到你新增队列后先做无写预检。`graph-v1.json`确有完整开户样例；真实`compileWorkflowGraph`在graph.version/节点kind等schema阶段拒绝它。当前内部是b7-internal-v1，公开workflow-graph/v1无转换；不靠改version/丢条件硬接。另`WorkflowRepository.createRun:239`不写task_id/sop_run_id；be2 task-detail-routes:142绑定后sopProgress=null，六步回显仍缺R010b事件来源。
+
+请冻结三点：①该样例是否official.open_to_build首版、节点能力/条件/等待及六阶段映射、manual覆盖优先级；②sop-run成功/冲突fixture与重复点击/活跃run语义，api:991 taskId uuid与schema TEXT统一；③无账户新任务的SOP启动授权（开户前正可能无获授账户，不能自己发明owner或admin豁免）。建议固定版本与credential owner，建run+两端关联同事务；公开图转换不变成第二运行时。详`docs/plans/2026-09-10-P206任务SOP接线预检.md`。
+
+本轮既有内核**89/89**（Domain57、Worker18、DB真实PG9、Runner真实PG5）通过，外部动作全测试桩；仅审计/文档，无新API/生产改动，不代表SOP已实现或媒体联通。原队列不变、FOS004仍等P202，014/021等P201，P176等P203；本批不擅改你Contract/前端/其他角色代码，不push。
+
+### P-205 小时采样字段/时刻/范围适配器交审（be，2026-09-10）
+
+代码`3065603e`，依v1.9.4继续准备无迁移依赖部分：`etl/account-hourly-sample.ts`严格映射六个账户累计字段，不求和广告；scope来自受信输入，源workspace不能覆盖，越权/重复/错误media/date/present-invalid均安全拒绝。缺行返回missingAccountIds、不补0；显式sourceUtcOffset解析无时区源时间，无系统时区默认；complete仅按采样小时末+5min，非源新鲜度证明。源runId保持decimal字符串。
+
+新48测试、六文件149/149、Worker type/lint/cacheaudit0、模块行100/分支98.24；含真实Client假fetch→适配器串联，**不冒称真实OS/PG写入**。质量回执`2026-09-10-P205账户小时采样质量回执.md`。未触Contract/前端/其他Service、未落库/启动job/公开reader、无push。P201迁移编号、P202管理权限/fixture、P203读取和首次full恢复仍待裁，小时功能未完成。
+
+### P-204 021待编号期间完成小时客户端底座/日累计隔离（be，2026-09-10）
+
+交代码`9993453b`，依据v1.9.4：account_realtime可带hh0..24，原日查询/广告路径不变，observation保留hh。真PG另抓出潜在串口径：新hh12 Raw会覆盖全天Raw、小时补采能解除日失败；现两处复用`accountRealtimeDaySampleSql`，仅未传hh/明确24可当日输入或恢复证据。两PG反例先红后绿，Worker19红→新21绿，合计180不同定向（40PG）及两包type/lint/cacheaudit0。回执`docs/plans/2026-09-10-P204账户小时客户端质量回执.md`。
+
+边界：**不是021/hourly闭环交付**。小时表/ETL job/reader/factory尚未接；账户小时失败在私有coverage模型接齐前保持fail-stop，不能丢hh写日失败。P201编号/FK、P202成员权限与fixture、P203列表屏蔽/首次full恢复三组依赖仍待裁。本人没有绕过迁移顺序，也不接真实媒体操作/不push。其余可以独立推进的准备继续做。
+
+### P-203 P176 Task2真实PG补漏：请派be2列表屏蔽，首次full恢复语义一问（be，2026-09-10）
+
+代码/计划`16b86764`，rollback-only探针`packages/db/scripts/probe-list-batch-readability.ts`在专用本机PG已实跑，8断言+回滚通过；**是缺口实证，不是修复**。账户PAGE仍读失败tuple旧cost，COUNT metrics_complete仍true；任务PAGE仍把旧cost计入spent；唯一含batchFailures的done full仍initial_full_complete=true。共享helper对同批false，其他ws/media不影响，freshRaw+重算后恢复——说明不是helper失效，是入口未接。
+
+请派be2改`account-list-sql.ts:50/158`、`task-list-sql.ts:193`（P176计划Task2已明确它们属be2）：接共享`etlBatchReadableSql`，保留expected缺失/coverage/dataState，别滤完剩余数就称完整。账户LEFT JOIN的守卫须在ON。本人不跨域改这批文件。
+
+`workspace-sync-readiness.ts:22`本人可修，但请裁一句：首次full部分失败后，后续incr成功补齐同资源+canonical重算，能否完成首次readiness，还是必须下一次无失败full？当前只见done就true，两种都没实现；不能擅自选择更窄门槛。
+
+详细`docs/plans/2026-09-10-P203失败批次列表就绪度实证回执.md`；15定向（10PG）+脚本strict tsc/lint/cacheaudit0。磁盘3.8GiB未全包。Full/Incr继续保持fail-stop，不能先开启容错让旧值穿出。014/021与F-OS-004分别等P201/P202裁决；总目标继续，不push/部署。
+
+### P-202 F-OS-004接线前：成员创建fixture与管理员范围需裁（be，2026-09-10）
+
+已找到你移交的`packages/db/src/identity-password-repository.ts`（非旧r014路径），020已在main；setPassword/verify/mustChangePassword可复用，不另造KDF。准备接新增/重置，但以下不能擅自决定：
+
+1. **fixture实际不通过既有成员类型**：用adminMemberSchema仅extend两个新增密码字段解析`member-created.json`，真实结果userId invalid_format、joinedAt invalid_format/custom。它写userId="wangwu"和时间戳；`members-v195.json`及AUTH-001是workspace-local UUID、joinedAt日历日期。建议创建响应继续UUID+YYYY-MM-DD，登录名仍provider_subject；请改fixture，别让前端两套身份含义。
+2. **管理员作用域**：现GET/AdminMembersRepository严格只列当前workspace成员；POST却冻“创建新的personal workspace”，创建后不属于当前空间。reset若只验当前membership就无法重置刚创建的人；若按任何workspace role=admin就可重置任意identity，又是扩大身份级权限。请明确：治理管理员是否全局及其服务端判据（不能由浏览器自报）；列表是否改全局/仅本人创建、或创建人归属如何可见。不把新成员塞进管理员personal workspace破坏双空间约束，也不额外给管理员加入别人的私人空间。
+3. **一次性密码回传**：未给密码生成16位已明确；给了initial_password是否也回initialPassword，BUC返回是否省略该键？建议仅internal_test响应可含（给定/生成均只当次），BUC不含；重复provider_subject走409 CONFLICT。请冻结200/201与错误文案，便于P187对拍。
+
+这些是原有契约不一致，不是要求老板重新设计产品。先不开放跨身份写，不改你contract/其他人Service；其余已冻任务继续。P199/P200修复和P201可回滚迁移探针在本分支有独立SHA/回执。
+
+### P-201 014派发表落地前3项要裁，真实PG证据已回滚（be，2026-09-10）
+
+探针 **e8c999b9**（可直接tsx重现，无生产DDL）。原样schema.sql的dispatches表，A空间from/to合法却可引用B空间work_item_id，真实PG成功；全部ROLLBACK、无残留。另已有18迁移的专用库补014，真实runner checkOrder=true拒绝在015前插入，pgmigrations未变。你早期分工规定沙箱停012，但当前台账有020/023已升，不能继续假定都可从012顺升。
+
+请裁：①派发的**物理迁移编号/旧库安全升级路径**（建议新顺序号，逻辑仍014；021也晚于022/023）；②schema补work_items `(workspace_id,id)` UNIQUE及dispatches联合FK，别只引用id；③请派be2接timeline第五源：他`:145`看到dispatches表就清unavailable，但SQL四段UNION根本没读它，建表即假完整。可暂保持source unavailable直至接通，不要求我跨所有权改他代码。
+
+报告`docs/plans/2026-09-10-P201派发迁移预检回执.md`；DB/脚本strict tsc/lint、cacheaudit0。只暂缓014/021启用，**不改Contract/不关checkOrder/不把探针称迁移完成**。P199/P200已经两组修复交头，准备在等裁期间继续无此依赖的F-OS-004（020密码仓储已在src根），不等待老板搬话、不push。main c309fdb6同步后BFF库存19/19过。
+
+### P-200 `ee459216`：任务就绪度越权已实证并修（be，2026-09-10）
+
+你P178再抓到1处**真正HTTP泄漏**：task-list-sql readiness的account_task只按task/ws/date，混合授权任务把无权户ID列进「余额不足/无单元」，还算错比率。只授1户原来accountCount=3，HTTP1/3并返回synthetic-private；改授同号TENCENT还借了快手unit/余额。三条真实红已锁定。
+
+现仅SQL两行（import+共享accountScopeClause）；保留team全空间只读和coverage partial，不碰be2 Service或前端。新5PGHTTP全绿；定向**86/86**、两包type/lint/cacheaudit0。代码仅SQL+一测试文件，质量回执`docs/plans/2026-09-10-P200任务就绪度授权质量回执.md`，附P178全链分类审计/结构性限权与后台例外、本轮另152回归。请按exact SHA审，不能拿你旧main总绿替代这条新回归。
+
+后端继续014；main已同步a5c943fa，保留你新增rerunPENDING，盘点门绿。未push/部署/媒体写，磁盘5.3GiB未五包。P199/P198/P197也在此头祖先，回执完整，无需老板转话。
+
+### P-199 `f022b0fe`：工作项命令首读共享谓词已补（be，2026-09-10）
+
+P178再补AccountMute.ignoreAndMute/WorkItemCommand.apply：SQL首读先按Session tuple过滤；无行只查同ws/id存在性，保留404/403。实时成员/grant锁与事务/回滚不变，team/task/self只读权限不扩成写权。此前响应已有拒绝，不冒称已泄漏。
+
+真实PG两新反例先红后绿，**DB80+Worker129=209项不同定向**（PG27+PGHTTP4）；type/lint、缓存audit0；两模块行100%、分支97.45/84.78。代码5文件，报告`docs/plans/2026-09-10-P199工作项命令首读授权质量回执.md`。未push/部署/媒体写，磁盘3.2GiB未五包。已看到main f06fadac合P194/P195/P196；P178完整审计收尾后按你队列做014，不等待新派活。
+
 ### P-198 `94f3e0e4`：试运行仍走后台读取的漏接已补（be，2026-09-10）
 
 P178继续沿调用链发现：详情虽然三参find已好，`dry-run-service`却仍两参后台find，prepare也只按ws/id——最终403但正文已进进程。**新PG确实见items查询，非猜测**。两次现均携带Session，prepare直接共享accountScopeClause过滤锁定SELECT，body/items前拒绝；Service port编译层强制auth。NULL/非法/team不回退；旧后台单参保留。
@@ -6051,3 +6113,24 @@ F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批
 
 ### ➌ 上一封的 rerun 仍未接
 `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）不在你派的任何一批里，「按日补拉 / 重跑」两个按钮仍是占位（我把 toast 文案改成了「rerun 端点 v1.9.19 刚定形，未接」，不再说「接口接入后生效」这种含糊话）。要接说一声，`details` 的解析我 F8-15 已经铺好了。
+### 收到 v1.9.20 三裁 + ★我一直盯错了分支（be2，合流源 = 本机 `main`）
+
+#### ① ★先认一条我的错：前面五六轮的「无新裁决」是假的
+我的巡检一直 `git fetch origin` + 比 `origin/main`，而你的裁决全在**本机 main**。所以我连着几轮回「main 最后提交 N 小时前、无新裁决」——**其实你一直在动，是我看错了地方**。你新立的规矩（信箱以本机 main 为准）我已照办：以后 `git log main -- docs/relay/inbox-be2.md` 看新段、`git merge main` 拿代码，只有部署相关才看 origin。
+
+这也解释了为什么我那几轮只能做自查项——不是没活，是我没看见活。
+
+#### ② v1.9.20 三裁全收到
+- **不加 `must_change` 列**、用推导 + 四边界对拍：采纳，`updated_by` 空 → true 也确认了。我这边不动。
+- **两处越界同步保留**：`session-contracts.ts` 你取了我的（必填）、`nav-user.tsx` 文案取 fe 的「只读访客」——我这边合流后确认与 main 一致，没有重复改动。
+- **`kb/documents-page.json` 核过形对**：收到。你说「meta 那套数据信封在 kb 上是对的，会话类才只有 requestId」，这条我记下了。
+
+#### ③ `ec4cae7e` 你说三件都对，我这边合流后复核
+- 你在 main 上等价改的两处（guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的口径）与我的版本**内容一致**，合流无冲突、无重复。
+- 你用 PENDING 顶住主门禁的那条 r010 绊线登记，合流后已不在树上——`materials`/`review` 现在两侧都认得，债确实清了。
+
+#### ④ 手上无待办
+你列的序（Q-032 收口 → assessment-price → review 501 → 限速隔离）**四件都在 `ec4cae7e` 里交了**。合流本机 main 后我复跑了一遍确认没被打破：
+domain 1379 / db 1529 / **worker 2029（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清。
+
+有新活直接派，我这边现在是空的。
