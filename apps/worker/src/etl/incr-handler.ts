@@ -14,12 +14,14 @@ import { replayRequestParams } from "./replay-params.js";
 import { errorSummary } from "./run-utils.js";
 import { withEtlAttempt } from "./attempt-scope.js";
 import type { AdHourlyStore, EtlRunStore, QihangQueryPort } from "./types.js";
+import { partialExecution, queryWithBatchFailure, accountQueryBatches, type BatchFailurePort } from "./partial-query.js";
 
 export interface IncrementalEtlDependencies {
   qihang: QihangQueryPort;
   store: EtlRunStore;
   jobs: JobEnqueuerPort;
   hourly: AdHourlyStore;
+  failures?: BatchFailurePort;
 }
 
 export function createIncrementalEtlHandler(
@@ -27,6 +29,9 @@ export function createIncrementalEtlHandler(
 ): JobHandler {
   return async (job) => {
     const payload = incrementalEtlPayloadSchema.parse(job.payload);
+    const partial = partialExecution(job, { workspaceId: payload.workspaceId, media: payload.media, accountIds: payload.accountIds,
+      dateFrom: shiftIsoDate(payload.ds, -payload.offlineReconcileDays), dateTo: payload.ds }, dependencies.failures);
+    if (partial && payload.focusAccountIds.some(id => !partial.scope.accountIds.includes(id))) throw new Error("Focus accounts escaped partial execution scope");
     const runId = await dependencies.store.startRun(job.id, "incr", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       ds: payload.ds,
@@ -37,6 +42,7 @@ export function createIncrementalEtlHandler(
         "account_realtime",
         "ad_realtime",
       ],
+      ...(partial ? { batchScope: partial.scope } : {}),
     }));
     let currentStep = "start";
     let rowsIngested = 0;
@@ -44,9 +50,10 @@ export function createIncrementalEtlHandler(
     const ingest = async (
       query: QihangQuery,
       fallbackDs: string,
-    ): Promise<QihangQueryResult> => {
+    ): Promise<QihangQueryResult | null> => {
       currentStep = query.resource;
-      const result = await dependencies.qihang.query(query);
+      const result = await queryWithBatchFailure(dependencies.qihang, query, runId, partial);
+      if (result === null) return null;
       if (result.observation !== undefined) {
         await dependencies.store.recordObservation(
           runId,
@@ -70,22 +77,24 @@ export function createIncrementalEtlHandler(
     try {
       for (let offset = 1; offset <= payload.offlineReconcileDays; offset += 1) {
         const ds = shiftIsoDate(payload.ds, -offset);
-        await ingest({
+        const query: QihangQuery = {
           resource: "account_offline",
           userId: payload.userId,
           media: payload.media,
           accountIds: payload.accountIds,
           beginDate: ds,
           endDate: ds,
-        }, ds);
+        };
+        for (const batch of accountQueryBatches(query, partial)) await ingest(batch, ds);
       }
-      await ingest({
+      const realtime: QihangQuery = {
         resource: "account_realtime",
         userId: payload.userId,
         media: payload.media,
         accountIds: payload.accountIds,
         ds: payload.ds,
-      }, payload.ds);
+      };
+      for (const batch of accountQueryBatches(realtime, partial)) await ingest(batch, payload.ds);
       if (payload.focusAccountIds.length > 0) {
         await ingestFocusedAds(dependencies, payload, runId, ingest, (step) => {
           currentStep = step;
@@ -115,7 +124,7 @@ export function createIncrementalEtlHandler(
 }
 
 type IncrementalPayload = ReturnType<typeof incrementalEtlPayloadSchema.parse>;
-type IngestQuery = (query: QihangQuery, fallbackDs: string) => Promise<QihangQueryResult>;
+type IngestQuery = (query: QihangQuery, fallbackDs: string) => Promise<QihangQueryResult | null>;
 type AdRealtimeQuery = Extract<QihangQuery, { resource: "ad_realtime" }>;
 
 async function ingestFocusedAds(
@@ -139,15 +148,16 @@ async function ingestFocusedAds(
     return;
   }
 
-  const previousRows = payload.hh === 0
-    ? []
-    : (await ingestAdSnapshot(query(payload.hh - 1), ingest, payload.ds)).rows;
+  const previous = payload.hh === 0
+    ? { rows: [], failedAccounts: [] }
+    : await ingestAdSnapshot(query(payload.hh - 1), ingest, payload.ds);
   const current = await ingestAdSnapshot(query(payload.hh), ingest, payload.ds);
+  const failed = new Set([...previous.failedAccounts, ...current.failedAccounts]);
   setStep("hourly_derive");
   const derived = deriveHourlyAdMetrics({
     currentHh: payload.hh,
-    previousRows,
-    currentRows: current.rows,
+    previousRows: previous.rows.filter(row => !failed.has(String(row.account_id))),
+    currentRows: current.rows.filter(row => !failed.has(String(row.account_id))),
   });
   assertDerivedDate(payload.ds, derived.rows);
   setStep("hourly_upsert");
@@ -166,21 +176,26 @@ async function ingestFocusedAds(
     bid: row.bid,
     budget: row.budget,
   })));
-  await dependencies.store.recordObservation(runId, derivationObservation(payload, current, derived.issues, derived.rows.length));
+  await dependencies.store.recordObservation(runId, { ...derivationObservation(payload, current, derived.issues, derived.rows.length),
+    ...(failed.size ? { availability: "observed_unverified" as const } : {}) });
 }
 
 async function ingestAdSnapshot(
   query: AdRealtimeQuery,
   ingest: IngestQuery,
   fallbackDs: string,
-): Promise<QihangQueryResult> {
+): Promise<QihangQueryResult & { failedAccounts: string[] }> {
   const results: QihangQueryResult[] = [];
+  const failedAccounts = new Set<string>();
   for (const batch of planAdRealtimeBatches(query)) {
-    results.push(await ingest(batch, fallbackDs));
+    const result = await ingest(batch, fallbackDs);
+    if (result === null) batch.accountIds?.forEach(id => failedAccounts.add(id));
+    else results.push(result);
   }
   const rows = mergeAdRealtimeRows(results.map((result) => result.rows));
   return {
     rows,
+    failedAccounts: [...failedAccounts],
     envelope: { batched: true, batchCount: results.length },
     observation: createQihangObservation("ad_realtime", rows, new Date()),
   };

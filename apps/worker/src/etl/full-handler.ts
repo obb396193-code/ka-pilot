@@ -12,11 +12,13 @@ import { toEtlQueryObservation } from "./query-observation.js";
 import { errorSummary } from "./run-utils.js";
 import { withEtlAttempt } from "./attempt-scope.js";
 import type { AccountMetadataEtlStore, EtlRunStore, QihangQueryPort } from "./types.js";
+import { partialExecution, queryWithBatchFailure, accountQueryBatches, type PartialExecution, type BatchFailurePort } from "./partial-query.js";
 
 export interface FullEtlDependencies {
   qihang: QihangQueryPort;
   store: AccountMetadataEtlStore;
   jobs: JobEnqueuerPort;
+  failures?: BatchFailurePort;
 }
 
 type FullEtlPayload = ReturnType<typeof fullEtlPayloadSchema.parse>;
@@ -24,6 +26,7 @@ type FullEtlPayload = ReturnType<typeof fullEtlPayloadSchema.parse>;
 interface FullEtlProgress {
   currentStep: string;
   rowsIngested: number;
+  partial?: PartialExecution;
 }
 
 interface FullJobIdentity {
@@ -37,14 +40,17 @@ const OFFLINE_PARTITION_LOOKBACK_DAYS = 3;
 export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHandler {
   return async (job) => {
     const payload = fullEtlPayloadSchema.parse(job.payload);
+    const partial = partialExecution(job, { workspaceId: payload.workspaceId, media: payload.media, accountIds: payload.accountIds,
+      dateFrom: shiftIsoDate(payload.asOfDate, -Math.max(OFFLINE_PARTITION_LOOKBACK_DAYS, payload.realtimeDays - 1)), dateTo: payload.asOfDate }, dependencies.failures);
     const runId = await dependencies.store.startRun(job.id, "full", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       asOfDate: payload.asOfDate,
       realtimeDays: payload.realtimeDays,
       requestedAccountIds: payload.accountIds,
       resources: ["account", "account_offline", "account_realtime"],
+      ...(partial ? { batchScope: partial.scope } : {}),
     }));
-    const progress: FullEtlProgress = { currentStep: "start", rowsIngested: 0 };
+    const progress: FullEtlProgress = { currentStep: "start", rowsIngested: 0, ...(partial ? { partial } : {}) };
 
     try {
       const accountIds = await discoverAccountIds(dependencies, payload, progress, runId);
@@ -154,7 +160,7 @@ async function ingestAccountMetrics(
       media: payload.media,
       accountIds,
       ds,
-    }, ds);
+    }, ds, progress.partial);
   }
   return offlineDate;
 }
@@ -176,7 +182,7 @@ async function ingestLatestAvailableOffline(
       accountIds,
       beginDate: ds,
       endDate: ds,
-    }, ds);
+    }, ds, progress.partial);
     progress.rowsIngested += count;
     if (count > 0) return ds;
   }
@@ -189,10 +195,16 @@ async function ingestQuery(
   runId: string,
   query: QihangQuery,
   fallbackDs: string,
+  partial?: PartialExecution,
 ): Promise<number> {
-  const result = await dependencies.qihang.query(query);
-  await recordObservation(dependencies.store, runId, query, result.observation);
-  return (await persistRows(dependencies, payload, query, fallbackDs, result.rows)).length;
+  let count = 0;
+  for (const batch of accountQueryBatches(query, partial)) {
+    const result = await queryWithBatchFailure(dependencies.qihang, batch, runId, partial);
+    if (result === null) continue;
+    await recordObservation(dependencies.store, runId, batch, result.observation);
+    count += (await persistRows(dependencies, payload, batch, fallbackDs, result.rows)).length;
+  }
+  return count;
 }
 
 async function recordObservation(
