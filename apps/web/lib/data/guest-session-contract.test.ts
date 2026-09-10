@@ -28,10 +28,12 @@ test("the guest login fixture parses, including its TTL", () => {
   assert.equal(view.expiresAt, "2026-09-05T11:15:00.000+08:00")
 })
 
-test("普通会话没有 isDemo / provider 也要照旧过", () => {
+// v1.9.20（arch 2026-09-10）：be2 Q-032 落地后 isDemo / provider / mustChangePassword 必填，普通会话也带。
+test("普通会话也带 isDemo / provider / mustChangePassword（v1.9.20 必填）", () => {
   const view = sessionViewSchema.parse((fixture("session-http/personal.json") as { data: unknown }).data)
-  assert.equal(view.activeWorkspace.isDemo, undefined)
-  assert.equal(view.identity.provider, undefined)
+  assert.equal(view.activeWorkspace.isDemo, false)
+  assert.equal(view.identity.provider, "internal_test")
+  assert.equal(view.identity.mustChangePassword, false)
 })
 
 test("login accepts both shapes and nothing else", () => {
@@ -42,12 +44,13 @@ test("login accepts both shapes and nothing else", () => {
   assert.equal(loginRequestSchema.safeParse({ provider: "buc" }).success, false)
 })
 
-test("v1.9.14 identity.mustChangePassword parses and老形会话不带它也照旧过", () => {
-  const view = sessionViewSchema.parse((fixture("session-http/personal-v1914-must-change-password.json") as { data: unknown }).data)
+test("v1.9.14 identity.mustChangePassword=true parses；缺字段的老形会话不再接受（v1.9.20）", () => {
+  const base = (fixture("session-http/personal.json") as { data: { identity: Record<string, unknown> } }).data
+  const view = sessionViewSchema.parse({ ...base, identity: { ...base.identity, mustChangePassword: true } })
   assert.equal(view.identity.mustChangePassword, true)
   assert.equal(view.identity.provider, "internal_test")
   assert.equal(view.activeWorkspace.isDemo, false)
-  // be2 Q-032 落地前 personal.json 还是老形，必填的话联调环境会整条会话解析失败
-  const old = sessionViewSchema.parse((fixture("session-http/personal.json") as { data: unknown }).data)
-  assert.equal(old.identity.mustChangePassword, undefined)
+  // 字段并齐后收成必填（fe 在 F8-13 回执里预授权）：老形缺 mustChangePassword 必须被拦
+  const { mustChangePassword: _omit, ...oldIdentity } = base.identity
+  assert.equal(sessionViewSchema.safeParse({ ...base, identity: oldIdentity }).success, false)
 })
