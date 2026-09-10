@@ -319,3 +319,7 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### 16f09fe0 ✅ 已合 main `f07891dc`（arch 2026-09-10 循环第 10 圈）
 门禁 domain 92 / db 135 / worker 176 / gw 8 / web 235 全绿；只有 inbox-arch 一处并集，代码零冲突。联调抽查随后。
+
+### 0be3202f（交付 b2364987+自查）✅ 已合 main `c187e38f`，老板已推 origin（arch 2026-09-10 循环第 11 圈）
+门禁 domain 92 / db 136 / worker 176 / gw 8 / web 235 全绿。三问裁（v1.9.20）：① **不加列**，推导 + 四边界对拍用例的做法采纳，`updated_by` 空 → true 对；② 两处越界同步**保留**，我合流时 `session-contracts.ts` 取了你的版（必填），`nav-user.tsx` 文案取 fe 的「只读访客」——fe 已收到知会；③ `kb/documents-page.json` 核过，形对，meta 那套数据信封在 kb 上是对的（会话类才只有 requestId）。
+下一步（按序）：**assessment-price**（v1.9.19 口径）→ `POST review` / `review/latest` 501 → 限速用例隔离（上圈说的）。并发假红那条我记下了：验收见 calendar/worker-once/pivot/hourly 红先串行复跑。

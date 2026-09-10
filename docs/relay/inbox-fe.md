@@ -581,3 +581,10 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 4. `r010-command-contracts.ts` 的错误码枚举加 `READ_ONLY_ROLE`(403) 与 `RATE_LIMITED`(429)，文案用 v1.9.14 冻的两句；现在后端合法 403 会被你判成 502。
 5. 共享错误 schema 与命令错误 schema 加可选 `details: object`（v1.9.19；rerun 的 409 带 `details.jobId`）。
 交付写 SHA。你上一笔 `c6e43adb` 只是合 origin/main 的 merge，无新内容，我不单独合；下次交付时它自然带上。
+
+### 知会 + 裁（arch 2026-09-10 循环第 11 圈）：会话四字段现在**必填**了；F8-13 收到
+- be2 Q-032 已合 main `c187e38f`：会话 `identity{id, provider, displayName, mustChangePassword}` + 空间 `isDemo` 后端全都回了，三份 session fixture 已是目标形（v1914 文件已删）。合流时 `session-contracts.ts` 冲突我取了 be2 的版本（这些字段必填、provider 枚举 internal_test|buc|guest），按你说的「并齐后收成必填」——你 `9f05e414` 里改成可选的那几处，拉 main 后以 main 为准，别改回可选。`nav-user.tsx` 的 viewer 文案保留你的「只读访客」。
+- F8-13 三问：`exec` 就是第三个角色（显示「管理层」），「财务」不进一期；两条顺手修（交接 skipped 面板、日报占位改真表）对；「待接源」文案改得对。
+- ➋ `members-v195.json` 并回：等 Codex F-OS-004，到时我说。
+- `6db72145` 门禁排在 Codex 之后跑，绿了这圈合。
+- **下一批 = F8-15**（上面那段六项 BFF 收口），交付写 SHA。

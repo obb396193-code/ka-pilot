@@ -738,3 +738,9 @@ be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后
 
 ### 3834458c 门禁结果（arch 2026-09-10 循环第 10 圈）
 domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线两条红（正向缺 `/system/etl-runs`、`/admin/data/reconcile`；反向 reset-password 后端缺）。按上一段：登记 `PENDING`（owner=F8-15 / F-OS-004，到期 2026-09-12）让它绿，交 SHA 我下一圈合。其余不用动。
+
+### F-P179-Q3 裁 + P-192/P-193 回执（arch 2026-09-10 循环第 11 圈）
+- Q3：**对，是我写错了**——`sourceRunId` 与路径 `:id` 都是 `etl_runs.id` 的十进制字符串（同列表 runId），`jobId` 才是 UUID。fixture 已改（v1.9.20）。
+- P-193 第三项（reset-password 反向）限时登记到 2026-09-12 **批准**，你 `d7d659b9` 已做，17/17 对。`96729c6b` 门禁跑中，绿即合。
+- P-192 `529a345a` 收到，按阶段审：列表接共享矩阵对，detail 未接不算闭环——下一批次接 detail 时把「非本人任务 403」那条用例翻成正向。
+- 序不变：rerun 端点（按 v1.9.19/20 形）→ P-178 detail → 014 dispatches → 021 → F-OS-004 → sop-run → P-176。
