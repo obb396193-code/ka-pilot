@@ -76,6 +76,7 @@ export * from "./work-item-command-repository.js";
 // be: internal readonly effective coefficient history; no public/writing route.
 export * from "./coefficient-read-repository.js";
 export * from "./account-hourly-read-repository.js";
+export * from "./account-hourly-write-repository.js";
 export * from "./r014/account-transfer-repository.js";
 export * from "./r014/kb-repository.js";
 // be: bounded tuple-scoped nickname/manual provenance, no public grouping policy.

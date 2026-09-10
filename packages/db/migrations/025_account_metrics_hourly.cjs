@@ -1,4 +1,5 @@
-// arch v1.9.21: 024 dispatches must ship before this migration is deployed.
+// arch v1.9.25: may ship independently; future migrations take the next unused
+// number, never insert a lower-numbered migration after 025 has been applied.
 // Stopped-writer maintenance window, not an online/low-lock migration.
 const partitionFunction = (includeAccountHourly) => {
   const tables = ["metrics_raw", "account_metrics_daily", "ad_metrics_hourly"];
