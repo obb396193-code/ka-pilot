@@ -11,8 +11,8 @@ const id = "semantic-bff-test"
 const cookie = "ka_session=synthetic-session-00000000000000001"
 const environment = { KA_DATA_BACKEND_ORIGIN: "https://backend.example", KA_DATA_SERVICE_TOKEN: "synthetic-service-token-0000000000000000" }
 function session(kind: "personal" | "team") {
-  const workspace = { id: "00000000-0000-4000-8000-000000000024", name: "Synthetic", kind, role: "admin", readOnly: kind === "team" }
-  return { ok: true, data: { identity: { displayName: "Synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: id } }
+  const workspace = { id: "00000000-0000-4000-8000-000000000024", name: "Synthetic", kind, role: "admin", readOnly: kind === "team" , isDemo: false}
+  return { ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e1", provider: "internal_test", displayName: "Synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId: id } }
 }
 function json(body: unknown, status = 200) { return Response.json(body, { status, headers: { "x-request-id": id } }) }
 function incoming(body: unknown, url = "http://localhost/api/internal/query", method = "POST") {

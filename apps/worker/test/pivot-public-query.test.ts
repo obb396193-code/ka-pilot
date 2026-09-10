@@ -107,9 +107,9 @@ describe("pivot public query and approved source chain", () => {
   });
   it("runs actual BFF/session/HTTP/query ports end to end (synthetic reader, not PostgreSQL)", async () => {
     const token = "synthetic-pivot-internal-token-000000000000";
-    const workspace = { id: auth.workspaceId, name: "synthetic", kind: "personal", role: "optimizer", readOnly: false };
+    const workspace = { id: auth.workspaceId, name: "synthetic", kind: "personal", role: "optimizer", readOnly: false , isDemo: false};
     const sessionHttpService = { current: async (_token: string, requestId: string) => ({ status: 200,
-      body: { ok: true, data: { identity: { displayName: "synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } } }) } as unknown as SessionHttpService;
+      body: { ok: true, data: { identity: { id: "00000000-0000-4000-8000-0000000000e2", provider: "internal_test", displayName: "synthetic", mustChangePassword: false }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } } }) } as unknown as SessionHttpService;
     // Non-pivot routes must never be invoked in this isolated HTTP test.
     const unrelated = new Proxy({}, { get: () => () => { throw new Error("Unrelated route invoked"); } });
     const server = createDataApiServer({ service: service({ read: async () => snapshot() }), internalToken: token,

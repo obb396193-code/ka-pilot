@@ -14,6 +14,9 @@ interface AuthSessionRow {
   identity_id: string;
   active_workspace_id: string;
   workspace_kind: "personal" | "team";
+  // v1.9.15：访客解析要的两项——身份 provider 与活动空间是否演示空间。
+  identity_provider: "internal_test" | "buc" | "guest";
+  active_workspace_is_demo: boolean;
   active_personal_workspace_ids: string[];
   active_workspace_member_count: string | number;
   expires_at: Date;
@@ -32,9 +35,14 @@ interface AuthSessionRow {
 
 interface SessionWorkspaceRow {
   display_name: string;
+  identity_id: string;
   workspace_id: string;
   workspace_name: string;
   workspace_kind: "personal" | "team";
+  // v1.9.15 会话 DTO 定形：身份 provider、空间是否演示空间、是否还在用初始密码。
+  identity_provider: "internal_test" | "buc" | "guest";
+  workspace_is_demo: boolean;
+  must_change_password: boolean;
   membership_role: AuthRole;
 }
 
@@ -90,6 +98,8 @@ function toSnapshot(row: AuthSessionRow): AuthSessionSnapshot {
     expiresAt: row.expires_at,
     revokedAt: row.revoked_at,
     identityActive: row.identity_active,
+    identityProvider: row.identity_provider,
+    activeWorkspaceIsDemo: row.active_workspace_is_demo,
     membershipWorkspaceId: row.membership_workspace_id,
     membershipIdentityId: row.membership_identity_id,
     membershipUserId: row.membership_user_id,
@@ -145,6 +155,8 @@ export class AuthSessionRepository {
          session.expires_at,
          session.revoked_at,
          identity.is_active AS identity_active,
+         identity.provider AS identity_provider,
+         workspace.is_demo AS active_workspace_is_demo,
          membership.workspace_id AS membership_workspace_id,
          membership.identity_id AS membership_identity_id,
          membership.user_id AS membership_user_id,
@@ -186,7 +198,9 @@ export class AuthSessionRepository {
        GROUP BY
          session.id,
          workspace.kind,
+         workspace.is_demo,
          identity.is_active,
+         identity.provider,
          membership.workspace_id,
          membership.identity_id,
          membership.user_id,
@@ -250,6 +264,14 @@ export class AuthSessionRepository {
       const result = await client.query<SessionWorkspaceRow>(
         `SELECT
            identity.display_name,
+           identity.id AS identity_id,
+           identity.provider AS identity_provider,
+           -- v1.9.14 「还在用管理员给的初始密码吗」：有密码行、且最后一次改的人不是本人。
+           -- **没有 must_change 列**——这个事实从 updated_by 就能推出来，
+           -- 多一列就多一处要维护的真相（buc/guest 没有密码行，自然是 false）。
+           (password.identity_id IS NOT NULL
+             AND password.updated_by IS DISTINCT FROM membership.user_id) AS must_change_password,
+           workspace.is_demo AS workspace_is_demo,
            workspace.id AS workspace_id,
            workspace.name AS workspace_name,
            workspace.kind AS workspace_kind,
@@ -267,6 +289,8 @@ export class AuthSessionRepository {
            ON actor.workspace_id = membership.workspace_id
           AND actor.id = membership.user_id
           AND actor.is_active = true
+         LEFT JOIN identity_passwords AS password
+           ON password.identity_id = session.identity_id
          WHERE session.token_hash = $1
            AND session.revoked_at IS NULL
            AND session.expires_at > $2
@@ -280,6 +304,7 @@ export class AuthSessionRepository {
         kind: row.workspace_kind,
         role: row.membership_role,
         readOnly: row.workspace_kind === "team",
+        isDemo: row.workspace_is_demo === true,
       }));
       const active = workspaces.filter((workspace) =>
         workspace.id === resolution.context.workspaceId);
@@ -290,7 +315,12 @@ export class AuthSessionRepository {
         return rejected(403, "INVALID_AUTH_STATE");
       }
       const view = sessionViewSchema.safeParse({
-        identity: { displayName: result.rows[0]!.display_name },
+        identity: {
+          id: result.rows[0]!.identity_id,
+          provider: result.rows[0]!.identity_provider,
+          displayName: result.rows[0]!.display_name,
+          mustChangePassword: result.rows[0]!.must_change_password === true,
+        },
         activeWorkspace: active[0]!,
         workspaces,
       });

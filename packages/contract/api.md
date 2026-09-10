@@ -1326,3 +1326,22 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 只读由**后端**兜：viewer 的任何写请求 403 `READ_ONLY_ROLE`（be2 Q-022 已有的写类拦截不变、一条都不能漏）；前端收到该码显示固定文案「演示空间只读，想用真数据找管理员开户」（v1.9.14 已定 READ_ONLY_ROLE 文案归前端）。
 - 顶部细条「演示数据 · 只读」**保留**——它是加一条提示，不是藏东西；老板若也不要，去掉即可。
 - 空间切换器不做特殊处理：访客的 `workspaces[]` 本来只有演示空间，显示出来就是一项。
+
+## v1.9.18 追加（2026-09-10 arch；裁 fe F8-12 ➊）
+- `POST /auth/login`、`GET /auth/session` 的 `meta` **只有 `requestId`**（后端 `session-http.ts` 实测如此；没有 dataAsOf/businessDate/workspaceKind/selectedSource——那套是数据类响应的信封）。`session-http/guest.json`、`auth/login-guest.json` 的 meta 已削成一致。前端 `sessionMetaSchema` 只要求 `requestId`、其余键不拦——采纳（strict 在这里只买到「后端多回一个键就卡登录页」的风险）。
+
+## v1.9.19 追加（2026-09-10 arch；裁 Codex F-P179-Q/P-189/P-190/P-191 + be2 Q-035）
+- **错误信封加可选 `details`**：`{code, message, retryable, requestId, details?: object}`；`details` 只在该码明确声明时出现，其它错误照旧四字段。前端共享错误 schema 与 r010 命令错误 schema 都加 `details: object?`（不 strict 到把它拦成 502）。
+- **`POST /system/etl-runs/:id/rerun` 定形**：成功 **202** `{ok:true, data:{jobId, sourceRunId}, meta:{requestId}}`；同源已有 queued/leased/running 的重跑 → **409 `CONFLICT`，`details:{jobId}`**（那个已存在的 job）；原状态不允许 → 409 `INVALID_STATE`（四字段）。留痕 = `audit_log(action="etl_run.rerun", object_type="etl_run", object_id=sourceRunId, detail={sourceJobId, jobId})`，这就是一期的「写 timeline 一条」，**不进任务/账户 timeline**（旧 run 未必挂任务）；同源查重也用这行。fixtures `system/etl-run-rerun.json`、`system/etl-run-rerun-conflict.json`。
+- **登录来源 IP**：BFF 把收到的 `x-forwarded-for`、`x-real-ip` 原样透传给后端；后端取 XFF 首段（已实现）。信任边界 = 内网反向代理（Aone/Pages 网关会覆盖 XFF）；一期**不做**可信代理白名单——它只护演示访客的限速，伪造的下场是多试几次登录。
+- **r010 命令类 BFF 错误码**加 `READ_ONLY_ROLE`（403，文案归前端 v1.9.14）与 `RATE_LIMITED`（429）。
+- **BFF 覆盖绊线两处缺口归属**：`GET /system/etl-runs`（治理后台·连接与拉数）和 `POST /admin/data/reconcile`（治理后台·对账诊断）都**接 BFF**（fe F8-15）。落地前 Codex 的绊线用 `PENDING` 登记（owner=F8-15、到期 2026-09-12），到期未接转红；fe 落地后删登记。`POST /admin/members`、`/:p/reset-password` 后端 = Codex F-OS-004（不变）。
+- **任务 timeline 第五源改为 `external_changes` 表**（原写的 `audit_log(action='external_change')` 全仓无写入方，作废）。`dispatches` 表 = Codex 迁移 **014**（未落）→ 落地前 timeline 回 `meta.unavailableKinds:["dispatch"]`（be2 已如此）。`account_offline` 表暂无 → funnel 线下三项 missing、两比率 undefined（不拿线上数顶替），等 M1b 线下源接入再建。
+- **任务写端点归属**：`POST /tasks/:id/assessment-price` = **be2**（写 `assessment_prices` 行；一期「重算」= 派生指标读时按新价算，不跑批；`recomputed_days` = effective_date 至今的天数；`notified_user_ids` = 任务 owner，通知走交接同一套）。`POST /tasks/:id/sop-run` = **Codex**（R-010b 工作流域，排 F-OS-004 之后）。`POST /tasks/:id/review` 与 `GET /tasks/:id/review/latest` = 二期 Agent，一期 **501**（与 GET materials/review 同）。
+
+## v1.9.20 追加（2026-09-10 arch；裁 be2 Q-032 三问 + Codex F-P179-Q3 + fe F8-13 一问）
+- rerun：`sourceRunId` 与路径 `:id` = `etl_runs.id`（BIGSERIAL）的**十进制字符串**，与列表 `runId` 同形；`jobId` = `jobs.id`（UUID）。fixture `system/etl-run-rerun.json` 已改（原 UUID 写法作废）。
+- `mustChangePassword` **不加列**：按「有密码行且最后改密者不是本人」推导；`updated_by` 为空按 true（保守）。两处实现（仓储方法 / `readSessionView` 内联 SQL）由 be2 的四边界对拍用例钉住。
+- 会话 DTO 四字段（`identity.id/provider/mustChangePassword`、`isDemo`）自本版起前端 schema **必填**（be2 已落地、三份 fixture 已统一）；be2 越界同步的 `session-contracts.ts` 镜像与 `nav-user.tsx` 的 `viewer` 映射**保留**，不回退。
+- kb 列表分页形 `{items, page, pageSize, total}`（与 etl-runs 同形），`truncated` 留在 meta；fixture `kb/documents-page.json`（be2）核过：与 v1.9.4 分页口径一致。
+- 日报 `role` 枚举维持 `optimizer|lead|exec`（`exec` 显示「管理层」）；「财务」视角不进一期。前端下拉只给这三个。

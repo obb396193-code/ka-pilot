@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { IconInnerShadowTop } from "@tabler/icons-react"
+import { IconEye, IconInnerShadowTop } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 // 登录表单业务件：老板 2026-09-05 定「账号密码为主 + BUC 次」。
 // 接 AUTH-001 `POST /api/internal/auth/login {provider:"internal_test"}`；401 统一「用户名或密码错误」不区分原因；BUC 按钮占位 disabled。
 // frame="card"：shadcn login-03 壳（/login 现用）；frame="plain"：只出表单，壳由三种登录方向页自己给。
-export function LoginForm({ className, frame = "card", ...props }: React.ComponentProps<"div"> & { frame?: "card" | "plain" }) {
+export function LoginForm({ className, frame = "card", guestEnabled = false, ...props }: React.ComponentProps<"div"> & { frame?: "card" | "plain"; guestEnabled?: boolean }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isMock = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
@@ -24,6 +24,7 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
   const [password, setPassword] = useState("")
   const [helpOpen, setHelpOpen] = useState(false)
   const [pending, setPending] = useState(false)
+  const [guestPending, setGuestPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const nextPath = (() => { const next = searchParams.get("next"); return next && next.startsWith("/") && !next.startsWith("//") ? next : "/" })()
 
@@ -48,6 +49,24 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
     }
   }
 
+  // F8-12 访客浏览（契约 v1.9.6）：匿名会话，进的是只读演示空间；后端只在 GUEST_ACCESS_ENABLED=1 时开放，
+  // 所以按钮由服务端传下来的 guestEnabled 决定显不显——没开时干脆不给这个入口，而不是点了才说不行。
+  async function enterAsGuest() {
+    setError(null)
+    if (isMock) { router.replace("/?session=guest"); return }
+    setGuestPending(true)
+    try {
+      const response = await loginSession({ provider: "guest" })
+      if (!response.ok) { setError(resolveErrorMessage(response.error.code, "访客浏览暂时不可用，请用账号登录")); return }
+      router.replace("/")
+      router.refresh()
+    } catch {
+      setError("访客浏览暂时不可用，请用账号登录")
+    } finally {
+      setGuestPending(false)
+    }
+  }
+
   const form = (
     <form onSubmit={onSubmit}>
       <FieldGroup>
@@ -68,11 +87,19 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
         </Field>
         <FieldSeparator className={cn(frame === "card" && "*:data-[slot=field-separator-content]:bg-card")}>或</FieldSeparator>
         <Field>
+          {guestEnabled ? (
+            <Button variant="outline" type="button" onClick={() => void enterAsGuest()} disabled={guestPending || pending}>
+              <IconEye className="size-4" />
+              {guestPending ? "进入中…" : "访客浏览（演示数据，只读）"}
+            </Button>
+          ) : null}
           <Button variant="outline" type="button" disabled title="内测后开放">
             <IconInnerShadowTop className="size-4" />
             BUC 登录（内测后开放）
           </Button>
-          <FieldDescription className="text-center">登录后默认进入你的个人空间；团队数据可在侧栏切换。</FieldDescription>
+          <FieldDescription className="text-center">
+            {guestEnabled ? "访客看到的是脱敏样例，不能新建和改动；想用真数据找管理员开户。" : "登录后默认进入你的个人空间；团队数据可在侧栏切换。"}
+          </FieldDescription>
         </Field>
       </FieldGroup>
 

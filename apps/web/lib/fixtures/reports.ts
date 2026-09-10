@@ -22,13 +22,28 @@ export const dataStatusMeta: Record<ReportLibraryItem["dataStatus"], { label: st
 export const deliveryLabel: Record<NonNullable<ReportLibraryItem["deliveryStatus"]>, string> = { sent_dingtalk: "已发钉钉", exported: "已导出", scheduled: "已排期" }
 
 // ---- 日报 daily-report/v1 ----
-export type DailyModule = { key: string; title: string; cards?: { cost: MetricValue; cashCost: MetricValue; realConversion: MetricValue; cashCpa: RatioValue; onTargetRate: RatioValue; costSpace: MetricValue }; anomalies?: string[]; trend?: unknown[]; rows?: unknown[]; unsupported?: boolean; status?: string }
-export type DailyDelivery = { status: "sent" | "not_sent" | "failed"; at: string | null; target: string | null }
-export type DailyReport = { schema: "daily-report/v1"; date: string; role: "optimizer" | "lead" | "admin" | "finance"; dataAsOf: string; modules: DailyModule[]; actions: { pushDingtalk: boolean; exportPdf: boolean }; delivery?: DailyDelivery }
-export const dailyDeliveryMeta: Record<DailyDelivery["status"], { label: string; tone: "success" | "pending" | "critical" }> = { sent: { label: "已推送", tone: "success" }, not_sent: { label: "未推送", tone: "pending" }, failed: { label: "推送失败", tone: "critical" } }
+// 各维度模块的 rows 一律复用 `account.dimension/v3` 的行（契约 §日报）：不另造一套行形。
+export type DailyMetrics = {
+  cost: MetricValue; cashCost: MetricValue; exposure: MetricValue; click: MetricValue
+  conversion: MetricValue; realConversion: MetricValue; costSpace: MetricValue
+  wakeUv: MetricValue; potentialUv: MetricValue
+  ratios: { ctr: RatioValue; cvr: RatioValue; realCpa: RatioValue; cashCpa: RatioValue; gap: RatioValue; potentialRate: RatioValue; biConversionRate: RatioValue }
+}
+export type DailyDimensionRow = {
+  key: string; label: string; media?: string; accountId?: string
+  metrics: DailyMetrics
+  assessment?: { price: MetricValue | null; priceSource: string | null; onTarget: boolean | null; costStatus: string | null; costStatusReason: string | null; budgetUsageRate: RatioValue | null }
+  anomaly?: unknown
+}
+export type DailyTrendPoint = { ds: string; metrics: DailyMetrics }
+export type DailyModule = { key: string; title: string; cards?: { cost: MetricValue; cashCost: MetricValue; realConversion: MetricValue; cashCpa: RatioValue; onTargetRate: RatioValue; costSpace: MetricValue }; anomalies?: string[]; trend?: DailyTrendPoint[]; rows?: DailyDimensionRow[]; unsupported?: boolean; status?: string }
+export type DailyDelivery = { status: "sent" | "not_sent" | "queued" | "failed"; at: string | null; target: string | null }
+// role 用后端那三个值：admin / finance 后端不认，发过去直接 400（F8-13 对齐 be2 的 dailyReportSchema）
+export type DailyReport = { schema: "daily-report/v1"; date: string; role: "optimizer" | "lead" | "exec"; dataAsOf: string | null; modules: DailyModule[]; actions: { pushDingtalk: boolean; exportPdf: boolean }; delivery?: DailyDelivery }
+export const dailyDeliveryMeta: Record<DailyDelivery["status"], { label: string; tone: "success" | "pending" | "critical" }> = { sent: { label: "已推送", tone: "success" }, queued: { label: "排队中", tone: "pending" }, not_sent: { label: "未推送", tone: "pending" }, failed: { label: "推送失败", tone: "critical" } }
 export const dailyFixture = dailyV1 as unknown as Fixture<DailyReport>
 export const dailyNotSentFixture = dailyV1NotSent as unknown as Fixture<DailyReport>
-export const dailyRoleLabel: Record<DailyReport["role"], string> = { optimizer: "优化师", lead: "负责人", admin: "管理员", finance: "财务" }
+export const dailyRoleLabel: Record<DailyReport["role"], string> = { optimizer: "优化师", lead: "负责人", exec: "管理层" }
 
 // ---- 自定义报告 report-config/v1 + render ----
 export type ReportConfig = { id: string; name: string; config: { version: "report-config/v1"; dataset: { queryId: string; params: Record<string, unknown> }; groupBy: string[]; columns: { metric: string; label: string }[]; sort: { by: string; dir: "asc" | "desc" }[]; filters: unknown[]; highlight: { metric: string; op: string; value: unknown; style: string }[]; layout: { type: string } }; isShared: boolean; version: string; updatedAt: string }

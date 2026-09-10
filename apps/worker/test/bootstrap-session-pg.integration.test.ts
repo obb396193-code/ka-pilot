@@ -70,13 +70,13 @@ describe("bootstrap CLI to real PG + HTTP session", () => {
     const login = (supplied: string) => fetch(`${url}/api/v1/auth/login`, { method: "POST", headers, body: JSON.stringify({ provider: "internal_test", username: "synthetic.bootstrap", password: supplied }) });
     expect((await login("wrong-synthetic-password")).status).toBe(401);
     const logged = await login(password); expect(logged.status).toBe(200);
-    expect(await logged.json()).toMatchObject({ ok: true, data: { activeWorkspace: { id: personal, kind: "personal", readOnly: false } } });
+    expect(await logged.json()).toMatchObject({ ok: true, data: { activeWorkspace: { id: personal, kind: "personal", readOnly: false , isDemo: false} } });
     const oldCookie = logged.headers.get("set-cookie")!.split(";")[0]!;
     const session = await fetch(`${url}/api/v1/auth/session`, { headers: { ...headers, cookie: oldCookie, "x-request-id": "bootstrap-session-001" } });
     expect(session.status).toBe(200); expect(session.headers.get("x-request-id")).toBe("bootstrap-session-001");
     const switched = await fetch(`${url}/api/v1/auth/workspace`, { method: "POST", headers: { ...headers, cookie: oldCookie }, body: JSON.stringify({ workspaceId: team }) });
     expect(switched.status).toBe(200);
-    expect(await switched.json()).toMatchObject({ ok: true, data: { activeWorkspace: { id: team, kind: "team", readOnly: true } } });
+    expect(await switched.json()).toMatchObject({ ok: true, data: { activeWorkspace: { id: team, kind: "team", readOnly: true , isDemo: false} } });
     const cookie = switched.headers.get("set-cookie")!.split(";")[0]!; expect(cookie).not.toBe(oldCookie);
     expect((await fetch(`${url}/api/v1/auth/session`, { headers: { ...headers, cookie: oldCookie } })).status).toBe(401);
     expect((await fetch(`${url}/api/v1/auth/session`, { method: "DELETE", headers: { ...headers, cookie } })).status).toBe(200);

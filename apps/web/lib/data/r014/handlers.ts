@@ -22,6 +22,8 @@ import {
   namingRulesTestSchema,
   taskBindingsSchema,
   taskDetailSchema,
+  taskFunnelSchema,
+  taskTimelineSchema,
   watchlistSchema,
   accountNamesConfirmSchema,
   accountNamesReparseSchema,
@@ -339,5 +341,36 @@ export const handleAdminAccountNamesReparse = (request: Request, deps: Deps): Pr
     method: "POST",
     allowedQuery: ["media"],
     dataSchema: accountNamesReparseSchema,
+    ...withDeps(deps),
+  })
+
+export const handleTaskTimeline = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/timeline`,
+    method: "GET",
+    allowedQuery: ["cursor", "limit", "kinds"],
+    dataSchema: taskTimelineSchema,
+    ...withDeps(deps),
+  })
+
+export const handleTaskFunnel = (request: Request, taskId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/funnel`,
+    method: "GET",
+    allowedQuery: ["date_from", "date_to"],
+    dataSchema: taskFunnelSchema,
+    ...withDeps(deps),
+  })
+
+/**
+ * 契约点名一期 501 的两签。BFF 照样透传，让前端拿到 501 而不是 404——
+ * 「一期不做」和「路径写错」必须分得开。
+ */
+export const handleTaskDeferredTab = (
+  request: Request, taskId: string, tab: "materials" | "review", deps: Deps,
+): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/tasks/${encodeURIComponent(taskId)}/${tab}`,
+    method: "GET",
     ...withDeps(deps),
   })

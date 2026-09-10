@@ -566,3 +566,25 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 顶部细条「演示数据 · 只读」保留（不是藏东西）。空间切换器不特殊处理。
 - 已经写了隐藏逻辑的，撤掉；别留 `role === "viewer"` 的分支在 UI 层，以后没人记得它为什么在。
 - 其余不变：登录页「访客浏览」按钮、`isDemo` 显示、F8-12 合并前提仍是 be2 Q-032 先合 main。
+
+### F8-12 532fdf5b ✅ 已合 main `e204b98a`；➊ 裁了（arch 2026-09-10 循环第 9 圈）
+- 门禁 web 236 / tsc 0 / eslint 0 绿。老板口径已进契约 v1.9.17（你改回那版正好对上）；be2/Codex 已各领「viewer 打每个写端点都 403」的用例任务，后端拦截完整性由他们的用例兜，你不用管。
+- ➊ 会话 meta：**后端只回 `{requestId}`**（实测 + 源码），两份 guest fixture 的 meta 我已削成一致（v1.9.18）；你把 `sessionMetaSchema` 放宽到只要求 requestId 的做法采纳。
+- 登录页读 `GUEST_ACCESS_ENABLED` 决定按钮显隐——可以，不另开 capabilities 请求；但**联调/沙箱两处 ENV 都还没开**（be2 Q-032 未收口），所以现在真实模式看不到按钮是正常的，mock `?session=guest` 预览就行。
+- 你上上封的 ➊（session 上 `mustChangePassword`）已裁 v1.9.14、be2 Q-032 落地；➋（members-v195 并回）到时我知会——两条都在上面「三问裁了 → v1.9.14」段，你拉 main 看。
+- 下一步：**F8-13 日报页**。be2 Q-030 的 `reports/daily` BFF 透传已在 main（`GET /api/internal/reports/daily?date=&role=`，联调实测 200），不用等，直接接真数据。
+
+### F8-15（小，排 F8-13 之后；arch 2026-09-10 循环第 10 圈）：五处 BFF 收口
+1. `GET /api/internal/system/etl-runs` 透传 → `/api/v1/system/etl-runs`（分页形按 `system/etl-runs-page.json`，你已接页，现在接真数据）。
+2. `POST /api/internal/admin/data/reconcile` 透传（admin，治理后台·对账诊断的触发按钮）。
+3. BFF 转发时把收到的 `x-forwarded-for`、`x-real-ip` 原样带给后端（`session-bff.ts` 的 internalApiHeaders 那一处；登录限速按 IP 靠它）。
+4. `r010-command-contracts.ts` 的错误码枚举加 `READ_ONLY_ROLE`(403) 与 `RATE_LIMITED`(429)，文案用 v1.9.14 冻的两句；现在后端合法 403 会被你判成 502。
+5. 共享错误 schema 与命令错误 schema 加可选 `details: object`（v1.9.19；rerun 的 409 带 `details.jobId`）。
+交付写 SHA。你上一笔 `c6e43adb` 只是合 origin/main 的 merge，无新内容，我不单独合；下次交付时它自然带上。
+
+### 知会 + 裁（arch 2026-09-10 循环第 11 圈）：会话四字段现在**必填**了；F8-13 收到
+- be2 Q-032 已合 main `c187e38f`：会话 `identity{id, provider, displayName, mustChangePassword}` + 空间 `isDemo` 后端全都回了，三份 session fixture 已是目标形（v1914 文件已删）。合流时 `session-contracts.ts` 冲突我取了 be2 的版本（这些字段必填、provider 枚举 internal_test|buc|guest），按你说的「并齐后收成必填」——你 `9f05e414` 里改成可选的那几处，拉 main 后以 main 为准，别改回可选。`nav-user.tsx` 的 viewer 文案保留你的「只读访客」。
+- F8-13 三问：`exec` 就是第三个角色（显示「管理层」），「财务」不进一期；两条顺手修（交接 skipped 面板、日报占位改真表）对；「待接源」文案改得对。
+- ➋ `members-v195.json` 并回：等 Codex F-OS-004，到时我说。
+- `6db72145` 门禁排在 Codex 之后跑，绿了这圈合。
+- **下一批 = F8-15**（上面那段六项 BFF 收口），交付写 SHA。

@@ -77,24 +77,31 @@ describe("guest login (real PostgreSQL)", () => {
     expect(result.status).toBe(404);
   });
 
-  it("★creates the guest session row but cannot resolve it yet: the personal-workspace invariant blocks it", async () => {
+  it("signs a guest into the demo workspace as a read-only viewer", async () => {
     const result = await service(true, demoWorkspaceId).login({ provider: "guest" }, "req-on");
+    expect(result.status, JSON.stringify(result.body)).toBe(200);
+    expect(typeof result.sessionToken).toBe("string");
+    // 契约冻的 2 小时，比常规会话短——访客不该长期挂着。
+    expect(result.cookieMaxAgeSeconds).toBe(2 * 60 * 60);
 
-    // 会话行本身建出来了——建会话这条路（我自己的仓储）是通的。
-    // 读不回来时 login 会顺手 logout 把它回收掉，所以这里不看 revoked_at，只看行在过。
+    const view = (result.body as {
+      data: { identity: Record<string, unknown>; activeWorkspace: Record<string, unknown>; workspaces: unknown[] };
+    }).data;
+    // v1.9.15 会话 DTO 定形。
+    expect(view.identity.provider).toBe("guest");
+    expect(view.identity.id).toBe(guestIdentityId);
+    // 访客没有密码行 → 恒 false，不该提示他去改一个不存在的密码。
+    expect(view.identity.mustChangePassword).toBe(false);
+    expect(view.activeWorkspace.id).toBe(demoWorkspaceId);
+    expect(view.activeWorkspace.role).toBe("viewer");
+    expect(view.activeWorkspace.readOnly).toBe(true);
+    expect(view.activeWorkspace.isDemo).toBe(true);
+    // 只看得到演示空间那一个：访客不该知道还有别的空间存在。
+    expect(view.workspaces).toHaveLength(1);
+
     expect((await pool.query(
-      "SELECT 1 FROM auth_sessions WHERE identity_id=$1", [guestIdentityId],
+      "SELECT 1 FROM auth_sessions WHERE identity_id=$1 AND revoked_at IS NULL", [guestIdentityId],
     )).rows.length).toBeGreaterThan(0);
-
-    // ★但读回来被拒：`packages/domain/src/auth-context.ts` 要求**每个会话的身份必须
-    // 有且仅有一个 personal 空间**（`uniquePersonalWorkspaces.size === 0 → 403
-    // PERSONAL_WORKSPACE_MISSING`），这一关排在 team 分支之前。访客一个个人空间都没有。
-    //
-    // 这不是 v1.9.12 那个 `demo` 枚举的问题（那个已绕开），是更深一层的鉴权不变量，
-    // 在共享契约文件里。放宽它等于改整个鉴权模型的前提，已回抛 arch（Q-032）。
-    // 在他裁决之前，这条用例把阻断钉在这里——绿的是「现状如实」，不是「功能已完成」。
-    expect(result.status).toBe(403);
-    expect((result.body as { error: { code: string } }).error.code).toBe("FORBIDDEN");
   });
 
   it("refuses a GUEST_WORKSPACE_ID that points at a real team workspace", async () => {
@@ -120,20 +127,9 @@ describe("guest login (real PostgreSQL)", () => {
     for (let attempt = 0; attempt < 20; attempt += 1) {
       await guestService.login({ provider: "guest" }, `req-burst-${attempt}`, "203.0.113.7");
     }
-    // 第 21 次被限速挡下。注意此时**未被限速的请求也是 403**（上面那条不变量），
-    // 所以单看状态码分不出「限速了」和「读不回来」——用会话行数来区分。
-    const before = Number((await pool.query(
-      "SELECT count(*)::int AS n FROM auth_sessions WHERE identity_id=$1", [guestIdentityId])).rows[0].n);
-    await guestService.login({ provider: "guest" }, "req-limited", "203.0.113.7");
-    expect(Number((await pool.query(
-      "SELECT count(*)::int AS n FROM auth_sessions WHERE identity_id=$1", [guestIdentityId])).rows[0].n),
-    "被限速的请求不该再建会话行").toBe(before);
-
-    // 换一个来源不受限速：会照常建出会话行（虽然读回仍被不变量挡住）。
-    await guestService.login({ provider: "guest" }, "req-other", "203.0.113.8");
-    expect(Number((await pool.query(
-      "SELECT count(*)::int AS n FROM auth_sessions WHERE identity_id=$1", [guestIdentityId])).rows[0].n))
-      .toBe(before + 1);
+    expect((await guestService.login({ provider: "guest" }, "req-limited", "203.0.113.7")).status).toBe(403);
+    // 换一个来源不受限速——限速是按来源分的。
+    expect((await guestService.login({ provider: "guest" }, "req-other", "203.0.113.8")).status).toBe(200);
   });
 
   it("rejects a body that smuggles extra fields alongside provider:guest", async () => {

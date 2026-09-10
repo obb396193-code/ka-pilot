@@ -18,17 +18,22 @@ function workspaceView(active: "personal" | "team"): SessionView {
     name: "我的工作台",
     kind: "personal" as const,
     role: "admin" as const,
-    readOnly: false,
+    readOnly: false, isDemo: false,
   };
   const team = {
     id: teamWorkspaceId,
     name: "团队数据",
     kind: "team" as const,
     role: "optimizer" as const,
-    readOnly: true,
+    readOnly: true, isDemo: false,
   };
   return {
-    identity: { displayName: "fixture user" },
+    identity: {
+          id: "00000000-0000-4000-8000-0000000000d1",
+          provider: "internal_test" as const,
+          displayName: "fixture user",
+          mustChangePassword: false,
+        },
     activeWorkspace: active === "personal" ? personal : team,
     workspaces: [personal, team],
   };
@@ -98,7 +103,7 @@ describe("SessionHttpService", () => {
       cookieMaxAgeSeconds: 3_600,
       body: {
         ok: true,
-        data: { activeWorkspace: { kind: "personal", readOnly: false } },
+        data: { activeWorkspace: { kind: "personal", readOnly: false, isDemo: false } },
         meta: { requestId: "auth-login-001" },
       },
     });
@@ -128,7 +133,7 @@ describe("SessionHttpService", () => {
     expect(switched).toMatchObject({
       status: 200,
       sessionToken: nextToken,
-      body: { ok: true, data: { activeWorkspace: { kind: "team", readOnly: true } } },
+      body: { ok: true, data: { activeWorkspace: { kind: "team", readOnly: true, isDemo: false } } },
     });
     expect(repository.switchSessionWorkspace).toHaveBeenCalledWith(expect.objectContaining({
       expiresAt: new Date("2026-08-25T09:00:00Z"),

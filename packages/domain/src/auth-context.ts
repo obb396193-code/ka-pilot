@@ -70,6 +70,9 @@ export const authSessionSnapshotSchema = z.object({
   expiresAt: z.date(),
   revokedAt: z.date().nullable(),
   identityActive: z.boolean(),
+  /** v1.9.15：钥匙是**身份**不是空间——真团队空间被误标 is_demo 时，普通身份不该因此绕过不变量。 */
+  identityProvider: z.enum(["internal_test", "buc", "guest"]).optional(),
+  activeWorkspaceIsDemo: z.boolean().optional(),
   membershipWorkspaceId: z.string().uuid().nullable(),
   membershipIdentityId: z.string().uuid().nullable(),
   membershipUserId: z.string().uuid().nullable(),
@@ -98,6 +101,8 @@ export const authRejectionReasonSchema = z.enum([
   "PERSONAL_WORKSPACE_AMBIGUOUS",
   "PERSONAL_WORKSPACE_MISMATCH",
   "PERSONAL_WORKSPACE_SHARED",
+  /** v1.9.15：访客身份的空间形态不对（ENV/灌数配错才会出现）。 */
+  "GUEST_SCOPE_INVALID",
   "INVALID_AUTH_STATE",
 ]);
 
@@ -210,6 +215,33 @@ export function resolveApprovedAuthContext(
   const uniquePersonalWorkspaces = new Set(snapshot.activePersonalWorkspaceIds);
   if (uniquePersonalWorkspaces.size !== snapshot.activePersonalWorkspaceIds.length) {
     return rejected(403, "INVALID_AUTH_STATE");
+  }
+  /**
+   * v1.9.15 访客：**跳过「一个身份一个个人空间」，换成更严的三条**——
+   * 个人空间必须为 0（访客不该有自己的空间）、活动空间必须是 team 且 is_demo。
+   * 任一不满足就是 ENV/灌数配错，403 GUEST_SCOPE_INVALID，而不是放他进去看真数据。
+   *
+   * 钥匙是身份的 provider 不是空间的 is_demo：真团队空间被误标 is_demo 时，
+   * 普通身份不该因此绕过这条不变量。非 guest 身份下面那段一字未改。
+   */
+  if (snapshot.identityProvider === "guest") {
+    if (uniquePersonalWorkspaces.size !== 0) return rejected(403, "GUEST_SCOPE_INVALID");
+    if (snapshot.workspaceKind !== "team" || snapshot.activeWorkspaceIsDemo !== true) {
+      return rejected(403, "GUEST_SCOPE_INVALID");
+    }
+    if (expectedWorkspaceId !== undefined && snapshot.activeWorkspaceId !== expectedWorkspaceId) {
+      return rejected(403, "WORKSPACE_MISMATCH");
+    }
+    return authResolutionSchema.parse({
+      status: "approved",
+      context: {
+        workspaceId: snapshot.activeWorkspaceId,
+        userId: snapshot.userId,
+        role: snapshot.membershipRole,
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
+      },
+    });
   }
   if (uniquePersonalWorkspaces.size === 0) {
     return rejected(403, "PERSONAL_WORKSPACE_MISSING");
