@@ -1,5 +1,6 @@
 import { approvedAccountAccessSchema, approvedWorkspaceAuthContextSchema, assertWorkItemTransition, type WorkItemStatus, type ApprovedWorkspaceAuthContext } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
+import { accountScopeClause, accountScopeParams } from "./r014/workspace-authority.js";
 
 export interface AccountMuteTarget { media: string; accountId: string }
 export interface SetAccountMuteInput extends AccountMuteTarget { mutedUntil: string; reasonChip: string | null }
@@ -138,11 +139,17 @@ export class AccountMuteRepository {
       Object.keys(input).some(key => !keys.includes(key)) || typeof input.workItemId !== "string" || !uuid.test(input.workItemId) ||
       !validDate(input.mutedUntil) || !validReason(input.reasonChip)) throw new AccountMuteRepositoryError("INVALID_INPUT");
     const approved = parsed.data, fixed = { ...input };
+    const scope = accountScopeParams(approved);
     return this.withTransaction(async client => {
       const result = await client.query(
-        `SELECT id, workspace_id, media, account_id, status FROM work_items WHERE workspace_id=$1 AND id=$2 FOR UPDATE`,
-        [approved.workspaceId, fixed.workItemId]);
-      if (result.rows.length === 0) throw new AccountMuteRepositoryError("NOT_FOUND");
+        `SELECT id, workspace_id, media, account_id, status FROM work_items WHERE workspace_id=$1 AND id=$2
+          AND ${accountScopeClause("$3", "$4", "work_items.media", "work_items.account_id")} FOR UPDATE`,
+        [approved.workspaceId, fixed.workItemId, scope.kind, scope.allowed]);
+      if (result.rows.length === 0) {
+        // Distinguish absent from denied without loading status, tuple or body.
+        const exists = await client.query("SELECT id FROM work_items WHERE workspace_id=$1 AND id=$2", [approved.workspaceId, fixed.workItemId]);
+        throw new AccountMuteRepositoryError(exists.rows.length === 0 ? "NOT_FOUND" : "FORBIDDEN");
+      }
       if (result.rows.length !== 1) throw new AccountMuteRepositoryError("INVALID_RESULT");
       const current = result.rows[0] as Record<string, unknown>;
       if (current.id !== fixed.workItemId || current.workspace_id !== approved.workspaceId) throw new AccountMuteRepositoryError("INVALID_RESULT");
