@@ -6134,3 +6134,47 @@ F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批
 domain 1379 / db 1529 / **worker 2029（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清。
 
 有新活直接派，我这边现在是空的。
+
+---
+
+## fe → arch：F8-17 + v1.9.21 + 两个老板报的/拍的（2026-09-10）
+
+| SHA | 内容 |
+|---|---|
+| `2c699431` | **修「数据分析 · 盯盘」整页崩溃**（老板报） |
+| `c1e4c11f` | 收 v1.9.21 member-created 改形；★顺手修转发器把 201/202 判成 502 |
+| `f27ae471` | F8-17 standalone 产物验证 + 钉死 workspace root |
+| `1a509e7f` | ★老板拍板：去掉「态」切换器与「脱敏 Mock」角标 |
+
+门禁：tsc 0 错、eslint 0 错（19 警告，基线）、**npm test 244/244**、真实/mock 两种生产构建都过。
+
+### ★★ 最要紧的一条：转发器把 201/202 判成 502
+查 v1.9.21 时发现的。`forwarder.ts` 的 `expectedStatus` 对**成功信封一律期望 200**，状态不等就判 `UPSTREAM_INVALID_RESPONSE` 502。但契约里成功不止一种码：
+- `POST /admin/members` = **201**（v1.9.21，be2 一落地「新增成员」就整条失效，用户看到「上游坏了」）；
+- `POST /system/etl-runs/:id/rerun` = **202**（v1.9.19，接上就撞）。
+
+已改成 `statusMatchesBody()`：**成功信封接受任何 2xx**，错误信封仍按码严格查表。用例锁住 201。**这条建议你在别的 BFF（r010 那套）也扫一眼**，如果也钉死 200，同样的坑。
+
+### 盯盘页崩溃：根因是 fixture 层类型断言撒谎
+`Cannot read properties of undefined (reading 'toUpperCase')`。`/me/watchlist` 的 items 是**判别联合**（account 有 media/accountId，task 只有 taskId），**你的 zod schema 一直是对的**；是我们 `lib/fixtures/*.ts` 里两处 `as unknown as Fixture<{ items: {media, accountId}[] }>` 把 task 那支抹掉了，TS 从此看不见。fixture 里第三条本来就是 task 型——**这页一直打不开，只因默认 tab 不是「盯盘」没被发现**。
+
+把类型改对之后，**编译器立刻又揪出设置页「关注账户」同样会崩**（没人点到而已）。两处都按分支渲染了。
+
+顺带扫了全部 188 份 fixture 找同类（行内带判别键且分支字段不同）：另有 7 份（`accounts/timeline`、`settings/change-log`、`agent/run-events`、`agent/runs`、`agent/session`、`integrations/messages`、`run-events-1802`），这批前端类型是对的或调用方已按分支取，**不用改**——记一笔免得下次重扫。
+
+**教训归我**：`as unknown as Fixture<…>` 这个写法会把契约的联合类型悄悄压平。以后遇到 items 带 `type`/`kind` 判别键的，一律照 zod schema 抄成联合，不图省事。
+
+### F8-17
+① 拷 `.next/static` + `public` 进 `.next/standalone/apps/web/` 跑 `node server.js` 实测：登录页 200、**5 条字体 preload 链接在且文件真能取到（24296B/19956B，不是 404）**、300 片按需切片全在产物里、Geist 200、public 头像 200。登录页背景走 Iridescence 纯 CSS，本来就不依赖图片。`Ready in 434ms`，无缺模块报错。
+② **补了 `outputFileTracingRoot` + `turbopack.root` 钉死仓库根**——不是为了消警告：仓库根和 `apps/web` 各有一份 lockfile，Next 推断工作区根，**产物层级跟着推断在 `.next/standalone/apps/web/server.js` 和 `.next/standalone/server.js` 之间跳，你 CI 和部署脚本写死了路径，跳一次就起不来**。重建复验层级不变、警告消失。
+③ `serverExternalPackages` **不需要**。
+
+### ★老板拍板（与 F-007 冲突，标出来）：去掉「态」切换器
+老板指着页头「态 正常」说「这种多状态展示可以去掉了，当一个真实产品直接接进去，不要出现演示之类的东西」。已删 `StateSwitch` 组件本体 + 16 个页头的挂载 + 页头「脱敏 Mock / 内网数据」角标（连带 `PageHeader.isMock` 属性和因此变孤儿的 import 全清干净）。
+
+**保留**：`StateFrame` 的八态本身（真产品一样有加载/空/无权限/超时/失败，只是现在只能由真实数据驱动）、访客的「演示数据 · 只读」顶部条（那是契约定的真功能，不标反而骗人）。
+
+**与 F-007 的冲突点**：八态 + 页头态切换器原是 F-007 的交付项，现按老板口径撤掉切换器那一半。你若要在联调环境保留切状态的能力，我可以做成只认 `?state=` 不给 UI 入口——说一声。
+
+### ➊ 要老板/你定的：39 处「当前为示例」的 toast
+全站还有 39 处点了只弹「接口接入后生效（当前为示例）」的按钮（改角色、撤销授权、按日补拉、重跑、新建定时…）。老板说「不要出现演示之类的东西」，但**那些后端接口确实还没开**——把文案改成假装能用会更糟，所以我没动。三个选项：(a) 你派单我逐个接掉；(b) 接口没开的按钮直接不显示；(c) 文案统一改成「暂未开放」不提「示例」。等拍。
