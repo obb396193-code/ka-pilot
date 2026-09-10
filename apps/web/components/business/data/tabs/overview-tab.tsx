@@ -1,88 +1,115 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 
-import { KpiCards } from "@/components/business/workbench/kpi-cards"
-import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
-import { Badge } from "@/components/ui/badge"
+import { DimensionChart } from "@/components/business/data/dashboard/dimension-chart"
+import { DrillTable } from "@/components/business/data/dashboard/drilldown"
+import { KpiRows } from "@/components/business/data/dashboard/kpi-rows"
+import { ScopeSwitch } from "@/components/business/data/dashboard/scope-switch"
+import { TrendChart, type TrendPoint } from "@/components/business/data/dashboard/trend-chart"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import type { DisplayMetric } from "@/lib/data/contracts"
-import { isOk, mv, rv, costStatusReasonText, costStatusReasonShort } from "@/lib/fixtures/contract"
-import { summaryFixtures, trendFixture, windowLabel, type SummaryVariant } from "@/lib/fixtures/data-analysis"
-import { cn } from "@/lib/utils"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { isOk } from "@/lib/fixtures/contract"
+import { dimensionFixtures, trendFixture, windowLabel } from "@/lib/fixtures/data-analysis"
+import { dashboardSummaryFixture, optimizerDimensionFixture, resourcePositionFixture, type DashboardRow } from "@/lib/fixtures/dashboard"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
-// 大盘：六卡（account.summary/v3，三色只从 assessment.costStatus 拿）+ 消耗与现金 CPA 趋势（account.trend/v3）
-const variants: { value: SummaryVariant; label: string }[] = [
-  { value: "green", label: "样例 · 绿（累计达标）" },
-  { value: "yellow", label: "样例 · 黄（单日超线）" },
-  { value: "cash-missing", label: "样例 · 现金缺（团队源）" },
-]
-const tone = (status: "green" | "yellow" | "red" | null): DisplayMetric["tone"] => status === "green" ? "positive" : status === "yellow" ? "warning" : status === "red" ? "critical" : "neutral"
-
+/**
+ * 数据分析 · 概览（F8-19，P0 数据看板）。
+ * 借同事「快手投放账户工作台 v7」的**内容布局**（哪页放哪些维度、用哪类组件），
+ * 前端规范一概不借（老板 2026-09-10）——组件、视觉、交互全按我们自己这套。
+ *
+ * 五块：两行 KPI（账面/考核 + 环比）→ 趋势双轴 → 任务大类表现（可展开到细分任务、账户）
+ * → 优化师三级钻取 → 资源位分布。
+ *
+ * 数据源：`assessment.biConv/biCashCost/overCost` 与环比是契约 v1.9.22 新增，后端 Codex P-210 未到，
+ * 现读 `lib/data/fixtures/v1922/` 的过渡 fixture（自写、按 api.md 形，落地后并回删除）。
+ */
 export function OverviewTab({ colorKey }: { colorKey?: string }) {
-  const [variant, setVariant] = useState<SummaryVariant>("green")
-  const fixture = summaryFixtures[variant]
-  const trend = trendFixture
-  const row = isOk(fixture) ? fixture.data.source.rows[0] : null
-  const trendRows = isOk(trend) ? trend.data.source.rows : []
+  const summary = isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.rows[0] : null
+  const lineage = (isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.lineage : null) as
+    (Parameters<typeof LineageFooter>[0]["lineage"] & { window?: { from: string; to: string; preset?: string } }) | null
 
-  const metrics = useMemo<DisplayMetric[]>(() => {
-    if (!row) return []
-    const a = row.assessment
-    const price = a.price ? `考核 ¥${a.price.value.toFixed(2)}${a.priceSource === "ka_daily" ? "（团队日价）" : ""}` : a.priceVersions && a.priceVersions >= 2 ? `考核价多版本(${a.priceVersions})` : null
-    return [
-      { key: "cost", label: "账面消耗", value: mv(row.metrics.cost, "money0"), delta: null, tone: "neutral" },
-      { key: "cashCost", label: "现金消耗", value: mv(row.metrics.cashCost, "money0"), delta: null, tone: "neutral" },
-      { key: "cashCpa", label: "现金 CPA", value: rv(row.metrics.ratios.cashCpa, "money"), delta: price, tone: tone(a.costStatus) },
-      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: a.costStatusReason ? costStatusReasonShort[a.costStatusReason] ?? null : null, tone: tone(a.costStatus) },
-      { key: "costSpace", label: "成本空间", value: mv(row.metrics.costSpace, "money0"), delta: null, tone: "neutral" },
-      { key: "realConversion", label: "BI 量级", value: mv(row.metrics.realConversion), delta: null, tone: "neutral" },
-    ]
-  }, [row])
-  const sparklines = useMemo(() => ({
-    cost: trendRows.map((item) => item.metrics.cost.availability === "available" ? item.metrics.cost.value : null),
-    cashCost: trendRows.map((item) => item.metrics.cashCost.availability === "available" ? item.metrics.cashCost.value : null),
-    cashCpa: trendRows.map((item) => item.metrics.ratios.cashCpa.state === "finite" ? item.metrics.ratios.cashCpa.value : null),
-  }), [trendRows])
-  const chartData = useMemo(() => trendRows.map((item) => ({ label: item.ds.slice(5), spend: item.metrics.cost.availability === "available" ? item.metrics.cost.value : null, realCpa: item.metrics.ratios.cashCpa.state === "finite" ? item.metrics.ratios.cashCpa.value : null })), [trendRows])
+  const optimizerRows = isOk(optimizerDimensionFixture) ? optimizerDimensionFixture.data.source.rows : []
+  const resourceRows = isOk(resourcePositionFixture) ? resourcePositionFixture.data.source.rows : []
+  // 任务大类走契约里已有的 biz 维度 fixture（不是我写的过渡件）。
+  // ★不用 `as unknown as DashboardRow[]` 硬转：那正是「盯盘页崩溃」的成因——
+  //   契约的 biz 行没有 v1.9.22 的考核三项，硬转过去运行时就是 undefined.value。
+  //   DashboardRow 的这三项现在是可选的，结构化匹配即可，缺了由钻取表按分摊处理。
+  const bizFixture = dimensionFixtures.biz
+  const bizRows: DashboardRow[] = "unsupported" in bizFixture || !isOk(bizFixture) ? [] : bizFixture.data.source.rows
 
-  if (!row || !isOk(fixture)) return null
-  const lineage = fixture.data.source.lineage
-  const status = row.assessment.costStatus
+  // 趋势：金额走左轴，转化数与转化成本走右轴；缺失日保持 null 让线断开
+  const points = useMemo<TrendPoint[]>(() => {
+    if (!isOk(trendFixture)) return []
+    return trendFixture.data.source.rows.map((row) => ({
+      ds: row.ds,
+      cost: row.metrics.cost.value,
+      conversion: row.metrics.conversion.value,
+      cpa: row.metrics.ratios.realCpa.value,
+    }))
+  }, [])
+
+  if (!summary) return <p className="rounded-lg border border-dashed px-3 py-10 text-center text-sm text-muted-foreground">概览暂无数据</p>
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <ScopeSwitch />
         <div className="flex items-center gap-2 text-sm">
-          <CostStatusDot status={status} />
-          <span className="font-medium">{windowLabel(lineage.window?.preset)}</span>
-          <span className="text-muted-foreground">{lineage.window?.from} ～ {lineage.window?.to}</span>
-          <Badge variant="outline" className={cn(status === "red" && "text-status-critical", status === "yellow" && "text-status-warning", status === "green" && "text-status-success")}>{costStatusReasonText(row.assessment.costStatusReason)}</Badge>
+          <CostStatusDot status={summary.assessment.costStatus} />
+          <span className="font-medium">{windowLabel(lineage?.window?.preset)}</span>
+          <span className="text-muted-foreground tabular-nums">{lineage?.window?.from} ～ {lineage?.window?.to}</span>
           <Tooltip>
             <TooltipTrigger asChild><span className="cursor-help text-xs text-muted-foreground underline decoration-dotted underline-offset-4">口径</span></TooltipTrigger>
-            <TooltipContent side="bottom" className="max-w-80">{metricFormulas.cashCpa}；颜色按窗口累计判，不按单日（容忍带在个人视图设，默认 0）。</TooltipContent>
+            <TooltipContent side="bottom" className="max-w-80">{metricFormulas.cashCpa}；颜色按窗口累计判，不按单日。</TooltipContent>
           </Tooltip>
         </div>
-        <Select value={variant} onValueChange={(value) => setVariant(value as SummaryVariant)}>
-          <SelectTrigger size="sm" className="w-56" aria-label="样例"><SelectValue /></SelectTrigger>
-          <SelectContent align="end">{variants.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
-        </Select>
       </div>
-      {fixture.data.source.warnings.length ? <div role="alert" className="rounded-lg border border-status-warning/30 bg-status-warning/10 px-4 py-2 text-sm text-status-warning">{fixture.data.source.warnings.join("；")}</div> : null}
-      <KpiCards metrics={metrics} sparklines={sparklines} className="px-0 lg:px-0" />
+
+      <KpiRows row={summary} />
+
       <Card>
-        <CardHeader>
-          <CardTitle>消耗与现金 CPA</CardTitle>
-          <CardDescription>{windowLabel(lineage.window?.preset)} · 左轴账面消耗、右轴现金 CPA · 缺失日留空，不补 0</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {chartData.length ? <SpendRealCpaTrend data={chartData} colorKey={`${colorKey}-${variant}`} labels={{ spend: "账面消耗", cpa: "现金 CPA" }} /> : <p className="text-sm text-muted-foreground">后端未返回趋势</p>}
+        <CardContent className="pt-5">
+          <TrendChart id="overview.trend" points={points} colorKey={colorKey} />
         </CardContent>
       </Card>
-      <LineageFooter lineage={lineage} extra={<span>账户 {row.accountCount} · 异常行 {row.anomalyRows}</span>} />
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">按维度看</CardTitle>
+          <CardDescription>任务大类看整体盘子，优化师视角看人；两个都能一路展开到账户</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="biz">
+            <TabsList>
+              <TabsTrigger value="biz">任务大类表现</TabsTrigger>
+              <TabsTrigger value="optimizer">优化师视角</TabsTrigger>
+            </TabsList>
+            <TabsContent value="biz" className="mt-3">
+              <DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv.value} rootCost={summary.metrics.cost.value} />
+            </TabsContent>
+            <TabsContent value="optimizer" className="mt-3">
+              <DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" rootBi={summary.assessment.biConv.value} rootCost={summary.metrics.cost.value} />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="pt-5">
+          <DimensionChart
+            id="overview.resource_position"
+            title="资源位分布"
+            description="按账面花费；只画有消耗的资源位"
+            rows={resourceRows}
+            colorKey={colorKey}
+          />
+        </CardContent>
+      </Card>
+
+      {lineage ? <LineageFooter lineage={lineage} extra={<span>账户 {summary.accountCount} · 异常行 {summary.anomalyRows}</span>} /> : null}
     </div>
   )
 }
