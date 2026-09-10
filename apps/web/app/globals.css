@@ -247,3 +247,7 @@
 @media (max-width: 767px) {
   [data-mobile-duty="restricted"] [data-write-actions] { display: none !important; }
 }
+
+/* F8-12 访客只读：viewer 身份下藏掉页面级和表格工具栏的写入口（新建 / 批量 / 导入 / 自定义列 / 确认 / 推送 / 导出）。
+   后端对 viewer 的写类请求一律 403 READ_ONLY_ROLE——让人点一个必然失败的按钮比不给按钮更劝退。 */
+[data-session-role="viewer"] [data-write-actions] { display: none !important; }

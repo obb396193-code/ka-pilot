@@ -72,7 +72,7 @@ function ConnectionsTab() {
             </CardContent>
             <CardFooter className="gap-2">
               <Button size="sm" variant="outline" onClick={() => toast.success("探活通过", { description: "机器人 token 与群可达" })}><IconRefresh />探活</Button>
-              <Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条只读测试卡" })}><IconSend />测试消息</Button>
+              <span data-write-actions><Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条只读测试卡" })}><IconSend />测试消息</Button></span>
             </CardFooter>
           </Card>
         ))}

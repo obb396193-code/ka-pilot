@@ -35,7 +35,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-const roleLabel = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员" } as const
+const roleLabel = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员", viewer: "只读访客" } as const
 
 // 头像沿用母版 shadcn 官方示例图；身份来自服务端 session，不在浏览器自报。
 

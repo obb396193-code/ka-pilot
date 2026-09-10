@@ -13,3 +13,13 @@ export const mockSessionView: SessionView = {
   activeWorkspace: personal,
   workspaces: [personal, team],
 }
+
+// F8-12 访客态预览（仅 mock，`?session=guest`）：形状 = 契约 fixture session-http/guest.json，
+// 演示空间是 kind:"team" + isDemo:true（v1.9.12 改口，不再有 demo kind）。
+const demo = { id: "00000000-0000-4000-8000-0000000000de", name: "演示空间", kind: "team" as const, role: "viewer" as const, readOnly: true, isDemo: true }
+
+export const mockGuestSessionView: SessionView = {
+  identity: { id: "00000000-0000-4000-8000-00000000009e", displayName: "访客", provider: "guest" },
+  activeWorkspace: demo,
+  workspaces: [demo],
+}

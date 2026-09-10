@@ -80,7 +80,7 @@ function BusinessTab() {
               <div><CardTitle>{config.name}</CardTitle><CardDescription>数据来自{datasetLabel(config.config.dataset.queryId)} · 分组 {config.config.groupBy.map(groupLabel).join(" × ")} · 排序 {config.config.sort.map((item) => `${metricLabel(item.by)}${item.dir === "desc" ? "从高到低" : "从低到高"}`).join("，")} · {config.isShared ? "已分享" : "私有"} · 更新 {fmtTime(config.updatedAt)}</CardDescription></div>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => openAgentDrawer(`把报告「${config.name}」改成按业务分组并加真实转化列`)}><IconSparkles />Agent 帮做表</Button>
-                <Button size="sm" variant="outline" disabled={exportState === "queued"} onClick={() => { setExportState("queued"); toast("已排队导出 xlsx", { description: "已提交，导出完成后给下载链接" }); setTimeout(() => setExportState("done"), 1500) }}><IconDownload />{exportState === "queued" ? "导出中…" : "导出 xlsx"}</Button>
+                <span data-write-actions><Button size="sm" variant="outline" disabled={exportState === "queued"} onClick={() => { setExportState("queued"); toast("已排队导出 xlsx", { description: "已提交，导出完成后给下载链接" }); setTimeout(() => setExportState("done"), 1500) }}><IconDownload />{exportState === "queued" ? "导出中…" : "导出 xlsx"}</Button></span>
               </div>
             </div>
           </CardHeader>

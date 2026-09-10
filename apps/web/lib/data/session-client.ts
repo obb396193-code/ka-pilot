@@ -1,6 +1,6 @@
 import {
   sessionHttpResponseSchema,
-  type InternalTestLoginRequest,
+  type LoginRequest,
   type SessionHttpResponse,
   type WorkspaceSwitchRequest,
 } from "./session-contracts.ts"
@@ -22,7 +22,7 @@ export function readWorkspaces(fetchImpl: FetchLike = fetch): Promise<SessionHtt
   return requestSession("/api/internal/auth/workspaces", { method: "GET" }, fetchImpl)
 }
 
-export function loginSession(input: InternalTestLoginRequest, fetchImpl: FetchLike = fetch): Promise<SessionHttpResponse> {
+export function loginSession(input: LoginRequest, fetchImpl: FetchLike = fetch): Promise<SessionHttpResponse> {
   return requestSession("/api/internal/auth/login", {
     method: "POST",
     headers: { "content-type": "application/json" },

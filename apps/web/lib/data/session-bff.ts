@@ -16,7 +16,7 @@ import {
   type SessionCookieResolution,
 } from "./internal-api-bff.ts"
 import {
-  internalTestLoginRequestSchema,
+  loginRequestSchema,
   logoutSuccessResponseSchema,
   sessionErrorResponseSchema,
   sessionHttpResponseSchema,
@@ -93,7 +93,8 @@ async function parsedBody(kind: SessionRouteKind, method: string, request: Reque
   if (method !== "POST") return undefined
   const body = await readBoundedRequestJson(request)
   if (body === null || body === undefined) return null
-  const schema = kind === "login" ? internalTestLoginRequestSchema : workspaceSwitchRequestSchema
+  // login 收两种：账号密码 和 访客（{provider:"guest"}，无凭证）
+  const schema = kind === "login" ? loginRequestSchema : workspaceSwitchRequestSchema
   const parsed = schema.safeParse(body)
   return parsed.success ? parsed.data : null
 }

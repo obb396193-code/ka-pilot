@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/business/theme/theme-provider"
 import { AgentLauncher } from "@/components/business/agent/agent-launcher"
 import { CommandPalette } from "@/components/business/command/command-palette"
 import { MobileDutyBanner, MobileDutyScope } from "@/components/business/mobile/duty-guard"
+import { DemoBanner, ViewerScope } from "@/components/business/session/demo-guard"
 import { AppSidebarProvider } from "@/components/business/layout/app-sidebar-provider"
 
 export default function MainLayout({
@@ -28,10 +29,11 @@ export default function MainLayout({
         <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
+          <DemoBanner />
           <MobileDutyBanner />
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
-              <MobileDutyScope><WorkspaceScope>{children}</WorkspaceScope></MobileDutyScope>
+              <ViewerScope><MobileDutyScope><WorkspaceScope>{children}</WorkspaceScope></MobileDutyScope></ViewerScope>
             </div>
           </div>
         </SidebarInset>
