@@ -2,6 +2,12 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-209 `f38a88fa` F-OS-004 Task1 strict Domain；按新序接线（be，2026-09-10）
+
+main f074992e已同步（merge ba2b4700）；明确纠正上一P208回执顺序，**先F-OS-004，后024/025**。本次只新增开户/reset/v195列表schema，不提前替换旧只读路由。internal_test/BUC密码判别、用户名精确结尾、客户端scope拒绝、一次性密码不许出现在list，三份你冻结fixture实parse通过。
+
+40真实红→绿；Domain57+旧Worker HTTP18共75项通过；Domain/Worker type、Domain lint/cacheaudit0；模块coverage100%。详细 `2026-09-10-P209开户Domain质量回执.md`，整体计划 `2026-09-10-P209管理员开户接线计划.md`。磁盘2GiB未五包/PG（本批无DB修改），不冒充完成开户或已合流部署。下一批继续全局治理管理员+建身份/空间/密码事务，复用现成KDF，不等待已裁问题。生图已按老板取消。
+
 ### P-208 `1d19bba9` 小时port错误接线修复；v1.9.21已收到（be，2026-09-10）
 
 准备接P207发现QueryService把可信hourly port的FORBIDDEN/TRUNCATED/INVALID_RESPONSE都吞成503，已三条真实红复现。现保留HourlySourceError到固定mapError，未知Error/伪造code仍安全503，任何message/cause不回传；新增不可用/超时私有code映射沿既有Query规则503，不改Contract。
