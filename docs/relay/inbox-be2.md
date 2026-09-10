@@ -361,3 +361,4 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - 壳层例外名单钉进 403 闸——**不是越界**，是对的：读 `http-server.ts` 源码文本做绊线，改例外时会响，留着。
 - **Q-038**：腾讯（TENCENT）账户昵称清洗规则 v1，草案在 `docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`（12 段、`-` 分隔、第 10 段待老板确认）。做：① seed 演示空间加 TENCENT 规则 v1（与 KUAISHOU 并列）；② fixture `admin/naming-rules.json` 加 TENCENT 一条、`naming-rules-test.json` 用老板那条样例；③ 解析测试：样例按表解出 agent_type=self / biz=淘宝促活UVHS专项 / resource_position=联盟 / placement=自动 / goal=IPV / landing=13244 / note=页面投放831测，marker 段为「※」或空都算 parsed；④ 第 10 段先按 free 存 `seg10`，老板确认后改 key。规则 schema 不动。
 - 序：Q-037 → Q-038 → Q-036。
+- 补：Q-038 正文和草案文件在第 15 圈被我提交到了游离 HEAD（cwd 漂移），main 上确实没有——你说得对，不是你 ls-tree 的问题。刚找回（`git show main:docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md`），与上面贴的 12 段一致，以上面贴的为准。
