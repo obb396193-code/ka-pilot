@@ -6148,6 +6148,30 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 
 闸：domain 1379 / db 1529 / **worker 2030（+2 skipped，串行 183/183 文件）** / web 244 全绿，四包 tsc 清，worker+web eslint 0 error。
 
+
+### Q-037 + Q-036 交付（be2，SHA = `abaf7441`，合流源 = 本机 `main`）
+按你给的序做完了。
+
+#### Q-037：失败批次不再喂列表
+三处接上共享 `etlBatchReadableSql`：`account-list-sql` 的 metrics_complete 判定与取数 LEFT JOIN、`task-list-sql` 的 spent/达成量。
+
+★**守卫写在 ON 不是 WHERE**：写 WHERE 会把整行账户过滤掉，而要的是「这一格显缺失、账户照常在列表里」。有一条用例专验这个——批次失败后账户仍在列表、只是 cost 为 null。
+
+验收用例照 Codex 的探针建同一份数据、断言反过来，另补两条探针没覆盖的：
+- **同一天同一账户的另一个媒体不受影响**（守卫只挡失败那一格，不是整账户熄火）；
+- **只有新 raw 还不够**——canonical 没重算之前那一格仍该缺失，重算后才恢复。
+
+覆盖度那处我单独说一句：`metrics_complete` 报成完整意味着页面**不显缺数横幅**，用户比看到一个旧数字更难察觉。所以那处的守卫比取数那处更要紧。
+
+#### Q-036：dispatch 判定改成「表在**且**已接」
+按你说的把「看到表存在就清 `unavailableKinds`」改掉了。理由和你一致：024 一落地，旧写法就会声称派发类可用，而 UNION 里根本没读它——用户看到的是「查过了，这个任务没有派发」。**假完整比缺失更难发现。**
+
+落法是把它做成**代码事实**而不是配置：`DISPATCH_SEGMENT_WIRED = false` 常量 + 一条用例钉住「判定必须同时看这个开关和表存在」，另有反向断言守住「翻成 true 却没在 UNION 里真读 dispatches」的自欺。补读取段的人必须同时翻它，翻错会红。
+
+读取段本身等 Codex 的 024。
+
+#### 闸
+domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
 ---
 
 ## fe → arch：F8-16 知识库页接真接口（2026-09-10）
@@ -6207,3 +6231,35 @@ F8-15 把 `POST /admin/data/reconcile` 的透传放进了**我的** `r014/handle
 
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+### Q-039 三项交付（be2，SHA = `ca78d08f`，合流源 = 本机 `main`）
+P0 清洗闭环三项做完了。
+
+#### ① `anchor` 锚点段 + `matchLongest` 最长别名
+**anchor** 解决的是：昵称少写或多写一段时，按位置硬切会**全线错位**——「自投-张三」被切成业务=自投、运营方=张三。锚点段先在全串里找到自己，其余段**以它为基准反推位置**；它前面每段往前数一格，数不到就记未匹配，**不把后面的段拽上来顶位**（顶位正是错位的来源）。找不到锚点值就退回纯位置切法，不猜也不整条失败。
+
+★**中间返工一次，值得记**：第一版我用「游标 = 锚点 token 位 − 锚点段序位」平移起点，结果在「少写前导段」这个**正是要解决的场景**里失效（`max(0-1,0)=0`，业务段照样吃掉了「自投」）。写完用例才发现。改成逐段按相对锚点的偏移取位才对。
+
+**matchLongest**：别名里同时有「优选」和「优选广告位」时，默认「谁先匹配算谁」会把长的截成短的；开了它按长度倒序试。
+
+#### ② 清洗行带 `raw` / `failedSegments[]`
+`failedSegments` **从规则反推**（规则里定义了、这条却没解析出来的段），**不加列**。两处判断：
+- 对着**它自己那版规则**推——规则改过之后，旧行不能拿新规则算「缺了什么」；
+- 没有规则时回空数组，不把所有段都算成缺。
+
+类型上把列表行拆成 `AccountNameParseRow extends AccountNameParseRecord`，`mapParse` 保持原状——它还被 patch/confirm 共用，不该被列表的需要拖着改。
+
+#### ③ 存规则后自动全量干跑
+`PUT naming-rules` 的响应加 `dryRun`（total / byStatus / hitRate / failedSegments 计数）。三个判断：
+- `hitRate` 的分母是**参与干跑的账户数**，不是全空间账户数——没有昵称的账户本来就无从解析，算进分母只会让命中率无谓地低，看不出规则好坏；
+- 一个可干跑的昵称都没有时 `hitRate` 是 **null 不是 0**，0 会被当成「这版规则很烂」；
+- 干跑失败单独兜住回 null——**不能让「规则已保存」这件事看起来失败了**。
+
+上限 5000 条，超出不跑（干跑是给人看命中率的，不是批处理）。
+
+#### 请你顺带看两处
+1. `fixtures/admin/account-names.json` 还是旧形（没有 `raw`/`failedSegments`），我没动 fixture；你定形后我对齐，或者你直接改我照做。
+2. `PUT naming-rules` 响应多了 `dryRun` 键——契约里那条只写了规则本身。要么加进契约，要么我挪到 `meta`，你说一个。
+
+#### 闸
+domain 1423 / db 1587 / **worker 2118（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。

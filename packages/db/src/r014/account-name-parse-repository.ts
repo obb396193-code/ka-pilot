@@ -1,5 +1,5 @@
 import {
-  EMPTY_DIMENSIONS_DTO, applyOverride, namingRuleSchema, parsedSegmentsSchema,
+  EMPTY_DIMENSIONS_DTO, applyOverride, namingRuleSchema, parseAccountName, parsedSegmentsSchema,
   parseOverrideSchema, parseStatusSchema,
   resolveAccountDimensions, toDimensionsDto, toNamingRule,
   type AccountDimensionsDto, type ApprovedWorkspaceAuthContext, type NamingRule,
@@ -30,6 +30,7 @@ export interface AccountNameParseRecord {
   media: string;
   accountId: string;
   accountName: string;
+
   ruleVersion: number;
   status: ParseStatus;
   segments: Record<string, unknown>;
@@ -38,6 +39,18 @@ export interface AccountNameParseRecord {
   override: Record<string, string> | null;
   parsedAt: string | null;
   confirmedAt: string | null;
+}
+
+/**
+ * v1.9.22 ②：清洗页列表行。fe 的「未归属样例」闭环要三样——原文、切好的段、
+ * **没切出来的段**。前两样底层本来就有（`accountName` / `segments`），这里补：
+ * - `raw` = 原昵称（与 accountName 同值，给 fe 一个语义明确的名字）；
+ * - `failedSegments` = **规则里定义了、这条却没解析出来的段**，从规则反推，不加列。
+ *   status=partial/failed 的行靠它直接回答「该往哪个段加别名」。
+ */
+export interface AccountNameParseRow extends AccountNameParseRecord {
+  raw: string;
+  failedSegments: string[];
 }
 
 export interface ReparseCandidate {
@@ -179,7 +192,7 @@ export class AccountNameParseRepository {
   async list(
     auth: ApprovedWorkspaceAuthContext,
     options: { status?: string; media?: string; q?: string; page?: number; pageSize?: number } = {},
-  ): Promise<{ items: AccountNameParseRecord[]; total: number }> {
+  ): Promise<{ items: AccountNameParseRow[]; total: number }> {
     const approved = approveAuth(auth);
     const page = options.page ?? 1;
     const pageSize = options.pageSize ?? 20;
@@ -210,10 +223,28 @@ export class AccountNameParseRepository {
        ORDER BY media, account_id LIMIT $7 OFFSET $8`,
       [...values, pageSize, (page - 1) * pageSize],
     );
-    return {
-      items: result.rows.map((row) => mapParse(row as Record<string, unknown>, approved.workspaceId)),
-      total,
-    };
+    // 每行的失败段要对着**它自己那版规则**推：规则改过之后，旧行不能拿新规则算缺了什么。
+    const rulesByMedia = new Map<string, NamingRule | null>();
+    const items: AccountNameParseRow[] = [];
+    for (const row of result.rows as Record<string, unknown>[]) {
+      const record = mapParse(row, approved.workspaceId);
+      const media = record.media;
+      if (!rulesByMedia.has(media)) {
+        const stored = await this.currentRule(approved, media);
+        rulesByMedia.set(media, stored === null ? null : toNamingRule(stored));
+      }
+      const rule = rulesByMedia.get(media) ?? null;
+      const parsedKeys = new Set(Object.keys(record.segments));
+      items.push({
+        ...record,
+        raw: record.accountName,
+        // 没有规则就谈不上「缺了哪段」——空数组而不是把所有段都算成缺。
+        failedSegments: rule === null
+          ? []
+          : rule.segments.map((segment) => segment.key).filter((key) => !parsedKeys.has(key)),
+      });
+    }
+    return { items, total };
   }
 
   /**
@@ -477,5 +508,42 @@ export class AccountNameParseRepository {
       if (biz !== undefined && biz.value !== "") found.set(`${media}:${String(row.account_id)}`, biz.value);
     }
     return found;
+  }
+
+  /**
+   * v1.9.22 ③：拿一份规则对**本空间该媒体的全部昵称**干跑，回命中率。
+   * 只读不写——改规则的人先看见「这版规则能解析出多少」，再决定要不要重解析。
+   *
+   * `hitRate` 的分母是**参与干跑的账户数**，不是全空间账户数：没有昵称的账户
+   * 本来就无从解析，算进分母只会让命中率无谓地低，看不出规则好坏。
+   */
+  async dryRunAll(
+    auth: ApprovedWorkspaceAuthContext, media: string, rule: NamingRule,
+  ): Promise<{ total: number; byStatus: Record<string, number>; hitRate: number | null; failedSegments: Record<string, number> }> {
+    const approved = approveAuth(auth);
+    if (!MEDIA.test(media)) throw new R014RepositoryError("INVALID_INPUT");
+
+    const rows = (await this.pool.query(
+      `SELECT account.account_name FROM accounts AS account
+       WHERE account.workspace_id=$1 AND account.media=$2
+         AND account.account_name IS NOT NULL AND btrim(account.account_name) <> ''
+       LIMIT 5000`,
+      [approved.workspaceId, media],
+    )).rows as { account_name: string }[];
+
+    const byStatus: Record<string, number> = {};
+    const failedSegments: Record<string, number> = {};
+    for (const row of rows) {
+      const parse = parseAccountName(String(row.account_name), rule);
+      byStatus[parse.status] = (byStatus[parse.status] ?? 0) + 1;
+      for (const key of parse.unmatched) failedSegments[key] = (failedSegments[key] ?? 0) + 1;
+    }
+    return {
+      total: rows.length,
+      byStatus,
+      // 一个可干跑的昵称都没有时命中率是**不知道**，不是 0——0 会被当成「规则很烂」。
+      hitRate: rows.length === 0 ? null : Number(((byStatus.parsed ?? 0) / rows.length).toFixed(4)),
+      failedSegments,
+    };
   }
 }
