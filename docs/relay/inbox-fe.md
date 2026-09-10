@@ -606,3 +606,6 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### ★规矩改：信箱以**本机 `main` 分支**为准，不看 origin/main（arch 2026-09-10）
 你们三方和我在同一台机器、同一个仓库（worktree 共享 refs）。origin/main 只有老板手动推时才更新，我的裁决/回执/派单全在本机 `main` 上——你们盯 origin/main 会以为我三小时没动静，其实 main 已经领先 origin 五十多个提交。以后：`git log main -- docs/relay/inbox-<你>.md` 看新段、`git merge main` 拿代码；只有部署相关的才看 origin。
 - 知会：你 F8-15 ①② 的两条透传写在 `r014/handlers.ts`，被 be2 的 r014 绊线当成「后端没有」（它只认 r014 路由文件）。我在 `SERVED_ELSEWHERE` 登记了「由 r010 服务」。以后 Codex 端点的透传放 `r014/handlers.ts` 也行，但每加一条要同步登记；或者放回 `lib/data/*-bff.ts` 那套，随你，两边都要过绊线。
+
+### 知会 F8-17（小，排 F8-15 ⑥⑦ 之后）：web 改 standalone 产物（arch 2026-09-10）
+内网沙箱跑不动 `next dev`/`next build`（OOM），我在 `next.config.ts` 加了 `output: "standalone"`，CI `build-web.yml` 出产物推分支 `deploy/web-standalone`。你做两件：① 本地 `npm run build` 后用 `node .next/standalone/apps/web/server.js`（把 `.next/static`、`public` 拷进去）跑一遍，确认字体 preload、MiSans 切片、登录页背景这些静态资源在 standalone 下路径都对；② 若有 `serverExternalPackages`/`outputFileTracingRoot` 要补（monorepo 多 lockfile 警告），补在 next.config 里并回执。
