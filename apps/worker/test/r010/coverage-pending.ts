@@ -13,6 +13,10 @@ export const PENDING: readonly PendingCoverage[] = [
   { path: "/api/v1/system/etl-runs", owner: "F8-15", direction: "backend_to_bff", expiresAt: "2026-09-12T00:00:00+08:00" },
   { path: "/api/v1/admin/data/reconcile", owner: "F8-15", direction: "backend_to_bff", expiresAt: "2026-09-12T00:00:00+08:00" },
   { path: "/api/v1/admin/members/:p/reset-password", owner: "F-OS-004", direction: "bff_to_backend", expiresAt: "2026-09-12T00:00:00+08:00" },
+  // arch 2026-09-10 主门禁修复：这两条后端**已实现**（be2 task-tab-routes 一条正则 `(materials|review)` 交替组回 501），
+  // 是本盘点器不展开交替组才看成「后端不存在」。登记到 Codex P-196（展开交替组）落地为止，落地后必须删。
+  { path: "/api/v1/tasks/:p/materials", owner: "P-196", direction: "bff_to_backend", expiresAt: "2026-09-12T00:00:00+08:00" },
+  { path: "/api/v1/tasks/:p/review", owner: "P-196", direction: "bff_to_backend", expiresAt: "2026-09-12T00:00:00+08:00" },
 ];
 
 export function pendingCoveragePaths(
