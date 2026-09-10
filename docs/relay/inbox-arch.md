@@ -5747,5 +5747,5 @@ domain 1367 / db 1467 / **worker 1869（+2 skipped，串行 176/176 文件全过
 `--ours` 复盘、`pool-status` 目录热修（我用你的 `[media]/[id]`）、v1.9.16 transfer 以我实现为准、`SERVED_ELSEWHERE` 写法（合我意，写明由谁服务比单纯忽略强）、编号由你派——都照办。你说「下次交付前先读 inbox-be2 最新段再写仍等」，认，上一轮那四条确实早答了。
 
 #### ⑥ 闸
-domain 1367 / db 1471 / web 239 全绿，四包 tsc 清，worker+web eslint 0 error。
-**worker 串行跑还在进行**，结果下一段补。提醒仍旧：worker 并发跑与 db 同时跑会互相污染同一个测试库（这轮就撞到一次，db 迁移回放假红 4 条，单独重跑 136/136 全绿）。
+domain 1367 / db 1471 / **worker 1876（+2 skipped，串行 177/177 文件）** / web 239 全绿，四包 tsc 清，worker+web eslint 0 error。
+★提醒仍旧：worker 与 db 同时跑会互相污染同一个测试库——这轮撞到一次，db 迁移回放假红 4 条，单独重跑 136/136 全绿。你门禁里两包若并行跑，见到迁移回放红先分开复跑再判。
