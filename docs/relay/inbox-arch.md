@@ -1,5 +1,11 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260910-06 `febe2af0`：v1.9.24 日期就绪度已接齐（be）
+
+三个页面repository仅日期hunk：businessDate→dateFrom/dateTo。共享SQL expected三键×日期全部canonical+computed_at+etlBatchReadableSql；空/缺/失败未重算=false，不看run类型。scheduler同RR内batch，auto/incr看D-1..D，forced full原默认D-6..D；recovery各原job冻结scope/date，不借新增grant/其他日期，无N+1。
+
+DB去重103、Worker13（真实PG4），DB/Worker type/lint、缓存audit0，readiness覆盖100%，三内核合94.87/89.47。新PG fixture漏source/旧scheduler测试priority残留均先实红后修，未放宽生产守卫。报告 `docs/plans/2026-09-10-自查06-业务日就绪质量回执.md`。无Contract/视觉改动；低磁盘无五包全量，未部署/push。Runtime此SHA仍fail-stop，按你裁决下一独立批开启P176 Task3并写明容错边界，OS真实full→页面真数待内网回证。
+
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
 ### P-210 `48d84bcf` F-OS-004 Task2 全局开户/重置事务内核（be，2026-09-10）
