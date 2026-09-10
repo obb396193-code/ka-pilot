@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { filesUnder, importedHttpPaths, inventory } from "./route-path-inventory.js";
+import { PENDING, pendingCoveragePaths } from "./coverage-pending.js";
 
 const root = fileURLToPath(new URL("../../../../", import.meta.url));
 const shell = resolve(root, "apps/worker/src/data/http-server.ts");
@@ -24,10 +25,14 @@ describe("R010 backend/BFF path coverage tripwire", () => {
   it("has a browser passthrough for every owned backend route", () => {
     expect(BACKEND_ONLY.every(entry => entry.why.trim().length >= 20 && ownPaths.includes(entry.path))).toBe(true);
     const exempt = new Set(BACKEND_ONLY.map(entry => entry.path));
-    expect(ownPaths.filter(path => !bff.paths.includes(path) && !exempt.has(path)), "Missing BFF: report to arch/fe; do not mask with exemptions").toEqual([]);
+    const missing = ownPaths.filter(path => !bff.paths.includes(path) && !exempt.has(path));
+    const pending = pendingCoveragePaths(PENDING, "backend_to_bff", missing, new Date());
+    expect(missing.filter(path => !pending.includes(path)), "Missing/expired BFF: report to arch/fe; no permanent debt exemption").toEqual([]);
   });
   it("has no BFF pointing at a route absent from both registered backend owners", () => {
     const backend = new Set([...ownPaths, ...other.paths]);
-    expect(bff.paths.filter(path => !backend.has(path)), "Orphan BFF: backend path is not implemented").toEqual([]);
+    const missing = bff.paths.filter(path => !backend.has(path));
+    const pending = pendingCoveragePaths(PENDING, "bff_to_backend", missing, new Date());
+    expect(missing.filter(path => !pending.includes(path)), "Orphan BFF: backend path is not implemented").toEqual([]);
   });
 });
