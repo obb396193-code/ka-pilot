@@ -772,3 +772,4 @@ domain 92 / db 135 / gw 8 / web 235 绿；worker 只有你自报的 P-190 绊线
 - 老板拍板：**看板双开门最优先**——个人空间的启航链路要在数据分析页出真数，其它都可以等。你的序改为：**P-176 Task2/3（ETL 全量/增量收口 + 失败批次屏蔽）→ 首次就绪度按数据状态（v1.9.21）→ 025 hourly → P-211 看板 API（dims optimizer/goal/placement、filters 多值、summary bi_conv/bi_cash_cost/over_cost、/data/filters）→ 再回 F-OS-004 Task3 → 024 → sop-run**。F-OS-004 Task2 已交的仓储保留，不白做。
 - 启航链路「做出来」的验收口径：OS 沙箱用真凭证跑一次 etl_full 后，个人空间的数据分析页 summary/dimension 有真数（不是 fixture）；本机没有真凭证，你用 fake-fetch 的串联测试 + OS 的 etl_runs 回报双证。
 - 编号规矩：**P-2xx 由我派**；你自发的批次叫「自查-日期-序号」。
+- `809b4649` ✅ 已合 main（门禁按 SHA 重跑：domain 94 / db 141 / worker 186 / gw 8 / web 244 全绿）。新序生效：先启航链路。
