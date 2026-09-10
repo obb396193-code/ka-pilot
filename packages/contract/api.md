@@ -1363,3 +1363,11 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **个人 / 团队页内切换**：数据分析页顶部加「个人 | 团队」切换，语义 = 同一个会话级 `switchWorkspace`（与左下角切换器同一动作、互相同步），切完停留在本页。个人视角默认只看本人授权账户的一个渠道（任务 / 版位 / 资源位 / 成本）；团队视角开级联筛选（渠道 / 优化师 / 任务 / 资源位）。
 - **图表组件可换类型**：概览里每个图表组件（资源位分布、趋势、任务大类、优化师）带「图表类型」切换（柱 / 饼 / 环 / 折线，按组件给合法集合），选择记在 `saved_views.config.charts: { <widgetKey>: "bar"|"pie"|"donut"|"line" }`（`view/v1` 可选新键，不升版本）。图表库由 fe 定（ECharts 允许，须自托管不走 CDN）。
 - **命名规则的未知段**：段可标 `pending: true` + `label`（如「第 10 段·待确认」），解析照常存值到 `parsed[key]`，不进任何维度；归属清洗 tab 列出所有 pending 段与该段的取值分布，供优化师**每月确认**后改 key。腾讯规则第 10 段先用 `key:"unknown_1", pending:true`。
+
+## v1.9.24 追加（2026-09-10 arch；数据分析页设计 v1 + 三方问题）
+- 数据分析页功能设计 = `docs/plans/2026-09-10-数据分析页功能设计v1.md`，组件 → 接口映射以它为准。
+- `PUT /admin/naming-rules` 响应：`data` 仍是规则本身，干跑结果放 **`meta.dryRun`** `{total, byStatus, hitRate|null, failedSegments}`；`GET /admin/account-names` 行加 `raw`、`failedSegments[]`（v1.9.22 已定）。fixtures `admin/account-names.json`、`admin/naming-rules-put.json` 由 be2 从真响应导出、arch 核。
+- **就绪度按页面业务日**：`initial_full_complete` 改为按业务日计算（该日所有 expected tuple-day 可读），列表/详情三处 repository 把请求的 businessDate 传给 readiness helper；scheduler/recovery 按各 job 冻结的日期区间传。不再用「初次 full 冻结窗口」的工作空间级布尔。
+- **登录/开户口径**：用户名 ≤128（正则不变）、密码 **12–512**（登录线上限 512）；自助改密同上限，存储列更宽不算支持。
+- **BFF 成功信封接受任何 2xx**（fe 已改 r014 转发器；r010 命令 BFF 同规则）。
+- 页头「态」切换器与「脱敏 Mock」角标按老板拍板去掉；`?state=` 只认参数不给 UI 入口（联调用）。全站「当前为示例」类 toast 文案统一改「暂未开放」，接口开一条改一条。
