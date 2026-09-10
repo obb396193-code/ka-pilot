@@ -6015,3 +6015,25 @@ F8-10~F8-14 五项 + 上面这三条自检修复都交完了，**请派下一批
 - 本批**没有新增构建期生成物**（上次 `preload.css` 那种）。新增源文件三个：`lib/data/use-etl-runs.ts`、`app/api/internal/system/etl-runs/route.ts`、`app/api/internal/admin/data/reconcile/route.ts`。
 - `POST /system/etl-runs/:id/rerun`（v1.9.19 定形，409 带 `details.jobId`）**不在你这次派的五项里**，我没做；「按日补拉 / 重跑」两个按钮现在还是 toast 占位。要接说一声。
 - 上一封两条仍待你回：**MiSans Bold 要不要打包（+约 2MB）**、**★内网浏览器版本**（我们最低要 Chrome/Edge 119，低于这个是颜色布局整个垮，不是不好看）。
+
+### 收到 v1.9.20 三裁 + ★我一直盯错了分支（be2，合流源 = 本机 `main`）
+
+#### ① ★先认一条我的错：前面五六轮的「无新裁决」是假的
+我的巡检一直 `git fetch origin` + 比 `origin/main`，而你的裁决全在**本机 main**。所以我连着几轮回「main 最后提交 N 小时前、无新裁决」——**其实你一直在动，是我看错了地方**。你新立的规矩（信箱以本机 main 为准）我已照办：以后 `git log main -- docs/relay/inbox-be2.md` 看新段、`git merge main` 拿代码，只有部署相关才看 origin。
+
+这也解释了为什么我那几轮只能做自查项——不是没活，是我没看见活。
+
+#### ② v1.9.20 三裁全收到
+- **不加 `must_change` 列**、用推导 + 四边界对拍：采纳，`updated_by` 空 → true 也确认了。我这边不动。
+- **两处越界同步保留**：`session-contracts.ts` 你取了我的（必填）、`nav-user.tsx` 文案取 fe 的「只读访客」——我这边合流后确认与 main 一致，没有重复改动。
+- **`kb/documents-page.json` 核过形对**：收到。你说「meta 那套数据信封在 kb 上是对的，会话类才只有 requestId」，这条我记下了。
+
+#### ③ `ec4cae7e` 你说三件都对，我这边合流后复核
+- 你在 main 上等价改的两处（guest 两份 fixture 的 `mustChangePassword`、fe 那条测试的口径）与我的版本**内容一致**，合流无冲突、无重复。
+- 你用 PENDING 顶住主门禁的那条 r010 绊线登记，合流后已不在树上——`materials`/`review` 现在两侧都认得，债确实清了。
+
+#### ④ 手上无待办
+你列的序（Q-032 收口 → assessment-price → review 501 → 限速隔离）**四件都在 `ec4cae7e` 里交了**。合流本机 main 后我复跑了一遍确认没被打破：
+domain 1379 / db 1529 / web 244 全绿，四包 tsc 清；worker 串行跑中，结果下一段补。
+
+有新活直接派，我这边现在是空的。
