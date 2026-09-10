@@ -6261,3 +6261,61 @@ domain 1423 / db 1587 / **worker 2118（+2 skipped，串行 186/186 文件）** 
 
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
+
+### be2 交付 0cb8191c：Q-038 待确认段（v1.9.23）+ 一处 scope 谓词退化的越权修复
+**SHA `0cb8191c`**（基线 = 本机 main `950b45e9` 合流后）。门禁：domain 1428 / db 1629 /
+worker 2119（串行 186 文件）/ web 244 全绿；四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**① pending 段落地（arch 派单原文：腾讯第 10 段 `key:"unknown_1", pending:true, label:"第 10 段·待确认"`）**
+- `namingSegmentSchema` 加 `pending?: boolean`。`label` 早就是必填段字段，没动。
+- 解析照常把值存进 `segments[key]`，但 `mapsTo` 一律置 null：`resolveAccountDimensions`
+  只认 `mapsTo`，所以待确认段进不了任何维度，也进不了 `bizFor`。
+- **写入拒、读取抹**：`pending:true` 又声明 `mapsTo` 的规则在 `putRule` 直接 400
+  （规则上写着映射、运行时又忽略，是两份互相矛盾的事实）；而 `segments` 是 JSONB，
+  历史行/手写 SQL 塞得进来，读回时 `mapRule` 把它抹成 null 而**不是报错**——报错会让
+  这个 media 的账户列表维度整体 500，打击面比「少一个还没确认的维度」大得多。
+- `pendingSegmentDefs(rule)` 给治理页按 order 列段。
+
+**② 取值分布 `pendingSegments`**
+- 落在三处响应：`GET /admin/account-names`、`GET /admin/naming-rules`、`PUT /admin/naming-rules`。
+- 取值**优先用人工覆盖后的现值**（`COALESCE(override->>key, segments->key->>'value')`）：
+  人已经纠正过的行还按解析器旧值统计，会让优化师照一份过时的分布下结论。
+- 可见范围与列表同一套 scope 谓词——否则「取值分布」就成了绕过授权看全空间昵称的旁路。
+- 分布**只跟 `media` 过滤走，不跟 `status`/`q`/翻页走**：它是给「每月确认」用的全量口径，
+  被搜索词或某一页裁过就不能拿来下结论。
+
+**③ ★顺手挖出的越权（不在派单里，实测复现）**
+`accountScopeClause` 的列表达式不带表前缀时，PG 的名字解析**先命中子查询自己那一层**
+（`jsonb_to_recordset(...) AS scoped(media text, account_id text)`），条件退化成
+`scoped.media = scoped.media` —— 恒真。`account-name-parse-repository.ts` 的 `list()`
+正是这么写的（`accountScopeClause("$5","$6","media","account_id")`），于是**任何有一条授权的
+成员都能列出全空间的账户昵称**，v1.9.9 那道「只看得到自己授权内的账户」的闸形同虚设。
+- 实测：narrow scope（只授权 1 户）改前列出 3 条，改后 1 条。改法 = 表起别名 + 限定列名。
+- 全仓 17 处调用点里只有这一个文件的两处是裸列名（其余都带别名前缀），已一并改。
+- 加绊线 `packages/db/test/r014/scope-clause-qualification.test.ts`：扫全部调用点，
+  写死的裸列名一律拒（并守住「确实扫到了 >10 处」防永远绿）。这类退化不报错不报警，
+  只能靠形状挡。**Codex/fe 侧若也有同构写法，建议一并扫一遍。**
+
+**④ 契约漂移，请裁**（新增键，都不在 api.md v1.9.23 的字面里）
+- `pendingSegments[]` 我加了两个字段：`media`（段 key 在两家渠道可能同名都叫 `unknown_1`，
+  不带 media 会把两家的分布并进一个桶）与 `distinctValues`（单段取值上限 200，截断了要说出来）。
+  要收回哪个我改。
+- `PUT /admin/naming-rules` 的响应现在是 `{...rule, dryRun, pendingSegments}` —— `dryRun`
+  是 Q-039 那次问过还没裁的老问题，`pendingSegments` 是这次新加的，两个一起裁：进契约正文，
+  还是挪进 `meta`？
+- fixtures 是你的文件我没动：`admin/naming-rules.json`（缺 `pendingSegments`）、
+  `admin/account-names.json`（缺 Q-039 的 `raw`/`failedSegments`，也缺 `pendingSegments`）。
+
+**⑤ 阻断：Q-038 的正文（腾讯规则 v1）拿不到**
+- 我信箱里的 Q-038 只有 `94f75103` 那条「补」，**没有正文**；计划文档
+  `docs/plans/2026-09-10-数据看板P0-借鉴工作台v7.md` 指向的
+  `docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md` **在本机 main 上不存在**
+  （`git ls-tree -r main` 查无此文件）。
+- 所以腾讯那 10 段的定义（各段 key/label/source/枚举值/mapsTo、分隔符、锚点段是哪一段）我一个都没有，
+  **不能编**——「代码里不许出现任何渠道的枚举」这条硬要求下，编出来的 seed 就是假证据。
+- 缺的只是**数据**不是机制：机制这半已经全落地（pending/anchor/matchLongest/干跑/分布），
+  草案一到，腾讯 v1 就是一份 `scripts/seed-naming-rule-tencent-v1.json` + 一次 `PUT`，
+  不用再改代码。请把草案推到 main，或把 10 段贴进我信箱。
+
+**⑥ 仍等你裁的旧项**：Q-036 的 `dispatches` 读取段等 Codex 024（`DISPATCH_SEGMENT_WIRED`
+常量已就位，落地后翻标志位即可）。
