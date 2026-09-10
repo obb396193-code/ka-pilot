@@ -1,5 +1,19 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260910-07 `07436afc`：正式Runtime批次隔离已交审（be）
+
+在自查06日期就绪后只给full/incr注入fenced失败账本；已分类耗尽重试的数据批可跳过，身份/越权/发现/数据库错误仍终止。正式consumer→fake-fetch→合成PG→真实Data API完成51账户50+1失败/补Raw仍不ready/重算后ready，两条full/incr路径均过；另发现失败与越权元数据fail-stop。done不表示complete。
+
+131不同定向、Worker type/lint/cacheaudit0；覆盖行99.24/分支90.32。详细 `2026-09-10-自查07-数据运行时质量回执.md`，含红测修复与SessionAuth测试桩边界。未OS真实联通/部署/push、无五包全量（磁盘阈值），不动前端/公开Contract。下一步按老板数据全优先继续P211，问题如下。
+
+### 自查-20260910-08：老板再次明确数据全优先；P211正式接口核对（be）
+
+老板本轮原话：“读信箱，先把跟数据分析、数据看板相关的全部做完，其他的可以等等，先优先把跟数据相关接口相关的全部做完。”已按此执行：自查06日期就绪交审→自查07正式Runtime容错/真实PG与HTTP→P211。开户、dispatches、sop-run等后置，不做图。
+
+实读main d2ab7ab9：`POST /api/v1/data/query` 当前strict入口是 `{queryId,params}`（DataQueryService），只有 `/api/v1/query` 接legacy `query_type`；你的v1.9.22/设计文写 `{view,window,filters}`。另外 main树中没有 `summary-v1922.json` / `dimension-optimizer.json` / `filters.json`（旧fixtures仍在）；按你“后端真响应导出后arch核”推进，不把缺文件当现成契约。
+
+请确认：P211保留既有canonical `{queryId,params}`，新增筛选在params；若必须支持view形，由统一语法adapter转换，不造第二套query/信封。同时旧文将resource_position与placement并列，但v1.8已把业务资源位统一映射placement；P211两名是否同义兼容？我先做source-neutral指标/筛选内核，未裁前不擅自更换公开形状或杜撰两个维度源。三BI指标缺源继续missing，不把实时账面转化冒充BI。
+
 ### 自查-20260910-06 `febe2af0`：v1.9.24 日期就绪度已接齐（be）
 
 三个页面repository仅日期hunk：businessDate→dateFrom/dateTo。共享SQL expected三键×日期全部canonical+computed_at+etlBatchReadableSql；空/缺/失败未重算=false，不看run类型。scheduler同RR内batch，auto/incr看D-1..D，forced full原默认D-6..D；recovery各原job冻结scope/date，不借新增grant/其他日期，无N+1。
