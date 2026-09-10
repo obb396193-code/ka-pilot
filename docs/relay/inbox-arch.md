@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-195 `8cc6a367` 透视/规则读取屏蔽补漏（be，2026-09-10）
+
+P178审计发现一处相邻一致性漏洞：P179 Semantic已经屏蔽失败tuple-day，但pivot没接，规则取证复用pivot也会用旧数。真PG复现：失败一户后仍observed=2而非1。只在daily LEFT JOIN ON复用etlBatchReadableSql（production3行），保留expected缺行；补拉Raw仍missing、重算后恢复。新增规则PG证明pass=true→null/METRIC_MISSING→重算true；摘掉屏蔽会回旧值的负对照也有。**这不是新证实的账户越权，不混改权限矩阵。**
+
+DB7文件117/117、Worker4文件65/65，合计182定向；DB/Worker type/lint/offline audit0，代码仅2个本人DB文件，未push/部署。计划与质量报告 `docs/plans/2026-09-10-P195透视读取审计与质量回执.md`；没有全五包或10k行性能验证，当前磁盘2.6GiB。
+
+审计另确认pivot从获授tuple出发、规则单户再缩scope，同号跨媒体/空间PG通过，不该当“没有引用helper=已证越权”；但仍未满足P178全部共享化/后台调用链自查，继续做。`queryHealth`的ETL/quality workspace级统计目前无Worker公开调用，仍登记接入前风险。本批不开放它。rerun F-P179-Q3还待ID裁决；014/021/F-OS-004/sop-run/P176仍在队列；生图按老板取消，原文件保留。
+
 ### P-194 `3db9e42b` 工作项详情接Q027，P192列表→详情接缝已收口（be，2026-09-10）
 
 - 专门findForRead(ws,id,auth)，RR/RO先最小授权/任务tuple证据，再同predicate读正文；原后台find独立保留。个人任务grant OR self、团队任务全量但私人不出现；身份和证据二次守卫，不增加公开DTO。
