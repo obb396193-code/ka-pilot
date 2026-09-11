@@ -1,4 +1,5 @@
 import { etlBatchReadableSql } from "./etl-batch-readability.js";
+import { assessmentPriceEffectiveSql } from "./assessment-price-selection.js";
 
 export const PIVOT_METRIC_FIELDS = ["cost", "cash_cost", "exposure", "click", "conversion", "real_conversion", "wake_uv", "potential_uv"] as const;
 
@@ -32,7 +33,7 @@ LEFT JOIN tasks AS task
 LEFT JOIN LATERAL (
   SELECT price.id, price.price, price.effective_date FROM assessment_price_history AS price
   WHERE price.workspace_id = relation.workspace_id AND price.task_id = relation.task_id
-    AND price.effective_date <= expected.ds
+    AND ${assessmentPriceEffectiveSql("price", "expected.ds")}
   ORDER BY price.effective_date DESC, price.id DESC LIMIT 1
 ) AS assessment ON true
 ORDER BY expected.media COLLATE "C", expected.account_id COLLATE "C", expected.ds

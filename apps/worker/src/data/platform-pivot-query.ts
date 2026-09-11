@@ -67,8 +67,10 @@ export class PlatformPivotQuery {
     const observedAccounts = new Set<string>(); let observedAccountDays = 0, missingComputedAt = 0;
     let earliestComputedAt: string | null = null, latestComputedAt: string | null = null;
     for (const member of snapshot.members) {
+      // v1.9.27 起 metrics 里有 optional 字段（incentiveCost），Object.values 会出现 undefined：
+      // 「这一项根本没有」显然不构成「未观测却带着值」，跳过它。
       if (!member.observed && (member.computedAt !== null || Object.values(member.metrics).some(value =>
-        "availability" in value && value.availability !== "missing"))) return invalid();
+        value !== undefined && "availability" in value && value.availability !== "missing"))) return invalid();
       if (member.observed) {
         observedAccountDays++; observedAccounts.add(JSON.stringify([member.media, member.accountId]));
         if (member.computedAt === null) missingComputedAt++;

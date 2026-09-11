@@ -26,10 +26,15 @@ const SERVED_ELSEWHERE: { path: string; by: string }[] = [
   { path: "/api/v1/admin/members/:p/reset-password", by: "r010 admin-members-routes（Codex F-OS-004）" },
   { path: "/api/v1/system/etl-runs", by: "r010 etl-run-list-route（Codex）；BFF 由 fe F8-15 ① 放在 r014/handlers.ts" },
   { path: "/api/v1/admin/data/reconcile", by: "r010 data/http-server reconcile（Codex）；BFF 由 fe F8-15 ② 放在 r014/handlers.ts" },
+  { path: "/api/v1/system/etl-runs/:p/rerun", by: "r010 etl-run rerun（Codex P-196）；BFF 由 fe F8-15 ⑦ 放在 r014/handlers.ts" },
 ];
 
 const normalize = (path: string): string => path
   .replace(/\$\{[^}]*\}/g, ":p")            // BFF 的模板插值
+  // 先去掉零宽断言（如 `(?!batch-save$)`）：它不吃字符，不该变成一段路径。
+  // 留着的话 `/tasks/(?!batch-save$)([^/]{1,128})` 会被抹成 `/tasks/:p:p`，
+  // 于是这条路由看着像「BFF 没透传」——假红比漏报还费时间。
+  .replace(/\(\?[!=][^)]*\)/g, "")
   .replace(/\([^)]*\)(\{[^}]*\})?/g, ":p")  // 后端正则里的捕获组
   .replace(/\\\//g, "/")
   .replace(/^\/?/, "/")

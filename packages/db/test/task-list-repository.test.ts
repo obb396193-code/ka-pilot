@@ -276,22 +276,9 @@ describe("TaskListRepository", () => {
     })).rejects.toThrow("must not carry account grants");
   });
 
-  it("keeps readiness false until this user completed full sync for every scoped media", async () => {
-    expect((await repository.list(baseQuery())).initialFullComplete).toBe(false);
-    const kuaishouJob = await pool.query<{ id: string }>(
-      `INSERT INTO jobs (
-         workspace_id, job_type, payload, credential_owner_user_id, status
-       ) VALUES ($1, 'etl_full', '{"media":"KUAISHOU"}'::jsonb, $2, 'done')
-       RETURNING id`,
-      [workspaceId, ownerId],
-    );
-    await pool.query(
-      `INSERT INTO etl_runs (
-         workspace_id, job_id, run_kind, scope, started_at, finished_at, status, rows_ingested
-       ) VALUES ($1, $2, 'full', '{}'::jsonb, now(), now(), 'done', 1)`,
-      [workspaceId, kuaishouJob.rows[0]!.id],
-    );
+  it("requires readable data for every scoped media on the page businessDate, not prior full jobs", async () => {
     expect((await repository.list(baseQuery())).initialFullComplete).toBe(true);
+    await pool.query("UPDATE account_metrics_daily SET computed_at=NULL WHERE workspace_id=$1 AND media='TENCENT'", [workspaceId]);
     expect((await repository.list({
       ...baseQuery(),
       scopeKind: "explicit_accounts" as const,
@@ -301,19 +288,7 @@ describe("TaskListRepository", () => {
       ],
     })).initialFullComplete).toBe(false);
 
-    const tencentJob = await pool.query<{ id: string }>(
-      `INSERT INTO jobs (
-         workspace_id, job_type, payload, credential_owner_user_id, status
-       ) VALUES ($1, 'etl_full', '{"media":"TENCENT"}'::jsonb, $2, 'done')
-       RETURNING id`,
-      [workspaceId, ownerId],
-    );
-    await pool.query(
-      `INSERT INTO etl_runs (
-         workspace_id, job_id, run_kind, scope, started_at, finished_at, status, rows_ingested
-       ) VALUES ($1, $2, 'full', '{}'::jsonb, now(), now(), 'done', 1)`,
-      [workspaceId, tencentJob.rows[0]!.id],
-    );
+    await pool.query("UPDATE account_metrics_daily SET computed_at=now() WHERE workspace_id=$1 AND media='TENCENT'", [workspaceId]);
     expect((await repository.list({
       ...baseQuery(),
       scopeKind: "explicit_accounts" as const,
@@ -322,6 +297,7 @@ describe("TaskListRepository", () => {
         { media: "TENCENT", accountId: "same-id" },
       ],
     })).initialFullComplete).toBe(true);
+    expect((await repository.list({ ...baseQuery(), businessDate: "2026-08-26" })).initialFullComplete).toBe(false);
   });
 
   it("holds total and page rows in one repeatable-read snapshot", async () => {

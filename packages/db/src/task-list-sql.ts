@@ -1,6 +1,7 @@
 import { etlBatchReadableSql } from "./etl-batch-readability.js";
 import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
 import { accountScopeClause } from "./r014/workspace-authority.js";
+import { assessmentPriceEffectiveSql } from "./assessment-price-selection.js";
 
 // P-123 转 be2：活动态集合以 domain 的冻结常量为准（v1.7.5 P-083 把 dispatched 并入活动态）。
 // Only frozen code constants become SQL literals; all request values remain parameters.
@@ -89,6 +90,10 @@ export const TASK_LIST_PAGE_SQL = `
     task.task_name,
     task.biz_name,
     task.status,
+    -- v1.9.28 任务管理视图要的三个字段（be2 Q-043）。
+    task.aliases,
+    task.monitor_url,
+    task.product_name,
     to_char(task.period_start, 'YYYY-MM-DD') AS period_start,
     to_char(task.period_end, 'YYYY-MM-DD') AS period_end,
     task.target_volume,
@@ -170,7 +175,7 @@ export const TASK_LIST_PAGE_SQL = `
     FROM assessment_price_history AS history
     WHERE history.workspace_id = task.workspace_id
       AND history.task_id = task.task_id
-      AND history.effective_date <= $2::date
+      AND ${assessmentPriceEffectiveSql("history", "$2::date")}
     ORDER BY history.effective_date DESC, history.id DESC
     LIMIT 1
   ) AS assessment ON true
@@ -262,7 +267,10 @@ export const TASK_LIST_PAGE_SQL = `
       )
   ) AS items ON true
   ORDER BY
-    CASE task.status WHEN 'active' THEN 0 WHEN 'preparing' THEN 1 WHEN 'ended' THEN 2 ELSE 3 END,
+    -- v1.9.28：停投沉底，排在结束之后——它不是「做完了」，是「先停着」，
+    -- 混在活动任务里会让人以为还在跑。ELSE 兜住将来新增的状态。
+    CASE task.status WHEN 'active' THEN 0 WHEN 'preparing' THEN 1 WHEN 'ended' THEN 2
+                     WHEN 'paused' THEN 3 ELSE 4 END,
     task.period_end ASC NULLS LAST,
     task.task_id ASC
   LIMIT $11 OFFSET $12`;

@@ -15,7 +15,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": null
+        "mapsTo": null,
+        "analyzable": false
       },
       {
         "key": "biz",
@@ -43,7 +44,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "biz"
+        "mapsTo": "biz",
+        "analyzable": true
       },
       {
         "key": "operator",
@@ -56,7 +58,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "agent_type"
+        "mapsTo": "agent_type",
+        "analyzable": true
       },
       {
         "key": "optimizer",
@@ -65,7 +68,8 @@
         "source": "free",
         "required": true,
         "multi": false,
-        "mapsTo": "optimizer"
+        "mapsTo": "optimizer",
+        "analyzable": true
       },
       {
         "key": "bid_mode",
@@ -78,7 +82,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "bid_mode"
+        "mapsTo": "bid_mode",
+        "analyzable": true
       },
       {
         "key": "device",
@@ -92,7 +97,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "device"
+        "mapsTo": "device",
+        "analyzable": true
       },
       {
         "key": "placement",
@@ -110,7 +116,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "placement"
+        "mapsTo": "placement",
+        "analyzable": true
       },
       {
         "key": "goal",
@@ -129,7 +136,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "goal"
+        "mapsTo": "goal",
+        "analyzable": true
       },
       {
         "key": "rta",
@@ -142,7 +150,8 @@
         ],
         "required": true,
         "multi": false,
-        "mapsTo": "rta"
+        "mapsTo": "rta",
+        "analyzable": true
       },
       {
         "key": "rebate",
@@ -152,7 +161,8 @@
         "pattern": "^(ZZ|KK)\\d+$",
         "required": false,
         "multi": false,
-        "mapsTo": "rebate"
+        "mapsTo": "rebate",
+        "analyzable": true
       },
       {
         "key": "special",
@@ -161,7 +171,8 @@
         "source": "free",
         "required": false,
         "multi": true,
-        "mapsTo": "special"
+        "mapsTo": "special",
+        "analyzable": true
       },
       {
         "key": "landing",
@@ -171,7 +182,8 @@
         "pattern": "^\\d{3,6}$",
         "required": false,
         "multi": false,
-        "mapsTo": "landing"
+        "mapsTo": "landing",
+        "analyzable": true
       },
       {
         "key": "custom",
@@ -180,7 +192,8 @@
         "source": "free",
         "required": false,
         "multi": false,
-        "mapsTo": null
+        "mapsTo": null,
+        "analyzable": false
       }
     ],
     "separators": [
@@ -198,6 +211,7 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "GET /admin/naming-rules?media=KUAISHOU：快手 v1 规范（scripts/seed-naming-rule-kuaishou-v1.json 灌入，联调第十轮实测响应）；segments 按 order，source=enum 带 values，mapsTo=null 表示不映射到归属字段"
+    "pendingSegments": [],
+    "_note": "GET /admin/naming-rules?media=KUAISHOU：快手 v1 规范（scripts/seed-naming-rule-kuaishou-v1.json）的真响应，由 apps/worker/scripts/export-naming-fixtures.ts 对本地隔离库 + 真路由处理器导出。segments 按 order，source=enum 带 values，mapsTo=null 表示不映射到归属字段；v1.9.23/24 meta.pendingSegments = 待确认段取值分布（快手 v1 无 pending 段，故为 []）；createdAt 归一化成固定值以免每次导出都 diff"
   }
 }

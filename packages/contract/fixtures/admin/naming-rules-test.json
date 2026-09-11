@@ -4,37 +4,31 @@
     "ruleVersion": 1,
     "results": [
       {
-        "accountName": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
-        "status": "partial",
+        "accountName": "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※",
+        "status": "parsed",
         "segments": {
           "channel": {
             "key": "channel",
-            "value": "DAU",
+            "value": "广点通",
             "mapsTo": null,
             "taskIds": []
           },
-          "biz": {
-            "key": "biz",
-            "value": "CVR有端",
-            "mapsTo": "biz",
-            "taskIds": []
-          },
-          "operator": {
-            "key": "operator",
+          "agent_type": {
+            "key": "agent_type",
             "value": "自投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
-            "value": "张三",
+            "value": "刘晓佳",
             "mapsTo": "optimizer",
             "taskIds": []
           },
-          "bid_mode": {
-            "key": "bid_mode",
-            "value": "单出价",
-            "mapsTo": "bid_mode",
+          "biz": {
+            "key": "biz",
+            "value": "淘宝促活UVHS专项",
+            "mapsTo": "biz",
             "taskIds": []
           },
           "device": {
@@ -43,138 +37,156 @@
             "mapsTo": "device",
             "taskIds": []
           },
-          "placement": {
-            "key": "placement",
-            "value": "优选",
+          "resource_position": {
+            "key": "resource_position",
+            "value": "联盟",
             "mapsTo": "placement",
+            "taskIds": []
+          },
+          "ad_slot": {
+            "key": "ad_slot",
+            "value": "自动",
+            "mapsTo": null,
             "taskIds": []
           },
           "goal": {
             "key": "goal",
-            "value": "激活",
+            "value": "IPV",
             "mapsTo": "goal",
-            "taskIds": []
-          },
-          "rta": {
-            "key": "rta",
-            "value": "有R",
-            "mapsTo": "rta",
-            "taskIds": []
-          },
-          "custom": {
-            "key": "custom",
-            "value": "A",
-            "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
-            "value": "13177",
+            "value": "13244",
             "mapsTo": "landing",
+            "taskIds": []
+          },
+          "unknown_1": {
+            "key": "unknown_1",
+            "value": "10",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "marker": {
+            "key": "marker",
+            "value": "※",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "note": {
+            "key": "note",
+            "value": "页面投放831测",
+            "mapsTo": null,
             "taskIds": []
           }
         },
         "taskIds": [],
-        "unmatched": [
-          "rebate",
-          "special"
-        ]
+        "unmatched": []
       },
       {
-        "accountName": "达人-M运动(280707655)-代投-李四-双出价-iOS-信息流-付费-无R-返点-20031-B",
-        "status": "partial",
+        "accountName": "广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-朋友圈-自动-IPV-13244-10-页面投放831测",
+        "status": "parsed",
         "segments": {
           "channel": {
             "key": "channel",
-            "value": "达人",
+            "value": "广点通",
             "mapsTo": null,
             "taskIds": []
           },
-          "biz": {
-            "key": "biz",
-            "value": "M运动",
-            "mapsTo": "biz",
-            "taskIds": [
-              "280707655"
-            ]
-          },
-          "operator": {
-            "key": "operator",
-            "value": "代投",
+          "agent_type": {
+            "key": "agent_type",
+            "value": "自投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
-            "value": "李四",
+            "value": "刘晓佳",
             "mapsTo": "optimizer",
             "taskIds": []
           },
-          "bid_mode": {
-            "key": "bid_mode",
-            "value": "双出价",
-            "mapsTo": "bid_mode",
+          "biz": {
+            "key": "biz",
+            "value": "淘宝促活UVHS专项",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "resource_position": {
+            "key": "resource_position",
+            "value": "朋友圈",
+            "mapsTo": "placement",
+            "taskIds": []
+          },
+          "ad_slot": {
+            "key": "ad_slot",
+            "value": "自动",
+            "mapsTo": null,
             "taskIds": []
           },
           "goal": {
             "key": "goal",
-            "value": "付费",
+            "value": "IPV",
             "mapsTo": "goal",
-            "taskIds": []
-          },
-          "custom": {
-            "key": "custom",
-            "value": "B",
-            "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
-            "value": "20031",
+            "value": "13244",
             "mapsTo": "landing",
+            "taskIds": []
+          },
+          "unknown_1": {
+            "key": "unknown_1",
+            "value": "10",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "note": {
+            "key": "note",
+            "value": "页面投放831测",
+            "mapsTo": null,
             "taskIds": []
           }
         },
-        "taskIds": [
-          "280707655"
-        ],
+        "taskIds": [],
         "unmatched": [
-          "device",
-          "placement",
-          "rta",
-          "rebate",
-          "special"
+          "marker"
         ]
       },
       {
-        "accountName": "随便起的名字",
+        "accountName": "没按规范起的腾讯户",
         "status": "failed",
         "segments": {},
         "taskIds": [],
         "unmatched": [
           "channel",
-          "biz",
-          "operator",
+          "agent_type",
           "optimizer",
-          "bid_mode",
+          "biz",
           "device",
-          "placement",
+          "resource_position",
+          "ad_slot",
           "goal",
-          "rta",
-          "rebate",
-          "custom",
           "landing",
-          "special"
+          "unknown_1",
+          "marker",
+          "note"
         ]
       }
     ],
     "hitRate": {
-      "value": 0,
+      "value": 0.6666666666666666,
       "state": "finite"
     },
     "counts": {
-      "parsed": 0,
-      "partial": 2,
+      "parsed": 2,
+      "partial": 0,
       "failed": 1
     }
   },
@@ -184,6 +196,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "POST /admin/naming-rules/test?media=KUAISHOU {media, sample_names[3]}：实测响应；hitRate 是三态数（parsed 占比，这里 0/3 因样本都缺括号任务 ID）；results[] 每条 status/segments/unmatched/taskIds；不写库"
+    "_note": "POST /admin/naming-rules/test {media:TENCENT}：拿老板给的腾讯样例干跑的真响应（apps/worker/scripts/export-naming-fixtures.ts 导出，**不写库**）。三条样本：① 12 段全中 → parsed；② 同一条去掉末尾区分符「※」→ 仍 parsed（可选段没写不算缺）；③ 完全不按规范 → failed。hitRate 按「完全解析」算，partial 不计入"
   }
 }

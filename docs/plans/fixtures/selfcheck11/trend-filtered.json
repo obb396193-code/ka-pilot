@@ -1,0 +1,125 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.trend",
+      "rowSchemaVersion": "account.trend/v3",
+      "status": "ready",
+      "rows": [
+        {
+          "ds": "2026-09-02",
+          "metrics": {
+            "cost": {
+              "value": 10,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 100,
+              "availability": "available"
+            },
+            "click": {
+              "value": 10,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 2,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 10,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.1,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.2,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 10,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 10,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        }
+      ],
+      "returnedRowCount": 1,
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      },
+      "lineage": {
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "source": "canonical",
+        "datasetVersion": null,
+        "queryTemplateVersion": "v2",
+        "metricVersion": "account-trend-v2",
+        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "historical_analysis",
+          "role": "comparison_reference"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true,
+          "returnedObjects": 1
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  }
+}

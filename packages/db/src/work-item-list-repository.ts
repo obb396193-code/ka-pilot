@@ -232,6 +232,7 @@ export class WorkItemListRepository {
       const initialFullComplete = query.scopeKind === "team_workspace_readonly"
         ? false
         : await loadWorkspaceSyncReadiness(client, {
+            dateFrom: query.businessDate, dateTo: query.businessDate,
             workspaceId: query.workspaceId,
             requestingUserId: query.requestingUserId,
             allowedAccounts: query.allowedAccounts,

@@ -10,6 +10,8 @@ import { describe, expect, it } from "vitest";
 const ALLOWED: RegExp[] = [
   /^[A-Z][A-Z0-9_]*$/,                                   // 模块常量：SELECT_COLUMNS / VISIBLE / SCOPED_METRIC …
   /^(accountScopeClause|workItemScopeClause|taskGrantScopeClause)\(/, // 授权谓词 helper：入参全是字面量（调用点已核）
+  // v1.9.28 选价谓词：同样只吃字面量（别名 + `$N`/列名的日期表达式），下面第二条用例逐个验。
+  /^assessmentPrice(Effective|NotRevoked)Sql\(/,
   /^params\.length(\s*\+\s*\d+)?$/,                       // 参数序号
   /^conditions\.join\("\s*AND\s*"\)$/,                    // 条件片段，值一律走 $N
   /^where$/, /^kindClause$/, /^scoreColumn$/, /^metricColumns$/, // 本文件内拼的片段，均只含 $N 与列名
@@ -71,7 +73,7 @@ describe("no request data is ever concatenated into R-014 SQL", () => {
       for (const name of readdirSync(base)) {
         if (!name.endsWith(".ts") || name === "workspace-authority.ts") continue;
         const source = readFileSync(new URL(name, base), "utf8");
-        for (const call of source.matchAll(/(?:accountScopeClause|workItemScopeClause|taskGrantScopeClause)\(([^)]*)\)/g)) {
+        for (const call of source.matchAll(/(?:accountScopeClause|workItemScopeClause|taskGrantScopeClause|assessmentPriceEffectiveSql|assessmentPriceNotRevokedSql)\(([^)]*)\)/g)) {
           callSites.push(`${name}: ${call[1]!.trim()}`);
         }
       }

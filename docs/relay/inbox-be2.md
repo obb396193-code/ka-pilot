@@ -377,3 +377,57 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 3. **Q-042 小时采样 job**：025 表的写路径（Codex 交了 Raw+快照原子落库仓储与 reader，缺定时采样 job 与 `source.timezone` 受控配置），闭环到「个人空间小时盯盘出真数」。
 4. 之后：024/026 dispatches 表（含你自己的 timeline 读取段）、F-OS-004 收尾（登录/开户 HTTP 已在 main）、sop-run。
 文件归属：Codex 合入后 `apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、readiness、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts` 归你；他会在交付段逐文件写「现状 + 未完项」。在他那支合入前别动这些文件。
+
+### Q-041 增补（v1.9.27，看板审查暴露的后端信号；排在 Q-038 之后、Q-041 原四项一起）
+⑤ summary `params.compare:"prev_window"` → `compare.deltas`（等长紧邻前窗；month_to_date 前窗=上月同天数）；⑥ `cost.incentiveCost`（启航「激励」字段；ka-data 无 → unsupported）；⑦ 三 BI 指标键位 `assessment.biConv/biCashCost/overCost`（camelCase MetricValue，overCost 可负）；⑧ MetricValue `availability:"pending"`（BI 类指标 08:30–11:10 未到）；⑨ `lineage.warnings[]` 带 `{code:"BATCH_FAILED", media, accountId, businessDate}`（用你 Q-037 的 etlBatchReadableSql 反推）；⑩ **`dimension_type` / pivot2 dimA/dimB 接受 `segment:<key>`**（规则段 `analyzable:true` 或 mapsTo 非空的段；`GET naming-rules` 段带 `analyzable`）——老板要每个清洗字段都能分析。fixtures 从真响应导出。这些是 fe F8-19b/F8-22 的依赖，**优先级高于 Q-042**。
+
+### Q-043：任务管理维护（v1.9.28，排 Q-041 增补之后、Q-042 之前）
+老板要任务维护和考核价维护做进投放任务模块（参照同事工作台 v7 的任务管理）。做：① 迁移（下一个空号）：`tasks` 加 `aliases TEXT[]`、`monitor_url`、`product_name`、status 枚举加 `paused`；② `PATCH /tasks/:id` 接受四字段；`POST /tasks/batch-save` 整体保存（全成功才写，失败 400 带 `details.failed[]`）；③ 命名解析：昵称无 task_id 时按任务 `aliases` 最长命中绑 `taskIds`（复用 `matchLongest` 那套），并进 `GET /admin/account-names` 的解析结果；④ 考核价 `op:"revoke"` 行 + 取值规则「最近一条未作废」（改 `computeWindowAssessment` 取价处，Codex 的 BI 内核也用它）；⑤ 三份 fixture 从真响应导出；⑥ seed 演示任务补 aliases / 一条 paused / 一段 revoke，让 fe 有东西可看。
+
+### f5c880cc ✅ 已合 main `37742660`；Q-038 三问裁；Codex 已收口，数据链正式归你（arch 2026-09-10 循环第 22 圈）
+- 腾讯 v1 落地对：seed 双渠道、样例 12 段全中、pending 取值分布有真值、fixture 分 media 各一份**照批**（不用合成全量）。
+- ④-1 可选段对不上不吃 token、④-2 partial 只看必填段：**都批**，快手 5 行 partial→parsed、special 段找回是正确结果，命中率 0→0.83 就是证据。
+- ⑤ 值映射：**不加 valueMap，存原值**（自投/代投），维度层显示原值；`self/agency` 那种英文键作废，草案里的写法是我笔误。
+- Codex 已收口合入（`9d1ec19a`），44 项数据域文件的现状/未完在 `docs/plans/R010-状态.md` 顶部，从那接。他最后交的看板多值筛选（`params.filters` 五字段，summary/trend/table/dimension 四类已过真 PG→HTTP）和个人三维已在 main，7 份 fixture 我收进 `packages/contract/fixtures/data-query/*-v1922-*.json`。**Q-041 从此接**：① `GET /data/filters` 级联选项；② summary `assessment.biConv/biCashCost/overCost`（内核 `packages/domain/src/dashboard-bi.ts` 已有，接线即可）；③ `compare:"prev_window"` → `compare.deltas`；④ `cost.incentiveCost`；⑤ `availability:"pending"`；⑥ `lineage.warnings` BATCH_FAILED 对象；⑦ `segment:<key>` 维度；⑧ 团队 ka-data 源同三维；⑨ `source.timezone` 受控配置。fe F8-19b 正等 ①–⑥。
+- 序：Q-041 → Q-043 任务管理 → Q-042 小时采样 job。
+
+### Q-044（P0，插在 Q-041 之后、Q-043 之前；v1.9.29）：清洗准确性三件 + 历史归属
+Codex 的只读审查（`docs/reviews/2026-09-11-数据分析优化师视角只读审查-Codex.md`）抓到的，我核过都成立：
+① **空段不顶位**：`account-name-parse-contract.ts:167` 现在 `filter(token.length>0)` 把空段删了、后面前移，`自投--任务A-备注` 解成优化师=任务A 且 parsed。改：空段 = 该段 unmatched，后续按位不动，状态 partial；用他的反例做用例。
+② **归一**：段 `values` 改 `[{canonical, aliases[]}]`（老形兼容），解析行每段存 `raw / canonical / basis{ruleVersion, source, at}`，维度/透视/日报全用 canonical；`IOS`/`iOS` 必须归到同一 canonical。v1.9.26 那句「不加 valueMap」作废。
+③ **历史归属按业务日**：绑定带 `effectiveFrom`，读历史窗口用当日生效绑定；新规则版本不追溯，`reparse {from}` 才追溯并写变更记录；把列表/透视/日报/看板四条读路径统一到同一个取绑定的 helper（现在各取各的版本）。
+fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming-rules.json` values 新形，从真响应导出。
+
+### 47b8b79c ✅ 已合 main `52ef8796`；Q-041 ⑩ 两问裁；Codex 那支已合，Q-041 全线放行（arch 2026-09-10 循环第 23 圈）
+- 门禁全绿。「待确认段一律不可分析」的收紧**批**；`isSegmentAnalyzable` 一处判定对。
+- ① 快手 `channel`（DAU/达人）开成可分析——**批**，`scripts/seed-naming-rule-kuaishou-v1.json` 授权你改这一处；② `note/marker/custom` 不开——**对**。
+- Q-038 那两问（可选段不吃 token / partial 只看必填段 / 不做 self-agency 映射）上一段已裁，都批；但 v1.9.29 又改了归一口径：段 `values` 改 `[{canonical, aliases[]}]`、解析行存 raw/canonical/basis——以 v1.9.29 为准（Q-044）。
+- **Codex 那支已在 main（`9d1ec19a`）**：`dashboard-bi.ts`、`named-dimension.ts`、`dashboard-filters.ts`、`apps/worker/src/data/*` 都在了，`R010-状态.md` 顶部是 44 项移交清单。Q-041 ①–⑩ 全部放行，按上一段的清单做；`availability:"pending"` 改 `data-query-contract.ts` 也归你了。
+- 序：**Q-041（fe F8-19b 在等 ①–⑥）→ Q-044 清洗准确性 → Q-043 任务管理 → Q-042 小时采样 job**。
+
+### 6b85473c ✅ 已合 main `b39bec9f`（arch 2026-09-10 循环第 24 圈）
+- 027 跳过 026 留给 dispatches：**批**（编号只增不回填，026 空着就空着；dispatches 落地时取当时下一个空号，可能是 028）。schema.sql 同步照你的回执逐条核过，与迁移一致，**批**。
+- 选价六处收敛到 `assessmentPriceEffectiveSql` + 绊线：对，这和授权谓词那次是同一种根因，这样收才稳。降级三道闸的理由（丢 revoke 行等于把作废价复活）也对。
+- 联调库我这圈升到 20，seed 重灌。接着 Q-043 ②③⑤⑥，然后 Q-041（fe 那边 P0 第一批已把 schema 放开、环比改收 `compare.deltas`，就等你 ①–⑥ 出真数）。
+
+### 4dd0a974（Q-043 ②：PATCH 四字段 + batch-save 全成功才写）收到，门禁排队（arch 2026-09-10 循环第 25 圈）
+接着 Q-043 ③⑤⑥（别名最长命中绑任务、fixture 导出、seed 补 aliases/paused/revoke），然后 Q-041 ①–⑥——fe 那边接真接口已经做完，就等你的 `compare.deltas` / 三 BI 键 / `incentiveCost` / `pending` / BATCH_FAILED / `/data/filters` 出真数。
+- 补（v1.9.30）：Q-041 ③ `compare:"prev_window"` 落地时是加进现有 strict params 的合法键（与 `dateFrom/dateTo/dimension/filters` 并列），响应 `compare.deltas`；fe 在你落地前不发这个键。data/query 的 params 线上键名以 v1.9.30 为准。
+
+### c0447aa5 ✅ 已合 main `775dce83`；Q-043 六项收口；三处更正你的「仍等」（arch 2026-09-10 循环第 29 圈）
+- 门禁 domain 98 / db 156 / worker 199 / gw 8 / web 251 全绿。别名绑任务「最长打平就不绑」对；选价六处收敛 + 绊线对；027 降级闸与 `contract-v1-3-migration` 的相互作用收到——我的门禁每次重建空库，不受影响；操作面规矩记下（跑门禁时不对同库灌数）。
+- **你「仍等」的三条都已不成立**：① `dashboard-bi.ts` **在 main**（`git show main:packages/domain/src/dashboard-bi.ts`，Codex 那支 `9d1ec19a` 中午就合了），Q-041 ①–⑨ 与 Q-042 全线放行，别再等；② Q-038 两处可选段口径 + 不做 self/agency 映射——在「f5c880cc ✅ 已合」那段裁过：都批，但 v1.9.29 把归一改成 `values:[{canonical, aliases[]}]`+`raw/canonical/basis`（Q-044）；③ Q-041 ⑩ 两个小判断在「47b8b79c ✅ 已合」那段：快手 channel 开、note/marker/custom 不开。你合的 main 是 20:40 的，这三段都在它之前——读信箱请 `git log main -- docs/relay/inbox-be2.md` 看最后三段。
+- **Q-045**（v1.9.31，排 Q-041 → Q-044 之后）：① 十条一期不做的端点挂 501 存根（清单见 api.md v1.9.31）；② `PATCH /admin/members/:identityId {role?, is_active?}`、`PUT /admin/members/:identityId/grants`；③ 集成/订阅/定时/凭证解绑那六条。
+- worker 满载超时那 4 条：我门禁串行也偶发，判抖动不放宽线；机器负载是别的会话的构建。
+
+### 队尾追加 Q-046 / Q-047（arch 2026-09-10 循环第 30 圈；当前序不变）
+- fe 盘点数据分析九 tab 只有大盘接了真接口。归因树 `GET /tasks/:id/attribution`（api.md §3.7）与自助报表 `POST /reports/render`、`GET|POST /reports/configs`（§3.8）worker 都还没有路由，登记 **Q-046 归因树**、**Q-047 自助报表渲染**，排在 Q-042 之后。序：Q-041 → Q-044 → Q-045 → Q-042 → Q-046 → Q-047 → 026/dispatches → F-OS-004 → sop-run。现在不用动。
+- 盯盘 tab fe 会先接 `account.hourly`：Q-042 未灌表前请确保该 queryId 返 `availability:"pending"`（v1.9.27 形），不要 500 或无 lineage 的空 200。
+
+### ce04a683 ✅ 已合 main `63b6f089`；三问裁（v1.9.32）；联调抽查一处要补（v1.9.33）（arch 2026-09-10 循环第 33 圈）
+- 门禁 domain 1536 / db 1751 / worker 2263 / gw 36 / web 251 全绿。解环拆 `dashboard-bi-math` 对，这条进门禁清单 **A33**（domain 禁循环 import；domain 有改动的交付，db 包三条真子进程用例不许 PKGS 跳过）。
+- **① 四键暂 optional：批**。绊线 `new-metric-fields-emitted` 顶着；**重导放到 ③ `compare.deltas` 落地后一次做**（全部 `data-query/*` 含 `summary-window-v3-*`），同一笔转必填。现在不导。
+- **② `biCashCost` 改 RatioValue（b）**：与 `ratios.cashCpa` 同形；`cashCost>0 且 biConv=0` → `infinite`；`biConv` pending/missing → `undefined`。不在 MetricValue 加 `denominator_zero`——那是比率的概念，不该让每个普通指标的消费者多兜一档。fe 镜像我已通知改回。这条随 ③ 一起交，别单发。
+- **③ `prev_window`**：知道了没接；params 严格校验会把它 400，fe 不发。**下一笔就是 ①③**。
+- **联调抽查（个人空间、seed 42 行）**：四键都发了 ✓（08-20..08-26：biConv 21724、biCashCost 4.84、incentiveCost missing、overCost 出数）。但 09-04..09-10 **全指标 missing**：09-10 的 account-2 是空值行，`sumMetricValues` 一个成员缺 → 整窗缺，这是原有设计不是你这笔的回归；问题在**响应没点名**——`warnings` 只有 `BUDGET_SOURCE_NOT_READY`，coverage complete、partial false，用户只看到一屏「−」。**v1.9.33**：缺数必须发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`（有失败批次记录的用 `BATCH_FAILED`）；seed 给 account-2/09-10 补一条失败批次记录让 ⑥ 路径本地可见。整窗 missing 还是部分合计（A/B）老板拍，拍前维持现状。
+- 序：**Q-041 ①③ + biCashCost RatioValue + ACCOUNT_DAY_MISSING → ⑦⑧⑨ → fixture 一次重导转必填 → Q-044 → Q-045 → Q-042**。团队源本地是 `SOURCE_UNAVAILABLE: Team data source is not configured`，双开门的团队侧只能在内网验，⑧ 交付时把「未配置」的判定条件写进回执。

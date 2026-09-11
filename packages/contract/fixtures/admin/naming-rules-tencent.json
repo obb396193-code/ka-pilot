@@ -1,0 +1,198 @@
+{
+  "ok": true,
+  "data": {
+    "media": "TENCENT",
+    "version": 1,
+    "segments": [
+      {
+        "key": "channel",
+        "label": "渠道",
+        "order": 0,
+        "source": "enum",
+        "values": [
+          "广点通"
+        ],
+        "required": true,
+        "multi": false,
+        "mapsTo": null,
+        "analyzable": false
+      },
+      {
+        "key": "agent_type",
+        "label": "运营方",
+        "order": 1,
+        "source": "enum",
+        "values": [
+          "自投",
+          "代投"
+        ],
+        "anchor": true,
+        "required": true,
+        "multi": false,
+        "mapsTo": "agent_type",
+        "analyzable": true
+      },
+      {
+        "key": "optimizer",
+        "label": "优化师",
+        "order": 2,
+        "source": "free",
+        "required": true,
+        "multi": false,
+        "mapsTo": "optimizer",
+        "analyzable": true
+      },
+      {
+        "key": "biz",
+        "label": "业务/项目",
+        "order": 3,
+        "source": "free",
+        "required": true,
+        "multi": false,
+        "mapsTo": "biz",
+        "analyzable": true
+      },
+      {
+        "key": "device",
+        "label": "设备",
+        "order": 4,
+        "source": "enum",
+        "values": [
+          "安卓",
+          "iOS",
+          "全端"
+        ],
+        "required": true,
+        "multi": false,
+        "mapsTo": "device",
+        "analyzable": true
+      },
+      {
+        "key": "resource_position",
+        "label": "资源位",
+        "order": 5,
+        "source": "enum",
+        "values": [
+          "联盟",
+          "朋友圈",
+          "公众号",
+          "视频号",
+          "优量汇"
+        ],
+        "required": true,
+        "multi": false,
+        "mapsTo": "placement",
+        "analyzable": true
+      },
+      {
+        "key": "ad_slot",
+        "label": "版位",
+        "order": 6,
+        "source": "enum",
+        "values": [
+          "自动",
+          "手动"
+        ],
+        "analyzable": true,
+        "required": true,
+        "multi": false,
+        "mapsTo": null
+      },
+      {
+        "key": "goal",
+        "label": "投放转化目标",
+        "order": 7,
+        "source": "enum",
+        "values": [
+          "IPV",
+          "激活",
+          "付费",
+          "下单"
+        ],
+        "required": true,
+        "multi": false,
+        "mapsTo": "goal",
+        "analyzable": true
+      },
+      {
+        "key": "landing",
+        "label": "承接",
+        "order": 8,
+        "source": "regex",
+        "pattern": "^\\d+$",
+        "required": false,
+        "multi": false,
+        "mapsTo": "landing",
+        "analyzable": true
+      },
+      {
+        "key": "unknown_1",
+        "label": "第 10 段·待确认",
+        "order": 9,
+        "source": "free",
+        "pending": true,
+        "required": false,
+        "multi": false,
+        "mapsTo": null,
+        "analyzable": false
+      },
+      {
+        "key": "note",
+        "label": "备注",
+        "order": 10,
+        "source": "free",
+        "required": false,
+        "multi": true,
+        "mapsTo": null,
+        "analyzable": false
+      },
+      {
+        "key": "marker",
+        "label": "区分符",
+        "order": 11,
+        "source": "enum",
+        "values": [
+          "※"
+        ],
+        "required": false,
+        "multi": false,
+        "mapsTo": null,
+        "analyzable": false
+      }
+    ],
+    "separators": [
+      "-",
+      "－",
+      "_"
+    ],
+    "effectiveFrom": "2026-09-01",
+    "note": "腾讯（广点通）v1，来源 docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md + arch 2026-09-10 信箱 12 段定稿；第 10 段待优化师确认（pending）",
+    "createdAt": "2026-09-05T09:00:00.000+08:00"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "pendingSegments": [
+      {
+        "media": "TENCENT",
+        "key": "unknown_1",
+        "label": "第 10 段·待确认",
+        "values": [
+          {
+            "value": "10",
+            "count": 2
+          },
+          {
+            "value": "20",
+            "count": 1
+          }
+        ],
+        "distinctValues": 2
+      }
+    ],
+    "_note": "GET /admin/naming-rules?media=TENCENT：腾讯（广点通）v1 规范的真响应（12 段，来源 docs/plans/2026-09-10-腾讯账户昵称清洗规则v1草案.md + arch 信箱定稿）。第 10 段 unknown_1 是 pending 段：解析照常存值，但不进任何维度；**meta.pendingSegments 在这份里是有值的**——它就是优化师每月确认第 10 段含义时看的取值分布（快手那两份因为没有 pending 段是空数组）；createdAt 归一化成固定值"
+  }
+}

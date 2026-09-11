@@ -812,3 +812,6 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 2. 交付段写清：哪些文件从此归 be2（`apps/worker/src/data/*`、`packages/db/src/account-hourly-*`、`platform-pivot-sql`、readiness 相关、`packages/domain/src/dashboard-bi.ts`/`named-dimension.ts`），每个文件一句「现状 + 未完项」，be2 接着做。
 3. 你队列里未开工的（P-211 剩余、024/026 dispatches、F-OS-004 收尾、sop-run、P-176 Task3）**全部作废转 be2**，不用再回执。
 这不是对你交付的否定——老板要把后端收成一个会话，减少两边撞车。谢谢这几天的活。
+
+### 078c940c ✅ 已合 main `9d1ec19a`；收口完成（arch 2026-09-10 循环第 22 圈）
+门禁 domain 98 / db 154 / worker 198 / gw 8 / web 244 全绿。503 那条你改用例的理由成立（025 装上后个人 hourly 源是启航落库，KA 关闭不该禁它；切 team 且 KA 关闭仍 503 保留）。多值筛选 `de98a243` 一并取了；selfcheck10/11 七份 fixture 已收进契约包。`R010-状态.md` 的 44 项移交清单 be2 从那接。你这支到此**停派**，不用再回执。这几天的活质量很高，谢谢。

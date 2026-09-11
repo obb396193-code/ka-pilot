@@ -63,7 +63,7 @@ describe("R010 actual production composition with KA disabled", () => {
     try {
       await pool.query("DELETE FROM auth_sessions WHERE identity_id=$1", [identity]);
       await pool.query("DELETE FROM execution_runs r USING changesets c WHERE r.changeset_id=c.id AND c.workspace_id=ANY($1::uuid[])", [[ws, team]]);
-      for (const table of ["changeset_items", "changesets", "account_mutes", "work_items", "account_access_grants", "workspace_memberships", "account_metrics_daily", "assessment_price_history", "task_accounts", "accounts", "tasks", "users"])
+      for (const table of ["changeset_items", "changesets", "account_mutes", "work_items", "account_access_grants", "workspace_memberships", "account_metrics_hourly", "account_metrics_daily", "assessment_price_history", "task_accounts", "accounts", "tasks", "users"])
         await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [[ws, team]]);
       await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [[ws, team]]);
       await pool.query("DELETE FROM auth_identities WHERE id=$1", [identity]);
@@ -92,9 +92,29 @@ describe("R010 actual production composition with KA disabled", () => {
   it("queries real scoped pivot, persists mute/ignore, then rejects team and logged-out session", async () => {
     expect((await call("/api/v1/auth/session", {}, "GET")).response.status).toBe(200);
     const hourly = { queryId: "account.hourly", params: { date: "2026-09-01", media: "KUAISHOU" } };
-    const unavailableHourly = await call("/api/v1/query", hourly);
-    expect(unavailableHourly.response.status).toBe(503);
-    expect(unavailableHourly.body).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
+    // The personal Qihang hour reader is now installed. KA=false does not
+    // disable a different source. Existing table + absent samples is a valid
+    // missing grid, never fabricated zeros or a claim of complete data.
+    const missingHourly = await call("/api/v1/query", hourly);
+    expect(missingHourly.response.status).toBe(200);
+    expect(missingHourly.body).toMatchObject({ ok: true, data: { mode: "platform", source: {
+      queryId: "account.hourly", rows: expect.any(Array), lineage: { source: "qihang_realtime", dataAsOf: null,
+        partial: true, truncated: false, coverage: { complete: false, requestedObjects: 1, returnedObjects: 0 } },
+    } } });
+    expect(missingHourly.body.data.source.rows).toHaveLength(25);
+    for (const row of missingHourly.body.data.source.rows) expect(row).toMatchObject({ media: "KUAISHOU", accountId: "synthetic-same",
+      cumulative: { cost: { value: null, availability: "missing" } } });
+    // A real stored sample is independent of KA availability; same IDs on
+    // other media/workspaces must not leak into this approved personal tuple.
+    for (const [workspace, media, cost] of [[ws, "KUAISHOU", 25], [ws, "TENCENT", 900], [team, "KUAISHOU", 800]] as const)
+      await pool.query(`INSERT INTO account_metrics_hourly(workspace_id,media,account_id,ds,hh,cost,conversion,real_conversion,last_sync_time,sampled_at,complete)
+        VALUES($1,$2,'synthetic-same','2026-09-01',10,$3,5,1,'2026-09-01T03:10:00Z','2026-09-01T03:11:00Z',true)`, [workspace, media, cost]);
+    const storedHourly = await call("/api/v1/query", { ...hourly, params: { ...hourly.params, hhFrom: 10, hhTo: 10 } });
+    expect(storedHourly.response.status).toBe(200);
+    expect(storedHourly.body).toMatchObject({ ok: true, data: { source: { returnedRowCount: 1,
+      rows: [{ media: "KUAISHOU", accountId: "synthetic-same", cumulative: { cost: { value: 25, availability: "available" } } }],
+      lineage: { source: "qihang_realtime", dataAsOf: "2026-09-01T03:10:00.000Z" } } } });
+    expect(storedHourly.response.headers.get("x-request-id")).toBe("r010-process");
     expect((await call("/api/v1/query", { ...hourly, params: { ...hourly.params, accountIds: ["not-granted"] } })).response.status).toBe(403);
     const gap = { queryId: "account.gap", params: { date_from: "2026-09-01", date_to: "2026-09-01", media: "KUAISHOU", groupBy: "account" } };
     const gapOff = await call("/api/v1/query", gap);
@@ -124,6 +144,9 @@ describe("R010 actual production composition with KA disabled", () => {
     expect((await pool.query("SELECT status FROM work_items WHERE id=$1", [workItem])).rows[0].status).toBe("ignored");
     const old = cookie, switched = await call("/api/v1/auth/workspace", { workspaceId: team });
     expect(switched.response.status).toBe(200); cookie = switched.response.headers.get("set-cookie")!.split(";")[0]!;
+    const teamHourly = await call("/api/v1/query", hourly);
+    expect(teamHourly.response.status).toBe(503);
+    expect(teamHourly.body).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
     expect((await call("/api/v1/query", query, "POST", old)).response.status).toBe(401);
     expect((await call("/api/v1/accounts/KUAISHOU/synthetic-same/mute", { days: 1, reason_chip: "synthetic" })).response.status).toBe(403);
     expect((await call(`/api/v1/work-items/${workItem}/ignore`, { mute_days: 1 })).response.status).toBe(403);

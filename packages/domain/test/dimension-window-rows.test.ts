@@ -11,6 +11,15 @@ async function fixture(name: typeof names[number] = "dimension-v3-account") {
 }
 
 describe("dimension v3 row boundary (not source envelope or source availability)", () => {
+  it.each(["optimizer", "goal", "placement"])("requires strict provenance for %s without changing account rows", async dimension => {
+    const { rows } = await fixture("dimension-v3-task");
+    const value = { dimension, rows: [{ ...rows[0], source: "mixed", sources: { nickname: 1, manual: 1 } }] };
+    expect(dimensionWindowRowsSchema.parse(value)).toEqual(value);
+    Reflect.deleteProperty(value.rows[0], "sources");
+    expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
+    value.rows[0].sources = { nickname: 1, manual: 0 };
+    expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
+  });
   it("preserves the authoritative unknown agent bucket without guessing self or agency", async () => {
     const value = await fixture("dimension-v3-agent_type");
     const unknown = value.rows.find((row: { agent_type: string }) => row.agent_type === "unknown");

@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "data": {
+    "task_id": "task-manage-1",
+    "op": "revoke",
+    "old_price": 42,
+    "new_price": 38,
+    "effective_date": "2026-09-03",
+    "recomputed_days": 3,
+    "notified_user_ids": [
+      "00000000-0000-4000-8000-000000000001"
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /api/v1/tasks/:id/assessment-price {op:\"revoke\", effective_date}：真响应。作废掉 09-03 那段 42（old_price），这一天生效的回到上一段 38（new_price）；取值规则 = effective_date <= D 的最近一条**未作废**段。作废行只增不改，历史弹层照常列出它并显示作废标记；作废一个不存在的段返 404（笔误，不是幂等）。recomputed_days 与 notified_user_ids 已归一化成固定值（前者随天数走、后者是随机 id），冻的是它们的含义不是具体数值"
+  }
+}

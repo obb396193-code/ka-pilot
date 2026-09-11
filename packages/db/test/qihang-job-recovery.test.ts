@@ -28,13 +28,13 @@ describe("identity-only scheduled job recovery / real PG", () => {
     for (const ws of [workspaceId, otherWorkspace]) for (const media of ["KUAISHOU", "TENCENT"]) await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,$2,'synthetic-same-id')", [ws, media]);
   });
   beforeEach(async () => {
-    for (const table of ["audit_log", "jobs", "account_access_grants"]) await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspaceId]);
+    for (const table of ["account_metrics_daily", "etl_runs", "audit_log", "jobs", "account_access_grants"]) await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspaceId]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','synthetic-same-id','read')", [workspaceId, identityId]);
     await pool.query("UPDATE users SET qihang_user_id='synthetic-private' WHERE id=$1", [userId]);
   });
   afterAll(async () => {
     if (!pool) return;
-    for (const table of ["audit_log", "jobs", "account_access_grants", "workspace_memberships", "accounts", "users", "workspaces"]) await pool.query(`DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=ANY($1::uuid[])`, [[workspaceId, otherWorkspace]]);
+    for (const table of ["account_metrics_daily", "etl_runs", "audit_log", "jobs", "account_access_grants", "workspace_memberships", "accounts", "users", "workspaces"]) await pool.query(`DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=ANY($1::uuid[])`, [[workspaceId, otherWorkspace]]);
     await pool.query("DELETE FROM auth_identities WHERE id=$1", [identityId]); await pool.end();
   });
   it("recovers old dates without changing identity, attempts or losing the original cause", async () => {
@@ -68,15 +68,39 @@ describe("identity-only scheduled job recovery / real PG", () => {
   it("does not recover before private identity exists", async () => {
     await blocked(); await pool.query("UPDATE users SET qihang_user_id=NULL WHERE id=$1", [userId]); expect(await recover()).toBe(0);
   });
-  it("does not recover incremental work before the original owner's initial full has succeeded", async () => {
+  it("does not recover incremental work until the original frozen tuple-days are readable", async () => {
     const id = await blocked(); await pool.query("UPDATE jobs SET job_type='etl_incr' WHERE id=$1", [id]);
     expect(await recover()).toBe(0);
     const fullId = await jobs.enqueue({ workspaceId, jobType: "etl_full", payload: { media: "KUAISHOU" }, credentialOwnerUserId: userId });
     await pool.query("INSERT INTO etl_runs(workspace_id,job_id,run_kind,status) VALUES($1,$2,'full','done')", [workspaceId, fullId]);
     try {
+      expect(await recover()).toBe(0); // A done full marker alone is insufficient.
+      await pool.query(`INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,computed_at)
+        SELECT $1,'KUAISHOU','synthetic-same-id',ds::date,now()
+        FROM generate_series('2026-09-07'::timestamp,'2026-09-08'::timestamp,interval '1 day') ds`, [workspaceId]);
       expect(await recover()).toBe(1);
       expect((await pool.query("SELECT payload FROM jobs WHERE id=$1", [id])).rows[0].payload).toEqual(approvedScheduledSyncPayload(snapshot(), "etl_incr", "KUAISHOU", "2026-09-08"));
     } finally { await pool.query("DELETE FROM etl_runs WHERE workspace_id=$1", [workspaceId]); }
+  });
+  it("recovers only the readable job window and never widens its prior grant scope", async () => {
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','synthetic-later-grant')", [workspaceId]);
+    await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','synthetic-later-grant','read')", [workspaceId, identityId]);
+    const ids: string[] = [];
+    for (const date of ["2026-09-08", "2026-09-09"]) {
+      const id = await jobs.enqueue({ workspaceId, jobType: "etl_incr", credentialOwnerUserId: userId,
+        payload: approvedScheduledSyncPayload(snapshot(), "etl_incr", "KUAISHOU", date) });
+      const leased = await jobs.leaseNext(60); expect(leased?.id).toBe(id);
+      await jobs.markBlockedAuth(leased!, "Credential owner has no usable Qihang identity"); ids.push(id);
+    }
+    await pool.query(`INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,computed_at)
+      SELECT $1,'KUAISHOU','synthetic-same-id',ds::date,now()
+      FROM generate_series('2026-09-07'::timestamp,'2026-09-08'::timestamp,interval '1 day') ds`, [workspaceId]);
+    const wider = snapshot(); wider.allowedAccounts.push({ media: "KUAISHOU", accountId: "synthetic-later-grant", accessLevel: "read" });
+    expect(await jobs.recoverQihangIdentityBlocked(wider, "KUAISHOU")).toEqual([ids[0]]);
+    const rows = (await pool.query("SELECT id,status,payload FROM jobs WHERE id=ANY($1::uuid[]) ORDER BY payload->>'ds'", [ids])).rows;
+    expect(rows.map(row => row.status)).toEqual(["queued", "blocked_auth"]);
+    expect(rows[0].payload.accountIds).toEqual(["synthetic-same-id"]);
+    expect(await recover(wider)).toBe(0);
   });
   it.each(["users", "workspaces", "workspace_memberships", "auth_identities"])("rejects inactive %s", async table => {
     await blocked(); const predicate = table === "workspace_memberships" ? "workspace_id" : "id";

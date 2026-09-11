@@ -31,6 +31,10 @@ function readyResult(overrides: Partial<TaskListRepositoryResult> = {}): TaskLis
     rows: [{
       workspaceId,
       taskId: "opaque-task-1",
+      // v1.9.28 任务管理视图的三个字段（be2 Q-043）：仓储行现在恒有它们。
+      aliases: [],
+      monitorUrl: null,
+      productName: null,
       taskName: "任务一",
       bizName: null,
       status: "active",
@@ -255,7 +259,8 @@ describe("TaskListService", () => {
 
   it("fails closed with 502 for an invalid repository contract", async () => {
     const invalidStatus = readyResult();
-    invalidStatus.rows[0] = { ...invalidStatus.rows[0]!, status: "paused" };
+    // v1.9.28 起 paused 是合法状态（停投），换一个真正认不出的值当反例。
+    invalidStatus.rows[0] = { ...invalidStatus.rows[0]!, status: "stopped" };
     expectError(
       await serviceFor(invalidStatus).service.execute({}, auth, "task-list-invalid-status"),
       "UPSTREAM_INVALID_RESPONSE",

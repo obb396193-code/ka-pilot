@@ -32,6 +32,13 @@ export const namingSegmentSchema = z.object({
    * 归属清洗页列它的取值分布，优化师每月确认后再改成正式 key + `mapsTo`。
    */
   pending: z.boolean().optional(),
+  /**
+   * v1.9.27 ⑩：这一段可不可以当**分析维度**用（`dimension_type: "segment:<key>"`）。
+   * 默认口径是「进了归属维度的段就能分析」（`mapsTo` 非空）；这个开关是给
+   * `mapsTo` 为空、但业务上确实想按它拆数的段用的（腾讯的「版位」段就是这种）。
+   * 判定统一走 `isSegmentAnalyzable`，别在各处自己 OR 一遍。
+   */
+  analyzable: z.boolean().optional(),
   pattern: z.string().min(1).optional(),
   required: z.boolean().default(false),
   /** 允许一段里塞多个值（快手的「专项」用 `-` 连多个）；**整条规范里最多一个**。 */
@@ -96,6 +103,41 @@ export function toNamingRule(record: NamingRule): NamingRule {
  */
 export function segmentMapsTo(segment: NamingSegment): string | null {
   return segment.pending === true ? null : segment.mapsTo;
+}
+
+/**
+ * 段能不能当分析维度。**待确认段一律不能**：含义都还没定，拿它拆出来的交叉表
+ * 没人能解释，比少一个维度更糟（与 `segmentMapsTo` 同一条理由）。
+ */
+export function isSegmentAnalyzable(segment: NamingSegment): boolean {
+  if (segment.pending === true) return false;
+  return segment.analyzable === true || segment.mapsTo !== null;
+}
+
+export interface AnalyzableSegmentDef {
+  key: string;
+  label: string;
+  /** 进哪个归属维度；null = 只能按段自己分析，不落维度。 */
+  mapsTo: string | null;
+}
+
+/** 规则里所有可分析段，按 order。`dimension_type: "segment:<key>"` 的合法 key 集合就是它。 */
+export function analyzableSegmentDefs(rule: NamingRule): AnalyzableSegmentDef[] {
+  return [...rule.segments]
+    .sort((left, right) => left.order - right.order)
+    .filter((segment) => isSegmentAnalyzable(segment))
+    .map((segment) => ({ key: segment.key, label: segment.label, mapsTo: segmentMapsTo(segment) }));
+}
+
+/**
+ * 把每段**实际生效的** `analyzable` 显式写出来，给出到响应里的那一份用。
+ * fe 不该自己再推一遍「mapsTo 非空就算」——推法哪天变了，两边就各说各话。
+ */
+export function withEffectiveAnalyzable<T extends NamingRule>(rule: T): T {
+  return {
+    ...rule,
+    segments: rule.segments.map((segment) => ({ ...segment, analyzable: isSegmentAnalyzable(segment) })),
+  };
 }
 
 export interface PendingSegmentDef {
@@ -241,7 +283,12 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
     const token = at >= 0 ? tokens[at] : undefined;
     if (token === undefined || !matchesSegment(segment, token)) {
       unmatched.push(segment.key);
-      head = Math.max(head, at + 1);
+      // **可选段没对上 = 这条昵称压根没写它，那个 token 不属于它，不能吃掉**。
+      // 原来一律往后挪一格：快手「…-有R-常规-13177-A」里可选的「扣量回传」段对不上「常规」，
+      // 却把「常规」吃了，于是专项段解不出来——昵称里明明写着的值就这么丢了。
+      // 必填段对不上是另一回事：位置上确实有它，只是值不规范，那一格照吃，
+      // 否则后面全线错位（这正是锚点段要解的问题）。
+      if (segment.required) head = Math.max(head, at + 1);
       continue;
     }
     record(segment, token);
@@ -286,15 +333,54 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
   const leftover = absorb === null ? tokens.slice(head, end + 1) : [];
   const taskIds = [...new Set(Object.values(segments).flatMap((segment) => segment.taskIds))];
   const matchedCount = Object.keys(segments).length;
+  /**
+   * partial 的含义是「**该有的没有**」，不是「可选的没写」。
+   * 可选段（规范明写可不写，如快手的扣量回传、腾讯的区分符「※」）缺了还报 partial，
+   * 等于把一条完全合规的昵称推到优化师面前让他修一个没坏的东西。
+   */
+  const required = new Set(ordered.filter((segment) => segment.required).map((segment) => segment.key));
+  const missingRequired = unmatched.filter((key) => required.has(key));
 
   return {
-    // 一段都没认出来 = 这条昵称压根不按规范写，报 failed；认出一部分就是 partial，成功的段照用。
-    status: matchedCount === 0 ? "failed" : unmatched.length === 0 ? "parsed" : "partial",
+    // 一段都没认出来 = 这条昵称压根不按规范写，报 failed；必填段缺了才是 partial，成功的段照用。
+    status: matchedCount === 0 ? "failed" : missingRequired.length === 0 ? "parsed" : "partial",
     segments,
     taskIds,
     unmatched: [...new Set(unmatched)],
     leftover,
   };
+}
+
+/* ── v1.9.28 ③：昵称里没有任务 ID 时，按任务别名最长命中绑任务 ──────── */
+
+export interface TaskAlias {
+  taskId: string;
+  alias: string;
+}
+
+/**
+ * 昵称按**最长别名命中**绑任务（Q-043 ③，复用 `matchLongest` 那条道理）。
+ *
+ * 只在昵称里**一个任务 ID 都没写**时才用：写了 ID 就以 ID 为准，别名是兜底不是覆盖。
+ *
+ * 两条不猜的规矩：
+ * - 命中按别名长度取最长——「拉新」与「拉新A」同时命中时，短的那个是巧合。
+ * - 最长长度上**有两个不同任务打平就一个都不绑**：那是真的分不清，绑错任务比不绑更贵
+ *   （账户的花费会算到别人的任务上）。
+ */
+export function matchTaskAliasesLongest(rawName: string, aliases: readonly TaskAlias[]): string[] {
+  const name = rawName.trim();
+  if (name.length === 0) return [];
+  const hits = aliases.filter((entry) => {
+    const alias = entry.alias.trim();
+    return alias.length > 0 && name.includes(alias);
+  });
+  if (hits.length === 0) return [];
+  const longest = Math.max(...hits.map((entry) => entry.alias.trim().length));
+  const winners = [...new Set(hits
+    .filter((entry) => entry.alias.trim().length === longest)
+    .map((entry) => entry.taskId))];
+  return winners.length === 1 ? winners : [];
 }
 
 /* ── T3：冲突计算与人工覆盖 ────────────────────────────────────────── */

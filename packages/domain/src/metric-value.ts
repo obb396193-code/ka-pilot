@@ -7,6 +7,12 @@ export const canonicalMetricValueSchema = z.discriminatedUnion("availability", [
   z.object({ value: z.number().finite(), availability: z.literal("available") }).strict(),
   z.object({ value: z.null(), availability: z.literal("missing") }).strict(),
   z.object({ value: z.null(), availability: z.literal("error") }).strict(),
+  /**
+   * v1.9.27 ⑤ `pending` =「这个数还没到」（BI 类指标在 08:30–11:10 之间、T-1 还没回）。
+   * 与 `missing`「这次查下来就是没有」不是一回事：混成同一个「−」，人分不清
+   * 是再等一会儿还是永远不会有。前端镜像（apps/web canonical-query-rows）已按同形。
+   */
+  z.object({ value: z.null(), availability: z.literal("pending") }).strict(),
 ]);
 export type CanonicalMetricValue = z.infer<typeof canonicalMetricValueSchema>;
 

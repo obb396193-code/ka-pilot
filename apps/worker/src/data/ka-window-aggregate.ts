@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { calendarDateSchema, metricValue, summaryWindowRowSchema, compareWindowPoints,
+import { biCashCostMetricValue, calendarDateSchema, dashboardBiFrom, metricValue, summaryWindowRowSchema, compareWindowPoints,
   unavailableWindowComparison, comparisonWindow } from "@ka/domain";
 import type { KaDataWindowQueryPlan } from "./query-registry.js";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
@@ -52,14 +52,20 @@ function rowSummary(row: Row) {
   const reason = !completePrices ? "assessment_missing" : row.cash_yuan === null ? "cash_missing" : row.target === null
     ? "conversion_missing" : row.cash_yuan > row.target ? "window_over" : row.day_over_count > 0 ? "day_over_window_ok" : "window_ok";
   const determined = reason === "window_ok" || reason === "day_over_window_ok" || reason === "window_over";
-  return summaryWindowRowSchema.parse({ ...base, metrics: { ...base.metrics,
-    costSpace: metricValue(row.cash_yuan === null || row.target === null ? null : row.target - row.cash_yuan) },
+  const costSpace = metricValue(
+    row.cash_yuan === null || row.target === null ? null : row.target - row.cash_yuan);
+  // v1.9.27 ③（Q-041 ②）：KA 这条路自己拼 assessment（不走 computeWeightedAssessment），
+  // 三个 BI 值也必须在这儿补齐——少发它们前端只会静悄悄显「−」，看不出是后端没算。
+  // 用的是同一个算术入口，口径与个人源那条路一致。
+  const bi = dashboardBiFrom(base.metrics.cashCost, base.metrics.realConversion, costSpace);
+  return summaryWindowRowSchema.parse({ ...base, metrics: { ...base.metrics, costSpace },
     assessment: { priceSource: "ka_daily", price: completePrices && row.price_count === 1
       ? { value: row.unique_price, effectiveDate: null } : null,
     ...(completePrices && row.price_count > 1 ? { priceVersions: row.price_count } : {}),
     onTarget: determined ? reason !== "window_over" : null,
     costStatus: !determined ? null : reason === "window_over" ? "red" : reason === "day_over_window_ok" ? "yellow" : "green",
-    costStatusReason: reason, budgetUsageRate: ratioUnknown },
+    costStatusReason: reason, budgetUsageRate: ratioUnknown,
+    biConv: bi.bi_conv, biCashCost: biCashCostMetricValue(bi.bi_cash_cost), overCost: bi.over_cost },
   });
 }
 

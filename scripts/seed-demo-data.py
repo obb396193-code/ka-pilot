@@ -33,8 +33,23 @@ sql(f"DELETE FROM tasks WHERE workspace_id='{WS_P}'")
 tasks = {}
 for _m,_a,_n,tid,tname,_p,_g,_pr,_c in ACCOUNTS:
     if tid and tid not in tasks: tasks[tid]=tname
+# v1.9.28（be2 Q-043 ⑥）：任务管理视图要有东西可看——别名、一条停投、监测链接与产品名。
+# 别名照任务名取一段，昵称里没写任务 ID 的账户就能按最长别名绑上来。
+TASK_EXTRAS = {}
+for index, (tid, tname) in enumerate(tasks.items()):
+    TASK_EXTRAS[tid] = {
+        "aliases": [tname] if tname else [],
+        "status": "paused" if index == 1 else "active",   # 第二条演示停投沉底
+        "monitor_url": f"https://example.invalid/monitor/{tid}",
+        "product_name": (tname or "")[:20] or None,
+    }
 for tid,tname in tasks.items():
-    sql(f"INSERT INTO tasks(workspace_id,task_id,task_name) VALUES('{WS_P}','{tid}',$${tname}$$)")
+    extra = TASK_EXTRAS[tid]
+    alias_sql = "ARRAY[" + ",".join("$$" + a + "$$" for a in extra["aliases"]) + "]::text[]" if extra["aliases"] else "'{}'::text[]"
+    product = "$$" + extra["product_name"] + "$$" if extra["product_name"] else "NULL"
+    sql(f"INSERT INTO tasks(workspace_id,task_id,task_name,status,aliases,monitor_url,product_name) "
+        f"VALUES('{WS_P}','{tid}',$${tname}$$,'{extra['status']}',{alias_sql},"
+        f"$${extra['monitor_url']}$$,{product})")
 for media,aid,name,tid,_tn,_p,_g,_pr,_c in ACCOUNTS:
     sql(f"INSERT INTO accounts(workspace_id,media,account_id,account_name,owner_user_id,lifecycle_stage) "
         f"VALUES('{WS_P}','{media}','{aid}',$${name}$$,'{USER}','stable')")
@@ -49,6 +64,12 @@ for media,aid,_n,tid,_tn,_p,_g,price,_c in ACCOUNTS:
         f"VALUES('{WS_P}','{tid}',{price},'2026-08-01') ON CONFLICT DO NOTHING")
 sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date) "
     f"VALUES('{WS_P}','1803240580',36.0,'2026-09-03') ON CONFLICT DO NOTHING")
+# v1.9.28：一段作废演示（只增不改）。写一段 40.0 再作废它 —— 历史弹层里能看到作废标记，
+# 而取价规则会跳过它回到 36.0，正好把「作废真的生效了」演示出来。
+sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date,op) "
+    f"VALUES('{WS_P}','1803240580',40.0,'2026-09-04','set') ON CONFLICT DO NOTHING")
+sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date,op) "
+    f"VALUES('{WS_P}','1803240580',40.0,'2026-09-04','revoke') ON CONFLICT DO NOTHING")
 
 print("③ 31 天指标（含缺数日、异常日）")
 # 业务日 = 上海时间 03:00 日切（与 domain shanghaiTaskBusinessDate 同口径）；灌到业务日当天，窗口才完整（v4，2026-09-09）
@@ -141,8 +162,12 @@ print("\n全部完成：账户 6 / 任务 3 / 指标 186 行 / 工作项 7 / 变
 # ---------- ⑥ 演示账号升 admin + 快手 v1 命名规范（归属清洗页要有东西）----------
 import os
 sql(f"UPDATE workspace_memberships SET role='admin' WHERE identity_id='{IDENTITY}' AND workspace_id='{WS_P}'")
-rule=json.load(open(os.path.join(os.path.dirname(__file__),'seed-naming-rule-kuaishou-v1.json'),encoding='utf-8'))
-sql(f"DELETE FROM naming_rules WHERE workspace_id='{WS_P}' AND media='KUAISHOU'")
-sql(f"""INSERT INTO naming_rules(workspace_id,media,version,segments,separators,effective_from,note)
-  VALUES('{WS_P}','KUAISHOU',1,$${json.dumps(rule['segments'],ensure_ascii=False)}$$::jsonb,ARRAY['-','－','_'],'2026-09-01','快手 v1，来源 ka-src-0003 §4.3')""")
-print("⑥ 演示账号 → admin；快手 v1 命名规范（13 段）已写入。解析结果需起服务后 POST /api/v1/admin/account-names/reparse {media:KUAISHOU}")
+# 两家渠道的规范并列灌：段/枚举全在 JSON 里，脚本不认识任何渠道的枚举（与解析器同一条规矩）。
+for seed_file in ('seed-naming-rule-kuaishou-v1.json','seed-naming-rule-tencent-v1.json'):
+    rule=json.load(open(os.path.join(os.path.dirname(__file__),seed_file),encoding='utf-8'))
+    media=rule['media']; seps=','.join("'"+x+"'" for x in rule['separators'])
+    sql(f"DELETE FROM naming_rules WHERE workspace_id='{WS_P}' AND media='{media}'")
+    sql(f"""INSERT INTO naming_rules(workspace_id,media,version,segments,separators,effective_from,note)
+      VALUES('{WS_P}','{media}',1,$${json.dumps(rule['segments'],ensure_ascii=False)}$$::jsonb,ARRAY[{seps}],'{rule['effective_from']}',$${rule['note']}$$)""")
+    print(f"   {media} v1 命名规范（{len(rule['segments'])} 段）已写入")
+print("⑥ 演示账号 → admin；快手 / 腾讯 v1 命名规范已写入。解析结果需起服务后 POST /api/v1/admin/account-names/reparse {media:KUAISHOU|TENCENT}")

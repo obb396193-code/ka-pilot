@@ -189,7 +189,11 @@ describe("AccountListRepository", () => {
        VALUES ($1, $2, 'full', '{}'::jsonb, 'done', 1)`,
       [workspaceId, job.rows[0]!.id],
     );
+    expect((await repository.list(baseQuery())).initialFullComplete).toBe(false);
+    await pool.query(`INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,computed_at)
+      VALUES($1,'KUAISHOU','stable','2026-08-25',now())`, [workspaceId]);
     expect((await repository.list(baseQuery())).initialFullComplete).toBe(true);
+    expect((await repository.list({ ...baseQuery(), businessDate: "2026-08-26" })).initialFullComplete).toBe(false);
   });
 
   it("rejects malformed and duplicate scope before opening a query", async () => {

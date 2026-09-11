@@ -1381,3 +1381,49 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **源时区**：不加列。受控源配置 `source.timezone`（按 media；启航、ka-data 均 `Asia/Shanghai`），reader/采样按它换算 `elapsedDayFraction`/`dataAsOf`；部署默认值不算证据，配置缺失时相关字段 missing 并告警。
 - **「当前为示例」类按钮**：按老板 2026-09-10 拍板，**按钮与提示保留**，对应接口接通后才撤提示；v1.9.24 那条「文案改暂未开放」作废。fe 出清单（页面/按钮/端点），arch 按端点分批派。
 - 前端过渡 fixture 放 `apps/web/lib/data/fixtures/v1922/`（不进契约包），后端 fixture 落地后前端并回。
+
+## v1.9.27 追加（2026-09-10 arch；看板前端审查暴露的四个契约缺口 + 老板「所有清洗字段都能分析」）
+- **环比**：`POST /data/query` summary 的 `params.compare` 枚举加 **`prev_window`**（与当前窗口等长、紧邻的前一窗口；month_to_date 的前窗 = 上月同天数），响应 `compare.deltas` 由后端给（沿用 v1.9.x 的 dod/wow 机制）；**前端不自造 `previous` 块、不二次查询**。
+- **激励花费**：summary 的 `cost` 组加 **`incentiveCost`**（MetricValue；个人源取启航「激励」字段，ka-data 无此列时 `unsupported`）。`costSpace` 是成本空间，与激励无关，前端不得混用。
+- **三个 BI 指标键位**：`assessment.biConv`（MetricValue，考核 BI 数）、`assessment.biCashCost`（MetricValue，=cashCost/biConv，后端算）、`assessment.overCost`（MetricValue，可负，正=超）；wire 键 camelCase，与现有 DTO 一致（api.md 里 snake_case 写法是命名而非 wire）。
+- **「待到」态**：MetricValue `availability` 加 **`pending`**（BI 类指标在 08:30–11:10 窗口内、T-1 数据尚未到达）；前端显「待到」不显「−」。
+- **失败批次信号**：data/query 的 `lineage.warnings[]` 从 string[] 改为可带对象 **`{code:"BATCH_FAILED", media, accountId, businessDate}`**（string 仍兼容）；前端据此显横幅「N 户 × M 天数据缺失（拉数失败）」。
+- **维度开放到任意清洗段**：`dimension_type` 除固定枚举外接受 **`segment:<key>`**（`<key>` = 该媒体命名规则里 `mapsTo` 非空或显式 `analyzable:true` 的段，如 `segment:bid_mode`、`segment:device`、`segment:landing`），按解析值分组，未解析归「未标注」；`GET /admin/naming-rules` 响应的段带 `analyzable`。`account.pivot2` 的 `dimA/dimB` 同样接受 `segment:<key>`。这是老板要求：每个渠道昵称清洗出的每个字段都能拿来做分析和透视。
+- **前端分摊规则**：分摊分母 = Σ已返回子行 cost（不是父行 cost）；`lineage.truncated/partial` 或父 `biConv` 为 pending/missing 时整列不分摊显「−」/「待到」；分摊派生的 BI 现金成本也带「分」；后端给了 `biCashCost` 的行不重算。
+
+## v1.9.28 追加（2026-09-10 老板问「任务/考核价维护是不是也要做、放投放任务？」；参照同事工作台 v7 任务管理）
+- **放哪**：投放任务页加「任务管理」视图 tab（按视图收敛原则不进侧栏）；单任务的考核价/日预算编辑留在任务详情·总览（已有）。任务管理视图 = 按业务大类（`biz_name`）分卡片 → 卡内细分任务表：名称 + 在投/停投胶囊 · 别名 chips · 预算 · 考核价（当前值 + 「历史」弹层）· 监测链接 · 产品名 · 行删除；停投沉底；超过 8 条折叠；按大类整体保存。
+- **tasks 表/DTO 加字段**：`aliases TEXT[]`（昵称里没有 task_id 时，命名解析按**最长别名命中**把账户绑到任务，写进解析行 `taskIds`）、`monitor_url TEXT`、`product_name TEXT`（与账户级 `accounts.product_name` 独立）、`status` 枚举加 **`paused`**（停投；`ended` 仍表示任务期结束）。`PATCH /tasks/:id` 接受这四个；新增 **`POST /tasks/batch-save {items:[{task_id, ...可编辑字段}]}`**（一个大类整体保存，逐条校验、全部成功才写，任一失败 400 带 `details.failed[]`）。「新建任务大类」= 新建任务时填新的 `biz_name`，大类本身不建表。
+- **考核价分段**：维持只增不改；加 **`op:"revoke"`** 行（`POST /tasks/:id/assessment-price {op:"revoke", effective_date}`）表示作废某段，取值规则 = effective_date ≤ D 的最近一条**未作废**段；历史弹层 = `GET /settings/change-log?kinds=assessment_price&task_id=`，显示生效日 / 值 / 改的人 / 证据链接 / 作废标记。fixtures：`tasks/list-manage.json`（含 aliases/status paused/monitor_url/product_name）、`tasks/batch-save.json`、`tasks/assessment-price-revoke.json`。
+- 归属：后端 be2（Q-043），前端 fe（F8-23）。
+
+## v1.9.29 追加（2026-09-10 arch；吸收 Codex 优化师视角审查的四条真问题 + 验收口径改为业务场景）
+- **清洗归一**：规则段的 `values` 从「别名列表」改为 **`values:[{canonical, aliases[]}]`**（如 `{canonical:"iOS", aliases:["IOS","ios","苹果"]}`；老形 `values:["a","b"]` 兼容读，视为 canonical=alias）。解析行每段存三样：**`raw`（账户名里原文）、`canonical`（统计归到谁）、`basis`（`{ruleVersion, source:"auto"|"manual", at}`）**；维度分组、透视、日报一律用 canonical。v1.9.26「不加 valueMap」作废——别名命中不等于归一，Codex 反例成立。
+- **空段不顶位**：分隔符之间为空的段记为该段 `unmatched`，**后续段不前移**（`自投--任务A-备注` → 优化师=unmatched、业务=任务A，状态 partial）；现行「删空 token」的做法作废。锚点段逻辑不变。
+- **历史归属按业务日**：账户→维度/任务/优化师的绑定带 **`effectiveFrom`**（解析或人工覆盖生效的业务日）；查历史窗口用**该业务日生效的绑定**（账户上周归甲本周归乙，看上周按甲）；规则新版本只对 `effective_from` 之后的业务日生效，追溯必须显式 `reparse {from}` 且写变更记录。所有读取路径（列表、透视、日报、看板）同一规则，禁止各取各的版本。
+- **账户名标签 ≠ 平台实际版位**：昵称解析出的 placement/goal/device 是「账户标签维度」（回答"这类账户表现怎样"）；平台侧版位消耗明细（回答"哪个流量位置贡献多少"）是另一源，dimension_type 命名区分：`placement`（标签）vs 将来的 `platform_placement`（实测），不合并。
+- **分摊值只能估归属，不能比效果**：分摊得到的 BI/CPA 行标 `allocated:true`；前端**不得**按分摊 CPA 排序、比较或据此给加减量建议，分摊行的 CPA 显「分摊·不可比」或不显；源本身有账户级 BI 的（ka-data 团队源 `fact_conv_daily` 按账户）直接用真值，不分摊。
+- **分布组件必须能判断效果**：资源位/版位/转化目标/自投代理等分布组件 = 图 + 同源明细表（花费、转化、现金 CPA、考核达标、样本量=账户数/天数），只给花费占比的饼图不算完成。
+- **验收改为六个业务场景**（替代「页面做完了」）：① 查昨日本人任务，合计与同范围原始数据对上；② 查某任务近七天分版位，分组 + 未归属 = 总计，能下钻复算；③ 从分析页进清洗修一条归属，保存、刷新、回分析，结果变了；④ 切日期/优化师/任务，卡片、图、明细、下钻、导出同步变，没数不顶旧数；⑤ 模拟 BI 未到、部分账户拉数失败：明确提示、不补零、不假分摊、不错判达标；⑥ 保存视图、导出、返回，范围与列配置保留，导出是真文件。每条由 arch 在联调环境实测，截图进 `docs/evidence/acceptance/`。
+- **优先级**（老板/Codex 一致）：真取数与真保存 → 清洗准确性 → 指标口径与下钻一致 → 筛选/导出/保存体验 → 更多图型。
+
+## v1.9.30 追加（2026-09-10 arch；真实模式端到端抓到的参数键名不一致）
+- **`POST /api/v1/data/query` 的 `params` 线上键名以此为准**（之前 v1.9.22/26/27 里的下划线写法是命名不是 wire）：`{ dateFrom, dateTo, media?, dimension?（account.dimension 用，不是 dimension_type）, dimA?/dimB?（pivot2）, filters?: { optimizer[], biz[], resource_position[], goal[], task_id[] }（**filters 内部是下划线**，Codex de98a243 已落地）, compare?: "prev_window"（be2 Q-041 ③ 落地前**不要发**——后端 params 是 strict，未知键整条 400 `INVALID_REQUEST: Invalid query parameter set`）}`。**不发 `workspace_id`**：空间由会话决定，前端要按空间做缓存 key 用本地变量即可。
+- fixtures：`data-query/summary-v1922-filtered.json` 等七份的 `_note` 里的 params 例以本条为准。
+
+## v1.9.31 追加（2026-09-10 arch；裁 fe 的 39 处未开放入口清单）
+- **一期不做、后端回 501 `NOT_IMPLEMENTED`**（前端显「这一块一期未开放」，提示由此替换「当前为示例」）：停止测试（#3）、自治度升档（#11）、订阅/定时「立即发送一次」（#13/#21）、值守换班（#15）、素材复刻（#18）、设计交付（#20）、AI 提效估时（#26）、月度拍板（#27）、搜索结果项动作（#28）、重新复盘（#24，已 501）。be2 在各契约路径挂 501 存根（Q-045 ①），不写业务。
+- **按日补拉（#8）= 现有 rerun**：治理后台「按日补拉」= 选一个 businessDate 对该日的 run 发 `POST /system/etl-runs/:id/rerun`（列表里取该日 run 的 id）；无该日 run → 显「该日没有拉数记录」。不新增端点。
+- **已有端点只差接线的批次**（fe 接，后端已在）：第 0 批 #10/#31/#33/#37（`/me/views`、`/me/watchlist`、readiness）；第 1 批 #38/#39（r010 ignore/mute 命令，路由接上）；第 2 批 #2/#9（pool-status DELETE、decision-policy PUT）。
+- **需后端补的**（be2 Q-045 ②③，排在 Q-041/Q-044 之后）：#4/#5 `PATCH /admin/members/:identityId {role?, is_active?}`、#6/#7 `PUT /admin/members/:identityId/grants`（整体替换）、#12/#14/#22/#23/#29/#30 集成/订阅/定时/凭证解绑、#16/#17/#19/#25/#32/#34/#35/#36 素材/工作项/派发/审批。顺序：治理后台 → 集成报告 → 素材任务 → 协作。
+
+## v1.9.32 追加（2026-09-10 arch；裁 be2 Q-041 ②④⑤⑥ 回执三问）
+- **`assessment.biCashCost` 改为 RatioValue**（`{value, state:"finite"|"infinite"|"undefined"}`，与 `ratios.cashCpa` 同形；v1.9.27 写的 MetricValue 作废）：`cashCost>0 且 biConv=0` → `state:"infinite"`（前端显「∞ · 无 BI 回传」，不是「−」——花了钱一个 BI 都没有，是最该被看见的一档）；`biConv` 为 `pending`/`missing` → `state:"undefined"`，前端按 `biConv.availability` 显「待到」或「−」。不在 MetricValue 里加 `denominator_zero` 档：那是比率的概念，不让每个普通指标的消费者都多兜一档。`biConv`（MetricValue，可 `pending`）、`overCost`（MetricValue，金额可负）、`incentiveCost`（MetricValue，ka-data 源恒 `missing` 不是 0）不变。
+- **四个新键（`biConv/biCashCost/overCost/incentiveCost`）schema 暂 optional**，「真实产出路径恒发」由 domain 绊线 `new-metric-fields-emitted` 保证；等 Q-041 ③ `compare.deltas` 落地后 be2 **一次性重导** `fixtures/data-query/*` 全部冻结 fixture（含 `summary-window-v3-*`），同一笔把四键改必填；fe 的 `-v1922` 过渡件届时换成 be2 导出版。不分两次导。
+- **`compare:"prev_window"`**：枚举已进 `windowComparisonSchema.mode`，前窗与 `deltas` 未实现（Q-041 ③ 下一笔）；落地前 params 严格校验照样把 `compare` 键判 400（v1.9.30），fe 不发。
+- **domain 包禁循环 import**（`dashboard-bi` ↔ `window-assessment` 那种）：vitest 模块图不报，真 CLI 入口 `ReferenceError … before initialization`。纯算术拆独立模块（`dashboard-bi-math`，明令不许反向 import）。进门禁清单 A33。
+
+## v1.9.33 追加（2026-09-10 arch；联调抽查：窗口合计因单个账户日缺数整体 missing 却无提示）
+- **缺数必须点名**：窗口汇总（`account.summary` / `trend` / `dimension` / `pivot2`）任一求和字段因成员账户日缺数而落成 `missing` 时，`lineage.warnings[]` 必须带对象形告警 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields:[...缺的指标键]}`（每个账户日一条；已有 `BATCH_FAILED` 记录的账户日用 `BATCH_FAILED`，不重复发）。`coverage.complete` 仍只描述对象覆盖；是否算部分合计见下一条。前端按 v1.9.27 ⑥ 的对象形渲染「N 账户·M 日缺数」并可展开清单——用户看到「−」必须能知道缺的是谁、哪天。
+- **整窗合计取舍待老板拍板**（A 现状：任一成员缺数 → 该指标整窗 `missing`，不出部分合计；B：`Σ available` + `partial:true` + 缺数清单，达标/超成本判定挂起为 `partial_data`）。拍板前维持 A；拍 B 则出 v1.9.34。
+- **联调种子**：`scripts/seed-demo-data.py` 给 account-2 / 09-10 那行补一条失败批次记录（etl 批次表），让 `BATCH_FAILED` 路径在本地端到端可见；无批次记录的空值行走 `ACCOUNT_DAY_MISSING`。

@@ -5,6 +5,8 @@ import type {
   SemanticTableQuery,
   SemanticTableResult,
 } from "@ka/db";
+import { AccountDimensionEvidenceError, SemanticQueryRepository as SemanticRepository, withSemanticReadSnapshot } from "@ka/db";
+import type { Pool } from "pg";
 import type {
   SourceAuthority,
   SourceLineage,
@@ -14,12 +16,13 @@ import type {
 import { canonicalRowSchemaVersionByQueryId, sourceQueryResultSchema, approvedWorkspaceAuthContextSchema } from "@ka/domain";
 import { PlatformPivotQueryError, type PlatformPivotQuery } from "./platform-pivot-query.js";
 import { DataSourceRoutingError } from "./data-source-routing.js";
+import { createDashboardScopeResolver, type DashboardScopeResolver } from "./dashboard-filter-scope.js";
 
 import type { DataQueryExecutionScope } from "./ka-data-client.js";
 import type { ResolvedDataQuery } from "./query-registry.js";
 import type { PlatformWindowQuery } from "./platform-window-query.js";
 import type { PlatformDimensionQuery } from "./platform-dimension-query.js";
-import { assertTaskWindowDates } from "./task-window-coverage.js";
+import { assertTaskWindowDates, taskWindowDates } from "./task-window-coverage.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
@@ -39,6 +42,7 @@ export class PlatformDataSourceError extends Error {
 }
 
 export interface PlatformQueryRepository {
+  resolveDashboardScope?: DashboardScopeResolver;
   querySummary: SemanticQueryRepository["querySummary"];
   queryTrend: SemanticQueryRepository["queryTrend"];
   queryTable: SemanticQueryRepository["queryTable"];
@@ -48,6 +52,14 @@ export interface PlatformQueryRepository {
 export type PlatformReadSnapshot = (
   read: (repository: PlatformQueryRepository) => Promise<SourceQueryResult>,
 ) => Promise<SourceQueryResult>;
+export function createPlatformReadSnapshot(pool: Pick<Pool, "connect">): PlatformReadSnapshot {
+  return read => withSemanticReadSnapshot(pool, connection => {
+    const repository = new SemanticRepository(connection);
+    return read({ querySummary: repository.querySummary.bind(repository), queryTrend: repository.queryTrend.bind(repository),
+      queryTable: repository.queryTable.bind(repository), queryLineage: repository.queryLineage.bind(repository),
+      resolveDashboardScope: createDashboardScopeResolver(connection) });
+  });
+}
 
 function authorityFor(resolved: ResolvedDataQuery): SourceAuthority {
   const defaultSource = resolved.authorityPolicy.defaultSource;
@@ -144,7 +156,7 @@ function sourceLineage(
           : {}),
       ...(scope.scopeKind === "explicit_accounts"
         ? {
-            ...(resolved.params.taskId === undefined ? { requestedObjects: scope.accounts.length } : {}),
+            ...(resolved.params.taskId === undefined && resolved.params.filters === undefined ? { requestedObjects: scope.accounts.length } : {}),
             returnedObjects: Math.min(scope.accounts.length, lineage.returnedAccounts),
           }
         : { returnedObjects: lineage.returnedAccounts }),
@@ -204,7 +216,7 @@ export class PlatformDataSource {
     private readonly repository: PlatformQueryRepository,
     private readonly snapshot?: PlatformReadSnapshot,
     private readonly windowQuery?: Pick<PlatformWindowQuery, "summary">,
-    private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group">,
+    private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group"> & Partial<Pick<PlatformDimensionQuery, "named">>,
     private readonly pivotQuery?: Pick<PlatformPivotQuery, "query">,
   ) {}
 
@@ -250,11 +262,15 @@ export class PlatformDataSource {
     try {
       if (resolved.queryId === "account.dimension") {
         const dimension = resolved.params.dimensionType;
-        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz"].includes(dimension)) throw new Error("Dimension reader unavailable");
+        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz", "optimizer", "goal", "placement"].includes(dimension)) throw new Error("Dimension reader unavailable");
         const input = { workspaceId: execution.workspaceId,
+          ...(resolved.params.filters === undefined ? {} : { filters: resolved.params.filters }),
           accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
           window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } };
+        const named = ["optimizer", "goal", "placement"].includes(dimension);
+        if (named && !this.dimensionQuery.named) throw new Error("Named dimension reader unavailable");
         const result = dimension === "account" ? await this.dimensionQuery.account(input)
+          : named ? await this.dimensionQuery.named!({ ...input, dimensionType: dimension })
           : await this.dimensionQuery.group({ ...input, dimensionType: dimension });
         const rows = canonicalizeQueryRows(resolved.queryId, "platform", result.rows, execution.workspaceId);
         const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings: result.warnings };
@@ -266,6 +282,7 @@ export class PlatformDataSource {
       if (resolved.queryId === "account.summary") {
         if (!this.windowQuery || execution.scopeKind !== "explicit_accounts") throw new Error("Window reader unavailable");
         const result = await this.windowQuery.summary({ workspaceId: execution.workspaceId,
+          ...(resolved.params.filters === undefined ? {} : { filters: resolved.params.filters }),
           accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
           window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" },
           ...(resolved.params.compare === undefined ? {} : { compare: resolved.params.compare }),
@@ -283,6 +300,10 @@ export class PlatformDataSource {
         ? this.snapshot((repository) => this.read(repository, resolved, execution))
         : this.read(this.repository, resolved, execution));
     } catch (error) {
+      if (error instanceof AccountDimensionEvidenceError) {
+        if (error.code === "SOURCE_TRUNCATED") throw new DataSourceRoutingError("SOURCE_TRUNCATED", "Naming evidence exceeds the bounded source limit");
+        throw new PlatformDataSourceError();
+      }
       const invalidCanonical = error instanceof CanonicalQueryRowError ||
         (error instanceof Error && (error.name === "SemanticQueryContractError" || error.name === "ZodError"));
       if (invalidCanonical) throw new PlatformDataSourceError();
@@ -309,8 +330,13 @@ export class PlatformDataSource {
     resolved: ResolvedDataQuery,
     execution: DataQueryExecutionScope,
   ): Promise<SourceQueryResult> {
-      const scope = semanticScope(resolved, execution);
+      const baseScope = semanticScope(resolved, execution);
+      if (resolved.params.filters !== undefined && !repository.resolveDashboardScope) throw new CanonicalQueryRowError();
+      const selection = resolved.params.filters === undefined ? { scope: baseScope, warnings: [] }
+        : await repository.resolveDashboardScope!(baseScope, resolved.params.filters);
+      const scope = selection.scope;
       const semanticLineage = await repository.queryLineage(scope);
+      if (scope.filters?.accountDays !== undefined) taskWindowDates(scope, semanticLineage);
       let rows: Record<string, unknown>[];
       let total: number;
       let truncated = false;
@@ -323,7 +349,7 @@ export class PlatformDataSource {
         total = summary.rowCount;
       } else if (resolved.queryId === "account.trend") {
         const trend = await repository.queryTrend(scope);
-        if (resolved.params.taskId !== undefined) {
+        if (resolved.params.taskId !== undefined || scope.filters?.accountDays !== undefined) {
           if (!Array.isArray(trend) || trend.some((row) => typeof row !== "object" || row === null ||
             typeof row.metrics !== "object" || row.metrics === null)) throw new CanonicalQueryRowError();
           assertTaskWindowDates(scope, semanticLineage, trend.map((row) => row.ds));
@@ -366,6 +392,15 @@ export class PlatformDataSource {
       }
 
       rows = canonicalizeQueryRows(resolved.queryId, "platform", rows, execution.workspaceId);
+      if (resolved.queryId === "account.table" && scope.filters?.accountDays !== undefined) {
+        const selected = new Set(scope.filters.accountDays.map(row => JSON.stringify([row.media, row.accountId, row.ds]))), seen = new Set<string>();
+        if (!Number.isSafeInteger(total) || total < rows.length || total > selected.size) throw new CanonicalQueryRowError();
+        for (const row of rows) {
+          const key = JSON.stringify([row.media, row.accountId, row.ds]);
+          if (!selected.has(key) || seen.has(key)) throw new CanonicalQueryRowError();
+          seen.add(key);
+        }
+      }
       if (
         aggregateAccountCount !== undefined &&
         aggregateAccountCount !== semanticLineage.returnedAccounts
@@ -396,7 +431,7 @@ export class PlatformDataSource {
         returnedRowCount: rows.length,
         wholeResultTotal,
         lineage,
-        warnings: lineage.partial ? [lineage.coverage.reason ?? "Canonical result is partial"] : [],
+        warnings: [...selection.warnings, ...(lineage.partial ? [lineage.coverage.reason ?? "Canonical result is partial"] : [])],
       };
   }
 }

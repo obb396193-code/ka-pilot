@@ -642,3 +642,92 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - ➊ **(a)**：团队空间只读是契约（kind=team 全量只读），演示空间是团队空间，写入口禁用 + 角标就是正确行为；v1.9.17「不藏」指的是不按 `role=viewer` 藏，不是要把团队空间的只读门拆掉。403 文案只在竞态出现，够了。
 - ➋ 真实路径 kb 写我这轮联调抽查（建/改名/软删/软删后 GET 404）。
 - ➌ rerun：**F8-15 ⑦**，早派了（在「7ff2d829 ✅ 已合」那段），连同 ⑥ NOT_IMPLEMENTED 一起是你现在手上仅剩的两项，绊线到期 09-12。做完再看 Q-038 腾讯规则要不要动归属清洗 tab（应该不用，规则编辑是通用的；若段数 12 排版挤了再调）。
+
+### F8-19b（P0，压倒一切）：看板审查修复清单（arch 2026-09-10；审查全文 `docs/reviews/2026-09-10-数据看板前端审查.md`，契约 v1.9.27）
+老板原话：前端的核心是站在优化师视角**看得到、看得对**——每个清洗字段的数据都能看、能像 Excel 透视表一样自选字段透视、选对图型；概览和成本盈亏必须做出来；同事那份的数据/任务/考核价是对的，我们要在此之上做美观。
+**P0（先修，修完交 SHA + 三宽度截图）**
+1. **接真接口**：`overview-tab.tsx` 用 `useDataQuery` 拉 `account.summary`（params 含 window + `compare:"prev_window"`）、`account.trend`、`account.dimension`；fixture 只在 `isMock` 生效；钻取每展开一层带 `params.filters.{optimizer,biz,task_id}` 再查（`drilldown.tsx` 的 `children()` 换掉）；request key 含 workspaceId（切空间自然重拉）。验收：真实模式页面不含「张三」；切个人/团队数据变。
+2. **激励卡**：`kpi-rows.tsx:61` 去掉 `costSpace` 绑定，改读 `cost.incentiveCost`（v1.9.27），后端未给前显「待接源」。
+3. **分摊**（`lib/fixtures/dashboard.ts:61-64` + `drilldown.tsx`）：分母 = Σ已返回子行 cost；truncated/partial 或父 biConv pending/missing → 整列不分摊；派生 BI 现金成本也带「分」；后端给了 `biCashCost` 不重算；`bi=0` 用 `!= null` 判断。mock 期同一棵树只能同一源（别把契约的 personal biz 行挂在 team summary 下）。
+4. **schema**：`lib/data/canonical-query-rows.ts` 的 summary 行/assessment 放开 `biConv/biCashCost/overCost/incentiveCost`（camelCase）、`compare.deltas`、`availability:"pending"`、`lineage.warnings` 对象形；不再自造 `previous`。v1922 过渡 fixture 按 `summary-window-v3` 形补齐并改成自洽数字（overCost = cash − bi×price）。
+**P1（同一批交）**
+5. 考核 BI 数卡加回传 GAP 下标（`ratios.gap`）；超成本负数绿；BI 现金成本卡不用 realConversion 口径的色标。
+6. 页头窗口 preset 传进概览并进 params（`date_from/date_to`，上海 03:00 切日）；页脚显 dataAsOf/businessDate/timezone；chips 改今/昨/近 7/近 30 + 月历（F8-20 首项提前）。
+7. 三态分开：缺数「−」、`pending`「待到」、unsupported「待接源」；分布图缺数行显「N 项缺数未计入」；趋势按 `lineage.window` 生成完整日期轴，缺日 null。
+8. 钻取表补列：激励、回传 GAP、考核价、超成本、消耗占比（11 列）；任务大类表现与优化师视角拆成两张卡；个人视角折成「我的任务→账户」两级、隐藏级联。
+9. 补自投/代理分布（契约 `dimension-v3-agent_type.json` 现成）与转化目标「待接源」壳；分布图 kinds 去掉折线；转化成本线虚线；趋势加「日｜小时（等 025）」端口。
+10. 图表偏好写 `PATCH /me/views config.charts`；`useDataQuery` 做 stale-while-revalidate（保留上一响应 + isValidating），错误态传 requestId + 重试。
+11. 单测：审查文档 §2 列的 12 组，至少补 allocateBi 六边界、deltaRate、六态文案、真实/mock 路由。
+**F8-22（P0 第二批，F8-19b 后）：自定义透视** = Excel 式：行维 × 列维（下拉列出固定 8 维 + 该媒体规则里所有 `analyzable` 段，含腾讯的 bid_mode/device/landing 等）× 指标集 × 图型（表/柱/环/折线），走 `account.pivot2` 的 `segment:<key>`（v1.9.27）；预设保存进 saved_views。策略分析的 3 个预设并入它。
+- **F8-19b 追加（审查员 C：体验/视觉/响应式，全文见审查文档 §3.1，带 文件:行）**。P0 再加三条：⑫页头 preset 传进 OverviewTab、两处窗口标签同一来源；⑬钻取行改行内 `<button aria-expanded>`，键盘可达；⑭账户行链接按 key 形态判不按 depth（biz 树账户在 depth 2，现在永远不是链接）。P1 视觉这几条老板会盯：黑白模式图表仍彩色（读 `--chart-1..5`）、主题切换不重画（colorKey 用 `${mode}|${hue}|${isDark}`）、趋势第三条线被压扁（第三轴）、KPI 卡抽 `KpiCard` 与工作台同一套、1280+侧栏展开 KPI 必须 4 列、切图型不闪（实例只建一次 + UniversalTransition）、图表字体/tooltip 走站内 token、图下「查看数据表」折叠区（既是无障碍替代也是老板要的表格视图）。验收按 §3.1 末尾的截图矩阵交图。
+- **F8-19b 追加（审查员 D：代码质量/测试，全文见审查文档 §3.2 + 附录）**。P0 再加四条：⑮环比改收后端 `compare.deltas`（RatioValue），删自造 `previous`/`deltaRate`；⑯`biCashCost` 是 MetricValue 不是 RatioValue；⑰v1922 fixture 改成 zod `parse()` 导入并加 `dashboard-fixtures.test.ts` 门禁（现在 4 个 `as unknown as` 压着 16 处不合 schema）；⑱`ChartFrame` 加 dataKey/`setOption(notMerge)`，否则接真接口后切窗口图不重画。P1 里最要紧：建 `lib/data/use-dashboard.ts` 取数层（mock/真实内部切，组件只吃 props）；MetricValue 全部 `z.infer` 自 `canonical-query-rows.ts`；`use-data-query` 加 AbortController + 稳定 key（含 workspaceId）+ SWR；错误边界；核心算法抽到 `lib/data/dashboard-math.ts`（`package.json` 的 test glob 只跑 `lib/data/*.test.ts`，放 fixtures 下的测试根本不会执行）；localStorage 偏好 safeParse。测试按附录 9 个文件补。TODO 注释里的归属改成 F8-19b / be2 Q-041（P-210 已改号、数据链已改派）。
+
+### F8-23：投放任务页「任务管理」视图（v1.9.28；排 F8-19b 之后、F8-22 之前）
+老板要任务维护 + 考核价维护做进投放任务模块，内容布局参照同事工作台 v7 的任务管理（只借布局，不借他的样式）：
+- 投放任务页加「任务管理」tab：按业务大类分卡片；卡头 = 大类名 + 计数 + 「保存」+「删除大类」（Ghost 红边，删除=把该大类下任务 status 置 ended，二次确认）；卡内表：任务名（在投/停投胶囊，点击切 `active`↔`paused`）· 别名 chips（回车添加、× 删）· 预算 · 考核价（当前值 + 「历史」按钮 → 弹层：生效日 / 值 / 改的人 / 证据 / 作废；底部加新段、行可作废）· 监测链接 · 产品名 · 行删除；停投沉底；>8 条折叠「展开全部」；按大类整体 `POST /tasks/batch-save`。
+- 「＋ 新建任务大类」= 新建任务对话框里 biz_name 可填新值。
+- 单任务的考核价/日预算编辑仍在任务详情（已有），历史弹层两处共用一个组件。
+- 后端 Q-043 未到前按 `tasks/list-manage.json` 等 fixture 形先做页（fixture 由 be2 从真响应导出，之前你按 v1.9.28 字面自写 `-v1928` 过渡件）。
+
+### a23f3b4f ✅ 已合 main `fd237639`（arch 2026-09-10 循环第 22 圈）
+- 窗口日历 + 窗口真驱动数据：对，尤其「预设以数据日为终点」「比率总和÷总和」「换窗口不显环比并说明」三条。web 244 绿。
+- ⑥⑧ 收到；**⑦ rerun 透传**仍是你手上唯一的 F8-15 尾巴（绊线到期 09-12），插空收掉。
+- 环比：be2 Q-041 ③ 会给 `compare:"prev_window"` → `compare.deltas`，到时换窗口的环比就有了，你那句「后端没算对应的上一窗口」的说明到时撤。
+- Codex 交的多值筛选 + 个人三维 fixture 已在 `packages/contract/fixtures/data-query/*-v1922-*.json`（summary/trend/table/dimension 的 filtered 版 + optimizer/goal/placement 维度），F8-19b 的 P0-1 接真接口可以直接对着它们；后端 `params.filters` 五字段已在 main。
+- 序不变：F8-19b（P0 十一条）→ F8-23 任务管理 → F8-22 自定义透视 → F8-20 剩余 → F8-21。
+
+### F8-19b 再追加（Codex 审查核实的两条 P0 + 三条口径，v1.9.29）
+- **P0-⑫ 清洗页三处按钮接真接口**：`admin/naming-tab.tsx:104` 重解析、`:191` 保存为新版本、`:202` 确认——现在是 toast/本地 state，刷新后什么都没变。接 `PUT /admin/naming-rules`（响应 meta.dryRun 显命中率）、`POST /admin/account-names/reparse`、`POST /admin/account-names/confirm`，成功后重拉列表；这本来是 F8-21 的活，但「提示成功其实没存」是真取数真保存那一档，提前到 F8-19b。
+- **分摊·不可比**：分摊行的 CPA 显「分摊·不可比」或不显，不得按它排序/比较；有账户级真 BI（团队 ka-data 源）直接用真值。
+- **分布组件 = 图 + 同源明细表**（花费、转化、现金 CPA、考核达标、样本量），只有饼图不算完成。
+- 账户标签维度（昵称解析）与平台实际版位是两回事，组件标题/口径提示写清「按账户标签」。
+- **验收改六个业务场景**（api.md v1.9.29 末尾），交付时按场景各截一张图；"页面做完了"不再是验收口径。
+
+### aceb5ecf ✅ 已合 main `1950294e`；两问裁；新依赖批（arch 2026-09-10 循环第 23 圈）
+- `react-day-picker@9`（连带 date-fns）**批**，报备方式对；门禁树/联调树我补装了，CI 走 apps/web 自己的 lockfile 没问题。
+- ➊ **(b)**：chips 只是 UI 快捷，「近 30 天」持久化成 `custom` + from/to，不动窗口枚举。
+- ➋ 对：真实模式的验收只看真实模式的页面 HTML（我用 `?session`/mock 关掉后 grep），mock 模式不算。
+- 窗口真驱动数据、比率总和÷总和、换窗口不显环比并说明——都对。⑦ rerun 透传仍欠（到期 09-12）。
+- be2 的 Q-041 现在全线放行了（Codex 那支已合），你 F8-19b P0-1 接真接口时后端 `params.filters` 五字段、个人三维已在；`compare.deltas`/三 BI 键/pending/BATCH_FAILED 由 be2 陆续到，先按 fixture 形接、到一个换一个。
+
+### b3c8180f ✅ 已合 main（arch 2026-09-10 循环第 24 圈）
+- P0 第一批八条收到，都对；「窗口与后端 lineage.window 一致才用后端环比」那条教训写得好。removeChild 崩溃修了也好。
+- ➊ 上一段已裁 **(b)**（chips 只是快捷，「近 30 天」持久化成 custom + from/to），补那个 chip 吧。➋ 依赖已批。
+- 剩 P0-①（接真接口）和 ⑱（ChartFrame dataKey）——**下一批就交这两条**，别插别的；be2 的 Q-041 ①–⑥ 正在出，你先按 v1.9.27 形接，字段没到显「待接源」。
+- 后端 027 已在 main（任务 aliases/paused/monitor_url/product_name、考核价作废段），F8-23 任务管理视图的 fixture 会随 be2 Q-043 ②③⑤⑥ 到。
+
+### 9633ae3c 收到；➊ 第三次答：**(b)**（arch 2026-09-10 循环第 25 圈）
+- ➊ **(b)**：chips 只当 UI 快捷，「近 30 天」持久化成 `custom` + 明确 from/to，不动窗口枚举。这条我在上面「aceb5ecf ✅ 已合」和「b3c8180f ✅ 已合」两段都答过了——你连着三次问，说明你读的还不是本机 main 的最新段；每次交付前 `git log main -- docs/relay/inbox-fe.md` 看一眼再写「仍等」。
+- ① 接真接口的做法对：取数层 + key 含 workspaceId + SWR 作废过期结果 + 逐层查钻取 + 非叶子一律给箭头。同源那次又撞了，你自己抓到并加了门禁，行。
+- removeChild 根因（React 与 ECharts 抢同一节点、两个分支无 key）修法对；⑱ 顺带收掉，收到。
+- **mock + production build 下不能碰 `runtimeDataClient()`**：进门禁清单 A32。
+- 真实模式端到端：你这头合入后我在联调库（seed 已含快手 13 段/腾讯 12 段规则、迁移 20）把概览整页过一遍——钻取每层 filters（optimizer/biz/task_id）、切个人/团队重拉、换窗口重拉，截图回你。
+- 你手上：P0 只剩等我的端到端验；然后 **F8-23 任务管理视图**（后端 027 + Q-043 ② 的 PATCH/batch-save 已在或即将在 main）→ F8-22 自定义透视 → F8-19b 的 P1（第三轴、KpiCard 抽公共、黑白配色、图下数据表）。
+
+### F8-19b ①真实模式端到端：**红**——参数键名不对，八个请求全 400（arch 2026-09-10 循环第 28 圈，v1.9.30）
+联调库（迁移 20、快手/腾讯规则在）真实模式打开 /data：先是整页「读取失败：Failed to execute 'fetch' on 'Window': Illegal invocation」——`lib/data/client.ts:29` 把裸 `fetch` 存成实例方法再 `this.fetchImpl(...)`，浏览器不允许（Node 不挑 this 所以服务端从没炸）。**我已热修**（`47079944`，包成箭头函数），你拉 main。
+修完后请求发出去了（首屏 8 个 data-query，形对：summary + optimizer/resource_position/biz 三维），但**全部 400 `INVALID_REQUEST: Invalid query parameter set`**，页面仍「读取失败」。原因三处（`lib/data/use-dashboard.ts:102,129,151`）：
+1. 键名：后端 wire 是 `dateFrom`/`dateTo`、维度键是 **`dimension`**（不是 `dimension_type`）——我契约里的下划线写法是命名，不是线上键，v1.9.30 已把线上键名写死。
+2. `compare:"prev_window"` 后端还没接（be2 Q-041 ③），params 是 strict，带上就整条 400——**落地前不要发**，用一个开关（读 `meta`/capabilities 或先常量 false）控制。
+3. `workspace_id` 不是后端参数（空间由会话定），别发；缓存 key 用本地 workspaceId 即可。
+`filters` 内部键保持下划线：`optimizer[]/biz[]/resource_position[]/goal[]/task_id[]`（后端已落地）。
+**P0-⑲**：改这三处 + 加一条用例锁住请求体形状（对着 `packages/contract/fixtures/data-query/summary-v1922-filtered.json` 的 params 例）。改完我再跑一遍端到端（脚本在我这，抓每个请求体）。证据：`docs/evidence/acceptance/2026-09-10-F8-19b-real-mode/`。
+
+### b62da659 ✅ 已合 main；39 处清单裁了（arch 2026-09-10 循环第 29 圈，v1.9.31）
+- ⑦ 重跑透传对（202「已排队」、409 指出正在跑的 job）；绊线里 rerun 登记我随合流删了。web 254 绿。
+- 39 处：**一期不做的 10 条**（#3/11/13/15/18/20/26/27/28/24）后端挂 501 存根（be2 Q-045 ①），你那边等 501 到了提示自然变「一期未开放」，不用改；**#8 按日补拉 = 对该日 run 发 rerun**，不新增端点，你接：选日期 → 列表找该日 run → rerun；**第 0 批**（#10/31/33/37）你直接做；**第 1 批**（#38/39）路由接上；**第 2 批**里 #2/#9 后端已在直接接，#4–#7 等 be2 Q-045 ②；其余批次等后端。
+- 顺序不变：**⑲ 参数键名（P0，联调端到端在等它）→ F8-23 任务管理 → 第 0/1 批 → F8-22 自定义透视 → F8-19b P1**。
+
+### 7920cefd ✅ 已合 main `fc398778`；➌ 八个 tab 裁了（arch 2026-09-10 循环第 30 圈）
+- web-only 门禁 254 绿、slug guard 过；rerun 路由补漏（`system/etl-runs/[runId]/rerun`）合进去了。第 0 批 3 条收到；`PUT /me/watchlist` 整体替换那个坑记得对——`use-me-actions.ts` 里给「传空名单」加一道二次确认或至少断言，别让误操作清空。
+- ➌ 八个 tab 按后端现状分三档（main 上 worker 已注册的 queryId 实测）：
+  - **后端已在、可直接接 = F8-24（三 tab）**：数据总表 = `account.table`（fixture `data-query/table-v3.json`）；差异对账 = `account.gap`（`gap / gap-biz / gap-task.json`）；盯盘 = `account.hourly`（`hourly.json`；小时表由 be2 Q-042 采样 job 灌，落地前后端返 `availability:"pending"`，页面显「待到」不显示例）。
+  - **并入已派任务**：策略分析 = F8-22 的三个预设，不单做。
+  - **后端未做、保持示例态**：归因树 `GET /tasks/:id/attribution`（依赖广告层数据源，登记 be2 Q-046）；自助报表 `POST /reports/render` + `/reports/configs`（登记 be2 Q-047）；竞情 = AppGrowing 接入是 OS 联调项，契约 §3.12 就定的示例态。这三 tab 的「当前为示例」按老板拍板保留，接通一处撤一处。
+- 顺序：**⑲（P0，联调端到端在等它）→ F8-23 任务管理 → 第 0/1 批 → F8-22 自定义透视 → F8-24（三 tab 接线）→ F8-19b P1**。⑲ 三处改动很小，先交它再动 F8-22。
+
+### be2 Q-041 ②④⑤⑥ 已在 main `63b6f089`；两条契约变更（arch 2026-09-10 循环第 33 圈，v1.9.32/33）
+- 真接口现在会发 `assessment.biConv / biCashCost / overCost` 与 `cost.incentiveCost`（ka-data 源恒 missing 不是 0）、`availability:"pending"`、`lineage.warnings[]` 对象形 `BATCH_FAILED`。你那几处「待接源」可以撤了（⑲ 落地后我端到端一起验）。
+- **`biCashCost` 改 RatioValue**（v1.9.32，推翻审查员 D 的 ⑯）：`canonical-query-rows.ts:130` 改 `ratioValueSchema.optional()`；`infinite` 显「∞ · 无 BI 回传」不是「−」；`undefined` 时按 `biConv.availability` 显「待到」或「−」。be2 随 Q-041 ③ 一起切，切之前后端还是 MetricValue 形——镜像用 union 过渡（两形都收），③ 到了收窄。
+- **缺数点名**（v1.9.33）：窗口里任一账户日缺数，后端会发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`；页面「−」旁要能展开「N 账户·M 日缺数」清单。整窗 missing 还是部分合计老板在拍，先按现状。
+- 序不变：**⑲ → F8-23 → 第 0/1 批 → F8-22 → F8-24 → P1**。

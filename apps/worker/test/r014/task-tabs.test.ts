@@ -208,6 +208,60 @@ describe("task detail tabs (real PostgreSQL)", () => {
     expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`, body)).status).toBe(409);
   });
 
+  it("★Q-043 ④: a revoked segment stops being the effective price everywhere", async () => {
+    const revokeDate = "2026-09-06";
+    // 先记下作废前这一天本来生效的价——作废掉新写的那段之后，就该回到它，
+    // 而不是回到 0 或停在被作废的价上。这样断言不依赖本文件前面几条用例写了什么。
+    const effectiveAt = async (): Promise<number | null> => {
+      const row = (await pool.query(
+        `SELECT history.price FROM assessment_price_history AS history
+         WHERE history.workspace_id=$1 AND history.task_id=$2 AND history.effective_date <= $3::date
+           AND history.op='set' AND NOT EXISTS (
+             SELECT 1 FROM assessment_price_history AS revoked
+             WHERE revoked.workspace_id=history.workspace_id AND revoked.task_id=history.task_id
+               AND revoked.op='revoke' AND revoked.effective_date=history.effective_date)
+         ORDER BY history.effective_date DESC, history.id DESC LIMIT 1`,
+        [workspaceId, taskId, revokeDate])).rows[0] as { price: string } | undefined;
+      return row === undefined ? null : Number(row.price);
+    };
+    const fallback = await effectiveAt();
+    expect(fallback).not.toBe(123);
+
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { price: 123, effective_date: revokeDate })).status).toBe(200);
+    expect(await effectiveAt()).toBe(123);
+
+    const revoked = await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { op: "revoke", effective_date: revokeDate });
+    expect(revoked.status, JSON.stringify(revoked.body)).toBe(200);
+    expect(dataOf(revoked).op).toBe("revoke");
+    // 作废掉的那段是 123；作废后这一天生效的回到作废前那一段，不是 0、也不是停在 123。
+    expect(dataOf(revoked).old_price).toBe(123);
+    expect(dataOf(revoked).new_price).toBe(fallback);
+    // 读侧与写侧回的是同一条判定——不是两套各算各的。
+    expect(await effectiveAt()).toBe(fallback);
+
+    // 只增不改：原来那行还在，多出来的是一条 revoke 行。
+    const rows = (await pool.query(
+      `SELECT op, price FROM assessment_price_history
+       WHERE workspace_id=$1 AND task_id=$2 AND effective_date=$3::date ORDER BY id`,
+      [workspaceId, taskId, revokeDate])).rows as { op: string; price: string }[];
+    expect(rows.map((row) => row.op)).toEqual(["set", "revoke"]);
+    expect(rows.every((row) => Number(row.price) === 123)).toBe(true);
+
+    // 任务详情、任务列表、窗口考核那几个读点走的是同一个共享谓词，
+    // 由绊线 assessment-price-selection 保证（本文件只注册了页签路由，够不着详情路由）。
+
+    // 作废一个不存在的段是笔误，不是幂等操作。
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { op: "revoke", effective_date: revokeDate })).status).toBe(404);
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { op: "revoke", effective_date: "2020-01-01" })).status).toBe(404);
+    // 认不出的 op 直接拒，别当成 set 悄悄写一行价。
+    expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/assessment-price`,
+      { op: "REVOKE", price: 9, effective_date: revokeDate })).status).toBe(400);
+  });
+
   it("answers 501 for the review endpoints too (v1.9.19)", async () => {
     expect((await call(`/api/v1/tasks/${encodeURIComponent(taskId)}/review/latest`)).status).toBe(501);
     expect((await post(`/api/v1/tasks/${encodeURIComponent(taskId)}/review`, {})).status).toBe(501);

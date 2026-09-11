@@ -11,6 +11,7 @@ import {
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
+const window = { dateFrom: "2026-09-09", dateTo: "2026-09-10" };
 
 describe("WorkspaceSyncRepository", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 4 });
@@ -24,6 +25,7 @@ describe("WorkspaceSyncRepository", () => {
 
   afterEach(async () => {
     if (workspaceIds.length === 0) return;
+    await pool.query("DELETE FROM account_metrics_daily WHERE workspace_id = ANY($1::uuid[])", [workspaceIds]);
     await pool.query("DELETE FROM etl_runs WHERE workspace_id = ANY($1::uuid[])", [workspaceIds]);
     await pool.query("DELETE FROM jobs WHERE workspace_id = ANY($1::uuid[])", [workspaceIds]);
     await pool.query("DELETE FROM account_access_grants WHERE workspace_id = ANY($1::uuid[])", [workspaceIds]);
@@ -97,7 +99,7 @@ describe("WorkspaceSyncRepository", () => {
       [seeded.workspaceId, seeded.identityId],
     );
 
-    const snapshot = await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU");
+    const snapshot = await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU", window);
 
     expect(snapshot).toMatchObject({
       workspaceId: seeded.workspaceId,
@@ -127,7 +129,7 @@ describe("WorkspaceSyncRepository", () => {
     [{ qihang: null }, "QIHANG_IDENTITY_MISSING"],
   ] as const)("fails closed for %j", async (options, reason) => {
     const seeded = await seed(options);
-    const snapshot = await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU");
+    const snapshot = await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU", window);
     expect(candidateBlockedReason(snapshot, snapshot.candidates[0]!)).toBe(reason);
   });
 
@@ -150,13 +152,13 @@ describe("WorkspaceSyncRepository", () => {
       [left.workspaceId, left.identityId, right.workspaceId, right.identityId],
     );
 
-    const snapshot = await repository.loadTickSnapshot(left.workspaceId, "KUAISHOU");
+    const snapshot = await repository.loadTickSnapshot(left.workspaceId, "KUAISHOU", window);
     expect(snapshot.candidates[0]?.allowedAccounts).toEqual([
       { media: "KUAISHOU", accountId: "same-account", accessLevel: "read" },
     ]);
   });
 
-  it("recognizes only a completed full run for the same workspace, user and media", async () => {
+  it("requires the frozen data window, not a completed full marker", async () => {
     const seeded = await seed();
     const job = await pool.query<{ id: string }>(
       `INSERT INTO jobs (
@@ -171,9 +173,20 @@ describe("WorkspaceSyncRepository", () => {
       [seeded.workspaceId, job.rows[0]!.id],
     );
 
-    const kuaishou = await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU");
-    const tencent = await repository.loadTickSnapshot(seeded.workspaceId, "TENCENT");
-    expect(kuaishou.candidates[0]?.hasSuccessfulFull).toBe(true);
+    const kuaishou = await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU", window);
+    const tencent = await repository.loadTickSnapshot(seeded.workspaceId, "TENCENT", window);
+    expect(kuaishou.candidates[0]?.hasSuccessfulFull).toBe(false);
     expect(tencent.candidates[0]?.hasSuccessfulFull).toBe(false);
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','same-account'),($1,'TENCENT','same-account')", [seeded.workspaceId]);
+    await pool.query(`INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level)
+      VALUES($1,$2,'KUAISHOU','same-account','read'),($1,$2,'TENCENT','same-account','read')`, [seeded.workspaceId, seeded.identityId]);
+    await pool.query(`INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,computed_at)
+      VALUES($1,'KUAISHOU','same-account','2026-09-10',now())`, [seeded.workspaceId]);
+    expect((await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU", window)).candidates[0]?.hasSuccessfulFull).toBe(false);
+    expect((await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU", { dateFrom: window.dateTo, dateTo: window.dateTo })).candidates[0]?.hasSuccessfulFull).toBe(true);
+    await pool.query(`INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,computed_at)
+      VALUES($1,'KUAISHOU','same-account','2026-09-09',now())`, [seeded.workspaceId]);
+    expect((await repository.loadTickSnapshot(seeded.workspaceId, "KUAISHOU", window)).candidates[0]?.hasSuccessfulFull).toBe(true);
+    expect((await repository.loadTickSnapshot(seeded.workspaceId, "TENCENT", window)).candidates[0]?.hasSuccessfulFull).toBe(false);
   });
 });

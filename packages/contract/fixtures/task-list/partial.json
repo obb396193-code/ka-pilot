@@ -89,7 +89,10 @@
             "missing": []
           }
         },
-        "nextMilestone": null
+        "nextMilestone": null,
+        "aliases": [],
+        "monitorUrl": null,
+        "productName": null
       }
     ],
     "page": 1,

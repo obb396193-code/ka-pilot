@@ -1,0 +1,240 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "dimension": "optimizer",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "rows": [
+        {
+          "source": null,
+          "sources": {},
+          "key": null,
+          "label": "未标注",
+          "metrics": {
+            "cost": {
+              "value": 80,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 200,
+              "availability": "available"
+            },
+            "click": {
+              "value": 20,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 4,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 25,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 5,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.1,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.2,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 40,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 12.5,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": null,
+            "priceVersions": 2,
+            "onTarget": true,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "source": "mixed",
+          "sources": {
+            "manual": 1,
+            "nickname": 1
+          },
+          "key": "synthetic-owner",
+          "label": "synthetic-owner",
+          "metrics": {
+            "cost": {
+              "value": 160,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 400,
+              "availability": "available"
+            },
+            "click": {
+              "value": 40,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 8,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 4,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 50,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 10,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.1,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.2,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 40,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 12.5,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": null,
+            "priceVersions": 2,
+            "onTarget": true,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        }
+      ],
+      "returnedRowCount": 2,
+      "wholeResultTotal": {
+        "value": 2,
+        "availability": "available"
+      },
+      "lineage": {
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY",
+          "NAMING_PARSE_MISSING"
+        ],
+        "source": "canonical",
+        "datasetVersion": null,
+        "queryTemplateVersion": "account-dimension-window-v1",
+        "metricVersion": "account-dimension-v3",
+        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true,
+          "requestedObjects": 3,
+          "returnedObjects": 3
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": [
+        "BUDGET_SOURCE_NOT_READY",
+        "NAMING_PARSE_MISSING"
+      ]
+    }
+  }
+}

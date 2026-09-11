@@ -105,9 +105,10 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     });
     expect(result.status).toBe(200);
     const data = dataOf(result);
-    expect(data.counts).toEqual({ parsed: 1, partial: 1, failed: 1 });
+    // 第二条「DAU-通投-年轻人」只少了可选的承接段 → v1.9.26 起算 parsed（可选段没写不是缺）。
+    expect(data.counts).toEqual({ parsed: 2, partial: 0, failed: 1 });
     // 命中率按「完全解析」算：partial 不计入，否则改规范时看不出到底改好没有。
-    expect(data.hitRate).toEqual({ value: 1 / 3, state: "finite" });
+    expect(data.hitRate).toEqual({ value: 2 / 3, state: "finite" });
     // 干跑绝不写库——老板要在页面上边调边看。
     expect(Number((await pool.query(
       "SELECT count(*)::int AS n FROM naming_rules WHERE workspace_id=$1", [workspaceId],
@@ -138,7 +139,9 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     const result = await call("/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
     expect(result.status).toBe(200);
     expect(dataOf(result)).toMatchObject({ reparsed: 3, skippedNoRule: 0 });
-    expect(dataOf(result).byStatus).toEqual({ parsed: 1, partial: 1, failed: 1 });
+    // a2「DAU-通投-年轻人」只少了可选的承接段 → v1.9.26 起算 parsed：
+    // partial 的含义是「必填段缺了」，可选段没写不该推到优化师面前让他修一个没坏的东西。
+    expect(dataOf(result).byStatus).toEqual({ parsed: 2, failed: 1 });
     const listed = dataOf(await call("/api/v1/admin/account-names", "GET", undefined, "?status=failed"));
     expect((listed.items as { accountId: string }[]).map((item) => item.accountId)).toEqual(["r017h-a3"]);
   });
@@ -170,10 +173,12 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
         { media: "KUAISHOU", accountId: "r017h-a3" },
       ],
     });
-    expect(dataOf(result).confirmed).toBe(1);
-    // partial / overridden 不许被一键过掉。
+    // a1/a2 都是 parsed（a2 只少可选段），a3 已人工改过。
+    expect(dataOf(result).confirmed).toBe(2);
+    // 人工改过的不许被一键过掉。partial / failed 同样不许，那两种在仓储层的用例里钉着
+    //（packages/db 的 confirmBatch：skipped 含 failed 与 overridden）。
     expect(new Set((dataOf(result).skipped as { status: string }[]).map((item) => item.status)))
-      .toEqual(new Set(["partial", "overridden"]));
+      .toEqual(new Set(["overridden"]));
     expect((await call("/api/v1/admin/account-names/confirm", "POST", { items: "nope" })).status).toBe(400);
   });
 
@@ -272,6 +277,12 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
       separators: ["-"], effective_from: "2026-09-01", note: "待确认段",
     }, "?media=KUAISHOU");
     expect(put.status, JSON.stringify(put.body)).toBe(200);
+    // 前面的用例已经把 a1/a2 确认、a3 人工改过，重解析一律绕开它们（这正是「人工结论优先」）。
+    // 所以这条用例自带一个新账户，让待确认段真有值可统计，而不是去动别人的行。
+    await pool.query(
+      "INSERT INTO accounts(workspace_id,media,account_id,account_name) VALUES($1,'KUAISHOU','r017h-a4','DAU-待确认值')",
+      [workspaceId]);
+    auth.scope.accounts.push({ media: "KUAISHOU", accountId: "r017h-a4", accessLevel: "execute" });
     await callRoute(auth, "/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
 
     // v1.9.24：`data` 只放资源本身，算出来的观测值在 `meta`。
@@ -301,5 +312,48 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
       separators: ["-"], effective_from: "2026-09-01",
     }, "?media=KUAISHOU");
     expect(contradiction.status).toBe(400);
+  });
+  it("★Q-041 ⑩: every segment in the rule response says whether it can be analysed", async () => {
+    const read = await call("/api/v1/admin/naming-rules", "GET", undefined, "?media=KUAISHOU");
+    const segments = (dataOf(read).segments as { key: string; mapsTo: string | null; analyzable?: boolean }[]);
+    expect(segments.length).toBeGreaterThan(0);
+    for (const segment of segments) {
+      // 老板要「每个清洗字段都能分析」：落了归属维度的段一定可分析；
+      // 没落维度的段要么显式开过，要么就是不可分析——fe 不必自己再推一遍这条规则。
+      expect(typeof segment.analyzable, segment.key).toBe("boolean");
+      if (segment.mapsTo !== null) expect(segment.analyzable, segment.key).toBe(true);
+    }
+  });
+  it("★Q-043 ③: a nickname without a task id gets bound by the longest task alias", async () => {
+    // 规则只切两段，昵称里不带括号任务 ID —— 正是「别名兜底」要管的那种。
+    await callRoute(auth, "/api/v1/admin/naming-rules", "PUT", {
+      segments: [
+        { key: "channel", label: "渠道", order: 0, source: "enum", values: ["DAU"],
+          required: true, multi: false, mapsTo: null },
+        { key: "biz", label: "业务", order: 1, source: "free", required: false, multi: false, mapsTo: "biz" },
+      ],
+      separators: ["-"], effective_from: "2026-09-01",
+    }, "?media=KUAISHOU");
+
+    const taskId = `alias-${randomUUID()}`;
+    const shortTask = `alias-${randomUUID()}`;
+    await pool.query(
+      `INSERT INTO tasks(workspace_id,task_id,task_name,status,aliases)
+       VALUES($1,$2,'别名任务','active',ARRAY['拉新专项']),($1,$3,'短别名任务','active',ARRAY['拉新'])`,
+      [workspaceId, taskId, shortTask]);
+    await pool.query(
+      "INSERT INTO accounts(workspace_id,media,account_id,account_name) VALUES($1,'KUAISHOU','r017h-a5','DAU-拉新专项')",
+      [workspaceId]);
+    auth.scope.accounts.push({ media: "KUAISHOU", accountId: "r017h-a5", accessLevel: "execute" });
+
+    const result = await call("/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
+    expect(result.status, JSON.stringify(result.body)).toBe(200);
+    expect(dataOf(result).boundByAlias as number).toBeGreaterThan(0);
+
+    const row = (await pool.query(
+      "SELECT task_ids FROM account_name_parses WHERE workspace_id=$1 AND account_id='r017h-a5'",
+      [workspaceId])).rows[0] as { task_ids: string[] };
+    // 「拉新」也命中，但「拉新专项」更长——短的那个是巧合。
+    expect(row.task_ids).toEqual([taskId]);
   });
 });

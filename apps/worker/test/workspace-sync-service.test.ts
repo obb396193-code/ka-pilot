@@ -43,7 +43,7 @@ function setup(value = snapshot()) {
 
 describe("WorkspaceSyncTickService", () => {
   it("queues the first full sync with a frozen authorization snapshot", async () => {
-    const { service, persisted } = setup();
+    const { service, persisted, repository } = setup();
     const result = await service.execute({
       workspaceId,
       media: "KUAISHOU",
@@ -79,10 +79,13 @@ describe("WorkspaceSyncTickService", () => {
       },
     });
     expect(JSON.stringify(persisted)).not.toContain("qihang-private");
+    expect(repository.loadTickSnapshot).toHaveBeenCalledWith(workspaceId, "KUAISHOU", {
+      dateFrom: "2026-08-24", dateTo: "2026-08-25",
+    });
   });
 
-  it("queues incremental sync after full using only the frozen media tuples", async () => {
-    const { service, persisted } = setup(snapshot({
+  it("queues incremental sync when its frozen data window is readable", async () => {
+    const { service, persisted, repository } = setup(snapshot({
       hasSuccessfulFull: true,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "a-2", accessLevel: "preview" },
@@ -97,6 +100,9 @@ describe("WorkspaceSyncTickService", () => {
     });
 
     expect(result.businessDate).toBe("2026-08-26");
+    expect(repository.loadTickSnapshot).toHaveBeenCalledWith(workspaceId, "KUAISHOU", {
+      dateFrom: "2026-08-25", dateTo: "2026-08-26",
+    });
     expect(result.jobs[0]).toMatchObject({ jobType: "etl_incr", status: "queued" });
     expect(persisted[0]?.job.payload).toMatchObject({
       ds: "2026-08-26",
@@ -160,7 +166,7 @@ describe("WorkspaceSyncTickService", () => {
     expect(missingScope.persisted[0]?.job.payload).not.toHaveProperty("accountIds");
   });
 
-  it("blocks explicit incremental sync until a full sync has succeeded", async () => {
+  it("blocks explicit incremental sync while its expected data window is incomplete", async () => {
     const { service } = setup();
     const result = await service.execute({
       workspaceId,
@@ -172,6 +178,14 @@ describe("WorkspaceSyncTickService", () => {
       jobType: "etl_incr",
       status: "blocked_auth",
       reason: "INITIAL_FULL_REQUIRED",
+    });
+  });
+
+  it("uses the forced full job's default frozen seven-day window", async () => {
+    const { service, repository } = setup();
+    await service.execute({ workspaceId, media: "KUAISHOU", mode: "full", triggeredAt: "2026-09-01T00:00:00Z" });
+    expect(repository.loadTickSnapshot).toHaveBeenCalledWith(workspaceId, "KUAISHOU", {
+      dateFrom: "2026-08-26", dateTo: "2026-09-01",
     });
   });
 

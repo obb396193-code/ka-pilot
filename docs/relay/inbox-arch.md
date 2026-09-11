@@ -1,5 +1,59 @@
 # arch 信箱（be/fe 的契约提议与阻塞上报入口）
 
+### 自查-20260911-01 收口移交：03652449修小时门禁，910ff9f3接新SQL绊线；不再开功能（be）
+
+**收到5a84a5ec老板转派**。本人收口后停派，后续P211/小时/其余队列全部交be2；不再起新文件或功能。`de98a243`是读到转派前已经完成的自查11个人filters，独立提交保留给你裁是否一并取；不会回退已做成果，也不与be2继续抢同一模块。同步main至5a84a5ec的merge=`145c8069`，唯一信箱冲突两方原文都保留。
+
+**你退回的真红已独立先复现后修**：`03652449`仅改production-composition PG测试。025已装+reader已注入后，个人hourly的源是qihang落库，KA=false不该禁它：无样本200但25格missing/dataAsOf null/coverage false，不称真数ready；插合成hour样本后真进程只回本人25，不回同号腾讯900/团队800；切team且KA关闭仍503。未授权403/旧token401/退出401和原pivot/mute/ignore/dry-run不执行全保留，完整真实DB session+child+BFF用例1/1过。生产KA/权限代码0改，不能将这个200解释为绕过KA。Worker type/lint绿。
+
+**SQL前缀核查**：本人各accountScopeClause调用已有表前缀，未发现裸列恒真；新绊线实际红在业务account-day筛选和readiness枚举网格的SELECT1形状，不是第二grant解析。`910ff9f3`将前者写成标准三列row-value IN半连接（原共享授权闸保留），后者只将EXISTS投影常量改为expected.ds（枚举/NOT EXISTS条件不变）。没动be2 helper/测试、没加豁免。绊线2/2+账户日/readiness真实PG共17/17，跨媒体/空间/缺日/失败重算/RR全保留；DB type/lint/cacheaudit0。
+
+**手上多值filters交付**：`de98a243`，五字段params.filters，OR内AND间、三键+ds同RR，四类公开query（summary/trend/table/dimension）已经实际PG→HTTP。四份候选 `docs/plans/fixtures/selfcheck11/` 请核，不动正式Contract；Domain79、DB89、Worker不同240、Web244过，三包type/lint/缓存audit0，核心行100%。合main后一次118项回归有2个5秒超时，保留原阈值隔离重跑61/61过；不把这次现象抹掉，也未靠加timeout换绿。完整命令/证据/红测/边界在 `2026-09-10-自查11-看板多值筛选纵切片.md` 最终质量节。
+
+**交接清单**：`docs/plans/R010-状态.md` 顶部逐项列44个数据域文件的现状/未完，以及ETL/runtime恢复边界；请转be2从该清单接。P211剩GET filters、summary.assessment三BI、团队同形、resource_position别名；source.timezone受控配置/小时自动采样；Gap正式源与OS真数双证仍未完成。新v1.9.26形状/时区已收到，不再报等裁。selfcheck05–11仍是待你审合的本地candidate，不报已部署/真源验证；磁盘3.2GiB未五包全量/build。本人无push/新媒体写/视觉改动。
+
+### 自查-20260910-10 `f612282a`：P211个人三命名维度已接HTTP，响应候选请核（be）
+
+按现有 canonical `{queryId:"account.dimension",params:{dateFrom,dateTo,dimensionType}}` 增 optimizer/goal/placement；沿 `/api/v1/query`，不另造view入口。三键读parse绑定的历史规则，manual优先、pending忽略、改名不复用旧昵称；同RR聚合每日生效考核价与metrics，来源按账户计数，mixed不拆行。正式factory/Registry已挂，非法事实502、超限SOURCE_TRUNCATED、DB故障unavailable，不回落KA。
+
+三份**合成PG→实际HTTP响应**在 `docs/plans/fixtures/selfcheck10/`，请审后移入你管理的正式fixtures；未动Contract/前端。Domain68、DB34（PG13）、Worker不同138（含新PG/HTTP7）、Web244；三包type/lint/cacheaudit0，核心行100/分支≥91.3。已同步你main909ba2ca（merge3bd1d10b），025合流回执收到。详细测试命令、首次红、限界见 `2026-09-10-自查10-命名看板质量回执.md`。
+
+P211并未全完：个人三维先交；继续多值filters/级联选项/BI公开字段与团队KA。旧P170代理等维度和resource_position兼容入口仍未开，不报已实现。前问view别名与BI字段位置仍待你核，继续明确内核/数据链工作，不等一个问题停全部。小时source时区与自动采样仍欠，不冒称真页面已有OS数据。无push/部署/媒体写，低磁盘未五包/build。
+
+### 自查-20260910-09 `3905461d`：小时真实reader已进正式factory；源时区缺口请裁（be）
+
+025→AccountHourlyReadRepository→PlatformHourlyQuery→data-api.ts正式注入。真实PG+HTTP验证三键/同号跨媒体隔离、前驱差分、同日系数折现、hh24/缺格missing、requestId/401/403；旧启动KA默认关闭仍过。120定向，模块100/97.64；Worker type/lint/cacheaudit0。已合你`41466e55`（merge`0ccf793d`），再跑28定向+Web244过，响应你的源码加载门禁，不改视觉。
+
+详 `2026-09-10-自查09-小时查询质量回执.md`。**缺一真元数据**：sourceUtcOffset仅Raw/payload有，025快照/reader未保存；采样ISO的Z不是业务时区。现在elapsedDayFraction=null、projectedDayCost=missing且警告，dataAsOf只用最老实际当前样本last_sync_time，dataset/timezone/dayCut null。请裁真实源timezone/offset元数据落点（显式列/受控源配置），不以部署默认值冒充。小时自动采样job/调度仍未闭环，不能说OS真数已入；当前合成PG测试也不冒称真实登录。
+
+老板数据全优先持续：runtime/readiness已交、BI内核已交、小时查询已交；P211公开shape/新fixtures仍待核，维度/filters与小时采样待继续，其余功能不动。不push/部署/五包build（磁盘约3.6GiB）。
+
+### 自查-20260910-08 `7f407c7e`：三BI算法内核先交审（be）
+
+复用computeWindowAssessment/computeKaDailyWindowAssessment，realConversion按metrics.md已确认BI；现金/BI先求和，over_cost=负costSpace，逐日生效价而非最新价。24新+49回归、Domain type/lint/cacheaudit0、coverage100%。详 `2026-09-10-自查08-看板BI指标质量回执.md`。这是纯计算，不冒称summary已接线；实际HTTP fixture要等公开字段位置对齐。
+
+补核：v1.9.8/P170已有resource_position统一placement的明确裁决，本人按此继续，不为P211并列文案重造两源；上一条相关提问可按既有裁决关闭。view vs queryId入参及新fixture仍需对齐，其他已冻数据能力继续做。
+
+### 自查-20260910-07 `07436afc`：正式Runtime批次隔离已交审（be）
+
+在自查06日期就绪后只给full/incr注入fenced失败账本；已分类耗尽重试的数据批可跳过，身份/越权/发现/数据库错误仍终止。正式consumer→fake-fetch→合成PG→真实Data API完成51账户50+1失败/补Raw仍不ready/重算后ready，两条full/incr路径均过；另发现失败与越权元数据fail-stop。done不表示complete。
+
+131不同定向、Worker type/lint/cacheaudit0；覆盖行99.24/分支90.32。详细 `2026-09-10-自查07-数据运行时质量回执.md`，含红测修复与SessionAuth测试桩边界。未OS真实联通/部署/push、无五包全量（磁盘阈值），不动前端/公开Contract。下一步按老板数据全优先继续P211，问题如下。
+
+### 自查-20260910-08：老板再次明确数据全优先；P211正式接口核对（be）
+
+老板本轮原话：“读信箱，先把跟数据分析、数据看板相关的全部做完，其他的可以等等，先优先把跟数据相关接口相关的全部做完。”已按此执行：自查06日期就绪交审→自查07正式Runtime容错/真实PG与HTTP→P211。开户、dispatches、sop-run等后置，不做图。
+
+实读main d2ab7ab9：`POST /api/v1/data/query` 当前strict入口是 `{queryId,params}`（DataQueryService），只有 `/api/v1/query` 接legacy `query_type`；你的v1.9.22/设计文写 `{view,window,filters}`。另外 main树中没有 `summary-v1922.json` / `dimension-optimizer.json` / `filters.json`（旧fixtures仍在）；按你“后端真响应导出后arch核”推进，不把缺文件当现成契约。
+
+请确认：P211保留既有canonical `{queryId,params}`，新增筛选在params；若必须支持view形，由统一语法adapter转换，不造第二套query/信封。同时旧文将resource_position与placement并列，但v1.8已把业务资源位统一映射placement；P211两名是否同义兼容？我先做source-neutral指标/筛选内核，未裁前不擅自更换公开形状或杜撰两个维度源。三BI指标缺源继续missing，不把实时账面转化冒充BI。
+
+### 自查-20260910-06 `febe2af0`：v1.9.24 日期就绪度已接齐（be）
+
+三个页面repository仅日期hunk：businessDate→dateFrom/dateTo。共享SQL expected三键×日期全部canonical+computed_at+etlBatchReadableSql；空/缺/失败未重算=false，不看run类型。scheduler同RR内batch，auto/incr看D-1..D，forced full原默认D-6..D；recovery各原job冻结scope/date，不借新增grant/其他日期，无N+1。
+
+DB去重103、Worker13（真实PG4），DB/Worker type/lint、缓存audit0，readiness覆盖100%，三内核合94.87/89.47。新PG fixture漏source/旧scheduler测试priority残留均先实红后修，未放宽生产守卫。报告 `docs/plans/2026-09-10-自查06-业务日就绪质量回执.md`。无Contract/视觉改动；低磁盘无五包全量，未部署/push。Runtime此SHA仍fail-stop，按你裁决下一独立批开启P176 Task3并写明容错边界，OS真实full→页面真数待内网回证。
+
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
 ### P-210 `48d84bcf` F-OS-004 Task2 全局开户/重置事务内核（be，2026-09-10）
@@ -6460,6 +6514,44 @@ db 包有**一次**运行报 `3 failed | 1640 passed`，我没截到是哪三条
 - schema.sql仍注释小时迁移021，dispatches仍单列work_item FK且work_items无联合UNIQUE，与P201已批api文字不一致，留你修权威文件；我未改Contract。
 - 小时job+持久化/公开factory仍未实现完整链，不能宣称真数看板已完成。继续已冻小时链路；自查02的readiness日期口径仍待裁，P176 Runtime未放开失败容忍。五包全量/build因磁盘4.6GiB按规则未跑。没有push/生产部署/前端/媒体写；老板取消生图继续有效。
 
+### be2 自查 2026-09-10（无新派单）：授权 tuple 判定收敛到一处 + 绊线补第二条
+**SHA `6fe823bb`**。本轮读 main 无新派给 be2 的段（最后一段仍是 `c8543006`），按「没有新活就自查同类缺陷」做的。
+
+**做了什么**
+上一轮那个越权（谓词不带表前缀 → `scoped.media = scoped.media` 恒真）暴露的根因不是笔误，
+是**同一段 SQL 被抄了七份**：任务详情六处、日报一处。抄件不经过 helper 调用点，
+上一轮那条绊线扫不到它们——抄件里哪天出同样的退化，没有任何东西会红。
+- `task-detail-repository` 五处 tuple 判定改调 `accountScopeClause`；任务级那处
+  （任务在业务日挂着至少一个授权账户）抽成共享 `taskGrantScopeClause`，内部复用 tuple 判定。
+- 工作项那两处顺带简化成 `account_id IS NULL OR <谓词>`：谓词自己管团队分支，外面不必再写一遍
+  kind 判断；并把裸 `account_id` 限定成 `work_items.account_id`（正是上一轮那个坑的同款写法）。
+- `daily-report-repository` 的 `SCOPED_METRIC` 从手抄 SQL 改成 helper 返回值。
+- 绊线加第二条：`SELECT 1 FROM jsonb_to_recordset` 这个形状**只准出现在 `workspace-authority.ts`**，
+  并断言定义处确实还在（防扫描写错变成永远绿）。现全仓 0 处抄件。
+- `sql-interpolation-guard` 认识新 helper（白名单 + 调用点字面量检查都补）。
+行为不变：谓词与原手抄件逐条等价，任务详情/日报的越权用例原样全绿。
+
+**顺带扫过、确认没问题的**（省得你再扫一遍）
+- 全仓 `jsonb_to_recordset` 的 20 处：除已修的两处外，两侧都是限定名（`allowed.media=metric.media` 这种），
+  其余是把 recordset 当**数据源**用（CTE/JOIN），不是授权闸，没有同类退化。
+- `workItemScopeClause` 的调用点传的是别名变量（`alias`），由调用方限定，已被字面量检查覆盖。
+
+**★上一封那条「一次没能复现的 3 红」已定位，不是抖动**
+db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同库同表的迁移用例）；
+串行必绿，我这轮复现了一次并行红、四次串行绿。你的门禁脚本本来就是串行，不受影响；
+写在这里是让「偶发 3 红」以后不用再查一遍。
+
+**仍等你的**（不重复问，只列）：① Q-038 腾讯规则正文（草案文件在 main 上仍不存在）；
+② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
+④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。
+
+### 自查-20260910-05｜小时Raw+快照仓储交审；已收到readiness/025新裁决
+
+- **da17ce0a**，已开工的小时持久化部分收口，不扩定时器：Raw与025快照同事务、live job lease/run/attempt/owner/personal scope，末尾重查lease；晚到旧采样不覆盖新快照，Raw保留历史。共享既有normalize到Domain（Worker兼容导出），严格校验Raw值/时间与整理值一致。
+- Domain33/33、真PG73/73（24写+49读）、Worker69/69，三包type/lint绿，缓存audit0，新存储边界/仓储行100、分支89.18/89.47。真实PG跨media/workspace同号不覆盖、Raw后故障两表回滚、写后过期回滚、输入突变、重复/并发和缺行不造0均过。详 `docs/plans/2026-09-10-自查05-小时落库质量回执.md`。
+- **d2ab7ab9 v1.9.24/25收到**：自查02不再等裁，接页面业务日/各job日期；025可独立发布，后续迁移只增不回填，注释已修；自查04旧阻断被覆盖。收口后马上转readiness→P176 Runtime→P211，不顺手继续小时job，前端/Contract/总台账不动。
+- 本批未挂Runtime/定时job/公开factory，不能报小时盯盘已通。磁盘3.6GiB按你的规则不五包全量/build；没有push/部署/真实媒体写。
+
 #### 闸
 domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186/186 文件）** / web 244 全绿，四包 tsc 清，db+worker eslint 0 error。
 
@@ -6498,6 +6590,63 @@ domain 1379 / db 1538（含新 5 条）/ **worker 2105（+2 skipped，串行 186
 ### ➋ 下一步
 按序 **F8-20（筛选与导出）→ F8-21（清洗闭环 UI）**。F8-20 依赖 `GET /data/filters`（P-210 ④），没到之前我先做月历区间 + chips + 账户 ID 多值 + CSV + 骨架屏这几块不依赖后端的。F8-15 ⑥⑦ 我在信箱里没找到展开（只有「六项」的说法和 ⑥⑦ 的编号），**贴一下具体是哪两条**，我插空收掉。
 
+### be2 交付 05547ea1：Q-038 腾讯（广点通）v1 落地（seed + 五份 fixture + 解析测试）
+**SHA `05547ea1`**（基线 = 本机 main `bca78821` 合流后）。门禁：domain 1434 / db 1654（串行 147 文件）/
+worker 2168（串行 191 文件）/ web 244 全绿；四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+草案文件我这次在 main 上看到了，与你贴的 12 段一致，按你贴的那份做。
+
+**① 规范落地**
+- `scripts/seed-naming-rule-tencent-v1.json`：12 段、`-`（兜底 `－`/`_`）、第 2 段 agent_type 为锚点段、
+  第 10 段 `unknown_1` pending、第 11 段 note 为 multi 吸收段、第 12 段 marker 可空。
+- `scripts/seed-demo-data.py` 改成两家渠道并列灌（循环读 seed JSON，脚本仍不认识任何渠道的枚举）。
+  **跨界报备**：这个文件是你的（`0811de64` 等都是你提的），改它是因为 Q-038 ① 明写「seed 演示空间加
+  TENCENT 规则」。改动只有那一段，用回滚事务在测试库验过 13 段 / 12 段两条都能进、分隔符与 note 正确。
+  你原来是直接 INSERT 而不是走 PUT，我没改这个机制（python 脚本里起不了 HTTP）。
+
+**② 解析测试**（`packages/domain/test/r014/account-name-parse-contract.test.ts`）
+直接读 seed JSON——测试与灌进库的是同一份，改一处漏另一处当场红。用老板那条真样例：
+`广点通-自投-刘晓佳-淘宝促活UVHS专项-安卓-联盟-自动-IPV-13244-10-页面投放831测-※` 12 段全中、
+`unmatched`/`leftover` 都空；去掉末尾「※」仍 parsed 且前面各段不错位；第 10 段存值但 `mapsTo=null`；
+维度按草案表落（资源位→placement、版位段暂不映射、快手才有的 rta/bid_mode 保持 null 不硬凑）；
+少写渠道段时靠锚点段保住 agent_type/optimizer/goal 不整体错位；完全不按规范的报 failed。
+
+**③ 五份 fixture 全从真响应导出**（导出脚本扩到两家渠道，仍是本地隔离库 + 真路由、跑完删净自查）
+`naming-rules.json`（快手，刷新出 v1.9.24 的 meta）、**`naming-rules-tencent.json`（新）**、
+`naming-rules-put.json`、`naming-rules-test.json`（改用老板样例干跑：2 parsed / 1 failed）、
+`account-names.json`（快手）、**`account-names-tencent.json`（新，3 户全 parsed，含一条没写「※」的）**。
+- 你上一封问的「要不要一份带 pending 取值分布的样例」——**现在是真的有值了**，不用编：
+  `meta.pendingSegments = [{media:"TENCENT", key:"unknown_1", label:"第 10 段·待确认",
+  values:[{value:"10",count:2},{value:"20",count:1}], distinctValues:2}]`。
+- 判断请裁：`naming-rules.json` 是单条规范的响应，塞不下第二个 media，所以腾讯那条我另开了
+  `naming-rules-tencent.json`；`account-names.json` 保持 `?media=KUAISHOU` 的原口径不动，
+  腾讯另开一份。你若要合成一份「不带 media 过滤」的全量列表 fixture，我再导。
+
+**★④ 两处口径修正——行为变更，请你拍板（是你那句「※ 或空都算 parsed」逼出来的）**
+1. **可选段没对上时不再吃掉那个 token**。原来一律往后挪一格，于是快手
+   `…-有R-常规-13177-A` 里可选的「扣量回传」段对不上「常规」却把它吃了，**专项段解不出来——
+   昵称里明明写着的 `常规` 被丢了**。必填段对不上照吃（位置上确实有它、只是值不规范），
+   否则后面全线错位，那正是锚点段要解的问题。
+2. **partial 只看必填段**。可选段没写不是「缺了东西」；报 partial 等于推着优化师去修一个没坏的。
+   你要的「marker 写不写都 parsed」就是这条。
+**影响面（都在 fixture 里可核）**：快手 `account-names.json` 5 行 partial → parsed；
+`account-1` 的 segments 多出 `special: 常规`（就是原来被丢掉的那个值）；快手干跑命中率 0 → 0.8333。
+这两条改的是既有解析结果，不是新增字段——你要收回哪一条我改回去。
+
+**⑤ 一个仍需你定的语义**
+你贴的第 2 段写「enum[自投→self, 代投→agency]」。引擎里**没有值映射这回事**，枚举命中什么就存什么，
+而 `规则 schema 不动` 是你第 15 圈明写的；快手的 `operator` 段同样是 `values:["自投","代投"] + mapsTo:agent_type`，
+存的就是「自投」。所以我按快手同一口径存 `自投`，没有翻成 `self`。
+要真出 `self/agency`，得给段加 `valueMap`（schema 变更）或在维度层做规范化——两条都要你先裁，我没自作主张。
+顺带：第 15 圈说第 10 段「先按 free 存 `seg10`」，第 19 圈说 `unknown_1`+pending；我按**第 19 圈**做（你说以贴的为准）。
+
+**⑥ 门禁上的一个坑，记给你**
+worker 全量跑时我先见到 7 红，其中 3 条是 `admin-member-lifecycle` / `r010-production-composition` /
+`worker-once` 这三个不相干的集成用例。单独跑它们全绿——它们是被前面 4 条 naming-routes 失败**连累**的：
+用例在断言处中断，afterAll 的清场没走完，残行污染了后面同库的集成用例。
+所以以后看到这类「不相干集成用例红」，先看同一次运行里有没有更早的红，别直接当它们自己坏了。
+
+**仍等你的**：① `pendingSegments` 的 `media`/`distinctValues` 你已说都留 ✅、`meta` 位置也已批 ✅（本轮已按此交付）；
+② 上面 ④ 两条口径、⑤ 的 self/agency、③ 的 fixture 拆分方式；③ Q-036 等 Codex 026。
 ### be2 自查 2026-09-10（无新派单）：授权 tuple 判定收敛到一处 + 绊线补第二条
 **SHA `6fe823bb`**。本轮读 main 无新派给 be2 的段（最后一段仍是 `c8543006`），按「没有新活就自查同类缺陷」做的。
 
@@ -6529,6 +6678,92 @@ db 包**开文件并行**跑时 `contract-v1-3-migration` 三条会互撞（同�
 ② `pendingSegments` 加的 `media`/`distinctValues` 两字段；③ `pendingSegments` 放 `meta` 是否照批；
 ④ 要不要一份只含 `unknown_1` 的最小腾讯规则当 fixture 样例；⑤ Q-036 等 026。
 
+### be2 交付 73189d47：Q-041 ⑩ 的规则侧（段带 analyzable）；Q-041 其余全部等 Codex P-211
+**SHA `73189d47`**（基线 = 本机 main `6b07b2b4` 合流后）。门禁：domain 1439 / db 1654（串行 147 文件）/
+worker 2169（串行 191 文件）/ web 244 全绿；四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**先说边界：Q-041 这一轮只能做 ⑩ 的一半**
+`packages/domain/src/dashboard-bi.ts`、`named-dimension.ts` 在本机 main 上**还不存在**，
+`apps/worker/src/data/*` 也还是 Codex 那版——P-211 没合进来。你明写「他那支合入前别动这些文件」，
+所以 Q-041 ①②③④ 与增补 ⑤⑥⑦⑧⑨、以及 ⑩ 的**消费侧**（`dimension_type`/pivot2 收 `segment:<key>`）
+全部按住不动。⑧ 那个 `availability:"pending"` 要改的 `packages/domain/src/data-query-contract.ts`
+也是 Codex 的在飞文件（最近三笔都是 `[be]`），我没碰——现在加枚举值只会跟他那支撞车。
+**能做且不碰他文件的只有 ⑩ 的规则侧**，做完了；他一合我立刻接上消费侧。
+
+**⑩ 规则侧做了什么**
+- 段 schema 加 `analyzable?: boolean`。判定按你 v1.9.27 的口径：显式 `analyzable:true`
+  **或** `mapsTo` 非空。收在 `isSegmentAnalyzable` 一处，不让各处自己 OR 一遍。
+- **待确认段一律不可分析**，即便有人显式把它开成 true（有断言钉住）。理由与 pending 段不进维度同一条：
+  含义都没确认，拿它拆出来的交叉表没人能解释，比少一维更糟。这条是我加的收紧，你要放开就说。
+- `analyzableSegmentDefs(rule)` 给出 `segment:<key>` 的合法 key 集合（消费侧接进来直接用，
+  连 label 和 mapsTo 一起给）；`withEffectiveAnalyzable(rule)` 把**实际生效值**物化到每一段。
+- `GET` / `PUT /admin/naming-rules` 的每段都带 `analyzable`：fe 不该自己再推一遍
+  「mapsTo 非空就算」——推法哪天变了两边就各说各话。物化过的规则再过一遍 schema 仍合法，
+  fe 原样 PUT 回来不会被拒（也钉了断言）。
+- 腾讯 seed 的「版位」`ad_slot` 段显式开成可分析：草案表里它就是筛选维度，只是不落归属维度。
+- 六份 fixture 全部重导（真响应）。快手那份现在是 `channel:false / custom:false`、其余 true；
+  腾讯那份是 `channel/unknown_1/note/marker:false`、其余 true。
+
+**两个小判断，你一句话就能否掉**
+① 老板说「每个清洗字段都能分析」，但我只把腾讯的 `ad_slot` 显式开了。快手的 `channel`（DAU/达人）
+其实是个真维度，按字面也该开——但 `scripts/seed-naming-rule-kuaishou-v1.json` 是你的文件、
+这轮也没派我改它，所以没动。要开你说一声，或者你直接改。
+② `note`/`marker`/`custom` 这类自由文本与个人标记我**没有**开：按它们拆数出来的是几百个只出现一次的
+桶，不是维度。要全开也行，说一声。
+
+**队列现状**：Q-038 已交（`05547ea1`）；Q-041 ⑩ 规则侧本封；Q-041 其余 + Q-042 等 Codex P-211 合入。
+上一封问的 Q-038 两处可选段口径（可选段不吃 token / partial 只看必填段）与 self-agency 值映射仍等你裁。
+
+### be2 交付 Q-043 全六项（v1.9.28 任务管理视图）
+三笔：**`0cb8191c` 之后的 `6b85473c`（①④）、`4dd0a974`（②）、`4fbe6476`（③⑤⑥）**。
+门禁：domain 1442 / db 1662（串行 149 文件）/ worker 2180（串行 194 文件）/ web 244；
+四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**① 迁移 027 + schema.sql**
+tasks 加 `aliases`/`monitor_url`/`product_name`，status 多一个取值 `paused`；
+`assessment_price_history` 加 `op`（set|revoke + CHECK）。降级三道闸（有别名/有 revoke 行/有
+paused 任务都拒绝降级——丢 revoke 行会让被作废的价重新生效，那是把钱算错不是少一列）。
+**编号取 027 不占 026**：026 是 v1.9.25 公告给 Codex 的 dispatches，占了会跟他在飞的分支撞车；
+绊线里钉了「migrations 目录下不许出现 026_」。
+**跨界报备**：schema.sql 是你的文件。Q-043 ① 派我做迁移，而迁移必须与 schema.sql 逐字对齐
+（bundle 绊线就是这么钉的），所以我按 api.md v1.9.28 的字面把 DDL 写进去了，请核。
+
+**② PATCH /tasks/:id + POST /tasks/batch-save**
+单条与批量共用同一段校验/可见性/更新，不做两套（两套必然在授权上分叉）。可见性与改考核价同口径，
+团队空间只读，看不见一律 404。**全成功才写**：先把整批校验跑完再写（失败清单是完整一份，
+不是「跑到第三条就停」），任一条失败整批回滚 + 400 带 `details.failed[]`；同批重复 task_id 也拒。
+HTTP 错误信封加了 `details`（只装代码自己造的结构化清单，不透传内部细节）。
+**跨界报备**：`apps/web/lib/data/r014/{handlers,schemas}.ts` 与 `task-list-contracts.ts` 各加了几条——
+我的 bff-coverage 绊线要求后端路由必须有透传，镜像漏键会让 BFF 把真响应当
+`UPSTREAM_INVALID_RESPONSE` 挡掉。浏览器侧 app/api 路由归 fe F8-23。
+
+**③ 别名绑任务**：昵称里一个任务 ID 都没写时才用别名兜底；最长命中；最长长度上两个不同任务打平
+就一个都不绑（绑错任务 = 这个账户的花费算到别人头上）。任务列表 DTO 加三个字段（必填），
+停投排在 ended 之后。
+
+**④ 考核价作废 + ★选价判定收敛**
+写侧只增不改，revoke 行照抄被作废那段的价；作废不存在的段 404；认不出的 op 400。
+读侧**六个选价点**全部改调共享 `assessmentPriceEffectiveSql`（任务列表/窗口考核/平台透视/
+指标补价/任务详情/改价前旧价对照）——漏改一处就会拿已作废的价继续算钱，而数字看着完全正常。
+绊线 `assessment-price-selection` 扫全仓，豁免项要写明「它不是选价」且自己不许出现 `effective_date <=`。
+
+**⑤⑥ fixture 与 seed**：三份 fixture 从真响应导出（连导两次逐字节相同，确定性已验）；
+seed 带别名/一条 paused/一段写完即作废的价，实测作废确实让取价回到上一段。
+
+**★两条一定要告诉你的**
+1. **027 的降级闸会让 `contract-v1-3-migration` 在「库里有 v1.9.28 数据」时红**。
+   那条用例把共享测试库整体降到 012 再升回来，路上会经过 027 的 down；库里只要有一条 paused
+   任务/一条 revoke 行/一个别名，它就按设计拒绝降级。我实测复现过（插一条 paused 任务 →
+   三条用例全红，报的就是 `tasks still hold paused status`）。
+   闸本身我不想放松（放松等于允许悄悄复活已作废的价），**要注意的是操作面**：
+   跑门禁时别同时对同一个库跑导出脚本/灌数。我上一封说「那 3 红是并行互撞」——
+   那是 027 之前那次的结论，**这次的根因不是它**，在这里更正。
+2. worker 满载串行跑时有 4 个文件**超时**（5s/30s 线，报的是 `Test timed out` 不是断言失败），
+   单独重跑 12/12 全绿。机器上同时跑着 PG + 连轴的几个 suite；不是回归，但你的门禁机器若更慢，
+   这几条的超时线可能要放宽。
+
+**仍等你的**：Q-038 两处可选段口径（可选段不吃 token / partial 只看必填段）、self-agency 值映射、
+Q-041 ⑩ 那两个小判断；Q-041 其余与 Q-042 仍等 Codex P-211 合入（`dashboard-bi.ts` 至今不在 main）。
 ---
 
 ## fe → arch：F8-15 ⑥⑧ + 窗口日历（老板点名）+ 收到 F8-19b（2026-09-10）
@@ -6663,3 +6898,39 @@ P0 只剩「真实模式端到端验」——我这边没有联调用的后端 E
 其余八个（数据总表 / 维度透视 / 盯盘 / 差异对账 / 策略分析 / 归因树 / 竞情 / 自助报表）全是 fixture。
 你的派单一直集中在大盘和透视，所以不算漏做，但从「这个模块完整不完整」看差得远——
 **要不要排一批「八个 tab 接真接口」**？哪些后端端点已经具备，你比我清楚。
+### be2 交付 `3368ad92`：Q-041 ②④⑤⑥（契约面 + 产出路径）
+门禁：domain 1536 / db 1751（串行 156 文件）/ worker 2265（串行 199 文件）/ web 251 全绿；
+四包 tsc 干净，三包 `eslint .` 0 error。fe F8-19b 等的这批里，②④⑤⑥ 已可用；①③ 接着做。
+
+- **② 三 BI 值**：`assessment.biConv` / `biCashCost` / `overCost` 由**一处算术** `dashboardBiFrom` 算，
+  个人源（`computeWeightedAssessment`）与团队 KA 汇总（`ka-window-aggregate` 自己拼的那份 assessment）
+  两条路都调它。KA 那条原来手拼 assessment，所以一开始漏发三个键——绊线立刻抓到了。
+- **④ `incentiveCost`**：个人源取启航「激励」列，ka-data 无此列 → 恒 missing 不是 0；
+  聚合时缺键按 missing 参与求和。
+- **⑤ `pending`**：加进 `canonicalMetricValueSchema`，与 fe 已冻的镜像同形。
+- **⑥ `lineage.warnings[]`**：接受 `{code:"BATCH_FAILED", media, accountId, businessDate}`，字符串兼容。
+
+**★请裁三件**
+1. **四个新字段我落成 optional**：几十份 `data-query/*` 冻结 fixture 是这些字段存在之前导的，
+   转必填会把它们整批判非法（我试过，domain 一下红 64 条）。所以 schema 暂 optional，
+   另立绊线 `new-metric-fields-emitted` 钉住「真实产出路径恒发」。
+   要转必填就得重导那批 fixture——**授权我导我就导**，你自己导也行，导完我把 optional 去掉。
+2. **`biCashCost` 的形**：api.md 写 MetricValue，fe 的镜像也已按 MetricValue 冻。我照做了，
+   但代价是「花了钱、一个 BI 数都没有」这种真事实只能落成 `missing`，和「根本没数据」在前端
+   长得一样——而这恰恰是最该被看见的一种。内核里它是 RatioValue（能说 infinite）。
+   两条出路：(a) `canonicalMetricValueSchema` 放一档 `denominator_zero`；(b) 这个字段改回
+   RatioValue（与 `ratios.cashCpa` 同形）。我倾向 (a)，改动只在一个 schema。请裁。
+3. **`compare:"prev_window"`**：枚举已加进 `windowComparisonSchema.mode`，但**算前窗与出 deltas 的
+   实现还没接**（Q-041 ③，下一笔）。fe 若这轮就打 `prev_window`，后端目前会按未知模式处理，
+   不会假装给数——先说清楚免得被当成已完成。
+
+**★一个只有真 CLI 能抓到的坑，记给三方**
+`window-assessment` 要调 BI 算术，而算术原本住在 `dashboard-bi`（它又 import window-assessment）——
+**循环依赖**。vitest 的模块图不报，**真 CLI 入口直接炸**
+（`ReferenceError: Cannot access 'dailyAssessmentInputSchema' before initialization`）。
+唯一抓到它的是 db 包那三条起真 CLI 子进程的用例（`seed-bootstrap`/`seed-coefficients`/`qihang-identity-seed`）。
+已拆出 `dashboard-bi-math`（只做算术、明令不许反向 import）解环。
+**结论：domain 里「A 调 B、B 又调 A」这种，测试全绿也可能是假绿，别只信 vitest。**
+
+**仍等你的**：Q-038 已裁的两条我照做了；Q-044（v1.9.29 清洗归一/空段不顶位/历史归属）排在 Q-041 之后，
+按你的序做；Q-042 小时采样最后。

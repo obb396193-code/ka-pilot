@@ -55,6 +55,10 @@ const successFixture = {
         infra: { ratio: { value: 1, state: "finite" }, ready: true, source: "system", missing: [] },
       },
       nextMilestone: null,
+      // v1.9.28 任务管理视图的三个字段：必填，服务层漏发要能被这条测试抓到。
+      aliases: [],
+      monitorUrl: null,
+      productName: null,
     }],
     page: 1,
     pageSize: 20,
@@ -102,7 +106,8 @@ describe("TASK-LIST-001 domain contract", () => {
       { page: 0 },
       { pageSize: 101 },
       { q: "x".repeat(101) },
-      { status: "paused" },
+      // v1.9.28 起 paused 是合法状态（停投），所以这里换一个真正认不出的值。
+      { status: "stopped" },
       { ownerUserId: "not-a-uuid" },
       { periodFrom: "2026-02-31" },
       { periodFrom: "2026-09-01", periodTo: "2026-08-01" },

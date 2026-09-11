@@ -26,7 +26,10 @@ export function createDataClient(options: ClientOptions = {}): DataClient {
     return new MockDataClient()
   }
   if (mode !== "internal_api") throw new Error(`Unsupported data provider: ${mode}`)
-  return new InternalApiDataClient(options.fetchImpl ?? fetch)
+  // 浏览器里 `fetch` 必须以 window 为 this 调用；把裸 `fetch` 存成实例方法再 `this.fetchImpl(...)` 会抛
+  // "Failed to execute 'fetch' on 'Window': Illegal invocation"（2026-09-10 概览页真实模式整页读取失败，arch 热修）。
+  // 之前只有服务端用这条路，Node 的 fetch 不挑 this，所以没炸。
+  return new InternalApiDataClient(options.fetchImpl ?? ((input, init) => fetch(input, init)))
 }
 export function runtimeDataClient(): { client: DataClient; isMock: boolean } {
   const isMock = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"

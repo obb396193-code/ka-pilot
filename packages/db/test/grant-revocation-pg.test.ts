@@ -81,8 +81,9 @@ it("team membership remains readonly and independent of soft-revoked personal gr
 it("scheduler candidates contain only active media tuples, including empty scope", async () => {
   const a = await fixture(); await revoke(a.workspaceId, "KUAISHOU");
   const repository = new WorkspaceSyncRepository(pool);
-  expect((await repository.loadTickSnapshot(a.workspaceId, "KUAISHOU")).candidates[0]?.allowedAccounts).toEqual([]);
-  expect((await repository.loadTickSnapshot(a.workspaceId, "TENCENT")).candidates[0]?.allowedAccounts).toEqual([{ media: "TENCENT", accountId: "same", accessLevel: "read" }]);
+  const window = { dateFrom: "2026-09-10", dateTo: "2026-09-10" };
+  expect((await repository.loadTickSnapshot(a.workspaceId, "KUAISHOU", window)).candidates[0]?.allowedAccounts).toEqual([]);
+  expect((await repository.loadTickSnapshot(a.workspaceId, "TENCENT", window)).candidates[0]?.allowedAccounts).toEqual([{ media: "TENCENT", accountId: "same", accessLevel: "read" }]);
 });
 it("admin effective grant list and count agree after revocation", async () => {
   const a = await fixture(); await revoke(a.workspaceId, "KUAISHOU");
