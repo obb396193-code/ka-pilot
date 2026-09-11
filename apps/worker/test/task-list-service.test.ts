@@ -31,6 +31,10 @@ function readyResult(overrides: Partial<TaskListRepositoryResult> = {}): TaskLis
     rows: [{
       workspaceId,
       taskId: "opaque-task-1",
+      // v1.9.28 任务管理视图的三个字段（be2 Q-043）：仓储行现在恒有它们。
+      aliases: [],
+      monitorUrl: null,
+      productName: null,
       taskName: "任务一",
       bizName: null,
       status: "active",

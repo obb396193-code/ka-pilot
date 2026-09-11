@@ -121,6 +121,11 @@ const taskListItemSchema = z.object({
     at: taskListCalendarDateSchema,
     label: z.string().min(1),
   }).strict().nullable(),
+  // v1.9.28 任务管理视图（后端 be2 Q-043）：与 packages/domain/src/task-list-contract.ts 同为必填。
+  // 这层镜像漏一个键，BFF 就会把真响应当成 UPSTREAM_INVALID_RESPONSE 挡掉——那正是它的用处。
+  aliases: z.array(z.string()),
+  monitorUrl: z.string().nullable(),
+  productName: z.string().nullable(),
 }).strict()
 
 const taskListSuccessSchema = z.object({

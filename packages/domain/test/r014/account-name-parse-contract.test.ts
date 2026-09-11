@@ -4,8 +4,9 @@ import { describe, expect, it } from "vitest";
 import {
   EMPTY_DIMENSIONS_DTO, PARSED_DIMENSIONS, accountDimensionsDtoSchema, accountDimensionsSchema,
   analyzableSegmentDefs, applyOverride, computeConflicts, extractTaskIds, isSegmentAnalyzable,
-  namingRuleSchema, parseAccountName, pendingSegmentDefs, resolveAccountDimensions, segmentMapsTo,
-  statusWithConflicts, toDimensionsDto, withEffectiveAnalyzable,
+  matchTaskAliasesLongest, namingRuleSchema, parseAccountName, pendingSegmentDefs,
+  resolveAccountDimensions, segmentMapsTo, statusWithConflicts, toDimensionsDto,
+  withEffectiveAnalyzable,
   type NamingRule,
 } from "../../src/r014/account-name-parse-contract.js";
 
@@ -532,5 +533,36 @@ describe("v1.9.27 ⑩ 可分析段", () => {
     // 版位在草案表里就是筛选维度，只是不落归属维度）。
     expect(analyzableSegmentDefs(tencent).map((segment) => segment.key))
       .toEqual(["agent_type", "optimizer", "biz", "device", "resource_position", "ad_slot", "goal", "landing"]);
+  });
+});
+
+/** Q-043 ③：昵称里没写任务 ID 时，按任务别名最长命中兜底绑任务。 */
+describe("v1.9.28 ③ 按任务别名最长命中绑任务", () => {
+  const aliases = [
+    { taskId: "T-1", alias: "拉新" },
+    { taskId: "T-2", alias: "拉新专项" },
+    { taskId: "T-3", alias: "闪购" },
+  ];
+
+  it("取最长的那个别名，短的那个是巧合", () => {
+    expect(matchTaskAliasesLongest("DAU-拉新专项-自投-张三", aliases)).toEqual(["T-2"]);
+    expect(matchTaskAliasesLongest("DAU-拉新-自投-张三", aliases)).toEqual(["T-1"]);
+  });
+
+  it("最长长度上两个任务打平就一个都不绑", () => {
+    // 绑错任务比不绑更贵：这个账户的花费会算到别人的任务上。
+    const tied = [{ taskId: "T-1", alias: "AA" }, { taskId: "T-2", alias: "BB" }];
+    expect(matchTaskAliasesLongest("户-AA-BB", tied)).toEqual([]);
+    // 同一个任务的两个别名都命中不算打平。
+    const same = [{ taskId: "T-9", alias: "AA" }, { taskId: "T-9", alias: "BB" }];
+    expect(matchTaskAliasesLongest("户-AA-BB", same)).toEqual(["T-9"]);
+  });
+
+  it("没命中就空手回，不编一个任务出来", () => {
+    expect(matchTaskAliasesLongest("完全不相干的户", aliases)).toEqual([]);
+    expect(matchTaskAliasesLongest("", aliases)).toEqual([]);
+    expect(matchTaskAliasesLongest("拉新", [])).toEqual([]);
+    // 空白别名不算命中——否则每条昵称都会「命中」它。
+    expect(matchTaskAliasesLongest("任意名字", [{ taskId: "T-0", alias: "   " }])).toEqual([]);
   });
 });

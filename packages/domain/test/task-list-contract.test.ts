@@ -55,6 +55,10 @@ const successFixture = {
         infra: { ratio: { value: 1, state: "finite" }, ready: true, source: "system", missing: [] },
       },
       nextMilestone: null,
+      // v1.9.28 任务管理视图的三个字段：必填，服务层漏发要能被这条测试抓到。
+      aliases: [],
+      monitorUrl: null,
+      productName: null,
     }],
     page: 1,
     pageSize: 20,

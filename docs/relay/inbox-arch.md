@@ -6714,6 +6714,56 @@ worker 2169（串行 191 文件）/ web 244 全绿；四包 tsc 干净，domain+
 **队列现状**：Q-038 已交（`05547ea1`）；Q-041 ⑩ 规则侧本封；Q-041 其余 + Q-042 等 Codex P-211 合入。
 上一封问的 Q-038 两处可选段口径（可选段不吃 token / partial 只看必填段）与 self-agency 值映射仍等你裁。
 
+### be2 交付 Q-043 全六项（v1.9.28 任务管理视图）
+三笔：**`0cb8191c` 之后的 `6b85473c`（①④）、`4dd0a974`（②）、`4fbe6476`（③⑤⑥）**。
+门禁：domain 1442 / db 1662（串行 149 文件）/ worker 2180（串行 194 文件）/ web 244；
+四包 tsc 干净，domain+db+worker `eslint .` 0 error。
+
+**① 迁移 027 + schema.sql**
+tasks 加 `aliases`/`monitor_url`/`product_name`，status 多一个取值 `paused`；
+`assessment_price_history` 加 `op`（set|revoke + CHECK）。降级三道闸（有别名/有 revoke 行/有
+paused 任务都拒绝降级——丢 revoke 行会让被作废的价重新生效，那是把钱算错不是少一列）。
+**编号取 027 不占 026**：026 是 v1.9.25 公告给 Codex 的 dispatches，占了会跟他在飞的分支撞车；
+绊线里钉了「migrations 目录下不许出现 026_」。
+**跨界报备**：schema.sql 是你的文件。Q-043 ① 派我做迁移，而迁移必须与 schema.sql 逐字对齐
+（bundle 绊线就是这么钉的），所以我按 api.md v1.9.28 的字面把 DDL 写进去了，请核。
+
+**② PATCH /tasks/:id + POST /tasks/batch-save**
+单条与批量共用同一段校验/可见性/更新，不做两套（两套必然在授权上分叉）。可见性与改考核价同口径，
+团队空间只读，看不见一律 404。**全成功才写**：先把整批校验跑完再写（失败清单是完整一份，
+不是「跑到第三条就停」），任一条失败整批回滚 + 400 带 `details.failed[]`；同批重复 task_id 也拒。
+HTTP 错误信封加了 `details`（只装代码自己造的结构化清单，不透传内部细节）。
+**跨界报备**：`apps/web/lib/data/r014/{handlers,schemas}.ts` 与 `task-list-contracts.ts` 各加了几条——
+我的 bff-coverage 绊线要求后端路由必须有透传，镜像漏键会让 BFF 把真响应当
+`UPSTREAM_INVALID_RESPONSE` 挡掉。浏览器侧 app/api 路由归 fe F8-23。
+
+**③ 别名绑任务**：昵称里一个任务 ID 都没写时才用别名兜底；最长命中；最长长度上两个不同任务打平
+就一个都不绑（绑错任务 = 这个账户的花费算到别人头上）。任务列表 DTO 加三个字段（必填），
+停投排在 ended 之后。
+
+**④ 考核价作废 + ★选价判定收敛**
+写侧只增不改，revoke 行照抄被作废那段的价；作废不存在的段 404；认不出的 op 400。
+读侧**六个选价点**全部改调共享 `assessmentPriceEffectiveSql`（任务列表/窗口考核/平台透视/
+指标补价/任务详情/改价前旧价对照）——漏改一处就会拿已作废的价继续算钱，而数字看着完全正常。
+绊线 `assessment-price-selection` 扫全仓，豁免项要写明「它不是选价」且自己不许出现 `effective_date <=`。
+
+**⑤⑥ fixture 与 seed**：三份 fixture 从真响应导出（连导两次逐字节相同，确定性已验）；
+seed 带别名/一条 paused/一段写完即作废的价，实测作废确实让取价回到上一段。
+
+**★两条一定要告诉你的**
+1. **027 的降级闸会让 `contract-v1-3-migration` 在「库里有 v1.9.28 数据」时红**。
+   那条用例把共享测试库整体降到 012 再升回来，路上会经过 027 的 down；库里只要有一条 paused
+   任务/一条 revoke 行/一个别名，它就按设计拒绝降级。我实测复现过（插一条 paused 任务 →
+   三条用例全红，报的就是 `tasks still hold paused status`）。
+   闸本身我不想放松（放松等于允许悄悄复活已作废的价），**要注意的是操作面**：
+   跑门禁时别同时对同一个库跑导出脚本/灌数。我上一封说「那 3 红是并行互撞」——
+   那是 027 之前那次的结论，**这次的根因不是它**，在这里更正。
+2. worker 满载串行跑时有 4 个文件**超时**（5s/30s 线，报的是 `Test timed out` 不是断言失败），
+   单独重跑 12/12 全绿。机器上同时跑着 PG + 连轴的几个 suite；不是回归，但你的门禁机器若更慢，
+   这几条的超时线可能要放宽。
+
+**仍等你的**：Q-038 两处可选段口径（可选段不吃 token / partial 只看必填段）、self-agency 值映射、
+Q-041 ⑩ 那两个小判断；Q-041 其余与 Q-042 仍等 Codex P-211 合入（`dashboard-bi.ts` 至今不在 main）。
 ---
 
 ## fe → arch：F8-15 ⑥⑧ + 窗口日历（老板点名）+ 收到 F8-19b（2026-09-10）

@@ -1,0 +1,292 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "taskId": "task-manage-1",
+        "taskName": "拉新·主力批次",
+        "bizName": "拉新",
+        "status": "active",
+        "period": {
+          "start": "2026-09-01",
+          "end": "2026-09-30"
+        },
+        "owner": {
+          "userId": "547cb328-b59c-4697-9321-d7ac94dcfe56",
+          "displayName": "合成负责人"
+        },
+        "assessmentPrice": {
+          "value": 42,
+          "effectiveDate": "2026-09-03"
+        },
+        "volume": {
+          "target": 120000,
+          "completed": null
+        },
+        "pacing": {
+          "asOf": "2026-09-05",
+          "elapsedDays": 5,
+          "totalDays": 30,
+          "remainingDays": 25,
+          "targetProgress": {
+            "value": null,
+            "state": "undefined"
+          },
+          "timeProgress": {
+            "value": 0.16666666666666666,
+            "state": "finite"
+          },
+          "projectedVolume": null,
+          "projectedCompletion": {
+            "value": null,
+            "state": "undefined"
+          },
+          "projectedGap": null,
+          "requiredDailyVolume": {
+            "value": null,
+            "state": "undefined"
+          },
+          "budgetProgress": {
+            "value": null,
+            "state": "undefined"
+          }
+        },
+        "linkedAccountCount": 1,
+        "workItemSummary": {
+          "openCount": 0,
+          "highestSeverity": null,
+          "counts": {
+            "P0": 0,
+            "P1": 0,
+            "P2": 0,
+            "opportunity": 0
+          }
+        },
+        "stage": "preparing",
+        "stageSource": "system",
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "manage-a1 余额不足"
+            ]
+          },
+          "products": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "materials": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "infra": {
+            "ratio": {
+              "value": 0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "manage-a1 无单元"
+            ]
+          }
+        },
+        "nextMilestone": null,
+        "aliases": [
+          "拉新专项"
+        ],
+        "monitorUrl": "https://example.invalid/monitor",
+        "productName": "某产品"
+      },
+      {
+        "taskId": "task-manage-2",
+        "taskName": "拉新·停投批次",
+        "bizName": "拉新",
+        "status": "paused",
+        "period": {
+          "start": "2026-09-01",
+          "end": "2026-09-30"
+        },
+        "owner": {
+          "userId": "547cb328-b59c-4697-9321-d7ac94dcfe56",
+          "displayName": "合成负责人"
+        },
+        "assessmentPrice": {
+          "value": 38,
+          "effectiveDate": "2026-09-01"
+        },
+        "volume": {
+          "target": 120000,
+          "completed": null
+        },
+        "pacing": {
+          "asOf": "2026-09-05",
+          "elapsedDays": 5,
+          "totalDays": 30,
+          "remainingDays": 25,
+          "targetProgress": {
+            "value": null,
+            "state": "undefined"
+          },
+          "timeProgress": {
+            "value": 0.16666666666666666,
+            "state": "finite"
+          },
+          "projectedVolume": null,
+          "projectedCompletion": {
+            "value": null,
+            "state": "undefined"
+          },
+          "projectedGap": null,
+          "requiredDailyVolume": {
+            "value": null,
+            "state": "undefined"
+          },
+          "budgetProgress": {
+            "value": null,
+            "state": "undefined"
+          }
+        },
+        "linkedAccountCount": 1,
+        "workItemSummary": {
+          "openCount": 0,
+          "highestSeverity": null,
+          "counts": {
+            "P0": 0,
+            "P1": 0,
+            "P2": 0,
+            "opportunity": 0
+          }
+        },
+        "stage": "preparing",
+        "stageSource": "system",
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "manage-a2 余额不足"
+            ]
+          },
+          "products": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "materials": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": null,
+              "state": "undefined"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "无系统来源，需人工确认"
+            ]
+          },
+          "infra": {
+            "ratio": {
+              "value": 0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "manage-a2 无单元"
+            ]
+          }
+        },
+        "nextMilestone": null,
+        "aliases": [
+          "拉新专项"
+        ],
+        "monitorUrl": "https://example.invalid/monitor",
+        "productName": "某产品"
+      }
+    ],
+    "page": 1,
+    "pageSize": 20,
+    "total": 2
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": null,
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "qihang",
+    "dataState": "partial",
+    "coverage": {
+      "complete": false
+    },
+    "_note": "GET /api/v1/tasks（任务管理视图口径）：apps/worker/scripts/export-task-manage-fixtures.ts 对本地隔离库 + 真 TaskListService 导出。v1.9.28 每行带 aliases / monitorUrl / productName，status 可为 paused（停投，排序沉底，排在 ended 之后）；其余字段与 task-list/ready.json 同形"
+  }
+}

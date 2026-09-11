@@ -3,7 +3,7 @@ import {
   parseOverrideSchema, parseStatusSchema, pendingSegmentDefs,
   resolveAccountDimensions, toDimensionsDto, toNamingRule,
   type AccountDimensionsDto, type ApprovedWorkspaceAuthContext, type NamingRule,
-  type ParseConflict, type ParseStatus,
+  type ParseConflict, type ParseStatus, type TaskAlias,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -284,6 +284,26 @@ export class AccountNameParseRepository {
       });
     }
     return { items, total };
+  }
+
+  /**
+   * v1.9.28 ③：本空间所有任务的别名索引，给「昵称没写任务 ID 时按最长别名绑任务」用。
+   *
+   * **不按 scope 收口**：这里读的是任务的别名（用来解释昵称），不是任何账户数据；
+   * 而且解析本身跑在治理动作里（reparse 是 lead|admin）。收口只会让同一条昵称
+   * 在不同人手里解出不同的任务，那才是真正的麻烦。
+   */
+  async taskAliases(auth: ApprovedWorkspaceAuthContext): Promise<TaskAlias[]> {
+    const approved = approveAuth(auth);
+    const rows = (await this.pool.query(
+      `SELECT task.task_id, alias
+       FROM tasks AS task, unnest(task.aliases) AS alias
+       WHERE task.workspace_id=$1 AND btrim(alias) <> ''
+       ORDER BY length(alias) DESC, task.task_id
+       LIMIT 5000`,
+      [approved.workspaceId],
+    )).rows as { task_id: string; alias: string }[];
+    return rows.map((row) => ({ taskId: String(row.task_id), alias: String(row.alias) }));
   }
 
   /**

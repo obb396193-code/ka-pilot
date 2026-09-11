@@ -90,6 +90,10 @@ export const TASK_LIST_PAGE_SQL = `
     task.task_name,
     task.biz_name,
     task.status,
+    -- v1.9.28 任务管理视图要的三个字段（be2 Q-043）。
+    task.aliases,
+    task.monitor_url,
+    task.product_name,
     to_char(task.period_start, 'YYYY-MM-DD') AS period_start,
     to_char(task.period_end, 'YYYY-MM-DD') AS period_end,
     task.target_volume,
@@ -263,7 +267,10 @@ export const TASK_LIST_PAGE_SQL = `
       )
   ) AS items ON true
   ORDER BY
-    CASE task.status WHEN 'active' THEN 0 WHEN 'preparing' THEN 1 WHEN 'ended' THEN 2 ELSE 3 END,
+    -- v1.9.28：停投沉底，排在结束之后——它不是「做完了」，是「先停着」，
+    -- 混在活动任务里会让人以为还在跑。ELSE 兜住将来新增的状态。
+    CASE task.status WHEN 'active' THEN 0 WHEN 'preparing' THEN 1 WHEN 'ended' THEN 2
+                     WHEN 'paused' THEN 3 ELSE 4 END,
     task.period_end ASC NULLS LAST,
     task.task_id ASC
   LIMIT $11 OFFSET $12`;

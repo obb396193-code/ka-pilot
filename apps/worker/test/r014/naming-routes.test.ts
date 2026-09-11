@@ -324,4 +324,36 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
       if (segment.mapsTo !== null) expect(segment.analyzable, segment.key).toBe(true);
     }
   });
+  it("★Q-043 ③: a nickname without a task id gets bound by the longest task alias", async () => {
+    // 规则只切两段，昵称里不带括号任务 ID —— 正是「别名兜底」要管的那种。
+    await callRoute(auth, "/api/v1/admin/naming-rules", "PUT", {
+      segments: [
+        { key: "channel", label: "渠道", order: 0, source: "enum", values: ["DAU"],
+          required: true, multi: false, mapsTo: null },
+        { key: "biz", label: "业务", order: 1, source: "free", required: false, multi: false, mapsTo: "biz" },
+      ],
+      separators: ["-"], effective_from: "2026-09-01",
+    }, "?media=KUAISHOU");
+
+    const taskId = `alias-${randomUUID()}`;
+    const shortTask = `alias-${randomUUID()}`;
+    await pool.query(
+      `INSERT INTO tasks(workspace_id,task_id,task_name,status,aliases)
+       VALUES($1,$2,'别名任务','active',ARRAY['拉新专项']),($1,$3,'短别名任务','active',ARRAY['拉新'])`,
+      [workspaceId, taskId, shortTask]);
+    await pool.query(
+      "INSERT INTO accounts(workspace_id,media,account_id,account_name) VALUES($1,'KUAISHOU','r017h-a5','DAU-拉新专项')",
+      [workspaceId]);
+    auth.scope.accounts.push({ media: "KUAISHOU", accountId: "r017h-a5", accessLevel: "execute" });
+
+    const result = await call("/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU" });
+    expect(result.status, JSON.stringify(result.body)).toBe(200);
+    expect(dataOf(result).boundByAlias as number).toBeGreaterThan(0);
+
+    const row = (await pool.query(
+      "SELECT task_ids FROM account_name_parses WHERE workspace_id=$1 AND account_id='r017h-a5'",
+      [workspaceId])).rows[0] as { task_ids: string[] };
+    // 「拉新」也命中，但「拉新专项」更长——短的那个是巧合。
+    expect(row.task_ids).toEqual([taskId]);
+  });
 });

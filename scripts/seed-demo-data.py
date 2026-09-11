@@ -33,8 +33,23 @@ sql(f"DELETE FROM tasks WHERE workspace_id='{WS_P}'")
 tasks = {}
 for _m,_a,_n,tid,tname,_p,_g,_pr,_c in ACCOUNTS:
     if tid and tid not in tasks: tasks[tid]=tname
+# v1.9.28（be2 Q-043 ⑥）：任务管理视图要有东西可看——别名、一条停投、监测链接与产品名。
+# 别名照任务名取一段，昵称里没写任务 ID 的账户就能按最长别名绑上来。
+TASK_EXTRAS = {}
+for index, (tid, tname) in enumerate(tasks.items()):
+    TASK_EXTRAS[tid] = {
+        "aliases": [tname] if tname else [],
+        "status": "paused" if index == 1 else "active",   # 第二条演示停投沉底
+        "monitor_url": f"https://example.invalid/monitor/{tid}",
+        "product_name": (tname or "")[:20] or None,
+    }
 for tid,tname in tasks.items():
-    sql(f"INSERT INTO tasks(workspace_id,task_id,task_name) VALUES('{WS_P}','{tid}',$${tname}$$)")
+    extra = TASK_EXTRAS[tid]
+    alias_sql = "ARRAY[" + ",".join("$$" + a + "$$" for a in extra["aliases"]) + "]::text[]" if extra["aliases"] else "'{}'::text[]"
+    product = "$$" + extra["product_name"] + "$$" if extra["product_name"] else "NULL"
+    sql(f"INSERT INTO tasks(workspace_id,task_id,task_name,status,aliases,monitor_url,product_name) "
+        f"VALUES('{WS_P}','{tid}',$${tname}$$,'{extra['status']}',{alias_sql},"
+        f"$${extra['monitor_url']}$$,{product})")
 for media,aid,name,tid,_tn,_p,_g,_pr,_c in ACCOUNTS:
     sql(f"INSERT INTO accounts(workspace_id,media,account_id,account_name,owner_user_id,lifecycle_stage) "
         f"VALUES('{WS_P}','{media}','{aid}',$${name}$$,'{USER}','stable')")
@@ -49,6 +64,12 @@ for media,aid,_n,tid,_tn,_p,_g,price,_c in ACCOUNTS:
         f"VALUES('{WS_P}','{tid}',{price},'2026-08-01') ON CONFLICT DO NOTHING")
 sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date) "
     f"VALUES('{WS_P}','1803240580',36.0,'2026-09-03') ON CONFLICT DO NOTHING")
+# v1.9.28：一段作废演示（只增不改）。写一段 40.0 再作废它 —— 历史弹层里能看到作废标记，
+# 而取价规则会跳过它回到 36.0，正好把「作废真的生效了」演示出来。
+sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date,op) "
+    f"VALUES('{WS_P}','1803240580',40.0,'2026-09-04','set') ON CONFLICT DO NOTHING")
+sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date,op) "
+    f"VALUES('{WS_P}','1803240580',40.0,'2026-09-04','revoke') ON CONFLICT DO NOTHING")
 
 print("③ 31 天指标（含缺数日、异常日）")
 # 业务日 = 上海时间 03:00 日切（与 domain shanghaiTaskBusinessDate 同口径）；灌到业务日当天，窗口才完整（v4，2026-09-09）
