@@ -480,3 +480,5 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - **真红 1 条**：`apps/worker/test/platform-window-query-pg.integration.test.ts:128`「missing account-days invalidate the assessment instead of making the remainder look green」——还在断言旧口径 A（`cashCost/costSpace` 整窗 `missing`），你这笔按 B 给的是 `{value:5, availability:"partial"}`。**不是回归，是断言没跟契约走**。改法：用例改名「missing account-days give a labelled partial total and suspend the assessment」，断言 `cashCost/costSpace` 为 `availability:"partial"`（值按夹具算）、`assessment.onTarget` 为 null、`costStatusReason` 为 `"partial_data"`，保留 `requestedAccountDays:3 / returnedAccountDays:2`；「不能看起来是绿的」这层意图由判定挂起保证，断言里写一句注释。
 - 你之前说的「worker 12 文件红（Qihang 桩 text/plain）」这次**没有出现**，确认是我热修中间版的锅，已解。
 - 这条改完和 ACCOUNT_DAY_MISSING / lineage.partial / seed 失败批次 / 两份 partial fixture **一笔交**，我一起跑门禁一起合。之后直奔 ⑦⑩。
+
+- 补（循环第 39 圈联调抽查，v1.9.39）：`account.hourly` 在小时表整日无采样时返的是 150 行全 `missing`，应为 `pending`；随下一笔带上（一个判断：该日该账户在采样表零行 → pending）。`account.gap` 无源时回 503「Versioned Gap source is not configured」行为正确。
