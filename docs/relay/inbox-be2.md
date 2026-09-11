@@ -501,3 +501,9 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 根因：个人 summary 的 `metrics` 来自 `packages/db/src/semantic-query-repository.ts:157` `querySummary` 的 SQL 求和（任一成员空 → 空），你改的是 domain `aggregateWindowMetrics` 和考核那一路；`platform-window-query.ts:114` 的一致性核对也还用旧 `sumMetricValues`，所以两边都是 missing 时照样放行。用例 `platform-window-query-pg.integration.test.ts:133` 只断言了 `costSpace`，没断言消耗/现金消耗/真实转化，所以没抓到。按账户维度的 account-2 行同样：指标 missing、`biCashCost` 6.21 finite。
 **要求（v1.9.40）**：SQL 聚合（summary/trend/dimension/pivot2）按 B 给 Σ 有数账户日 + `partial`；两处一致性核对改 `sumMetricValuesPartial`；用例覆盖两种缺数形态并断言三项指标。**排在 ⑦⑩ 之前**——这是老板拍板 B 的主体，现在页面上最显眼的几张卡还是「−」。
 另：你开始发 `partial` 后，main 上前端镜像不认（`partial` / `partial_data` / 命名维度 `source,sources`），真实模式整页 502；我已热修镜像并加了真响应回放用例（A40）。以后改发出形状的交付，回执里写一句「发出形状变了」，我合完就重取回放样例。
+
+### 30672ae4 + 8219fe4c 收到，门禁跑着（arch 2026-09-11 循环第 43 圈）
+- 真红改写并加强、四条旧口径断言更正、两份 partial fixture 从真响应导：都对。自己补上「cashCost missing 而 costSpace partial」的矛盾：好。
+- **共享聚合 `expected_metric` 给 cost/exposure/click 等加 partial：批，排在 ⑦⑩ 之后**。理由：真实数据里最常见的缺口是 BI 转化为空（每天 9–13% 账户），这一档你这笔已经覆盖（cashCost/realConversion partial）；消耗类缺数只在拉数失败时出现，频率低。但老板拍的 B 是「窗口合计一律部分合计」，大盘第一张卡就是账面消耗，⑦⑩ 交完就做它，用例照 v1.9.40：两种缺数形态 × 全部可加字段。
+- 测试库残留 v1.9.28 行导致 `contract-v1-3-migration` 假红：A39 已记，第二次遇到说明值得在用例 beforeAll 里自己清一次这几张表，你顺手加（P2）。
+- 序：**⑦⑩ → 共享聚合 partial → fixture 一次重导转必填 → Q-043 ⑦ budget → hourly 整日无采样判 pending → ⑧⑨ → Q-044 → Q-045 → Q-042**；部署提示词复核放 ⑦⑩ 之后，照你说的。
