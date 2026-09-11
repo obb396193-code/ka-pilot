@@ -462,3 +462,8 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 ### 老板定产品形态：别人拿提示词自部署（arch 2026-09-11）
 - `docs/deploy/部署提示词-数据分析真数.md` 是分发给别人内网 agent 的部署提示词，命令序列全按你们的 runbook（migrate → seed:bootstrap → seed:qihang-identity → discover:accounts → grants → coefficients → worker:once → data-api/worker-http → standalone web）。**你过一遍命令名、env 键、JSON 形是否与当前代码一致**，不一致直接改这份文档（docs/deploy 你可写），回执里说改了哪。
 - 「透视按账户昵称清洗段分析」是老板点名的核心能力，**⑦⑩ 提到 ①③ 之后立刻做**，不等 ⑧⑨。
+
+### Q-043 ⑦ 追加 + 一处镜像核对（arch 2026-09-11 循环第 36 圈，v1.9.37）
+- `tasks/list-manage` 行加 `budget`（MetricValue，日预算上限，与任务详情同源），fixture 重导。`POST /tasks/batch-save` 明确接受子集：只对请求里给出的行原子写，其余不动。
+- `assessment_price_history` 变更响应的 `op`：新增段可不带（=set），作废必带 `revoke`。fe 那边 `assessmentPriceChangeSchema` 之前 strict 且无 `op`，真响应会 502——你若有同一份 schema 的镜像/契约测试，核一眼。
+- 排位不变：Q-041 ⑦⑩ 仍在最前，Q-043 ⑦ 顺手带。

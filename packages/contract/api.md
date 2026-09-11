@@ -1457,3 +1457,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **团队小时源**：holo 有 `qihang_account_report_hour`（hour/convert_cnt/deep_convert_cnt/task_ids，当天准实时到 hh），但 `cost` 量级 5.7–8.6 亿/天单位未知、同账户同小时多行——**车程确认单位与去重口径前 Q-042 不得接它**；sqlite 后端无小时表。
 - **启航 `resource=account` 忽略 `accountIds`**（12 个数据点字节级相同），worker 不再发（F-OS-005）；账户范围靠本地 scope 断言。
 - **精简版 PG**：022 迁移的 EXCEPTION 已补 `feature_not_supported`（0A000），缺 contrib 时降级 ILIKE 而不是整批回滚。
+
+## v1.9.37 追加（2026-09-11 arch；fe F8-23 交付时四个判断的裁决）
+- **`POST /tasks/batch-save` 接受子集**：请求只带本次改动过的任务行，服务端只对给出的行做原子写（全成功才写），未给出的行不动。「按大类整体保存」指交互，不指请求体必须全量——全量回写会把别人同时改的值盖掉。
+- **`tasks/list-manage` 行加 `budget`**（MetricValue，日预算上限，与任务详情同源；缺则 missing），fe 有值才显列。be2 Q-043 ⑦，fixture `tasks/list-manage.json` 重导。
+- `assessment_price_history` 的变更响应 `op` 字段：新增段响应可不带（等于 `set`），作废响应必带 `op:"revoke"`；镜像 schema 里 `op` 为可选枚举 `set|revoke`。
+- 删除大类文案：「该大类下任务将置为已结束，历史数据仍可查」，不写「不可恢复」。停投沉底排序只在拉数时算一次。
