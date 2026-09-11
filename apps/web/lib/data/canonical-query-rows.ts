@@ -140,7 +140,8 @@ export const accountSummaryRowSchema = z.object({
     overCost: canonicalMetricValueSchema.optional(),
   }).strict().superRefine((value, ctx) => {
     const expected = { window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
-      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null] } as const
+      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null],
+      partial_data: [null, null] /* v1.9.35 部分合计 → 判定挂起 */ } as const
     const [target, color] = expected[value.costStatusReason]
     if (value.onTarget !== target || value.costStatus !== color) ctx.addIssue({ code: "custom", message: "Assessment reason mismatch" })
     if (value.price !== null && ((value.priceSource === "history") !== (value.price.effectiveDate !== null))) ctx.addIssue({ code: "custom", message: "Price source/date mismatch" })
@@ -167,6 +168,13 @@ export const dimensionWindowRowSchema = z.union([
     .refine((row) => row.key === `${row.media}:${row.accountId}`),
   z.object({ ...dimensionFields, agent_type: z.enum(["agency", "self"]), agency_name: z.string().min(1).optional() }).strict(),
   z.object(dimensionFields).strict(),
+  // v1.9.22 命名维度（optimizer/goal/placement）行带归属来源汇总，镜像 domain named-dimension.ts 的 dimensionSourceSummarySchema。
+  // arch 热修（2026-09-11）：缺这一形，大盘按优化师分组的真响应整条被判废。
+  z.object({ ...dimensionFields,
+    source: z.enum(["manual", "nickname", "platform", "qihang", "mixed"]).nullable(),
+    sources: z.object({ manual: z.number().int().positive().max(1000).optional(), nickname: z.number().int().positive().max(1000).optional(),
+      platform: z.number().int().positive().max(1000).optional(), qihang: z.number().int().positive().max(1000).optional() }).strict(),
+  }).strict(),
 ]).superRefine(refineAssessmentMetrics)
 
 const pivotAxis = z.object({ key: z.string().min(1).nullable(), label: z.string().nullable() }).strict()
