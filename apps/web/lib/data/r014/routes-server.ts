@@ -46,5 +46,7 @@ export {
   handleTaskReviewLatest,
   handleTaskTimeline,
   handleTaskDetail,
+  handleTaskPatch,
+  handleTaskBatchSave,
   handleTaskReadiness,
 } from "./handlers.ts"

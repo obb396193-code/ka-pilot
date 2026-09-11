@@ -604,6 +604,8 @@ export const taskFunnelSchema = z.object({
 /** v1.9.19 `POST /tasks/:id/assessment-price`；键名照契约是 snake_case。 */
 export const assessmentPriceChangeSchema = z.object({
   task_id: z.string().min(1),
+  /** v1.9.28 的作废响应带 `op:"revoke"`；新增一段的响应不带。少了这行 strict 会把作废的真响应判废 → 502。 */
+  op: z.enum(["set", "revoke"]).optional(),
   old_price: z.number().nullable(),
   new_price: z.number(),
   effective_date: z.string(),

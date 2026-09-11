@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, useLocalOrder, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
+import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -22,8 +23,18 @@ import { taskAccountsFixture, taskListStates, taskStageMap, taskStages, tasksFix
 import { watchlistFixture } from "@/lib/fixtures/settings"
 import { cn } from "@/lib/utils"
 import { ReadinessBar } from "./readiness"
+import { TaskManageTab } from "./task-manage-tab"
+import { taskManageRows } from "@/lib/fixtures/task-manage"
 
 // 投放任务列表（F-007 §4 / F-006 §5，契约 v1.5.1 ②）：tabs 进行中 / 准备中 / 已结束 + 我负责的 / 关注；列含就绪度六段 + 阶段 chip + pacing；右栏 分布 / 健康 / 里程碑
+// F8-23：任务维护做成页内视图 tab（`/tasks?tab=manage`），不加侧栏项也不开一级路由——
+// 它和任务列表是同一份数据的两种看法，不是两个功能。
+const viewTabs = [
+  { value: "list", label: "任务列表" },
+  { value: "manage", label: "任务管理" },
+] as const
+type ViewTab = (typeof viewTabs)[number]["value"]
+
 type StatusTab = "all" | "active" | "preparing" | "ended"
 type Scope = "all" | "mine" | "starred"
 const number0 = new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 0 })
@@ -89,6 +100,7 @@ export function TasksPage() {
   }, [all])
   const items = useMemo(() => all.filter((task) => (status === "all" || task.status === status) && (scope !== "mine" || task.owner?.displayName === "示例优化师") && (scope !== "starred" || starred.has(task.taskId))), [all, status, scope, starred])
   const counts = useMemo(() => ({ all: all.length, active: all.filter((task) => task.status === "active").length, preparing: all.filter((task) => task.status === "preparing").length, ended: all.filter((task) => task.status === "ended").length }), [all])
+  const [view, setView] = usePageTab<ViewTab>(viewTabs, "list")
   const { ordered, reorder } = useLocalOrder(items, (task) => task.taskId)
   const table = useGridTable({ data: legacy ? [] : ordered, columns, pageSize: 20, getRowId: (task) => task.taskId, initialColumnVisibility: { taskId: false, period: false, rta: false, placementPref: false } })
   const stageDistribution = taskStages.map((stage) => ({ stage, count: all.filter((task) => task.stage === stage.value).length })).filter((item) => item.count > 0)
@@ -108,6 +120,11 @@ export function TasksPage() {
           
         </>
       } />
+      <PageTabs tabs={viewTabs.map((tab) => ({ ...tab, badge: tab.value === "manage" ? taskManageRows.length : null }))} value={view} onChange={setView} />
+
+      {view === "manage" ? (
+        <div className="px-4 lg:px-6"><TaskManageTab /></div>
+      ) : (
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="任务阶段 / 就绪度 / SOP 接口接入后切换为真数据" empty={{ title: "没有任务", description: "任务由运营在创建接口开放后新建；个人空间只看本人授权账户挂载的任务。" }}>
           <div className="grid gap-4 @6xl/main:grid-cols-12">
@@ -155,6 +172,7 @@ export function TasksPage() {
           </div>
         </StateFrame>
       </div>
+      )}
     </PageBody>
   )
 }
