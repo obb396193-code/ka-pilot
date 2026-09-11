@@ -115,3 +115,30 @@ export function markReadiness(taskId: string, dimension: string, ready: boolean,
     "标记就绪失败",
   )
 }
+
+/**
+ * 忽略一条工作项并静音 N 天（`POST /work-items/:id/ignore`，r010 命令）。
+ *
+ * ★这里**必须同时带 `mute_days`**：BFF 对「不带 mute_days 的忽略」在 200 上直接判
+ * `UPSTREAM_INVALID_RESPONSE`（`r010-command-bff.ts` 里那句「A plain ignore must not
+ * masquerade as ignore+mute」）——也就是说「只忽略不静音」这条路现在走不通，不是我没接。
+ * 已报 arch。所以界面上是**先选原因、再选静音多久**，而不是两组平行的菜单项。
+ */
+export function ignoreWorkItem(workItemId: string, reasonChip: string, muteDays: 1 | 3 | 7): Promise<boolean> {
+  return call(
+    `/api/internal/work-items/${encodeURIComponent(workItemId)}/ignore`,
+    { method: "POST", body: JSON.stringify({ reason_chip: reasonChip, mute_days: muteDays }) },
+    `已忽略并静音 ${muteDays} 天`,
+    "忽略失败",
+  )
+}
+
+/** 静音一个账户 N 天（`POST /accounts/:media/:id/mute`）。和上面那条不同：这条是**账户级**的。 */
+export function muteAccount(media: string, accountId: string, days: 1 | 3 | 7, reasonChip: string): Promise<boolean> {
+  return call(
+    `/api/internal/accounts/${encodeURIComponent(media)}/${encodeURIComponent(accountId)}/mute`,
+    { method: "POST", body: JSON.stringify({ days, reason_chip: reasonChip }) },
+    `已静音该账户 ${days} 天`,
+    "静音失败",
+  )
+}
