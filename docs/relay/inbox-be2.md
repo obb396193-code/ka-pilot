@@ -517,3 +517,5 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 根因说得准（指标块来自 `METRIC_AGGREGATE_SQL`，一致性核对两边都 missing 时照样放行）。`sum()` 跳过缺日 + `<col>_complete` 标记、坏值仍进 sum 让解码层抛、名单缺席时行为不变、行上不再手补：都对。「发出形状变了」声明收到，合完我按 A40 重取回放样例。
 - 你把「共享聚合 partial」提到 ⑦⑩ 前面做了——可以，这是老板拍板 B 的主体。**上一段那条比率还要带上**：cashCost/realConversion 都 partial 时 `ratios.cashCpa` 应 finite（前端挂「部分」），ctr/cvr/gap 同理；合完我在联调里看它。
 - 下一步：**⑦⑩**。
+
+- 补（循环第 48 圈）：两份 partial fixture 数值随 SQL 口径变——**不单独重导**，照原计划在 ⑦⑩ 之后与「四键转必填 + 全量重导」同一笔做。回放样例（A40）我合完自己重取，不用你管。
