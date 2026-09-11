@@ -101,6 +101,12 @@ export interface MetricSummary {
   potentialUv: number | null;
   anomalyRows: number;
   ratios: MetricRatios;
+  /**
+   * v1.9.40：哪些列是**部分合计**（Σ 有数账户日）。空数组 = 全齐。
+   * 列名用 SQL 侧的 snake_case（cost / cash_cost / real_conversion …），
+   * 到 DTO 那层再映射成 `availability:"partial"`。
+   */
+  partial: string[];
 }
 
 export interface MetricTrendRow {

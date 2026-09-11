@@ -39,6 +39,8 @@ describe("canonical query row adapters", () => {
           rowCount: 1,
           accountCount: 1,
           anomalyRows: 0,
+          // v1.9.40：部分合计的列名单；本桩不造缺口。
+          partial: [],
           cost: 12,
           exposure: 100,
           click: 10,
@@ -155,6 +157,8 @@ describe("canonical query row adapters", () => {
       rowCount: 2,
       accountCount: 1,
       anomalyRows: 0,
+      // v1.9.40：部分合计的列名单；本桩不造缺口。
+      partial: [],
       cost: 100,
       exposure: 1_000,
       click: 100,
@@ -230,6 +234,8 @@ describe("canonical query row adapters", () => {
       rowCount: 1,
       accountCount: 1,
       anomalyRows: 0,
+      // v1.9.40：部分合计的列名单；本桩不造缺口。
+      partial: [],
       cost: 5,
       exposure: 0,
       click: 0,

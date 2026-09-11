@@ -7,6 +7,7 @@ import {
   type AccountSummaryRow,
   type DataQueryId,
   type RatioValue,
+  canonicalMetricValueSchema,
 } from "@ka/domain";
 
 type RawRow = Record<string, unknown>;
@@ -96,6 +97,25 @@ function subtractOne(ratio: RatioValue): RatioValue {
     : ratio;
 }
 
+/**
+ * v1.9.40：仓储对**部分合计**的列会带一份 `partial: string[]`（SQL 侧列名）。
+ * 有值且在这份名单里 → `availability:"partial"`；没值仍是 `missing`。
+ * 名单缺席时一切照旧（KA 源、老调用方不受影响）。
+ */
+const PARTIAL_COLUMN_BY_FIELD: Record<string, string> = {
+  cost: "cost", exposure: "exposure", click: "click", conversion: "conversion",
+  realConversion: "real_conversion", cashCost: "cash_cost", costSpace: "cost_space",
+  wakeUv: "wake_uv", potentialUv: "potential_uv",
+};
+function partialAware(row: RawRow, field: string, value: number | null) {
+  const partial = (row as Record<string, unknown>).partial;
+  if (value === null || !Array.isArray(partial)) return metricValue(value);
+  const column = PARTIAL_COLUMN_BY_FIELD[field] ?? field;
+  return partial.includes(column)
+    ? canonicalMetricValueSchema.parse({ value, availability: "partial" })
+    : metricValue(value);
+}
+
 function metricSet(row: RawRow, source: SourceKind) {
   const cost = firstNumber(row, "cost", "cost_yuan");
   const exposure = firstNumber(row, "exposure", "show");
@@ -115,16 +135,16 @@ function metricSet(row: RawRow, source: SourceKind) {
   const wakeUv = source === "platform" ? firstNumber(row, "wakeUv") : null;
   const potentialUv = source === "platform" ? firstNumber(row, "potentialUv") : null;
   return {
-    cost: metricValue(cost),
-    exposure: metricValue(exposure),
-    click: metricValue(click),
-    conversion: metricValue(conversion),
-    realConversion: metricValue(realConversion),
-    cashCost: metricValue(cashCost),
-    costSpace: metricValue(costSpace),
+    cost: partialAware(row, "cost", cost),
+    exposure: partialAware(row, "exposure", exposure),
+    click: partialAware(row, "click", click),
+    conversion: partialAware(row, "conversion", conversion),
+    realConversion: partialAware(row, "realConversion", realConversion),
+    cashCost: partialAware(row, "cashCost", cashCost),
+    costSpace: partialAware(row, "costSpace", costSpace),
     incentiveCost: metricValue(incentiveCost),
-    wakeUv: metricValue(wakeUv),
-    potentialUv: metricValue(potentialUv),
+    wakeUv: partialAware(row, "wakeUv", wakeUv),
+    potentialUv: partialAware(row, "potentialUv", potentialUv),
     ratios: {
       ctr: safeDivide(click, exposure),
       cvr: safeDivide(conversion, click),

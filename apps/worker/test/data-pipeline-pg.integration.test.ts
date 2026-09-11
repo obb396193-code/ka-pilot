@@ -418,11 +418,14 @@ describe("real PostgreSQL data pipeline", () => {
     expect(summary.cost).toBe(5_100);
     expect(summary.realConversion).toBe(51);
     // Same account ID in the other media has no facts; never silently drop that missing member.
+    // v1.9.40：缺成员不再让整窗变空——给 Σ 有数的那部分，并在 `partial` 名单里点出这一列不完整。
+    // 「不许静默丢成员」这层意图由 partial 名单保证（判定那侧据此挂起），而不是靠把和抹成 null。
     const mixed = await semantic.querySummary({ ...scope, filters: { accountId } });
-    expect(mixed.cost).toBeNull();
+    expect(mixed.cost).toBe(5_100);
+    expect(mixed.partial).toContain("cost");
     expect(mixed.accountCount).toBe(1);
     const missingDay = await semantic.querySummary({ ...scope, workspaceId: otherWorkspaceId });
-    expect(missingDay.cost).toBeNull();
+    expect(missingDay.partial).toContain("cost");
     const isolated = await semantic.querySummary({ ...scope, workspaceId: otherWorkspaceId, dateTo: "2026-08-18" });
     expect(isolated.cost).toBe(9_999);
 

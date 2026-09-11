@@ -12,7 +12,10 @@ const auth: ApprovedWorkspaceAuthContext = { workspaceId, userId: "00000000-0000
   role: "optimizer", workspaceKind: "personal", scope: { kind: "explicit_accounts",
     accounts: [{ media: "KUAISHOU", accountId: "same", accessLevel: "read" }] } };
 const summary = { rowCount: 1, accountCount: 1, anomalyRows: 0, cost: 10, cashCost: 10, realConversion: 1,
-  conversion: 2, exposure: 100, click: 10, costSpace: 0, wakeUv: null, potentialUv: null, ratios: canonicalMetrics(10).ratios };
+  conversion: 2, exposure: 100, click: 10, costSpace: 0, wakeUv: null, potentialUv: null,
+  ratios: canonicalMetrics(10).ratios,
+  // v1.9.40：部分合计的列名单；本桩不造缺口。
+  partial: [] };
 function setup() {
   const repository = {
     querySummary: vi.fn(async () => summary), queryTable: vi.fn(),
