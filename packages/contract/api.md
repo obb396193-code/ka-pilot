@@ -1410,3 +1410,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ## v1.9.30 追加（2026-09-10 arch；真实模式端到端抓到的参数键名不一致）
 - **`POST /api/v1/data/query` 的 `params` 线上键名以此为准**（之前 v1.9.22/26/27 里的下划线写法是命名不是 wire）：`{ dateFrom, dateTo, media?, dimension?（account.dimension 用，不是 dimension_type）, dimA?/dimB?（pivot2）, filters?: { optimizer[], biz[], resource_position[], goal[], task_id[] }（**filters 内部是下划线**，Codex de98a243 已落地）, compare?: "prev_window"（be2 Q-041 ③ 落地前**不要发**——后端 params 是 strict，未知键整条 400 `INVALID_REQUEST: Invalid query parameter set`）}`。**不发 `workspace_id`**：空间由会话决定，前端要按空间做缓存 key 用本地变量即可。
 - fixtures：`data-query/summary-v1922-filtered.json` 等七份的 `_note` 里的 params 例以本条为准。
+
+## v1.9.31 追加（2026-09-10 arch；裁 fe 的 39 处未开放入口清单）
+- **一期不做、后端回 501 `NOT_IMPLEMENTED`**（前端显「这一块一期未开放」，提示由此替换「当前为示例」）：停止测试（#3）、自治度升档（#11）、订阅/定时「立即发送一次」（#13/#21）、值守换班（#15）、素材复刻（#18）、设计交付（#20）、AI 提效估时（#26）、月度拍板（#27）、搜索结果项动作（#28）、重新复盘（#24，已 501）。be2 在各契约路径挂 501 存根（Q-045 ①），不写业务。
+- **按日补拉（#8）= 现有 rerun**：治理后台「按日补拉」= 选一个 businessDate 对该日的 run 发 `POST /system/etl-runs/:id/rerun`（列表里取该日 run 的 id）；无该日 run → 显「该日没有拉数记录」。不新增端点。
+- **已有端点只差接线的批次**（fe 接，后端已在）：第 0 批 #10/#31/#33/#37（`/me/views`、`/me/watchlist`、readiness）；第 1 批 #38/#39（r010 ignore/mute 命令，路由接上）；第 2 批 #2/#9（pool-status DELETE、decision-policy PUT）。
+- **需后端补的**（be2 Q-045 ②③，排在 Q-041/Q-044 之后）：#4/#5 `PATCH /admin/members/:identityId {role?, is_active?}`、#6/#7 `PUT /admin/members/:identityId/grants`（整体替换）、#12/#14/#22/#23/#29/#30 集成/订阅/定时/凭证解绑、#16/#17/#19/#25/#32/#34/#35/#36 素材/工作项/派发/审批。顺序：治理后台 → 集成报告 → 素材任务 → 协作。
