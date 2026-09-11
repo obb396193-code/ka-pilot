@@ -6863,7 +6863,7 @@ P0 只剩「真实模式端到端验」——我这边没有联调用的后端 E
 门禁：domain 1536 / db 1751（串行 156 文件）/ worker 2265（串行 199 文件）/ web 251 全绿；
 四包 tsc 干净，三包 `eslint .` 0 error。fe F8-19b 等的这批里，②④⑤⑥ 已可用；①③ 接着做。
 
-- **② 三 BI 值**： 由**一处算术** `dashboardBiFrom` 算，
+- **② 三 BI 值**：`assessment.biConv` / `biCashCost` / `overCost` 由**一处算术** `dashboardBiFrom` 算，
   个人源（`computeWeightedAssessment`）与团队 KA 汇总（`ka-window-aggregate` 自己拼的那份 assessment）
   两条路都调它。KA 那条原来手拼 assessment，所以一开始漏发三个键——绊线立刻抓到了。
 - **④ `incentiveCost`**：个人源取启航「激励」列，ka-data 无此列 → 恒 missing 不是 0；
