@@ -6858,3 +6858,40 @@ P0 只剩「真实模式端到端验」——我这边没有联调用的后端 E
 
 ### ➊ 「近 30 天」那条仍等你裁（第三次问）
 `last_30d` 不在契约冻结的窗口枚举里，而 preset 会随保存视图写进 `saved_views.config.window`。我倾向 **(b) chips 只当 UI 快捷、持久化成 `custom` + from/to**，不动契约。你不回我就按 (b) 做。
+
+### be2 交付 `3368ad92`：Q-041 ②④⑤⑥（契约面 + 产出路径）
+门禁：domain 1536 / db 1751（串行 156 文件）/ worker 2265（串行 199 文件）/ web 251 全绿；
+四包 tsc 干净，三包 `eslint .` 0 error。fe F8-19b 等的这批里，②④⑤⑥ 已可用；①③ 接着做。
+
+- **② 三 BI 值**： 由**一处算术** `dashboardBiFrom` 算，
+  个人源（`computeWeightedAssessment`）与团队 KA 汇总（`ka-window-aggregate` 自己拼的那份 assessment）
+  两条路都调它。KA 那条原来手拼 assessment，所以一开始漏发三个键——绊线立刻抓到了。
+- **④ `incentiveCost`**：个人源取启航「激励」列，ka-data 无此列 → 恒 missing 不是 0；
+  聚合时缺键按 missing 参与求和。
+- **⑤ `pending`**：加进 `canonicalMetricValueSchema`，与 fe 已冻的镜像同形。
+- **⑥ `lineage.warnings[]`**：接受 `{code:"BATCH_FAILED", media, accountId, businessDate}`，字符串兼容。
+
+**★请裁三件**
+1. **四个新字段我落成 optional**：几十份 `data-query/*` 冻结 fixture 是这些字段存在之前导的，
+   转必填会把它们整批判非法（我试过，domain 一下红 64 条）。所以 schema 暂 optional，
+   另立绊线 `new-metric-fields-emitted` 钉住「真实产出路径恒发」。
+   要转必填就得重导那批 fixture——**授权我导我就导**，你自己导也行，导完我把 optional 去掉。
+2. **`biCashCost` 的形**：api.md 写 MetricValue，fe 的镜像也已按 MetricValue 冻。我照做了，
+   但代价是「花了钱、一个 BI 数都没有」这种真事实只能落成 `missing`，和「根本没数据」在前端
+   长得一样——而这恰恰是最该被看见的一种。内核里它是 RatioValue（能说 infinite）。
+   两条出路：(a) `canonicalMetricValueSchema` 放一档 `denominator_zero`；(b) 这个字段改回
+   RatioValue（与 `ratios.cashCpa` 同形）。我倾向 (a)，改动只在一个 schema。请裁。
+3. **`compare:"prev_window"`**：枚举已加进 `windowComparisonSchema.mode`，但**算前窗与出 deltas 的
+   实现还没接**（Q-041 ③，下一笔）。fe 若这轮就打 `prev_window`，后端目前会按未知模式处理，
+   不会假装给数——先说清楚免得被当成已完成。
+
+**★一个只有真 CLI 能抓到的坑，记给三方**
+`window-assessment` 要调 BI 算术，而算术原本住在 `dashboard-bi`（它又 import window-assessment）——
+**循环依赖**。vitest 的模块图不报，**真 CLI 入口直接炸**
+（`ReferenceError: Cannot access 'dailyAssessmentInputSchema' before initialization`）。
+唯一抓到它的是 db 包那三条起真 CLI 子进程的用例（`seed-bootstrap`/`seed-coefficients`/`qihang-identity-seed`）。
+已拆出 `dashboard-bi-math`（只做算术、明令不许反向 import）解环。
+**结论：domain 里「A 调 B、B 又调 A」这种，测试全绿也可能是假绿，别只信 vitest。**
+
+**仍等你的**：Q-038 已裁的两条我照做了；Q-044（v1.9.29 清洗归一/空段不顶位/历史归属）排在 Q-041 之后，
+按你的序做；Q-042 小时采样最后。
