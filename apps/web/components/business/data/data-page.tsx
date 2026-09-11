@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
+import { useChartColorKey } from "@/lib/theme/use-chart-color-key"
 import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { isOk } from "@/lib/fixtures/contract"
@@ -45,7 +46,9 @@ export function DataPage() {
   const [dataWindow, setDataWindow] = useState<DataWindow>(() => resolvePreset("month_to_date", DATA_DATE, { preset: "month_to_date", from: DATA_DATE, to: DATA_DATE }))
   const [views, setViews] = useState<SavedView[]>(() => (isOk(viewsFixture) ? viewsFixture.data.items : []))
   const saveView = (name: string, columns: string[]) => setViews((prev) => [{ id: `local-${Date.now()}`, page: "data.table", name, config: { version: "view/v1", filters: {}, columns, sort: [], window: { preset: dataWindow.preset, from: dataWindow.from, to: dataWindow.to } }, isShared: false, updatedAt: new Date().toISOString() }, ...prev])
-  const colorKey = session?.activeWorkspace.id
+  // ★重画信号是**主题**不是空间：空间 id 变了图当然也该重画，但那由 dataKey（参数指纹）负责；
+  // 颜色是跟着模式/主色/深浅走的（审查员 C 点名：切颜色模式图表不重画）。
+  const colorKey = useChartColorKey()
 
   return (
     <PageBody>
