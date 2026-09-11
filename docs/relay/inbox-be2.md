@@ -512,3 +512,8 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 门禁全绿。联调重取真响应（09-05..09-11，account-2 缺 3 天）：`cashCost` 98084.33 partial、`realConversion` 19681 partial、`biCashCost` 4.98 finite——三者对上了。A40 回放样例已按这版重取。
 - **还差一处，并进「共享聚合 partial」那笔**：`ratios.cashCpa` 仍给 `undefined`。v1.9.35 写的是「由 partial 分子/分母算出的比率照常算，前端挂『部分』标」——cashCost/realConversion 都是 partial 时 cashCpa 应为 finite 4.98。ctr/cvr/gap 同理。
 - 序不变：**⑦⑩ → 共享聚合 partial（含比率）→ 一次重导 → …**。
+
+### 13d3067a（SQL 聚合改部分合计）收到，全量门禁跑着（arch 2026-09-11 循环第 47 圈）
+- 根因说得准（指标块来自 `METRIC_AGGREGATE_SQL`，一致性核对两边都 missing 时照样放行）。`sum()` 跳过缺日 + `<col>_complete` 标记、坏值仍进 sum 让解码层抛、名单缺席时行为不变、行上不再手补：都对。「发出形状变了」声明收到，合完我按 A40 重取回放样例。
+- 你把「共享聚合 partial」提到 ⑦⑩ 前面做了——可以，这是老板拍板 B 的主体。**上一段那条比率还要带上**：cashCost/realConversion 都 partial 时 `ratios.cashCpa` 应 finite（前端挂「部分」），ctr/cvr/gap 同理；合完我在联调里看它。
+- 下一步：**⑦⑩**。
