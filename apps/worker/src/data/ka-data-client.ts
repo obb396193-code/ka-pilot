@@ -4,6 +4,7 @@ import {
   type SourceLineage,
   type SourceQueryResult,
   type StableDataQueryErrorCode,
+  type WindowComparisonMode,
 } from "@ka/domain";
 import { z } from "zod";
 import { assertProductionEnvironment } from "../production-environment.js";
@@ -343,7 +344,7 @@ export class KaDataClient {
   }
 
   /** Internal v3 source reader. Public summary switches only with Platform/HTTP/BFF. */
-  async queryTeamWindowMembers(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+  async queryTeamWindowMembers(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {
     if (scope.scopeKind !== "team_workspace_readonly" || !z.string().uuid().safeParse(scope.userId).success) {
       throw new KaDataClientError("FORBIDDEN", "Team window query requires approved team context", false);
     }
@@ -369,7 +370,7 @@ export class KaDataClient {
     };
   }
 
-  async queryTeamWindowSummary(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+  async queryTeamWindowSummary(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {
     const snapshot = await this.queryTeamWindowMembers(resolved, scope, window, compare);
     try {
       const summary = summarizeKaWindowMembers(snapshot.members, snapshot.window, snapshot.previousWindow, compare);
@@ -378,7 +379,7 @@ export class KaDataClient {
     } catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window summary response", false); }
   }
 
-  private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+  private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {
     if (scope.scopeKind !== "team_workspace_readonly" || !z.string().uuid().safeParse(scope.userId).success) {
       throw new KaDataClientError("FORBIDDEN", "Team window query requires approved team context", false);
     }

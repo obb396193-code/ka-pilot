@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { biCashCostMetricValue, calendarDateSchema, dashboardBiFrom, metricValue, summaryWindowRowSchema, compareWindowPoints,
-  unavailableWindowComparison, comparisonWindow } from "@ka/domain";
+  unavailableWindowComparison, comparisonWindow, type WindowComparisonMode} from "@ka/domain";
 import type { KaDataWindowQueryPlan } from "./query-registry.js";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 
@@ -70,7 +70,7 @@ function rowSummary(row: Row) {
 }
 
 /** Strict internal proof decoder. Does not claim complete team inventory. */
-export function assembleKaWindowAggregates(input: unknown, plan: KaDataWindowQueryPlan, compare?: "dod" | "wow") {
+export function assembleKaWindowAggregates(input: unknown, plan: KaDataWindowQueryPlan, compare?: WindowComparisonMode) {
   const expectedPrevious = compare === undefined ? null : comparisonWindow(plan.window, compare);
   if (JSON.stringify(expectedPrevious) !== JSON.stringify(plan.previousWindow)) invalid();
   const rows = z.array(rowSchema).min(1).max(10000).parse(input);

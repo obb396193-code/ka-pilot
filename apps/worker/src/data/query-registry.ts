@@ -12,6 +12,8 @@ import {
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
+  type WindowComparisonMode,
+  windowComparisonModeSchema,
 } from "@ka/domain";
 import { z } from "zod";
 import { buildKaWindowAggregateSql } from "./ka-window-aggregate-sql.js";
@@ -51,7 +53,7 @@ export interface NormalizedQueryParams {
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
-  compare?: "dod" | "wow";
+  compare?: WindowComparisonMode;
 }
 
 export interface KaDataQueryPlan {
@@ -158,7 +160,7 @@ function normalizeDateParams(input: {
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
-  compare?: "dod" | "wow";
+  compare?: WindowComparisonMode;
 }): NormalizedQueryParams {
   const camel = input.dateFrom !== undefined || input.dateTo !== undefined;
   const snake = input.date_from !== undefined || input.date_to !== undefined;
@@ -208,7 +210,7 @@ const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSch
   ...(taskIds === undefined ? {} : { taskIds }) }));
 const intervalSchema = normalizedSchema(commonDateFields);
 const windowFields = { ...commonDateFields, filters: dashboardFiltersSchema.optional(), taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
-const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
+const summarySchema = normalizedSchema({ ...windowFields, compare: windowComparisonModeSchema.optional() });
 const trendSchema = normalizedSchema(windowFields);
 const tableSchema = normalizedSchema({
   ...commonDateFields,
@@ -572,13 +574,13 @@ export class DataQueryRegistry {
    * One statement returns both windows, avoiding two independently refreshed source snapshots.
    * Byte/row cap or duplicate account-days must be rejected by the reader before assessment.
    */
-  private teamKaWindowBase(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow", aggregate = false): KaDataWindowQueryPlan {
+  private teamKaWindowBase(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: WindowComparisonMode, aggregate = false): KaDataWindowQueryPlan {
     if (!isResolvedDataQuery(resolved) || (resolved.queryId !== "account.summary" && resolved.queryId !== "account.trend")) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
     }
     rejectKaTaskWindow(resolved);
     const window = queryWindowSchema.parse(windowInput);
-    const compare = z.enum(["dod", "wow"]).optional().parse(compareInput);
+    const compare = windowComparisonModeSchema.optional().parse(compareInput);
     if (window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window must match resolved query dates");
     }
@@ -608,12 +610,12 @@ export class DataQueryRegistry {
     };
   }
 
-  buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+  buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: WindowComparisonMode): KaDataWindowQueryPlan {
     const base = this.teamKaWindowBase(resolved, windowInput, compareInput);
     return { ...base, sql: `${base.sql} LIMIT 10001` };
   }
 
-  buildTeamKaWindowAggregatePlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+  buildTeamKaWindowAggregatePlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: WindowComparisonMode): KaDataWindowQueryPlan {
     const base = this.teamKaWindowBase(resolved, windowInput, compareInput, true);
     return { ...base, queryTemplateVersion: "account-window-aggregate-v1",
       sql: buildKaWindowAggregateSql(base.sql, base.window, base.previousWindow) };

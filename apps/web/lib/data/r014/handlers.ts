@@ -24,6 +24,7 @@ import {
   namingRuleSchema,
   namingRulesTestSchema,
   taskBindingsSchema,
+  dashboardFilterOptionsSchema,
   taskBatchSaveResponseSchema,
   taskDetailSchema,
   taskManageRecordSchema,
@@ -136,6 +137,23 @@ export const handleTaskDetail = (request: Request, taskId: string, deps: Deps): 
     path: `/api/v1/tasks/${encodeURIComponent(taskId)}`,
     method: "GET",
     dataSchema: taskDetailSchema,
+    ...withDeps(deps),
+  })
+
+/**
+ * v1.9.27 ④ 级联筛选选项（后端 be2 Q-041 ①；浏览器侧 app/api 路由由 fe 接）。
+ * 窗口与筛选都在 query 上；账户范围由会话决定，前端不传账户。
+ */
+export const handleDataFilters = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/data/filters",
+    method: "GET",
+    // 白名单式透传：窗口与四个筛选键之外的 query 一律不带过去，
+    // 账户范围永远由会话决定，前端不传账户。
+    allowedQuery: ["window_from", "window_to", "media",
+      "optimizer[]", "biz[]", "task_id[]", "resource_position[]",
+      "optimizer", "biz", "task_id", "resource_position"],
+    dataSchema: dashboardFilterOptionsSchema,
     ...withDeps(deps),
   })
 

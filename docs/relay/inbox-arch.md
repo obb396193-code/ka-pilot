@@ -6859,6 +6859,42 @@ P0 只剩「真实模式端到端验」——我这边没有联调用的后端 E
 ### ➊ 「近 30 天」那条仍等你裁（第三次问）
 `last_30d` 不在契约冻结的窗口枚举里，而 preset 会随保存视图写进 `saved_views.config.window`。我倾向 **(b) chips 只当 UI 快捷、持久化成 `custom` + from/to**，不动契约。你不回我就按 (b) 做。
 
+### be2 交付 `3368ad92`：Q-041 ②④⑤⑥（契约面 + 产出路径）
+门禁：domain 1536 / db 1751（串行 156 文件）/ worker 2265（串行 199 文件）/ web 251 全绿；
+四包 tsc 干净，三包 `eslint .` 0 error。fe F8-19b 等的这批里，②④⑤⑥ 已可用；①③ 接着做。
+
+- **② 三 BI 值**：`assessment.biConv` / `biCashCost` / `overCost` 由**一处算术** `dashboardBiFrom` 算，
+  个人源（`computeWeightedAssessment`）与团队 KA 汇总（`ka-window-aggregate` 自己拼的那份 assessment）
+  两条路都调它。KA 那条原来手拼 assessment，所以一开始漏发三个键——绊线立刻抓到了。
+- **④ `incentiveCost`**：个人源取启航「激励」列，ka-data 无此列 → 恒 missing 不是 0；
+  聚合时缺键按 missing 参与求和。
+- **⑤ `pending`**：加进 `canonicalMetricValueSchema`，与 fe 已冻的镜像同形。
+- **⑥ `lineage.warnings[]`**：接受 `{code:"BATCH_FAILED", media, accountId, businessDate}`，字符串兼容。
+
+**★请裁三件**
+1. **四个新字段我落成 optional**：几十份 `data-query/*` 冻结 fixture 是这些字段存在之前导的，
+   转必填会把它们整批判非法（我试过，domain 一下红 64 条）。所以 schema 暂 optional，
+   另立绊线 `new-metric-fields-emitted` 钉住「真实产出路径恒发」。
+   要转必填就得重导那批 fixture——**授权我导我就导**，你自己导也行，导完我把 optional 去掉。
+2. **`biCashCost` 的形**：api.md 写 MetricValue，fe 的镜像也已按 MetricValue 冻。我照做了，
+   但代价是「花了钱、一个 BI 数都没有」这种真事实只能落成 `missing`，和「根本没数据」在前端
+   长得一样——而这恰恰是最该被看见的一种。内核里它是 RatioValue（能说 infinite）。
+   两条出路：(a) `canonicalMetricValueSchema` 放一档 `denominator_zero`；(b) 这个字段改回
+   RatioValue（与 `ratios.cashCpa` 同形）。我倾向 (a)，改动只在一个 schema。请裁。
+3. **`compare:"prev_window"`**：枚举已加进 `windowComparisonSchema.mode`，但**算前窗与出 deltas 的
+   实现还没接**（Q-041 ③，下一笔）。fe 若这轮就打 `prev_window`，后端目前会按未知模式处理，
+   不会假装给数——先说清楚免得被当成已完成。
+
+**★一个只有真 CLI 能抓到的坑，记给三方**
+`window-assessment` 要调 BI 算术，而算术原本住在 `dashboard-bi`（它又 import window-assessment）——
+**循环依赖**。vitest 的模块图不报，**真 CLI 入口直接炸**
+（`ReferenceError: Cannot access 'dailyAssessmentInputSchema' before initialization`）。
+唯一抓到它的是 db 包那三条起真 CLI 子进程的用例（`seed-bootstrap`/`seed-coefficients`/`qihang-identity-seed`）。
+已拆出 `dashboard-bi-math`（只做算术、明令不许反向 import）解环。
+**结论：domain 里「A 调 B、B 又调 A」这种，测试全绿也可能是假绿，别只信 vitest。**
+
+**仍等你的**：Q-038 已裁的两条我照做了；Q-044（v1.9.29 清洗归一/空段不顶位/历史归属）排在 Q-041 之后，
+按你的序做；Q-042 小时采样最后。
 ---
 
 ## fe → arch：F8-15 ⑦ 清掉 + 39 处清单出了（2026-09-10）
@@ -6902,35 +6938,35 @@ P0 只剩「真实模式端到端验」——我这边没有联调用的后端 E
 门禁：domain 1536 / db 1751（串行 156 文件）/ worker 2265（串行 199 文件）/ web 251 全绿；
 四包 tsc 干净，三包 `eslint .` 0 error。fe F8-19b 等的这批里，②④⑤⑥ 已可用；①③ 接着做。
 
-- **② 三 BI 值**：`assessment.biConv` / `biCashCost` / `overCost` 由**一处算术** `dashboardBiFrom` 算，
-  个人源（`computeWeightedAssessment`）与团队 KA 汇总（`ka-window-aggregate` 自己拼的那份 assessment）
-  两条路都调它。KA 那条原来手拼 assessment，所以一开始漏发三个键——绊线立刻抓到了。
-- **④ `incentiveCost`**：个人源取启航「激励」列，ka-data 无此列 → 恒 missing 不是 0；
-  聚合时缺键按 missing 参与求和。
-- **⑤ `pending`**：加进 `canonicalMetricValueSchema`，与 fe 已冻的镜像同形。
-- **⑥ `lineage.warnings[]`**：接受 `{code:"BATCH_FAILED", media, accountId, businessDate}`，字符串兼容。
+### be2 交付 `39bffa94` + `e1b660b8`：Q-041 ①③ 交齐 —— fe F8-19b/F8-20 等的 ①–⑥ 全部到位
+门禁：domain 1541 / db 1751（串行 156 文件）/ worker 2265（串行 202 文件）/ web 254；
+四包 tsc 干净，三包 eslint 0 error。加上上一封的 ②④⑤⑥，**Q-041 ①–⑥ 已全交**。
 
-**★请裁三件**
-1. **四个新字段我落成 optional**：几十份 `data-query/*` 冻结 fixture 是这些字段存在之前导的，
-   转必填会把它们整批判非法（我试过，domain 一下红 64 条）。所以 schema 暂 optional，
-   另立绊线 `new-metric-fields-emitted` 钉住「真实产出路径恒发」。
-   要转必填就得重导那批 fixture——**授权我导我就导**，你自己导也行，导完我把 optional 去掉。
-2. **`biCashCost` 的形**：api.md 写 MetricValue，fe 的镜像也已按 MetricValue 冻。我照做了，
-   但代价是「花了钱、一个 BI 数都没有」这种真事实只能落成 `missing`，和「根本没数据」在前端
-   长得一样——而这恰恰是最该被看见的一种。内核里它是 RatioValue（能说 infinite）。
-   两条出路：(a) `canonicalMetricValueSchema` 放一档 `denominator_zero`；(b) 这个字段改回
-   RatioValue（与 `ratios.cashCpa` 同形）。我倾向 (a)，改动只在一个 schema。请裁。
-3. **`compare:"prev_window"`**：枚举已加进 `windowComparisonSchema.mode`，但**算前窗与出 deltas 的
-   实现还没接**（Q-041 ③，下一笔）。fe 若这轮就打 `prev_window`，后端目前会按未知模式处理，
-   不会假装给数——先说清楚免得被当成已完成。
+**③ `compare:"prev_window"`（`e1b660b8`）**
+等长紧邻前窗；**month_to_date 例外走上月同天数**（9/1–9/10 → 8/1–8/10，不是平移到 8/22–8/31——
+那既不是上月同期也不是完整口径）；上月天数不够到月末为止；`today` 仍回 null。
+顺带把散在七处的 `"dod"|"wow"` 收敛成 `WindowComparisonMode`——散着写死枚举就是
+「加一个模式要改七处，漏一处就是 400」。
 
-**★一个只有真 CLI 能抓到的坑，记给三方**
-`window-assessment` 要调 BI 算术，而算术原本住在 `dashboard-bi`（它又 import window-assessment）——
-**循环依赖**。vitest 的模块图不报，**真 CLI 入口直接炸**
-（`ReferenceError: Cannot access 'dailyAssessmentInputSchema' before initialization`）。
-唯一抓到它的是 db 包那三条起真 CLI 子进程的用例（`seed-bootstrap`/`seed-coefficients`/`qihang-identity-seed`）。
-已拆出 `dashboard-bi-math`（只做算术、明令不许反向 import）解环。
-**结论：domain 里「A 调 B、B 又调 A」这种，测试全绿也可能是假绿，别只信 vitest。**
+**① `GET /data/filters`（`39bffa94`）**
+挂在 R-014 路由表（壳层本来就把不认识的路径交给 `findR014Route`），好处是直接拿会话批准的 tuple：
+**账户集合永远来自会话、不来自浏览器参数**。用例里那个越权户花得最多，漏进选项就是越权，断言钉住。
+- 纯算部分在 domain，脱库验两条：只列 cost>0（但 **cost 缺失 ≠ 0**）、下游随上游收窄。
+- 花费读取复用 Q-037 的失败批次守卫：**失败那天的旧 canonical 不算数**——拿过期数据替用户
+  决定「这个选项列不列」是最难发现的一种错。
+- 元数据/证据/花费同一个快照连接；解析行挂哪版规则就用哪版解释。
+- **团队 ka-data 源回 503 SOURCE_UNAVAILABLE，不回空列表**：空列表会被读成「没有可选项」，
+  而事实是「这个源还没接」（Q-041 ⑧）。
 
+**下一步**：Q-041 ⑦（`segment:<key>` 维度，规则侧已就绪、只差消费侧）→ ⑧ 团队三维 → ⑨ timezone，
+然后按你的序 Q-044 → Q-045 → Q-042。
+
+**★顺带报两件**
+1. `apps/web` 的 `npx tsc` 现在有 4 条红，全在 fe 新加的 `components/business/data/dashboard/window-picker.tsx`
+   与 `components/ui/calendar.tsx`：`Cannot find module 'react-day-picker'`。**不是我引入的**，
+   与后端无关（web 的 `npm test` 是 node --test，跑不到这两个文件，所以门禁看不出来）。
+   fe 装个依赖就好，提醒一句免得下次谁以为是契约改坏了。
+2. worker 满载串行仍有 3 个文件报 `Test timed out`（5s 线），单独重跑 86/86 全绿——
+   与你上一封说的「判抖动不放宽线」一致，只是这次换了三个文件，记一笔。
 **仍等你的**：Q-038 已裁的两条我照做了；Q-044（v1.9.29 清洗归一/空段不顶位/历史归属）排在 Q-041 之后，
 按你的序做；Q-042 小时采样最后。
