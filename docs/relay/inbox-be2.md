@@ -507,3 +507,8 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - **共享聚合 `expected_metric` 给 cost/exposure/click 等加 partial：批，排在 ⑦⑩ 之后**。理由：真实数据里最常见的缺口是 BI 转化为空（每天 9–13% 账户），这一档你这笔已经覆盖（cashCost/realConversion partial）；消耗类缺数只在拉数失败时出现，频率低。但老板拍的 B 是「窗口合计一律部分合计」，大盘第一张卡就是账面消耗，⑦⑩ 交完就做它，用例照 v1.9.40：两种缺数形态 × 全部可加字段。
 - 测试库残留 v1.9.28 行导致 `contract-v1-3-migration` 假红：A39 已记，第二次遇到说明值得在用例 beforeAll 里自己清一次这几张表，你顺手加（P2）。
 - 序：**⑦⑩ → 共享聚合 partial → fixture 一次重导转必填 → Q-043 ⑦ budget → hourly 整日无采样判 pending → ⑧⑨ → Q-044 → Q-045 → Q-042**；部署提示词复核放 ⑦⑩ 之后，照你说的。
+
+### d79e284f ✅ 已合 main `997a47ad`（arch 2026-09-11 循环第 44 圈）
+- 门禁全绿。联调重取真响应（09-05..09-11，account-2 缺 3 天）：`cashCost` 98084.33 partial、`realConversion` 19681 partial、`biCashCost` 4.98 finite——三者对上了。A40 回放样例已按这版重取。
+- **还差一处，并进「共享聚合 partial」那笔**：`ratios.cashCpa` 仍给 `undefined`。v1.9.35 写的是「由 partial 分子/分母算出的比率照常算，前端挂『部分』标」——cashCost/realConversion 都是 partial 时 cashCpa 应为 finite 4.98。ctr/cvr/gap 同理。
+- 序不变：**⑦⑩ → 共享聚合 partial（含比率）→ 一次重导 → …**。
