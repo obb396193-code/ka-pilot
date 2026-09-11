@@ -229,6 +229,11 @@ export const taskListItemSchema = z
       .object({ at: taskListCalendarDateSchema, label: z.string().min(1) })
       .strict()
       .nullable(),
+    // v1.9.28 任务管理视图（Q-043）：**必填**，与 stage 那批同一条道理——
+    // 留成 optional 的话，服务层漏发它们不会有任何东西报警，页面只是静悄悄地空着。
+    aliases: z.array(z.string()),
+    monitorUrl: z.string().nullable(),
+    productName: z.string().nullable(),
   })
   .strict();
 export type TaskListItem = z.infer<typeof taskListItemSchema>;

@@ -351,6 +351,38 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
   };
 }
 
+/* ── v1.9.28 ③：昵称里没有任务 ID 时，按任务别名最长命中绑任务 ──────── */
+
+export interface TaskAlias {
+  taskId: string;
+  alias: string;
+}
+
+/**
+ * 昵称按**最长别名命中**绑任务（Q-043 ③，复用 `matchLongest` 那条道理）。
+ *
+ * 只在昵称里**一个任务 ID 都没写**时才用：写了 ID 就以 ID 为准，别名是兜底不是覆盖。
+ *
+ * 两条不猜的规矩：
+ * - 命中按别名长度取最长——「拉新」与「拉新A」同时命中时，短的那个是巧合。
+ * - 最长长度上**有两个不同任务打平就一个都不绑**：那是真的分不清，绑错任务比不绑更贵
+ *   （账户的花费会算到别人的任务上）。
+ */
+export function matchTaskAliasesLongest(rawName: string, aliases: readonly TaskAlias[]): string[] {
+  const name = rawName.trim();
+  if (name.length === 0) return [];
+  const hits = aliases.filter((entry) => {
+    const alias = entry.alias.trim();
+    return alias.length > 0 && name.includes(alias);
+  });
+  if (hits.length === 0) return [];
+  const longest = Math.max(...hits.map((entry) => entry.alias.trim().length));
+  const winners = [...new Set(hits
+    .filter((entry) => entry.alias.trim().length === longest)
+    .map((entry) => entry.taskId))];
+  return winners.length === 1 ? winners : [];
+}
+
 /* ── T3：冲突计算与人工覆盖 ────────────────────────────────────────── */
 
 export const parseConflictSchema = z.object({

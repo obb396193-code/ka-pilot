@@ -145,6 +145,10 @@ function itemFor(row: TaskListRepositoryRow, businessDate: string): TaskListItem
     ),
     // 下一个里程碑要的是任务日历/SOP 排期，本批没有源 → null，不拿 period_end 冒充。
     nextMilestone: null,
+    // v1.9.28 任务管理视图（be2 Q-043）：三个字段直接透传，仓储取什么就是什么。
+    aliases: row.aliases,
+    monitorUrl: row.monitorUrl,
+    productName: row.productName,
   };
 }
 

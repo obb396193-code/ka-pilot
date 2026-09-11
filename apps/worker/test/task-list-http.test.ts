@@ -40,6 +40,10 @@ function taskResult(status = "active"): TaskListRepositoryResult {
     rows: [{
       workspaceId,
       taskId: "task-http-1",
+      // v1.9.28 任务管理视图的三个字段（be2 Q-043）：仓储行现在恒有它们。
+      aliases: [],
+      monitorUrl: null,
+      productName: null,
       taskName: "HTTP 任务",
       bizName: "业务甲",
       status,

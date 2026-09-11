@@ -1,7 +1,7 @@
 import { AccountNameParseRepository } from "@ka/db";
 import {
-  applyOverride, computeConflicts, namingRuleSchema, parseAccountName, statusWithConflicts,
-  toNamingRule, withEffectiveAnalyzable, type NamingRule,
+  applyOverride, computeConflicts, matchTaskAliasesLongest, namingRuleSchema, parseAccountName,
+  statusWithConflicts, toNamingRule, withEffectiveAnalyzable, type NamingRule,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -182,7 +182,10 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       });
 
       const rules = new Map<string, NamingRule>();
-      const summary = { reparsed: 0, skippedNoRule: 0, byStatus: {} as Record<string, number> };
+      // v1.9.28 ③：昵称里一个任务 ID 都没写时，按任务别名最长命中兜底绑任务。
+      // 别名索引一次读完——每条昵称各查一次库，几百个账户就是几百次往返。
+      const aliases = await repository.taskAliases(context.auth);
+      const summary = { reparsed: 0, skippedNoRule: 0, byStatus: {} as Record<string, number>, boundByAlias: 0 };
       for (const candidate of candidates) {
         if (!rules.has(candidate.media)) {
           const stored = await repository.currentRule(context.auth, candidate.media);
@@ -191,6 +194,11 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
         }
         const rule = rules.get(candidate.media)!;
         const parse = parseAccountName(candidate.accountName, rule);
+        // 写了 ID 就以 ID 为准：别名是兜底，不是覆盖。
+        const aliasBound = parse.taskIds.length > 0
+          ? [] : matchTaskAliasesLongest(candidate.accountName, aliases);
+        if (aliasBound.length > 0) summary.boundByAlias += 1;
+        const taskIds = parse.taskIds.length > 0 ? parse.taskIds : aliasBound;
         const conflicts = computeConflicts(parse, { platform: {}, qihangTaskIds: [] });
         const status = statusWithConflicts(parse, conflicts);
         const saved = await repository.upsertParse(context.auth, {
@@ -200,7 +208,7 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
           ruleVersion: rule.version,
           status,
           segments: parse.segments,
-          taskIds: parse.taskIds,
+          taskIds,
           conflicts,
         });
         summary.reparsed += 1;

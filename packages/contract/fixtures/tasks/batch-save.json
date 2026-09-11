@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "data": {
+    "saved": [
+      {
+        "taskId": "task-manage-1",
+        "taskName": "拉新·主力批次",
+        "bizName": "拉新",
+        "status": "active",
+        "aliases": [
+          "拉新专项",
+          "拉新"
+        ],
+        "monitorUrl": "https://example.invalid/monitor",
+        "productName": "某产品"
+      },
+      {
+        "taskId": "task-manage-2",
+        "taskName": "拉新·停投批次",
+        "bizName": "拉新",
+        "status": "paused",
+        "aliases": [
+          "拉新专项"
+        ],
+        "monitorUrl": "https://example.invalid/monitor",
+        "productName": "某产品"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /api/v1/tasks/batch-save：真响应。一个大类整体保存，**全部成功才写**；任一条失败返 400 且 error.details.failed[] 逐条说明（code=INVALID_INPUT/NOT_FOUND），此时一条也不落库——一半写进去一半没写，页面上看不出是哪一半"
+  }
+}

@@ -57,6 +57,10 @@ export interface TaskListRepositoryRow {
   taskName: string | null;
   bizName: string | null;
   status: string | null;
+  /** v1.9.28 任务管理视图（Q-043）：别名、监测链接、产品名。 */
+  aliases: string[];
+  monitorUrl: string | null;
+  productName: string | null;
   periodStart: string | null;
   periodEnd: string | null;
   targetVolume: number | null;
@@ -262,6 +266,9 @@ function mapListRow(row: ListRow): TaskListRepositoryRow {
     taskName: row.task_name,
     bizName: row.biz_name,
     status: row.status,
+    aliases: Array.isArray(row.aliases) ? row.aliases.map((alias) => String(alias)) : [],
+    monitorUrl: row.monitor_url === null || row.monitor_url === undefined ? null : String(row.monitor_url),
+    productName: row.product_name === null || row.product_name === undefined ? null : String(row.product_name),
     periodStart: row.period_start,
     periodEnd: row.period_end,
     targetVolume: nullableNumber(row.target_volume),
