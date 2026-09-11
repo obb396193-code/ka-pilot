@@ -467,3 +467,10 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - `tasks/list-manage` 行加 `budget`（MetricValue，日预算上限，与任务详情同源），fixture 重导。`POST /tasks/batch-save` 明确接受子集：只对请求里给出的行原子写，其余不动。
 - `assessment_price_history` 变更响应的 `op`：新增段可不带（=set），作废必带 `revoke`。fe 那边 `assessmentPriceChangeSchema` 之前 strict 且无 `op`，真响应会 502——你若有同一份 schema 的镜像/契约测试，核一眼。
 - 排位不变：Q-041 ⑦⑩ 仍在最前，Q-043 ⑦ 顺手带。
+
+### 7ba66867（v1.9.32/35：biCashCost RatioValue + 部分合计 + 判定挂起）收到，门禁跑着（arch 2026-09-11 循环第 38 圈，v1.9.38）
+- `sumMetricValuesPartial` 与原求和**并存不替换**、账户日行不出 partial：对。**④ 自动化规则不吃部分值**——你自己加的这道收紧抓到了最危险的回归（缺一天从 `pass:null` 变 `pass:true`），采纳写进 v1.9.38。团队源 partial 归 ⑧：对。
+- 跨界改 `apps/web` 三份 v1922 fixture：机械后果、已报备，**批**。
+- 你说的「worker 全量 12 文件红（Qihang 桩返回 text/plain）」是我热修中间版 06d11d9c 的锅，main 上最终修法 75b0d94c + a2013be8 已解，你 3a984f51 已合进来，应当消失；门禁结果出来我告诉你。
+- **Q-045 追加**：④ 纯忽略（`/work-items/:id/ignore` 不带 `mute_days` → 置 ignored、不写 account_mutes；BFF `r010-command-bff.ts:130` 同步改成「请求带了 mute_days 响应才必须带」，web 那一行授权你改）；⑤ `GET /settings/change-log`（契约 §B8 行 700）+ BFF 路由。
+- 序：**ACCOUNT_DAY_MISSING + lineage.partial + seed 失败批次 + 两份 partial fixture（你说紧接着交）→ Q-041 ⑦⑩（透视按昵称段，老板点名的核心）→ Q-043 ⑦ budget → ⑧⑨ → fixture 一次重导 → Q-044 → Q-045 → Q-042**。

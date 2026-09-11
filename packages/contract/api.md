@@ -1463,3 +1463,20 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **`tasks/list-manage` 行加 `budget`**（MetricValue，日预算上限，与任务详情同源；缺则 missing），fe 有值才显列。be2 Q-043 ⑦，fixture `tasks/list-manage.json` 重导。
 - `assessment_price_history` 的变更响应 `op` 字段：新增段响应可不带（等于 `set`），作废响应必带 `op:"revoke"`；镜像 schema 里 `op` 为可选枚举 `set|revoke`。
 - 删除大类文案：「该大类下任务将置为已结束，历史数据仍可查」，不写「不可恢复」。停投沉底排序只在拉数时算一次。
+
+## v1.9.38 追加（2026-09-11 arch；两套查询端点键名并排、纯忽略、考核价历史读路径、自动化规则不吃部分值）
+**两个查询端点，两套键名（fe F8-24 指出，照代码核过）：**
+
+| BFF → 后端 | queryId | 日期键 | 其它必填 | 权威 schema |
+|---|---|---|---|---|
+| `/api/internal/data-query` → `POST /api/v1/data/query` | `account.summary / trend / dimension / table / detail` | `dateFrom`+`dateTo`（`date_from/date_to` 也收，不得混用）或 `date` | dimension 要 `dimensionType`；detail 要 `accountId` | `apps/worker/src/data/query-registry.ts` |
+| 同上 | `account.pivot2` | `window_from`+`window_to` | `media`、`dimA`、`dimB` | 同上（be2 Q-041 ⑩ 统一后改驼峰） |
+| `/api/internal/query` → `POST /api/v1/query` | `account.hourly` | `date`（单日） | `media`；可选 `accountIds[]`、`hhFrom/hhTo` | `packages/domain/src/operational-query-request.ts`（strict） |
+| 同上 | `account.gap` | `date_from`+`date_to`（只收下划线） | `media`；可选 `accountIds[]` | 同上 |
+
+v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两套都只能经 `lib/data/query-params.ts` 构造（A36），用例从上表两处 schema 源码解析键名比对，不抄期望值。
+
+- **纯忽略**：`POST /work-items/:id/ignore {reason_chip?, mute_days?}` 两者都可选是契约本意；后端现在对不带 `mute_days` 的请求回 503、BFF 把不带 `mute_days` 的 200 判上游无效——**是后端未实现，不是设计**。be2 Q-045 ④ 实现纯忽略（置 ignored、不写 account_mutes，响应不带 mute_days），BFF 同步改为「请求带了 mute_days 响应才必须带」。落地前前端保留「先选原因再选静音时长」单一表单。
+- **考核价历史读路径**：`GET /settings/change-log` 后端与 BFF 都没有（be2 Q-045 ⑤）。落地前任务详情/任务管理的「历史」弹层读 `GET /tasks/:id/timeline?kinds=assessment_price`（已在 main）显 at/actor/summary/detail；作废按钮等 change-log 到了再开。**真实模式下不得读 fixture 顶替**——假价格历史挂在真任务旁边会被当真。
+- **自动化规则不吃部分值**（be2 7ba66867 自加，采纳）：`rule-daily-evidence` 把 `partial` 一律按「不知道」处理（METRIC_MISSING），由它派生的比率同样不知道；部分合计只用于展示，任何会触发调价/停投的判定只认 `available`。
+- **部分合计这版只开个人源**：团队 ka-data 源的 SQL 直出汇总拿不到逐成员缺失信息，接 partial 归 Q-041 ⑧，两条路径一起改，避免同一窗口「成员路径说部分、汇总路径说缺失」。
