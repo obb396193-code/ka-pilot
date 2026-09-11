@@ -551,12 +551,12 @@
        "availability": "missing"
       },
       "realConversion": {
-       "value": null,
-       "availability": "missing"
+       "value": 1862,
+       "availability": "partial"
       },
       "cashCost": {
-       "value": null,
-       "availability": "missing"
+       "value": 11564.429999999998,
+       "availability": "partial"
       },
       "costSpace": {
        "value": 55467.57,
