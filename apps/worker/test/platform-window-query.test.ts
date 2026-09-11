@@ -13,6 +13,8 @@ function setup() {
     querySummary: vi.fn(async (scope: unknown) => { void scope; return summary(); }),
     queryLineage: vi.fn(async () => ({ dataAsOf: "2026-09-02T10:00:00Z", canonicalRows: 2, returnedAccounts: 1, requestedAccountDays: 2, returnedAccountDays: 2 })),
     loadAccountCounts: vi.fn(async () => ({ total: 1, determinable: 1, onTarget: 1 })),
+    // v1.9.33 缺数点名：本桩不造缺口，恒回空表。
+    loadMissingAccountDays: vi.fn(async () => []),
     loadAssessment: vi.fn(async () => [
       { ds: "2026-09-01", cashCost: metricValue(22), realConversion: metricValue(1), price: { value: 20, effectiveDate: "2026-09-01", versionKey: "p1" } },
       { ds: "2026-09-02", cashCost: metricValue(3), realConversion: metricValue(1), price: { value: 10, effectiveDate: "2026-09-02", versionKey: "p2" } },

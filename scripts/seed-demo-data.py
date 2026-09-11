@@ -156,6 +156,23 @@ print("   变更集草稿 1 个（3 明细，挂 P0 工作项）")
 IDENTITY="00000000-0000-4000-8000-000000000090"
 sql(f"""INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level)
   SELECT workspace_id,'{IDENTITY}',media,account_id,'preview' FROM accounts WHERE workspace_id='{WS_P}' ON CONFLICT DO NOTHING""")
+# v1.9.33（be2）：给 account-2 的最近一天补一条**失败批次**记录，让「缺数点名」的
+# BATCH_FAILED 分支在本地看得见——否则本地只能看到 ACCOUNT_DAY_MISSING 那一半。
+_fail_ds = (today - dt.timedelta(days=1)).isoformat()
+sql(f"""INSERT INTO jobs(id,workspace_id,job_type,payload,credential_owner_user_id,status)
+  VALUES('00000000-0000-4000-8000-0000000000fb','{WS_P}','etl_full',
+    '{{"media":"KUAISHOU","accountIds":["account-2"]}}'::jsonb,'{USER}','done')
+  ON CONFLICT DO NOTHING""")
+sql(f"""INSERT INTO etl_runs(workspace_id,job_id,run_kind,scope,status,rows_ingested)
+  VALUES('{WS_P}','00000000-0000-4000-8000-0000000000fb','full',
+    jsonb_build_object('batchFailures', jsonb_build_array(jsonb_build_object(
+      'code','BATCH_FAILED','resource','account_realtime','ds','{_fail_ds}','media','KUAISHOU',
+      'accountIds', jsonb_build_array('account-2'),
+      'fingerprint', repeat('a',64), 'failedAt', now()::text))),
+    'done',0)""")
+sql(f"DELETE FROM account_metrics_daily WHERE workspace_id='{WS_P}' AND media='KUAISHOU' AND account_id='account-2' AND ds='{_fail_ds}'")
+print(f"   account-2 / {_fail_ds} 失败批次记录 + 当天 canonical 已删（演示缺数点名）")
+
 print("⑤ 授权 6 户（preview）")
 print("\n全部完成：账户 6 / 任务 3 / 指标 186 行 / 工作项 7 / 变更集草稿 1 / 授权 6。")
 

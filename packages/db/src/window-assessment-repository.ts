@@ -150,6 +150,50 @@ export class WindowAssessmentRepository {
     return { total: row.total as number, determinable: row.determinable as number, onTarget: row.on_target as number };
   }
 
+  /**
+   * v1.9.33 缺数点名：这一窗里**哪个账户的哪一天、少了哪几个字段**。
+   *
+   * 只给一屏「−」而不点名，用户没法判断是「这天没投」还是「这天没拉到」——
+   * 联调抽查就是这么栽的：整窗 missing，warnings 里却只有一条不相干的预算告警。
+   * `batchFailed` 为真表示这一天有失败批次记录（已知原因，上层改报 `BATCH_FAILED`）。
+   * 这里只查「有没有失败记录」，不重复 `etlBatchReadableSql` 的恢复判定：
+   * 能走到这一行说明它**本来就是缺的**——若失败已被恢复并重算，行就不为空，也就不会被点名。
+   * （那个共享守卫引用 `computed_at`，而这一步读的是 CTE 的投影，没有那一列。）
+   */
+  async loadMissingAccountDays(scope: SemanticQueryScope): Promise<{
+    media: string; accountId: string; ds: string; fields: string[]; batchFailed: boolean;
+  }[]> {
+    const filter = assessmentFilter(scope);
+    const result = await this.connection.query<{
+      media: string; account_id: string; ds: string; fields: string[]; batch_failed: boolean;
+    }>(`${EXPECTED_METRIC_CTE}
+      SELECT metric.media, metric.account_id, metric.ds::text AS ds,
+        ARRAY_REMOVE(ARRAY[
+          CASE WHEN metric.cash_cost IS NULL THEN 'cashCost' END,
+          CASE WHEN metric.real_conversion IS NULL THEN 'realConversion' END,
+          CASE WHEN metric.cost IS NULL THEN 'cost' END
+        ], NULL) AS fields,
+        EXISTS (
+          SELECT 1 FROM etl_runs AS failed_run
+          CROSS JOIN LATERAL jsonb_array_elements(COALESCE(failed_run.scope->'batchFailures','[]'::jsonb)) AS failure(value)
+          WHERE failed_run.workspace_id=metric.workspace_id
+            AND failure.value->>'media'=metric.media
+            AND (failure.value->'accountIds') ? metric.account_id
+            AND (failure.value->>'ds')::date=metric.ds
+        ) AS batch_failed
+      FROM expected_metric AS metric
+      WHERE ${filter.whereSql}
+        AND (metric.cash_cost IS NULL OR metric.real_conversion IS NULL OR metric.cost IS NULL)
+      ORDER BY metric.media, metric.account_id, metric.ds
+      LIMIT 10001`, filter.values);
+    assertBounded(result.rows);
+    return result.rows.map((row) => ({
+      media: String(row.media), accountId: String(row.account_id), ds: String(row.ds),
+      fields: Array.isArray(row.fields) ? row.fields.map(String) : [],
+      batchFailed: row.batch_failed === true,
+    }));
+  }
+
   async load(scope: SemanticQueryScope): Promise<DailyAssessmentInput[]> {
     const filter = assessmentFilter(scope);
     const result = await this.connection.query<AssessmentGroupRow>(`${EXPECTED_METRIC_CTE}

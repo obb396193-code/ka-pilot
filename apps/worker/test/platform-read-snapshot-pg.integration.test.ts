@@ -69,6 +69,8 @@ describe("Platform adapter production snapshot / synthetic real PG", () => {
         querySummary: repository.querySummary.bind(repository),
         loadAssessment: assessment.load.bind(assessment),
         loadAccountCounts: assessment.loadAccountCounts.bind(assessment),
+        // 缺数点名（v1.9.33）：本桩不造缺口，恒回空表。
+        loadMissingAccountDays: async () => [],
         queryLineage: async (scope) => {
           const result = await repository.queryLineage(scope);
           // Separate connection commits a new version while the request snapshot stays open.

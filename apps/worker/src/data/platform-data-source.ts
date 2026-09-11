@@ -289,7 +289,10 @@ export class PlatformDataSource {
           ...(resolved.params.taskId === undefined ? {} : { taskId: resolved.params.taskId }),
         });
         const rows = canonicalizeQueryRows(resolved.queryId, "platform", [result.row], execution.workspaceId);
-        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings: result.warnings };
+        // v1.9.33：缺数点名进 `lineage.warnings`（结构化对象），与原有字符串告警并存。
+        // 一屏「−」而不点名，用户分不清「这天没投」还是「这天没拉到」。
+        const warnings = [...result.warnings, ...result.namedGaps];
+        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings };
         return { queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
           status: "ready", rows, returnedRowCount: rows.length, lineage, warnings: result.warnings,
           wholeResultTotal: lineage.partial ? { value: null, availability: "partial", reason: "Canonical window coverage is incomplete" }

@@ -22,6 +22,8 @@ function setup() {
     loadAssessment: async (scope) => [{ ds: scope.dateFrom, cashCost: metricValue(10), realConversion: metricValue(2),
       price: { value: 20, effectiveDate: "2026-08-01", versionKey: "fixture-price" } }],
     loadAccountCounts: async () => ({ total: 1, determinable: 1, onTarget: 1 }),
+    // 缺数点名（v1.9.33）：本桩不造缺口，恒回空表。
+    loadMissingAccountDays: async () => [],
   }));
   const kaData = new KaDataClient({ baseUrl: "https://ka.test.invalid", token: "synthetic", teamWorkspaceId: workspaceId,
     fetchFn: async (_url, init) => {
