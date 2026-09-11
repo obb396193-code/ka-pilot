@@ -400,9 +400,16 @@ function assertResponseStatus(response: Response): void {
 
 // F-OS-005：网关拦截页是 HTTP 200 + text/html（aplus-core/data-spm），以前被当成信封解析失败重试 4 次。
 // 非 JSON 的 2xx 是确定性失败，直接以 QihangUnexpectedContentTypeError 抛出（不重试）。
+// 只认「网关拦截页」这一种确定性失败：content-type 是 text/html，或正文以 HTML 标签开头且不是 JSON。
+// 单测/内网 mock 常用 text/plain 装 JSON，不能因 content-type 不带 json 就拒；截断/畸形 JSON 仍走原有协议重试。
 function assertJsonContentType(response: Response, bodyText: string): void {
   const contentType = response.headers.get("content-type") ?? "";
-  if (contentType !== "" && !/json/i.test(contentType)) {
+  if (/json/i.test(contentType)) return;
+  const looksHtml = /text\/html/i.test(contentType) || /^\s*<(!doctype|html|head|body)/i.test(bodyText);
+  if (!looksHtml) return;
+  try {
+    JSON.parse(bodyText);
+  } catch {
     throw new QihangUnexpectedContentTypeError(contentType, bodyText.slice(0, 200));
   }
 }
