@@ -7040,3 +7040,36 @@ mock 生产构建过，3402 起着。
 3. **8 个 tab 里那三档我照你的裁执行**（F8-24 三个接线、策略分析并进 F8-22、三个保持示例态）。
    顺序按你的：F8-23 任务管理 → 第 0/1 批 → F8-24 → F8-19b P1。
    F8-22 我先做了（老板当面点的「像 Excel 透视表一样自选字段」），排在 F8-23 前面，跟你报备。
+
+### be2 交付 `7ba66867` + `5932b365`：v1.9.32 biCashCost 改形 + v1.9.35 部分合计 + v1.9.33 缺数点名
+门禁：domain 1544 / db 1751（串行 156 文件）/ worker 2276（串行 201 文件）/ web 271 全绿；
+四包 tsc 干净、三包 `eslint .` 0 error。你说的「一笔交、别让同一片代码合三次」照做了。
+
+- **biCashCost 回 RatioValue**（裁 (b)）：`cashCost>0 且 biConv=0` → infinite。
+  前端镜像与三份 v1922 fixture 我先改了，合流时发现 main 上 fe 已自己改过（`486f2adb`），
+  **web 那两处冲突我按规矩取了交方（fe）的版本**，只保留我这边后端的改动。
+- **部分合计**：MetricValue 第四态 `partial`（唯一带真值的非 available 态）；
+  新增 `sumMetricValuesPartial` 与原函数**并存**——账户日原始行、单日行「缺一个就整体缺」是对的。
+- **判定挂起**：`costStatusReason:"partial_data"`，onTarget/costStatus 全 null。
+- **★自动化规则不许吃部分值**（我加的收紧，不在派单里）：规则会据此调价/停投。
+  发现方式是原有用例变红——缺一天的窗口原本 `pass:null`，接上部分合计后变成 `pass:true`，
+  正是最危险的那种回归。已把 partial 及其派生比率在规则层一律当「不知道」。
+- **部分合计这版只开个人源**：团队 KA 另有一条 SQL 直出总数的对拍路径，拿不到逐成员缺失信息；
+  两边口径必须一致，否则同一窗口「成员路径说部分、汇总路径说缺失」。团队源归 Q-041 ⑧。
+- **缺数点名**：新 reader 逐账户日给 `{code, media, accountId, businessDate, fields[]}`，
+  有失败记录的报 `BATCH_FAILED`；进 `lineage.warnings`，上限 200 条 + 截断计数。
+  `lineage.partial=true`。seed 给 account-2 最近一天补失败批次记录并删当天 canonical，
+  让 BATCH_FAILED 分支本地可见。
+
+**★两条经验，值得进门禁清单**
+1. 共享守卫 `etlBatchReadableSql` 引用 `computed_at`，**套到 `expected_metric` 的投影上会直接
+   `column metric.computed_at does not exist`**。点名那步只需要「有没有失败记录」，
+   不需要恢复判定（能被点名的行本来就是缺的），所以那里写的是最小 EXISTS 而不是套守卫。
+2. 我这边的测试库里残留过 v1.9.28 字段（上一轮 worker 用例超时中断、afterAll 没走完），
+   于是 `contract-v1-3-migration` 被 027 的降级闸挡红。清库后连跑全绿。
+   **这是操作面问题不是代码问题**，但它会伪装成「迁移回放坏了」，记一笔省得下次误判。
+
+**仍等你的**：①「四键转必填 + fixture 一次重导」——你说放在 ③ 落地后一起做，③ 已交（`e1b660b8`），
+授权我就导；② `summary-window-v3-partial.json` / `dimension-v3-partial.json` 两份 partial fixture
+我可以从真响应导（需要先造一个缺天的合成空间，脚本我有），要我导就说一声。
+**下一步按序做 Q-041 ⑦⑩**（pivot2 收 dateFrom/filters + 维度扩到全集与 `segment:<key>`）。
