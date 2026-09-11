@@ -16,7 +16,7 @@ exports.up = (pgm) => {
     BEGIN
       BEGIN
         CREATE EXTENSION IF NOT EXISTS pg_trgm;
-      EXCEPTION WHEN insufficient_privilege OR undefined_file THEN
+      EXCEPTION WHEN insufficient_privilege OR undefined_file OR feature_not_supported THEN
         RAISE NOTICE 'pg_trgm unavailable; kb search stays on the ILIKE path';
       END;
 

@@ -6,6 +6,7 @@ import {
   QihangError,
   QihangResourceLimitError,
   QihangSuspectedTruncationError,
+  QihangUnexpectedContentTypeError,
   RetryExhaustedError,
 } from "../src/qihang/errors.js";
 import { QihangClient } from "../src/qihang/client.js";
@@ -45,6 +46,33 @@ describe("QihangClient", () => {
     expect(calledUrl.searchParams.get("pageSize")).toBe("50");
     expect(result.rows).toEqual([{ account_id: "a1" }]);
     expect(result.pagination?.totalNum).toBe(1);
+  });
+
+  // F-OS-005（2026-09-11 内网实测）：resource=account 忽略 accountIds，766 个 id 把请求行撑过网关 8K。
+  it("never sends accountIds on the account pagination request, however many are bound", async () => {
+    const fetchFn = vi.fn<typeof fetch>(async () =>
+      jsonResponse({ successful: true, data: { rows: [], totalNum: 0, pageNum: 1, pageSize: 50 } }),
+    );
+    const client = new QihangClient({ fetchFn });
+    const accountIds = Array.from({ length: 766 }, (_, i) => `18032405${String(i).padStart(3, "0")}`);
+    await client.query({ resource: "account", userId: "u1", media: "KUAISHOU", accountIds, pageNum: 1, pageSize: 50 });
+    const calledUrl = new URL(fetchFn.mock.calls[0]?.[0] as string);
+    expect(calledUrl.searchParams.has("accountIds")).toBe(false);
+    expect(new TextEncoder().encode(calledUrl.toString()).byteLength).toBeLessThan(8_192);
+  });
+
+  it("treats an HTTP 200 non-JSON body as a deterministic failure without retrying", async () => {
+    const fetchFn = vi.fn<typeof fetch>(async () =>
+      new Response("<html><head><script src=\"aplus-core\"></script></head></html>", {
+        status: 200,
+        headers: { "content-type": "text/html;charset=utf-8" },
+      }),
+    );
+    const client = new QihangClient({ fetchFn, maxRetries: 3, retryBaseMs: 0 });
+    await expect(
+      client.query({ resource: "account", userId: "u1", media: "KUAISHOU", pageNum: 1, pageSize: 50 }),
+    ).rejects.toBeInstanceOf(QihangUnexpectedContentTypeError);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
   });
 
   it.each([

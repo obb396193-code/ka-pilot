@@ -13,6 +13,7 @@ import {
   QihangResourceLimitError,
   QihangSuspectedTruncationError,
   RetryExhaustedError,
+  QihangUnexpectedContentTypeError,
 } from "./errors.js";
 import { createQihangObservation, type QihangObservation } from "./observation.js";
 import { protocolDiagnostic } from "./protocol-diagnostic.js";
@@ -236,6 +237,7 @@ export class QihangClient {
       assertResponseStatus(response);
       const bodyText = await readBoundedResponse(response, this.maxResponseBytes);
       assertSuccessfulHttpResponse(response, bodyText);
+      assertJsonContentType(response, bodyText);
       const envelope = parseSuccessfulEnvelope(bodyText, query);
       let result: QihangQueryResult;
       try { result = this.extractResult(query.resource, envelope); }
@@ -282,7 +284,10 @@ export class QihangClient {
     appendParam(url.searchParams, "resource", query.resource);
     appendParam(url.searchParams, "userId", query.userId);
     appendParam(url.searchParams, "media", query.media ?? "KUAISHOU");
-    appendParam(url.searchParams, "accountIds", query.accountIds);
+    // F-OS-005（2026-09-11，内网实测）：`resource=account` 完全忽略 accountIds（传 0/3/…/728 个返回体字节级相同），
+    // 而 766 个 id 会把请求行撑到 8628 字节，超过网关 nginx 8K 上限，回的是 text/html 拦截页。
+    // 账户分页只按 userId/media 拉，范围由 full-handler 的 scope 断言兜底。其它资源仍需要 accountIds。
+    if (query.resource !== "account") appendParam(url.searchParams, "accountIds", query.accountIds);
 
     switch (query.resource) {
       case "account":
@@ -390,6 +395,15 @@ function assertResponseStatus(response: Response): void {
   }
   if (RETRYABLE_STATUS.has(response.status)) {
     throw new QihangHttpError(response.status, `Qihang HTTP ${response.status}`);
+  }
+}
+
+// F-OS-005：网关拦截页是 HTTP 200 + text/html（aplus-core/data-spm），以前被当成信封解析失败重试 4 次。
+// 非 JSON 的 2xx 是确定性失败，直接以 QihangUnexpectedContentTypeError 抛出（不重试）。
+function assertJsonContentType(response: Response, bodyText: string): void {
+  const contentType = response.headers.get("content-type") ?? "";
+  if (contentType !== "" && !/json/i.test(contentType)) {
+    throw new QihangUnexpectedContentTypeError(contentType, bodyText.slice(0, 200));
   }
 }
 

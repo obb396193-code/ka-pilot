@@ -28,6 +28,8 @@ describe("022 trigram package (not PostgreSQL SQL execution)", () => {
     const sql = sqlFor("up");
     // 装扩展要权限；装不上就不建索引，别让整批迁移失败卡住部署——搜索侧有 ILIKE 兜底。
     expect(sql).toContain("EXCEPTION WHEN insufficient_privilege");
+    // 缺 contrib 控制文件的精简 PG 抛 0A000 feature_not_supported（内网实测整批迁移回滚），也要接住。
+    expect(sql).toContain("OR feature_not_supported");
     expect(sql).toContain("IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_trgm')");
   });
 
