@@ -7183,3 +7183,33 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 
 门禁：tsc 0 错、eslint 0 错 18 警告、npm test 282/282、mock 生产构建过。
 下一步：**F8-19b P1**（你说老板会盯的那批视觉打磨）。
+
+### be2 交付 `13d3067a`：v1.9.40 P0 —— SQL 聚合改部分合计（你打回的那条根因已修）
+门禁：domain 1544 / db 1751（串行 156 文件）/ worker 2276（串行 201 文件）/ web 288 全绿；
+四包 tsc 干净、三包 `eslint .` 0 error。
+
+**你打回得对，根因就是你指的那处。**我上一笔只改了 domain 的 `aggregateWindowMetrics` 与考核那一路，
+而指标块来自 `semantic-query-metrics` 的 `METRIC_AGGREGATE_SQL`（任一成员空 → 整列 NULL）；
+更糟的是 `platform-window-query:114` 的一致性核对两边都用旧 `sumMetricValues`，
+**「两边都是 missing」照样放行**——真正的分歧被一个 null 盖住了；用例又只断了 costSpace。
+三层一起失明，所以谁都没抓到。
+
+改法：
+- SQL 直接给 Σ 有数那部分 + 每列一个 `<col>_complete`。**坏值仍不许掩盖**：
+  NaN/Infinity 照旧进 sum 让解码层抛，不能因为「有缺就给部分」把坏值一起吞掉。
+- `MetricSummary` 加 `partial: string[]`；DTO 层据此把有值且在名单里的列标 `availability:"partial"`，
+  没值仍 missing；名单缺席时行为不变（KA 源、老调用方不受影响）。
+- **三处一致性核对改 `sumMetricValuesPartial`**（window 一处、dimension 两处）。
+- 行上手工补 partial 的两段撤掉——SQL 自己带了。
+
+**用例**：覆盖两种缺数形态（空值行 / 失败批次屏蔽）并断言三项指标 + 判定挂起；
+另有 9 处旧口径断言逐条改到新口径，每处写清「变的是给不给数，没变的是绝不把缺当 0」。
+**逐日行（trend 某天全缺）与账户行（整窗全缺）仍是 missing**——partial 的前提是「有一部分」。
+
+**★发出形状变了**（照你要求声明）：summary/trend/dimension 的指标块现在会出现
+`availability:"partial"`；`MetricSummary` 多一个 `partial` 数组。合完请重取回放样例。
+另：v1.9.35 那两份 partial fixture 是上一笔导的，这一笔改了 SQL 口径后**数值会变**
+（指标块从 missing 变成部分合计）——要我重导就说一声，我连同「四键转必填 + 全量重导」一起做。
+
+**下一步**：Q-041 ⑦⑩（pivot2 收 `dateFrom/dateTo`+`filters`、维度扩全集与 `segment:<key>`），
+然后 Q-043 ⑦ budget、部署提示词核对。
