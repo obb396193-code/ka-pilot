@@ -13,6 +13,7 @@ import { useSession } from "@/components/business/session/session-provider"
 import { ExampleBlock, StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { useTaskDetail } from "@/lib/data/use-task-detail"
+import { markReadiness } from "@/lib/data/use-me-actions"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { WorkItemCard } from "@/components/business/workbench/work-item-card"
 import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
@@ -156,7 +157,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                     {ov.readiness ? (
                       <>
                         <ReadinessRing readiness={ov.readiness} />
-                        <ul className="flex flex-col gap-1 text-xs">{readinessKeys.filter(({ key }) => !ov.readiness![key].ready).map(({ key, label }) => <li key={key} className="flex items-center justify-between gap-2"><span><span className="font-medium">{label}</span> 缺：{ov.readiness![key].missing.join("；") || "−"}</span><Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => toast(`已人工勾就绪：${label}`, { description: "接口接入后生效（当前为示例）" })}>勾就绪</Button></li>)}</ul>
+                        <ul className="flex flex-col gap-1 text-xs">{readinessKeys.filter(({ key }) => !ov.readiness![key].ready).map(({ key, label }) => <li key={key} className="flex items-center justify-between gap-2"><span><span className="font-medium">{label}</span> 缺：{ov.readiness![key].missing.join("；") || "−"}</span><Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => { void markReadiness(taskId, key, true).then((ok) => { if (ok) remote.reload?.() }) }}>勾就绪</Button></li>)}</ul>
                       </>
                     ) : <p className="text-sm text-muted-foreground">就绪度未返回。</p>}
                   </CardContent>

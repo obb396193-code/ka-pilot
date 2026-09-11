@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import type { TaskOverview } from "@/lib/fixtures/tasks"
 
@@ -13,8 +13,11 @@ export type TaskDetailState =
   | { status: "not_found" }
   | { status: "error"; message: string; requestId: string | null }
 
-export function useTaskDetail(taskId: string, enabled: boolean): TaskDetailState {
+export function useTaskDetail(taskId: string, enabled: boolean): TaskDetailState & { reload: () => void } {
   const [state, setState] = useState<TaskDetailState>(enabled ? { status: "loading" } : { status: "idle" })
+  // 勾完就绪要重拉才看得到结果——不然人以为没生效又点一次
+  const [nonce, setNonce] = useState(0)
+  const reload = useCallback(() => setNonce((value) => value + 1), [])
 
   useEffect(() => {
     if (!enabled) { setState({ status: "idle" }); return }
@@ -36,7 +39,7 @@ export function useTaskDetail(taskId: string, enabled: boolean): TaskDetailState
         setState({ status: "error", message: cause instanceof Error ? cause.message : "网络异常", requestId: null })
       })
     return () => { active = false }
-  }, [taskId, enabled])
+  }, [taskId, enabled, nonce])
 
-  return state
+  return { ...state, reload }
 }
