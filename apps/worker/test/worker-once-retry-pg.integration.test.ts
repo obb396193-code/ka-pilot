@@ -35,7 +35,8 @@ describe("actual once tick before retry lease / real PG", () => {
     const fetchFn = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       expect(url.searchParams.get("userId")).toBe("synthetic-private-qihang");
-      expect(url.searchParams.get("accountIds")).toBe("synthetic-once-retry");
+      // F-OS-005：resource=account 不再带 accountIds（上游忽略且 766 个 id 撑爆网关 8K），其它资源仍带。
+      expect(url.searchParams.get("accountIds")).toBe(url.searchParams.get("resource") === "account" ? null : "synthetic-once-retry");
       return Response.json({ successful: true, data: url.searchParams.get("resource") === "account" ? { rows: [], totalNum: 0 } : [] });
     });
     for (let i = 0; i < 4; i++) fetchFn.mockImplementationOnce(async () => new Response("<html>temporary synthetic failure</html>"));

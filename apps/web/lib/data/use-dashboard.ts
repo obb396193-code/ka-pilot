@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { runtimeDataClient } from "./client"
-import type { DataQueryResponse } from "./contracts"
+import { dimensionParams, windowParams, type QueryParams } from "./query-params"
+import type { DataQueryResponse, DataQueryWarning } from "./contracts"
 import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import {
   dashboardSummaryFixture,
@@ -29,6 +30,13 @@ import { isOk } from "@/lib/fixtures/contract"
  * ③ **AbortController**：连点窗口时把在飞的请求取消，避免先发的后到把新结果覆盖掉。
  */
 
+/** 页面要用到的 lineage 子集（完整形状在 `contracts.ts` 的 `sourceLineageSchema`） */
+export type SourceLineage = {
+  window?: { from: string; to: string; preset?: string }
+  warnings?: DataQueryWarning[]
+  [key: string]: unknown
+}
+
 export type DashboardQueryState<T> = {
   data: T | null
   /** 首次加载（还没有任何数据可显示） */
@@ -39,7 +47,7 @@ export type DashboardQueryState<T> = {
   reload: () => void
 }
 
-type Params = Record<string, unknown>
+type Params = QueryParams
 
 /**
  * ★mock 模式**不建客户端**：`runtimeDataClient()` 在 mock + production build 下会直接抛
@@ -54,15 +62,21 @@ function errorOf(response: DataQueryResponse | null, cause?: unknown): { message
   return { message: response.error.message, requestId: response.error.requestId }
 }
 
-/** 一条查询。`enabled=false` 时不发请求（例如 mock 模式，数据由调用方给）。 */
+/**
+ * 一条查询。`enabled=false` 时不发请求（例如 mock 模式，数据由调用方给）。
+ *
+ * `scope` 只进缓存 key **不进 params**：空间由会话 cookie 决定，`workspace_id` 是未知键
+ * （发了整条 400，P0-⑲）；但切个人/团队确实是换数据源，所以 key 里必须有它才会重拉。
+ */
 function useQuery<T>(
   queryId: "account.summary" | "account.trend" | "account.dimension",
   params: Params,
   enabled: boolean,
   pick: (response: DataQueryResponse) => T | null,
+  scope?: string,
 ): DashboardQueryState<T> {
   const runtime = useMemo(() => (enabled ? runtimeDataClient() : null), [enabled])
-  const key = JSON.stringify({ queryId, params })
+  const key = JSON.stringify({ queryId, params, scope })
   const [data, setData] = useState<T | null>(null)
   const [isValidating, setValidating] = useState(false)
   const [error, setError] = useState<{ message: string; requestId: string | null } | null>(null)
@@ -97,38 +111,48 @@ function useQuery<T>(
   return { data: data ?? held.current, loading: enabled && data === null && held.current === null && error === null, isValidating, error, reload }
 }
 
-/** 窗口 → 查询参数。上海 03:00 切日的口径在后端，前端只传日历日。 */
-function windowParams(window: DataWindow, workspaceId: string | undefined): Params {
-  return { date_from: window.from, date_to: window.to, workspace_id: workspaceId, compare: "prev_window" }
-}
+/**
+ * 概览汇总。**连 `lineage` 一起返回**：数据来源、截数时间、缺数点名（v1.9.33 的
+ * `warnings[]`）都在里面。之前页面只取 `rows[0]`，页脚的来源信息一律读 mock fixture——
+ * 真实模式下等于拿假的「数据截至」贴在真数字旁边，比不显更糟。
+ */
+export type DashboardSummary = { row: DashboardSummaryRow; lineage: SourceLineage | null }
 
 export function useDashboardSummary(window: DataWindow, workspaceId: string | undefined) {
-  const remote = useQuery<DashboardSummaryRow>(
+  const remote = useQuery<DashboardSummary>(
     "account.summary",
-    windowParams(window, workspaceId),
+    windowParams(window),
     !IS_MOCK,
-    (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows[0] as unknown as DashboardSummaryRow) ?? null : null),
+    (response) => {
+      if (!response.ok || response.data.mode === "reconcile") return null
+      const row = response.data.source.rows[0] as unknown as DashboardSummaryRow | undefined
+      return row ? { row, lineage: response.data.source.lineage } : null
+    },
+    workspaceId,
   )
   if (!IS_MOCK) return remote
   const row = isOk(dashboardSummaryFixture) ? (dashboardSummaryFixture.data.source.rows[0] ?? null) : null
-  return { data: row, loading: false, isValidating: false, error: null, reload: () => {} }
+  const lineage = (isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.lineage : null) as SourceLineage | null
+  return { data: row ? { row, lineage } : null, loading: false, isValidating: false, error: null, reload: () => {} }
 }
 
 export function useDashboardTrend(window: DataWindow, workspaceId: string | undefined) {
   return useQuery<{ ds: string; metrics: DashboardRow["metrics"] }[]>(
     "account.trend",
-    windowParams(window, workspaceId),
+    windowParams(window),
     !IS_MOCK,
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as { ds: string; metrics: DashboardRow["metrics"] }[]) : null),
+    workspaceId,
   )
 }
 
 export function useDashboardDimension(dimension: string, window: DataWindow, workspaceId: string | undefined, fallback: DashboardRow[]) {
   const remote = useQuery<DashboardRow[]>(
     "account.dimension",
-    { ...windowParams(window, workspaceId), dimension_type: dimension },
+    dimensionParams(dimension, window).params,
     !IS_MOCK,
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as DashboardRow[]) : null),
+    workspaceId,
   )
   if (!IS_MOCK) return remote
   return { data: fallback, loading: false, isValidating: false, error: null, reload: () => {} }
@@ -146,13 +170,24 @@ export const mockResourcePositionRows = (): DashboardRow[] => (isOk(resourcePosi
  * `path` 形如 `opt-zhang|biz-aac`：逐段就是逐级的上游过滤条件。
  */
 export function useDrillChildren(path: string, dimension: string, filters: Params, window: DataWindow, workspaceId: string | undefined) {
+  // 后端只认五个过滤键；出现别的键就**这一层不查**并明说不支持——
+  // 静默把它丢掉会让下钻悄悄放宽成「全部」，看着正常其实是错数（比报错更坏）。
+  const built = dimensionParams(dimension, window, filters)
+  const supported = built.unsupported.length === 0
   const remote = useQuery<DashboardRow[]>(
     "account.dimension",
-    { ...windowParams(window, workspaceId), dimension_type: dimension, filters },
-    !IS_MOCK,
+    built.params,
+    // `path` 为空 = 这一行没展开：不查。
+    // 漏了这个条件的话，首屏每一个非叶子行都会立刻发一次下钻查询——
+    // 几十行就是几十个请求，「展开才查」就白写了（mock 下看不出来，因为 mock 不发请求）。
+    !IS_MOCK && supported && path !== "",
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as DashboardRow[]) : null),
+    workspaceId,
   )
-  if (!IS_MOCK) return remote
+  if (!IS_MOCK) {
+    if (!supported) return { data: null, loading: false, isValidating: false, error: { message: `这层下钻后端还不支持（条件 ${built.unsupported.join("、")}）`, requestId: null }, reload: () => {} }
+    return remote
+  }
   const table = isOk(drillFixture) ? drillFixture.data.byParent : {}
   return { data: table[path] ?? [], loading: false, isValidating: false, error: null, reload: () => {} }
 }

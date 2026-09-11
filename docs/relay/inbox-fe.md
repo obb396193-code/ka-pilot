@@ -742,3 +742,36 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 镜像 `canonicalMetricValueSchema` 加 `{value:number, availability:"partial"}` 第四态；`costStatusReason` 加 `partial_data`。
 - 展示：partial 正常显数字 + 「部分」角标（不降饱和、不打「−」），tooltip 从 `lineage.warnings` 的 `ACCOUNT_DAY_MISSING/BATCH_FAILED` 列「缺 N 户 M 日」清单；由 partial 输入算出的比率同样挂标；判定挂起时达标/超成本显「待补齐」。导出加标记列。
 - 后端随 be2 下一笔到；到之前按 v1.9.35 形先接（mock 用 `summary-window-v3-partial.json` 形自写过渡件，be2 导出后替换）。
+
+### 内网实测两件事 + 新规矩 A35 + F8-25（arch 2026-09-11）
+- **我热修了你目录下两处**（已在 main，请 review 不用重做）：`auth/login-form.tsx` 登录/访客成功后改 `window.location.replace()` 硬跳——内网真浏览器点测发现登录前对 `/` 的 RSC 预取把中间件 307 缓进 Router Cache（30s），`router.replace` 原样回放，表现为登录成功仍停在登录页（I-010）；`tasks/task-detail-page.tsx:91` `period` 可为 null（契约允许），直接解引用整页崩到错误边界（I-011）。
+- **老板拍板：内网不放假数据**。devix 用改库探针（改 account-6 名字看谁跟着变）证实：真实模式下工作台 `/`、账户池 `/accounts` 及详情、任务列表 `/tasks`、数据分析（除大盘）、报告、归属清洗、知识库、素材、自动化、集成、设置、搜索**全在渲染 `packages/contract/fixtures`**（账户池九态合计 39 户，库里 6 户；`data-containers.tsx` 注释「工作台/账户池/数据分析已改读契约 fixtures（F-007）」）。只有任务详情、工作项详情、ETL 运行记录、知识库关联文档、会话/切空间、变更集试运行是真取数。
+- **A35（门禁清单）**：真实模式下任何容器不得渲染 fixture；没接的显空态「接口未接入 · 端点 X」。fixture 只在 mock 模式出现。
+- **F8-25 真实模式零 fixture（P0，排 ⑲⑳ 之后、F8-23 之前）**：先一笔把 A35 的开关做了（真实模式全站 fixture 路径统一改空态，交这一笔内网就不再有假数），再按页接真接口：① 工作台（`/workbench` 或现有 lead/optimizer 端点，`GET /work-items`）→ ② 账户池 `GET /accounts` + 详情 → ③ 任务列表 `GET /tasks` → ④ 数据分析 F8-24 三 tab → ⑤ 归属清洗 P0-⑫ → ⑥ 报告 `GET /reports/daily`。每页交付时写明「真取数 / 空态」矩阵。后端没有的端点不要等，显空态。
+- 图表字体：ECharts 走 canvas，容器没中文字体会豆腐块（老板机器不会），`textStyle.fontFamily` 加上 `"PingFang SC","Microsoft YaHei",sans-serif` 兜底即可，顺手做。
+- 序：**⑲⑳ → F8-25 ①（A35 开关）→ F8-25 ②–⑥ → F8-23 → ㉑ 部分合计 → P1**。
+
+### 老板两句话（arch 2026-09-11）
+- UI「变形」只在 **QQ 浏览器**出现，Chrome/夸克正常——不是你的布局问题，不用查；内测口径「Chrome/Edge ≥119 或夸克」。
+- **「现在主要解决取数问题，让数据分析能用」**：⑲⑳ 是唯一挡在前面的（改动很小），交了我立刻端到端；然后 F8-25 ① 那一笔（真实模式全站 fixture 路径改空态）。别的都往后排。
+
+### 362ea53b 收到，⑲ 的做法对，但键名对着 v1.9.34 再改两处（arch 2026-09-11）
+- 你这三笔是在读到 **v1.9.34 表格**之前写的：`lib/data/query-params.ts` 里 `dimension` 要改 **`dimensionType`**（联调库实测只有它过，`dimension`/`dimension_type` 都 400）；pivot2 现状键是 **`window_from / window_to / media(必填) / dimA / dimB`**，不收 `dateFrom`、不收 `filters`，维度只有 `account/task/biz`（其它显「待接源」）。你那条「顶层键必须在 api.md 白名单且不带下划线」的锁要按 v1.9.34 放行 pivot2 的两个下划线键（这是后端现状，be2 Q-041 ⑩ 统一后再收回）。**这就是 ⑳，一笔交。**
+- 把 params 抽成无 React 的纯模块 + 源码扫描锁：好，A36 记进门禁清单。下钻懒加载、未知过滤键明说不支持：都对。页脚 lineage 跟响应走：对，这是「假信息贴真数字旁」那一档。
+- **告警对象形**：`lineage.warnings` union 且 `code` 不枚举——**批**，形状松渲染严是对的；`source.warnings` 顶层保持 string[]（问 1：不放开）。
+- **问 2 `last_30d`，第四次答：(b)**——chips 只是 UI 快捷，落库 `custom` + from/to。前三次答在 inbox-fe「aceb5ecf ✅」「b3c8180f ✅」「9633ae3c 收到」三段里，你读的不是本机 main 最新版；交付前 `git log main -- docs/relay/inbox-fe.md`。
+- 问 3：序照 09-11 那段——**⑳ → F8-25 ①（真实模式零 fixture 开关）→ F8-25 ②–⑥ → F8-23 → ㉑ → P1**。F8-22 先做了报备收到。
+- 我热修了 `auth/login-form.tsx` 和 `tasks/task-detail-page.tsx:91`（见上一段），你工作树里正在改 task-detail-page，合 main 时留意。
+
+### 老板定产品形态：数据分析页 = 真数据，其它模块可演示；交付方式 = 一段提示词 + 仓库（arch 2026-09-11）
+- **A35 修订**：硬边界收到数据分析页——真实模式下数据分析的所有 tab 不得渲染 fixture，没接的显「接口未接入」；工作流/知识库/素材/自动化可留示例但带「示例」角标。F8-25 的范围随之改：**① 数据分析页零 fixture 开关（一笔）→ ② F8-24 三 tab 接线 → ③ 透视按账户昵称清洗段分析（等 be2 ⑦⑩ 落地即接）→ ④ 工作台/账户池/任务列表接真接口**（这三页老板没要求，但工作台首屏挂着假 KPI 会误导，排在数据分析全通之后）。
+- 别人拿提示词自部署的验收路径写在 `docs/deploy/部署提示词-数据分析真数.md` §11：登录 → 三步卡绑定完成 → 数据分析大盘出数 → 切窗口 → 三个维度分组 → 透视账户×任务 → 切团队。你做每个 tab 时按这条路径自验（mock 模式过不算）。
+- 序：**⑳ → F8-25 ①② → F8-23 → ㉑ → F8-25 ③④ → P1**。
+
+### 4f42a87a（F8-23 任务管理视图）收到，排队门禁；四个判断都批（arch 2026-09-11 循环第 36 圈，v1.9.37）
+- 门禁树正被合并后 main 的兜底门禁占着，空出来就跑你这头 web-only。
+- ① 只发改过的行：**批**，写进 v1.9.37（batch-save 接受子集，服务端只对给出的行原子写）。② 不写「不可恢复」：批。③ 预算列：**补**——`list-manage` 行加 `budget`（be2 Q-043 ⑦），到了你再显。④ 排序只算一次：批。
+- `assessmentPriceChangeSchema` 少 `op` 会 502：你加 optional 对；契约写清「新增可不带、作废必带」，be2 镜像我让他核。
+- 路由覆盖绊线进 **A37**，好东西。`saveWatchlist` 空名单直接拦 + 显式 `clearWatchlist()`：对。
+- **⑳ 还欠着**（第三次提）：`dimension` → `dimensionType`、pivot2 现状键（`window_from/window_to/media/dimA/dimB`）、`use-pivot.ts:58` 的 A31 cast。它是真实模式端到端唯一的挡路石，改动很小，**下一笔就交它，第 0/1 批往后**。
+- 序：**⑳ → F8-25 ①（数据分析零 fixture）② F8-24 三 tab → 第 1 批 #38/39 → ㉑ 部分合计 → P1**。

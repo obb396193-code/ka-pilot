@@ -6,7 +6,6 @@ import {
   QihangError,
   QihangResourceLimitError,
   QihangSuspectedTruncationError,
-  QihangUnexpectedContentTypeError,
   RetryExhaustedError,
 } from "../src/qihang/errors.js";
 import { QihangClient } from "../src/qihang/client.js";
@@ -61,18 +60,21 @@ describe("QihangClient", () => {
     expect(new TextEncoder().encode(calledUrl.toString()).byteLength).toBeLessThan(8_192);
   });
 
-  it("treats an HTTP 200 non-JSON body as a deterministic failure without retrying", async () => {
+  it("labels an HTTP 200 text/html gateway page as unexpected_content_type without leaking the body", async () => {
     const fetchFn = vi.fn<typeof fetch>(async () =>
       new Response("<html><head><script src=\"aplus-core\"></script></head></html>", {
         status: 200,
         headers: { "content-type": "text/html;charset=utf-8" },
       }),
     );
-    const client = new QihangClient({ fetchFn, maxRetries: 3, retryBaseMs: 0 });
-    await expect(
-      client.query({ resource: "account", userId: "u1", media: "KUAISHOU", pageNum: 1, pageSize: 50 }),
-    ).rejects.toBeInstanceOf(QihangUnexpectedContentTypeError);
-    expect(fetchFn).toHaveBeenCalledTimes(1);
+    const client = new QihangClient({ fetchFn, maxRetries: 1, retryBaseMs: 0, sleep: async () => undefined });
+    const error = await client
+      .query({ resource: "account", userId: "u1", media: "KUAISHOU", pageNum: 1, pageSize: 50 })
+      .catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(RetryExhaustedError);
+    const message = (error as Error).message;
+    expect(message).toContain('"kind":"unexpected_content_type"');
+    expect(message).not.toContain("aplus-core");
   });
 
   it.each([

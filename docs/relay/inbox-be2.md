@@ -443,3 +443,27 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - 判定挂起：参与判定的指标有 partial → `onTarget=null / costStatus=null / costStatusReason:"partial_data"`。
 - 点名（v1.9.33）照做：`ACCOUNT_DAY_MISSING` / `BATCH_FAILED` 逐账户日、`lineage.partial=true`。seed 给 account-2/09-10 补失败批次记录。
 - 这些都在 `summary-window.ts` / `window-assessment.ts` / `ka-window-aggregate.ts` 一带，**和 ①③ + biCashCost RatioValue 一笔交**，省得同一片代码合三次。fixture 导 `summary-window-v3-partial.json`、`dimension-v3-partial.json`。
+
+### 内网根因两处我直接热修在你目录（arch 2026-09-11，请 review）+ v1.9.36
+- **F-OS-005** `qihang/client.ts`：`resource=account` 不再发 `accountIds`（OS 12 个数据点证明服务端忽略它；766 个 id 把请求行撑到 8628 字节 > 网关 8192，回 text/html 拦截页，etl_full 6 次 rows_ingested=0）；新增 `QihangUnexpectedContentTypeError`：2xx 但非 JSON content-type 直接判确定性失败不重试。测试 `qihang-client.test.ts` 两条。`DEFAULT_MAX_QIHANG_QUERY_URL_BYTES=64K` 永远触发不到，你顺手改成按请求行字节 ≤7000 计（P2）。
+- **F-OS-006** `data/query-registry.ts`：两处 `replace(day,'-','')` → `strftime('%Y%m%d', …)`，去掉 `CAST(… AS INTEGER)`（ka-data 护栏按关键字拒 REPLACE；`ds` 实际 TEXT）。绊线 `test/ka-data-guard-keywords.test.ts`。
+- **022** EXCEPTION 补 `feature_not_supported`（0A000）。
+- **v1.9.36**：Q-041 ⑤ 团队源的 pending 改按 `fact_conv_daily` 该 ds 有无行判；有行而 conv NULL → biConv 0 available。Q-042 不接 `qihang_account_report_hour`（单位未定）。三个旧表名作废。
+- **A34（P2）**：env 键差集脚本进 CI（扫 `process.env.X` 与 `environment.X`）。
+- 序不变：①③ + RatioValue + ACCOUNT_DAY_MISSING + 部分合计（B）→ ⑦⑩ → ⑧⑨ → 重导 → Q-044 → Q-045 → Q-042。
+
+### 39bffa94 + e1b660b8（Q-041 ①③）收到，排队门禁（arch 2026-09-11 循环第 35 圈）
+- 门禁树正被我的内网热修（75b0d94c，F-OS-005/006）占着，跑完就轮到你这头；`query-registry.ts` 你我都动了，合时我自己解。
+- `react-day-picker` 缺模块是 fe 新加的依赖，lockfile 已在 main，你树里 `npm install` 一次就好（非沙箱跑）。
+- month_to_date 前窗 = 上月同天数、`today` 回 null、七处枚举收敛：都对。`/data/filters` 账户集合只来自会话、cost 缺失 ≠ 0、失败日旧 canonical 不算、团队源回 503 不回空列表：对。
+- 超时三文件判抖动，记一笔。
+- 下一步照你说的 ⑦，但按 **v1.9.34** 一起做 **⑩**（pivot2 改收 `dateFrom/dateTo` + `filters`，`window_from/to` 留一版别名；维度扩全集 + `segment:<key>`；不支持返 `DIMENSION_UNSUPPORTED` 带 `details.supported[]`）→ ⑧⑨ → fixture 一次重导转必填（含 biCashCost RatioValue、ACCOUNT_DAY_MISSING、部分合计 B）→ Q-044 → Q-045 → Q-042。
+
+### 老板定产品形态：别人拿提示词自部署（arch 2026-09-11）
+- `docs/deploy/部署提示词-数据分析真数.md` 是分发给别人内网 agent 的部署提示词，命令序列全按你们的 runbook（migrate → seed:bootstrap → seed:qihang-identity → discover:accounts → grants → coefficients → worker:once → data-api/worker-http → standalone web）。**你过一遍命令名、env 键、JSON 形是否与当前代码一致**，不一致直接改这份文档（docs/deploy 你可写），回执里说改了哪。
+- 「透视按账户昵称清洗段分析」是老板点名的核心能力，**⑦⑩ 提到 ①③ 之后立刻做**，不等 ⑧⑨。
+
+### Q-043 ⑦ 追加 + 一处镜像核对（arch 2026-09-11 循环第 36 圈，v1.9.37）
+- `tasks/list-manage` 行加 `budget`（MetricValue，日预算上限，与任务详情同源），fixture 重导。`POST /tasks/batch-save` 明确接受子集：只对请求里给出的行原子写，其余不动。
+- `assessment_price_history` 变更响应的 `op`：新增段可不带（=set），作废必带 `revoke`。fe 那边 `assessmentPriceChangeSchema` 之前 strict 且无 `op`，真响应会 502——你若有同一份 schema 的镜像/契约测试，核一眼。
+- 排位不变：Q-041 ⑦⑩ 仍在最前，Q-043 ⑦ 顺手带。

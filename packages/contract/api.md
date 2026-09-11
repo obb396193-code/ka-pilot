@@ -1449,3 +1449,17 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **点名不变**（v1.9.33）：`lineage.warnings[]` 每个缺数账户日一条 `{code:"ACCOUNT_DAY_MISSING"|"BATCH_FAILED", media, accountId, businessDate, fields[]}`，`lineage.partial=true`；`coverage` 仍只描述对象覆盖。前端「部分·缺 N 户 M 日」标可展开清单。
 - **前端展示**：partial 值正常显示数字 + 「部分」角标（不降饱和、不打「−」），tooltip 列缺数清单；导出时 partial 列加标记列。
 - fixtures：be2 从联调种子（account-2 / 09-10 空值行）导 `data-query/summary-window-v3-partial.json`、`dimension-v3-partial.json`；fe 镜像 `canonicalMetricValueSchema` 加 `partial` 态、`costStatusReason` 加 `partial_data`。
+
+## v1.9.36 追加（2026-09-11 arch；内网 OS 实测的 ka-data 事实，纠正契约假设）
+- **ka-data 真实表名**：账户×天事实 = `dwd_account_daily`（28 列；`ds` 是 **TEXT** `'YYYYMMDD'`）；BI 转化权威 = `fact_conv_daily`（ds/media/biz/account_id/task_id/task_name/conv/updated_at）；广告组×天 = `dwd_adgroup_daily`（41 列，含 resource_position/bid_tool/plan_tier/deduction_rate/operator_name；缺 is_ubp、ocpx_gap）。文档里 `agent_daily / bi_conv_daily / agent_hourly` 三个名字作废（两个后端都不存在）。
+- **BI「待到」判别改为按业务日**（取代按时段猜）：`fact_conv_daily` 在该 `ds` **没有任何行** → 该日 BI 未到，`biConv`/`conv` 派生值 `availability:"pending"`；该 `ds` **已有行**而某账户 `conv IS NULL` → BI 已跑完、该账户无归因，`biConv = {value:0, availability:"available"}`，前端显 0（可加「无归因」提示），**不是「待到」**（实测 T-1 起每天 27–40 户 NULL 且老日期同样如此、与 fact_conv_daily 零交集）。当天 T 两表无行 → pending。be2 Q-041 ⑤ 团队源按此实现；个人源（启航）沿用现有 BI 到达判定。
+- **ka-data SQL 护栏**：关键字黑名单会拒 `REPLACE`（含字符串函数），日期→ds 一律 `strftime('%Y%m%d', …)`；`ds` TEXT=TEXT join，不 CAST；holo 后端 `rows` 是保留字、`information_schema` 对部分表返回 0 列，sqlite 用 `pragma_table_info`。绊线 `apps/worker/test/ka-data-guard-keywords.test.ts`。
+- **团队小时源**：holo 有 `qihang_account_report_hour`（hour/convert_cnt/deep_convert_cnt/task_ids，当天准实时到 hh），但 `cost` 量级 5.7–8.6 亿/天单位未知、同账户同小时多行——**车程确认单位与去重口径前 Q-042 不得接它**；sqlite 后端无小时表。
+- **启航 `resource=account` 忽略 `accountIds`**（12 个数据点字节级相同），worker 不再发（F-OS-005）；账户范围靠本地 scope 断言。
+- **精简版 PG**：022 迁移的 EXCEPTION 已补 `feature_not_supported`（0A000），缺 contrib 时降级 ILIKE 而不是整批回滚。
+
+## v1.9.37 追加（2026-09-11 arch；fe F8-23 交付时四个判断的裁决）
+- **`POST /tasks/batch-save` 接受子集**：请求只带本次改动过的任务行，服务端只对给出的行做原子写（全成功才写），未给出的行不动。「按大类整体保存」指交互，不指请求体必须全量——全量回写会把别人同时改的值盖掉。
+- **`tasks/list-manage` 行加 `budget`**（MetricValue，日预算上限，与任务详情同源；缺则 missing），fe 有值才显列。be2 Q-043 ⑦，fixture `tasks/list-manage.json` 重导。
+- `assessment_price_history` 的变更响应 `op` 字段：新增段响应可不带（等于 `set`），作废响应必带 `op:"revoke"`；镜像 schema 里 `op` 为可选枚举 `set|revoke`。
+- 删除大类文案：「该大类下任务将置为已结束，历史数据仍可查」，不写「不可恢复」。停投沉底排序只在拉数时算一次。

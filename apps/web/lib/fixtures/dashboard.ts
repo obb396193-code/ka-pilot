@@ -19,8 +19,9 @@ export type DashboardAssessment = {
    * 写成必填再靠 `as unknown as` 转过去，就是把「字段不存在」藏进类型里，运行时照崩。
    */
   biConv?: MetricValue
-  /** 现金花费 / 考核 BI 数。**MetricValue 不是 RatioValue**——它是金额，可缺可「待到」 */
-  biCashCost?: MetricValue
+  /** 现金花费 / 考核 BI 数。v1.9.32 起是 RatioValue（`infinite` = 零 BI 回传）；
+   *  be2 Q-041 ③ 切换前后端还发 MetricValue 形，两形都收，读它一律走 `normalizeBiCost`/`biCostText`。 */
+  biCashCost?: MetricValue | RatioValue
   /** 现金花费 − Σ日(考核BI数 × 当日生效考核价)；正 = 超成本 */
   overCost?: MetricValue
   /** 两种形状并存（summary 是 MetricValue，维度行是 {value,effectiveDate}）；钻取表不读它，放宽即可 */
@@ -47,7 +48,7 @@ export type DashboardSummaryRow = {
   rowCount: number; accountCount: number; anomalyRows: number
   metrics: DashboardMetrics
   /** summary 一定带 v1.9.27 三项（后端保证），所以这里收紧成必填 */
-  assessment: DashboardAssessment & { biConv: MetricValue; biCashCost: MetricValue; overCost: MetricValue }
+  assessment: DashboardAssessment & { biConv: MetricValue; biCashCost: MetricValue | RatioValue; overCost: MetricValue }
   /**
    * 环比：**后端算好的比率**（`compare.deltas`，RatioValue）。
    * ★不再自造 `previous` + 前端相减：窗口口径、缺数怎么算、除零怎么办全在后端，

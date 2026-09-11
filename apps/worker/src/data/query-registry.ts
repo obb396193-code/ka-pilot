@@ -279,6 +279,9 @@ function completeSum(column: "cost_yuan" | "show" | "click" | "conv" | "cash_yua
   return `CASE WHEN MAX(CASE WHEN typeof(${column}) NOT IN ('integer', 'real', 'null') OR ABS(CAST(${column} AS REAL)) > 1.7976931348623157e308 THEN 1 ELSE 0 END) = 1 OR ABS(SUM(${column})) > 1.7976931348623157e308 THEN 'INVALID_METRIC' WHEN COUNT(${column}) = COUNT(*) AND COUNT(*) > 0 THEN ROUND(SUM(${column}), 6) ELSE NULL END`;
 }
 
+// F-OS-006（2026-09-11 内网实测）：ka-data 的 SQL 护栏按关键字黑名单拒绝 `REPLACE`（分不清 REPLACE INTO 与
+// 字符串函数 replace()），团队空间所有窗口查询因此 503。日期→ds 一律用 strftime('%Y%m%d', …)；
+// dwd_account_daily.ds 实际是 TEXT('YYYYMMDD')，join 直接 TEXT=TEXT，不再 CAST AS INTEGER。
 function expectedAccountDays(params: NormalizedQueryParams, accountScope: SqlAccountScope): string {
   const accounts = accountScope.kind === "explicit_accounts" ? accountScope.accounts : [];
   const tuples = [...new Set(accounts
@@ -291,13 +294,13 @@ function expectedAccountDays(params: NormalizedQueryParams, accountScope: SqlAcc
     SELECT ${sqlString(params.dateFrom)} UNION ALL
     SELECT date(day, '+1 day') FROM dates WHERE day < ${sqlString(params.dateTo)}
   ), approved(media, account_id) AS (${scope}), expected AS (
-    SELECT replace(dates.day, '-', '') AS ds, approved.media, approved.account_id
+    SELECT strftime('%Y%m%d', dates.day) AS ds, approved.media, approved.account_id
     FROM dates CROSS JOIN approved
   ), members AS (
     SELECT e.ds, e.media, e.account_id, d.account_id AS observed_account_id,
       d.cost_yuan, d.show, d.click, d.conv, d.cash_yuan
     FROM expected e LEFT JOIN dwd_account_daily d
-      ON d.ds = CAST(e.ds AS INTEGER) AND d.media = e.media AND d.account_id = e.account_id
+      ON d.ds = e.ds AND d.media = e.media AND d.account_id = e.account_id
   )`;
 }
 
@@ -601,7 +604,7 @@ export class DataQueryRegistry {
           ${aggregate ? "(SELECT COUNT(*) FROM selected) AS source_row_count," : ""}
           selected.account_id IS NOT NULL AS observed,
           selected.cost_yuan, selected.cash_yuan, selected.show, selected.click, selected.conv, selected.cash_assessment
-        FROM expected LEFT JOIN selected ON selected.ds=CAST(replace(expected.ds,'-','') AS INTEGER)
+        FROM expected LEFT JOIN selected ON selected.ds=strftime('%Y%m%d', expected.ds)
           AND selected.media=expected.media AND selected.account_id=expected.account_id
         ORDER BY expected.ds,expected.media,expected.account_id`,
     };

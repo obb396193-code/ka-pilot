@@ -31,7 +31,7 @@ describe("identity missing once recovery / real PG", () => {
     const fetchFn = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       expect(url.searchParams.get("userId")).toBe("synthetic-private-recovery");
-      expect(url.searchParams.get("accountIds")).toBe("synthetic-recovery");
+      expect(url.searchParams.get("accountIds")).toBe(url.searchParams.get("resource") === "account" ? null : "synthetic-recovery");  // F-OS-005
       return Response.json({ successful: true, data: url.searchParams.get("resource") === "account" ? { rows: [], totalNum: 0 } : [] });
     });
     const qihang = new QihangClient({ fetchFn, sleep: async () => undefined });
@@ -60,7 +60,7 @@ describe("identity missing once recovery / real PG", () => {
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','synthetic-extra','read')", [workspaceId, identityId]);
     const fetchFn = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
-      expect(url.searchParams.get("accountIds")).toBe("synthetic-recovery");
+      expect(url.searchParams.get("accountIds")).toBe(url.searchParams.get("resource") === "account" ? null : "synthetic-recovery");  // F-OS-005
       return Response.json({ successful: true, data: url.searchParams.get("resource") === "account" ? { rows: [], totalNum: 0 } : [] });
     });
     await expect(executeWorkerOnceChild(config, at, { qihang: new QihangClient({ fetchFn }) })).resolves.toMatchObject({ status: "drained" });

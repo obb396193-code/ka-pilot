@@ -31,18 +31,6 @@ export class QihangResourceLimitError extends QihangError {
   readonly code = "RESOURCE_LIMIT";
 }
 
-/** 2xx 但 content-type 不是 JSON（网关拦截页等）：确定性失败，不重试。F-OS-005。 */
-export class QihangUnexpectedContentTypeError extends QihangError {
-  readonly code = "UNEXPECTED_CONTENT_TYPE";
-
-  constructor(
-    readonly contentType: string,
-    readonly bodyPreview: string,
-  ) {
-    super(`Qihang returned non-JSON content-type ${contentType}: ${bodyPreview}`);
-  }
-}
-
 export class QihangProtocolError extends QihangError {
   constructor(readonly diagnostic: string) { super(`Qihang transient protocol error: ${diagnostic}`); }
 }

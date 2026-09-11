@@ -52,7 +52,7 @@ describe("single-shot real PG/runtime/CLI integration (synthetic only)", () => {
     const fetchFn = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       expect(url.searchParams.get("userId")).toBe("synthetic-once-private");
-      expect(url.searchParams.get("accountIds")).toBe("synthetic-once-account");
+      expect(url.searchParams.get("accountIds")).toBe(url.searchParams.get("resource") === "account" ? null : "synthetic-once-account");  // F-OS-005
       return Response.json({ successful: true, data: url.searchParams.get("resource") === "account" ? { rows: [], totalNum: 0, pageNum: 1, pageSize: 100 } : [] });
     });
     const events: unknown[] = [];

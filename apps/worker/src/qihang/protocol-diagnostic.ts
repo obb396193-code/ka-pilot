@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { QihangQuery } from "./client.js";
 
-export type QihangProtocolKind = "invalid_json" | "invalid_envelope" | "invalid_resource_shape";
+export type QihangProtocolKind = "invalid_json" | "invalid_envelope" | "invalid_resource_shape" | "unexpected_content_type";
 /** Only allowlisted query facts. Do not log arbitrary body snippets: an HTML
  * login page or malformed JSON can echo a token/user identity even in byte 1.
  * Hashes let OS correlate a failed batch/body without storing those raw values.
