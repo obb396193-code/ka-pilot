@@ -1427,3 +1427,18 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **缺数必须点名**：窗口汇总（`account.summary` / `trend` / `dimension` / `pivot2`）任一求和字段因成员账户日缺数而落成 `missing` 时，`lineage.warnings[]` 必须带对象形告警 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields:[...缺的指标键]}`（每个账户日一条；已有 `BATCH_FAILED` 记录的账户日用 `BATCH_FAILED`，不重复发）。`coverage.complete` 仍只描述对象覆盖；是否算部分合计见下一条。前端按 v1.9.27 ⑥ 的对象形渲染「N 账户·M 日缺数」并可展开清单——用户看到「−」必须能知道缺的是谁、哪天。
 - **整窗合计取舍待老板拍板**（A 现状：任一成员缺数 → 该指标整窗 `missing`，不出部分合计；B：`Σ available` + `partial:true` + 缺数清单，达标/超成本判定挂起为 `partial_data`）。拍板前维持 A；拍 B 则出 v1.9.34。
 - **联调种子**：`scripts/seed-demo-data.py` 给 account-2 / 09-10 那行补一条失败批次记录（etl 批次表），让 `BATCH_FAILED` 路径在本地端到端可见；无批次记录的空值行走 `ACCOUNT_DAY_MISSING`。
+
+## v1.9.34 追加（2026-09-10 arch；联调库逐键实测，纠正 v1.9.30 两处错误）
+**`POST /api/v1/data/query` 各 queryId 的 `params` 线上键名（以 `apps/worker/src/data/query-registry.ts` 实测为准，本表取代 v1.9.30 那段）：**
+
+| queryId | 必填 | 可选 | 备注 |
+|---|---|---|---|
+| `account.summary` | `dateFrom`+`dateTo` **或** `date_from`+`date_to`（两种拼法都收，不得混用）或 `date` | `media`, `accountIds[]`, `filters{optimizer[],biz[],resource_position[],goal[],task_id[]}`, `taskId`, `preset`, `compare:"dod"\|"wow"`（`prev_window` 等 Q-041 ③） | `workspace_id` 永远不发（空间由会话定） |
+| `account.trend` | 同上 | 同上（无 compare） | |
+| `account.dimension` | 同上 + **`dimensionType`** | `media`, `accountIds[]`, `filters`, `taskId`, `preset` | **v1.9.30 写的 `dimension` 是错的**，实际键是 `dimensionType`；`dimension_type` 也不收 |
+| `account.table` | 同上 | `media`, `accountIds[]`, `filters`, `taskId`, `page`, `pageSize`(≤500) | |
+| `account.detail` | 同上 + `accountId` | `media` | |
+| `account.pivot2` | **`window_from`+`window_to`+`media`+`dimA`+`dimB`**（media 必填） | `taskIds[]` | 现状另一套键；不收 `dateFrom`、不收 `filters`；维度现只支持 `account/task/biz`，其它维度与 `segment:<key>` 报 `DIMENSION_UNSUPPORTED`（快手源实测） |
+
+- **pivot2 统一（be2 Q-041 ⑩，与 ⑦ 一起）**：改收 `dateFrom/dateTo`（`window_from/to` 保留一版做别名），`media` 仍必填，加 `filters?`；维度扩到 `dimensionTypeSchema` 全集 + `segment:<key>`（与 `account.dimension` 同一个命名规则解析器），源不支持的维度返 `DIMENSION_UNSUPPORTED` 且 `details.supported[]` 列出该源可用维度。落地前 fe 按现状键发，其它维度显「待接源」。
+- v1.9.30 里「`_note` 的 params 例以本条为准」作废：那批 fixture 没有 `_note`，键名以本表为准。

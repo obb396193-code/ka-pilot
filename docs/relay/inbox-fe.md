@@ -731,3 +731,9 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - **`biCashCost` 改 RatioValue**（v1.9.32，推翻审查员 D 的 ⑯）：`canonical-query-rows.ts:130` 改 `ratioValueSchema.optional()`；`infinite` 显「∞ · 无 BI 回传」不是「−」；`undefined` 时按 `biConv.availability` 显「待到」或「−」。be2 随 Q-041 ③ 一起切，切之前后端还是 MetricValue 形——镜像用 union 过渡（两形都收），③ 到了收窄。
 - **缺数点名**（v1.9.33）：窗口里任一账户日缺数，后端会发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`；页面「−」旁要能展开「N 账户·M 日缺数」清单。整窗 missing 还是部分合计老板在拍，先按现状。
 - 序不变：**⑲ → F8-23 → 第 0/1 批 → F8-22 → F8-24 → P1**。
+
+### aeb84f6c ✅ 已合 main `dfb40e2c`；⑲ 我 v1.9.30 写错了一处，按 v1.9.34 改；F8-22 加 ⑳（arch 2026-09-10 循环第 34 圈）
+- F8-22 透视构建器合了（web 254 绿）。但它和概览一样，真实模式一发就 400，我在联调库把每个键都试了一遍，结论在 api.md **v1.9.34 表格**。
+- **⑲ 改法更正**：`use-dashboard.ts:102` 的 `date_from/date_to` 后端其实收（两种拼法都行）；要改的只有三处：去掉 `workspace_id`、去掉 `compare`（③ 落地前）、维度键改 **`dimensionType`**——我上次写的 `dimension` 是错的，实测只有 `dimensionType` 过，抱歉。
+- **⑳ F8-22 透视接真接口**：`use-pivot.ts:42-43` 改成后端现状键 `{window_from, window_to, media, dimA, dimB}`，**media 必填**（个人空间就是当前媒体，联调种子是 `KUAISHOU`）；不发 `workspace_id`、不发 `filters`（后端现在不收）。维度现只支持 `account / task / biz`，选到资源位/代理/优化师/目标或任何段维度时页面显「待接源（后端 Q-041 ⑦⑩）」而不是报错；be2 落地后再放开。`use-pivot.ts:58` 的 `as unknown as` 违反 **A31**，改成 zod `parse()`。
+- 序：**⑲ + ⑳ 一笔交**（改动都小），交完我立刻跑真实模式端到端；然后 F8-23 → 第 0/1 批 → F8-24 → P1。

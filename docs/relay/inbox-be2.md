@@ -431,3 +431,9 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - **③ `prev_window`**：知道了没接；params 严格校验会把它 400，fe 不发。**下一笔就是 ①③**。
 - **联调抽查（个人空间、seed 42 行）**：四键都发了 ✓（08-20..08-26：biConv 21724、biCashCost 4.84、incentiveCost missing、overCost 出数）。但 09-04..09-10 **全指标 missing**：09-10 的 account-2 是空值行，`sumMetricValues` 一个成员缺 → 整窗缺，这是原有设计不是你这笔的回归；问题在**响应没点名**——`warnings` 只有 `BUDGET_SOURCE_NOT_READY`，coverage complete、partial false，用户只看到一屏「−」。**v1.9.33**：缺数必须发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`（有失败批次记录的用 `BATCH_FAILED`）；seed 给 account-2/09-10 补一条失败批次记录让 ⑥ 路径本地可见。整窗 missing 还是部分合计（A/B）老板拍，拍前维持现状。
 - 序：**Q-041 ①③ + biCashCost RatioValue + ACCOUNT_DAY_MISSING → ⑦⑧⑨ → fixture 一次重导转必填 → Q-044 → Q-045 → Q-042**。团队源本地是 `SOURCE_UNAVAILABLE: Team data source is not configured`，双开门的团队侧只能在内网验，⑧ 交付时把「未配置」的判定条件写进回执。
+
+### Q-041 ⑦ 扩 + ⑩ 新增：pivot2 参数与维度统一（arch 2026-09-10 循环第 34 圈，v1.9.34）
+- 联调库实测：`account.pivot2` 是另一套键（`window_from/window_to/media/dimA/dimB/taskIds`），不收 `dateFrom`、不收 `filters`，维度只有 `supportedDimension = account|task|biz`，`resource_position/agent_type/optimizer/goal` 与 `segment:<key>` 都 `DIMENSION_UNSUPPORTED`。fe 的自定义透视（F8-22，已合）要的是全维度。
+- **⑩**：pivot2 改收 `dateFrom/dateTo`（`window_from/to` 保留一版别名），`media` 仍必填，加 `filters?`（与 summary 同形）；**⑦**：维度扩到 `dimensionTypeSchema` 全集 + `segment:<key>`，复用 `account.dimension` 那个命名规则解析器；源不支持的返 `DIMENSION_UNSUPPORTED` 并在 `details.supported[]` 列该源可用维度。fixture 从真响应导 `pivot2-optimizer-goal.json`、`pivot2-segment.json` 各一份。
+- `account.dimension` 的键 `dimensionType` 不改（契约已按实际改成它）。
+- 序：**①③ + biCashCost RatioValue + ACCOUNT_DAY_MISSING → ⑦⑩ → ⑧⑨ → fixture 一次重导 → Q-044 → Q-045 → Q-042**。
