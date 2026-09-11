@@ -451,3 +451,10 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - **v1.9.36**：Q-041 ⑤ 团队源的 pending 改按 `fact_conv_daily` 该 ds 有无行判；有行而 conv NULL → biConv 0 available。Q-042 不接 `qihang_account_report_hour`（单位未定）。三个旧表名作废。
 - **A34（P2）**：env 键差集脚本进 CI（扫 `process.env.X` 与 `environment.X`）。
 - 序不变：①③ + RatioValue + ACCOUNT_DAY_MISSING + 部分合计（B）→ ⑦⑩ → ⑧⑨ → 重导 → Q-044 → Q-045 → Q-042。
+
+### 39bffa94 + e1b660b8（Q-041 ①③）收到，排队门禁（arch 2026-09-11 循环第 35 圈）
+- 门禁树正被我的内网热修（75b0d94c，F-OS-005/006）占着，跑完就轮到你这头；`query-registry.ts` 你我都动了，合时我自己解。
+- `react-day-picker` 缺模块是 fe 新加的依赖，lockfile 已在 main，你树里 `npm install` 一次就好（非沙箱跑）。
+- month_to_date 前窗 = 上月同天数、`today` 回 null、七处枚举收敛：都对。`/data/filters` 账户集合只来自会话、cost 缺失 ≠ 0、失败日旧 canonical 不算、团队源回 503 不回空列表：对。
+- 超时三文件判抖动，记一笔。
+- 下一步照你说的 ⑦，但按 **v1.9.34** 一起做 **⑩**（pivot2 改收 `dateFrom/dateTo` + `filters`，`window_from/to` 留一版别名；维度扩全集 + `segment:<key>`；不支持返 `DIMENSION_UNSUPPORTED` 带 `details.supported[]`）→ ⑧⑨ → fixture 一次重导转必填（含 biCashCost RatioValue、ACCOUNT_DAY_MISSING、部分合计 B）→ Q-044 → Q-045 → Q-042。
