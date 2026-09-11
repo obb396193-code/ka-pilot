@@ -55,6 +55,7 @@ export function evaluateRuleDailyEvidence(tree: unknown, windowInput: unknown, i
     seen.add(row.ds);
   }
   type Value = ReturnType<typeof metricValue> | ReturnType<typeof divideMetricValues>;
+  const undefinedRatio = { value: null, state: "undefined" } as const;
   const observations = new Map<string, { value: Value; granularity: "daily" }>();
   const windows = new Map<string, Record<string, Value>>();
   for (const read of plan.reads) {
@@ -68,11 +69,26 @@ export function evaluateRuleDailyEvidence(tree: unknown, windowInput: unknown, i
       const target = sumMetricValues(assessmentRows.map(row => row.price && row.realConversion.availability === "available"
         ? metricValue(row.price.value * row.realConversion.value) : metricValue(null)));
       const price = divideMetricValues(target, metrics.realConversion);
-      values = { cash_cost: metrics.cashCost, real_conversion: metrics.realConversion, conversion: metrics.conversion,
-        exposure: metrics.exposure, click: metrics.click, wake_uv: metrics.wakeUv, potential_uv: metrics.potentialUv,
-        cash_cpa: metrics.ratios.cashCpa, ctr: metrics.ratios.ctr, cvr: metrics.ratios.cvr, gap: metrics.ratios.gap,
-        potential_rate: metrics.ratios.potentialRate, bi_conversion_rate: metrics.ratios.biConversionRate,
-        cost_space: assessment.costSpace, assessment_price: price };
+      /**
+       * v1.9.35：窗口聚合可能是**部分合计**（缺了几个账户日）。部分值可以给人看，
+       * 但**绝不能拿去判规则**——自动化规则会据此调价/停投，用半个窗口的数据做这种动作，
+       * 错了还看不出来。所以规则这一层把「部分」一律当成「不知道」（→ METRIC_MISSING），
+       * 由它派生的比率也一起当不知道（比率本身没有 partial 这一档，藏不住这件事）。
+       */
+      const complete = (value: ReturnType<typeof metricValue>): Value =>
+        value.availability === "available" ? value : metricValue(null);
+      const ratioIf = (ratio: Value, ...inputs: ReturnType<typeof metricValue>[]): Value =>
+        inputs.every((input) => input.availability === "available") ? ratio : undefinedRatio;
+      values = { cash_cost: complete(metrics.cashCost), real_conversion: complete(metrics.realConversion),
+        conversion: complete(metrics.conversion), exposure: complete(metrics.exposure),
+        click: complete(metrics.click), wake_uv: complete(metrics.wakeUv), potential_uv: complete(metrics.potentialUv),
+        cash_cpa: ratioIf(metrics.ratios.cashCpa, metrics.cashCost, metrics.realConversion),
+        ctr: ratioIf(metrics.ratios.ctr, metrics.click, metrics.exposure),
+        cvr: ratioIf(metrics.ratios.cvr, metrics.conversion, metrics.click),
+        gap: ratioIf(metrics.ratios.gap, metrics.conversion, metrics.realConversion),
+        potential_rate: ratioIf(metrics.ratios.potentialRate, metrics.potentialUv, metrics.wakeUv),
+        bi_conversion_rate: ratioIf(metrics.ratios.biConversionRate, metrics.realConversion, metrics.potentialUv),
+        cost_space: complete(assessment.costSpace), assessment_price: price };
       windows.set(windowKey, values);
     }
     const value = Object.hasOwn(values, read.request.metric) ? values[read.request.metric]! : metricValue(null);

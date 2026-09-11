@@ -9,6 +9,7 @@ import {
   comparisonWindow, computeWindowAssessment, compareWindowPoints, unavailableWindowComparison,
   sumMetricValues, type SummaryWindowRow,
   calendarDateSchema, dashboardFiltersSchema,
+  type LineageWarning,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 import { createDataQueryRegistry, taskQueryIdSchema } from "./query-registry.js";
@@ -48,12 +49,19 @@ interface WindowReadRepository {
   queryLineage: SemanticQueryRepository["queryLineage"];
   loadAssessment: WindowAssessmentRepository["load"];
   loadAccountCounts: WindowAssessmentRepository["loadAccountCounts"];
+  loadMissingAccountDays: WindowAssessmentRepository["loadMissingAccountDays"];
 }
 interface WindowReadResult {
   row: SummaryWindowRow;
   lineage: SemanticLineageResult;
   window: z.infer<typeof queryWindowSchema>;
   warnings: string[];
+  /**
+   * v1.9.33 缺数点名：逐账户日的结构化告警（`ACCOUNT_DAY_MISSING` / `BATCH_FAILED`）。
+   * 与 `warnings` 分开装是因为那一栏是既有的字符串告警，两者出口不同：
+   * 点名进 `lineage.warnings`（前端据此显「N 户 × M 天缺失」），字符串告警照旧。
+   */
+  namedGaps: LineageWarning[];
 }
 type WindowSnapshot = (read: (repository: WindowReadRepository) => Promise<WindowReadResult>) => Promise<WindowReadResult>;
 function dayCount(from: string, to: string): number { return (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000 + 1; }
@@ -133,8 +141,26 @@ export class PlatformWindowQuery {
           compare = compareWindowPoints(input.compare, point(summary.metrics, onTargetRate), point(previous.metrics, previousRate));
         }
       }
+      /**
+       * v1.9.33 缺数点名：把「哪个账户的哪一天少了哪几个字段」逐条说出来。
+       * 有失败批次记录的报 `BATCH_FAILED`（已知原因），其余报 `ACCOUNT_DAY_MISSING`。
+       * 只给一屏「−」而不点名，用户分不清「这天没投」还是「这天没拉到」。
+       * 上限 200 条：再多前端也读不完，且响应不该被告警撑爆；截断时补一条计数说明。
+       */
+      const missing = await repository.loadMissingAccountDays(scope);
+      const named: LineageWarning[] = missing.slice(0, 200).map((row) => (row.batchFailed
+        ? { code: "BATCH_FAILED", media: row.media, accountId: row.accountId, businessDate: row.ds }
+        : { code: "ACCOUNT_DAY_MISSING", media: row.media, accountId: row.accountId, businessDate: row.ds,
+          fields: row.fields.length > 0 ? row.fields : ["cashCost"] }));
+      if (missing.length > 200) named.push(`ACCOUNT_DAY_MISSING_TRUNCATED:${missing.length}`);
+
       return {
-        window: input.window, lineage, warnings: [...new Set(["BUDGET_SOURCE_NOT_READY", ...selection.warnings])],
+        window: input.window,
+        // v1.9.35：这一窗给的是部分合计时，lineage 明说 partial——判定那侧已经挂起，
+        // 但调用方还要知道「这个数是不完整的」才敢往下用。
+        lineage: { ...lineage, ...(missing.length > 0 ? { partial: true } : {}) },
+        warnings: [...new Set(["BUDGET_SOURCE_NOT_READY", ...selection.warnings])],
+        namedGaps: named,
         row: summaryWindowRowSchema.parse({
           ...summary, metrics: { ...summary.metrics, costSpace: assessment.costSpace },
           assessment: assessment.assessment, ...(compare ? { compare } : {}),
@@ -152,6 +178,7 @@ export function createPlatformWindowQuery(pool: Pick<Pool, "connect">): Platform
       querySummary: semantic.querySummary.bind(semantic), queryLineage: semantic.queryLineage.bind(semantic),
       loadAssessment: assessment.load.bind(assessment),
       loadAccountCounts: assessment.loadAccountCounts.bind(assessment),
+      loadMissingAccountDays: assessment.loadMissingAccountDays.bind(assessment),
     });
   }));
 }

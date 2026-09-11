@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { calendarDateSchema, ratioValueSchema } from "./data-query-base-rows.js";
-import { canonicalMetricValueSchema, metricValue, sumMetricValues } from "./metric-value.js";
-import { biCashCostMetricValue, dashboardBiFrom } from "./dashboard-bi-math.js";
+import { canonicalMetricValueSchema, metricValue, sumMetricValues, sumMetricValuesPartial, type CanonicalMetricValue } from "./metric-value.js";
+import { dashboardBiFrom } from "./dashboard-bi-math.js";
 import { queryWindowSchema, windowAssessmentSchema, windowComparisonSchema, type WindowComparisonMode } from "./summary-window.js";
 
 const undefinedRatio = { value: null, state: "undefined" } as const;
@@ -55,15 +55,37 @@ export function computeKaDailyWindowAssessment(input: readonly unknown[], budget
   };
 }
 
+/**
+ * v1.9.35 部分合计**只对个人源（history 价）这条路径开**。
+ *
+ * 团队 KA 源那条（`ka_daily`）这版仍走「缺一个成员就整体缺」：它的窗口汇总另有一条
+ * 由 SQL 直接出总数的对拍路径（`ka-window-aggregate`），那条拿不到逐成员的缺失信息，
+ * 两边口径必须一致，否则同一个窗口会出现「成员路径说部分、汇总路径说缺失」。
+ * 团队源接 partial 属于 Q-041 ⑧ 的活，届时两条路一起改。
+ */
 function computeWeightedAssessment(rows: readonly WeightedDay[], evidence: PriceEvidence, budgetUsageRate: unknown) {
+  const sum = evidence.priceSource === "history" ? sumMetricValuesPartial : sumMetricValues;
   const completePrices = rows.length > 0 && rows.every((row) => row.price !== null);
-  const cash = sumMetricValues(rows.map((row) => row.cashCost));
-  const target = sumMetricValues(rows.map((row) => row.price && row.realConversion.availability === "available"
+  // v1.9.35：窗口聚合走部分合计（缺几天就给有数那部分并标 partial）。
+  const cash = sum(rows.map((row) => row.cashCost));
+  const target = sum(rows.map((row) => row.price && row.realConversion.availability === "available"
     ? metricValue(row.price.value * row.realConversion.value) : metricValue(null)));
-  const costSpace = cash.availability === "available" && target.availability === "available"
-    ? metricValue(target.value - cash.value) : metricValue(null);
-  let reason: "assessment_missing" | "cash_missing" | "conversion_missing" | "window_over" | "day_over_window_ok" | "window_ok";
+  // 成本空间照样给（两边都有值就能算），但它可能是「部分」的——
+  // 部分的空间只能看个大概，不能拿去判达标，下面的 partial_data 就是干这个的。
+  const partialSum = cash.availability === "partial" || target.availability === "partial";
+  const bothUsable = (value: CanonicalMetricValue) =>
+    value.availability === "available" || value.availability === "partial";
+  const costSpace = bothUsable(cash) && bothUsable(target)
+    ? canonicalMetricValueSchema.parse({
+      value: (target.value as number) - (cash.value as number),
+      availability: partialSum ? "partial" : "available",
+    })
+    : metricValue(null);
+  let reason: "assessment_missing" | "cash_missing" | "conversion_missing" | "window_over" | "day_over_window_ok" | "window_ok" | "partial_data";
   if (!completePrices) reason = "assessment_missing";
+  // v1.9.35 判定挂起：参与判定的任一项是「部分」就不判——拿半个窗口的花费去跟整窗目标比，
+  // 结论必错，而且错得看不出来（数字一切正常，只是少了几天）。
+  else if (partialSum) reason = "partial_data";
   else if (cash.availability !== "available") reason = "cash_missing";
   else if (costSpace.availability !== "available") reason = "conversion_missing";
   else if (costSpace.value < 0) reason = "window_over";
@@ -77,16 +99,16 @@ function computeWeightedAssessment(rows: readonly WeightedDay[], evidence: Price
     }
     reason = [...daily.values()].some((day) => day.cash > day.target) ? "day_over_window_ok" : "window_ok";
   }
-  const determined = reason !== "cash_missing" && reason !== "conversion_missing" && reason !== "assessment_missing";
+  const determined = reason === "window_over" || reason === "day_over_window_ok" || reason === "window_ok";
   // v1.9.27 ③（Q-041 ②）：三个 BI 值就在这里一起出，与 costSpace 同源同口径。
   // 它们和考核结论用的是同一批天、同一批价，不可能各说各话。
-  const bi = dashboardBiFrom(cash, sumMetricValues(rows.map((row) => row.realConversion)), costSpace);
+  const bi = dashboardBiFrom(cash, sum(rows.map((row) => row.realConversion)), costSpace);
   return {
     costSpace,
     assessment: windowAssessmentSchema.parse({
       ...evidence,
       biConv: bi.bi_conv,
-      biCashCost: biCashCostMetricValue(bi.bi_cash_cost),
+      biCashCost: bi.bi_cash_cost,
       overCost: bi.over_cost,
       onTarget: determined ? reason !== "window_over" : null,
       costStatus: !determined ? null : reason === "window_over" ? "red" : reason === "day_over_window_ok" ? "yellow" : "green",

@@ -20,6 +20,8 @@ function setup() {
     queryLineage: vi.fn(async () => ({ dataAsOf: null, canonicalRows: 1, returnedAccounts: 1,
       requestedAccountDays: 1, returnedAccountDays: 1, requestedDates: ["2026-08-01"] })),
     loadAccountCounts: vi.fn(async () => ({ total: 1, determinable: 1, onTarget: 1 })),
+    // 缺数点名（v1.9.33）：本桩不造缺口，恒回空表。
+    loadMissingAccountDays: async () => [],
     loadAssessment: vi.fn(async () => [{ ds: "2026-08-01", cashCost: metricValue(10), realConversion: metricValue(1),
       price: { value: 20, effectiveDate: "2026-08-01", versionKey: "price-a" } }]),
   };

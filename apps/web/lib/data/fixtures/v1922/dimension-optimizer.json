@@ -102,7 +102,7 @@
             },
             "biCashCost": {
               "value": 36.11,
-              "availability": "available"
+              "state": "finite"
             },
             "overCost": {
               "value": 2050.56,
@@ -205,7 +205,7 @@
             },
             "biCashCost": {
               "value": 36.1,
-              "availability": "available"
+              "state": "finite"
             },
             "overCost": {
               "value": 1626.65,
@@ -308,7 +308,7 @@
             },
             "biCashCost": {
               "value": 36.11,
-              "availability": "available"
+              "state": "finite"
             },
             "overCost": {
               "value": 1025.28,
@@ -411,7 +411,7 @@
             },
             "biCashCost": {
               "value": 36.17,
-              "availability": "available"
+              "state": "finite"
             },
             "overCost": {
               "value": 423.91,

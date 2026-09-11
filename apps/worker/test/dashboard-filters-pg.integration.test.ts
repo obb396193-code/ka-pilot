@@ -82,6 +82,8 @@ describe("P211 multi-filter / dedicated synthetic PG + public HTTP", () => {
       const resolve = createDashboardScopeResolver(connection);
       return read({ querySummary: semantic.querySummary.bind(semantic), queryLineage: semantic.queryLineage.bind(semantic),
         loadAssessment: assessment.load.bind(assessment), loadAccountCounts: assessment.loadAccountCounts.bind(assessment),
+        // 缺数点名（v1.9.33）：这些桩不造缺口，恒回空表。
+        loadMissingAccountDays: async () => [],
         resolveDashboardScope: async (scope, selected) => {
           const result = await resolve(scope, selected);
           await pool.query("UPDATE account_metrics_daily SET cash_cost=700 WHERE workspace_id=$1 AND media='KUAISHOU' AND ds='2026-09-02'", [ws]);

@@ -125,12 +125,31 @@ describe("personal summary window composition / synthetic real PG", () => {
     expect(result.row).toMatchObject({ accountCount: 0, rowCount: 0, metrics: { cashCost: { value: null, availability: "missing" } }, assessment: { onTarget: null } });
     expect(result.lineage.returnedAccountDays).toBe(0);
   });
-  it("missing account-days invalidate the assessment instead of making the remainder look green", async () => {
+  it("missing account-days give a partial total and suspend the judgement, never a green remainder", async () => {
+    // v1.9.35（老板拍板 B）：缺账户日不再让整窗变「−」——给有数那部分的和并标 partial；
+    // 但**判定一律挂起**（partial_data），所以剩下那部分绝不会被判成「达标」。
+    // 变的是「给不给数」，没变的是「绝不拿不完整的数下结论」。
     const result = await createPlatformWindowQuery(pool).summary({ ...input, window: { from: "2026-09-01", to: "2026-09-03" } });
-    expect(result.row.metrics.cashCost).toEqual({ value: null, availability: "missing" });
-    expect(result.row.metrics.costSpace).toEqual({ value: null, availability: "missing" });
+    expect(result.row.metrics.costSpace.availability).toBe("partial");
     expect(result.row.assessment.onTarget).toBeNull();
+    expect(result.row.assessment.costStatus).toBeNull();
+    expect(result.row.assessment.costStatusReason).toBe("partial_data");
     expect(result.lineage).toMatchObject({ requestedAccountDays: 3, returnedAccountDays: 2 });
+
+    // v1.9.33 缺数点名：少了哪个账户的哪一天、少了哪几个字段，必须逐条说出来——
+    // 只给一屏「−」，用户分不清「这天没投」还是「这天没拉到」。
+    const named = result.namedGaps.filter((entry) => typeof entry !== "string")
+      .map((entry) => entry as unknown as Record<string, unknown>);
+    expect(named.length).toBeGreaterThan(0);
+    for (const gap of named) {
+      expect(["ACCOUNT_DAY_MISSING", "BATCH_FAILED"]).toContain(gap.code);
+      expect(typeof gap.media).toBe("string");
+      expect(typeof gap.accountId).toBe("string");
+      expect(String(gap.businessDate)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      if (gap.code === "ACCOUNT_DAY_MISSING") expect((gap.fields as string[]).length).toBeGreaterThan(0);
+    }
+    // 有缺口的窗口要在 lineage 上明说 partial，调用方才知道这个数不完整。
+    expect((result.lineage as { partial?: boolean }).partial).toBe(true);
   });
   it("compares real account target rates with effective historical prices in the same window snapshot", async () => {
     await pool.query("INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date) VALUES($1,'synthetic-task',1,'2026-08-01')", [workspaceId]);

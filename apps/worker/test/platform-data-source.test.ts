@@ -81,6 +81,8 @@ function windowSource(
     loadAssessment: vi.fn(async () => [{ ds: "2026-08-24", price: null,
       cashCost: metricValue(empty ? 0 : 12), realConversion: metricValue(empty ? 0 : 1) }]),
     loadAccountCounts: vi.fn(async () => ({ total: 1, determinable: 0, onTarget: 0 })),
+    // 缺数点名（v1.9.33）：这些桩不造缺口，恒回空表。
+    loadMissingAccountDays: async () => [],
   };
   const query = new PlatformWindowQuery((read) => snapshot
     ? snapshot((transaction) => read({ ...transaction, ...history }))
