@@ -725,3 +725,20 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
   - **并入已派任务**：策略分析 = F8-22 的三个预设，不单做。
   - **后端未做、保持示例态**：归因树 `GET /tasks/:id/attribution`（依赖广告层数据源，登记 be2 Q-046）；自助报表 `POST /reports/render` + `/reports/configs`（登记 be2 Q-047）；竞情 = AppGrowing 接入是 OS 联调项，契约 §3.12 就定的示例态。这三 tab 的「当前为示例」按老板拍板保留，接通一处撤一处。
 - 顺序：**⑲（P0，联调端到端在等它）→ F8-23 任务管理 → 第 0/1 批 → F8-22 自定义透视 → F8-24（三 tab 接线）→ F8-19b P1**。⑲ 三处改动很小，先交它再动 F8-22。
+
+### be2 Q-041 ②④⑤⑥ 已在 main `63b6f089`；两条契约变更（arch 2026-09-10 循环第 33 圈，v1.9.32/33）
+- 真接口现在会发 `assessment.biConv / biCashCost / overCost` 与 `cost.incentiveCost`（ka-data 源恒 missing 不是 0）、`availability:"pending"`、`lineage.warnings[]` 对象形 `BATCH_FAILED`。你那几处「待接源」可以撤了（⑲ 落地后我端到端一起验）。
+- **`biCashCost` 改 RatioValue**（v1.9.32，推翻审查员 D 的 ⑯）：`canonical-query-rows.ts:130` 改 `ratioValueSchema.optional()`；`infinite` 显「∞ · 无 BI 回传」不是「−」；`undefined` 时按 `biConv.availability` 显「待到」或「−」。be2 随 Q-041 ③ 一起切，切之前后端还是 MetricValue 形——镜像用 union 过渡（两形都收），③ 到了收窄。
+- **缺数点名**（v1.9.33）：窗口里任一账户日缺数，后端会发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`；页面「−」旁要能展开「N 账户·M 日缺数」清单。整窗 missing 还是部分合计老板在拍，先按现状。
+- 序不变：**⑲ → F8-23 → 第 0/1 批 → F8-22 → F8-24 → P1**。
+
+### aeb84f6c ✅ 已合 main `dfb40e2c`；⑲ 我 v1.9.30 写错了一处，按 v1.9.34 改；F8-22 加 ⑳（arch 2026-09-10 循环第 34 圈）
+- F8-22 透视构建器合了（web 254 绿）。但它和概览一样，真实模式一发就 400，我在联调库把每个键都试了一遍，结论在 api.md **v1.9.34 表格**。
+- **⑲ 改法更正**：`use-dashboard.ts:102` 的 `date_from/date_to` 后端其实收（两种拼法都行）；要改的只有三处：去掉 `workspace_id`、去掉 `compare`（③ 落地前）、维度键改 **`dimensionType`**——我上次写的 `dimension` 是错的，实测只有 `dimensionType` 过，抱歉。
+- **⑳ F8-22 透视接真接口**：`use-pivot.ts:42-43` 改成后端现状键 `{window_from, window_to, media, dimA, dimB}`，**media 必填**（个人空间就是当前媒体，联调种子是 `KUAISHOU`）；不发 `workspace_id`、不发 `filters`（后端现在不收）。维度现只支持 `account / task / biz`，选到资源位/代理/优化师/目标或任何段维度时页面显「待接源（后端 Q-041 ⑦⑩）」而不是报错；be2 落地后再放开。`use-pivot.ts:58` 的 `as unknown as` 违反 **A31**，改成 zod `parse()`。
+- 序：**⑲ + ⑳ 一笔交**（改动都小），交完我立刻跑真实模式端到端；然后 F8-23 → 第 0/1 批 → F8-24 → P1。
+
+### 老板拍板 B：部分合计（arch 2026-09-11，v1.9.35）——排在 ⑲⑳ 之后、F8-23 之前，记作 ㉑
+- 镜像 `canonicalMetricValueSchema` 加 `{value:number, availability:"partial"}` 第四态；`costStatusReason` 加 `partial_data`。
+- 展示：partial 正常显数字 + 「部分」角标（不降饱和、不打「−」），tooltip 从 `lineage.warnings` 的 `ACCOUNT_DAY_MISSING/BATCH_FAILED` 列「缺 N 户 M 日」清单；由 partial 输入算出的比率同样挂标；判定挂起时达标/超成本显「待补齐」。导出加标记列。
+- 后端随 be2 下一笔到；到之前按 v1.9.35 形先接（mock 用 `summary-window-v3-partial.json` 形自写过渡件，be2 导出后替换）。

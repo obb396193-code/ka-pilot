@@ -40,8 +40,9 @@ export function LoginForm({ className, frame = "card", guestEnabled = false, ...
       if (!response.ok) { setError(response.error.code === "UNAUTHORIZED" ? "用户名或密码错误" : resolveErrorMessage(response.error.code, "登录失败，请稍后重试")); return }
       const session = await readSession()
       if (!session.ok) { setError("登录成功但读取会话失败，请重试"); return }
-      router.replace(nextPath)
-      router.refresh()
+      // I-010（内网真浏览器点测）：登录前对 "/" 的 RSC 预取拿到中间件 307→/login，进了客户端 Router Cache（30s），
+      // router.replace 会原样回放，表现为「登录成功仍停在登录页」。真实模式一律整页硬跳，绕开该缓存。
+      window.location.replace(nextPath)
     } catch {
       setError("登录服务暂时不可用，请稍后重试")
     } finally {
@@ -58,8 +59,7 @@ export function LoginForm({ className, frame = "card", guestEnabled = false, ...
     try {
       const response = await loginSession({ provider: "guest" })
       if (!response.ok) { setError(resolveErrorMessage(response.error.code, "访客浏览暂时不可用，请用账号登录")); return }
-      router.replace("/")
-      router.refresh()
+      window.location.replace("/")  // 同上 I-010
     } catch {
       setError("访客浏览暂时不可用，请用账号登录")
     } finally {

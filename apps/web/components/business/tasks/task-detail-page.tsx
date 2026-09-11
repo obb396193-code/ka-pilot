@@ -88,7 +88,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
     <PageBody>
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{data.task.taskName}{stage ? <TypeChip className="gap-1.5"><span className={cn("size-1.5 rounded-full", taskStageMap[stage].dot)} />{taskStageMap[stage].label}{ov.stage?.source === "manual" ? " · 手" : ov.stage?.source === "workflow" ? " · 工作流" : ""}</TypeChip> : null}{ov.costStatus ? <StatusChip tone={ov.costStatus === "green" ? "success" : ov.costStatus === "yellow" ? "warning" : "critical"}>{costStatusLabel[ov.costStatus]}</StatusChip> : <StatusChip tone="muted">不可判断</StatusChip>}</span>}
-        description={<span>{data.task.bizName ?? "−"} · {data.task.period.start} – {data.task.period.end} · 预算 {mv(data.task.budget, "money0")} · 负责人 {data.task.owner?.displayName ?? "待分配"}{listItem?.rta ? " · RTA" : ""}{listItem?.placementPref ? ` · ${listItem.placementPref}` : ""} · {costStatusReasonText(ov.costStatusReason)}</span>}
+        description={<span>{data.task.bizName ?? "−"} · {data.task.period?.start ?? "−"} – {data.task.period?.end ?? "−"} · 预算 {mv(data.task.budget, "money0")} · 负责人 {data.task.owner?.displayName ?? "待分配"}{listItem?.rta ? " · RTA" : ""}{listItem?.placementPref ? ` · ${listItem.placementPref}` : ""} · {costStatusReasonText(ov.costStatusReason)}</span>}
         actions={
           <>
             

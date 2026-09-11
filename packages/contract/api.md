@@ -1416,3 +1416,36 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **按日补拉（#8）= 现有 rerun**：治理后台「按日补拉」= 选一个 businessDate 对该日的 run 发 `POST /system/etl-runs/:id/rerun`（列表里取该日 run 的 id）；无该日 run → 显「该日没有拉数记录」。不新增端点。
 - **已有端点只差接线的批次**（fe 接，后端已在）：第 0 批 #10/#31/#33/#37（`/me/views`、`/me/watchlist`、readiness）；第 1 批 #38/#39（r010 ignore/mute 命令，路由接上）；第 2 批 #2/#9（pool-status DELETE、decision-policy PUT）。
 - **需后端补的**（be2 Q-045 ②③，排在 Q-041/Q-044 之后）：#4/#5 `PATCH /admin/members/:identityId {role?, is_active?}`、#6/#7 `PUT /admin/members/:identityId/grants`（整体替换）、#12/#14/#22/#23/#29/#30 集成/订阅/定时/凭证解绑、#16/#17/#19/#25/#32/#34/#35/#36 素材/工作项/派发/审批。顺序：治理后台 → 集成报告 → 素材任务 → 协作。
+
+## v1.9.32 追加（2026-09-10 arch；裁 be2 Q-041 ②④⑤⑥ 回执三问）
+- **`assessment.biCashCost` 改为 RatioValue**（`{value, state:"finite"|"infinite"|"undefined"}`，与 `ratios.cashCpa` 同形；v1.9.27 写的 MetricValue 作废）：`cashCost>0 且 biConv=0` → `state:"infinite"`（前端显「∞ · 无 BI 回传」，不是「−」——花了钱一个 BI 都没有，是最该被看见的一档）；`biConv` 为 `pending`/`missing` → `state:"undefined"`，前端按 `biConv.availability` 显「待到」或「−」。不在 MetricValue 里加 `denominator_zero` 档：那是比率的概念，不让每个普通指标的消费者都多兜一档。`biConv`（MetricValue，可 `pending`）、`overCost`（MetricValue，金额可负）、`incentiveCost`（MetricValue，ka-data 源恒 `missing` 不是 0）不变。
+- **四个新键（`biConv/biCashCost/overCost/incentiveCost`）schema 暂 optional**，「真实产出路径恒发」由 domain 绊线 `new-metric-fields-emitted` 保证；等 Q-041 ③ `compare.deltas` 落地后 be2 **一次性重导** `fixtures/data-query/*` 全部冻结 fixture（含 `summary-window-v3-*`），同一笔把四键改必填；fe 的 `-v1922` 过渡件届时换成 be2 导出版。不分两次导。
+- **`compare:"prev_window"`**：枚举已进 `windowComparisonSchema.mode`，前窗与 `deltas` 未实现（Q-041 ③ 下一笔）；落地前 params 严格校验照样把 `compare` 键判 400（v1.9.30），fe 不发。
+- **domain 包禁循环 import**（`dashboard-bi` ↔ `window-assessment` 那种）：vitest 模块图不报，真 CLI 入口 `ReferenceError … before initialization`。纯算术拆独立模块（`dashboard-bi-math`，明令不许反向 import）。进门禁清单 A33。
+
+## v1.9.33 追加（2026-09-10 arch；联调抽查：窗口合计因单个账户日缺数整体 missing 却无提示）
+- **缺数必须点名**：窗口汇总（`account.summary` / `trend` / `dimension` / `pivot2`）任一求和字段因成员账户日缺数而落成 `missing` 时，`lineage.warnings[]` 必须带对象形告警 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields:[...缺的指标键]}`（每个账户日一条；已有 `BATCH_FAILED` 记录的账户日用 `BATCH_FAILED`，不重复发）。`coverage.complete` 仍只描述对象覆盖；是否算部分合计见下一条。前端按 v1.9.27 ⑥ 的对象形渲染「N 账户·M 日缺数」并可展开清单——用户看到「−」必须能知道缺的是谁、哪天。
+- **整窗合计取舍待老板拍板**（A 现状：任一成员缺数 → 该指标整窗 `missing`，不出部分合计；B：`Σ available` + `partial:true` + 缺数清单，达标/超成本判定挂起为 `partial_data`）。拍板前维持 A；拍 B 则出 v1.9.34。
+- **联调种子**：`scripts/seed-demo-data.py` 给 account-2 / 09-10 那行补一条失败批次记录（etl 批次表），让 `BATCH_FAILED` 路径在本地端到端可见；无批次记录的空值行走 `ACCOUNT_DAY_MISSING`。
+
+## v1.9.34 追加（2026-09-10 arch；联调库逐键实测，纠正 v1.9.30 两处错误）
+**`POST /api/v1/data/query` 各 queryId 的 `params` 线上键名（以 `apps/worker/src/data/query-registry.ts` 实测为准，本表取代 v1.9.30 那段）：**
+
+| queryId | 必填 | 可选 | 备注 |
+|---|---|---|---|
+| `account.summary` | `dateFrom`+`dateTo` **或** `date_from`+`date_to`（两种拼法都收，不得混用）或 `date` | `media`, `accountIds[]`, `filters{optimizer[],biz[],resource_position[],goal[],task_id[]}`, `taskId`, `preset`, `compare:"dod"\|"wow"`（`prev_window` 等 Q-041 ③） | `workspace_id` 永远不发（空间由会话定） |
+| `account.trend` | 同上 | 同上（无 compare） | |
+| `account.dimension` | 同上 + **`dimensionType`** | `media`, `accountIds[]`, `filters`, `taskId`, `preset` | **v1.9.30 写的 `dimension` 是错的**，实际键是 `dimensionType`；`dimension_type` 也不收 |
+| `account.table` | 同上 | `media`, `accountIds[]`, `filters`, `taskId`, `page`, `pageSize`(≤500) | |
+| `account.detail` | 同上 + `accountId` | `media` | |
+| `account.pivot2` | **`window_from`+`window_to`+`media`+`dimA`+`dimB`**（media 必填） | `taskIds[]` | 现状另一套键；不收 `dateFrom`、不收 `filters`；维度现只支持 `account/task/biz`，其它维度与 `segment:<key>` 报 `DIMENSION_UNSUPPORTED`（快手源实测） |
+
+- **pivot2 统一（be2 Q-041 ⑩，与 ⑦ 一起）**：改收 `dateFrom/dateTo`（`window_from/to` 保留一版做别名），`media` 仍必填，加 `filters?`；维度扩到 `dimensionTypeSchema` 全集 + `segment:<key>`（与 `account.dimension` 同一个命名规则解析器），源不支持的维度返 `DIMENSION_UNSUPPORTED` 且 `details.supported[]` 列出该源可用维度。落地前 fe 按现状键发，其它维度显「待接源」。
+- v1.9.30 里「`_note` 的 params 例以本条为准」作废：那批 fixture 没有 `_note`，键名以本表为准。
+
+## v1.9.35 追加（2026-09-11 arch；老板拍板 B：窗口合计出部分合计，缺数点名）
+- **窗口汇总改 B**（取代 v1.9.33 第二条的「维持 A」）：`account.summary / trend / dimension / pivot2` 的求和字段在成员账户日缺数时，值 = **Σ 有数的账户日**，`availability:"partial"`（MetricValue 新增第四态，`value` 非 null；只用于窗口聚合，账户日原始行不出现 partial）；由 partial 分子/分母算出的比率（cashCpa/ctr/cvr/gap 等）照常算，前端在有 partial 输入时给比率同样挂「部分」标。全部成员齐 → `available`；一个有数的都没有 → `missing`。
+- **判定挂起**：任一参与判定的指标为 partial 时 `assessment.onTarget=null`、`costStatus=null`、`costStatusReason:"partial_data"`（枚举新增）；`biConv` partial → `biCashCost` 照算但前端挂「部分」；不按部分数判达标/超成本。
+- **点名不变**（v1.9.33）：`lineage.warnings[]` 每个缺数账户日一条 `{code:"ACCOUNT_DAY_MISSING"|"BATCH_FAILED", media, accountId, businessDate, fields[]}`，`lineage.partial=true`；`coverage` 仍只描述对象覆盖。前端「部分·缺 N 户 M 日」标可展开清单。
+- **前端展示**：partial 值正常显示数字 + 「部分」角标（不降饱和、不打「−」），tooltip 列缺数清单；导出时 partial 列加标记列。
+- fixtures：be2 从联调种子（account-2 / 09-10 空值行）导 `data-query/summary-window-v3-partial.json`、`dimension-v3-partial.json`；fe 镜像 `canonicalMetricValueSchema` 加 `partial` 态、`costStatusReason` 加 `partial_data`。
