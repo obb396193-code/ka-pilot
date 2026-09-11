@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { biCashCostMetricValue, calendarDateSchema, dashboardBiFrom, metricValue, summaryWindowRowSchema, compareWindowPoints,
+import { calendarDateSchema, dashboardBiFrom, metricValue, summaryWindowRowSchema, compareWindowPoints,
   unavailableWindowComparison, comparisonWindow, type WindowComparisonMode} from "@ka/domain";
 import type { KaDataWindowQueryPlan } from "./query-registry.js";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
@@ -65,7 +65,7 @@ function rowSummary(row: Row) {
     onTarget: determined ? reason !== "window_over" : null,
     costStatus: !determined ? null : reason === "window_over" ? "red" : reason === "day_over_window_ok" ? "yellow" : "green",
     costStatusReason: reason, budgetUsageRate: ratioUnknown,
-    biConv: bi.bi_conv, biCashCost: biCashCostMetricValue(bi.bi_cash_cost), overCost: bi.over_cost },
+    biConv: bi.bi_conv, biCashCost: bi.bi_cash_cost, overCost: bi.over_cost },
   });
 }
 

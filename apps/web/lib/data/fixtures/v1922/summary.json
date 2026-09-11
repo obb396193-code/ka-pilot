@@ -102,7 +102,7 @@
             },
             "biCashCost": {
               "value": 36.11,
-              "availability": "available"
+              "state": "finite"
             },
             "overCost": {
               "value": 5126.4,

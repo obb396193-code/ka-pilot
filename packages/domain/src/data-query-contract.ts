@@ -107,6 +107,19 @@ export const lineageWarningSchema = z.union([
     accountId: z.string().min(1).max(128),
     businessDate: calendarDateSchema,
   }).strict(),
+  /**
+   * v1.9.33 **缺数点名**：窗口里少了哪个账户的哪一天、少了哪几个字段，必须逐条说出来。
+   * 只给一屏「−」而不点名，用户没法判断是「这天没投」还是「这天没拉到」——
+   * 联调抽查就是这么栽的：整窗 missing、warnings 里却只有一条不相干的预算告警。
+   * 有失败批次记录的用 `BATCH_FAILED`（那是已知原因），其余用这条。
+   */
+  z.object({
+    code: z.literal("ACCOUNT_DAY_MISSING"),
+    media: z.string().min(1).max(32),
+    accountId: z.string().min(1).max(128),
+    businessDate: calendarDateSchema,
+    fields: z.array(z.string().min(1).max(64)).min(1).max(32),
+  }).strict(),
 ]);
 export type LineageWarning = z.infer<typeof lineageWarningSchema>;
 

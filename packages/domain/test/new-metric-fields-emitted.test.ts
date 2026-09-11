@@ -32,7 +32,7 @@ describe("v1.9.27 new metric fields are always emitted by the real producers", (
       }
       // 值也要对得上：现金 100 / BI 10 = 10；成本空间 = 10×12 − 100 = 20 ⇒ 超成本 −20（没超）。
       expect(assessment.biConv).toEqual(metricValue(10));
-      expect(assessment.biCashCost).toEqual(metricValue(10));
+      expect(assessment.biCashCost).toEqual({ value: 10, state: "finite" });
       expect(assessment.overCost).toEqual(metricValue(-20));
     }
   });
@@ -44,18 +44,17 @@ describe("v1.9.27 new metric fields are always emitted by the real producers", (
         price: { value: 12, effectiveDate: "2026-09-01", versionKey: "p" } },
     ]).assessment;
     expect(assessment.biConv).toEqual(metricValue(null));
-    expect(assessment.biCashCost).toEqual(metricValue(null));
+    expect(assessment.biCashCost).toEqual({ value: null, state: "undefined" });
     expect(assessment.overCost).toEqual(metricValue(null));
   });
 
-  it("keeps the zero-BI spend visible in the kernel even though the wire shape loses it", () => {
-    // 花了钱一个 BI 数都没有：内核（RatioValue）能说出这是 infinite；
-    // 但 wire 形按契约是 MetricValue，没有 infinite 这一档，只能落成 missing——
-    // 这一档有损，已在回执里请 arch 裁。这条用例把「损在哪」钉住，免得以后被当成正常。
+  it("reports a real zero-BI spend as infinite instead of hiding it", () => {
+    // 花了钱一个 BI 数都没有：这是最该被看见的一种，v1.9.32 裁 biCashCost 用 RatioValue
+    // 就是为了留住这一档（压成 MetricValue 会和「根本没数据」长得一样）。
     const days = [day("2026-09-01", 100, 0, 12)];
     expect(computeDashboardBi({ priceSource: "history", days }).bi_cash_cost)
       .toEqual({ value: null, state: "infinite" });
-    expect(computeWindowAssessment(days).assessment.biCashCost).toEqual(metricValue(null));
+    expect(computeWindowAssessment(days).assessment.biCashCost).toEqual({ value: null, state: "infinite" });
   });
 
   it("aggregates incentiveCost and treats an absent column as missing, never zero", () => {
@@ -71,9 +70,50 @@ describe("v1.9.27 new metric fields are always emitted by the real producers", (
       },
     });
     expect(aggregateWindowMetrics([withValue, withValue]).incentiveCost).toEqual(metricValue(6));
-    // 老行没有这个键（源里就没这一列）：求和结果是 missing，不是 0。
+    // 老行没有这个键（源里就没这一列）：v1.9.35 起窗口聚合是**部分合计**，
+    // 给的是有数那部分的和并标 partial——不是 0，也不再是整体 missing。
     const legacy = { ...withValue };
     delete (legacy as { incentiveCost?: unknown }).incentiveCost;
-    expect(aggregateWindowMetrics([withValue, legacy]).incentiveCost).toEqual(metricValue(null));
+    expect(aggregateWindowMetrics([withValue, legacy]).incentiveCost)
+      .toEqual({ value: 3, availability: "partial" });
+    // 一个都没有才是 missing。
+    const none = { ...withValue };
+    delete (none as { incentiveCost?: unknown }).incentiveCost;
+    expect(aggregateWindowMetrics([none, legacy]).incentiveCost).toEqual(metricValue(null));
+  });
+});
+
+/**
+ * v1.9.35（老板拍板 B）部分合计：窗口里缺账户日时给「有数那部分的和」并标 `partial`，
+ * 但**任何判定都挂起**。这两件事必须同时成立——只给数不挂判定，等于用半个窗口判达标；
+ * 只挂判定不给数，用户又回到一屏「−」。
+ */
+describe("v1.9.35 partial window totals suspend every judgement", () => {
+  const full = day("2026-09-01", 100, 10, 12);
+  const blank = { ds: "2026-09-02", cashCost: metricValue(null), realConversion: metricValue(null),
+    price: { value: 12, effectiveDate: "2026-09-01", versionKey: "p-12" } };
+
+  it("gives the partial total and refuses to judge on it", () => {
+    const out = computeWindowAssessment([full, blank]);
+    // 有数那天的和照给，并明说这是「部分」。
+    expect(out.costSpace).toEqual({ value: 20, availability: "partial" });
+    // 判定一律挂起：拿半个窗口的花费跟整窗目标比，结论必错且看不出来。
+    expect(out.assessment.onTarget).toBeNull();
+    expect(out.assessment.costStatus).toBeNull();
+    expect(out.assessment.costStatusReason).toBe("partial_data");
+  });
+
+  it("still judges normally when every expected day is present", () => {
+    const out = computeWindowAssessment([full, day("2026-09-02", 100, 10, 12)]);
+    expect(out.costSpace.availability).toBe("available");
+    expect(out.assessment.costStatusReason).toBe("window_ok");
+    expect(out.assessment.onTarget).toBe(true);
+  });
+
+  it("falls back to missing only when nothing in the window has data", () => {
+    const out = computeWindowAssessment([blank, { ...blank, ds: "2026-09-03" }]);
+    expect(out.costSpace).toEqual(metricValue(null));
+    // 一个数都没有时理由是「缺现金」而不是「部分」——partial 的前提是有一部分。
+    expect(out.assessment.costStatusReason).toBe("cash_missing");
   });
 });

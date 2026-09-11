@@ -52,6 +52,9 @@ export const canonicalMetricValueSchema = z.discriminatedUnion("availability", [
   // 和 missing「这次查下来就是没有」不是一回事——两者混成一个「−」，
   // 人分不清是等一会儿还是永远不会有。
   z.object({ value: z.null(), availability: z.literal("pending") }).strict(),
+  // v1.9.35 partial = 部分合计：窗口里缺了账户日，给的是**有数那部分的和**。
+  // 唯一带真值的非 available 态；判定一律挂起（costStatusReason: partial_data）。
+  z.object({ value: finiteNumber, availability: z.literal("partial") }).strict(),
 ])
 
 const hourlyVolumeSchema = z.object({ cost: canonicalMetricValueSchema, cashCost: canonicalMetricValueSchema,
@@ -122,17 +125,22 @@ export const accountSummaryRowSchema = z.object({
     price: z.object({ value: finiteNumber, effectiveDate: calendarDateSchema.nullable() }).strict().nullable(),
     priceVersions: z.number().int().min(2).optional(),
     onTarget: z.boolean().nullable(), costStatus: z.enum(["green", "yellow", "red"]).nullable(),
-    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
+    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing", "partial_data"]),
     budgetUsageRate: ratioValueSchema,
     /* v1.9.27 考核口径三项（camelCase）。只有 summary 和新维度带，老维度行没有 → optional。 */
     biConv: canonicalMetricValueSchema.optional(),
-    /** ★MetricValue 不是 RatioValue：它是「一个 BI 转化多少钱」的金额，可缺可待到 */
-    biCashCost: canonicalMetricValueSchema.optional(),
+    /**
+     * ★v1.9.32 arch 裁 (b)：改回 **RatioValue**（与 `ratios.cashCpa` 同形）。
+     * 理由是「花了钱、一个 BI 数都没有」要能说成 `infinite`——压成 MetricValue 只能落 missing，
+     * 和「根本没数据」长得一样，而那恰恰是最该被看见的一种。
+     */
+    biCashCost: ratioValueSchema.optional(),
     /** 现金花费 − Σ日(考核BI数 × 当日生效考核价)；正 = 超成本，负 = 还有余量 */
     overCost: canonicalMetricValueSchema.optional(),
   }).strict().superRefine((value, ctx) => {
     const expected = { window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
-      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null] } as const
+      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null],
+      partial_data: [null, null] } as const
     const [target, color] = expected[value.costStatusReason]
     if (value.onTarget !== target || value.costStatus !== color) ctx.addIssue({ code: "custom", message: "Assessment reason mismatch" })
     if (value.price !== null && ((value.priceSource === "history") !== (value.price.effectiveDate !== null))) ctx.addIssue({ code: "custom", message: "Price source/date mismatch" })

@@ -13,7 +13,7 @@ describe("v1.7.2 daily effective price aggregation", () => {
     // 现金 160、BI 数 10、成本空间 −50 ⇒ 超成本 50、BI 现金成本 16。
     expect(out.assessment).toEqual({ priceSource: "history", price: null, priceVersions: 2, onTarget: false,
       costStatus: "red", costStatusReason: "window_over", budgetUsageRate: missingRatio,
-      biConv: mv(10), biCashCost: mv(16), overCost: mv(50) });
+      biConv: mv(10), biCashCost: { value: 16, state: "finite" }, overCost: mv(50) });
   });
   it("preserves unique version metadata but flags a daily aggregate breach inside a good window", () => {
     const out = computeWindowAssessment([day("2026-09-01", 30), day("2026-09-02", 0)]);
@@ -34,8 +34,13 @@ describe("v1.7.2 daily effective price aggregation", () => {
   it("missing price, cash, conversions and empty sets never fabricate a target result", () => {
     expect(computeWindowAssessment([{ ...day(), price: null }]).assessment).toMatchObject({ onTarget: null, costStatusReason: "assessment_missing" });
     for (const field of ["cashCost", "realConversion"] as const) {
+      // v1.9.35：缺一天不再让整窗变「−」——给的是有数那部分的和并标 partial，
+      // 但**判定一律挂起**（拿半个窗口的花费跟整窗目标比，结论必错且看不出来）。
       const out = computeWindowAssessment([day(), { ...day("2026-09-02"), [field]: mv(null) }]);
-      expect(out.costSpace).toEqual(mv(null)); expect(out.assessment.onTarget).toBeNull();
+      expect(out.costSpace.availability).toBe("partial");
+      expect(out.assessment.onTarget).toBeNull();
+      expect(out.assessment.costStatus).toBeNull();
+      expect(out.assessment.costStatusReason).toBe("partial_data");
     }
     expect(computeWindowAssessment([]).costSpace).toEqual(mv(null));
     expect(computeWindowAssessment([]).assessment.onTarget).toBeNull();

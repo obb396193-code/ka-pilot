@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { accountSummaryRowSchema, calendarDateSchema, canonicalMetricSetSchema, ratioValueSchema } from "./data-query-base-rows.js";
-import { canonicalMetricValueSchema, divideMetricValues, metricValue, sumMetricValues, type CanonicalMetricValue } from "./metric-value.js";
+import { canonicalMetricValueSchema, divideMetricValues, metricValue, sumMetricValuesPartial, type CanonicalMetricValue } from "./metric-value.js";
 import { compareAbsolute, compareRate } from "./metrics.js";
 
 /** Strict public v3 window and assessment values. */
@@ -16,22 +16,25 @@ export const windowAssessmentSchema = z.object({
   priceVersions: z.number().int().min(2).optional(),
   onTarget: z.boolean().nullable(),
   costStatus: z.enum(["green", "yellow", "red"]).nullable(),
-  costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
+  // v1.9.35：`partial_data` = 参与判定的指标里有 partial（部分合计）→ 判定挂起。
+  // 拿「一部分」去判达标，等于用半个窗口的花费跟整窗的目标比，结论必错且错得看不出来。
+  costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing", "partial_data"]),
   budgetUsageRate: ratioValueSchema,
   /**
    * v1.9.27 ③ 三个 BI 指标（Q-041 ②）。**必填**，与 stage 那批同理——
    * 留 optional 的话哪条路径漏发都不会有东西报警，前端只是静悄悄显「−」。
    * 三个值由 `dashboardBiFrom` 一处算出：
    * - `biConv` = 考核 BI 数（= 确认口径的 realConversion 求和，不是媒体侧转化）；
-   * - `biCashCost` = 现金花费 / biConv，wire 形是 MetricValue（契约与前端镜像已冻）；
-   *   BI 数为 0 而花了钱那种情况只能落成 missing，**这一档是有损的**，已请 arch 裁；
+   * - `biCashCost` = 现金花费 / biConv，**RatioValue**（v1.9.32 arch 裁 (b)，与 `ratios.cashCpa` 同形）：
+   *   `cashCost>0 且 biConv=0` → `infinite`（花了钱一个都没有，这是最该被看见的一种），
+   *   `biConv` 缺失/待到 → `undefined`。不在 MetricValue 里加 `denominator_zero`——
+   *   那是比率的概念，不该让每个普通指标的消费者多兜一档；
    * - `overCost` = 成本空间取反，正数 = 超成本，可负。
    */
   // 同 incentiveCost：**暂为 optional 只是为了不判死几十份冻结 fixture**，
   // 真实产出路径恒发三个值（绊线 new-metric-fields-emitted 钉住），fixtures 重导后转必填。
   biConv: canonicalMetricValueSchema.optional(),
-  /** wire 形按契约与前端镜像是 MetricValue（不是 RatioValue），见 `biCashCostMetricValue` 的注释。 */
-  biCashCost: canonicalMetricValueSchema.optional(),
+  biCashCost: ratioValueSchema.optional(),
   overCost: canonicalMetricValueSchema.optional(),
 }).strict().superRefine((assessment, context) => {
   if (assessment.price !== null && assessment.priceSource === "history" && assessment.price.effectiveDate === null) {
@@ -52,6 +55,7 @@ export const windowAssessmentSchema = z.object({
   const expected = {
     window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
     cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null],
+    partial_data: [null, null],
   } as const;
   const [target, status] = expected[assessment.costStatusReason];
   if (assessment.onTarget !== target || assessment.costStatus !== status) {
@@ -111,8 +115,10 @@ export function aggregateWindowMetrics(input: readonly unknown[]): z.infer<typeo
   // incentiveCost 是 v1.9.27 新增且暂为 optional：老行没有这个键。
   // 缺键按 **missing** 参与求和（`metricValue(null)`），不是 0——源里没有这一列和
   // 「这段时间没花激励」是两件事，压成 0 就分不出来了。
+  // v1.9.35：窗口聚合走**部分合计**——缺几个账户日就给有数那部分并标 partial，
+  // 而不是整窗一个「−」。判定那一侧会因为 partial 挂起，所以不会拿半份数据下结论。
   const values = Object.fromEntries(sumFields.map((key) => [
-    key, sumMetricValues(rows.map((row) => row[key] ?? metricValue(null))),
+    key, sumMetricValuesPartial(rows.map((row) => row[key] ?? metricValue(null))),
   ])) as Record<typeof sumFields[number], CanonicalMetricValue>;
   const gap = divideMetricValues(values.conversion, values.realConversion);
   return canonicalMetricSetSchema.parse({

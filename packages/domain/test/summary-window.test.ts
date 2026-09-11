@@ -66,10 +66,16 @@ describe("window arithmetic never averages daily CPA", () => {
     expect(sum.ratios.realCpa).toEqual(finite(20)); expect(sum.ratios.cashCpa).toEqual(finite(16));
     expect(sum.wakeUv).toEqual(mv(null)); expect(sum.ratios.potentialRate).toEqual(missing);
   });
-  it.each(["missing", "error"])("preserves %s members as missing aggregate, not partial sum", (availability) => {
+  it.each(["missing", "error"])("sums the %s member's window as an explicitly partial total", (availability) => {
+    // v1.9.35（老板拍板 B）：窗口聚合改成**部分合计**——缺成员时给有数那部分并标 partial，
+    // 而不是整窗一个「−」。变的是「给不给数」，没变的是「绝不把缺当 0」：
+    // 结果带着 partial 标记，判定那一侧会因此挂起（costStatusReason: partial_data）。
     const second = metrics(); second.cashCost = { value: null, availability };
-    expect(aggregateWindowMetrics([metrics(), second]).cashCost).toEqual(mv(null));
-    expect(aggregateWindowMetrics([metrics(), second]).ratios.cashCpa).toEqual(missing);
+    const aggregate = aggregateWindowMetrics([metrics(), second]);
+    expect(aggregate.cashCost).toEqual({ value: metrics().cashCost.value, availability: "partial" });
+    // 全员缺才是 missing。
+    const bothMissing = metrics(); bothMissing.cashCost = { value: null, availability };
+    expect(aggregateWindowMetrics([bothMissing, second]).cashCost).toEqual(mv(null));
   });
   it("empty/zero/infinite remain different", () => {
     expect(aggregateWindowMetrics([]).cost).toEqual(mv(null));

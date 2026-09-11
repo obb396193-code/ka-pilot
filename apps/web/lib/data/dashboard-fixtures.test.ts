@@ -22,10 +22,12 @@ function rowsOf(payload: unknown): unknown[] {
 
 test("summary 过渡 fixture 逐字段过 canonical schema", () => {
   const row = accountSummaryRowSchema.parse(rowsOf(load("summary.json"))[0])
-  // v1.9.27 三项都在，且 biCashCost 是 MetricValue（有 availability）不是 RatioValue（有 state）
+  // v1.9.27 三项都在；**v1.9.32 arch 裁 (b)：biCashCost 改回 RatioValue（有 state）**，
+  // 为的是「花了钱一个 BI 数都没有」能说成 infinite——MetricValue 只能落 missing，
+  // 和「根本没数据」长得一样。（后端 be2 同步改，本处随之更正。）
   assert.equal(row.assessment.biConv?.availability, "available")
-  assert.equal(row.assessment.biCashCost?.availability, "available")
-  assert.ok("availability" in (row.assessment.biCashCost ?? {}), "biCashCost 必须是 MetricValue")
+  assert.equal(row.assessment.biCashCost?.state, "finite")
+  assert.ok("state" in (row.assessment.biCashCost ?? {}), "biCashCost 必须是 RatioValue")
   // 激励花费是独立字段，不是 costSpace
   assert.equal(row.metrics.incentiveCost?.availability, "available")
   assert.notEqual(row.metrics.incentiveCost?.value, row.metrics.costSpace.value)
