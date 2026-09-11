@@ -52,6 +52,10 @@ export const canonicalMetricValueSchema = z.discriminatedUnion("availability", [
   // 和 missing「这次查下来就是没有」不是一回事——两者混成一个「−」，
   // 人分不清是等一会儿还是永远不会有。
   z.object({ value: z.null(), availability: z.literal("pending") }).strict(),
+  // v1.9.35（老板拍板 B）：partial = 窗口部分合计，唯一带真值的非 available 态；只出现在窗口聚合。
+  // arch 热修（2026-09-11）：后端 be2 已开始发，镜像不认会让整条响应被 BFF 判废 → 数据分析整页 502。
+  // 展示（「部分」角标 + 缺数清单）是 fe ㉑，此处只保证不崩。
+  z.object({ value: finiteNumber, availability: z.literal("partial") }).strict(),
 ])
 
 const hourlyVolumeSchema = z.object({ cost: canonicalMetricValueSchema, cashCost: canonicalMetricValueSchema,
