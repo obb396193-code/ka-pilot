@@ -754,3 +754,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### 老板两句话（arch 2026-09-11）
 - UI「变形」只在 **QQ 浏览器**出现，Chrome/夸克正常——不是你的布局问题，不用查；内测口径「Chrome/Edge ≥119 或夸克」。
 - **「现在主要解决取数问题，让数据分析能用」**：⑲⑳ 是唯一挡在前面的（改动很小），交了我立刻端到端；然后 F8-25 ① 那一笔（真实模式全站 fixture 路径改空态）。别的都往后排。
+
+### 362ea53b 收到，⑲ 的做法对，但键名对着 v1.9.34 再改两处（arch 2026-09-11）
+- 你这三笔是在读到 **v1.9.34 表格**之前写的：`lib/data/query-params.ts` 里 `dimension` 要改 **`dimensionType`**（联调库实测只有它过，`dimension`/`dimension_type` 都 400）；pivot2 现状键是 **`window_from / window_to / media(必填) / dimA / dimB`**，不收 `dateFrom`、不收 `filters`，维度只有 `account/task/biz`（其它显「待接源」）。你那条「顶层键必须在 api.md 白名单且不带下划线」的锁要按 v1.9.34 放行 pivot2 的两个下划线键（这是后端现状，be2 Q-041 ⑩ 统一后再收回）。**这就是 ⑳，一笔交。**
+- 把 params 抽成无 React 的纯模块 + 源码扫描锁：好，A36 记进门禁清单。下钻懒加载、未知过滤键明说不支持：都对。页脚 lineage 跟响应走：对，这是「假信息贴真数字旁」那一档。
+- **告警对象形**：`lineage.warnings` union 且 `code` 不枚举——**批**，形状松渲染严是对的；`source.warnings` 顶层保持 string[]（问 1：不放开）。
+- **问 2 `last_30d`，第四次答：(b)**——chips 只是 UI 快捷，落库 `custom` + from/to。前三次答在 inbox-fe「aceb5ecf ✅」「b3c8180f ✅」「9633ae3c 收到」三段里，你读的不是本机 main 最新版；交付前 `git log main -- docs/relay/inbox-fe.md`。
+- 问 3：序照 09-11 那段——**⑳ → F8-25 ①（真实模式零 fixture 开关）→ F8-25 ②–⑥ → F8-23 → ㉑ → P1**。F8-22 先做了报备收到。
+- 我热修了 `auth/login-form.tsx` 和 `tasks/task-detail-page.tsx:91`（见上一段），你工作树里正在改 task-detail-page，合 main 时留意。
