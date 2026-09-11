@@ -4,7 +4,7 @@ import { IconArrowDownRight, IconArrowUpRight, IconMinus } from "@tabler/icons-r
 
 import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { mv, rv } from "@/lib/fixtures/contract"
+import { biCostText, mv, rv } from "@/lib/fixtures/contract"
 import type { DashboardSummaryRow } from "@/lib/fixtures/dashboard"
 import type { RatioValue } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
@@ -80,12 +80,12 @@ export function KpiRows({ row, windowed }: {
         </p>
         <div className="grid gap-2 @2xl/main:grid-cols-2 @5xl/main:grid-cols-4">
           <Kpi label="账面花费" value={scoped ? money0(scoped.cost) : mv(now.cost, "money0")} delta={showDelta ? <Delta delta={deltas?.cost} /> : undefined} />
-          {/* ★激励花费读 `incentiveCost`，不是 costSpace——costSpace 是「离考核线还剩多少」，
-              两者含义无关；后端没给这个字段时显「待接源」而不是拿别的数顶上 */}
+          {/* ★激励花费读 `incentiveCost`，不是 costSpace——costSpace 是「离考核线还剩多少」，两者含义无关。
+              ka-data 源恒 missing（不是 0），所以那边显「−」是对的，别补 0（v1.9.32） */}
           <Kpi
             label="激励花费"
-            value={now.incentiveCost ? mv(now.incentiveCost, "money0") : "待接源"}
-            hint="账面花费里由平台激励承担的部分；不进结算。"
+            value={mv(now.incentiveCost, "money0")}
+            hint="账面花费里由平台激励承担的部分；不进结算。团队（ka-data）源不提供这个数。"
           />
           <Kpi label="转化数" value={scoped ? int(scoped.conversion) : mv(now.conversion)} delta={showDelta ? <Delta delta={deltas?.realConversion} /> : undefined} />
           <Kpi label="转化成本" value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")} hint="账面花费 / 真实转化数。" delta={showDelta ? <Delta delta={deltas?.cashCpa} goodWhenDown /> : undefined} />
@@ -98,19 +98,19 @@ export function KpiRows({ row, windowed }: {
           <Kpi label="现金花费" value={scoped ? money0(scoped.cashCost) : mv(now.cashCost, "money0")} hint="扣掉激励后自己真花的钱，结算按它算。" delta={showDelta ? <Delta delta={deltas?.cashCost} /> : undefined} />
           <Kpi
             label="考核 BI 数"
-            value={assess.biConv ? mv(assess.biConv) : "待接源"}
+            value={mv(assess.biConv)}
             // 回传 GAP：平台转化和 BI 认可之间差了多少，优化师最关心这个缺口
             hint={`回传给 BI 并被认可的转化数。与平台转化数的缺口（回传 GAP）：${rv(now.ratios.gap)}。`}
           />
           <Kpi
             label="BI 现金成本"
-            value={assess.biCashCost ? mv(assess.biCashCost, "money") : "待接源"}
-            hint="现金花费 / 考核 BI 数。考核看的就是这个成本。"
+            value={biCostText(assess.biCashCost, assess.biConv)}
+            hint="现金花费 / 考核 BI 数。考核看的就是这个成本；花了钱但一个 BI 都没回传时显「∞ · 无 BI 回传」。"
             tone={assess.costStatus === "red" ? "critical" : assess.costStatus === "yellow" ? "warning" : undefined}
           />
           <Kpi
             label="超成本金额"
-            value={assess.overCost ? mv(assess.overCost, "money0") : "待接源"}
+            value={mv(assess.overCost, "money0")}
             hint="现金花费 − Σ（当日考核 BI 数 × 当日生效考核价）。正数 = 超出考核价；负数 = 还有余量。"
             // 负数是「还有余量」，是好事——不能和超成本一样标红
             tone={(assess.overCost?.value ?? 0) > 0 ? "critical" : (assess.overCost?.value ?? 0) < 0 ? "success" : undefined}

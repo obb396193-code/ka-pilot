@@ -126,8 +126,12 @@ export const accountSummaryRowSchema = z.object({
     budgetUsageRate: ratioValueSchema,
     /* v1.9.27 考核口径三项（camelCase）。只有 summary 和新维度带，老维度行没有 → optional。 */
     biConv: canonicalMetricValueSchema.optional(),
-    /** ★MetricValue 不是 RatioValue：它是「一个 BI 转化多少钱」的金额，可缺可待到 */
-    biCashCost: canonicalMetricValueSchema.optional(),
+    /**
+     * v1.9.32 改成 **RatioValue**（`infinite` = 花了现金但零 BI 回传，前端显「∞ · 无 BI 回传」）。
+     * be2 Q-041 ③ 那一笔才切；切之前后端还发 MetricValue 形，所以这里**两形都收**。
+     * ③ 落地后收窄成 `ratioValueSchema`，同时删掉这条注释。
+     */
+    biCashCost: z.union([ratioValueSchema, canonicalMetricValueSchema]).optional(),
     /** 现金花费 − Σ日(考核BI数 × 当日生效考核价)；正 = 超成本，负 = 还有余量 */
     overCost: canonicalMetricValueSchema.optional(),
   }).strict().superRefine((value, ctx) => {

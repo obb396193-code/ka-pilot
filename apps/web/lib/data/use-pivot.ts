@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { runtimeDataClient } from "./client"
+import { pivotParams } from "./query-params"
 import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { isOk } from "@/lib/fixtures/contract"
 import pivot2 from "@contract/fixtures/data-query/pivot2.json"
@@ -38,11 +39,10 @@ function readMetric(row: Row, metric: string): number | null {
 }
 
 export function usePivot(rowDim: string, colDim: string | null, metric: string, window: DataWindow, workspaceId: string | undefined) {
-  const params = useMemo(() => ({
-    date_from: window.from, date_to: window.to, workspace_id: workspaceId,
-    dim_a: rowDim, ...(colDim ? { dim_b: colDim } : {}),
-  }), [window.from, window.to, workspaceId, rowDim, colDim])
-  const key = JSON.stringify(params)
+  // 参数键名一律走 query-params（P0-⑲：线上是 dimA/dimB 驼峰，且不发 workspace_id）
+  const params = useMemo(() => pivotParams(rowDim, colDim, window), [rowDim, colDim, window])
+  // workspaceId 只进缓存 key 不进 params：空间由会话定，发出去是未知键
+  const key = JSON.stringify({ params, workspaceId })
 
   const [cells, setCells] = useState<PivotCell[] | null>(null)
   const [loading, setLoading] = useState(false)

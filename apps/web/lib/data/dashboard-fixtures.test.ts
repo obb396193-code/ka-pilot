@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs"
 import test from "node:test"
 
 import { accountSummaryRowSchema, dimensionWindowRowSchema } from "./canonical-query-rows.ts"
+import { biCostText, mv, normalizeBiCost } from "../fixtures/contract.ts"
 
 /**
  * F8-19b ⑰：过渡 fixture 的门禁。
@@ -22,10 +23,12 @@ function rowsOf(payload: unknown): unknown[] {
 
 test("summary 过渡 fixture 逐字段过 canonical schema", () => {
   const row = accountSummaryRowSchema.parse(rowsOf(load("summary.json"))[0])
-  // v1.9.27 三项都在，且 biCashCost 是 MetricValue（有 availability）不是 RatioValue（有 state）
+  // v1.9.27 三项都在。biCashCost 的形状 v1.9.32 改判成 RatioValue，
+  // be2 Q-041 ③ 切换前后端还发 MetricValue 形，所以 schema 两形都收——这里只断言「能收」，
+  // 归一后的取值由 normalizeBiCost 的用例管。③ 落地后这里收窄成 state。
   assert.equal(row.assessment.biConv?.availability, "available")
-  assert.equal(row.assessment.biCashCost?.availability, "available")
-  assert.ok("availability" in (row.assessment.biCashCost ?? {}), "biCashCost 必须是 MetricValue")
+  assert.ok(row.assessment.biCashCost, "biCashCost 必须在")
+  assert.equal(normalizeBiCost(row.assessment.biCashCost).known, true)
   // 激励花费是独立字段，不是 costSpace
   assert.equal(row.metrics.incentiveCost?.availability, "available")
   assert.notEqual(row.metrics.incentiveCost?.value, row.metrics.costSpace.value)
@@ -84,4 +87,23 @@ test("任务大类顶层行与 summary 同源：消耗之和 = summary 的账面
     .map((row) => dimensionWindowRowSchema.parse(row))
     .reduce((sum, row) => sum + (row.metrics.cost.value ?? 0), 0)
   assert.equal(Math.round(total), Math.round(summary.metrics.cost.value ?? -1))
+})
+
+test("biCashCost 两形都认（v1.9.32 过渡），且 ∞ 不能显成「−」", () => {
+  // 老形（MetricValue）：be2 Q-041 ③ 切换前后端还这么发
+  assert.deepEqual(normalizeBiCost({ value: 12.5, availability: "available" }), { known: true, infinite: false, value: 12.5 })
+  // 新形（RatioValue）
+  assert.deepEqual(normalizeBiCost({ value: 12.5, state: "finite" }), { known: true, infinite: false, value: 12.5 })
+  // ★花了现金但零 BI 回传：最该被看见的一档，不能和「没数」混成同一个「−」
+  assert.equal(biCostText({ value: null, state: "infinite" }), "∞ · 无 BI 回传")
+  // 后端没给：按考核 BI 数是「还没到」还是「没有」分别显
+  assert.equal(biCostText(undefined, { value: null, availability: "pending" }), "待到")
+  assert.equal(biCostText(undefined, { value: null, availability: "missing" }), "−")
+  assert.equal(biCostText({ value: null, state: "undefined" }, { value: null, availability: "pending" }), "待到")
+})
+
+test("pending 显「待到」不显「−」：还没到 ≠ 没有", () => {
+  assert.equal(mv({ value: null, availability: "pending" }), "待到")
+  assert.equal(mv({ value: null, availability: "missing" }), "−")
+  assert.equal(mv({ value: 0, availability: "available" }), "0", "真实的 0 要显 0")
 })
