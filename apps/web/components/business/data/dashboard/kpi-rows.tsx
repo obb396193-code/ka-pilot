@@ -78,7 +78,9 @@ export function KpiRows({ row, windowed }: {
           账面口径 · 平台侧扣费与转化
           {scoped ? <span className="ml-1 font-normal">（本窗口 {scoped.days} 天；换窗口后暂不显环比，接后端重查后恢复）</span> : null}
         </p>
-        <div className="grid gap-2 @2xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+        {/* 四列的门槛放到 @4xl（56rem）：1280 屏 + 侧栏展开时，main 容器只有 ~976px，
+            卡在 @5xl（64rem）门槛下面，于是最常见的桌面尺寸反而只有两列（审查员 C 点名）。 */}
+        <div className="grid gap-2 @2xl/main:grid-cols-2 @4xl/main:grid-cols-4">
           <Kpi label="账面花费" value={scoped ? money0(scoped.cost) : mv(now.cost, "money0")} delta={showDelta ? <Delta delta={deltas?.cost} /> : undefined} />
           {/* ★激励花费读 `incentiveCost`，不是 costSpace——costSpace 是「离考核线还剩多少」，两者含义无关。
               ka-data 源恒 missing（不是 0），所以那边显「−」是对的，别补 0（v1.9.32） */}
@@ -94,7 +96,7 @@ export function KpiRows({ row, windowed }: {
 
       <section aria-label="考核口径">
         <p className="mb-1.5 text-xs font-medium text-muted-foreground">考核口径 · 结算认的数</p>
-        <div className="grid gap-2 @2xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+        <div className="grid gap-2 @2xl/main:grid-cols-2 @4xl/main:grid-cols-4">
           <Kpi label="现金花费" value={scoped ? money0(scoped.cashCost) : mv(now.cashCost, "money0")} hint="扣掉激励后自己真花的钱，结算按它算。" delta={showDelta ? <Delta delta={deltas?.cashCost} /> : undefined} />
           <Kpi
             label="考核 BI 数"

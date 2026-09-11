@@ -5,11 +5,14 @@ import { BarChart, LineChart, PieChart } from "echarts/charts"
 import { AriaComponent, GridComponent, LegendComponent, TooltipComponent } from "echarts/components"
 import { init, use as registerEChartsModules, type EChartsCoreOption } from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
+import { LabelLayout, UniversalTransition } from "echarts/features"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-registerEChartsModules([BarChart, LineChart, PieChart, AriaComponent, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer])
+// UniversalTransition：柱↔折↔饼切换时让图元**接着变形**而不是整张重画。
+// 没有它，`notMerge: true` 的一次 setOption 就是「旧图消失、新图出现」——闪一下（审查员 C 点名）。
+registerEChartsModules([BarChart, LineChart, PieChart, AriaComponent, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer, LabelLayout, UniversalTransition])
 
 // F8-19：图表底座。老板 v1.9.23 要求「每个图表组件带类型切换（柱/饼/环/折线），偏好记住，要美观」。
 // 库用 ECharts（已在 package.json，**npm 自托管不走 CDN**——内网出网只放行两个素材域名）。
@@ -29,15 +32,43 @@ export function chartToken(element: HTMLElement, name: string): string {
   return typeof context.fillStyle === "string" ? context.fillStyle : raw
 }
 
-/** 图表配色：主色 + 派生的两个色相，够分辨又不打架；不够时循环 */
+/**
+ * 图表配色，读 `--chart-1..5`。
+ *
+ * ★这五个 token 是**跟着颜色模式走**的：黑白模式下它们是灰阶，彩色模式下才是主色系。
+ * 之前这里读的是 `--kp-hue-2/3/light`——那几个不管什么模式**永远是彩的**，
+ * 于是选了「黑白」壳变了、图还是花的（审查员 C 点名）。
+ * 换配色时优先改 `globals.css` 里各模式的 `--chart-*`，别在这里挑变量。
+ */
 export function chartPalette(element: HTMLElement): string[] {
-  return [
-    chartToken(element, "--kp-chart-spend"),
-    chartToken(element, "--kp-chart-cpa"),
-    chartToken(element, "--kp-hue-2"),
-    chartToken(element, "--kp-hue-3"),
-    chartToken(element, "--kp-hue-light"),
-  ].filter(Boolean)
+  return ["--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5"]
+    .map((name) => chartToken(element, name))
+    .filter(Boolean)
+}
+
+/**
+ * 站内 token 兜到图表上：字体、tooltip 的底色/边框/文字。
+ *
+ * ECharts 默认是自己那套 sans-serif + 白底黑框 tooltip，和站内字体、深浅模式都对不上。
+ * 这里**只补没写的**，调用方自己设过的照旧——所以各个图仍然能按需覆盖。
+ */
+export function withChartDefaults(element: HTMLElement, option: EChartsCoreOption): EChartsCoreOption {
+  const font = getComputedStyle(element).fontFamily
+  const tooltip = (option as { tooltip?: Record<string, unknown> }).tooltip
+  return {
+    ...option,
+    textStyle: { fontFamily: font, ...(option as { textStyle?: object }).textStyle },
+    ...(tooltip
+      ? {
+        tooltip: {
+          backgroundColor: chartToken(element, "--popover"),
+          borderColor: chartToken(element, "--border"),
+          textStyle: { color: chartToken(element, "--popover-foreground"), fontFamily: font },
+          ...tooltip,
+        },
+      }
+      : {}),
+  }
 }
 
 /**
@@ -46,7 +77,7 @@ export function chartPalette(element: HTMLElement): string[] {
  * 因为换主题模式/主色只改变量，ECharts 不认变量、只在画的那一刻取到的值。
  */
 export function ChartFrame({
-  title, description, kinds, kind, onKindChange, colorKey, height = 260, option, empty, dataKey, className,
+  title, description, kinds, kind, onKindChange, colorKey, height = 260, option, empty, dataKey, table, className,
 }: {
   title: string
   description?: string
@@ -61,11 +92,18 @@ export function ChartFrame({
   empty?: string | null
   /** 数据指纹：变了就重设 option。不给的话换了窗口图不会重画（审查员 D ⑱） */
   dataKey?: string
+  /**
+   * 图下面的「查看数据表」折叠区。
+   * 两个用处合一：**读屏用户的等价替代**（canvas 本身读不出来），
+   * 以及老板要的「图看趋势、表看具体数」——不用为了看一个数去把鼠标悬停到某个点上。
+   */
+  table?: { columns: string[]; rows: (string | number | null)[][] }
   className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const chartRef = useRef<ReturnType<typeof init> | null>(null)
   const labelId = useId()
+  const [tableOpen, setTableOpen] = useState(false)
 
   // 实例只建一次，之后只 setOption——每次重建会闪一下，而且 dispose/init 交错时
   // 容易和 React 的卸载撞在一起（就是那个 removeChild 报错的来源之一）
@@ -90,7 +128,7 @@ export function ChartFrame({
   useEffect(() => {
     const chart = chartRef.current
     if (!chart || empty || !ref.current) return
-    chart.setOption(option(ref.current, kind), { notMerge: true })
+    chart.setOption(withChartDefaults(ref.current, option(ref.current, kind)), { notMerge: true })
     // option 是每次渲染新建的闭包，放进依赖会每帧重设；用 kind/colorKey/dataKey 做重画信号
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, colorKey, dataKey, empty])
@@ -130,6 +168,38 @@ export function ChartFrame({
       {empty
         ? <div key="empty" className="grid rounded-lg border border-dashed text-center text-xs text-muted-foreground" style={{ height }}><span className="self-center">{empty}</span></div>
         : null}
+      {table && table.rows.length ? (
+        <div>
+          <button
+            type="button"
+            aria-expanded={tableOpen}
+            onClick={() => setTableOpen((value) => !value)}
+            className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >{tableOpen ? "收起数据表" : "查看数据表"}</button>
+          {tableOpen ? (
+            <div className="mt-2 max-h-64 overflow-auto rounded-lg border">
+              <table className="w-full text-xs">
+                <caption className="sr-only">{title}的数据表</caption>
+                <thead className="sticky top-0 bg-muted">
+                  <tr>{table.columns.map((column, index) => <th key={column} scope="col" className={cn("px-2 py-1.5 font-medium", index === 0 ? "text-left" : "text-right")}>{column}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((row, rowIndex) => (
+                    <tr key={rowIndex} className="border-t">
+                      {row.map((cell, cellIndex) => (
+                        <td key={cellIndex} className={cn("px-2 py-1", cellIndex === 0 ? "text-left" : "text-right tabular-nums")}>
+                          {/* 缺数显「−」：图上那个点是断开的，表里也不能变成 0 */}
+                          {cell === null || cell === "" ? "−" : cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   )
 }

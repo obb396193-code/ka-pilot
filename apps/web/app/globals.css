@@ -187,6 +187,9 @@
   --chart-1: var(--kp-tone);
   --chart-2: var(--kp-hue-2);
   --chart-3: var(--kp-hue-3);
+  /* 四五条系列也得在同一色系里：只定到 3 的话第 4 条会掉回 :root 的灰阶，一张图半彩半灰 */
+  --chart-4: var(--kp-hue-light);
+  --chart-5: var(--kp-hue-deep);
 }
 :root[data-theme-mode="full"] {
   --kp-chart-spend: var(--kp-tone);
@@ -194,6 +197,8 @@
   --chart-1: var(--kp-tone);
   --chart-2: var(--kp-hue-light);
   --chart-3: var(--kp-hue-3);
+  --chart-4: var(--kp-hue-2);
+  --chart-5: var(--kp-hue-deep);
   --primary: var(--kp-tone);
   --primary-foreground: #ffffff;
   --ring: var(--kp-tone);
