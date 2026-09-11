@@ -14,6 +14,8 @@ import { isOk } from "@/lib/fixtures/contract"
 import { dimensionFixtures, dimensions, type Dimension, type DimensionRow } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { cell, LineageFooter, OnTargetChip } from "./shared"
+import { PivotBuilder } from "@/components/business/data/dashboard/pivot-builder"
+import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 
 // 维度透视：8 维 tab + 母版表；异常行着色；勾选 → 「分析这 N 个」唤 Agent；无源维度显「数据源待确认」空态
 const helper = createColumnHelper<GridFeatures, DimensionRow>()
@@ -64,16 +66,33 @@ function DimensionTable({ dimension }: { dimension: Dimension }) {
   )
 }
 
-export function PivotTab() {
+/**
+ * 维度透视：两种用法并存。
+ * - **自定义透视**（F8-22，默认）：行维 × 列维 × 指标 × 图型自己选，老板要的「像 Excel 透视表」；
+ * - **单维明细**：原来那套 8 维 tab + 母版表，看某一维的全量行、能勾选交给 Agent。
+ * 不用前者替掉后者：透视看的是交叉关系，明细看的是逐行数据，两件事。
+ */
+export function PivotTab({ window, workspaceId, colorKey }: { window: DataWindow; workspaceId?: string; colorKey?: string }) {
+  const [mode, setMode] = useState<"custom" | "single">("custom")
   const [dimension, setDimension] = useState<Dimension>("resource_position")
   return (
     <div className="flex flex-col gap-4">
-      <Tabs value={dimension} onValueChange={(value) => setDimension(value as Dimension)}>
-        <TabsList className="flex-wrap">
-          {dimensions.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}{"unsupported" in dimensionFixtures[item.value] ? <span className="ml-1 text-[10px] text-muted-foreground">待接</span> : null}</TabsTrigger>)}
+      <Tabs value={mode} onValueChange={(value) => setMode(value as "custom" | "single")}>
+        <TabsList>
+          <TabsTrigger value="custom">自定义透视</TabsTrigger>
+          <TabsTrigger value="single">单维明细</TabsTrigger>
         </TabsList>
       </Tabs>
-      <DimensionTable key={dimension} dimension={dimension} />
+      {mode === "custom" ? <PivotBuilder window={window} workspaceId={workspaceId} colorKey={colorKey} /> : (
+        <>
+          <Tabs value={dimension} onValueChange={(value) => setDimension(value as Dimension)}>
+            <TabsList className="flex-wrap">
+              {dimensions.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}{"unsupported" in dimensionFixtures[item.value] ? <span className="ml-1 text-[10px] text-muted-foreground">待接</span> : null}</TabsTrigger>)}
+            </TabsList>
+          </Tabs>
+          <DimensionTable key={dimension} dimension={dimension} />
+        </>
+      )}
     </div>
   )
 }
