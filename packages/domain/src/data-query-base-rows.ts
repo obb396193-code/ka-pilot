@@ -55,6 +55,16 @@ export const canonicalMetricSetSchema = z
     realConversion: canonicalMetricValueSchema,
     cashCost: canonicalMetricValueSchema,
     costSpace: canonicalMetricValueSchema,
+    /**
+     * v1.9.27 ④ 激励花费：个人源取启航「激励」字段；ka-data 没有这一列时是
+     * `unsupported`（走 availability=missing + reason），**不是 0**。
+     * 与 `costSpace`（成本空间）无关，前端不许混用——两者含义完全不同。
+     *
+     * **暂为 optional**：几十份冻结 fixture 是这字段存在之前从真响应导出的，转必填会把它们全判非法。
+     * 但「optional」不等于「可以不发」——真实产出路径**恒发**它，由绊线
+     * `new-metric-fields-emitted` 钉住；fixtures 重导之后再转必填（照 v1.5.1 ② 的先例）。
+     */
+    incentiveCost: canonicalMetricValueSchema.optional(),
     wakeUv: canonicalMetricValueSchema,
     potentialUv: canonicalMetricValueSchema,
     ratios: canonicalRatioSetSchema,

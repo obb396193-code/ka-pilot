@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { accountSummaryRowSchema, calendarDateSchema, canonicalMetricSetSchema, ratioValueSchema } from "./data-query-base-rows.js";
-import { canonicalMetricValueSchema, divideMetricValues, sumMetricValues, type CanonicalMetricValue } from "./metric-value.js";
+import { canonicalMetricValueSchema, divideMetricValues, metricValue, sumMetricValues, type CanonicalMetricValue } from "./metric-value.js";
 import { compareAbsolute, compareRate } from "./metrics.js";
 
 /** Strict public v3 window and assessment values. */
@@ -18,6 +18,21 @@ export const windowAssessmentSchema = z.object({
   costStatus: z.enum(["green", "yellow", "red"]).nullable(),
   costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
   budgetUsageRate: ratioValueSchema,
+  /**
+   * v1.9.27 ③ 三个 BI 指标（Q-041 ②）。**必填**，与 stage 那批同理——
+   * 留 optional 的话哪条路径漏发都不会有东西报警，前端只是静悄悄显「−」。
+   * 三个值由 `dashboardBiFrom` 一处算出：
+   * - `biConv` = 考核 BI 数（= 确认口径的 realConversion 求和，不是媒体侧转化）；
+   * - `biCashCost` = 现金花费 / biConv，wire 形是 MetricValue（契约与前端镜像已冻）；
+   *   BI 数为 0 而花了钱那种情况只能落成 missing，**这一档是有损的**，已请 arch 裁；
+   * - `overCost` = 成本空间取反，正数 = 超成本，可负。
+   */
+  // 同 incentiveCost：**暂为 optional 只是为了不判死几十份冻结 fixture**，
+  // 真实产出路径恒发三个值（绊线 new-metric-fields-emitted 钉住），fixtures 重导后转必填。
+  biConv: canonicalMetricValueSchema.optional(),
+  /** wire 形按契约与前端镜像是 MetricValue（不是 RatioValue），见 `biCashCostMetricValue` 的注释。 */
+  biCashCost: canonicalMetricValueSchema.optional(),
+  overCost: canonicalMetricValueSchema.optional(),
 }).strict().superRefine((assessment, context) => {
   if (assessment.price !== null && assessment.priceSource === "history" && assessment.price.effectiveDate === null) {
     context.addIssue({ code: "custom", message: "history price requires a real effective date" });
@@ -45,7 +60,9 @@ export const windowAssessmentSchema = z.object({
 });
 
 export const windowComparisonSchema = z.object({
-  mode: z.enum(["dod", "wow"]),
+  // v1.9.27 ①：`prev_window` = 与当前窗口等长、紧邻的前一窗口
+  //（month_to_date 的前窗 = 上月同样天数）。前端不自造 previous 块、不二次查询。
+  mode: z.enum(["dod", "wow", "prev_window"]),
   deltas: z.object({
     cost: ratioValueSchema, cashCost: ratioValueSchema, realConversion: ratioValueSchema,
     cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
@@ -80,14 +97,21 @@ export const summaryWindowRowSchema = accountSummaryRowSchema.extend({
 export const trendWindowRowSchema = z.object({ ds: calendarDateSchema, metrics: canonicalMetricSetSchema }).strict();
 export type SummaryWindowRow = z.infer<typeof summaryWindowRowSchema>;
 
-const sumFields = ["cost", "cashCost", "exposure", "click", "conversion", "realConversion", "costSpace", "wakeUv", "potentialUv"] as const;
+// v1.9.27 ④：incentiveCost 与其它花费一样可加；源里没有这一列时它恒为 missing，
+// 相加的结果也就是 missing——不会因为「有几天有、几天没有」被悄悄当成 0。
+const sumFields = ["cost", "cashCost", "exposure", "click", "conversion", "realConversion", "costSpace", "incentiveCost", "wakeUv", "potentialUv"] as const;
 
 /** Caller must supply every expected account-day, including explicit missing members.
  * Does not claim scope/coverage or infer a representative price from heterogeneous versions.
  */
 export function aggregateWindowMetrics(input: readonly unknown[]): z.infer<typeof canonicalMetricSetSchema> {
   const rows = input.map((row) => canonicalMetricSetSchema.parse(row));
-  const values = Object.fromEntries(sumFields.map((key) => [key, sumMetricValues(rows.map((row) => row[key]))])) as Record<typeof sumFields[number], CanonicalMetricValue>;
+  // incentiveCost 是 v1.9.27 新增且暂为 optional：老行没有这个键。
+  // 缺键按 **missing** 参与求和（`metricValue(null)`），不是 0——源里没有这一列和
+  // 「这段时间没花激励」是两件事，压成 0 就分不出来了。
+  const values = Object.fromEntries(sumFields.map((key) => [
+    key, sumMetricValues(rows.map((row) => row[key] ?? metricValue(null))),
+  ])) as Record<typeof sumFields[number], CanonicalMetricValue>;
   const gap = divideMetricValues(values.conversion, values.realConversion);
   return canonicalMetricSetSchema.parse({
     ...values,

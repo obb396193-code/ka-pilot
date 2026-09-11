@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { calendarDateSchema, ratioValueSchema } from "./data-query-base-rows.js";
 import { canonicalMetricValueSchema, metricValue, sumMetricValues } from "./metric-value.js";
+import { biCashCostMetricValue, dashboardBiFrom } from "./dashboard-bi-math.js";
 import { queryWindowSchema, windowAssessmentSchema, windowComparisonSchema } from "./summary-window.js";
 
 const undefinedRatio = { value: null, state: "undefined" } as const;
@@ -77,10 +78,16 @@ function computeWeightedAssessment(rows: readonly WeightedDay[], evidence: Price
     reason = [...daily.values()].some((day) => day.cash > day.target) ? "day_over_window_ok" : "window_ok";
   }
   const determined = reason !== "cash_missing" && reason !== "conversion_missing" && reason !== "assessment_missing";
+  // v1.9.27 ③（Q-041 ②）：三个 BI 值就在这里一起出，与 costSpace 同源同口径。
+  // 它们和考核结论用的是同一批天、同一批价，不可能各说各话。
+  const bi = dashboardBiFrom(cash, sumMetricValues(rows.map((row) => row.realConversion)), costSpace);
   return {
     costSpace,
     assessment: windowAssessmentSchema.parse({
       ...evidence,
+      biConv: bi.bi_conv,
+      biCashCost: biCashCostMetricValue(bi.bi_cash_cost),
+      overCost: bi.over_cost,
       onTarget: determined ? reason !== "window_over" : null,
       costStatus: !determined ? null : reason === "window_over" ? "red" : reason === "day_over_window_ok" ? "yellow" : "green",
       costStatusReason: reason, budgetUsageRate: ratioValueSchema.parse(budgetUsageRate),
