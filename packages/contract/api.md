@@ -1422,3 +1422,8 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **四个新键（`biConv/biCashCost/overCost/incentiveCost`）schema 暂 optional**，「真实产出路径恒发」由 domain 绊线 `new-metric-fields-emitted` 保证；等 Q-041 ③ `compare.deltas` 落地后 be2 **一次性重导** `fixtures/data-query/*` 全部冻结 fixture（含 `summary-window-v3-*`），同一笔把四键改必填；fe 的 `-v1922` 过渡件届时换成 be2 导出版。不分两次导。
 - **`compare:"prev_window"`**：枚举已进 `windowComparisonSchema.mode`，前窗与 `deltas` 未实现（Q-041 ③ 下一笔）；落地前 params 严格校验照样把 `compare` 键判 400（v1.9.30），fe 不发。
 - **domain 包禁循环 import**（`dashboard-bi` ↔ `window-assessment` 那种）：vitest 模块图不报，真 CLI 入口 `ReferenceError … before initialization`。纯算术拆独立模块（`dashboard-bi-math`，明令不许反向 import）。进门禁清单 A33。
+
+## v1.9.33 追加（2026-09-10 arch；联调抽查：窗口合计因单个账户日缺数整体 missing 却无提示）
+- **缺数必须点名**：窗口汇总（`account.summary` / `trend` / `dimension` / `pivot2`）任一求和字段因成员账户日缺数而落成 `missing` 时，`lineage.warnings[]` 必须带对象形告警 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields:[...缺的指标键]}`（每个账户日一条；已有 `BATCH_FAILED` 记录的账户日用 `BATCH_FAILED`，不重复发）。`coverage.complete` 仍只描述对象覆盖；是否算部分合计见下一条。前端按 v1.9.27 ⑥ 的对象形渲染「N 账户·M 日缺数」并可展开清单——用户看到「−」必须能知道缺的是谁、哪天。
+- **整窗合计取舍待老板拍板**（A 现状：任一成员缺数 → 该指标整窗 `missing`，不出部分合计；B：`Σ available` + `partial:true` + 缺数清单，达标/超成本判定挂起为 `partial_data`）。拍板前维持 A；拍 B 则出 v1.9.34。
+- **联调种子**：`scripts/seed-demo-data.py` 给 account-2 / 09-10 那行补一条失败批次记录（etl 批次表），让 `BATCH_FAILED` 路径在本地端到端可见；无批次记录的空值行走 `ACCOUNT_DAY_MISSING`。

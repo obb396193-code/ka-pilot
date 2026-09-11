@@ -423,3 +423,11 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 ### 队尾追加 Q-046 / Q-047（arch 2026-09-10 循环第 30 圈；当前序不变）
 - fe 盘点数据分析九 tab 只有大盘接了真接口。归因树 `GET /tasks/:id/attribution`（api.md §3.7）与自助报表 `POST /reports/render`、`GET|POST /reports/configs`（§3.8）worker 都还没有路由，登记 **Q-046 归因树**、**Q-047 自助报表渲染**，排在 Q-042 之后。序：Q-041 → Q-044 → Q-045 → Q-042 → Q-046 → Q-047 → 026/dispatches → F-OS-004 → sop-run。现在不用动。
 - 盯盘 tab fe 会先接 `account.hourly`：Q-042 未灌表前请确保该 queryId 返 `availability:"pending"`（v1.9.27 形），不要 500 或无 lineage 的空 200。
+
+### ce04a683 ✅ 已合 main `63b6f089`；三问裁（v1.9.32）；联调抽查一处要补（v1.9.33）（arch 2026-09-10 循环第 33 圈）
+- 门禁 domain 1536 / db 1751 / worker 2263 / gw 36 / web 251 全绿。解环拆 `dashboard-bi-math` 对，这条进门禁清单 **A33**（domain 禁循环 import；domain 有改动的交付，db 包三条真子进程用例不许 PKGS 跳过）。
+- **① 四键暂 optional：批**。绊线 `new-metric-fields-emitted` 顶着；**重导放到 ③ `compare.deltas` 落地后一次做**（全部 `data-query/*` 含 `summary-window-v3-*`），同一笔转必填。现在不导。
+- **② `biCashCost` 改 RatioValue（b）**：与 `ratios.cashCpa` 同形；`cashCost>0 且 biConv=0` → `infinite`；`biConv` pending/missing → `undefined`。不在 MetricValue 加 `denominator_zero`——那是比率的概念，不该让每个普通指标的消费者多兜一档。fe 镜像我已通知改回。这条随 ③ 一起交，别单发。
+- **③ `prev_window`**：知道了没接；params 严格校验会把它 400，fe 不发。**下一笔就是 ①③**。
+- **联调抽查（个人空间、seed 42 行）**：四键都发了 ✓（08-20..08-26：biConv 21724、biCashCost 4.84、incentiveCost missing、overCost 出数）。但 09-04..09-10 **全指标 missing**：09-10 的 account-2 是空值行，`sumMetricValues` 一个成员缺 → 整窗缺，这是原有设计不是你这笔的回归；问题在**响应没点名**——`warnings` 只有 `BUDGET_SOURCE_NOT_READY`，coverage complete、partial false，用户只看到一屏「−」。**v1.9.33**：缺数必须发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`（有失败批次记录的用 `BATCH_FAILED`）；seed 给 account-2/09-10 补一条失败批次记录让 ⑥ 路径本地可见。整窗 missing 还是部分合计（A/B）老板拍，拍前维持现状。
+- 序：**Q-041 ①③ + biCashCost RatioValue + ACCOUNT_DAY_MISSING → ⑦⑧⑨ → fixture 一次重导转必填 → Q-044 → Q-045 → Q-042**。团队源本地是 `SOURCE_UNAVAILABLE: Team data source is not configured`，双开门的团队侧只能在内网验，⑧ 交付时把「未配置」的判定条件写进回执。

@@ -725,3 +725,9 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
   - **并入已派任务**：策略分析 = F8-22 的三个预设，不单做。
   - **后端未做、保持示例态**：归因树 `GET /tasks/:id/attribution`（依赖广告层数据源，登记 be2 Q-046）；自助报表 `POST /reports/render` + `/reports/configs`（登记 be2 Q-047）；竞情 = AppGrowing 接入是 OS 联调项，契约 §3.12 就定的示例态。这三 tab 的「当前为示例」按老板拍板保留，接通一处撤一处。
 - 顺序：**⑲（P0，联调端到端在等它）→ F8-23 任务管理 → 第 0/1 批 → F8-22 自定义透视 → F8-24（三 tab 接线）→ F8-19b P1**。⑲ 三处改动很小，先交它再动 F8-22。
+
+### be2 Q-041 ②④⑤⑥ 已在 main `63b6f089`；两条契约变更（arch 2026-09-10 循环第 33 圈，v1.9.32/33）
+- 真接口现在会发 `assessment.biConv / biCashCost / overCost` 与 `cost.incentiveCost`（ka-data 源恒 missing 不是 0）、`availability:"pending"`、`lineage.warnings[]` 对象形 `BATCH_FAILED`。你那几处「待接源」可以撤了（⑲ 落地后我端到端一起验）。
+- **`biCashCost` 改 RatioValue**（v1.9.32，推翻审查员 D 的 ⑯）：`canonical-query-rows.ts:130` 改 `ratioValueSchema.optional()`；`infinite` 显「∞ · 无 BI 回传」不是「−」；`undefined` 时按 `biConv.availability` 显「待到」或「−」。be2 随 Q-041 ③ 一起切，切之前后端还是 MetricValue 形——镜像用 union 过渡（两形都收），③ 到了收窄。
+- **缺数点名**（v1.9.33）：窗口里任一账户日缺数，后端会发 `{code:"ACCOUNT_DAY_MISSING", media, accountId, businessDate, fields[]}`；页面「−」旁要能展开「N 账户·M 日缺数」清单。整窗 missing 还是部分合计老板在拍，先按现状。
+- 序不变：**⑲ → F8-23 → 第 0/1 批 → F8-22 → F8-24 → P1**。
