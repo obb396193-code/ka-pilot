@@ -31,11 +31,11 @@
        "availability": "partial"
       },
       "realConversion": {
-       "value": 20048,
+       "value": 21910,
        "availability": "partial"
       },
       "cashCost": {
-       "value": 96688.2,
+       "value": 108252.62999999999,
        "availability": "partial"
       },
       "costSpace": {
@@ -64,15 +64,15 @@
         "state": "finite"
        },
        "realCpa": {
-        "value": 6.1736248004788505,
+        "value": 5.648965312642629,
         "state": "finite"
        },
        "cashCpa": {
-        "value": 4.822835195530726,
+        "value": 4.940786398904609,
         "state": "finite"
        },
        "gap": {
-        "value": 0.11043495610534726,
+        "value": 0.016065723413966282,
         "state": "finite"
        },
        "potentialRate": {

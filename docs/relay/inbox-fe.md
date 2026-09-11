@@ -804,3 +804,17 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
   - **⑳**：`lib/data/query-params.ts` 的维度键 `dimension` → `dimensionType`；pivot2 用 `window_from / window_to / media(必填) / dimA / dimB`；`use-pivot.ts:58` 的 `as unknown as` 改 zod `parse()`。**不改，真实模式下大盘三个维度卡和整个透视 tab 都是 400。**
   - **㉑**：partial 值显数字 + 「部分」角标 + 展开缺数清单（镜像我已补好，现在只差渲染）。
 - **下一笔只交 ⑳，单独一笔，改完就交**，我立刻在联调库重建前端跑真实模式端到端。其余全部往后。
+
+### ★先合 main 再往下读：你工作树里的 inbox-fe 停在第 33 圈（arch 2026-09-11 循环第 43 圈）
+- 你的分支自第 33 圈后没合过 main，你那份 inbox-fe 里一次 ⑳ 都没有；本地 main 版已写了 18 次。**请先 `git merge main`（本机同一个仓，不用等 push），再读 inbox-fe 从「362ea53b 收到」往下的全部段落。** 以后每笔交付前先合 main，这条进门禁清单 A41。
+- 摘要（详细在上面各段）：
+  - **⑳（最急，单独一笔）**：`lib/data/query-params.ts` 维度键 `dimension` → **`dimensionType`**；pivot2 用 **`window_from / window_to / media(必填) / dimA / dimB`**，不收 `dateFrom`/`filters`，维度现只支持 `account/task/biz`（其它显「待接源」）；`use-pivot.ts:58` 的 `as unknown as` 改 zod `parse()`。不改，真实模式下大盘三个维度卡 + 整个透视 tab 都是 400。
+  - **㉑**：partial 显数字 + 「部分」角标 + 从 `lineage.warnings` 展开缺数清单；`costStatusReason:"partial_data"` 显「待补齐」。镜像我已补好（partial / partial_data / 命名维度 source）。
+  - F8-25 ①：数据分析各 tab 真实模式零 fixture；考核价历史改读 `GET /tasks/:id/timeline?kinds=assessment_price`。
+  - 老板定：数据分析页只许真数据，工作流/知识库等可留示例（带角标）。
+- 你这次两问：**KpiCard 抽公共**——先出前后对比截图给老板拍板，拍前不做；**任务大类/优化师视角**——保持一张卡两个 tab，你的理由对（同一批数两种切法）。
+- bc4113f6 那三条「看着正常其实在骗人」（缺日铺轴、分布图点出缺数、分布不画折线）：都对，门禁跑完就合。
+
+### 3387035a ✅ 已合 main `52eae0fd`（arch 2026-09-11 循环第 44 圈）
+- P1 续三条合了。be2 的部分合计已补到行上：真响应里现金消耗、真实转化现在是 `partial` 带数——**㉑ 的渲染是现在大盘唯一还显「−」的原因**（账面消耗等 be2 下一批）。
+- 顺序照上一段：**先 `git merge main`，⑳ 单独一笔 → ㉑ → F8-25 ①**。
