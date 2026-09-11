@@ -7,7 +7,7 @@ import {
 import {
   queryWindowSchema, summaryWindowRowSchema, dailyAssessmentInputSchema,
   comparisonWindow, computeWindowAssessment, compareWindowPoints, unavailableWindowComparison,
-  sumMetricValues, sumMetricValuesPartial, type SummaryWindowRow,
+  sumMetricValuesPartial, type SummaryWindowRow,
   calendarDateSchema, dashboardFiltersSchema,
   type LineageWarning,
 } from "@ka/domain";
@@ -111,22 +111,12 @@ export class PlatformWindowQuery {
         summary.accountCount !== lineage.returnedAccounts || summary.rowCount !== lineage.canonicalRows ||
         history.some((row) => row.ds < scope.dateFrom || row.ds > scope.dateTo) ||
         (!selected && new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0))) return invalid();
-      if (!equalMetric(sumMetricValues(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
-        !equalMetric(sumMetricValues(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
+      // v1.9.40：SQL 聚合与逐日证据两边都按**部分合计**对拍。原来两边都用「缺一个就整体缺」，
+      // 于是「两边都是 missing」照样放行——真正的分歧被一个 null 盖住了，看不出来。
+      if (!equalMetric(sumMetricValuesPartial(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
+        !equalMetric(sumMetricValuesPartial(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
       const assessment = (() => { try { return computeWindowAssessment(history); } catch { return invalid(); } })();
-      /**
-       * v1.9.35：窗口里缺账户日时，两个**逐日可证**的指标改发「部分合计」——
-       * 现金花费与考核 BI 数在 `history` 里是逐日的，加得出有数那部分的和。
-       * 其余字段（cost/exposure/click…）仍走 SQL 的整窗口径：那条聚合是多查询共用的
-       * `expected_metric` CTE，给它加 partial 属于 Codex 那批共享聚合的活，我不在这一笔里动它。
-       * 判定已经因为 partial 挂起，所以「部分」绝不会被读成「达标」。
-       */
-      const partialMetrics = assessment.costSpace.availability === "partial"
-        ? {
-          cashCost: sumMetricValuesPartial(history.map((row) => row.cashCost)),
-          realConversion: sumMetricValuesPartial(history.map((row) => row.realConversion)),
-        }
-        : {};
+
       const onTargetRate = targetRate(await repository.loadAccountCounts(scope), input.accounts.length, summary.accountCount);
       let compare: SummaryWindowRow["compare"];
       if (input.compare) {
@@ -175,7 +165,8 @@ export class PlatformWindowQuery {
         warnings: [...new Set(["BUDGET_SOURCE_NOT_READY", ...selection.warnings])],
         namedGaps: named,
         row: summaryWindowRowSchema.parse({
-          ...summary, metrics: { ...summary.metrics, ...partialMetrics, costSpace: assessment.costSpace },
+          // v1.9.40 起 summary.metrics 自己就带 partial（SQL 聚合给的），这里不再手工补。
+          ...summary, metrics: { ...summary.metrics, costSpace: assessment.costSpace },
           assessment: assessment.assessment, ...(compare ? { compare } : {}),
         }),
       };
