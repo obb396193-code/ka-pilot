@@ -126,7 +126,7 @@ export const accountSummaryRowSchema = z.object({
     price: z.object({ value: finiteNumber, effectiveDate: calendarDateSchema.nullable() }).strict().nullable(),
     priceVersions: z.number().int().min(2).optional(),
     onTarget: z.boolean().nullable(), costStatus: z.enum(["green", "yellow", "red"]).nullable(),
-    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
+    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing", "partial_data"]),
     budgetUsageRate: ratioValueSchema,
     /* v1.9.27 考核口径三项（camelCase）。只有 summary 和新维度带，老维度行没有 → optional。 */
     biConv: canonicalMetricValueSchema.optional(),
@@ -158,7 +158,8 @@ export const accountTrendRowSchema = z.object({
   metrics: canonicalMetricSetSchema,
 }).strict()
 
-export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"])
+// v1.9.22 起后端还有三个按昵称解析的命名维度 optimizer/goal/placement（arch 热修 2026-09-11：不认会让大盘首屏按优化师分组 502）
+export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"])
 const dimensionFields = { key: z.string().min(1).nullable(), label: z.string().nullable(),
   metrics: canonicalMetricSetSchema, assessment: accountSummaryRowSchema.shape.assessment, anomaly: z.boolean() }
 export const dimensionWindowRowSchema = z.union([
