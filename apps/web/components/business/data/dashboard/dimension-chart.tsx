@@ -25,6 +25,9 @@ export function DimensionChart({ id, title, description, rows, colorKey, default
     .map((row) => ({ name: row.label, value: row.metrics.cost.value ?? 0 }))
     .filter((item) => item.value > 0)
     .sort((a, b) => b.value - a.value)
+  // ★缺数的项要**点出来**，不能默默不画：一张「分布图」少了几项，占比就全是错的，
+  //   而用户从图上完全看不出少了东西（审查 ⑦）。缺数 ≠ 0 消耗，两者分开数。
+  const missing = rows.filter((row) => row.metrics.cost.value === null).length
 
   const option = (element: HTMLElement, current: ChartKind): EChartsCoreOption => {
     const palette = chartPalette(element)
@@ -64,14 +67,15 @@ export function DimensionChart({ id, title, description, rows, colorKey, default
   return (
     <ChartFrame
       title={title}
-      description={description}
-      kinds={["donut", "pie", "bar", "line"]}
+      // 分布不画折线：把「各维度占比」连成一条线，x 轴的先后顺序没有任何含义（审查 ⑨）
+      kinds={["donut", "pie", "bar"]}
       kind={kind}
       onKindChange={setKind}
       colorKey={colorKey}
       dataKey={data.map((item) => `${item.name}:${item.value}`).join("|")}
       height={height}
       option={option}
+      description={missing ? `${description} · ${missing} 项缺数未计入占比` : description}
       empty={data.length === 0 ? "这个窗口没有消耗，没有可画的分布" : null}
       table={{
         columns: ["维度", "账面消耗", "占比"],
