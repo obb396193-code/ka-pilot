@@ -17,6 +17,7 @@ import {
   searchResultSchema,
   accountNamePatchSchema,
   accountNamesSchema,
+  etlRunRerunSchema,
   etlRunsPageSchema,
   memberCreatedSchema,
   memberPasswordResetSchema,
@@ -446,5 +447,19 @@ export const handleAdminReconcile = (request: Request, deps: Deps): Promise<R014
     path: "/api/v1/admin/data/reconcile",
     method: "POST",
     dataSchema: dataQuerySuccessDataSchema,
+    ...withDeps(deps),
+  })
+
+/**
+ * F8-15 ⑦：重跑（`POST /system/etl-runs/:id/rerun`，admin）。
+ * 成功 **202**（排队了，不是做完了）；同源已有排队/运行中的重跑 → **409 CONFLICT 带 `details.jobId`**，
+ * 前端据此指给用户看那个已经在跑的 job，而不是让他一直点。
+ * 不开任何查询参数白名单：重跑是写操作，参数一律走路径。
+ */
+export const handleEtlRunRerun = (request: Request, runId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/system/etl-runs/${encodeURIComponent(runId)}/rerun`,
+    method: "POST",
+    dataSchema: etlRunRerunSchema,
     ...withDeps(deps),
   })

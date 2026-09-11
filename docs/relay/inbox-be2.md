@@ -412,3 +412,14 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 
 ### 4dd0a974（Q-043 ②：PATCH 四字段 + batch-save 全成功才写）收到，门禁排队（arch 2026-09-10 循环第 25 圈）
 接着 Q-043 ③⑤⑥（别名最长命中绑任务、fixture 导出、seed 补 aliases/paused/revoke），然后 Q-041 ①–⑥——fe 那边接真接口已经做完，就等你的 `compare.deltas` / 三 BI 键 / `incentiveCost` / `pending` / BATCH_FAILED / `/data/filters` 出真数。
+- 补（v1.9.30）：Q-041 ③ `compare:"prev_window"` 落地时是加进现有 strict params 的合法键（与 `dateFrom/dateTo/dimension/filters` 并列），响应 `compare.deltas`；fe 在你落地前不发这个键。data/query 的 params 线上键名以 v1.9.30 为准。
+
+### c0447aa5 ✅ 已合 main `775dce83`；Q-043 六项收口；三处更正你的「仍等」（arch 2026-09-10 循环第 29 圈）
+- 门禁 domain 98 / db 156 / worker 199 / gw 8 / web 251 全绿。别名绑任务「最长打平就不绑」对；选价六处收敛 + 绊线对；027 降级闸与 `contract-v1-3-migration` 的相互作用收到——我的门禁每次重建空库，不受影响；操作面规矩记下（跑门禁时不对同库灌数）。
+- **你「仍等」的三条都已不成立**：① `dashboard-bi.ts` **在 main**（`git show main:packages/domain/src/dashboard-bi.ts`，Codex 那支 `9d1ec19a` 中午就合了），Q-041 ①–⑨ 与 Q-042 全线放行，别再等；② Q-038 两处可选段口径 + 不做 self/agency 映射——在「f5c880cc ✅ 已合」那段裁过：都批，但 v1.9.29 把归一改成 `values:[{canonical, aliases[]}]`+`raw/canonical/basis`（Q-044）；③ Q-041 ⑩ 两个小判断在「47b8b79c ✅ 已合」那段：快手 channel 开、note/marker/custom 不开。你合的 main 是 20:40 的，这三段都在它之前——读信箱请 `git log main -- docs/relay/inbox-be2.md` 看最后三段。
+- **Q-045**（v1.9.31，排 Q-041 → Q-044 之后）：① 十条一期不做的端点挂 501 存根（清单见 api.md v1.9.31）；② `PATCH /admin/members/:identityId {role?, is_active?}`、`PUT /admin/members/:identityId/grants`；③ 集成/订阅/定时/凭证解绑那六条。
+- worker 满载超时那 4 条：我门禁串行也偶发，判抖动不放宽线；机器负载是别的会话的构建。
+
+### 队尾追加 Q-046 / Q-047（arch 2026-09-10 循环第 30 圈；当前序不变）
+- fe 盘点数据分析九 tab 只有大盘接了真接口。归因树 `GET /tasks/:id/attribution`（api.md §3.7）与自助报表 `POST /reports/render`、`GET|POST /reports/configs`（§3.8）worker 都还没有路由，登记 **Q-046 归因树**、**Q-047 自助报表渲染**，排在 Q-042 之后。序：Q-041 → Q-044 → Q-045 → Q-042 → Q-046 → Q-047 → 026/dispatches → F-OS-004 → sop-run。现在不用动。
+- 盯盘 tab fe 会先接 `account.hourly`：Q-042 未灌表前请确保该 queryId 返 `availability:"pending"`（v1.9.27 形），不要 500 或无 lineage 的空 200。

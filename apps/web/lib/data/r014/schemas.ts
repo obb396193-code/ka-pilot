@@ -633,3 +633,9 @@ export const etlRunsPageSchema = z.object({
   pageSize: z.number().int().positive(),
   total: z.number().int().nonnegative(),
 })
+
+/** F8-15 ⑦：重跑一次拉数（契约 v1.9.19）。成功 202，回新排队的 job 与被重跑的 run。 */
+export const etlRunRerunSchema = z.object({
+  jobId: z.string().min(1),
+  sourceRunId: z.string().min(1),
+}).strict()

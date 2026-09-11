@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import {
-  handleAdminMemberCreate, handleAdminMemberResetPassword, handleAdminReconcile, handleEtlRuns,
+  handleAdminMemberCreate, handleAdminMemberResetPassword, handleAdminReconcile, handleEtlRunRerun, handleEtlRuns,
   handleDecisionPolicy, handleExportDetail, handleMeView, handleMeViews, handleMeWatchlist,
   handleTaskBindings, handleTaskReadiness,
 } from "./r014/handlers.ts"
@@ -226,4 +226,42 @@ test("来源 IP 原样带给后端：登录限速按 IP 算，不带就是所有
   })
   assert.equal(headers!.get("x-forwarded-for"), "10.1.2.3, 10.0.0.1")
   assert.equal(headers!.get("x-real-ip"), "10.1.2.3")
+})
+
+/* F8-15 ⑦ 重跑（契约 v1.9.19） */
+test("重跑成功是 202 排队，不是 200 完成——转发器不能把它判成 502", async () => {
+  const seen: string[] = []
+  const result = await handleEtlRunRerun(req("http://localhost/api/internal/system/etl-runs/1601/rerun", "POST", {}), "1601", {
+    environment,
+    fetchImpl: async (input: string) => {
+      seen.push(new URL(String(input)).pathname)
+      return Response.json({ ok: true, data: { jobId: "00000000-0000-4000-8000-000000000e02", sourceRunId: "1601" }, meta: { requestId: "req-rr" } },
+        { status: 202, headers: { "x-request-id": "req-rr" } })
+    },
+    requestId: () => "req-rr",
+  })
+  assert.equal(result.status, 202)
+  assert.equal(seen[0], "/api/v1/system/etl-runs/1601/rerun")
+})
+
+test("同源已在重跑时回 409 CONFLICT，且 details.jobId 原样透到前端", async () => {
+  const result = await handleEtlRunRerun(req("http://localhost/api/internal/system/etl-runs/1601/rerun", "POST", {}), "1601", {
+    environment,
+    fetchImpl: async () => Response.json(
+      { ok: false, error: { code: "CONFLICT", message: "该拉数已有一个排队/运行中的重跑", retryable: false, requestId: "req-rr2", details: { jobId: "00000000-0000-4000-8000-000000000e02" } } },
+      { status: 409, headers: { "x-request-id": "req-rr2" } }),
+    requestId: () => "req-rr2",
+  })
+  assert.equal(result.status, 409)
+  // details 丢了的话，界面就只能说「冲突」而指不出是哪个 job 在跑
+  assert.equal((result.body as { error: { details: { jobId: string } } }).error.details.jobId, "00000000-0000-4000-8000-000000000e02")
+})
+
+test("重跑是写操作，路径参数要编码且不开查询白名单", async () => {
+  const blocked = spy("req-rr3", { jobId: "j", sourceRunId: "1" })
+  const bad = await handleEtlRunRerun(req("http://localhost/api/internal/system/etl-runs/x/rerun?force=1", "POST", {}), "a/b", {
+    environment, fetchImpl: blocked.fetchImpl, requestId: () => "req-rr3",
+  })
+  assert.equal(bad.status, 400)
+  assert.equal(blocked.seen.length, 0)
 })

@@ -3,7 +3,6 @@
 import { useMemo } from "react"
 import Link from "next/link"
 import { IconStar, IconStarOff } from "@tabler/icons-react"
-import { toast } from "sonner"
 
 import { accountHref, accountsFixture, poolStatusMap } from "@/lib/fixtures/accounts"
 import { MissingValue, TypeChip } from "@/components/business/data-grid/data-grid"
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { isOk, mv, rv } from "@/lib/fixtures/contract"
 import { watchlistFixture } from "@/lib/fixtures/settings"
+import { saveWatchlist } from "@/lib/data/use-me-actions"
 import { tasksFixture } from "@/lib/fixtures/tasks"
 import { cn } from "@/lib/utils"
 
@@ -70,7 +70,7 @@ export function StarredTab() {
                   <Link href={`/tasks/${task.taskId}`} className="truncate text-sm font-medium hover:underline">{task.taskName}</Link>
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">{task.bizName ?? "−"} · 负责人 {task.owner?.displayName ?? "待分配"}</p>
                 </div>
-                <Button size="sm" variant="ghost" className="h-7 shrink-0 text-xs" onClick={() => toast("已取消关注", { description: "接口接入后保存（当前为示例）" })}><IconStar className="size-3.5" />取消关注</Button>
+                <Button size="sm" variant="ghost" className="h-7 shrink-0 text-xs" onClick={() => { void saveWatchlist(watch.filter((item) => !("taskId" in item && item.taskId === task.taskId))) }}><IconStar className="size-3.5" />取消关注</Button>
               </div>
             ))}
           </CardContent>
