@@ -125,11 +125,13 @@ describe("personal summary window composition / synthetic real PG", () => {
     expect(result.row).toMatchObject({ accountCount: 0, rowCount: 0, metrics: { cashCost: { value: null, availability: "missing" } }, assessment: { onTarget: null } });
     expect(result.lineage.returnedAccountDays).toBe(0);
   });
-  it("missing account-days give a partial total and suspend the judgement, never a green remainder", async () => {
+  it("missing account-days give a labelled partial total and suspend the assessment", async () => {
     // v1.9.35（老板拍板 B）：缺账户日不再让整窗变「−」——给有数那部分的和并标 partial；
     // 但**判定一律挂起**（partial_data），所以剩下那部分绝不会被判成「达标」。
     // 变的是「给不给数」，没变的是「绝不拿不完整的数下结论」。
     const result = await createPlatformWindowQuery(pool).summary({ ...input, window: { from: "2026-09-01", to: "2026-09-03" } });
+    // 「不能看起来是绿的」这层意图现在由**判定挂起**保证（下面三条），而不是靠把整窗抹成「−」。
+    expect(result.row.metrics.cashCost.availability).toBe("partial");
     expect(result.row.metrics.costSpace.availability).toBe("partial");
     expect(result.row.assessment.onTarget).toBeNull();
     expect(result.row.assessment.costStatus).toBeNull();
@@ -178,7 +180,10 @@ describe("personal summary window composition / synthetic real PG", () => {
           coverage: { complete: false, requestedObjects: 1, returnedObjects: 1 } },
           wholeResultTotal: { value: null, availability: "partial" } });
         if (queryId === "account.summary") {
-          expect(result.rows[0]).toMatchObject({ metrics: { cashCost: { value: null, availability: "missing" } }, assessment: { onTarget: null } });
+          // v1.9.35：失败批次屏蔽掉一天之后，现金花费给的是**有数那天的部分合计**（带 partial 标），
+          // 而不是整窗一个「−」；判定照样挂起，所以剩下那天绝不会被读成「达标」。
+          expect(result.rows[0]).toMatchObject({ metrics: { cashCost: { availability: "partial" } },
+            assessment: { onTarget: null, costStatusReason: "partial_data" } });
         } else {
           expect(result.rows).toHaveLength(1); expect(result.rows[0]).toMatchObject({ ds: "2026-09-01" });
         }

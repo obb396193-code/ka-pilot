@@ -113,8 +113,14 @@ describe("task filtered table / real PG and HTTP handler", () => {
         params: { date_from: "2026-08-01", date_to: "2026-08-03", taskId: "task-a" } } });
       expect(response.status).toBe(200); const value = source(response.body);
       expect(value.lineage).toMatchObject({ partial: true, truncated: false });
-      if (queryId === "account.summary") expect(value.rows[0]).toMatchObject({ metrics: { cashCost: { value: null, availability: "missing" } }, assessment: { onTarget: null } });
-      else expect(value.rows[1]).toMatchObject({ ds: "2026-08-02", metrics: { cashCost: { value: null, availability: "missing" } } });
+      // v1.9.35：窗口聚合（summary）给带 partial 标的部分合计、判定挂起；
+      // 而**逐日行（trend）不受影响**——那一天就是没有数，仍是 missing，绝不是 0 也不是「部分」。
+      if (queryId === "account.summary") {
+        expect(value.rows[0]).toMatchObject({ metrics: { cashCost: { availability: "partial" } },
+          assessment: { onTarget: null, costStatusReason: "partial_data" } });
+      } else {
+        expect(value.rows[1]).toMatchObject({ ds: "2026-08-02", metrics: { cashCost: { value: null, availability: "missing" } } });
+      }
     }
   });
 });

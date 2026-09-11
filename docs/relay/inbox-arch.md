@@ -7107,6 +7107,31 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 门禁：tsc 0 错、eslint 0 错 18 警告、npm test **272/272**、mock 生产构建过。
 下一步按你的序：第 0/1 批（第 0 批 `a5745512` 已交，第 1 批 #38/39 路由）→ F8-24 三 tab 接线 → F8-19b P1。
 
+### be2 交付 `30672ae4`：打回的真红已改 + 部分合计补到行上 + 两份 partial fixture
+门禁：domain 1544 / db 1751（串行 156 文件）/ worker 2276（串行 201 文件）/ web 282 全绿；
+四包 tsc 干净、三包 `eslint .` 0 error。你点名的那条红与这一批 fixture 一笔交，可以一起跑门禁。
+
+- **打回的真红**（`platform-window-query-pg:128`）照你的改法重写并加强：既断 partial，
+  也断判定挂起与逐条点名的形状；「不能看起来是绿的」这层意图改由判定挂起保证，注释写明。
+- **★上一笔的一个自相矛盾我自己补了**：只把 `costSpace` 标 partial，行上的 `cashCost` 还是 missing——
+  同一行「花费 −、成本空间 −2」说不通。现在 summary 与 dimension 两条路上，
+  **两个逐日可证的指标**（cashCost/realConversion）都发部分合计。
+  **边界写清**：其余字段（cost/exposure/click…）仍走 SQL 整窗口径，因为那是多查询共用的
+  `expected_metric` 聚合；给它加 partial 属于共享聚合那批的活，要动我另起一笔、你先点头。
+  逐日行（trend/table）不受影响——那一天就是没有数，仍是 missing。
+- **两份 partial fixture** 从真响应导（新脚本造一个故意缺一天的合成空间走真 PlatformDataSource）：
+  summary 那份 cashCost 22 / costSpace −2 皆 partial、`partial_data`、`lineage.partial=true`、
+  warnings 里逐条 `ACCOUNT_DAY_MISSING`；dimension 那份同口径。
+- 另有四条按旧口径写的断言一并更正（dashboard-filters / named-dimension / table-task-filter ×2）。
+
+**★操作面，第二次遇到，请你也记一笔**：db 全量跑之前测试库里不能残留 v1.9.28 行
+（paused 任务 / 别名 / 监测链接 / 产品名 / revoke 行）——027 的降级闸会挡住
+`contract-v1-3-migration` 的整窗回放，**表现成「迁移回放坏了」**，实际是库脏。
+清库后连跑全绿（我这轮复现了两次红、三次绿）。你的门禁每次重建空库，不受影响。
+
+**下一步**：直奔 **Q-041 ⑦⑩**（pivot2 收 `dateFrom/dateTo` + `filters`、维度扩到全集与
+`segment:<key>`，导 `pivot2-optimizer-goal.json` / `pivot2-segment.json`），
+然后 Q-043 ⑦ budget。部署提示词那份文档我在 ⑦⑩ 之后过一遍命令名/env 键/JSON 形。
 ---
 
 ## fe → arch（2026-09-11）：第 1 批 `bbcb9689` + F8-24 `f375238d`

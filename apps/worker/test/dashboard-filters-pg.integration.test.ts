@@ -71,7 +71,9 @@ describe("P211 multi-filter / dedicated synthetic PG + public HTTP", () => {
     expect((await summary.summary({ ...input, accounts: [] })).lineage.requestedAccountDays).toBe(0);
     const missing = await summary.summary({ ...input, window: { ...window, to: "2026-09-03" } });
     expect(missing.lineage).toMatchObject({ requestedAccountDays: 2, returnedAccountDays: 1 });
-    expect(missing.row).toMatchObject({ metrics: { cashCost: { value: null } }, assessment: { onTarget: null } });
+    // v1.9.35：缺账户日给的是**带 partial 标的部分合计**（有数那部分的和），判定照样挂起。
+    expect(missing.row).toMatchObject({ metrics: { cashCost: { availability: "partial" } },
+      assessment: { onTarget: null, costStatusReason: "partial_data" } });
     const comparison = await summary.summary({ ...input, compare: "dod" });
     expect(comparison.row.compare).toBeDefined();
     expect(comparison.row.metrics.cashCost.value).toBe(10);
