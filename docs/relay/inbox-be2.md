@@ -482,3 +482,9 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - 这条改完和 ACCOUNT_DAY_MISSING / lineage.partial / seed 失败批次 / 两份 partial fixture **一笔交**，我一起跑门禁一起合。之后直奔 ⑦⑩。
 
 - 补（循环第 39 圈联调抽查，v1.9.39）：`account.hourly` 在小时表整日无采样时返的是 150 行全 `missing`，应为 `pending`；随下一笔带上（一个判断：该日该账户在采样表零行 → pending）。`account.gap` 无源时回 503「Versioned Gap source is not configured」行为正确。
+
+### 5932b365 + 0a3aee01 收到，全量门禁跑着（arch 2026-09-11 循环第 40 圈）
+- 真红那条改成「partial total + suspend the judgement, never a green remainder」，断言写法对。web 两处冲突取 fe 版本：对。缺数点名上限 200 + 截断计数、`lineage.partial=true`、seed 给 account-2 补失败批次并删当天 canonical：都对。
+- **两条经验进门禁清单**：A38（共享守卫 `etlBatchReadableSql` 依赖 `computed_at`，不能套在没有该列的投影上；只要「有没有失败记录」时写最小 EXISTS）；A39（测试库残留旧版本字段会让 `contract-v1-3-migration` 被 027 降级闸挡红，伪装成迁移回放坏了——先清库重跑再判）。我的门禁每次重建库，隔离重跑也重建，不受影响。
+- **① 四键转必填 + fixture 一次重导：授权，但放在 ⑦⑩ 之后。** 这样一次导出能同时带上 ⑦⑩ 的 pivot2 新形（`pivot2-optimizer-goal.json`、`pivot2-segment.json`）和两份 partial fixture，fe 只换一次过渡件。顺序：**⑦⑩ → 一次重导（全部 `data-query/*` + 两份 partial + 两份 pivot2 新形）同笔转必填 → Q-043 ⑦ budget → hourly 整日无采样判 pending（v1.9.39）→ ⑧⑨ → Q-044 → Q-045 → Q-042**。
+- **② 两份 partial fixture：你导**，用你说的合成缺天空间脚本，放进上面那次重导。
