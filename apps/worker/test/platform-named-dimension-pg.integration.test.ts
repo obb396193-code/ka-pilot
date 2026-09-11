@@ -99,7 +99,9 @@ describe("P211 personal named dimensions / real PG + HTTP", () => {
     const query = createPlatformDimensionQuery(pool);
     expect((await query.named({ ...input, accounts: [], dimensionType: "optimizer" })).rows).toEqual([]);
     const missing = await query.named({ ...input, dimensionType: "optimizer", window: { from: "2026-09-01", to: "2026-09-03" } });
-    expect(missing.rows.every(row => row.metrics.cashCost.value === null && row.assessment.onTarget === null)).toBe(true);
+    // v1.9.35：缺账户日的行给**部分合计**（带 partial 标），判定挂起——不是整行「−」，也不是 0。
+    expect(missing.rows.every(row => row.metrics.cashCost.availability === "partial"
+      && row.assessment.onTarget === null && row.assessment.costStatusReason === "partial_data")).toBe(true);
     await pool.query("UPDATE naming_rules SET segments=$2 WHERE workspace_id=$1 AND media='KUAISHOU' AND version=1", [ws, JSON.stringify(rule.map(row => ({ ...row, pending: true })))]);
     try {
       const result = await query.named({ ...input, dimensionType: "optimizer" });
