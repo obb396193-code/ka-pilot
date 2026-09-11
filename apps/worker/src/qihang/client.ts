@@ -13,7 +13,6 @@ import {
   QihangResourceLimitError,
   QihangSuspectedTruncationError,
   RetryExhaustedError,
-  QihangUnexpectedContentTypeError,
 } from "./errors.js";
 import { createQihangObservation, type QihangObservation } from "./observation.js";
 import { protocolDiagnostic } from "./protocol-diagnostic.js";
@@ -237,8 +236,7 @@ export class QihangClient {
       assertResponseStatus(response);
       const bodyText = await readBoundedResponse(response, this.maxResponseBytes);
       assertSuccessfulHttpResponse(response, bodyText);
-      assertJsonContentType(response, bodyText);
-      const envelope = parseSuccessfulEnvelope(bodyText, query);
+      const envelope = parseSuccessfulEnvelope(bodyText, query, response.headers.get("content-type") ?? "");
       let result: QihangQueryResult;
       try { result = this.extractResult(query.resource, envelope); }
       catch (error) {
@@ -398,22 +396,6 @@ function assertResponseStatus(response: Response): void {
   }
 }
 
-// F-OS-005：网关拦截页是 HTTP 200 + text/html（aplus-core/data-spm），以前被当成信封解析失败重试 4 次。
-// 非 JSON 的 2xx 是确定性失败，直接以 QihangUnexpectedContentTypeError 抛出（不重试）。
-// 只认「网关拦截页」这一种确定性失败：content-type 是 text/html，或正文以 HTML 标签开头且不是 JSON。
-// 单测/内网 mock 常用 text/plain 装 JSON，不能因 content-type 不带 json 就拒；截断/畸形 JSON 仍走原有协议重试。
-function assertJsonContentType(response: Response, bodyText: string): void {
-  const contentType = response.headers.get("content-type") ?? "";
-  if (/json/i.test(contentType)) return;
-  const looksHtml = /text\/html/i.test(contentType) || /^\s*<(!doctype|html|head|body)/i.test(bodyText);
-  if (!looksHtml) return;
-  try {
-    JSON.parse(bodyText);
-  } catch {
-    throw new QihangUnexpectedContentTypeError(contentType, bodyText.slice(0, 200));
-  }
-}
-
 function assertSuccessfulHttpResponse(response: Response, bodyText: string): void {
   if (!response.ok) {
     throw new QihangHttpError(
@@ -423,12 +405,15 @@ function assertSuccessfulHttpResponse(response: Response, bodyText: string): voi
   }
 }
 
-function parseSuccessfulEnvelope(bodyText: string, query: QihangQuery): ReturnType<typeof qihangEnvelopeSchema.parse> {
+function parseSuccessfulEnvelope(bodyText: string, query: QihangQuery, contentType = ""): ReturnType<typeof qihangEnvelopeSchema.parse> {
   let parsed: unknown;
   try {
     parsed = JSON.parse(bodyText);
   } catch {
-    throw new QihangProtocolError(protocolDiagnostic(query, "invalid_json", bodyText));
+    // F-OS-005：网关拦截页是 HTTP 200 + text/html（URL 请求行超 8192 等），诊断里标 unexpected_content_type，
+    // 一眼可判「网关返回 HTML」而不用人肉二分；正文仍只记 sha256 不记内容，重试策略不变。
+    const kind = /text\/html/i.test(contentType) ? "unexpected_content_type" : "invalid_json";
+    throw new QihangProtocolError(protocolDiagnostic(query, kind, bodyText));
   }
   const checked = qihangEnvelopeSchema.safeParse(parsed);
   if (!checked.success) throw new QihangProtocolError(protocolDiagnostic(query, "invalid_envelope", bodyText));
