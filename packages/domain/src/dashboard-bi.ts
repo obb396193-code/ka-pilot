@@ -1,18 +1,14 @@
 import { z } from "zod";
-import { ratioValueSchema } from "./data-query-base-rows.js";
-import { canonicalMetricValueSchema, divideMetricValues, metricValue, sumMetricValues } from "./metric-value.js";
+import { dashboardBiFrom, type DashboardBi } from "./dashboard-bi-math.js";
+import { sumMetricValues } from "./metric-value.js";
+
+// 算术与 schema 搬到 dashboard-bi-math：window-assessment 要调它，留在这里会形成循环依赖。
+export { biCashCostMetricValue, dashboardBiFrom, dashboardBiSchema, type DashboardBi } from "./dashboard-bi-math.js";
 import {
   computeKaDailyWindowAssessment, computeWindowAssessment,
   dailyAssessmentInputSchema, kaDailyAssessmentInputSchema,
 } from "./window-assessment.js";
 
-/** P211 arithmetic result, not a query envelope or a source/coverage claim. */
-export const dashboardBiSchema = z.object({
-  bi_conv: canonicalMetricValueSchema,
-  bi_cash_cost: ratioValueSchema,
-  over_cost: canonicalMetricValueSchema,
-}).strict();
-export type DashboardBi = z.infer<typeof dashboardBiSchema>;
 
 const inputSchema = z.discriminatedUnion("priceSource", [
   z.object({ priceSource: z.literal("history"), days: z.array(dailyAssessmentInputSchema).max(10000) }).strict(),
@@ -32,11 +28,5 @@ export function computeDashboardBi(value: unknown): DashboardBi {
   const { costSpace } = input.priceSource === "history"
     ? computeWindowAssessment(input.days)
     : computeKaDailyWindowAssessment(input.days);
-  return dashboardBiSchema.parse({
-    bi_conv: bi,
-    bi_cash_cost: divideMetricValues(cash, bi, { infiniteWhenPositiveNumerator: true }),
-    over_cost: costSpace.availability === "available"
-      ? metricValue(costSpace.value === 0 ? 0 : -costSpace.value)
-      : metricValue(null),
-  });
+  return dashboardBiFrom(cash, bi, costSpace);
 }

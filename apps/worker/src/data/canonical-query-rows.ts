@@ -108,6 +108,10 @@ function metricSet(row: RawRow, source: SourceKind) {
     : firstNumber(row, "realConversion", "real_conversion");
   const cashCost = firstNumber(row, "cashCost", "cash_cost", "cash_yuan");
   const costSpace = source === "platform" ? firstNumber(row, "costSpace") : null;
+  // v1.9.27 ④：个人源（启航）有「激励」这一列；ka-data 没有 → 恒 null（= missing），
+  // 不是 0。前端据此显「不支持」而不是「这段时间没有激励花费」。
+  const incentiveCost = source === "platform"
+    ? firstNumber(row, "incentiveCost", "incentive_cost") : null;
   const wakeUv = source === "platform" ? firstNumber(row, "wakeUv") : null;
   const potentialUv = source === "platform" ? firstNumber(row, "potentialUv") : null;
   return {
@@ -118,6 +122,7 @@ function metricSet(row: RawRow, source: SourceKind) {
     realConversion: metricValue(realConversion),
     cashCost: metricValue(cashCost),
     costSpace: metricValue(costSpace),
+    incentiveCost: metricValue(incentiveCost),
     wakeUv: metricValue(wakeUv),
     potentialUv: metricValue(potentialUv),
     ratios: {

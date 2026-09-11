@@ -34,6 +34,12 @@ export const availabilitySchema = z.enum([
   "partial",
   "stale",
   "error",
+  /**
+   * v1.9.27 ⑤「待到」：BI 类指标在 08:30–11:10 这段窗口里，T-1 的数据还没到。
+   * 与 `missing` 分开是因为两者要人做的事不一样——`missing` 是「这个数没有，别等了」，
+   * `pending` 是「再等等就有」。前端显「待到」不显「−」。
+   */
+  "pending",
 ]);
 export type Availability = z.infer<typeof availabilitySchema>;
 
@@ -89,11 +95,26 @@ export const sourceAuthoritySchema = z
   .strict();
 export type SourceAuthority = z.infer<typeof sourceAuthoritySchema>;
 
+/**
+ * v1.9.27 ⑥ 失败批次信号。原来 `warnings` 只有字符串，前端没法据此说清「哪几户哪几天缺」；
+ * 现在允许结构化对象，**字符串仍然兼容**（老告警不必一次性改完）。
+ */
+export const lineageWarningSchema = z.union([
+  z.string(),
+  z.object({
+    code: z.literal("BATCH_FAILED"),
+    media: z.string().min(1).max(32),
+    accountId: z.string().min(1).max(128),
+    businessDate: calendarDateSchema,
+  }).strict(),
+]);
+export type LineageWarning = z.infer<typeof lineageWarningSchema>;
+
 export const sourceLineageSchema = z
   .object({
     workspaceKind: z.enum(["personal", "team"]),
     window: queryWindowSchema.optional(),
-    warnings: z.array(z.string()).optional(),
+    warnings: z.array(lineageWarningSchema).optional(),
     source: z.enum([
       "ka_data",
       "qihang_realtime",
