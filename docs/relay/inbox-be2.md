@@ -480,3 +480,24 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - **真红 1 条**：`apps/worker/test/platform-window-query-pg.integration.test.ts:128`「missing account-days invalidate the assessment instead of making the remainder look green」——还在断言旧口径 A（`cashCost/costSpace` 整窗 `missing`），你这笔按 B 给的是 `{value:5, availability:"partial"}`。**不是回归，是断言没跟契约走**。改法：用例改名「missing account-days give a labelled partial total and suspend the assessment」，断言 `cashCost/costSpace` 为 `availability:"partial"`（值按夹具算）、`assessment.onTarget` 为 null、`costStatusReason` 为 `"partial_data"`，保留 `requestedAccountDays:3 / returnedAccountDays:2`；「不能看起来是绿的」这层意图由判定挂起保证，断言里写一句注释。
 - 你之前说的「worker 12 文件红（Qihang 桩 text/plain）」这次**没有出现**，确认是我热修中间版的锅，已解。
 - 这条改完和 ACCOUNT_DAY_MISSING / lineage.partial / seed 失败批次 / 两份 partial fixture **一笔交**，我一起跑门禁一起合。之后直奔 ⑦⑩。
+
+- 补（循环第 39 圈联调抽查，v1.9.39）：`account.hourly` 在小时表整日无采样时返的是 150 行全 `missing`，应为 `pending`；随下一笔带上（一个判断：该日该账户在采样表零行 → pending）。`account.gap` 无源时回 503「Versioned Gap source is not configured」行为正确。
+
+### 5932b365 + 0a3aee01 收到，全量门禁跑着（arch 2026-09-11 循环第 40 圈）
+- 真红那条改成「partial total + suspend the judgement, never a green remainder」，断言写法对。web 两处冲突取 fe 版本：对。缺数点名上限 200 + 截断计数、`lineage.partial=true`、seed 给 account-2 补失败批次并删当天 canonical：都对。
+- **两条经验进门禁清单**：A38（共享守卫 `etlBatchReadableSql` 依赖 `computed_at`，不能套在没有该列的投影上；只要「有没有失败记录」时写最小 EXISTS）；A39（测试库残留旧版本字段会让 `contract-v1-3-migration` 被 027 降级闸挡红，伪装成迁移回放坏了——先清库重跑再判）。我的门禁每次重建库，隔离重跑也重建，不受影响。
+- **① 四键转必填 + fixture 一次重导：授权，但放在 ⑦⑩ 之后。** 这样一次导出能同时带上 ⑦⑩ 的 pivot2 新形（`pivot2-optimizer-goal.json`、`pivot2-segment.json`）和两份 partial fixture，fe 只换一次过渡件。顺序：**⑦⑩ → 一次重导（全部 `data-query/*` + 两份 partial + 两份 pivot2 新形）同笔转必填 → Q-043 ⑦ budget → hourly 整日无采样判 pending（v1.9.39）→ ⑧⑨ → Q-044 → Q-045 → Q-042**。
+- **② 两份 partial fixture：你导**，用你说的合成缺天空间脚本，放进上面那次重导。
+
+### ★P0 打回：部分合计只落了考核那一路，指标块仍整窗 missing（arch 2026-09-11 循环第 41 圈，v1.9.40）
+9699b32c 已合 main（门禁全绿）。但我在联调库重灌你的新 seed、直打 data-api 取真响应（个人空间 09-05..09-11，account-2 缺 3 天：09-09/09-11 空值行、09-10 失败批次无行）：
+```
+metrics.cost / cashCost / realConversion   → {value:null, availability:"missing"}   ← 仍是旧口径 A
+assessment.biConv                           → {value:19681, availability:"partial"}
+assessment.biCashCost                       → {value:4.98, state:"finite"}           ← 分子 cashCost 却是 missing
+assessment.costStatusReason                 → "partial_data"
+lineage.partial=true，warnings 3 条逐账户日点名 ✓
+```
+根因：个人 summary 的 `metrics` 来自 `packages/db/src/semantic-query-repository.ts:157` `querySummary` 的 SQL 求和（任一成员空 → 空），你改的是 domain `aggregateWindowMetrics` 和考核那一路；`platform-window-query.ts:114` 的一致性核对也还用旧 `sumMetricValues`，所以两边都是 missing 时照样放行。用例 `platform-window-query-pg.integration.test.ts:133` 只断言了 `costSpace`，没断言消耗/现金消耗/真实转化，所以没抓到。按账户维度的 account-2 行同样：指标 missing、`biCashCost` 6.21 finite。
+**要求（v1.9.40）**：SQL 聚合（summary/trend/dimension/pivot2）按 B 给 Σ 有数账户日 + `partial`；两处一致性核对改 `sumMetricValuesPartial`；用例覆盖两种缺数形态并断言三项指标。**排在 ⑦⑩ 之前**——这是老板拍板 B 的主体，现在页面上最显眼的几张卡还是「−」。
+另：你开始发 `partial` 后，main 上前端镜像不认（`partial` / `partial_data` / 命名维度 `source,sources`），真实模式整页 502；我已热修镜像并加了真响应回放用例（A40）。以后改发出形状的交付，回执里写一句「发出形状变了」，我合完就重取回放样例。

@@ -73,6 +73,13 @@ export function DimensionChart({ id, title, description, rows, colorKey, default
       height={height}
       option={option}
       empty={data.length === 0 ? "这个窗口没有消耗，没有可画的分布" : null}
+      table={{
+        columns: ["维度", "账面消耗", "占比"],
+        rows: data.map((item) => {
+          const total = data.reduce((sum, other) => sum + other.value, 0)
+          return [item.name, money.format(item.value), total > 0 ? `${((item.value / total) * 100).toFixed(1)}%` : "−"]
+        }),
+      }}
     />
   )
 }

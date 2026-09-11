@@ -1,0 +1,163 @@
+{
+ "ok": true,
+ "data": {
+  "mode": "platform",
+  "source": {
+   "queryId": "account.dimension",
+   "dimension": "biz",
+   "rowSchemaVersion": "account.dimension/v3",
+   "status": "ready",
+   "rows": [
+    {
+     "key": null,
+     "label": null,
+     "metrics": {
+      "cost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "exposure": {
+       "value": null,
+       "availability": "missing"
+      },
+      "click": {
+       "value": null,
+       "availability": "missing"
+      },
+      "conversion": {
+       "value": null,
+       "availability": "missing"
+      },
+      "realConversion": {
+       "value": null,
+       "availability": "missing"
+      },
+      "cashCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "costSpace": {
+       "value": 648747.37,
+       "availability": "partial"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": null,
+        "state": "undefined"
+       },
+       "cvr": {
+        "value": null,
+        "state": "undefined"
+       },
+       "realCpa": {
+        "value": null,
+        "state": "undefined"
+       },
+       "cashCpa": {
+        "value": null,
+        "state": "undefined"
+       },
+       "gap": {
+        "value": null,
+        "state": "undefined"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": null,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "assessment_missing",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 21910,
+       "availability": "partial"
+      },
+      "biCashCost": {
+       "value": 4.940786398904608,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     },
+     "anomaly": true
+    }
+   ],
+   "returnedRowCount": 1,
+   "wholeResultTotal": {
+    "value": null,
+    "availability": "partial",
+    "reason": "Canonical account-day coverage is incomplete"
+   },
+   "lineage": {
+    "workspaceKind": "personal",
+    "window": {
+     "from": "2026-09-05",
+     "to": "2026-09-11",
+     "preset": "custom"
+    },
+    "warnings": [
+     "BUDGET_SOURCE_NOT_READY"
+    ],
+    "source": "canonical",
+    "datasetVersion": null,
+    "queryTemplateVersion": "account-dimension-window-v1",
+    "metricVersion": "account-dimension-v3",
+    "dataAsOf": "2026-09-11T15:10:03.407Z",
+    "timezone": null,
+    "dayCut": null,
+    "metadataAvailability": "partial",
+    "authority": {
+     "policyVersion": "2026-08-24",
+     "useCase": "cross_media_operations",
+     "role": "default_authoritative"
+    },
+    "objectIdentity": {
+     "objectType": "account",
+     "joinKeys": [
+      "workspace_id",
+      "media",
+      "account_id"
+     ]
+    },
+    "coverage": {
+     "complete": false,
+     "reason": "Canonical account-day coverage is incomplete",
+     "requestedObjects": 6,
+     "returnedObjects": 6
+    },
+    "truncated": false,
+    "partial": true
+   },
+   "warnings": [
+    "BUDGET_SOURCE_NOT_READY"
+   ]
+  }
+ }
+}

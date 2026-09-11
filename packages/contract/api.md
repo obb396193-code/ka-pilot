@@ -1480,3 +1480,13 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **考核价历史读路径**：`GET /settings/change-log` 后端与 BFF 都没有（be2 Q-045 ⑤）。落地前任务详情/任务管理的「历史」弹层读 `GET /tasks/:id/timeline?kinds=assessment_price`（已在 main）显 at/actor/summary/detail；作废按钮等 change-log 到了再开。**真实模式下不得读 fixture 顶替**——假价格历史挂在真任务旁边会被当真。
 - **自动化规则不吃部分值**（be2 7ba66867 自加，采纳）：`rule-daily-evidence` 把 `partial` 一律按「不知道」处理（METRIC_MISSING），由它派生的比率同样不知道；部分合计只用于展示，任何会触发调价/停投的判定只认 `available`。
 - **部分合计这版只开个人源**：团队 ka-data 源的 SQL 直出汇总拿不到逐成员缺失信息，接 partial 归 Q-041 ⑧，两条路径一起改，避免同一窗口「成员路径说部分、汇总路径说缺失」。
+
+## v1.9.39 追加（2026-09-11 arch；联调抽查 F8-24 三 tab 的真接口）
+- v1.9.38 键名表补一格：`account.gap` 还**必填 `groupBy: "account"|"task"|"biz"`**。fe `gapParams` 已带。
+- `account.gap` 在未配置版本化对账源时回 `503 SOURCE_UNAVAILABLE: Versioned Gap source is not configured`——前端显「对账源未配置」空态，不重试、不拿 fixture 顶。
+- `account.hourly`：小时采样表对该日**没有任何采样**时，行内指标应为 `availability:"pending"`（v1.9.27），现在返回 `missing`（联调库 6 户 × 25 小时共 150 行全 missing）。be2 Q-042 落地前先把「整日无采样」判成 pending；有采样但某小时缺才是 missing。
+
+## v1.9.40 追加（2026-09-11 arch；联调真响应抓到的两处断口）
+- **部分合计必须全链一致**：窗口汇总的 `metrics.*` 与 `assessment.*` 必须来自同一种求和语义。联调库（个人空间 09-05..09-11，account-2 缺 3 天：两天空值行 + 一天失败批次无行）实测：`metrics.cost / cashCost / realConversion` 仍是整窗 `missing`（走 SQL `querySummary` 的旧求和），而 `assessment.biConv` 是 `partial` 19681、`biCashCost` 算出 finite 4.98——页面会出现「现金消耗 −、BI 现金成本 4.98」。要求：`packages/db` 的 `querySummary`（及 trend/dimension/pivot2 的 SQL 聚合）按 v1.9.35 给 Σ 有数账户日 + `partial`；`apps/worker/src/data/platform-window-query.ts:114` 与 `platform-dimension-query.ts:179/222` 的一致性核对改用 `sumMetricValuesPartial`；缺数日两种形态（空值行、整行缺失/失败批次）都要有用例，**断言消耗、现金消耗、真实转化三项**，不只 `costSpace`。
+- **前端镜像必须认得后端真发的形状**：`availability:"partial"`、`costStatusReason:"partial_data"`、命名维度 `optimizer/goal/placement` 与其行上的 `source/sources`。arch 已热修镜像（6c368753 / 98d7a0f6 / 6ab1000d）。
+- **A40 真响应回放**：`apps/web/lib/data/fixtures/real-backend/*.json` 是联调 data-api 原样响应，`real-backend-replay.test.ts` 逐份过 BFF 契约。后端每次改发出形状，arch 在联调库重取覆盖；这条红了先修镜像，不许改 JSON。

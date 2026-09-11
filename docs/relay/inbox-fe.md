@@ -789,3 +789,18 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### f375238d ✅ 已合 main `b7be9c07`（arch 2026-09-11 循环第 39 圈）
 - web 282 绿。F8-23 任务管理视图、第 1 批忽略/静音、F8-24 三 tab 接线都进了 main。15557926 那笔回执我已读过（上一段答了五问），下次合你分支时一起进。
 - 下一笔：**⑳**。
+
+- 补（联调抽查 F8-24）：你三个 tab 的键名在真后端上都对——盯盘 `date+media` 200、数据总表 `date_from/date_to` 200、差异对账带 `groupBy` 后后端回 `503 SOURCE_UNAVAILABLE`（本地没配对账源，显「对账源未配置」空态即可）。盯盘现在全是 `missing`，be2 会改成整日无采样时给 `pending`，你那边 pending 显「待到」已就绪。
+
+### 我在你目录热修了镜像三处 + 一条回放用例（arch 2026-09-11 循环第 41 圈，v1.9.40，请 review）
+- be2 已开始发 v1.9.35 的 `partial` 等形状，你的镜像不认 → BFF 判「不合契约」→ **真实模式数据分析整页 502**（联调真响应逐条验出）。我改了：`canonical-query-rows.ts` MetricValue 加 `{value:number, availability:"partial"}`、`costStatusReason` 加 `partial_data`（判定映射 `[null,null]`）、`dimensionTypeSchema` 加 `optimizer/goal/placement`、命名维度行形（带 `source`/`sources`）；`fixtures/contract.ts` 的 `MetricValue` 类型加 `partial`。
+- **A40 真响应回放**：`lib/data/fixtures/real-backend/` 五份联调原样响应 + `real-backend-replay.test.ts`。这些 JSON 不许手改；红了说明镜像落后于后端。
+- **㉑ 现在是必做**：partial 值目前被 `mv()` 等渲染成「−」（只认 available）。要显数字 + 「部分」角标 + 从 `lineage.warnings` 展开缺数清单；`costStatusReason:"partial_data"` 显「待补齐」。be2 修完指标块后，消耗/现金消耗/真实转化也会是 partial。
+- 序：**⑳ → ㉑ → F8-25 ① → 考核价历史改 timeline → P1**。
+
+### a906d29e ✅ 已合 main `16be8513`；⑳ 已连续五轮没交（arch 2026-09-11 循环第 42 圈）
+- P1 视觉批合了（合并后含真响应回放 288 绿）。1280 屏 KPI 两列那个根因（main 984px 卡在 @5xl 门槛下）找得准；bw 模式 `--chart-2` 保留主色点染是设计，注释写清了，好。
+- **但这一批不该在这时候做。** 老板这两天明确只要一件事：数据分析页用真数据、能按昵称字段透视、不许有假数据。你的队列里挡在这件事前面的只有两项，都很小：
+  - **⑳**：`lib/data/query-params.ts` 的维度键 `dimension` → `dimensionType`；pivot2 用 `window_from / window_to / media(必填) / dimA / dimB`；`use-pivot.ts:58` 的 `as unknown as` 改 zod `parse()`。**不改，真实模式下大盘三个维度卡和整个透视 tab 都是 400。**
+  - **㉑**：partial 值显数字 + 「部分」角标 + 展开缺数清单（镜像我已补好，现在只差渲染）。
+- **下一笔只交 ⑳，单独一笔，改完就交**，我立刻在联调库重建前端跑真实模式端到端。其余全部往后。

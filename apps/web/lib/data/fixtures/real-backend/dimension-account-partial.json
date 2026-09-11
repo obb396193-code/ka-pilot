@@ -1,0 +1,690 @@
+{
+ "ok": true,
+ "data": {
+  "mode": "platform",
+  "source": {
+   "queryId": "account.dimension",
+   "dimension": "account",
+   "rowSchemaVersion": "account.dimension/v3",
+   "status": "ready",
+   "rows": [
+    {
+     "key": "KUAISHOU:account-5",
+     "label": "DAU-闲鱼DAU-自投-李四-单出价-安卓-搜索-唤起-有R-常规-13181-E",
+     "metrics": {
+      "cost": {
+       "value": 31261.59,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 2049059,
+       "availability": "available"
+      },
+      "click": {
+       "value": 69320,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 4860,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 4400,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 24421.56,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 103178.44,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03383016301629187,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.07010963646855164,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 7.104906818181818,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 5.550354545454546,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.1045454545454545,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 29,
+       "effectiveDate": "2026-08-01"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 4400,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 5.550354545454546,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -103178.44,
+       "availability": "available"
+      }
+     },
+     "anomaly": true,
+     "media": "KUAISHOU",
+     "accountId": "account-5"
+    },
+    {
+     "key": "KUAISHOU:account-1",
+     "label": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
+     "metrics": {
+      "cost": {
+       "value": 30353.82,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 2518720,
+       "availability": "available"
+      },
+      "click": {
+       "value": 87889,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 5503,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 5061,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 23712.4,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 158483.6,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03489431139626477,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06261306875718235,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 5.99759336099585,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.685319106895871,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.08733451886978849,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 36,
+       "effectiveDate": "2026-09-03"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 5061,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 4.685319106895871,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -158483.6,
+       "availability": "available"
+      }
+     },
+     "anomaly": false,
+     "media": "KUAISHOU",
+     "accountId": "account-1"
+    },
+    {
+     "key": "KUAISHOU:account-4",
+     "label": "DAU-M运动-代投-某代理-单出价-安卓-主站-付费-非R-常规-13180-D",
+     "metrics": {
+      "cost": {
+       "value": 27190.67,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 2344532,
+       "availability": "available"
+      },
+      "click": {
+       "value": 80703,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 5492,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 4813,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 21241.34,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 229034.66,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.034421795053341135,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06805199311054112,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 5.649422397672969,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.413326407645959,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.14107625181799288,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 52,
+       "effectiveDate": "2026-08-01"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 4813,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 4.413326407645959,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -229034.66,
+       "availability": "available"
+      }
+     },
+     "anomaly": false,
+     "media": "KUAISHOU",
+     "accountId": "account-4"
+    },
+    {
+     "key": "KUAISHOU:account-3",
+     "label": "DAU-M运动-代投-某代理-双出价-双端-联盟-付费-非R-一户一品-13179-C",
+     "metrics": {
+      "cost": {
+       "value": 18082.87,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 1524842,
+       "availability": "available"
+      },
+      "click": {
+       "value": 43617,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 2743,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 2498,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 14126.34,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 115769.66,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.02860427506587568,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06288832336015773,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 7.238939151321056,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 5.655060048038431,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.09807846277021626,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 52,
+       "effectiveDate": "2026-08-01"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 2498,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 5.655060048038431,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -115769.66,
+       "availability": "available"
+      }
+     },
+     "anomaly": false,
+     "media": "KUAISHOU",
+     "accountId": "account-3"
+    },
+    {
+     "key": "KUAISHOU:account-6",
+     "label": "没按规范起的名字_测试户",
+     "metrics": {
+      "cost": {
+       "value": 16879.88,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 1477622,
+       "availability": "available"
+      },
+      "click": {
+       "value": 48935,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 3664,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 3276,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 13186.56,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": null,
+       "availability": "missing"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03311740079668549,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.07487483396342086,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 5.152588522588523,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.025201465201465,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.11843711843711846,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": null,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "assessment_missing",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 3276,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 4.025201465201465,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     },
+     "anomaly": false,
+     "media": "KUAISHOU",
+     "accountId": "account-6"
+    },
+    {
+     "key": "KUAISHOU:account-2",
+     "label": "DAU-CVR有端-自投-张三-单出价-IOS-上下滑-激活-有R-常规-13178-B",
+     "metrics": {
+      "cost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "exposure": {
+       "value": null,
+       "availability": "missing"
+      },
+      "click": {
+       "value": null,
+       "availability": "missing"
+      },
+      "conversion": {
+       "value": null,
+       "availability": "missing"
+      },
+      "realConversion": {
+       "value": null,
+       "availability": "missing"
+      },
+      "cashCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "costSpace": {
+       "value": 55467.57,
+       "availability": "partial"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": null,
+        "state": "undefined"
+       },
+       "cvr": {
+        "value": null,
+        "state": "undefined"
+       },
+       "realCpa": {
+        "value": null,
+        "state": "undefined"
+       },
+       "cashCpa": {
+        "value": null,
+        "state": "undefined"
+       },
+       "gap": {
+        "value": null,
+        "state": "undefined"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 36,
+       "effectiveDate": "2026-09-03"
+      },
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "partial_data",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 1862,
+       "availability": "partial"
+      },
+      "biCashCost": {
+       "value": 6.210757250268528,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     },
+     "anomaly": false,
+     "media": "KUAISHOU",
+     "accountId": "account-2"
+    }
+   ],
+   "returnedRowCount": 6,
+   "wholeResultTotal": {
+    "value": null,
+    "availability": "partial",
+    "reason": "Canonical account-day coverage is incomplete"
+   },
+   "lineage": {
+    "workspaceKind": "personal",
+    "window": {
+     "from": "2026-09-05",
+     "to": "2026-09-11",
+     "preset": "custom"
+    },
+    "warnings": [
+     "BUDGET_SOURCE_NOT_READY"
+    ],
+    "source": "canonical",
+    "datasetVersion": null,
+    "queryTemplateVersion": "account-dimension-window-v1",
+    "metricVersion": "account-dimension-v3",
+    "dataAsOf": "2026-09-11T15:10:03.407Z",
+    "timezone": null,
+    "dayCut": null,
+    "metadataAvailability": "partial",
+    "authority": {
+     "policyVersion": "2026-08-24",
+     "useCase": "cross_media_operations",
+     "role": "default_authoritative"
+    },
+    "objectIdentity": {
+     "objectType": "account",
+     "joinKeys": [
+      "workspace_id",
+      "media",
+      "account_id"
+     ]
+    },
+    "coverage": {
+     "complete": false,
+     "reason": "Canonical account-day coverage is incomplete",
+     "requestedObjects": 6,
+     "returnedObjects": 6
+    },
+    "truncated": false,
+    "partial": true
+   },
+   "warnings": [
+    "BUDGET_SOURCE_NOT_READY"
+   ]
+  }
+ }
+}

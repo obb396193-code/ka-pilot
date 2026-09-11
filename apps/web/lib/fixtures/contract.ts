@@ -1,7 +1,8 @@
 // F-007：fixture 即契约。前端 mock 层直接读 packages/contract/fixtures/*.json（路径别名 @contract/*）。
 // 这里只做类型与取值小工具，不算任何数；缺数一律显 −。lib/data/ 归后端，本目录是前端自己的 fixture 读取层。
 /** `pending` =「这个数还没到」（调度未跑完 / 源未回），界面显「待到」——和「没有」是两件事（v1.9.27） */
-export type MetricValue = { value: number | null; availability: "available" | "missing" | "error" | "pending" }
+// partial = v1.9.35 窗口部分合计（带真值）；展示「部分」角标是 fe ㉑，这里先让类型对齐镜像。
+export type MetricValue = { value: number | null; availability: "available" | "missing" | "error" | "pending" | "partial" }
 export type RatioValue = { value: number | null; state: "finite" | "infinite" | "undefined" }
 export type CostStatus = "green" | "yellow" | "red" | null
 

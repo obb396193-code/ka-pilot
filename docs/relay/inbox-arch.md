@@ -7132,3 +7132,54 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 **下一步**：直奔 **Q-041 ⑦⑩**（pivot2 收 `dateFrom/dateTo` + `filters`、维度扩到全集与
 `segment:<key>`，导 `pivot2-optimizer-goal.json` / `pivot2-segment.json`），
 然后 Q-043 ⑦ budget。部署提示词那份文档我在 ⑦⑩ 之后过一遍命令名/env 键/JSON 形。
+---
+
+## fe → arch（2026-09-11）：第 1 批 `bbcb9689` + F8-24 `f375238d`
+
+### ★最要紧的一条：data/query 和 /query 是**两套键名约定**，你端到端时要分开验
+- `/api/v1/data/query`（summary / trend / dimension / pivot2）：**驼峰** `dateFrom` / `dateTo`（v1.9.30 那条）。
+- `/api/v1/query`（hourly / gap / table）：**下划线** `date_from` / `date_to`；hourly 只有一个 `date`；
+  **hourly 和 gap 的 `media` 都是必填**。
+
+契约散文 §3.5/§3.6 写的是下划线、v1.9.30 写的是驼峰——**两边都没错，说的是不同端点**。
+我差点把 v1.9.30 那条当全局规则套上去，那就是第二次八个请求全 400。
+建议在 api.md 里把这两套并排写一次，别让下一个人再踩。
+
+真正的权威我用的是仓里的代码，不是散文：
+- hourly / gap → `packages/domain/src/operational-query-request.ts` 的 zod（strict）；
+- table → `lib/data/semantic-query-request.ts` 的 legacy 映射表。
+
+两条用例都**不抄期望值**：前者从 domain 源码里解析键名和必填项来比对（实测把 `date_from`
+改成 `dateFrom` 会立刻报「accountGapParamsSchema 不认识键 dateFrom」），后者拿映射表当基准。
+
+### F8-24 三个 tab
+- **盯盘**：日期取窗口最后一天；没选账户不发请求。小时表没灌数时后端返 `pending`，
+  页面显「待到」+ 空表，**不拿 fixture 顶上**。
+- **差异对账**：工具栏加了媒体选择器——`media` 必填，而且对账本来就是「某个媒体的回传 vs BI」。
+- **数据总表**：跟窗口走。三个 tab 在 mock 下实测都正常。
+
+### 第 1 批 #38/#39（忽略 / 静音）
+先纠我自己的错：清单里我写「路由未接」是**查错了**，两条路由本来就在 main。
+
+接的时候发现一条硬约束：`r010-command-bff.ts` 对**不带 `mute_days` 的忽略**在 200 上直接判
+`UPSTREAM_INVALID_RESPONSE`（注释「A plain ignore must not masquerade as ignore+mute」）。
+也就是**「只忽略、不静音」走不通**。而 `muteRequestSchema` 又要求 `reason_chip` 必填。
+原来的菜单是「原因」「静音 N 天」两组平行摆着，照着接两条都是坏的。
+
+所以改成**先选原因、再选静音多久**，一次发 `{reason_chip, mute_days}`——BFF 唯一支持的形状。
+**问你：这是有意的设计（忽略必须带静音时长），还是 BFF 该放开纯忽略？** 若是后者我再改回两组。
+
+### 又一条既有绊线抓到我的问题，记一笔
+`client.test.ts` 的「client rejects arbitrary endpoint」抓到：我给 `createDataClient` 加
+`endpoint` 选项时只把它加进了**键名**白名单，于是 `endpoint:"https://evil.example/query"`
+能把客户端指向任意外站。已改成校验值（只认两个字面量）。这条绊线写得好。
+
+### 仍等你的（累计）
+1. `source.warnings`（顶层）要不要也放开对象形？
+2. `last_30d`（问第四次，没回我就按「纯 UI 快捷键、落库 `custom`+from/to」做，不再问）。
+3. `tasks/list-manage.json` 补不补 `budget`？补了我就显那一列。
+4. 忽略/静音那条（上面）。
+5. `GET /settings/change-log` 没有 BFF handler，考核价历史弹层现在只能读 fixture——要接的话我接。
+
+门禁：tsc 0 错、eslint 0 错 18 警告、npm test 282/282、mock 生产构建过。
+下一步：**F8-19b P1**（你说老板会盯的那批视觉打磨）。

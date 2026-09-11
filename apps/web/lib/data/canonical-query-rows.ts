@@ -52,6 +52,10 @@ export const canonicalMetricValueSchema = z.discriminatedUnion("availability", [
   // 和 missing「这次查下来就是没有」不是一回事——两者混成一个「−」，
   // 人分不清是等一会儿还是永远不会有。
   z.object({ value: z.null(), availability: z.literal("pending") }).strict(),
+  // v1.9.35（老板拍板 B）：partial = 窗口部分合计，唯一带真值的非 available 态；只出现在窗口聚合。
+  // arch 热修（2026-09-11）：后端 be2 已开始发，镜像不认会让整条响应被 BFF 判废 → 数据分析整页 502。
+  // 展示（「部分」角标 + 缺数清单）是 fe ㉑，此处只保证不崩。
+  z.object({ value: finiteNumber, availability: z.literal("partial") }).strict(),
 ])
 
 const hourlyVolumeSchema = z.object({ cost: canonicalMetricValueSchema, cashCost: canonicalMetricValueSchema,
@@ -122,7 +126,7 @@ export const accountSummaryRowSchema = z.object({
     price: z.object({ value: finiteNumber, effectiveDate: calendarDateSchema.nullable() }).strict().nullable(),
     priceVersions: z.number().int().min(2).optional(),
     onTarget: z.boolean().nullable(), costStatus: z.enum(["green", "yellow", "red"]).nullable(),
-    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
+    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing", "partial_data"]),
     budgetUsageRate: ratioValueSchema,
     /* v1.9.27 考核口径三项（camelCase）。只有 summary 和新维度带，老维度行没有 → optional。 */
     biConv: canonicalMetricValueSchema.optional(),
@@ -136,7 +140,8 @@ export const accountSummaryRowSchema = z.object({
     overCost: canonicalMetricValueSchema.optional(),
   }).strict().superRefine((value, ctx) => {
     const expected = { window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
-      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null] } as const
+      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null],
+      partial_data: [null, null] /* v1.9.35 部分合计 → 判定挂起 */ } as const
     const [target, color] = expected[value.costStatusReason]
     if (value.onTarget !== target || value.costStatus !== color) ctx.addIssue({ code: "custom", message: "Assessment reason mismatch" })
     if (value.price !== null && ((value.priceSource === "history") !== (value.price.effectiveDate !== null))) ctx.addIssue({ code: "custom", message: "Price source/date mismatch" })
@@ -154,7 +159,8 @@ export const accountTrendRowSchema = z.object({
   metrics: canonicalMetricSetSchema,
 }).strict()
 
-export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"])
+// v1.9.22 起后端还有三个按昵称解析的命名维度 optimizer/goal/placement（arch 热修 2026-09-11：不认会让大盘首屏按优化师分组 502）
+export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"])
 const dimensionFields = { key: z.string().min(1).nullable(), label: z.string().nullable(),
   metrics: canonicalMetricSetSchema, assessment: accountSummaryRowSchema.shape.assessment, anomaly: z.boolean() }
 export const dimensionWindowRowSchema = z.union([
@@ -162,6 +168,13 @@ export const dimensionWindowRowSchema = z.union([
     .refine((row) => row.key === `${row.media}:${row.accountId}`),
   z.object({ ...dimensionFields, agent_type: z.enum(["agency", "self"]), agency_name: z.string().min(1).optional() }).strict(),
   z.object(dimensionFields).strict(),
+  // v1.9.22 命名维度（optimizer/goal/placement）行带归属来源汇总，镜像 domain named-dimension.ts 的 dimensionSourceSummarySchema。
+  // arch 热修（2026-09-11）：缺这一形，大盘按优化师分组的真响应整条被判废。
+  z.object({ ...dimensionFields,
+    source: z.enum(["manual", "nickname", "platform", "qihang", "mixed"]).nullable(),
+    sources: z.object({ manual: z.number().int().positive().max(1000).optional(), nickname: z.number().int().positive().max(1000).optional(),
+      platform: z.number().int().positive().max(1000).optional(), qihang: z.number().int().positive().max(1000).optional() }).strict(),
+  }).strict(),
 ]).superRefine(refineAssessmentMetrics)
 
 const pivotAxis = z.object({ key: z.string().min(1).nullable(), label: z.string().nullable() }).strict()
