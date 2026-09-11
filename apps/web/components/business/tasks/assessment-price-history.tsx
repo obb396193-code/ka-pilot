@@ -65,7 +65,7 @@ export function AssessmentPriceHistory({ taskId, taskName, current }: {
         <DialogHeader>
           <DialogTitle>考核价历史 · {taskName}</DialogTitle>
           <DialogDescription>
-            分段只增不改。某天算成多少，看的是**生效日不晚于那天、且没被作废**的最近一段。
+            分段只增不改。某天算成多少，看的是<b className="font-medium text-foreground">生效日不晚于那天、且没被作废</b>的最近一段。
             {current ? <>当前生效：¥{current.value.toFixed(2)}（{current.effectiveDate} 起）。</> : null}
           </DialogDescription>
         </DialogHeader>
@@ -83,7 +83,13 @@ export function AssessmentPriceHistory({ taskId, taskName, current }: {
             </TableHeader>
             <TableBody>
               {segments.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground">这个任务还没有考核价分段</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground">
+                  {/* ★有当前生效价却列不出分段，是自相矛盾的——只能是记录没取到，不能说成「还没有分段」。
+                      变更记录目前只有 fixture，`GET /settings/change-log` 的 BFF 还没接（已报 arch）。 */}
+                  {current
+                    ? <>没取到这个任务的变更记录。当前确实有一段在生效（¥{current.value.toFixed(2)}，{current.effectiveDate} 起），所以记录是缺的不是没有。</>
+                    : "这个任务还没有考核价分段"}
+                </TableCell></TableRow>
               ) : segments.map((item, index) => {
                 const revoked = isRevoked(item)
                 return (

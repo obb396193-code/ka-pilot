@@ -153,12 +153,13 @@ function BizCard({ biz, rows }: { biz: string; rows: TaskManageRow[] }) {
 
   return (
     <Card>
-      <CardHeader className="flex-row flex-wrap items-center gap-2 space-y-0">
+      {/* CardHeader 默认是 grid：不写 `flex` 只写 `flex-row` 改不掉 display，三个元素会各占一行 */}
+      <CardHeader className="flex flex-row flex-wrap items-center gap-2 space-y-0">
         <CardTitle className="text-base">{biz}</CardTitle>
         <Badge variant="secondary" className="font-normal">{rows.length}</Badge>
         {dirty ? <span className="text-xs text-status-warning">有未保存的改动</span> : null}
         <div className="ml-auto flex items-center gap-2">
-          <Button size="sm" disabled={!dirty || saving} onClick={save}>保存</Button>
+          <Button size="sm" variant={dirty ? "default" : "outline"} disabled={!dirty || saving} onClick={save}>保存</Button>
           <Dialog open={confirmEnd} onOpenChange={setConfirmEnd}>
             <DialogTrigger asChild>
               <Button size="sm" variant="ghost" className="border border-status-critical/40 text-status-critical hover:bg-status-critical/10 hover:text-status-critical">
@@ -184,7 +185,7 @@ function BizCard({ biz, rows }: { biz: string; rows: TaskManageRow[] }) {
       <CardContent>
         {failed.length ? (
           <p className="mb-2 rounded-md border border-status-critical/40 bg-status-critical/5 px-3 py-2 text-xs text-status-critical">
-            这一组**一条也没保存**（后端是全部成功才写）。{failed.length} 条不合要求，已在下面标出来，改完再存一次。
+            这一组<b>一条也没保存</b>（后端是全部成功才写）。{failed.length} 条不合要求，已在下面标出来，改完再存一次。
           </p>
         ) : null}
         <div className="overflow-x-auto">
@@ -281,7 +282,7 @@ function BizCard({ biz, rows }: { biz: string; rows: TaskManageRow[] }) {
         ) : null}
         <p className="mt-2 text-[11px] text-muted-foreground">
           删除是把任务置为「已结束」，不是真删——历史数据还查得到。停投的任务排在下面。
-          别名用于账户昵称里没有任务号时按**最长命中**把账户绑到任务。
+          别名用于账户昵称里没有任务号时按<b className="font-medium">最长命中</b>把账户绑到任务。
         </p>
       </CardContent>
     </Card>
