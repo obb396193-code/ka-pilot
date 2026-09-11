@@ -7,7 +7,7 @@ import { IconChevronRight, IconLoader2 } from "@tabler/icons-react"
 import { StatusChip } from "@/components/business/data-grid/data-grid"
 import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { mv, rv } from "@/lib/fixtures/contract"
+import { mv, normalizeBiCost, rv } from "@/lib/fixtures/contract"
 import { allocateBi, type DashboardRow } from "@/lib/fixtures/dashboard"
 import { useDrillChildren } from "@/lib/data/use-dashboard"
 import { cn } from "@/lib/utils"
@@ -77,13 +77,14 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
   const allocatedBi = measured === null ? allocateBi({ parentBi, siblings, childCost: row.metrics.cost.value, incomplete }) : null
   const bi = measured ?? allocatedBi
   const isAllocated = measured === null && allocatedBi !== null
-  // 后端给了 biCashCost 就用它，别拿分摊值再除一遍——两个口径会打架
-  const backendBiCost = row.assessment.biCashCost
+  // 后端给了 biCashCost 就用它，别拿分摊值再除一遍——两个口径会打架。
+  // v1.9.32 起它可能是 RatioValue（含 `infinite`），两形归一走 normalizeBiCost。
+  const backendBiCost = normalizeBiCost(row.assessment.biCashCost)
   const cash = row.metrics.cashCost.value
   const derivedBiCost = bi !== null && bi !== 0 && cash !== null ? cash / bi : null
-  const biCost = backendBiCost && backendBiCost.availability === "available" ? backendBiCost.value : derivedBiCost
+  const biCost = backendBiCost.known ? backendBiCost.value : derivedBiCost
   // 派生出来的成本同样是「分」的——它建立在分摊值之上（审查员 D ③）
-  const biCostAllocated = (!backendBiCost || backendBiCost.availability !== "available") && isAllocated
+  const biCostAllocated = !backendBiCost.known && !backendBiCost.infinite && isAllocated
   const href = accountHref(row.key)
   const childRows = kids.data ?? []
 
@@ -111,7 +112,7 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
           </span>
         </TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.cost, "money0")}</TableCell>
-        <TableCell className="text-right tabular-nums">{row.metrics.incentiveCost ? mv(row.metrics.incentiveCost, "money0") : <span className="text-muted-foreground">待接源</span>}</TableCell>
+        <TableCell className="text-right tabular-nums">{mv(row.metrics.incentiveCost, "money0")}</TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.cashCost, "money0")}</TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.conversion)}</TableCell>
         <TableCell className="text-right tabular-nums">
@@ -119,7 +120,9 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
         </TableCell>
         <TableCell className="text-right tabular-nums">{rv(row.metrics.ratios.gap)}</TableCell>
         <TableCell className="text-right tabular-nums">
-          {biCost === null ? "−" : <span className="inline-flex items-center gap-1">{cny2.format(biCost)}{biCostAllocated ? <Allocated /> : null}</span>}
+          {backendBiCost.infinite ? <span title="花了现金但一个 BI 都没回传">∞</span>
+            : biCost === null ? "−"
+            : <span className="inline-flex items-center gap-1">{cny2.format(biCost)}{biCostAllocated ? <Allocated /> : null}</span>}
         </TableCell>
         <TableCell className="text-right tabular-nums">{rv(row.metrics.ratios.realCpa, "money")}</TableCell>
         <TableCell>

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { runtimeDataClient } from "./client"
 import { dimensionParams, windowParams, type QueryParams } from "./query-params"
-import type { DataQueryResponse } from "./contracts"
+import type { DataQueryResponse, DataQueryWarning } from "./contracts"
 import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import {
   dashboardSummaryFixture,
@@ -29,6 +29,13 @@ import { isOk } from "@/lib/fixtures/contract"
  *    不把已经看到的数字清成骨架屏——换窗口时闪一下空白比慢一点更难受；
  * ③ **AbortController**：连点窗口时把在飞的请求取消，避免先发的后到把新结果覆盖掉。
  */
+
+/** 页面要用到的 lineage 子集（完整形状在 `contracts.ts` 的 `sourceLineageSchema`） */
+export type SourceLineage = {
+  window?: { from: string; to: string; preset?: string }
+  warnings?: DataQueryWarning[]
+  [key: string]: unknown
+}
 
 export type DashboardQueryState<T> = {
   data: T | null
@@ -104,17 +111,29 @@ function useQuery<T>(
   return { data: data ?? held.current, loading: enabled && data === null && held.current === null && error === null, isValidating, error, reload }
 }
 
+/**
+ * 概览汇总。**连 `lineage` 一起返回**：数据来源、截数时间、缺数点名（v1.9.33 的
+ * `warnings[]`）都在里面。之前页面只取 `rows[0]`，页脚的来源信息一律读 mock fixture——
+ * 真实模式下等于拿假的「数据截至」贴在真数字旁边，比不显更糟。
+ */
+export type DashboardSummary = { row: DashboardSummaryRow; lineage: SourceLineage | null }
+
 export function useDashboardSummary(window: DataWindow, workspaceId: string | undefined) {
-  const remote = useQuery<DashboardSummaryRow>(
+  const remote = useQuery<DashboardSummary>(
     "account.summary",
     windowParams(window),
     !IS_MOCK,
-    (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows[0] as unknown as DashboardSummaryRow) ?? null : null),
+    (response) => {
+      if (!response.ok || response.data.mode === "reconcile") return null
+      const row = response.data.source.rows[0] as unknown as DashboardSummaryRow | undefined
+      return row ? { row, lineage: response.data.source.lineage } : null
+    },
     workspaceId,
   )
   if (!IS_MOCK) return remote
   const row = isOk(dashboardSummaryFixture) ? (dashboardSummaryFixture.data.source.rows[0] ?? null) : null
-  return { data: row, loading: false, isValidating: false, error: null, reload: () => {} }
+  const lineage = (isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.lineage : null) as SourceLineage | null
+  return { data: row ? { row, lineage } : null, loading: false, isValidating: false, error: null, reload: () => {} }
 }
 
 export function useDashboardTrend(window: DataWindow, workspaceId: string | undefined) {

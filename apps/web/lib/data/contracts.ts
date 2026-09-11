@@ -45,9 +45,28 @@ const queryWindowSchema = z.object({ from: calendarDate, to: calendarDate,
   preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).default("custom"),
 }).strict().refine((value) => value.from <= value.to)
 
+/**
+ * lineage 告警。老形是 string；对象形带着「谁、哪天、缺了哪些字段」——
+ * `BATCH_FAILED`（v1.9.27 ⑥，拉数失败）和 `ACCOUNT_DAY_MISSING`（v1.9.33，账户日缺数）。
+ *
+ * **`code` 故意不用枚举**：后端加一个新告警码就让整条响应过不了 schema、BFF 直接 502 整页白——
+ * 一条「提示」不该有把页面打死的权力。形状松、渲染严：认识的码画成清单，不认识的原样列出来。
+ */
+export const dataQueryWarningSchema = z.union([
+  z.string(),
+  z.object({
+    code: z.string().min(1),
+    media: z.string().min(1).optional(),
+    accountId: z.string().min(1).optional(),
+    businessDate: calendarDate.optional(),
+    fields: z.array(z.string().min(1)).optional(),
+  }).loose(),
+])
+export type DataQueryWarning = z.infer<typeof dataQueryWarningSchema>
+
 export const sourceLineageSchema = z.object({
   window: queryWindowSchema.optional(),
-  warnings: z.array(z.string()).optional(),
+  warnings: z.array(dataQueryWarningSchema).optional(),
   workspaceKind: z.enum(["personal", "team"]),
   source: z.enum(["ka_data", "qihang_realtime", "qihang_offline", "canonical"]),
   datasetVersion: z.string().min(1).nullable(),
@@ -163,6 +182,7 @@ export const sourceQueryResultSchema = z.object({
   returnedRowCount: z.number().int().nonnegative(),
   wholeResultTotal: metricValueSchema,
   lineage: sourceLineageSchema,
+  // 顶层 `source.warnings` 仍是 string[]；对象形只在 `lineage.warnings` 上（api.md v1.9.27 ⑥ / v1.9.33）
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {

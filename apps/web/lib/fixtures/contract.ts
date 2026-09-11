@@ -1,6 +1,7 @@
 // F-007：fixture 即契约。前端 mock 层直接读 packages/contract/fixtures/*.json（路径别名 @contract/*）。
 // 这里只做类型与取值小工具，不算任何数；缺数一律显 −。lib/data/ 归后端，本目录是前端自己的 fixture 读取层。
-export type MetricValue = { value: number | null; availability: "available" | "missing" | "error" }
+/** `pending` =「这个数还没到」（调度未跑完 / 源未回），界面显「待到」——和「没有」是两件事（v1.9.27） */
+export type MetricValue = { value: number | null; availability: "available" | "missing" | "error" | "pending" }
 export type RatioValue = { value: number | null; state: "finite" | "infinite" | "undefined" }
 export type CostStatus = "green" | "yellow" | "red" | null
 
@@ -19,8 +20,9 @@ const money = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY
 const money0 = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY", maximumFractionDigits: 0 })
 const percent = new Intl.NumberFormat("zh-CN", { style: "percent", maximumFractionDigits: 1 })
 
-/** MetricValue → 文本；missing/error 显 −（真实 0 才显 0） */
+/** MetricValue → 文本；missing/error 显 −（真实 0 才显 0），pending 显「待到」 */
 export function mv(value: MetricValue | null | undefined, kind: "int" | "money" | "money0" | "num" = "int"): string {
+  if (value?.availability === "pending") return "待到"
   if (!value || value.availability !== "available" || value.value === null) return "−"
   if (kind === "money") return money.format(value.value)
   if (kind === "money0") return money0.format(value.value)
@@ -41,6 +43,36 @@ export function signed(value: MetricValue | null | undefined): string {
   if (!value || value.availability !== "available" || value.value === null) return "−"
   return value.value > 0 ? `+${number0.format(value.value)}` : number0.format(value.value)
 }
+/**
+ * `assessment.biCashCost` 的**过渡期归一**（v1.9.32）。
+ *
+ * 它正在从 MetricValue 切成 RatioValue（be2 Q-041 ③ 那一笔），切之前后端还发老形，
+ * 所以两形都可能收到。调用方只关心三件事：后端到底给没给准数（给了就别自己再除一遍，
+ * 两个口径会打架）、是不是「花了钱零 BI 回传」、以及那个数是多少。
+ */
+export function normalizeBiCost(value: MetricValue | RatioValue | null | undefined): { known: boolean; infinite: boolean; value: number | null } {
+  if (!value) return { known: false, infinite: false, value: null }
+  if ("state" in value) {
+    // RatioValue（新形）：infinite = cashCost>0 且 BI 回传为 0
+    if (value.state === "infinite") return { known: true, infinite: true, value: null }
+    return { known: value.state === "finite" && value.value !== null, infinite: false, value: value.state === "finite" ? value.value : null }
+  }
+  return { known: value.availability === "available" && value.value !== null, infinite: false, value: value.availability === "available" ? value.value : null }
+}
+
+/**
+ * BI 现金成本 → 文本。
+ * **`∞ · 无 BI 回传` 不能显成「−」**：花了钱一个 BI 都没回来，是最该被看见的一档，
+ * 显「−」等于把它和「没数」混成一样（v1.9.32 arch 点名）。
+ * 后端没给确定值时，按 `biConv` 是不是还没到，分别显「待到」和「−」。
+ */
+export function biCostText(value: MetricValue | RatioValue | null | undefined, biConv?: MetricValue | null): string {
+  const normalized = normalizeBiCost(value)
+  if (normalized.infinite) return "∞ · 无 BI 回传"
+  if (normalized.known && normalized.value !== null) return money.format(normalized.value)
+  return biConv?.availability === "pending" ? "待到" : "−"
+}
+
 export function isMissing(value: MetricValue | RatioValue | null | undefined): boolean {
   if (!value) return true
   if ("availability" in value) return value.availability !== "available" || value.value === null

@@ -5,13 +5,14 @@ import { useMemo } from "react"
 import { DimensionChart } from "@/components/business/data/dashboard/dimension-chart"
 import { DrillTable } from "@/components/business/data/dashboard/drilldown"
 import { KpiRows } from "@/components/business/data/dashboard/kpi-rows"
+import { MissingDataNotice, type LineageWarning } from "@/components/business/data/dashboard/missing-data-notice"
 import { ScopeSwitch } from "@/components/business/data/dashboard/scope-switch"
 import { TrendChart, type TrendPoint } from "@/components/business/data/dashboard/trend-chart"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { isOk } from "@/lib/fixtures/contract"
 import { trendFixture } from "@/lib/fixtures/data-analysis"
-import { aggregateDays, dashboardSummaryFixture } from "@/lib/fixtures/dashboard"
+import { aggregateDays } from "@/lib/fixtures/dashboard"
 import { mockBizRows, mockOptimizerRows, mockResourcePositionRows, useDashboardDimension, useDashboardSummary } from "@/lib/data/use-dashboard"
 import { windowPresetLabel, type DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
@@ -31,9 +32,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: string; window: DataWindow; workspaceId?: string }) {
   // 取数全在 `use-dashboard`：组件不再自己判断走 fixture 还是走接口（审查员 D 的 P1）
   const summaryQuery = useDashboardSummary(window, workspaceId)
-  const summary = summaryQuery.data
-  const lineage = (isOk(dashboardSummaryFixture) ? dashboardSummaryFixture.data.source.lineage : null) as
-    (Parameters<typeof LineageFooter>[0]["lineage"] & { window?: { from: string; to: string; preset?: string } }) | null
+  const summary = summaryQuery.data?.row ?? null
+  // ★lineage 跟着这次响应走，不再固定读 mock fixture——真实模式下那等于把假的「数据截至」
+  //   贴在真数字旁边。缺数点名（v1.9.33）也在这里面。
+  const lineage = (summaryQuery.data?.lineage ?? null) as
+    (Parameters<typeof LineageFooter>[0]["lineage"] & { window?: { from: string; to: string; preset?: string }; warnings?: LineageWarning[] }) | null
 
   const optimizerQuery = useDashboardDimension("optimizer", window, workspaceId, mockOptimizerRows())
   const resourceQuery = useDashboardDimension("resource_position", window, workspaceId, mockResourcePositionRows())
@@ -96,6 +99,8 @@ export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: stri
           </Tooltip>
         </div>
       </div>
+
+      <MissingDataNotice warnings={lineage?.warnings} />
 
       <KpiRows row={summary} windowed={windowed} />
 
