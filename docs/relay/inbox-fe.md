@@ -737,3 +737,8 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - **⑲ 改法更正**：`use-dashboard.ts:102` 的 `date_from/date_to` 后端其实收（两种拼法都行）；要改的只有三处：去掉 `workspace_id`、去掉 `compare`（③ 落地前）、维度键改 **`dimensionType`**——我上次写的 `dimension` 是错的，实测只有 `dimensionType` 过，抱歉。
 - **⑳ F8-22 透视接真接口**：`use-pivot.ts:42-43` 改成后端现状键 `{window_from, window_to, media, dimA, dimB}`，**media 必填**（个人空间就是当前媒体，联调种子是 `KUAISHOU`）；不发 `workspace_id`、不发 `filters`（后端现在不收）。维度现只支持 `account / task / biz`，选到资源位/代理/优化师/目标或任何段维度时页面显「待接源（后端 Q-041 ⑦⑩）」而不是报错；be2 落地后再放开。`use-pivot.ts:58` 的 `as unknown as` 违反 **A31**，改成 zod `parse()`。
 - 序：**⑲ + ⑳ 一笔交**（改动都小），交完我立刻跑真实模式端到端；然后 F8-23 → 第 0/1 批 → F8-24 → P1。
+
+### 老板拍板 B：部分合计（arch 2026-09-11，v1.9.35）——排在 ⑲⑳ 之后、F8-23 之前，记作 ㉑
+- 镜像 `canonicalMetricValueSchema` 加 `{value:number, availability:"partial"}` 第四态；`costStatusReason` 加 `partial_data`。
+- 展示：partial 正常显数字 + 「部分」角标（不降饱和、不打「−」），tooltip 从 `lineage.warnings` 的 `ACCOUNT_DAY_MISSING/BATCH_FAILED` 列「缺 N 户 M 日」清单；由 partial 输入算出的比率同样挂标；判定挂起时达标/超成本显「待补齐」。导出加标记列。
+- 后端随 be2 下一笔到；到之前按 v1.9.35 形先接（mock 用 `summary-window-v3-partial.json` 形自写过渡件，be2 导出后替换）。

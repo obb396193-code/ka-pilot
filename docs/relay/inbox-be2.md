@@ -437,3 +437,9 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - **⑩**：pivot2 改收 `dateFrom/dateTo`（`window_from/to` 保留一版别名），`media` 仍必填，加 `filters?`（与 summary 同形）；**⑦**：维度扩到 `dimensionTypeSchema` 全集 + `segment:<key>`，复用 `account.dimension` 那个命名规则解析器；源不支持的返 `DIMENSION_UNSUPPORTED` 并在 `details.supported[]` 列该源可用维度。fixture 从真响应导 `pivot2-optimizer-goal.json`、`pivot2-segment.json` 各一份。
 - `account.dimension` 的键 `dimensionType` 不改（契约已按实际改成它）。
 - 序：**①③ + biCashCost RatioValue + ACCOUNT_DAY_MISSING → ⑦⑩ → ⑧⑨ → fixture 一次重导 → Q-044 → Q-045 → Q-042**。
+
+### 老板拍板 B：部分合计（arch 2026-09-11，v1.9.35）——并进你下一笔
+- 窗口求和：Σ 有数账户日，`availability:"partial"`（MetricValue 第四态，value 非 null，只出现在窗口聚合）；全齐 `available`、全无 `missing`。`sumMetricValues` 加一个「部分」路径而不是改全局语义：账户日原始行、`account.table` 单日行不变。
+- 判定挂起：参与判定的指标有 partial → `onTarget=null / costStatus=null / costStatusReason:"partial_data"`。
+- 点名（v1.9.33）照做：`ACCOUNT_DAY_MISSING` / `BATCH_FAILED` 逐账户日、`lineage.partial=true`。seed 给 account-2/09-10 补失败批次记录。
+- 这些都在 `summary-window.ts` / `window-assessment.ts` / `ka-window-aggregate.ts` 一带，**和 ①③ + biCashCost RatioValue 一笔交**，省得同一片代码合三次。fixture 导 `summary-window-v3-partial.json`、`dimension-v3-partial.json`。

@@ -1442,3 +1442,10 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 - **pivot2 统一（be2 Q-041 ⑩，与 ⑦ 一起）**：改收 `dateFrom/dateTo`（`window_from/to` 保留一版做别名），`media` 仍必填，加 `filters?`；维度扩到 `dimensionTypeSchema` 全集 + `segment:<key>`（与 `account.dimension` 同一个命名规则解析器），源不支持的维度返 `DIMENSION_UNSUPPORTED` 且 `details.supported[]` 列出该源可用维度。落地前 fe 按现状键发，其它维度显「待接源」。
 - v1.9.30 里「`_note` 的 params 例以本条为准」作废：那批 fixture 没有 `_note`，键名以本表为准。
+
+## v1.9.35 追加（2026-09-11 arch；老板拍板 B：窗口合计出部分合计，缺数点名）
+- **窗口汇总改 B**（取代 v1.9.33 第二条的「维持 A」）：`account.summary / trend / dimension / pivot2` 的求和字段在成员账户日缺数时，值 = **Σ 有数的账户日**，`availability:"partial"`（MetricValue 新增第四态，`value` 非 null；只用于窗口聚合，账户日原始行不出现 partial）；由 partial 分子/分母算出的比率（cashCpa/ctr/cvr/gap 等）照常算，前端在有 partial 输入时给比率同样挂「部分」标。全部成员齐 → `available`；一个有数的都没有 → `missing`。
+- **判定挂起**：任一参与判定的指标为 partial 时 `assessment.onTarget=null`、`costStatus=null`、`costStatusReason:"partial_data"`（枚举新增）；`biConv` partial → `biCashCost` 照算但前端挂「部分」；不按部分数判达标/超成本。
+- **点名不变**（v1.9.33）：`lineage.warnings[]` 每个缺数账户日一条 `{code:"ACCOUNT_DAY_MISSING"|"BATCH_FAILED", media, accountId, businessDate, fields[]}`，`lineage.partial=true`；`coverage` 仍只描述对象覆盖。前端「部分·缺 N 户 M 日」标可展开清单。
+- **前端展示**：partial 值正常显示数字 + 「部分」角标（不降饱和、不打「−」），tooltip 列缺数清单；导出时 partial 列加标记列。
+- fixtures：be2 从联调种子（account-2 / 09-10 空值行）导 `data-query/summary-window-v3-partial.json`、`dimension-v3-partial.json`；fe 镜像 `canonicalMetricValueSchema` 加 `partial` 态、`costStatusReason` 加 `partial_data`。
