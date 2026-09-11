@@ -50,15 +50,32 @@ export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: stri
   // 按天的原始行：趋势和「窗口重算」都从这里来
   const days = useMemo(() => (isOk(trendFixture) ? trendFixture.data.source.rows : []), [])
 
-  // 趋势：只画窗口内的天；金额走左轴，转化数与转化成本走右轴；缺失日保持 null 让线断开
-  const points = useMemo<TrendPoint[]>(() => days
-    .filter((row) => row.ds >= window.from && row.ds <= window.to)
-    .map((row) => ({
-      ds: row.ds,
-      cost: row.metrics.cost.value,
-      conversion: row.metrics.conversion.value,
-      cpa: row.metrics.ratios.realCpa.value,
-    })), [days, window.from, window.to])
+  /**
+   * 趋势的横轴 = **窗口里的每一天**，不是「后端返回了哪几天」。
+   *
+   * 之前是把返回的行过滤一遍就画——某天整天缺数时那一天在轴上**根本不存在**，
+   * 于是 09-02 和 09-04 直接挨在一起，看着像连续的，缺的那天神不知鬼不觉（审查 ⑦）。
+   * 现在按窗口铺满日期，没有的那天给 null：线在那里断开，人一眼看得见。
+   */
+  const points = useMemo<TrendPoint[]>(() => {
+    const byDate = new Map(days.map((row) => [row.ds, row]))
+    const out: TrendPoint[] = []
+    // 用 UTC 推进，避免夏令时/时区把某一天跳过去或算重
+    for (let cursor = new Date(`${window.from}T00:00:00.000Z`); ; cursor = new Date(cursor.getTime() + 86_400_000)) {
+      const ds = cursor.toISOString().slice(0, 10)
+      if (ds > window.to) break
+      const row = byDate.get(ds)
+      out.push({
+        ds,
+        cost: row?.metrics.cost.value ?? null,
+        conversion: row?.metrics.conversion.value ?? null,
+        cpa: row?.metrics.ratios.realCpa.value ?? null,
+      })
+      // 窗口异常长时兜一下，别把页面卡死（一年封顶）
+      if (out.length > 366) break
+    }
+    return out
+  }, [days, window.from, window.to])
 
   /**
    * ★窗口一换，KPI 必须跟着变——否则那个选择器就是个摆设（老板 2026-09-10 问的就是这个）。
