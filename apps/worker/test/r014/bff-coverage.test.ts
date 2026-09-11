@@ -26,6 +26,7 @@ const SERVED_ELSEWHERE: { path: string; by: string }[] = [
   { path: "/api/v1/admin/members/:p/reset-password", by: "r010 admin-members-routes（Codex F-OS-004）" },
   { path: "/api/v1/system/etl-runs", by: "r010 etl-run-list-route（Codex）；BFF 由 fe F8-15 ① 放在 r014/handlers.ts" },
   { path: "/api/v1/admin/data/reconcile", by: "r010 data/http-server reconcile（Codex）；BFF 由 fe F8-15 ② 放在 r014/handlers.ts" },
+  { path: "/api/v1/system/etl-runs/:p/rerun", by: "r010 etl-run rerun（Codex P-196）；BFF 由 fe F8-15 ⑦ 放在 r014/handlers.ts" },
 ];
 
 const normalize = (path: string): string => path
