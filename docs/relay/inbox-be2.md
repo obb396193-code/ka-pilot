@@ -443,3 +443,11 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - 判定挂起：参与判定的指标有 partial → `onTarget=null / costStatus=null / costStatusReason:"partial_data"`。
 - 点名（v1.9.33）照做：`ACCOUNT_DAY_MISSING` / `BATCH_FAILED` 逐账户日、`lineage.partial=true`。seed 给 account-2/09-10 补失败批次记录。
 - 这些都在 `summary-window.ts` / `window-assessment.ts` / `ka-window-aggregate.ts` 一带，**和 ①③ + biCashCost RatioValue 一笔交**，省得同一片代码合三次。fixture 导 `summary-window-v3-partial.json`、`dimension-v3-partial.json`。
+
+### 内网根因两处我直接热修在你目录（arch 2026-09-11，请 review）+ v1.9.36
+- **F-OS-005** `qihang/client.ts`：`resource=account` 不再发 `accountIds`（OS 12 个数据点证明服务端忽略它；766 个 id 把请求行撑到 8628 字节 > 网关 8192，回 text/html 拦截页，etl_full 6 次 rows_ingested=0）；新增 `QihangUnexpectedContentTypeError`：2xx 但非 JSON content-type 直接判确定性失败不重试。测试 `qihang-client.test.ts` 两条。`DEFAULT_MAX_QIHANG_QUERY_URL_BYTES=64K` 永远触发不到，你顺手改成按请求行字节 ≤7000 计（P2）。
+- **F-OS-006** `data/query-registry.ts`：两处 `replace(day,'-','')` → `strftime('%Y%m%d', …)`，去掉 `CAST(… AS INTEGER)`（ka-data 护栏按关键字拒 REPLACE；`ds` 实际 TEXT）。绊线 `test/ka-data-guard-keywords.test.ts`。
+- **022** EXCEPTION 补 `feature_not_supported`（0A000）。
+- **v1.9.36**：Q-041 ⑤ 团队源的 pending 改按 `fact_conv_daily` 该 ds 有无行判；有行而 conv NULL → biConv 0 available。Q-042 不接 `qihang_account_report_hour`（单位未定）。三个旧表名作废。
+- **A34（P2）**：env 键差集脚本进 CI（扫 `process.env.X` 与 `environment.X`）。
+- 序不变：①③ + RatioValue + ACCOUNT_DAY_MISSING + 部分合计（B）→ ⑦⑩ → ⑧⑨ → 重导 → Q-044 → Q-045 → Q-042。

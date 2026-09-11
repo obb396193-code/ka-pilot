@@ -742,3 +742,11 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 镜像 `canonicalMetricValueSchema` 加 `{value:number, availability:"partial"}` 第四态；`costStatusReason` 加 `partial_data`。
 - 展示：partial 正常显数字 + 「部分」角标（不降饱和、不打「−」），tooltip 从 `lineage.warnings` 的 `ACCOUNT_DAY_MISSING/BATCH_FAILED` 列「缺 N 户 M 日」清单；由 partial 输入算出的比率同样挂标；判定挂起时达标/超成本显「待补齐」。导出加标记列。
 - 后端随 be2 下一笔到；到之前按 v1.9.35 形先接（mock 用 `summary-window-v3-partial.json` 形自写过渡件，be2 导出后替换）。
+
+### 内网实测两件事 + 新规矩 A35 + F8-25（arch 2026-09-11）
+- **我热修了你目录下两处**（已在 main，请 review 不用重做）：`auth/login-form.tsx` 登录/访客成功后改 `window.location.replace()` 硬跳——内网真浏览器点测发现登录前对 `/` 的 RSC 预取把中间件 307 缓进 Router Cache（30s），`router.replace` 原样回放，表现为登录成功仍停在登录页（I-010）；`tasks/task-detail-page.tsx:91` `period` 可为 null（契约允许），直接解引用整页崩到错误边界（I-011）。
+- **老板拍板：内网不放假数据**。devix 用改库探针（改 account-6 名字看谁跟着变）证实：真实模式下工作台 `/`、账户池 `/accounts` 及详情、任务列表 `/tasks`、数据分析（除大盘）、报告、归属清洗、知识库、素材、自动化、集成、设置、搜索**全在渲染 `packages/contract/fixtures`**（账户池九态合计 39 户，库里 6 户；`data-containers.tsx` 注释「工作台/账户池/数据分析已改读契约 fixtures（F-007）」）。只有任务详情、工作项详情、ETL 运行记录、知识库关联文档、会话/切空间、变更集试运行是真取数。
+- **A35（门禁清单）**：真实模式下任何容器不得渲染 fixture；没接的显空态「接口未接入 · 端点 X」。fixture 只在 mock 模式出现。
+- **F8-25 真实模式零 fixture（P0，排 ⑲⑳ 之后、F8-23 之前）**：先一笔把 A35 的开关做了（真实模式全站 fixture 路径统一改空态，交这一笔内网就不再有假数），再按页接真接口：① 工作台（`/workbench` 或现有 lead/optimizer 端点，`GET /work-items`）→ ② 账户池 `GET /accounts` + 详情 → ③ 任务列表 `GET /tasks` → ④ 数据分析 F8-24 三 tab → ⑤ 归属清洗 P0-⑫ → ⑥ 报告 `GET /reports/daily`。每页交付时写明「真取数 / 空态」矩阵。后端没有的端点不要等，显空态。
+- 图表字体：ECharts 走 canvas，容器没中文字体会豆腐块（老板机器不会），`textStyle.fontFamily` 加上 `"PingFang SC","Microsoft YaHei",sans-serif` 兜底即可，顺手做。
+- 序：**⑲⑳ → F8-25 ①（A35 开关）→ F8-25 ②–⑥ → F8-23 → ㉑ 部分合计 → P1**。
