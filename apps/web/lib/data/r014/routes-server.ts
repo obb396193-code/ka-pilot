@@ -25,6 +25,7 @@ export {
   handleAdminNamingRules,
   handleAdminNamingRulesTest,
   handleCapabilities,
+  handleEtlRunRerun,
   handleEtlRuns,
   handleDecisionPolicy,
   handleExportCreate,
