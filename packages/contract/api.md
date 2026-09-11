@@ -1396,3 +1396,13 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **tasks 表/DTO 加字段**：`aliases TEXT[]`（昵称里没有 task_id 时，命名解析按**最长别名命中**把账户绑到任务，写进解析行 `taskIds`）、`monitor_url TEXT`、`product_name TEXT`（与账户级 `accounts.product_name` 独立）、`status` 枚举加 **`paused`**（停投；`ended` 仍表示任务期结束）。`PATCH /tasks/:id` 接受这四个；新增 **`POST /tasks/batch-save {items:[{task_id, ...可编辑字段}]}`**（一个大类整体保存，逐条校验、全部成功才写，任一失败 400 带 `details.failed[]`）。「新建任务大类」= 新建任务时填新的 `biz_name`，大类本身不建表。
 - **考核价分段**：维持只增不改；加 **`op:"revoke"`** 行（`POST /tasks/:id/assessment-price {op:"revoke", effective_date}`）表示作废某段，取值规则 = effective_date ≤ D 的最近一条**未作废**段；历史弹层 = `GET /settings/change-log?kinds=assessment_price&task_id=`，显示生效日 / 值 / 改的人 / 证据链接 / 作废标记。fixtures：`tasks/list-manage.json`（含 aliases/status paused/monitor_url/product_name）、`tasks/batch-save.json`、`tasks/assessment-price-revoke.json`。
 - 归属：后端 be2（Q-043），前端 fe（F8-23）。
+
+## v1.9.29 追加（2026-09-10 arch；吸收 Codex 优化师视角审查的四条真问题 + 验收口径改为业务场景）
+- **清洗归一**：规则段的 `values` 从「别名列表」改为 **`values:[{canonical, aliases[]}]`**（如 `{canonical:"iOS", aliases:["IOS","ios","苹果"]}`；老形 `values:["a","b"]` 兼容读，视为 canonical=alias）。解析行每段存三样：**`raw`（账户名里原文）、`canonical`（统计归到谁）、`basis`（`{ruleVersion, source:"auto"|"manual", at}`）**；维度分组、透视、日报一律用 canonical。v1.9.26「不加 valueMap」作废——别名命中不等于归一，Codex 反例成立。
+- **空段不顶位**：分隔符之间为空的段记为该段 `unmatched`，**后续段不前移**（`自投--任务A-备注` → 优化师=unmatched、业务=任务A，状态 partial）；现行「删空 token」的做法作废。锚点段逻辑不变。
+- **历史归属按业务日**：账户→维度/任务/优化师的绑定带 **`effectiveFrom`**（解析或人工覆盖生效的业务日）；查历史窗口用**该业务日生效的绑定**（账户上周归甲本周归乙，看上周按甲）；规则新版本只对 `effective_from` 之后的业务日生效，追溯必须显式 `reparse {from}` 且写变更记录。所有读取路径（列表、透视、日报、看板）同一规则，禁止各取各的版本。
+- **账户名标签 ≠ 平台实际版位**：昵称解析出的 placement/goal/device 是「账户标签维度」（回答"这类账户表现怎样"）；平台侧版位消耗明细（回答"哪个流量位置贡献多少"）是另一源，dimension_type 命名区分：`placement`（标签）vs 将来的 `platform_placement`（实测），不合并。
+- **分摊值只能估归属，不能比效果**：分摊得到的 BI/CPA 行标 `allocated:true`；前端**不得**按分摊 CPA 排序、比较或据此给加减量建议，分摊行的 CPA 显「分摊·不可比」或不显；源本身有账户级 BI 的（ka-data 团队源 `fact_conv_daily` 按账户）直接用真值，不分摊。
+- **分布组件必须能判断效果**：资源位/版位/转化目标/自投代理等分布组件 = 图 + 同源明细表（花费、转化、现金 CPA、考核达标、样本量=账户数/天数），只给花费占比的饼图不算完成。
+- **验收改为六个业务场景**（替代「页面做完了」）：① 查昨日本人任务，合计与同范围原始数据对上；② 查某任务近七天分版位，分组 + 未归属 = 总计，能下钻复算；③ 从分析页进清洗修一条归属，保存、刷新、回分析，结果变了；④ 切日期/优化师/任务，卡片、图、明细、下钻、导出同步变，没数不顶旧数；⑤ 模拟 BI 未到、部分账户拉数失败：明确提示、不补零、不假分摊、不错判达标；⑥ 保存视图、导出、返回，范围与列配置保留，导出是真文件。每条由 arch 在联调环境实测，截图进 `docs/evidence/acceptance/`。
+- **优先级**（老板/Codex 一致）：真取数与真保存 → 清洗准确性 → 指标口径与下钻一致 → 筛选/导出/保存体验 → 更多图型。

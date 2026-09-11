@@ -9,7 +9,7 @@ describe("dimension registry capability boundary", () => {
     expect(resolved).toMatchObject({ queryId: "account.dimension", rowSchemaVersion: "account.dimension/v3", outputShape: "aggregate",
       params: { dimensionType: "account", dateFrom: "2026-09-01", dateTo: "2026-09-05" } });
   });
-  it.each(["task", "biz"])("resolves implemented %s with bounded window", (dimensionType) => {
+  it.each(["task", "biz", "optimizer", "goal", "placement"])("resolves implemented %s with bounded window", (dimensionType) => {
     expect(registry.resolve("account.dimension", { date: "2026-09-01", dimensionType }, "platform").params.dimensionType).toBe(dimensionType);
   });
   it.each(["agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"])("does not pretend %s is implemented by the account reader", (dimensionType) => {

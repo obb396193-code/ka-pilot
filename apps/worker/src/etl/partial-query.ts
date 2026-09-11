@@ -6,7 +6,8 @@ import { batchFailureWarning } from "./batch-failure.js";
 
 export interface BatchFailurePort { record(input: RecordEtlBatchFailure): Promise<{ recorded: boolean }> }
 export interface PartialExecution { scope: EtlBatchScope; jobId: string; leaseToken: string; failures: BatchFailurePort }
-/** Opt-in dependency only. Runtime remains fail-stop until readiness is wired. */
+/** Dependency-injected batch isolation. Formal full/incr runtime supplies the
+ * fenced ledger after date-scoped readiness was wired; other callers may omit it. */
 export function partialExecution(job: JobRecord, scope: unknown, failures?: BatchFailurePort): PartialExecution | undefined {
   if (!failures) return undefined;
   const parsed = etlBatchScopeSchema.parse(scope);

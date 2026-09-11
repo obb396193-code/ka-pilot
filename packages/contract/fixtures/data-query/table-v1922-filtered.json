@@ -1,0 +1,157 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.table",
+      "rowSchemaVersion": "account.table/v2",
+      "status": "ready",
+      "rows": [
+        {
+          "workspaceId": "7f4945e6-16bd-434e-be17-8ce8fbbfb430",
+          "media": "KUAISHOU",
+          "accountId": "a",
+          "accountName": "synthetic",
+          "ownerUserId": null,
+          "ds": "2026-09-02",
+          "metrics": {
+            "cost": {
+              "value": 10,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 100,
+              "availability": "available"
+            },
+            "click": {
+              "value": 10,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 2,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 10,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.1,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.2,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 10,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 10,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "budget": {
+              "value": null,
+              "availability": "missing"
+            },
+            "budgetUsageRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "deductionRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "mainAdCostProportion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "assessmentPrice": {
+              "value": null,
+              "availability": "missing"
+            }
+          },
+          "dataAnomaly": false,
+          "computedAt": "2026-09-02T10:00:00.000Z",
+          "tasks": [
+            {
+              "taskId": "two",
+              "taskName": "task-two",
+              "bizName": "biz-two"
+            }
+          ]
+        }
+      ],
+      "returnedRowCount": 1,
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      },
+      "lineage": {
+        "workspaceKind": "personal",
+        "source": "canonical",
+        "datasetVersion": null,
+        "queryTemplateVersion": "v1",
+        "metricVersion": "account-table-v1",
+        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "comparison_reference"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true,
+          "returnedObjects": 1
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "_note": "v1.9.22/26（Codex 自查 10/11 合成 PG→真 HTTP 导出，arch 2026-09-10 收进契约包；筛选/维度键位以 api.md v1.9.26/27 为准）"
+  }
+}

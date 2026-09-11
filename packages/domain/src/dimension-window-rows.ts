@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { canonicalMetricSetSchema } from "./data-query-base-rows.js";
 import { refineWindowMetricAssessment, windowAssessmentSchema } from "./summary-window.js";
+import { dimensionSourceSummarySchema, namedDimensionTypeSchema } from "./named-dimension.js";
 
 const dimensionFields = {
   key: z.string().min(1).nullable(),
@@ -9,10 +10,11 @@ const dimensionFields = {
   assessment: windowAssessmentSchema,
   anomaly: z.boolean(),
 };
-export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"]);
+export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"]);
 
 const groupedRowSchema = z.object(dimensionFields).strict().superRefine(refineWindowMetricAssessment);
 export const groupedDimensionWindowRowSchema = groupedRowSchema;
+export const namedDimensionWindowRowSchema = dimensionSourceSummarySchema.safeExtend(dimensionFields).superRefine(refineWindowMetricAssessment);
 const agentTypeRowSchema = z.object({
   ...dimensionFields,
   // v1.7.9：代理/自投只有账户级 custom_tags，OS 实测大量账户无匹配 → 无标记归 unknown（显「未标注」），不猜不填默认值。
@@ -29,13 +31,14 @@ export const accountDimensionWindowRowSchema = z.object({
     context.addIssue({ code: "custom", path: ["key"], message: "Account dimension key must preserve media and accountId" });
   }
 });
-export const dimensionWindowRowSchema = z.union([accountDimensionWindowRowSchema, agentTypeRowSchema, groupedRowSchema]);
+export const dimensionWindowRowSchema = z.union([accountDimensionWindowRowSchema, agentTypeRowSchema, groupedRowSchema, namedDimensionWindowRowSchema]);
 
 /** Row-only boundary. Not an authorization check, source capability registry or full response envelope.
  * workspaceId comes from the trusted source/session boundary, never from a displayed dimension key.
  * 10,000 rows is the bounded canonical result; sources still must prove they were not hard-cap truncated.
  */
 export const dimensionWindowRowsSchema = z.union([
+  z.object({ dimension: namedDimensionTypeSchema, rows: namedDimensionWindowRowSchema.array().max(10000) }).strict(),
   z.object({ dimension: z.literal("account"), rows: z.array(accountDimensionWindowRowSchema).max(10000) }).strict(),
   z.object({ dimension: z.literal("agent_type"), rows: z.array(agentTypeRowSchema).max(10000) }).strict(),
   z.object({

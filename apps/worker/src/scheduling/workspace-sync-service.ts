@@ -22,9 +22,11 @@ import {
 
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import { JOB_PRIORITY } from "../jobs/priorities.js";
+import { shiftIsoDate } from "../etl/date-range.js";
 
 export interface WorkspaceSyncSnapshotPort {
-  loadTickSnapshot(workspaceId: string, media: string): Promise<WorkspaceSyncTickSnapshot>;
+  loadTickSnapshot(workspaceId: string, media: string,
+    window: { dateFrom: string; dateTo: string }): Promise<WorkspaceSyncTickSnapshot>;
 }
 
 export interface WorkspaceSyncJobPort {
@@ -134,7 +136,11 @@ export class WorkspaceSyncTickService {
   async execute(input: unknown): Promise<WorkspaceSyncTickResult> {
     const request = workspaceSyncTickRequestSchema.parse(input);
     const businessDate = shanghaiTaskBusinessDate(new Date(request.triggeredAt));
-    const snapshot = await this.repository.loadTickSnapshot(request.workspaceId, request.media);
+    // auto tests the prospective incr window (D-1..D); if incomplete it selects full.
+    // Forced full uses its existing default seven-day window. No wall-clock dates in DB.
+    const snapshot = await this.repository.loadTickSnapshot(request.workspaceId, request.media, {
+      dateFrom: shiftIsoDate(businessDate, request.mode === "full" ? -6 : -1), dateTo: businessDate,
+    });
     if (snapshot.workspaceActive === null) throw new Error("Workspace does not exist");
     const jobs = [];
     for (const candidate of snapshot.candidates) {

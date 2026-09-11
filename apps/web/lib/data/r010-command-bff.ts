@@ -21,7 +21,7 @@ const messages: Record<CommandErrorCode, string> = {
   SOURCE_UNAVAILABLE: "Source unavailable", SOURCE_TRUNCATED: "Response exceeds the safe limit",
   UPSTREAM_TIMEOUT: "Upstream request timed out", UPSTREAM_INVALID_RESPONSE: "Invalid upstream response", INTERNAL_ERROR: "Internal error",
   // 这张表是 BFF 自己造错误时的兜底英文；到用户眼前的中文走 contracts.ts 的 resolveErrorMessage
-  READ_ONLY_ROLE: "Read-only role", RATE_LIMITED: "Too many requests",
+  READ_ONLY_ROLE: "Read-only role", RATE_LIMITED: "Too many requests", NOT_IMPLEMENTED: "Not implemented",
 }
 
 function commandPath(pathname: string): Command | "invalid" | null {

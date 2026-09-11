@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 import { approvedScheduledSyncPayload, scheduledSyncAuthorizationSnapshotSchema,
   scheduledQihangRecoveryRequestSchema, type ScheduledSyncAuthorizationSnapshot, type WorkspaceSyncJobType } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
-import { loadWorkspaceSyncReadiness } from "./workspace-sync-readiness.js";
+import { loadWorkspaceSyncReadinessBatch } from "./workspace-sync-readiness.js";
 
 const initialReason = "QIHANG_IDENTITY_MISSING";
 const executionReason = "Credential owner has no usable Qihang identity";
@@ -67,15 +67,25 @@ export async function recoverQihangIdentityJobs(pool: Pool, value: unknown): Pro
         AND lease_token IS NULL AND lease_until IS NULL
       ORDER BY created_at,id LIMIT 1001 FOR UPDATE`, [snapshot.workspaceId, snapshot.userId, media, initialReason, executionReason]);
     if (jobs.rows.length > 1000 || Buffer.byteLength(JSON.stringify(jobs.rows)) >= 16 * 1024 * 1024) throw new Error("Recovery result overflow");
-    const fullReady = jobs.rows.some(r => r.job_type === "etl_incr") && await loadWorkspaceSyncReadiness(client, {
-      workspaceId: snapshot.workspaceId, requestingUserId: snapshot.userId, allowedAccounts: snapshot.allowedAccounts,
+    const replacements = jobs.rows.flatMap(row => {
+      const payload = replacementPayload(row, snapshot, media);
+      return payload === null ? [] : [{ row, payload }];
     });
+    const incremental = replacements.filter(entry => entry.row.job_type === "etl_incr");
+    // replacementPayload proved the exact approved scheduled shape (including ds,
+    // offlineReconcileDays and prior grant subset). Never use today's wider scope/date.
+    const readiness = await loadWorkspaceSyncReadinessBatch(client, incremental.map(({ payload }) => {
+      const frozen = scheduledSyncAuthorizationSnapshotSchema.parse(payload.authorizationSnapshot);
+      const dateTo = payload.ds as string;
+      const dateFrom = new Date(Date.parse(dateTo) - (payload.offlineReconcileDays as number) * 86_400_000).toISOString().slice(0, 10);
+      return { workspaceId: frozen.workspaceId, requestingUserId: frozen.userId,
+        allowedAccounts: frozen.allowedAccounts, dateFrom, dateTo };
+    }));
+    const readyIds = new Set(incremental.filter((_, i) => readiness[i]).map(entry => entry.row.id));
     const entries: Array<{ id: string; payload: Record<string, unknown>; detail: Record<string, unknown> }> = [];
     let batchBytes = 2;
-    for (const row of jobs.rows) {
-      if (row.job_type === "etl_incr" && !fullReady) continue;
-      const payload = replacementPayload(row, snapshot, media);
-      if (payload === null) continue;
+    for (const { row, payload } of replacements) {
+      if (row.job_type === "etl_incr" && !readyIds.has(row.id)) continue;
       const entry = { id: row.id, payload, detail: {
         previousReason: row.last_error, attempts: row.attempts, businessDate: payload.businessDate,
         media, identityId: snapshot.identityId, previousAuthorizationSnapshot: row.payload.authorizationSnapshot,

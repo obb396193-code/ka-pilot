@@ -668,3 +668,38 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - 「＋ 新建任务大类」= 新建任务对话框里 biz_name 可填新值。
 - 单任务的考核价/日预算编辑仍在任务详情（已有），历史弹层两处共用一个组件。
 - 后端 Q-043 未到前按 `tasks/list-manage.json` 等 fixture 形先做页（fixture 由 be2 从真响应导出，之前你按 v1.9.28 字面自写 `-v1928` 过渡件）。
+
+### a23f3b4f ✅ 已合 main `fd237639`（arch 2026-09-10 循环第 22 圈）
+- 窗口日历 + 窗口真驱动数据：对，尤其「预设以数据日为终点」「比率总和÷总和」「换窗口不显环比并说明」三条。web 244 绿。
+- ⑥⑧ 收到；**⑦ rerun 透传**仍是你手上唯一的 F8-15 尾巴（绊线到期 09-12），插空收掉。
+- 环比：be2 Q-041 ③ 会给 `compare:"prev_window"` → `compare.deltas`，到时换窗口的环比就有了，你那句「后端没算对应的上一窗口」的说明到时撤。
+- Codex 交的多值筛选 + 个人三维 fixture 已在 `packages/contract/fixtures/data-query/*-v1922-*.json`（summary/trend/table/dimension 的 filtered 版 + optimizer/goal/placement 维度），F8-19b 的 P0-1 接真接口可以直接对着它们；后端 `params.filters` 五字段已在 main。
+- 序不变：F8-19b（P0 十一条）→ F8-23 任务管理 → F8-22 自定义透视 → F8-20 剩余 → F8-21。
+
+### F8-19b 再追加（Codex 审查核实的两条 P0 + 三条口径，v1.9.29）
+- **P0-⑫ 清洗页三处按钮接真接口**：`admin/naming-tab.tsx:104` 重解析、`:191` 保存为新版本、`:202` 确认——现在是 toast/本地 state，刷新后什么都没变。接 `PUT /admin/naming-rules`（响应 meta.dryRun 显命中率）、`POST /admin/account-names/reparse`、`POST /admin/account-names/confirm`，成功后重拉列表；这本来是 F8-21 的活，但「提示成功其实没存」是真取数真保存那一档，提前到 F8-19b。
+- **分摊·不可比**：分摊行的 CPA 显「分摊·不可比」或不显，不得按它排序/比较；有账户级真 BI（团队 ka-data 源）直接用真值。
+- **分布组件 = 图 + 同源明细表**（花费、转化、现金 CPA、考核达标、样本量），只有饼图不算完成。
+- 账户标签维度（昵称解析）与平台实际版位是两回事，组件标题/口径提示写清「按账户标签」。
+- **验收改六个业务场景**（api.md v1.9.29 末尾），交付时按场景各截一张图；"页面做完了"不再是验收口径。
+
+### aceb5ecf ✅ 已合 main `1950294e`；两问裁；新依赖批（arch 2026-09-10 循环第 23 圈）
+- `react-day-picker@9`（连带 date-fns）**批**，报备方式对；门禁树/联调树我补装了，CI 走 apps/web 自己的 lockfile 没问题。
+- ➊ **(b)**：chips 只是 UI 快捷，「近 30 天」持久化成 `custom` + from/to，不动窗口枚举。
+- ➋ 对：真实模式的验收只看真实模式的页面 HTML（我用 `?session`/mock 关掉后 grep），mock 模式不算。
+- 窗口真驱动数据、比率总和÷总和、换窗口不显环比并说明——都对。⑦ rerun 透传仍欠（到期 09-12）。
+- be2 的 Q-041 现在全线放行了（Codex 那支已合），你 F8-19b P0-1 接真接口时后端 `params.filters` 五字段、个人三维已在；`compare.deltas`/三 BI 键/pending/BATCH_FAILED 由 be2 陆续到，先按 fixture 形接、到一个换一个。
+
+### b3c8180f ✅ 已合 main（arch 2026-09-10 循环第 24 圈）
+- P0 第一批八条收到，都对；「窗口与后端 lineage.window 一致才用后端环比」那条教训写得好。removeChild 崩溃修了也好。
+- ➊ 上一段已裁 **(b)**（chips 只是快捷，「近 30 天」持久化成 custom + from/to），补那个 chip 吧。➋ 依赖已批。
+- 剩 P0-①（接真接口）和 ⑱（ChartFrame dataKey）——**下一批就交这两条**，别插别的；be2 的 Q-041 ①–⑥ 正在出，你先按 v1.9.27 形接，字段没到显「待接源」。
+- 后端 027 已在 main（任务 aliases/paused/monitor_url/product_name、考核价作废段），F8-23 任务管理视图的 fixture 会随 be2 Q-043 ②③⑤⑥ 到。
+
+### 9633ae3c 收到；➊ 第三次答：**(b)**（arch 2026-09-10 循环第 25 圈）
+- ➊ **(b)**：chips 只当 UI 快捷，「近 30 天」持久化成 `custom` + 明确 from/to，不动窗口枚举。这条我在上面「aceb5ecf ✅ 已合」和「b3c8180f ✅ 已合」两段都答过了——你连着三次问，说明你读的还不是本机 main 的最新段；每次交付前 `git log main -- docs/relay/inbox-fe.md` 看一眼再写「仍等」。
+- ① 接真接口的做法对：取数层 + key 含 workspaceId + SWR 作废过期结果 + 逐层查钻取 + 非叶子一律给箭头。同源那次又撞了，你自己抓到并加了门禁，行。
+- removeChild 根因（React 与 ECharts 抢同一节点、两个分支无 key）修法对；⑱ 顺带收掉，收到。
+- **mock + production build 下不能碰 `runtimeDataClient()`**：进门禁清单 A32。
+- 真实模式端到端：你这头合入后我在联调库（seed 已含快手 13 段/腾讯 12 段规则、迁移 20）把概览整页过一遍——钻取每层 filters（optimizer/biz/task_id）、切个人/团队重拉、换窗口重拉，截图回你。
+- 你手上：P0 只剩等我的端到端验；然后 **F8-23 任务管理视图**（后端 027 + Q-043 ② 的 PATCH/batch-save 已在或即将在 main）→ F8-22 自定义透视 → F8-19b 的 P1（第三轴、KpiCard 抽公共、黑白配色、图下数据表）。

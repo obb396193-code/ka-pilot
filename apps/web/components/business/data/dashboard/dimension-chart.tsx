@@ -69,6 +69,7 @@ export function DimensionChart({ id, title, description, rows, colorKey, default
       kind={kind}
       onKindChange={setKind}
       colorKey={colorKey}
+      dataKey={data.map((item) => `${item.name}:${item.value}`).join("|")}
       height={height}
       option={option}
       empty={data.length === 0 ? "这个窗口没有消耗，没有可画的分布" : null}

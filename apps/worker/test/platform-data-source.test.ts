@@ -89,6 +89,18 @@ function windowSource(
 }
 
 describe("PlatformDataSource", () => {
+  it.each(["out-of-day", "duplicate", "inflated-total", "wrong-coverage"])("fails closed on filtered table %s instead of returning a broader page", async kind => {
+    const rows = kind === "duplicate" ? [daily(), daily()] : [{ ...daily(), ...(kind === "out-of-day" ? { ds: "2026-08-23" } : {}) }];
+    const repository = { querySummary: vi.fn(), queryTrend: vi.fn(),
+      queryTable: vi.fn(async () => ({ rows, total: kind === "inflated-total" ? 3 : rows.length, page: 1, pageSize: 50 })),
+      queryLineage: vi.fn(async () => ({ ...lineage(), requestedDates: ["2026-08-24"], ...(kind === "wrong-coverage" ? { requestedAccountDays: 0 } : {}) })),
+      resolveDashboardScope: vi.fn(async (input: import("@ka/db").SemanticQueryScope) => ({ scope: { ...input,
+        filters: { ...input.filters, accountDays: [{ media: "KUAISHOU", accountId: "account-1", ds: "2026-08-24" }] } }, warnings: [] })),
+    };
+    await expect(new PlatformDataSource(repository as never).query(createDataQueryRegistry().resolve("account.table", {
+      dateFrom: "2026-08-23", dateTo: "2026-08-24", filters: { biz: ["selected"] },
+    }, "platform"), scope)).rejects.toBeInstanceOf(PlatformDataSourceError);
+  });
   it("runs every read through the provided snapshot repository, never the pool fallback", async () => {
     const fallback = { querySummary: vi.fn(), queryTrend: vi.fn(), queryTable: vi.fn(), queryLineage: vi.fn() };
     const transaction = {

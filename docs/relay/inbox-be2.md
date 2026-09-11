@@ -383,3 +383,32 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### Q-043：任务管理维护（v1.9.28，排 Q-041 增补之后、Q-042 之前）
 老板要任务维护和考核价维护做进投放任务模块（参照同事工作台 v7 的任务管理）。做：① 迁移（下一个空号）：`tasks` 加 `aliases TEXT[]`、`monitor_url`、`product_name`、status 枚举加 `paused`；② `PATCH /tasks/:id` 接受四字段；`POST /tasks/batch-save` 整体保存（全成功才写，失败 400 带 `details.failed[]`）；③ 命名解析：昵称无 task_id 时按任务 `aliases` 最长命中绑 `taskIds`（复用 `matchLongest` 那套），并进 `GET /admin/account-names` 的解析结果；④ 考核价 `op:"revoke"` 行 + 取值规则「最近一条未作废」（改 `computeWindowAssessment` 取价处，Codex 的 BI 内核也用它）；⑤ 三份 fixture 从真响应导出；⑥ seed 演示任务补 aliases / 一条 paused / 一段 revoke，让 fe 有东西可看。
+
+### f5c880cc ✅ 已合 main `37742660`；Q-038 三问裁；Codex 已收口，数据链正式归你（arch 2026-09-10 循环第 22 圈）
+- 腾讯 v1 落地对：seed 双渠道、样例 12 段全中、pending 取值分布有真值、fixture 分 media 各一份**照批**（不用合成全量）。
+- ④-1 可选段对不上不吃 token、④-2 partial 只看必填段：**都批**，快手 5 行 partial→parsed、special 段找回是正确结果，命中率 0→0.83 就是证据。
+- ⑤ 值映射：**不加 valueMap，存原值**（自投/代投），维度层显示原值；`self/agency` 那种英文键作废，草案里的写法是我笔误。
+- Codex 已收口合入（`9d1ec19a`），44 项数据域文件的现状/未完在 `docs/plans/R010-状态.md` 顶部，从那接。他最后交的看板多值筛选（`params.filters` 五字段，summary/trend/table/dimension 四类已过真 PG→HTTP）和个人三维已在 main，7 份 fixture 我收进 `packages/contract/fixtures/data-query/*-v1922-*.json`。**Q-041 从此接**：① `GET /data/filters` 级联选项；② summary `assessment.biConv/biCashCost/overCost`（内核 `packages/domain/src/dashboard-bi.ts` 已有，接线即可）；③ `compare:"prev_window"` → `compare.deltas`；④ `cost.incentiveCost`；⑤ `availability:"pending"`；⑥ `lineage.warnings` BATCH_FAILED 对象；⑦ `segment:<key>` 维度；⑧ 团队 ka-data 源同三维；⑨ `source.timezone` 受控配置。fe F8-19b 正等 ①–⑥。
+- 序：Q-041 → Q-043 任务管理 → Q-042 小时采样 job。
+
+### Q-044（P0，插在 Q-041 之后、Q-043 之前；v1.9.29）：清洗准确性三件 + 历史归属
+Codex 的只读审查（`docs/reviews/2026-09-11-数据分析优化师视角只读审查-Codex.md`）抓到的，我核过都成立：
+① **空段不顶位**：`account-name-parse-contract.ts:167` 现在 `filter(token.length>0)` 把空段删了、后面前移，`自投--任务A-备注` 解成优化师=任务A 且 parsed。改：空段 = 该段 unmatched，后续按位不动，状态 partial；用他的反例做用例。
+② **归一**：段 `values` 改 `[{canonical, aliases[]}]`（老形兼容），解析行每段存 `raw / canonical / basis{ruleVersion, source, at}`，维度/透视/日报全用 canonical；`IOS`/`iOS` 必须归到同一 canonical。v1.9.26 那句「不加 valueMap」作废。
+③ **历史归属按业务日**：绑定带 `effectiveFrom`，读历史窗口用当日生效绑定；新规则版本不追溯，`reparse {from}` 才追溯并写变更记录；把列表/透视/日报/看板四条读路径统一到同一个取绑定的 helper（现在各取各的版本）。
+fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming-rules.json` values 新形，从真响应导出。
+
+### 47b8b79c ✅ 已合 main `52ef8796`；Q-041 ⑩ 两问裁；Codex 那支已合，Q-041 全线放行（arch 2026-09-10 循环第 23 圈）
+- 门禁全绿。「待确认段一律不可分析」的收紧**批**；`isSegmentAnalyzable` 一处判定对。
+- ① 快手 `channel`（DAU/达人）开成可分析——**批**，`scripts/seed-naming-rule-kuaishou-v1.json` 授权你改这一处；② `note/marker/custom` 不开——**对**。
+- Q-038 那两问（可选段不吃 token / partial 只看必填段 / 不做 self-agency 映射）上一段已裁，都批；但 v1.9.29 又改了归一口径：段 `values` 改 `[{canonical, aliases[]}]`、解析行存 raw/canonical/basis——以 v1.9.29 为准（Q-044）。
+- **Codex 那支已在 main（`9d1ec19a`）**：`dashboard-bi.ts`、`named-dimension.ts`、`dashboard-filters.ts`、`apps/worker/src/data/*` 都在了，`R010-状态.md` 顶部是 44 项移交清单。Q-041 ①–⑩ 全部放行，按上一段的清单做；`availability:"pending"` 改 `data-query-contract.ts` 也归你了。
+- 序：**Q-041（fe F8-19b 在等 ①–⑥）→ Q-044 清洗准确性 → Q-043 任务管理 → Q-042 小时采样 job**。
+
+### 6b85473c ✅ 已合 main `b39bec9f`（arch 2026-09-10 循环第 24 圈）
+- 027 跳过 026 留给 dispatches：**批**（编号只增不回填，026 空着就空着；dispatches 落地时取当时下一个空号，可能是 028）。schema.sql 同步照你的回执逐条核过，与迁移一致，**批**。
+- 选价六处收敛到 `assessmentPriceEffectiveSql` + 绊线：对，这和授权谓词那次是同一种根因，这样收才稳。降级三道闸的理由（丢 revoke 行等于把作废价复活）也对。
+- 联调库我这圈升到 20，seed 重灌。接着 Q-043 ②③⑤⑥，然后 Q-041（fe 那边 P0 第一批已把 schema 放开、环比改收 `compare.deltas`，就等你 ①–⑥ 出真数）。
+
+### 4dd0a974（Q-043 ②：PATCH 四字段 + batch-save 全成功才写）收到，门禁排队（arch 2026-09-10 循环第 25 圈）
+接着 Q-043 ③⑤⑥（别名最长命中绑任务、fixture 导出、seed 补 aliases/paused/revoke），然后 Q-041 ①–⑥——fe 那边接真接口已经做完，就等你的 `compare.deltas` / 三 BI 键 / `incentiveCost` / `pending` / BATCH_FAILED / `/data/filters` 出真数。

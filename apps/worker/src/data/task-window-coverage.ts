@@ -14,6 +14,12 @@ export function taskWindowDates(scope: SemanticQueryScope, lineage: SemanticLine
     dates.data.some((ds, i) => ds < scope.dateFrom || ds > scope.dateTo || (i > 0 && ds <= dates.data[i - 1]!))) {
     throw new SemanticQueryContractError("Invalid window source result");
   }
+  const selected = scope.filters?.accountDays;
+  if (selected !== undefined) {
+    const selectedDates = [...new Set(selected.map(row => row.ds))].sort();
+    if (expected !== selected.length || dates.data.length !== selectedDates.length ||
+      dates.data.some((ds, index) => ds !== selectedDates[index])) throw new SemanticQueryContractError("Invalid filtered window source result");
+  }
   return dates.data;
 }
 
