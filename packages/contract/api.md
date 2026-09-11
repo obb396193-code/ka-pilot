@@ -1416,3 +1416,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **按日补拉（#8）= 现有 rerun**：治理后台「按日补拉」= 选一个 businessDate 对该日的 run 发 `POST /system/etl-runs/:id/rerun`（列表里取该日 run 的 id）；无该日 run → 显「该日没有拉数记录」。不新增端点。
 - **已有端点只差接线的批次**（fe 接，后端已在）：第 0 批 #10/#31/#33/#37（`/me/views`、`/me/watchlist`、readiness）；第 1 批 #38/#39（r010 ignore/mute 命令，路由接上）；第 2 批 #2/#9（pool-status DELETE、decision-policy PUT）。
 - **需后端补的**（be2 Q-045 ②③，排在 Q-041/Q-044 之后）：#4/#5 `PATCH /admin/members/:identityId {role?, is_active?}`、#6/#7 `PUT /admin/members/:identityId/grants`（整体替换）、#12/#14/#22/#23/#29/#30 集成/订阅/定时/凭证解绑、#16/#17/#19/#25/#32/#34/#35/#36 素材/工作项/派发/审批。顺序：治理后台 → 集成报告 → 素材任务 → 协作。
+
+## v1.9.32 追加（2026-09-10 arch；裁 be2 Q-041 ②④⑤⑥ 回执三问）
+- **`assessment.biCashCost` 改为 RatioValue**（`{value, state:"finite"|"infinite"|"undefined"}`，与 `ratios.cashCpa` 同形；v1.9.27 写的 MetricValue 作废）：`cashCost>0 且 biConv=0` → `state:"infinite"`（前端显「∞ · 无 BI 回传」，不是「−」——花了钱一个 BI 都没有，是最该被看见的一档）；`biConv` 为 `pending`/`missing` → `state:"undefined"`，前端按 `biConv.availability` 显「待到」或「−」。不在 MetricValue 里加 `denominator_zero` 档：那是比率的概念，不让每个普通指标的消费者都多兜一档。`biConv`（MetricValue，可 `pending`）、`overCost`（MetricValue，金额可负）、`incentiveCost`（MetricValue，ka-data 源恒 `missing` 不是 0）不变。
+- **四个新键（`biConv/biCashCost/overCost/incentiveCost`）schema 暂 optional**，「真实产出路径恒发」由 domain 绊线 `new-metric-fields-emitted` 保证；等 Q-041 ③ `compare.deltas` 落地后 be2 **一次性重导** `fixtures/data-query/*` 全部冻结 fixture（含 `summary-window-v3-*`），同一笔把四键改必填；fe 的 `-v1922` 过渡件届时换成 be2 导出版。不分两次导。
+- **`compare:"prev_window"`**：枚举已进 `windowComparisonSchema.mode`，前窗与 `deltas` 未实现（Q-041 ③ 下一笔）；落地前 params 严格校验照样把 `compare` 键判 400（v1.9.30），fe 不发。
+- **domain 包禁循环 import**（`dashboard-bi` ↔ `window-assessment` 那种）：vitest 模块图不报，真 CLI 入口 `ReferenceError … before initialization`。纯算术拆独立模块（`dashboard-bi-math`，明令不许反向 import）。进门禁清单 A33。
