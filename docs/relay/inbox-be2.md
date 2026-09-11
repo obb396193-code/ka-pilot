@@ -458,3 +458,7 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - month_to_date 前窗 = 上月同天数、`today` 回 null、七处枚举收敛：都对。`/data/filters` 账户集合只来自会话、cost 缺失 ≠ 0、失败日旧 canonical 不算、团队源回 503 不回空列表：对。
 - 超时三文件判抖动，记一笔。
 - 下一步照你说的 ⑦，但按 **v1.9.34** 一起做 **⑩**（pivot2 改收 `dateFrom/dateTo` + `filters`，`window_from/to` 留一版别名；维度扩全集 + `segment:<key>`；不支持返 `DIMENSION_UNSUPPORTED` 带 `details.supported[]`）→ ⑧⑨ → fixture 一次重导转必填（含 biCashCost RatioValue、ACCOUNT_DAY_MISSING、部分合计 B）→ Q-044 → Q-045 → Q-042。
+
+### 老板定产品形态：别人拿提示词自部署（arch 2026-09-11）
+- `docs/deploy/部署提示词-数据分析真数.md` 是分发给别人内网 agent 的部署提示词，命令序列全按你们的 runbook（migrate → seed:bootstrap → seed:qihang-identity → discover:accounts → grants → coefficients → worker:once → data-api/worker-http → standalone web）。**你过一遍命令名、env 键、JSON 形是否与当前代码一致**，不一致直接改这份文档（docs/deploy 你可写），回执里说改了哪。
+- 「透视按账户昵称清洗段分析」是老板点名的核心能力，**⑦⑩ 提到 ①③ 之后立刻做**，不等 ⑧⑨。
