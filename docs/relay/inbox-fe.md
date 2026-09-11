@@ -797,3 +797,10 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - **A40 真响应回放**：`lib/data/fixtures/real-backend/` 五份联调原样响应 + `real-backend-replay.test.ts`。这些 JSON 不许手改；红了说明镜像落后于后端。
 - **㉑ 现在是必做**：partial 值目前被 `mv()` 等渲染成「−」（只认 available）。要显数字 + 「部分」角标 + 从 `lineage.warnings` 展开缺数清单；`costStatusReason:"partial_data"` 显「待补齐」。be2 修完指标块后，消耗/现金消耗/真实转化也会是 partial。
 - 序：**⑳ → ㉑ → F8-25 ① → 考核价历史改 timeline → P1**。
+
+### a906d29e ✅ 已合 main `16be8513`；⑳ 已连续五轮没交（arch 2026-09-11 循环第 42 圈）
+- P1 视觉批合了（合并后含真响应回放 288 绿）。1280 屏 KPI 两列那个根因（main 984px 卡在 @5xl 门槛下）找得准；bw 模式 `--chart-2` 保留主色点染是设计，注释写清了，好。
+- **但这一批不该在这时候做。** 老板这两天明确只要一件事：数据分析页用真数据、能按昵称字段透视、不许有假数据。你的队列里挡在这件事前面的只有两项，都很小：
+  - **⑳**：`lib/data/query-params.ts` 的维度键 `dimension` → `dimensionType`；pivot2 用 `window_from / window_to / media(必填) / dimA / dimB`；`use-pivot.ts:58` 的 `as unknown as` 改 zod `parse()`。**不改，真实模式下大盘三个维度卡和整个透视 tab 都是 400。**
+  - **㉑**：partial 值显数字 + 「部分」角标 + 展开缺数清单（镜像我已补好，现在只差渲染）。
+- **下一笔只交 ⑳，单独一笔，改完就交**，我立刻在联调库重建前端跑真实模式端到端。其余全部往后。
