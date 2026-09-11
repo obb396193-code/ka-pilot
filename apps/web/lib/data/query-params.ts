@@ -70,3 +70,63 @@ export function dimensionParams(dimension: string, window: QueryWindow, filters?
 export function pivotParams(dimA: string, dimB: string | null, window: QueryWindow): QueryParams {
   return { ...windowParams(window), dimA, ...(dimB ? { dimB } : {}) }
 }
+
+
+/* ------------------------------------------------------------------------- *
+ * 盯盘 / 差异对账：**另一条路、另一套键名约定**
+ *
+ * 这两个查询走 `POST /api/v1/query`（前端 `/api/internal/query`），不是 data/query。
+ * 它们的 params schema 是 **`.strict()`** 且和上面那套**不一样**：
+ *   · gap 的日期是 **`date_from` / `date_to`（下划线）**，不是驼峰；
+ *   · hourly 只有一个 **`date`**；
+ *   · **两者 `media` 都必填**（data/query 那边是可选）。
+ *
+ * 权威来源是 `packages/domain/src/operational-query-request.ts` 里的 zod schema——
+ * 不是 api.md 的散文。`operational-query-params.test.ts` 直接拿那两个 schema 来 parse
+ * 我这里造出来的参数：后端改了 schema，用例当场红。
+ * ------------------------------------------------------------------------- */
+
+export type HourlyQuery = { date: string; media: string; accountIds?: string[]; hhFrom?: number; hhTo?: number }
+export type GapQuery = { from: string; to: string; media: string; accountIds?: string[]; groupBy: "account" | "task" | "biz" }
+
+export function hourlyParams(query: HourlyQuery): QueryParams {
+  return {
+    date: query.date,
+    media: query.media,
+    ...(query.accountIds?.length ? { accountIds: query.accountIds } : {}),
+    ...(query.hhFrom !== undefined ? { hhFrom: query.hhFrom } : {}),
+    ...(query.hhTo !== undefined ? { hhTo: query.hhTo } : {}),
+  }
+}
+
+export function gapParams(query: GapQuery): QueryParams {
+  return {
+    date_from: query.from,
+    date_to: query.to,
+    media: query.media,
+    ...(query.accountIds?.length ? { accountIds: query.accountIds } : {}),
+    groupBy: query.groupBy,
+  }
+}
+
+
+/**
+ * 数据总表 `account.table`。也走 `/api/v1/query`，所以**跟着那条路的约定**：
+ * `date_from` / `date_to` 下划线、`pageSize` 驼峰。
+ *
+ * 依据不是散文，是仓里的 `semantic-query-request.ts`——那张 legacy 映射表就是为了
+ * 打中后端 Registry 才存在的，它把 `page_size` 映成 `pageSize`、把两个日期原样留下划线。
+ * `table-query-params.test.ts` 拿那张表当基准比对，改哪边都会红。
+ */
+export type TableQuery = { from: string; to: string; page?: number; pageSize?: number; columns?: string[]; media?: string }
+
+export function tableParams(query: TableQuery): QueryParams {
+  return {
+    date_from: query.from,
+    date_to: query.to,
+    ...(query.page !== undefined ? { page: query.page } : {}),
+    ...(query.pageSize !== undefined ? { pageSize: query.pageSize } : {}),
+    ...(query.columns?.length ? { columns: query.columns } : {}),
+    ...(query.media ? { media: query.media } : {}),
+  }
+}

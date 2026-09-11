@@ -26,6 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { costStatusLabel, fmtTime, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
+import { AssessmentPriceHistory } from "./assessment-price-history"
 import { bindingsFixtures, changeLogFixture, overviewFixtures, readinessKeys, sopStepLabel, taskAccountsFixture, taskFunnelFixture, taskMetricsFixture, taskStageMap, taskStages, taskTimelineFixture, tasksFixture, type TaskStage } from "@/lib/fixtures/tasks"
 import { workItemDetailFixture, workItemLists } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -176,7 +177,12 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
               <div className="grid gap-4 @5xl/main:grid-cols-2">
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center justify-between gap-2"><div><CardTitle>考核价</CardTitle><CardDescription>只增不改，改一次留一行；回溯改触发重算</CardDescription></div><Button size="sm" variant="outline" onClick={() => { setForm((prev) => ({ ...prev, value: ov.assessmentPrice ? String(ov.assessmentPrice.current) : "", note: "" })); setPriceDialog("assessment") }}><IconPencil />改价</Button></div>
+                    <div className="flex items-center justify-between gap-2"><div><CardTitle>考核价</CardTitle><CardDescription>只增不改，改一次留一行；回溯改触发重算</CardDescription></div><div className="flex items-center gap-1">
+                      {/* F8-23：历史弹层和任务管理视图**共用一个组件**——两处各写一份，
+                          「作废怎么算」这类规则迟早会在一处被写歪 */}
+                      <AssessmentPriceHistory taskId={data.task.taskId} taskName={data.task.taskName} current={ov.assessmentPrice ? { value: ov.assessmentPrice.current, effectiveDate: ov.assessmentPrice.effectiveDate } : null} />
+                      <Button size="sm" variant="outline" onClick={() => { setForm((prev) => ({ ...prev, value: ov.assessmentPrice ? String(ov.assessmentPrice.current) : "", note: "" })); setPriceDialog("assessment") }}><IconPencil />改价</Button>
+                    </div></div>
                   </CardHeader>
                   <CardContent className="text-sm">{ov.assessmentPrice ? <span className="tabular-nums">当前 ¥{ov.assessmentPrice.current.toFixed(2)} · 生效 {ov.assessmentPrice.effectiveDate} · 历史 {ov.assessmentPrice.historyCount} 版</span> : <span className="text-muted-foreground">无考核价（不判达标、不判色）</span>}</CardContent>
                 </Card>

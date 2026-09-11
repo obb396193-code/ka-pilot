@@ -15,6 +15,9 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { hourlyFixture, watchlistFixture } from "@/lib/fixtures/data-analysis"
+import type { HourlyRow } from "@/lib/fixtures/data-analysis"
+import { operationalIsMock, useHourly } from "@/lib/data/use-operational"
+import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
@@ -28,13 +31,31 @@ type WatchItem = { media: string; accountId: string }
 // 盯盘名单显账户名，不显 ID；样例里查不到就退回 ID
 const accountName = (id: string) => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === id)?.accountName ?? id : id)
 
-export function HourlyTab() {
+/**
+ * F8-24：盯盘接 `account.hourly`（走 `/api/internal/query`）。
+ * 看的是**某一天**的分时，所以取窗口的最后一天——盯盘盯的就是最近这天跑得怎么样。
+ *
+ * ★小时表由 be2 Q-042 的采样 job 灌；灌之前后端返 `availability:"pending"`，
+ * 页面显「待到」**不显示例数据**——拿 fixture 顶上，人就以为盯盘已经能用了。
+ */
+export function HourlyTab({ window, workspaceId }: { window: DataWindow; workspaceId?: string }) {
   const all = isOk(watchlistFixture) ? watchlistFixture.data.items : []
   const watchedTasks = all.flatMap((item) => (item.type === "task" ? [item.taskId] : []))
   const [items, setItems] = useState<WatchItem[]>(() => all.flatMap((item) => (item.type === "task" ? [] : [{ media: item.media, accountId: item.accountId }])))
   const [current, setCurrent] = useState<WatchItem | null>(items[0] ?? null)
   const [draft, setDraft] = useState("")
-  const rows = useMemo(() => (isOk(hourlyFixture) ? hourlyFixture.data.source.rows.filter((row) => current && row.accountId === current.accountId && row.media === current.media) : []), [current])
+  // 没选账户就不查：`media` 是必填参数，没得填就别发（发出去 400）
+  const query = useMemo(
+    () => (current ? { date: window.to, media: current.media, accountIds: [current.accountId] } : null),
+    [current, window.to],
+  )
+  const remote = useHourly<HourlyRow>(query, workspaceId)
+  const mockRows = useMemo(
+    () => (isOk(hourlyFixture) ? hourlyFixture.data.source.rows.filter((row) => current && row.accountId === current.accountId && row.media === current.media) : []),
+    [current],
+  )
+  // 三元式直接当 useMemo 依赖会让下面那个 byHour 每帧重算；套一层把身份稳住
+  const rows = useMemo(() => (operationalIsMock ? mockRows : remote.rows ?? []), [mockRows, remote.rows])
   const byHour = useMemo(() => new Map(rows.map((row) => [row.hh, row])), [rows])
   const hours = Array.from({ length: 24 }, (_, hh) => hh)
   const lastSync = rows.find((row) => row.lastSyncAt)?.lastSyncAt ?? null
@@ -80,8 +101,19 @@ export function HourlyTab() {
       <Card className="@4xl/main:col-span-9">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">小时累计 / 逐时增量{current ? <span className="font-mono text-xs font-normal text-muted-foreground">{current.accountId}</span> : null}</CardTitle>
-          <CardDescription>0–23 时 · 累计与逐时增量 · 缺小时显 − 不补 0 · 最近同步 {fmtTime(lastSync)}</CardDescription>
+          <CardDescription>
+            {window.to} · 0–23 时 · 累计与逐时增量 · 缺小时显 − 不补 0 · 最近同步 {fmtTime(lastSync)}
+          </CardDescription>
         </CardHeader>
+        {/* 取数状态照实说。小时表由 be2 Q-042 的采样 job 灌，灌之前后端返「还没到」——
+            这时显空表 + 一行说明，而不是拿示例数据顶上让人以为盯盘已经能用了。 */}
+        {!operationalIsMock && (remote.loading || remote.error || remote.unavailable) ? (
+          <p className={cn("mx-6 mb-2 rounded-md border border-dashed px-3 py-2 text-xs", remote.error ? "text-status-critical" : "text-muted-foreground")}>
+            {remote.loading ? "正在取数…"
+              : remote.error ? <>取数失败：{remote.error.message}{remote.error.requestId ? `（问题编号 ${remote.error.requestId}）` : ""}<button type="button" onClick={remote.reload} className="ml-2 underline underline-offset-2">重试</button></>
+              : remote.unavailable}
+          </p>
+        ) : null}
         <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader className="bg-muted">

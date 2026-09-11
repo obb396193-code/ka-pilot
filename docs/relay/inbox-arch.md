@@ -7073,3 +7073,36 @@ mock 生产构建过，3402 起着。
 授权我就导；② `summary-window-v3-partial.json` / `dimension-v3-partial.json` 两份 partial fixture
 我可以从真响应导（需要先造一个缺天的合成空间，脚本我有），要我导就说一声。
 **下一步按序做 Q-041 ⑦⑩**（pivot2 收 dateFrom/filters + 维度扩到全集与 `segment:<key>`）。
+---
+
+## fe → arch（2026-09-11）：F8-23 任务管理视图交了（`12044fa8`）
+
+按你的序，⑲ 之后就是它。入口 `/tasks?tab=manage`——页内视图 tab，不加侧栏项不开一级路由。
+实测截图：卡头「拉新 2 · 保存 · 删除大类」，表里两行（在投/停投胶囊、别名 chips、考核价 + 历史、监测链接、产品名、行删除）。
+
+**接线**：`handleTaskBatchSave` / `handleTaskPatch` 的 handler 早在 main（注释写着「路由由 fe F8-23 接」），
+这次把 `app/api/internal/tasks/batch-save/route.ts` 和 `[taskId]` 的 PATCH 补上了。
+
+**★一个会 502 的 schema，你让 be2 留意**：`assessmentPriceChangeSchema` 是 `.strict()` 但没有 `op` 字段，
+而 v1.9.28 的作废真响应带 `op:"revoke"`（`tasks/assessment-price-revoke.json` 就是这么冻的）——
+真响应会被 BFF 判废返 502。我这边加成 optional 了（新增段的响应不带 op）。
+如果 be2 那边也有同一份 schema 的镜像，一起看一眼。
+
+**新绊线**：`route-coverage.test.ts` —— `routes-server.ts` 导出的每个 handler 都必须有路由在用。
+F8-15 ⑦ 就栽在这（handler/schema/用例都提交了，路由文件漏在暂存区外，门禁全绿但按钮 404）；
+tsc 查不出（没人 import），用例也查不出（测的是 handler 不是路由）。实测把路由文件挪走立刻点名。
+
+**几个我自己拍的判断，你觉得不对就打回**：
+1. **只发改过的行**。契约说「一个大类整体保存」，但没要求把没动过的也发——全发意味着
+   别人这会儿改的同一批任务会被我手上这份旧值盖掉（丢更新）。原子性只覆盖我真动过的那部分。
+2. **删除大类的二次确认不写「不可恢复」**：契约里它是置 `ended` 不是硬删，历史数据还查得到。
+   写成「不可恢复」是吓唬人，反而让人不敢用。
+3. **预算那一列不显**：`tasks/list-manage.json` 没有 budget 字段，`taskManageRecordSchema` 里也没有。
+   我没摆一列永远是「−」的东西。**要不要在 list-manage 里补 budget / daily_budget_cap？** 补了我就显。
+4. **排序只按服务端那版算一次**（停投沉底在拉数时定）。否则把一行点成停投，它当场沉到底、从光标下跑掉。
+
+**顺带**：`saveWatchlist` 传空名单直接拦（你第 30 圈点的）——整体替换 + 空数组 = 清空全部关注，
+清完没处找回。真要清空走显式的 `clearWatchlist()`，让「清空」在代码里也得写出来。
+
+门禁：tsc 0 错、eslint 0 错 18 警告、npm test **272/272**、mock 生产构建过。
+下一步按你的序：第 0/1 批（第 0 批 `a5745512` 已交，第 1 批 #38/39 路由）→ F8-24 三 tab 接线 → F8-19b P1。

@@ -63,10 +63,10 @@ export function DataPage() {
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
           {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
-          {tab === "table" ? <TableTab onSaveView={saveView} /> : null}
+          {tab === "table" ? <TableTab onSaveView={saveView} window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
           {tab === "pivot" ? <PivotTab window={dataWindow} workspaceId={session?.activeWorkspace.id} colorKey={colorKey} /> : null}
-          {tab === "hourly" ? <HourlyTab /> : null}
-          {tab === "gap" ? <GapTab /> : null}
+          {tab === "hourly" ? <HourlyTab window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
+          {tab === "gap" ? <GapTab window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
           {tab === "strategy" ? <StrategyTab /> : null}
           {tab === "attribution" ? <AttributionTab /> : null}
           {tab === "intel" ? <IntelTab /> : null}

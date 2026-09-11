@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { fmtTime, isOk, mv, rv, changesetStatusText, reasonCodeLabel, itemStatusLabel, targetTypeLabel, schemaText } from "@/lib/fixtures/contract"
+import { ignoreWorkItem } from "@/lib/data/use-me-actions"
 import { changesetFixture, severityMeta, workItemActionsFixture, workItemDetailFixture, type WorkItem, type WorkItemDetail } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 
@@ -30,6 +31,9 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
   const [evidenceOpen, setEvidenceOpen] = useState(false)
   const [changesetOpen, setChangesetOpen] = useState(false)
   const actions = isOk(workItemActionsFixture) ? workItemActionsFixture.data : null
+  const [ignoreOpen, setIgnoreOpen] = useState(false)
+  const [reason, setReason] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
   const severity = severityMeta[item.severity]
   const suggestion = detail?.diagnosis?.suggestions[0] ?? null
   const changeset = isOk(changesetFixture) ? changesetFixture.data : null
@@ -61,13 +65,39 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
       <div className="flex flex-wrap items-start gap-1.5 @3xl/main:col-span-2 @3xl/main:justify-end">
         <Button size="sm" variant="outline" onClick={() => setEvidenceOpen(true)}><IconEye />证据</Button>
         <Button size="sm" variant="outline" disabled={disabled || !changeset} onClick={() => setChangesetOpen(true)}><IconFileDiff />变更集</Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild><Button size="sm" variant="ghost">忽略<IconChevronDown /></Button></DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>原因（3 秒点选）</DropdownMenuLabel>
-            {actions?.ignore.reasons.map((reason) => <DropdownMenuItem key={reason} onSelect={() => toast(`已忽略：${reason}`, { description: "接口接入后生效（当前为示例）" })}>{reason}</DropdownMenuItem>)}
-            <DropdownMenuSeparator />
-            {actions?.ignore.muteDays.map((days) => <DropdownMenuItem key={days} onSelect={() => toast(`已静音 ${days} 天`, { description: "接口接入后生效（当前为示例）" })}><IconBellOff />静音 {days} 天</DropdownMenuItem>)}
+        {/*
+          忽略 = **先选原因、再选静音多久**，不是两组平行的菜单项。
+          因为 r010 的 BFF 对「不带 mute_days 的忽略」在 200 上直接判 UPSTREAM_INVALID_RESPONSE
+          （`r010-command-bff.ts`：「A plain ignore must not masquerade as ignore+mute」）——
+          只忽略不静音这条路现在走不通。摆成平行两组会让人以为点「原因」就能单独忽略，
+          点下去必然报错。已报 arch。
+        */}
+        <DropdownMenu open={ignoreOpen} onOpenChange={(open) => { setIgnoreOpen(open); if (!open) setReason(null) }}>
+          <DropdownMenuTrigger asChild><Button size="sm" variant="ghost" disabled={disabled}>忽略<IconChevronDown /></Button></DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            {reason === null ? (
+              <>
+                <DropdownMenuLabel>为什么忽略？（3 秒点选）</DropdownMenuLabel>
+                {actions?.ignore.reasons.map((item) => (
+                  // onSelect 默认会关菜单：这里要留在菜单里进第二步，所以阻止默认
+                  <DropdownMenuItem key={item} onSelect={(event) => { event.preventDefault(); setReason(item) }}>{item}</DropdownMenuItem>
+                ))}
+              </>
+            ) : (
+              <>
+                <DropdownMenuLabel className="font-normal text-muted-foreground">{reason} · 静音多久？</DropdownMenuLabel>
+                {(actions?.ignore.muteDays ?? [1, 3, 7]).filter((days): days is 1 | 3 | 7 => days === 1 || days === 3 || days === 7).map((days) => (
+                  <DropdownMenuItem key={days} disabled={busy} onSelect={async () => {
+                    setBusy(true)
+                    await ignoreWorkItem(item.workItemId, reason, days)
+                    setBusy(false)
+                    setReason(null)
+                  }}><IconBellOff />静音 {days} 天</DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={(event) => { event.preventDefault(); setReason(null) }}>换个原因</DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
         <Tooltip>

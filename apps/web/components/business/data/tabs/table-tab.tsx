@@ -13,6 +13,8 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { isOk, rv, exportStatusText } from "@/lib/fixtures/contract"
 import { exportQueuedFixture, tableFixture, type TableRow } from "@/lib/fixtures/data-analysis"
+import { operationalIsMock, useDataTable } from "@/lib/data/use-operational"
+import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { cn } from "@/lib/utils"
 import { cell, GroupHeader, LineageFooter, OnTargetChip } from "./shared"
 
@@ -54,9 +56,13 @@ const columns = helper.columns([
   )),
 ])
 
-export function TableTab({ onSaveView }: { onSaveView: (name: string, columns: string[]) => void }) {
+export function TableTab({ onSaveView, window, workspaceId }: { onSaveView: (name: string, columns: string[]) => void; window: DataWindow; workspaceId?: string }) {
   const fixture = tableFixture
-  const rows = useMemo(() => (isOk(fixture) ? fixture.data.source.rows : []), [fixture])
+  // F8-24：总表接 `account.table`（和盯盘/对账同一条路 `/api/internal/query`）
+  const query = useMemo(() => ({ from: window.from, to: window.to }), [window.from, window.to])
+  const remote = useDataTable<TableRow>(query, workspaceId)
+  const mockRows = useMemo(() => (isOk(fixture) ? fixture.data.source.rows : []), [fixture])
+  const rows = useMemo(() => (operationalIsMock ? mockRows : remote.rows ?? []), [mockRows, remote.rows])
   const [media, setMedia] = useState("all")
   const [account, setAccount] = useState("all")
   const data = useMemo(() => rows.filter((row) => (media === "all" || row.media === media) && (account === "all" || row.accountId === account)), [rows, media, account])
@@ -71,7 +77,10 @@ export function TableTab({ onSaveView }: { onSaveView: (name: string, columns: s
       <DataGrid
         table={table}
         density="compact"
-        empty="当前窗口没有明细"
+        empty={operationalIsMock ? "当前窗口没有明细"
+          : remote.loading ? "正在取数…"
+          : remote.error ? `取数失败：${remote.error.message}${remote.error.requestId ? `（问题编号 ${remote.error.requestId}）` : ""}`
+          : remote.unavailable ?? "当前窗口没有明细"}
         onReorder={reorder}
         toolbar={
           <>

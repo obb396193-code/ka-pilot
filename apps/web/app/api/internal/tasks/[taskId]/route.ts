@@ -1,5 +1,5 @@
 import { internalJsonResponse } from "@/lib/data/internal-api-bff"
-import { handleTaskDetail } from "@/lib/data/r014/routes-server"
+import { handleTaskDetail, handleTaskPatch } from "@/lib/data/r014/routes-server"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -8,4 +8,11 @@ export const dynamic = "force-dynamic"
 export async function GET(request: Request, { params }: { params: Promise<{ taskId: string }> }) {
   const resolved = await params
   return internalJsonResponse(await handleTaskDetail(request, resolved.taskId, { environment: process.env }))
+}
+
+// F8-23：单条任务改可编辑字段（v1.9.28 的 aliases / monitor_url / product_name / status）。
+// 整组保存走 batch-save；这条是详情页改单个任务用的。
+export async function PATCH(request: Request, { params }: { params: Promise<{ taskId: string }> }) {
+  const resolved = await params
+  return internalJsonResponse(await handleTaskPatch(request, resolved.taskId, { environment: process.env }))
 }
