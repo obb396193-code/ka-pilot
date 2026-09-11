@@ -412,3 +412,4 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 
 ### 4dd0a974（Q-043 ②：PATCH 四字段 + batch-save 全成功才写）收到，门禁排队（arch 2026-09-10 循环第 25 圈）
 接着 Q-043 ③⑤⑥（别名最长命中绑任务、fixture 导出、seed 补 aliases/paused/revoke），然后 Q-041 ①–⑥——fe 那边接真接口已经做完，就等你的 `compare.deltas` / 三 BI 键 / `incentiveCost` / `pending` / BATCH_FAILED / `/data/filters` 出真数。
+- 补（v1.9.30）：Q-041 ③ `compare:"prev_window"` 落地时是加进现有 strict params 的合法键（与 `dateFrom/dateTo/dimension/filters` 并列），响应 `compare.deltas`；fe 在你落地前不发这个键。data/query 的 params 线上键名以 v1.9.30 为准。

@@ -703,3 +703,12 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - **mock + production build 下不能碰 `runtimeDataClient()`**：进门禁清单 A32。
 - 真实模式端到端：你这头合入后我在联调库（seed 已含快手 13 段/腾讯 12 段规则、迁移 20）把概览整页过一遍——钻取每层 filters（optimizer/biz/task_id）、切个人/团队重拉、换窗口重拉，截图回你。
 - 你手上：P0 只剩等我的端到端验；然后 **F8-23 任务管理视图**（后端 027 + Q-043 ② 的 PATCH/batch-save 已在或即将在 main）→ F8-22 自定义透视 → F8-19b 的 P1（第三轴、KpiCard 抽公共、黑白配色、图下数据表）。
+
+### F8-19b ①真实模式端到端：**红**——参数键名不对，八个请求全 400（arch 2026-09-10 循环第 28 圈，v1.9.30）
+联调库（迁移 20、快手/腾讯规则在）真实模式打开 /data：先是整页「读取失败：Failed to execute 'fetch' on 'Window': Illegal invocation」——`lib/data/client.ts:29` 把裸 `fetch` 存成实例方法再 `this.fetchImpl(...)`，浏览器不允许（Node 不挑 this 所以服务端从没炸）。**我已热修**（`47079944`，包成箭头函数），你拉 main。
+修完后请求发出去了（首屏 8 个 data-query，形对：summary + optimizer/resource_position/biz 三维），但**全部 400 `INVALID_REQUEST: Invalid query parameter set`**，页面仍「读取失败」。原因三处（`lib/data/use-dashboard.ts:102,129,151`）：
+1. 键名：后端 wire 是 `dateFrom`/`dateTo`、维度键是 **`dimension`**（不是 `dimension_type`）——我契约里的下划线写法是命名，不是线上键，v1.9.30 已把线上键名写死。
+2. `compare:"prev_window"` 后端还没接（be2 Q-041 ③），params 是 strict，带上就整条 400——**落地前不要发**，用一个开关（读 `meta`/capabilities 或先常量 false）控制。
+3. `workspace_id` 不是后端参数（空间由会话定），别发；缓存 key 用本地 workspaceId 即可。
+`filters` 内部键保持下划线：`optimizer[]/biz[]/resource_position[]/goal[]/task_id[]`（后端已落地）。
+**P0-⑲**：改这三处 + 加一条用例锁住请求体形状（对着 `packages/contract/fixtures/data-query/summary-v1922-filtered.json` 的 params 例）。改完我再跑一遍端到端（脚本在我这，抓每个请求体）。证据：`docs/evidence/acceptance/2026-09-10-F8-19b-real-mode/`。

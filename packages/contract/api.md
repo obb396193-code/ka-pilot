@@ -1406,3 +1406,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **分布组件必须能判断效果**：资源位/版位/转化目标/自投代理等分布组件 = 图 + 同源明细表（花费、转化、现金 CPA、考核达标、样本量=账户数/天数），只给花费占比的饼图不算完成。
 - **验收改为六个业务场景**（替代「页面做完了」）：① 查昨日本人任务，合计与同范围原始数据对上；② 查某任务近七天分版位，分组 + 未归属 = 总计，能下钻复算；③ 从分析页进清洗修一条归属，保存、刷新、回分析，结果变了；④ 切日期/优化师/任务，卡片、图、明细、下钻、导出同步变，没数不顶旧数；⑤ 模拟 BI 未到、部分账户拉数失败：明确提示、不补零、不假分摊、不错判达标；⑥ 保存视图、导出、返回，范围与列配置保留，导出是真文件。每条由 arch 在联调环境实测，截图进 `docs/evidence/acceptance/`。
 - **优先级**（老板/Codex 一致）：真取数与真保存 → 清洗准确性 → 指标口径与下钻一致 → 筛选/导出/保存体验 → 更多图型。
+
+## v1.9.30 追加（2026-09-10 arch；真实模式端到端抓到的参数键名不一致）
+- **`POST /api/v1/data/query` 的 `params` 线上键名以此为准**（之前 v1.9.22/26/27 里的下划线写法是命名不是 wire）：`{ dateFrom, dateTo, media?, dimension?（account.dimension 用，不是 dimension_type）, dimA?/dimB?（pivot2）, filters?: { optimizer[], biz[], resource_position[], goal[], task_id[] }（**filters 内部是下划线**，Codex de98a243 已落地）, compare?: "prev_window"（be2 Q-041 ③ 落地前**不要发**——后端 params 是 strict，未知键整条 400 `INVALID_REQUEST: Invalid query parameter set`）}`。**不发 `workspace_id`**：空间由会话决定，前端要按空间做缓存 key 用本地变量即可。
+- fixtures：`data-query/summary-v1922-filtered.json` 等七份的 `_note` 里的 params 例以本条为准。
