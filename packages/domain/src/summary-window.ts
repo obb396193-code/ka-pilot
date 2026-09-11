@@ -68,6 +68,8 @@ export const windowComparisonSchema = z.object({
     cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
   }).strict(),
 }).strict();
+export const windowComparisonModeSchema = windowComparisonSchema.shape.mode;
+export type WindowComparisonMode = z.infer<typeof windowComparisonModeSchema>;
 
 /** Shared cross-field guard for summary and dimension rows; does not recompute ratios. */
 export function refineWindowMetricAssessment(row: {
@@ -132,7 +134,7 @@ const comparisonPointSchema = z.object({
   cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
 }).strict();
 
-export function compareWindowPoints(mode: "dod" | "wow", current: unknown, previous: unknown): z.infer<typeof windowComparisonSchema> {
+export function compareWindowPoints(mode: WindowComparisonMode, current: unknown, previous: unknown): z.infer<typeof windowComparisonSchema> {
   const now = comparisonPointSchema.parse(current), before = comparisonPointSchema.parse(previous);
   const toRatio = (value: ReturnType<typeof compareAbsolute>) => ratioValueSchema.parse(value === "NEW"
     ? { value: null, state: "infinite" }

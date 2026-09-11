@@ -2,7 +2,7 @@ import { z } from "zod";
 import { calendarDateSchema, ratioValueSchema } from "./data-query-base-rows.js";
 import { canonicalMetricValueSchema, metricValue, sumMetricValues } from "./metric-value.js";
 import { biCashCostMetricValue, dashboardBiFrom } from "./dashboard-bi-math.js";
-import { queryWindowSchema, windowAssessmentSchema, windowComparisonSchema } from "./summary-window.js";
+import { queryWindowSchema, windowAssessmentSchema, windowComparisonSchema, type WindowComparisonMode } from "./summary-window.js";
 
 const undefinedRatio = { value: null, state: "undefined" } as const;
 export const dailyAssessmentInputSchema = z.object({
@@ -95,16 +95,47 @@ function computeWeightedAssessment(rows: readonly WeightedDay[], evidence: Price
   };
 }
 
-export function comparisonWindow(input: unknown, mode: "dod" | "wow") {
+const DAY_MS = 86_400_000;
+const dayOf = (value: string) => new Date(`${value}T00:00:00Z`).valueOf();
+const dateOf = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+
+/**
+ * v1.9.27 ①（Q-041 ③）`prev_window`：与当前窗口**等长、紧邻**的前一窗口。
+ *
+ * `month_to_date` 例外：它的前窗是**上月同样天数**（9/1–9/10 → 8/1–8/10），不是往前平移 10 天
+ * （那会落到 8/22–8/31）。月初至今比的是「上个月同期」，平移过去的那段既不是上月同期、
+ * 也不是一个完整口径，拿来算环比等于给人看一个没人要的数。
+ */
+export function comparisonWindow(input: unknown, mode: WindowComparisonMode) {
   const window = queryWindowSchema.parse(input);
+  if (window.preset === "today") return null;
+  if (mode === "prev_window") {
+    const length = Math.round((dayOf(window.to) - dayOf(window.from)) / DAY_MS) + 1;
+    if (window.preset === "month_to_date") {
+      const start = new Date(`${window.from}T00:00:00Z`);
+      const previousMonth = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() - 1, 1));
+      const daysInPreviousMonth = new Date(Date.UTC(
+        previousMonth.getUTCFullYear(), previousMonth.getUTCMonth() + 1, 0)).getUTCDate();
+      // 上月天数不够时（3/1–3/31 的前窗是 2 月）到月末为止，不借下个月的天。
+      const span = Math.min(length, daysInPreviousMonth);
+      const from = dateOf(previousMonth.valueOf());
+      return queryWindowSchema.parse({
+        from, to: dateOf(previousMonth.valueOf() + (span - 1) * DAY_MS), preset: "custom",
+      });
+    }
+    return queryWindowSchema.parse({
+      from: dateOf(dayOf(window.from) - length * DAY_MS),
+      to: dateOf(dayOf(window.to) - length * DAY_MS),
+      preset: "custom",
+    });
+  }
   const shift = mode === "dod" ? 1 : mode === "wow" ? 7 : null;
   if (shift === null) throw new Error("Invalid comparison mode");
-  if (window.preset === "today") return null;
-  const move = (value: string) => new Date(new Date(`${value}T00:00:00Z`).valueOf() - shift * 86_400_000).toISOString().slice(0, 10);
+  const move = (value: string) => dateOf(dayOf(value) - shift * DAY_MS);
   return queryWindowSchema.parse({ from: move(window.from), to: move(window.to), preset: "custom" });
 }
 
-export function unavailableWindowComparison(mode: "dod" | "wow") {
+export function unavailableWindowComparison(mode: WindowComparisonMode) {
   return windowComparisonSchema.parse({ mode, deltas: {
     cost: undefinedRatio, cashCost: undefinedRatio, realConversion: undefinedRatio,
     cashCpa: undefinedRatio, onTargetRate: undefinedRatio,

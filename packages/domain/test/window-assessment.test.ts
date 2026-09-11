@@ -69,6 +69,24 @@ describe("window comparison alignment", () => {
   it("shifts both endpoints by one/seven days, including leap dates", () => {
     expect(comparisonWindow({ from: "2024-03-01", to: "2024-03-07" }, "dod")).toEqual({ from: "2024-02-29", to: "2024-03-06", preset: "custom" });
     expect(comparisonWindow({ from: "2024-03-01", to: "2024-03-07" }, "wow")).toEqual({ from: "2024-02-23", to: "2024-02-29", preset: "custom" });
+
+    // v1.9.27 ①（Q-041 ③）prev_window：等长、紧邻的前一窗口。
+    expect(comparisonWindow({ from: "2026-09-04", to: "2026-09-10" }, "prev_window"))
+      .toEqual({ from: "2026-08-28", to: "2026-09-03", preset: "custom" });
+    // month_to_date 例外：前窗是**上月同样天数**（9/1–9/10 → 8/1–8/10），
+    // 不是往前平移 10 天（那会落到 8/22–8/31，既不是上月同期也不是完整口径）。
+    expect(comparisonWindow({ from: "2026-09-01", to: "2026-09-10", preset: "month_to_date" }, "prev_window"))
+      .toEqual({ from: "2026-08-01", to: "2026-08-10", preset: "custom" });
+    // 上月天数不够就到月末为止，不借下个月的天（3/1–3/31 的前窗是 2 月 29 天）。
+    expect(comparisonWindow({ from: "2024-03-01", to: "2024-03-31", preset: "month_to_date" }, "prev_window"))
+      .toEqual({ from: "2024-02-01", to: "2024-02-29", preset: "custom" });
+    // 单日窗口的前窗就是前一天。
+    expect(comparisonWindow({ from: "2026-09-10", to: "2026-09-10" }, "prev_window"))
+      .toEqual({ from: "2026-09-09", to: "2026-09-09", preset: "custom" });
+    // today 没有可比的快照，三种模式一律 null——不拿昨天冒充。
+    expect(comparisonWindow({ from: "2026-09-10", to: "2026-09-10", preset: "today" }, "prev_window")).toBeNull();
+    // 未知模式必须抛，不能悄悄当成 dod。
+    expect(() => comparisonWindow({ from: "2026-09-10", to: "2026-09-10" }, "nope" as never)).toThrow();
   });
   it("today has no comparable daily snapshot and preset defaults to custom", () => {
     expect(comparisonWindow({ from: "2026-09-06", to: "2026-09-06", preset: "today" }, "dod")).toBeNull();

@@ -1,6 +1,7 @@
 import {
   computeKaDailyWindowAssessment, sumMetricValues, summaryWindowRowSchema,
   compareWindowPoints, unavailableWindowComparison,
+  type WindowComparisonMode,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 import type { KaWindowMember } from "./ka-window-members.js";
@@ -37,7 +38,7 @@ function summarize(members: readonly KaWindowMember[], window: Window) {
 }
 
 /** Only call with the registered reader's validated complete member grid, never an arbitrary partial page. */
-export function summarizeKaWindowMembers(members: readonly KaWindowMember[], window: Window, previousWindow: Window | null, compare?: "dod" | "wow") {
+export function summarizeKaWindowMembers(members: readonly KaWindowMember[], window: Window, previousWindow: Window | null, compare?: WindowComparisonMode) {
   const current = summarize(members, window);
   const comparison = compare === undefined ? undefined : previousWindow === null ? unavailableWindowComparison(compare)
     : compareWindowPoints(compare, current.point, summarize(members, previousWindow).point);
