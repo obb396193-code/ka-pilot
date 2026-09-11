@@ -10,8 +10,6 @@ export type PendingCoverage = z.infer<typeof schema>;
 
 // Explicit arch v1.9.19 debt only. No permanent exemption; Shanghai deadline is inclusive.
 export const PENDING: readonly PendingCoverage[] = [
-  // arch 2026-09-10：Codex P-196 rerun 端点已落，BFF 透传归 fe F8-15 ⑦；落地后删。
-  { path: "/api/v1/system/etl-runs/:p/rerun", owner: "F8-15", direction: "backend_to_bff", expiresAt: "2026-09-12T00:00:00+08:00" },
 ];
 
 export function pendingCoveragePaths(
