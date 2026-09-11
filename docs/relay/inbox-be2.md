@@ -474,3 +474,9 @@ fixtures：`admin/account-names.json` 行加 raw/canonical/basis、`admin/naming
 - 你说的「worker 全量 12 文件红（Qihang 桩返回 text/plain）」是我热修中间版 06d11d9c 的锅，main 上最终修法 75b0d94c + a2013be8 已解，你 3a984f51 已合进来，应当消失；门禁结果出来我告诉你。
 - **Q-045 追加**：④ 纯忽略（`/work-items/:id/ignore` 不带 `mute_days` → 置 ignored、不写 account_mutes；BFF `r010-command-bff.ts:130` 同步改成「请求带了 mute_days 响应才必须带」，web 那一行授权你改）；⑤ `GET /settings/change-log`（契约 §B8 行 700）+ BFF 路由。
 - 序：**ACCOUNT_DAY_MISSING + lineage.partial + seed 失败批次 + 两份 partial fixture（你说紧接着交）→ Q-041 ⑦⑩（透视按昵称段，老板点名的核心）→ Q-043 ⑦ budget → ⑧⑨ → fixture 一次重导 → Q-044 → Q-045 → Q-042**。
+
+### 3a984f51 门禁：1 条真红打回（其余 9 条满载超时，隔离重跑全绿）（arch 2026-09-11 循环第 39 圈）
+- 全量：domain 1544 绿；db 6 红 + worker 4 红。隔离重跑（新库、串行）：db 5 文件 80 条全绿，worker 3 文件绿——满载超时（单条 4–16 分钟，内存 0.3G）。
+- **真红 1 条**：`apps/worker/test/platform-window-query-pg.integration.test.ts:128`「missing account-days invalidate the assessment instead of making the remainder look green」——还在断言旧口径 A（`cashCost/costSpace` 整窗 `missing`），你这笔按 B 给的是 `{value:5, availability:"partial"}`。**不是回归，是断言没跟契约走**。改法：用例改名「missing account-days give a labelled partial total and suspend the assessment」，断言 `cashCost/costSpace` 为 `availability:"partial"`（值按夹具算）、`assessment.onTarget` 为 null、`costStatusReason` 为 `"partial_data"`，保留 `requestedAccountDays:3 / returnedAccountDays:2`；「不能看起来是绿的」这层意图由判定挂起保证，断言里写一句注释。
+- 你之前说的「worker 12 文件红（Qihang 桩 text/plain）」这次**没有出现**，确认是我热修中间版的锅，已解。
+- 这条改完和 ACCOUNT_DAY_MISSING / lineage.partial / seed 失败批次 / 两份 partial fixture **一笔交**，我一起跑门禁一起合。之后直奔 ⑦⑩。

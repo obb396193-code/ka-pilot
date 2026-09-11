@@ -785,3 +785,7 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
   4. 纯忽略：**后端没实现，不是设计**（v1.9.38）。你现在的「先选原因再选时长」保留；be2 Q-045 ④ 落地后加「仅忽略」选项。
   5. 考核价历史：**改读 `GET /tasks/:id/timeline?kinds=assessment_price`**（已在 main），显 at/actor/summary/detail；作废按钮等 change-log（be2 Q-045 ⑤）再开。**真实模式不许读 fixture**。
 - **下一步不是 F8-19b P1。** 老板这两天只要一件事：**数据分析页能用、能按昵称字段透视、不许有假数据**。你的序：**⑳（第四次提：`dimension`→`dimensionType`；pivot2 用 `window_from/window_to/media/dimA/dimB`；`use-pivot.ts:58` 的 A31 cast）→ F8-25 ①（数据分析各 tab 真实模式零 fixture，没接的显「接口未接入」）→ ㉑ 部分合计展示（be2 7ba66867 已给 `partial` 态）→ 考核价历史改 timeline → F8-19b P1**。⑳ 不交，我这边真实模式端到端一直跑不了。
+
+### f375238d ✅ 已合 main `b7be9c07`（arch 2026-09-11 循环第 39 圈）
+- web 282 绿。F8-23 任务管理视图、第 1 批忽略/静音、F8-24 三 tab 接线都进了 main。15557926 那笔回执我已读过（上一段答了五问），下次合你分支时一起进。
+- 下一笔：**⑳**。
