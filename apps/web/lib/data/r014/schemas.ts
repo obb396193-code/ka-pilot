@@ -249,6 +249,20 @@ const versionedValueSchema = z.object({
   historyCount: z.number().int().nonnegative(),
 }).strict()
 
+// v1.9.27 ④ 级联筛选选项（后端 be2 Q-041 ①）：只列窗口内 cost>0 的项，下游随上游收窄。
+const filterOptionSchema = z.object({
+  key: z.string().min(1).max(256),
+  label: z.string().min(1).max(256),
+  cost: z.number().finite().nonnegative(),
+}).strict()
+
+export const dashboardFilterOptionsSchema = z.object({
+  optimizers: z.array(filterOptionSchema),
+  bizs: z.array(filterOptionSchema),
+  tasks: z.array(filterOptionSchema),
+  resource_positions: z.array(filterOptionSchema),
+}).strict()
+
 // v1.9.28 任务管理视图（后端 be2 Q-043 ②）：与 packages/domain/src/task-list-contract.ts 逐字对应。
 export const taskManageRecordSchema = z.object({
   taskId: z.string().min(1).max(128),

@@ -105,3 +105,4 @@ export * from "./account-hourly-sample.js";
 export * from "./dashboard-bi.js";
 export * from "./named-dimension.js";
 export * from "./dashboard-filters.js";
+export * from "./dashboard-filter-options.js";

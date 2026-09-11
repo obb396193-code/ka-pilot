@@ -84,6 +84,7 @@ export * from "./r014/kb-repository.js";
 export * from "./account-dimension-evidence-repository.js";
 export * from "./account-dimension-rule-repository.js";
 export * from "./dashboard-account-days-repository.js";
+export * from "./dashboard-account-cost-repository.js";
 // be: operator-only explicit identity binding; no role/session/grant mutation.
 export * from "./qihang-identity-seed-repository.js";
 export * from "./worker-once-diagnostics-repository.js";

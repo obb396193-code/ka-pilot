@@ -47,6 +47,7 @@ import { EtlRunRerunService } from "./admin/etl-run-rerun-service.js";
 // be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
 import { createAccountRoutes } from "./r014/account-routes.js";
 import { createMeRoutes } from "./r014/me-routes.js";
+import { createDataFiltersRoutes } from "./r014/data-filters-routes.js";
 import { createNamingRoutes } from "./r014/naming-routes.js";
 import { createDailyReportRoutes } from "./r014/daily-report-routes.js";
 import { createTaskDetailRoutes } from "./r014/task-detail-routes.js";
@@ -75,6 +76,7 @@ async function main(): Promise<void> {
     ...createTaskRoutes(pool),
     ...createWorkspaceRoutes(pool),
     ...createNamingRoutes(pool),
+    ...createDataFiltersRoutes(pool),
     ...createTaskDetailRoutes(pool),
     ...createTaskTabRoutes(pool),
     ...createDailyReportRoutes(pool),
