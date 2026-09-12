@@ -114,3 +114,58 @@ describe("v1.9.42 dimension grouped by an arbitrary cleaning segment / real PG",
         details: { supported: ["account", "task", "biz", "optimizer", "goal", "placement", "segment:<key>"] } }));
   });
 });
+
+/**
+ * v1.9.42（Q-041 ⑨）：血缘里的 `timezone` 来自受控配置。
+ * 没配就照旧发 null 并把 metadataAvailability 如实降级——「不知道」比编一个准确。
+ */
+describe("v1.9.42 source timezone comes from configuration / real PG", () => {
+  let pool: Pool;
+  const workspaceId = randomUUID();
+  const accounts = [{ media: "KUAISHOU", accountId: "tz-a" }];
+  const registry = createDataQueryRegistry();
+
+  const run = (timezone: string | null) => new PlatformDataSource(
+    new SemanticQueryRepository(pool), createPlatformReadSnapshot(pool),
+    createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), undefined, timezone,
+  ).query(registry.resolve("account.summary", { dateFrom: "2026-09-01", dateTo: "2026-09-02" }, "platform"), {
+    workspaceId, userId: randomUUID(), scopeKind: "explicit_accounts",
+    accounts: accounts.map((account) => ({ ...account, accessLevel: "execute" as const })),
+  });
+
+  beforeAll(async () => {
+    const databaseUrl = process.env.TEST_DATABASE_URL;
+    if (!databaseUrl) throw new Error("Explicit isolated TEST_DATABASE_URL required");
+    await runMigrations({ databaseUrl });
+    pool = new Pool({ connectionString: databaseUrl, max: 3 });
+    await pool.query("INSERT INTO workspaces(id,name) VALUES($1,'synthetic timezone')", [workspaceId]);
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','tz-a')", [workspaceId]);
+    await pool.query(
+      `INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,cost,cash_cost,real_conversion,conversion,exposure,click,computed_at)
+       VALUES($1,'KUAISHOU','tz-a','2026-09-01',40,30,2,4,1000,50,'2026-09-05T10:00:00Z'),
+             ($1,'KUAISHOU','tz-a','2026-09-02',40,30,2,4,1000,50,'2026-09-05T10:00:00Z')`, [workspaceId]);
+  }, 60_000);
+
+  afterAll(async () => {
+    if (!pool) return;
+    for (const table of ["account_metrics_daily", "accounts"]) {
+      await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspaceId]);
+    }
+    await pool.query("DELETE FROM workspaces WHERE id=$1", [workspaceId]);
+    await pool.end();
+  });
+
+  it("publishes the configured zone", async () => {
+    expect((await run("Asia/Shanghai")).lineage).toMatchObject({ timezone: "Asia/Shanghai" });
+  });
+
+  it("says it does not know when nothing is configured, rather than guessing the server's", async () => {
+    expect((await run(null)).lineage).toMatchObject({ timezone: null });
+  });
+
+  it("keeps metadataAvailability honest either way", async () => {
+    // 知道时区不等于血缘齐备：datasetVersion 与 dayCut 仍然没有来源，所以只能是 partial。
+    expect((await run("Asia/Shanghai")).lineage.metadataAvailability).toBe("partial");
+    expect((await run(null)).lineage.metadataAvailability).toBe("partial");
+  });
+});
