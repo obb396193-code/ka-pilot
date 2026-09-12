@@ -13,9 +13,7 @@ const params = { date_from: "2026-09-01", date_to: "2026-09-01", compare: "dod" 
 const summary = { rowCount: 1, accountCount: 1, anomalyRows: 0, cost: 12, cashCost: 10, exposure: 100, click: 10,
   conversion: 3, realConversion: 2, costSpace: 30, wakeUv: null, potentialUv: null,
   ratios: { ctr: safeDivide(10, 100), cvr: safeDivide(3, 10), realCpa: safeDivide(12, 2), cashCpa: safeDivide(10, 2),
-    gap: safeDivide(1, 2), potentialRate: safeDivide(null, null), biConversionRate: safeDivide(null, null) },
-  // v1.9.40：部分合计的列名单；本桩不造缺口。
-  partial: [] };
+    gap: safeDivide(1, 2), potentialRate: safeDivide(null, null), biConversionRate: safeDivide(null, null) } };
 function setup() {
   const querySummary = vi.fn(async () => summary);
   const queryLineage = vi.fn(async () => ({ dataAsOf: null, canonicalRows: 1, returnedAccounts: 1, requestedAccountDays: 1, returnedAccountDays: 1 }));

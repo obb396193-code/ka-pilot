@@ -7,12 +7,12 @@ import {
 } from "@ka/db";
 import {
   accountDimensionWindowRowSchema, groupedDimensionWindowRowSchema, dailyAssessmentInputSchema, queryWindowSchema,
-  computeWindowAssessment, type MetricValue,
+  computeWindowAssessment, sumMetricValues, type MetricValue,
   namedDimensionTypeSchema, namedDimensionWindowRowSchema, accountDimensionRuleSchema,
   resolveNamedDimensions, summarizeDimensionSources, aggregateWindowMetrics,
   dashboardFiltersSchema, calendarDateSchema,
 
-  sumMetricValuesPartial,
+  sumMetricValuesPartial, type CanonicalMetricValue,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 import { createDashboardScopeResolver, type DashboardScopeResolver } from "./dashboard-filter-scope.js";
@@ -56,6 +56,21 @@ function equal(left: MetricValue, right: MetricValue): boolean {
   if (left.availability !== right.availability) return false;
   if (left.value === null || right.value === null) return left.value === right.value;
   return Math.abs(left.value - right.value) <= Math.max(0.000001, Math.abs(left.value) * Number.EPSILON * 16);
+}
+/**
+ * v1.9.35：窗口里缺账户日时，两个**逐日可证**的指标改发部分合计（与 summary 同口径）。
+ * 其余字段仍走 SQL 的整窗聚合——那条是多查询共用的 `expected_metric`，给它加 partial
+ * 是共享聚合那批的活，不在这一笔里动。判定已因 partial 挂起，部分值读不成「达标」。
+ */
+function partialWindowMetrics(
+  costSpace: { availability: string },
+  members: readonly { cashCost: CanonicalMetricValue; realConversion: CanonicalMetricValue }[],
+): { cashCost: CanonicalMetricValue; realConversion: CanonicalMetricValue } | Record<string, never> {
+  if (costSpace.availability !== "partial") return {};
+  return {
+    cashCost: sumMetricValuesPartial(members.map((member) => member.cashCost)),
+    realConversion: sumMetricValuesPartial(members.map((member) => member.realConversion)),
+  };
 }
 
 function groupHistory(raw: AccountDailyAssessment[], input: z.infer<typeof inputSchema>) {
@@ -179,13 +194,13 @@ export class PlatformDimensionQuery {
         if (summary.accountCount > accountCount || summary.accountCount > lineage.returnedAccounts ||
           (summary.rowCount > 0 && summary.accountCount === 0) ||
           summary.accountCount > summary.rowCount || summary.rowCount > members.length || summary.anomalyRows! > summary.rowCount ||
-          !equal(summary.metrics.cashCost, sumMetricValuesPartial(members.map((row) => row.input.cashCost))) ||
-          !equal(summary.metrics.realConversion, sumMetricValuesPartial(members.map((row) => row.input.realConversion)))) return invalid();
+          !equal(summary.metrics.cashCost, sumMetricValues(members.map((row) => row.input.cashCost))) ||
+          !equal(summary.metrics.realConversion, sumMetricValues(members.map((row) => row.input.realConversion)))) return invalid();
         observedRows += summary.rowCount; groupAccounts += summary.accountCount;
         const assessment = computeWindowAssessment(members.map((row) => row.input));
         return groupedDimensionWindowRowSchema.parse({ key: row.dimensionKey, label: row.dimensionLabel,
-          // v1.9.40 起 summary.metrics 自带 partial（SQL 聚合给的），不再手工补。
-          metrics: { ...summary.metrics, costSpace: assessment.costSpace },
+          metrics: { ...summary.metrics, ...partialWindowMetrics(assessment.costSpace, members.map((row) => row.input)),
+            costSpace: assessment.costSpace },
           assessment: assessment.assessment, anomaly: summary.anomalyRows! > 0 });
       });
       // One account may occur in several groups across days: group counts are not a distinct account total.
@@ -224,13 +239,14 @@ export class PlatformDimensionQuery {
         seen.add(accountKey);
         const summary = canonicalSummaryBaseRow(row.metrics as unknown as Record<string, unknown>, "platform");
         if (summary.accountCount > 1 || summary.accountCount !== (summary.rowCount > 0 ? 1 : 0) || summary.rowCount > expectedDays || summary.anomalyRows! > summary.rowCount ||
-          !equal(summary.metrics.cashCost, sumMetricValuesPartial(members.map((day) => day.cashCost))) ||
-          !equal(summary.metrics.realConversion, sumMetricValuesPartial(members.map((day) => day.realConversion)))) return invalid();
+          !equal(summary.metrics.cashCost, sumMetricValues(members.map((day) => day.cashCost))) ||
+          !equal(summary.metrics.realConversion, sumMetricValues(members.map((day) => day.realConversion)))) return invalid();
         observedRows += summary.rowCount; observedAccounts += summary.accountCount;
         const assessment = computeWindowAssessment(members);
         return accountDimensionWindowRowSchema.parse({ key: accountKey, label: row.dimensionLabel, media: identity.media,
           accountId: identity.accountId,
-          metrics: { ...summary.metrics, costSpace: assessment.costSpace },
+          metrics: { ...summary.metrics, ...partialWindowMetrics(assessment.costSpace, members),
+            costSpace: assessment.costSpace },
           assessment: assessment.assessment, anomaly: summary.anomalyRows! > 0 });
       });
       if (observedRows !== lineage.canonicalRows || observedAccounts !== lineage.returnedAccounts) return invalid();

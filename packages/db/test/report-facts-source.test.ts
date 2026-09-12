@@ -155,12 +155,11 @@ describe("SemanticReportFactsSource", () => {
       resolve: async () => "2026-08-19T10:30:00.000Z",
     });
     const facts = await source.load({ workspaceId, plan: reportPlan() });
-    // v1.9.40：缺账户日不再让报表整块空——给 Σ 有数那部分（窗口 120、当天 120），
-    // 「不完整」由仓储的 partial 名单带着走；整天一个数都没有的那天仍是 missing。
-    expect(facts.summary?.cost).toEqual({ value: 120, state: "finite" });
+    expect(facts.summary?.cost).toEqual({ value: null, state: "missing" });
+    expect(facts.summary?.realCpa).toEqual({ value: null, state: "undefined" });
     expect(facts.trend?.[0]?.metrics.cost).toEqual({ value: null, state: "missing" });
     expect(facts.trend?.[1]?.metrics.cost).toEqual({ value: 120, state: "finite" });
-    expect(facts.dimensions.task?.[0]?.metrics.cost).toEqual({ value: 120, state: "finite" });
+    expect(facts.dimensions.task?.[0]?.metrics.cost).toEqual({ value: null, state: "missing" });
   });
 
   it("rejects overlapping task ownership before it can be double counted", async () => {

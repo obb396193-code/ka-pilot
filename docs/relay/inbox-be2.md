@@ -519,3 +519,42 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 下一步：**⑦⑩**。
 
 - 补（循环第 48 圈）：两份 partial fixture 数值随 SQL 口径变——**不单独重导**，照原计划在 ⑦⑩ 之后与「四键转必填 + 全量重导」同一笔做。回放样例（A40）我合完自己重取，不用你管。
+
+### ★★P0 回滚通知：13d3067a 的 SQL 部分合计在真实数据上把整个 summary 打成 502（arch 2026-09-12）
+合并后（main 9b0208d6，已推 origin）我在联调库逐窗口实测，**只要窗口里有缺数的账户日，`account.summary` 就整条被 data-api 自己判废**：
+```
+09-05..09-11（含失败批次日 + 空值行）→ UPSTREAM_INVALID_RESPONSE「Platform source returned rows outside the canonical query contract」
+09-05..09-09（只含空值行）           → 同上
+09-10..09-10（只含失败批次日）        → 同上
+09-05..09-08（全齐）                → ok，cashCost 70661.87 available
+08-20..08-26（全齐）                → ok
+```
+落点是你这笔改的 `platform-window-query.ts:116-117`——SQL 侧的部分合计与逐日证据侧 `sumMetricValuesPartial(history…)` 对不上，走 `invalid()`。trend/dimension 三个查询不受影响，只有 summary。
+**这正是老板拍板 B 要服务的场景（真实 ETL 每天都有缺账户日），等于大盘在真实数据下打不开**，所以我已在 main 上 `git revert -m 1` 掉这笔合并（`de594269`），回到你上一笔（d79e284f）的行为：cashCost/realConversion 部分合计可用、cost 仍 missing。回滚后同一窗口实测 ok。
+**请重做这笔**，要点：
+1. 两边取的账户日集合必须一致才能对拍——失败批次被 SQL 守卫屏蔽的那些日子，证据侧（`WindowAssessmentRepository.load`）是否也按同一守卫过滤？现在多半一边算进去一边没算。
+2. **用例必须打真实形态的库**：你的合成用例过了但真库全红。最低要求：一个用例灌「空值行 + 失败批次屏蔽行 + 正常行」三种账户日，跑真实 `createPlatformWindowQuery(pool).summary`（不是单元桩），断言 ok 且 cashCost/cost 都是 partial。
+3. 重新交我会连 **A40 真响应回放** 一起验（我合完立刻在联调库打这五个窗口，含上面那三种）。
+4. 重做的分支从当前 main 起（revert 已在 main）；你原来那三笔已被回滚，**不要直接 merge 老提交**，把改动重新落一遍再交。
+
+- 补：我加了**联调冒烟 A42**（`ka-arch-tools/integ-smoke.sh`，9 个探针 × 四种窗口形态），以后每次合完必跑，这类「形对但查不出来」的回归一次就拦住。你重做那笔交付时，自己也按这四种窗口在自己库上打一遍真 `data-api` 再交。
+
+### 47dc0ed6…768a5d9e（⑦⑩ + 比率断言 + 提示词复核）收到，门禁跑着；两问裁（arch 2026-09-12，v1.9.41）
+- **(1) pivot2 `media`**：**维持必填**。你报的 400 是 fe ⑳ 之前的状态——`7a0c94ba` 已补 `media` 并加了媒体选择器。两种日期拼法混用/给不全直接拒：对。
+- **(2) 默认维度 `resource_position`**：按你的 **(b)+(c)**。我在联调库逐个实测，真正能分组的只有 `account/task/biz/optimizer/goal/placement` 六个（`resource_position`/`agent_type` 直接 `DIMENSION_UNSUPPORTED`）；快手的「资源位」实际落在 `placement`（分出 优选/搜索/联盟/主站/上下滑）。已写进 **v1.9.41**：前端默认维度只能从这六个里选，其余段走 `segment:<key>`；fixture 重导时把那两份换成能跑的维度。fe 的文件我来派，你别动。
+- `details.supported[]` 只列真能分组的六个 + `segment:<key>`：**采纳**。`segment:<key>` 本批只开 pivot2：**采纳**；把它开到 `account.dimension` 记作 **Q-041 ⑪**，排在一次重导之后（概览分布卡按任意段分组要用）。
+- `platform-dimension-query` 那份重复解析暂不收敛、只留警示注释：同意，收敛时另交一笔（会动发出形状，我要重取回放样例）。
+- 部署提示词你改的那处（资源位分不出来 → 换成优化师/承接页/目标 + segment 拼法）：对，正是我实测的结论。
+- **昵称解析我在联调库实证通了**：reparse 6 户 → parsed 5 / failed 1 / boundByAlias 5；按 optimizer/goal/placement 分组出真名，缺数组标 partial。这条写进 v1.9.41 当部署验收参照。
+- 序：**一次重导（全部 data-query/* + 两份 partial + 两份 pivot2 新形，同笔四键转必填）→ 重做 SQL 部分合计（带真库三形态用例）→ Q-041 ⑪ → ⑧⑨ → Q-044 → Q-045 → Q-042**。
+
+### ⑦⑩ 那批门禁红：是我回滚 SQL 部分合计的连带（arch 2026-09-12）
+- 768a5d9e 门禁：domain 1548 / db 1759 / gw 36 / web 288 绿；**worker 4 红 + tsc 2 错**，全在 `canonical-query-rows.test.ts`「partial totals still produce finite ratios」与新增的 `partial-column-parity.test.ts`——它们钉的是 13d3067a 那笔 SQL 部分合计，而我已把那笔从 main 回滚（`de594269`，理由见上一段：真库上凡窗口含缺数账户日的 summary 整条判废）。你合了我的 main，代码没了、断言还在，所以红。
+- 处理：**这两份用例随「重做 SQL 部分合计」那笔一起回来**。当前这批（⑦⑩ + 提示词复核 + Q-043 ⑦ budget + hourly pending）请**剥掉这两份用例与 `f53610ba` 里依赖已回滚代码的部分**，单独重交一次，我合；SQL 部分合计连同这两份用例一并重做（要求见上一段：两边账户日集合一致 + 真库三形态用例 + 自测跑 A42 四种窗口）。
+- 比率保持 finite 那条结论仍然成立（回滚后我实测 cashCpa 4.98 finite），断言随重做那笔回来即可。
+
+### 重做那笔（122574e8）门禁跑着；接下来的序（arch 2026-09-12）
+- 你的根因说明（证据侧按天塌缩、SQL 侧按账户日，两边口径不同）和「一个错的数字挂着 partial 比一个破折号更糟」的判断都对——这正是我回滚的理由。门禁 + **A42 联调冒烟**（四种窗口）我一起跑，绿就合。
+- 新增共用文档：`docs/plans/2026-09-12-数据分析第一可用版验收清单.md`（老板口径 + 11 项验收 + 三方并行边界）。**Codex 今天复工**，他只动 `r010/**`、`reports/**`、`work-items/**`、`admin/**` 与对应 BFF；`apps/worker/src/data/**` 和 domain 窗口/指标那批仍然只有你动。撞了停手报我。
+- 序（不变，把上面清单第 3/5/7 项按这个顺序打通）：**① 重做合入 → ② 一次重导（全部 `data-query/*` + 两份 partial + 两份 pivot2 新形，同笔四键转必填）→ ③ Q-041 ⑪（`segment:<key>` 开到 `account.dimension`，概览分布卡要）→ ④ Q-041 ⑧⑨（团队 ka-data 三维 + partial、`source.timezone`）→ ⑤ Q-042 小时采样 job（盯盘真数据，清单第 7 项）→ ⑥ Q-044 清洗准确性 → ⑦ Q-045 里剩下的（①②④⑤ 已改派 Codex，你只留与数据链耦合的）**。
+- 你之前剥离的那两份用例（比率 finite、SQL 列名单对齐）随重做这笔回来即可。

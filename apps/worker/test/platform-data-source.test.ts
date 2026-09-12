@@ -20,8 +20,6 @@ function summary(cost: number, rowCount = 1) {
     rowCount,
     accountCount: rowCount === 0 ? 0 : 1,
     anomalyRows: 0,
-    // v1.9.40：部分合计的列名单；本桩不造缺口。
-    partial: [],
     cost,
     exposure: rowCount * 100,
     click: rowCount * 10,

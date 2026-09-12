@@ -47,8 +47,7 @@ describe("dashboard eligible dates / synthetic PG", () => {
     expect(await assessment.loadAccountCounts(scope)).toEqual({ total: 1, determinable: 1, onTarget: 1 });
     expect((await assessment.loadByAccount(scope)).map(row => row.input.price?.value)).toEqual([10]);
     scope.filters.accountDays.push({ ...accounts[0]!, ds: "2026-09-03" });
-    // v1.9.40：缺账户日给 Σ 有数那部分并在 `partial` 名单里点名该列，不再把整窗抹成 null。
-    expect(await semantic.querySummary(scope)).toMatchObject({ rowCount: 1, partial: expect.arrayContaining(["cost"]) });
+    expect(await semantic.querySummary(scope)).toMatchObject({ cost: null, rowCount: 1 });
     expect(await semantic.queryLineage(scope)).toMatchObject({ requestedAccountDays: 2, returnedAccountDays: 1 });
     expect(await assessment.loadAccountCounts(scope)).toEqual({ total: 1, determinable: 0, onTarget: 0 });
     scope.filters.accountDays = [];

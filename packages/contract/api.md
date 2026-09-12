@@ -1490,3 +1490,11 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **部分合计必须全链一致**：窗口汇总的 `metrics.*` 与 `assessment.*` 必须来自同一种求和语义。联调库（个人空间 09-05..09-11，account-2 缺 3 天：两天空值行 + 一天失败批次无行）实测：`metrics.cost / cashCost / realConversion` 仍是整窗 `missing`（走 SQL `querySummary` 的旧求和），而 `assessment.biConv` 是 `partial` 19681、`biCashCost` 算出 finite 4.98——页面会出现「现金消耗 −、BI 现金成本 4.98」。要求：`packages/db` 的 `querySummary`（及 trend/dimension/pivot2 的 SQL 聚合）按 v1.9.35 给 Σ 有数账户日 + `partial`；`apps/worker/src/data/platform-window-query.ts:114` 与 `platform-dimension-query.ts:179/222` 的一致性核对改用 `sumMetricValuesPartial`；缺数日两种形态（空值行、整行缺失/失败批次）都要有用例，**断言消耗、现金消耗、真实转化三项**，不只 `costSpace`。
 - **前端镜像必须认得后端真发的形状**：`availability:"partial"`、`costStatusReason:"partial_data"`、命名维度 `optimizer/goal/placement` 与其行上的 `source/sources`。arch 已热修镜像（6c368753 / 98d7a0f6 / 6ab1000d）。
 - **A40 真响应回放**：`apps/web/lib/data/fixtures/real-backend/*.json` 是联调 data-api 原样响应，`real-backend-replay.test.ts` 逐份过 BFF 契约。后端每次改发出形状，arch 在联调库重取覆盖；这条红了先修镜像，不许改 JSON。
+
+## v1.9.41 追加（2026-09-12 arch；裁 be2 ⑦⑩ 的两问 + 可分组维度的真实清单）
+- **今天真正能分组的固定维度只有六个**（联调库逐个实测）：`account / task / biz / optimizer / goal / placement`。`resource_position`、`agent_type`、`bid_tool`、`ubp`、`deduction_range` 虽在 `dimensionTypeSchema` 里合法，但没有任何解析器产出它们，查了直接 `DIMENSION_UNSUPPORTED`。**前端一切默认维度只能从这六个里选**；清洗规则里的其余段一律走 `segment:<key>`（快手「资源位」实际映射到 `placement`，实测分出 优选/搜索/联盟/主站/上下滑）。
+- `DIMENSION_UNSUPPORTED` 的 `details.supported[]` **只列这六个 + `segment:<key>`**（be2 自行改窄，采纳）：把合法但解析不出的维度列进去，等于叫调用方去试一个必炸的东西。
+- **`segment:<key>` 本批只对 `account.pivot2` 开放**（采纳 be2 的收窄），`account.dimension` 不收——它的下游只解析命名维度，放段进去会在更深处炸。概览的分布卡若要按任意清洗段分组，走 pivot2 单轴；**Q-041 ⑪**（把 `segment:<key>` 也开到 `account.dimension`）排在一次重导之后。
+- **`account.pivot2` 的 `media` 维持必填**：fe 的 ⑳（`7a0c94ba`）已补上并加了媒体选择器，be2 报的那条 400 是 ⑳ 之前的状态。`dateFrom/dateTo` 与 `window_from/window_to` 两种拼法**混用直接拒、给不全直接拒**（be2 已实现，采纳）。
+- **昵称解析链路实证**（联调库，供部署验收参照）：`POST /admin/account-names/reparse {media}` → `{reparsed:6, byStatus:{parsed:5, failed:1}, boundByAlias:5}`；随后按 optimizer/goal/placement 分组各出 4/4/6 组真名（张三、李四、某代理、未标注…），缺数组标 `partial`。部署提示词 5b 之后应照此自验。
+- **比率在部分合计上保持 finite**（be2 实测已然，补了断言）：分子分母任一为 partial 时比率照算，前端挂「部分」标，不得压成 `undefined`。
