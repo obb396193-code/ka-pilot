@@ -108,8 +108,10 @@ function stableError(
   message: string,
   retryable: boolean,
   requestId: string,
+  details?: { supported: string[] },
 ): StableDataQueryError {
-  return { code, message, retryable, requestId };
+  // v1.9.34：只有 DIMENSION_UNSUPPORTED 会带 details（可用维度清单），其余照旧四个字段。
+  return { code, message, retryable, requestId, ...(details === undefined ? {} : { details }) };
 }
 
 function mapError(error: unknown, requestId: string): StableDataQueryError {
@@ -123,7 +125,9 @@ function mapError(error: unknown, requestId: string): StableDataQueryError {
     return stableError(error.code, error.message, error.retryable, requestId);
   }
   if (error instanceof QueryRegistryError) {
-    return stableError(error.code, error.message, false, requestId);
+    const supported = error.details?.supported;
+    return stableError(error.code, error.message, false, requestId,
+      Array.isArray(supported) ? { supported: supported.map(String) } : undefined);
   }
   if (error instanceof KaDataClientError) {
     return stableError(error.code, error.message, error.retryable, requestId);

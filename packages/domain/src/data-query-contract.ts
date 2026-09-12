@@ -234,6 +234,12 @@ export const stableDataQueryErrorSchema = z
     message: z.string().min(1),
     retryable: z.boolean(),
     requestId: requestIdSchema,
+    /**
+     * v1.9.34：`DIMENSION_UNSUPPORTED` 时带 `{supported:[...]}`——告诉调用方这个源**能用哪些维度**，
+     * 不然前端只能猜或写死一份必然漂的清单。只装**代码自己造的结构化清单**，
+     * 不透传内部错误细节（稳定 envelope 那条不变）。
+     */
+    details: z.object({ supported: z.array(z.string().min(1)).max(64) }).strict().optional(),
   })
   .strict();
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>;
