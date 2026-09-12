@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs"
 import test from "node:test"
 
 import { accountSummaryRowSchema, dimensionWindowRowSchema } from "./canonical-query-rows.ts"
-import { biCostText, mv, normalizeBiCost } from "../fixtures/contract.ts"
+import { biCostText, costStatusReasonLabel, costStatusReasonShort, isPartial, mv, normalizeBiCost } from "../fixtures/contract.ts"
 
 /**
  * F8-19b ⑰：过渡 fixture 的门禁。
@@ -106,4 +106,37 @@ test("pending 显「待到」不显「−」：还没到 ≠ 没有", () => {
   assert.equal(mv({ value: null, availability: "pending" }), "待到")
   assert.equal(mv({ value: null, availability: "missing" }), "−")
   assert.equal(mv({ value: 0, availability: "available" }), "0", "真实的 0 要显 0")
+})
+
+test("★partial 显数字不显「−」：它带着真值，是已有账户日的合计（v1.9.35）", () => {
+  // 这条锁的是 ㉑ 的核心规矩。把一个有真值的数显成「−」，等于告诉用户「这里没数」，
+  // 而实际上有数、只是没齐——比不显还误导。
+  assert.equal(mv({ value: 114836, availability: "partial" }, "money0"), "¥114,836")
+  assert.equal(isPartial({ value: 114836, availability: "partial" }), true)
+  // 其余三态照旧
+  assert.equal(mv({ value: null, availability: "missing" }), "−")
+  assert.equal(mv({ value: null, availability: "pending" }), "待到")
+  assert.equal(isPartial({ value: 1, availability: "available" }), false)
+})
+
+test("判定挂起时说「待补齐」，不跟别的档一样说「无法判定」", () => {
+  // partial_data 不是「判不了」，是「等数齐了再判」——两种说法给人的下一步动作不同
+  assert.equal(costStatusReasonShort.partial_data, "待补齐")
+  assert.ok(costStatusReasonLabel.partial_data.includes("待补齐"))
+  assert.ok(costStatusReasonLabel.cash_missing.includes("无法判定"))
+})
+
+test("★拿联调真响应验：partial 的现金消耗渲染成数字而不是「−」", () => {
+  // 用 arch 抓的 A40 真响应（`fixtures/real-backend/`，不许手改）当输入。
+  // 合并前这个数在页面上就是「−」——大盘唯一还显缺数的原因就是它。
+  const payload = JSON.parse(readFileSync(new URL("./fixtures/real-backend/summary-partial.json", import.meta.url), "utf8")) as {
+    data: { source: { rows: { metrics: Record<string, { value: number | null; availability: string }> }[]; lineage: { warnings?: unknown[] } } }
+  }
+  const metrics = payload.data.source.rows[0]!.metrics
+  assert.equal(metrics.cashCost!.availability, "partial", "真响应里现金消耗就是 partial（形状变了这条要跟着改）")
+  const text = mv(metrics.cashCost as never, "money0")
+  assert.notEqual(text, "−")
+  assert.match(text, /^¥[\d,]+$/, `partial 应显数字，实得 ${text}`)
+  // 角标的 tooltip 要能列出「缺了谁、哪天」——真响应里确实带着点名
+  assert.ok((payload.data.source.lineage.warnings ?? []).length > 0, "partial 必须伴随缺数点名，否则用户无从知道缺的是谁")
 })

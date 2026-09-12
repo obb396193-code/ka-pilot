@@ -16,6 +16,7 @@ import { aggregateDays } from "@/lib/fixtures/dashboard"
 import { mockBizRows, mockOptimizerRows, mockResourcePositionRows, useDashboardDimension, useDashboardSummary } from "@/lib/data/use-dashboard"
 import { windowPresetLabel, type DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
+import { costStatusReasonShort } from "@/lib/fixtures/contract"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 /**
@@ -107,7 +108,12 @@ export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: stri
       <div className="flex flex-wrap items-center justify-between gap-3">
         <ScopeSwitch />
         <div className="flex items-center gap-2 text-sm">
+          {/* 判定挂起（partial_data）时没有色标：显「待补齐」而不是一个空点，
+              否则人看不出「是没超线还是根本没判」 */}
           <CostStatusDot status={summary.assessment.costStatus} />
+          {summary.assessment.costStatus === null && summary.assessment.costStatusReason
+            ? <span className="rounded bg-status-warning/15 px-1.5 py-0.5 text-xs text-status-warning">{costStatusReasonShort[summary.assessment.costStatusReason] ?? "不可判断"}</span>
+            : null}
           <span className="font-medium">{windowPresetLabel[window.preset]}</span>
           <span className="text-muted-foreground tabular-nums">{window.from} ～ {window.to}</span>
           <Tooltip>
@@ -119,7 +125,7 @@ export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: stri
 
       <MissingDataNotice warnings={lineage?.warnings} />
 
-      <KpiRows row={summary} windowed={windowed} />
+      <KpiRows row={summary} windowed={windowed} warnings={lineage?.warnings} />
 
       <Card>
         <CardContent className="pt-5">
