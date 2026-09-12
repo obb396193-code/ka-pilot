@@ -5,38 +5,42 @@
     "source": {
       "queryId": "account.summary",
       "rowSchemaVersion": "account.summary/v3",
-      "status": "partial",
+      "status": "ready",
       "rows": [
         {
-          "rowCount": 3,
-          "accountCount": 3,
-          "anomalyRows": 1,
+          "rowCount": 2,
+          "accountCount": 1,
+          "anomalyRows": 0,
           "metrics": {
             "cost": {
-              "value": 12500.0,
+              "value": 80,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 2000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 100,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 8,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 4,
               "availability": "available"
             },
             "cashCost": {
               "value": null,
               "availability": "missing"
             },
-            "exposure": {
-              "value": 100000,
-              "availability": "available"
-            },
-            "click": {
-              "value": 4000,
-              "availability": "available"
-            },
-            "conversion": {
-              "value": 320,
-              "availability": "available"
-            },
-            "realConversion": {
-              "value": 300,
-              "availability": "available"
-            },
             "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "incentiveCost": {
               "value": null,
               "availability": "missing"
             },
@@ -50,7 +54,7 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.04,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
@@ -58,7 +62,7 @@
                 "state": "finite"
               },
               "realCpa": {
-                "value": 41.67,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
@@ -66,7 +70,7 @@
                 "state": "undefined"
               },
               "gap": {
-                "value": 0.0667,
+                "value": 1,
                 "state": "finite"
               },
               "potentialRate": {
@@ -80,45 +84,48 @@
             }
           },
           "assessment": {
+            "priceSource": "history",
             "price": {
-              "value": 38.0,
+              "value": 20,
               "effectiveDate": "2026-09-01"
             },
-            "priceSource": "history",
             "onTarget": null,
             "costStatus": null,
             "costStatusReason": "cash_missing",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": 4,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": null,
+              "state": "undefined"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
             }
           }
         }
       ],
       "returnedRowCount": 1,
-      "wholeResultTotal": {
-        "value": 1,
-        "availability": "available"
-      },
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
-        "datasetVersion": "canonical-20260905-01",
-        "queryTemplateVersion": "account-summary-v3",
-        "metricVersion": "account-metrics-v2",
-        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
-        "timezone": "Asia/Shanghai",
-        "dayCut": "business_day_0300",
-        "metadataAvailability": "known",
+        "datasetVersion": null,
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "queryTemplateVersion": "v2",
+        "metricVersion": "account-summary-v2",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
-          "role": "default_authoritative"
-        },
-        "window": {
-          "from": "2026-09-05",
-          "to": "2026-09-05",
-          "preset": "today"
+          "role": "comparison_reference"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -129,19 +136,52 @@
           ]
         },
         "coverage": {
-          "complete": true
+          "complete": true,
+          "requestedObjects": 1,
+          "returnedObjects": 1
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY",
+          {
+            "code": "ACCOUNT_DAY_MISSING",
+            "media": "KUAISHOU",
+            "accountId": "acc-1",
+            "businessDate": "2026-09-01",
+            "fields": [
+              "cashCost"
+            ]
+          },
+          {
+            "code": "ACCOUNT_DAY_MISSING",
+            "media": "KUAISHOU",
+            "accountId": "acc-1",
+            "businessDate": "2026-09-02",
+            "fields": [
+              "cashCost"
+            ]
+          }
+        ]
       },
       "warnings": [
-        "cash_yuan 为 null：现金口径缺数，达标与色标不判"
-      ]
+        "BUDGET_SOURCE_NOT_READY"
+      ],
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      }
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v3-cash-missing",
+    "requestId": "fixture",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "同上，真响应。窗口内一天现金都没有 → cashCost/costSpace 为 missing（**不是 0**）、判定挂起 onTarget/costStatus 为 null、costStatusReason=cash_missing"
   }
 }

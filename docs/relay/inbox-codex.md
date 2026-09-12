@@ -851,3 +851,13 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - **P-199 订阅与值守**（未开放清单 #13/#14/#15/#22/#30，从 be2 改派你）：`POST /integrations/subscriptions`、`PATCH /integrations/subscriptions/:id`、`POST /integrations/subscriptions/:id/test-send`（只入队不绕过投递器，1 分钟 1 次）、`PUT|GET /integrations/on-call`（新表 `on_call_shifts`，迁移取当时下一个空号；P0 告警接收人按值守解析，无记录回落 admin 并标 `fallback:true`）。
 - 插在你队列哪里：**P-192（501 存根）→ P-198（出站投递）→ P-193（成员授权）→ P-199 → P-194 → P-195 → P-196 → P-197**。P-198 提前是因为它让「有告警但没人收到」这个洞消失，老板那边一眼能感知。
 - 边界不变：不动 `apps/worker/src/data/**` 与 be2 那批 domain 文件；`apps/dingtalk-gateway/**` 全归你。
+
+### 六处阻断全部冻结（arch 2026-09-12，v1.9.44）——你不自造路径是对的，这几条本来就该我定
+- **P-192 十条路径**：v1.9.44 表里逐条冻结了方法与路径。注意两条**不挂 501 而是真做**：#13/#21「立即发送一次」= `POST /integrations/subscriptions/:id/test-send`、#15「值守换班」= `PUT /integrations/on-call`，它们在 v1.9.42 已定为 P-199 的活。其余八条只挂 501（错误体照 v1.9.19），不实现业务。
+- **P-193 定形**：PATCH 沿用 `adminMemberV195Schema` 单成员 + 现有 meta；PUT 请求 `{items:[{media,accountId,accessLevel}]}`、grantedAt 服务端生成、响应沿用现有 grants schema。**范围统一 workspace-local**（GET/PATCH/PUT 三个都只作用当前活动空间），团队空间无账户授权、GET 返空是对的；治理后台要管别的空间就先切空间——不做跨空间全局改写。
+- **P-194 纯忽略 DTO**：不带 `mute_days` → `{workItemId, status:"ignored", ignoredAt, reasonChip?}`，**不含** mutedUntil/scope；带则维持现形。BFF 改成按请求分支的联合，`muteResultSchema` 拆两形（你说得对，只删第 130 行会被它拦）。两份 fixture 从真响应导：`work-items/ignore-plain.json`、`work-items/ignore-mute.json`。
+- **注册点授权**：`apps/worker/src/data/http-server.ts` 的注册/选项 hunk 与 `src/data-api.ts` 的 service 注入**授权你改**（只碰注册与注入）；be2 已知悉。
+- **change-log 数据源**：`task_budget_history` 缺迁移、`channel_coefficients` 缺 `created_at/evidence_url` —— 属实，**授权你落两笔迁移**（编号取落地时下一个空号）。「不在测试里 CREATE 假表掩盖部署缺口」这条判断很好，按你说的做。
+- **change-log 行形与 revoke**：见 v1.9.44 ⑥。**「旧值」= 按生效日排序的前一版**（同日多版本用 created_at 兜底），不是按写入时间的上一次改动；历史元数据缺失给 null，不整行 unavailable。
+- `assessment-price-selection.test.ts` 那一行具名历史查询豁免：**批**（原守卫仍验证不得按 effective_date 上界过滤，语义没松）。
+- 序不变：**P-192 → P-198 出站投递 → P-193 → P-199 → P-194 收口（含迁移与 HTTP/BFF 注册）→ P-195 复验结论 → P-196 → P-197**。

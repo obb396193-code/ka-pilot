@@ -8,38 +8,42 @@
       "status": "ready",
       "rows": [
         {
-          "workspaceId": "7f4945e6-16bd-434e-be17-8ce8fbbfb430",
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
           "media": "KUAISHOU",
-          "accountId": "a",
-          "accountName": "synthetic",
+          "accountId": "acc-1",
+          "accountName": "启航-拉新-张三-优选",
           "ownerUserId": null,
           "ds": "2026-09-02",
           "metrics": {
             "cost": {
-              "value": 10,
+              "value": 40,
               "availability": "available"
             },
             "exposure": {
-              "value": 100,
+              "value": 1000,
               "availability": "available"
             },
             "click": {
-              "value": 10,
+              "value": 50,
               "availability": "available"
             },
             "conversion": {
-              "value": 2,
+              "value": 4,
               "availability": "available"
             },
             "realConversion": {
-              "value": 1,
+              "value": 2,
               "availability": "available"
             },
             "cashCost": {
-              "value": 10,
+              "value": 30,
               "availability": "available"
             },
             "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "incentiveCost": {
               "value": null,
               "availability": "missing"
             },
@@ -53,19 +57,19 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.1,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.2,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 10,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 10,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
@@ -103,31 +107,358 @@
             }
           },
           "dataAnomaly": false,
-          "computedAt": "2026-09-02T10:00:00.000Z",
+          "computedAt": "2026-09-05T10:00:00.000Z",
           "tasks": [
             {
-              "taskId": "two",
-              "taskName": "task-two",
-              "bizName": "biz-two"
+              "taskId": "t-1",
+              "taskName": "投放任务",
+              "bizName": "拉新业务"
+            }
+          ]
+        },
+        {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "acc-3",
+          "accountName": "启航-促活-张三-优选",
+          "ownerUserId": null,
+          "ds": "2026-09-02",
+          "metrics": {
+            "cost": {
+              "value": 60,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 1500,
+              "availability": "available"
+            },
+            "click": {
+              "value": 75,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 6,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 3,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 45,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "budget": {
+              "value": null,
+              "availability": "missing"
+            },
+            "budgetUsageRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "deductionRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "mainAdCostProportion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "assessmentPrice": {
+              "value": null,
+              "availability": "missing"
+            }
+          },
+          "dataAnomaly": false,
+          "computedAt": "2026-09-05T10:00:00.000Z",
+          "tasks": [
+            {
+              "taskId": "t-1",
+              "taskName": "投放任务",
+              "bizName": "拉新业务"
+            }
+          ]
+        },
+        {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "acc-1",
+          "accountName": "启航-拉新-张三-优选",
+          "ownerUserId": null,
+          "ds": "2026-09-01",
+          "metrics": {
+            "cost": {
+              "value": 40,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 1000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 50,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 4,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 30,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "budget": {
+              "value": null,
+              "availability": "missing"
+            },
+            "budgetUsageRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "deductionRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "mainAdCostProportion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "assessmentPrice": {
+              "value": null,
+              "availability": "missing"
+            }
+          },
+          "dataAnomaly": false,
+          "computedAt": "2026-09-05T10:00:00.000Z",
+          "tasks": [
+            {
+              "taskId": "t-1",
+              "taskName": "投放任务",
+              "bizName": "拉新业务"
+            }
+          ]
+        },
+        {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "acc-3",
+          "accountName": "启航-促活-张三-优选",
+          "ownerUserId": null,
+          "ds": "2026-09-01",
+          "metrics": {
+            "cost": {
+              "value": 60,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 1500,
+              "availability": "available"
+            },
+            "click": {
+              "value": 75,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 6,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 3,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 45,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            },
+            "budget": {
+              "value": null,
+              "availability": "missing"
+            },
+            "budgetUsageRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "deductionRate": {
+              "value": null,
+              "availability": "missing"
+            },
+            "mainAdCostProportion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "assessmentPrice": {
+              "value": null,
+              "availability": "missing"
+            }
+          },
+          "dataAnomaly": false,
+          "computedAt": "2026-09-05T10:00:00.000Z",
+          "tasks": [
+            {
+              "taskId": "t-1",
+              "taskName": "投放任务",
+              "bizName": "拉新业务"
             }
           ]
         }
       ],
-      "returnedRowCount": 1,
+      "returnedRowCount": 4,
       "wholeResultTotal": {
-        "value": 1,
+        "value": 4,
         "availability": "available"
       },
       "lineage": {
-        "workspaceKind": "personal",
         "source": "canonical",
+        "workspaceKind": "personal",
         "datasetVersion": null,
-        "queryTemplateVersion": "v1",
-        "metricVersion": "account-table-v1",
-        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
         "timezone": null,
         "dayCut": null,
         "metadataAvailability": "partial",
+        "queryTemplateVersion": "v1",
+        "metricVersion": "account-table-v1",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
@@ -143,7 +474,7 @@
         },
         "coverage": {
           "complete": true,
-          "returnedObjects": 1
+          "returnedObjects": 2
         },
         "truncated": false,
         "partial": false
@@ -152,6 +483,9 @@
     }
   },
   "meta": {
-    "_note": "v1.9.22/26（Codex 自查 10/11 合成 PG→真 HTTP 导出，arch 2026-09-10 收进契约包；筛选/维度键位以 api.md v1.9.26/27 为准）"
+    "requestId": "fixture",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /data/query {queryId:\"account.table\", filters:{optimizer:[\"张三\"]}}：真响应，同一套筛选下的逐账户日明细"
   }
 }

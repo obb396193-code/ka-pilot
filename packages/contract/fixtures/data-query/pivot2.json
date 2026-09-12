@@ -1,51 +1,55 @@
 {
   "ok": true,
   "data": {
-    "mode": "ka_data",
+    "mode": "platform",
     "source": {
       "queryId": "account.pivot2",
+      "dimA": "placement",
+      "dimB": "task",
       "rowSchemaVersion": "account.pivot2/v1",
       "status": "ready",
-      "dimA": "resource_position",
-      "dimB": "task",
       "rows": [
         {
           "a": {
-            "key": "INVENTORY_UNIVERSAL",
-            "label": "通投"
+            "key": "优选",
+            "label": "优选"
           },
           "b": {
-            "key": "fixture-task-ready",
-            "label": "AAC 拉新"
+            "key": "t-1",
+            "label": "投放任务"
           },
           "metrics": {
             "cost": {
-              "value": 9000.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 7030.8,
+              "value": 200,
               "availability": "available"
             },
             "exposure": {
-              "value": 72000,
+              "value": 5000,
               "availability": "available"
             },
             "click": {
-              "value": 2900,
+              "value": 250,
               "availability": "available"
             },
             "conversion": {
-              "value": 220,
+              "value": 20,
               "availability": "available"
             },
             "realConversion": {
-              "value": 210,
+              "value": 10,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 150,
               "availability": "available"
             },
             "costSpace": {
-              "value": 949.2,
+              "value": 50,
               "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             },
             "wakeUv": {
               "value": null,
@@ -57,23 +61,23 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.0403,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.0759,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.86,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 33.48,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0476,
+                "value": 1,
                 "state": "finite"
               },
               "potentialRate": {
@@ -87,57 +91,73 @@
             }
           },
           "assessment": {
+            "priceSource": "history",
             "price": {
-              "value": 38.0,
-              "effectiveDate": null
+              "value": 20,
+              "effectiveDate": "2026-09-01"
             },
-            "priceSource": "ka_daily",
             "onTarget": true,
             "costStatus": "green",
             "costStatusReason": "window_ok",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": 10,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -50,
+              "availability": "available"
             }
           }
         },
         {
           "a": {
-            "key": "KUAI_SHOU_YOU_XUAN",
-            "label": "快手优选"
+            "key": "搜索",
+            "label": "搜索"
           },
           "b": {
-            "key": "fixture-task-ready",
-            "label": "AAC 拉新"
+            "key": "t-1",
+            "label": "投放任务"
           },
           "metrics": {
             "cost": {
-              "value": 4200.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 3281.0,
+              "value": 40,
               "availability": "available"
             },
             "exposure": {
-              "value": 33000,
+              "value": 1000,
               "availability": "available"
             },
             "click": {
-              "value": 1300,
+              "value": 50,
               "availability": "available"
             },
             "conversion": {
-              "value": 70,
+              "value": 4,
               "availability": "available"
             },
             "realConversion": {
-              "value": 66,
+              "value": 2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 30,
               "availability": "available"
             },
             "costSpace": {
-              "value": -773.0,
+              "value": 10,
               "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             },
             "wakeUv": {
               "value": null,
@@ -149,23 +169,23 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.0394,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.0538,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 63.64,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 49.71,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0606,
+                "value": 1,
                 "state": "finite"
               },
               "potentialRate": {
@@ -179,134 +199,57 @@
             }
           },
           "assessment": {
+            "priceSource": "history",
             "price": {
-              "value": 38.0,
-              "effectiveDate": null
+              "value": 20,
+              "effectiveDate": "2026-09-01"
             },
-            "priceSource": "ka_daily",
-            "onTarget": false,
-            "costStatus": "red",
-            "costStatusReason": "window_over",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
-            }
-          }
-        },
-        {
-          "a": {
-            "key": "INVENTORY_UNIVERSAL",
-            "label": "通投"
-          },
-          "b": {
-            "key": "fixture-task-nocap",
-            "label": "闲鱼潜客转化"
-          },
-          "metrics": {
-            "cost": {
-              "value": null,
-              "availability": "missing"
             },
-            "cashCost": {
-              "value": null,
-              "availability": "missing"
+            "biConv": {
+              "value": 2,
+              "availability": "available"
             },
-            "exposure": {
-              "value": null,
-              "availability": "missing"
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
             },
-            "click": {
-              "value": null,
-              "availability": "missing"
-            },
-            "conversion": {
-              "value": null,
-              "availability": "missing"
-            },
-            "realConversion": {
-              "value": null,
-              "availability": "missing"
-            },
-            "costSpace": {
-              "value": null,
-              "availability": "missing"
-            },
-            "wakeUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "potentialUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "ratios": {
-              "ctr": {
-                "value": null,
-                "state": "undefined"
-              },
-              "cvr": {
-                "value": null,
-                "state": "undefined"
-              },
-              "realCpa": {
-                "value": null,
-                "state": "undefined"
-              },
-              "cashCpa": {
-                "value": null,
-                "state": "undefined"
-              },
-              "gap": {
-                "value": null,
-                "state": "undefined"
-              },
-              "potentialRate": {
-                "value": null,
-                "state": "undefined"
-              },
-              "biConversionRate": {
-                "value": null,
-                "state": "undefined"
-              }
-            }
-          },
-          "assessment": {
-            "price": null,
-            "priceSource": "ka_daily",
-            "onTarget": null,
-            "costStatus": null,
-            "costStatusReason": "cash_missing",
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+            "overCost": {
+              "value": -10,
+              "availability": "available"
             }
           }
         }
       ],
-      "returnedRowCount": 3,
+      "returnedRowCount": 2,
       "wholeResultTotal": {
-        "value": 3,
+        "value": 2,
         "availability": "available"
       },
       "lineage": {
-        "source": "ka_data",
-        "workspaceKind": "team",
-        "datasetVersion": "ka-daily-2026-09-04",
-        "queryTemplateVersion": "account-summary-v3",
-        "metricVersion": "account-metrics-v2",
-        "dataAsOf": "2026-09-04T00:00:00.000+08:00",
-        "timezone": "Asia/Shanghai",
-        "dayCut": "business_day_0300",
-        "metadataAvailability": "known",
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "source": "canonical",
+        "datasetVersion": null,
+        "queryTemplateVersion": "account-pivot-window-v1",
+        "metricVersion": "account-pivot-v3",
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
           "role": "default_authoritative"
-        },
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-05",
-          "preset": "month_to_date"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -317,7 +260,9 @@
           ]
         },
         "coverage": {
-          "complete": true
+          "complete": true,
+          "requestedObjects": 3,
+          "returnedObjects": 3
         },
         "truncated": false,
         "partial": false
@@ -326,16 +271,10 @@
     }
   },
   "meta": {
-    "requestId": "fixture",
-    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
-    "businessDate": "2026-09-04",
-    "workspaceKind": "team",
-    "selectedSource": "ka_data",
     "cellCoverage": {
-      "cells": 3,
+      "cells": 2,
       "withData": 2,
-      "undeterminable": 1
-    },
-    "_note": "策略分析视图：预设 版位×任务；不做最优推荐"
+      "undeterminable": 0
+    }
   }
 }

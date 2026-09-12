@@ -8,37 +8,41 @@
       "status": "ready",
       "rows": [
         {
-          "rowCount": 3,
-          "accountCount": 3,
-          "anomalyRows": 1,
+          "rowCount": 2,
+          "accountCount": 1,
+          "anomalyRows": 0,
           "metrics": {
             "cost": {
-              "value": 13100.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 10233.7,
+              "value": 80,
               "availability": "available"
             },
             "exposure": {
-              "value": 98000,
+              "value": 2000,
               "availability": "available"
             },
             "click": {
-              "value": 3900,
+              "value": 100,
               "availability": "available"
             },
             "conversion": {
-              "value": 300,
+              "value": 8,
               "availability": "available"
             },
             "realConversion": {
-              "value": 270,
+              "value": 4,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 60,
               "availability": "available"
             },
             "costSpace": {
-              "value": 26.3,
+              "value": 20,
               "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             },
             "wakeUv": {
               "value": null,
@@ -50,23 +54,23 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.0398,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.0769,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 48.52,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 37.9,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.1111,
+                "value": 1,
                 "state": "finite"
               },
               "potentialRate": {
@@ -80,45 +84,48 @@
             }
           },
           "assessment": {
+            "priceSource": "history",
             "price": {
-              "value": 38.0,
+              "value": 20,
               "effectiveDate": "2026-09-01"
             },
-            "priceSource": "history",
             "onTarget": true,
             "costStatus": "yellow",
             "costStatusReason": "day_over_window_ok",
             "budgetUsageRate": {
-              "value": 0.91,
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 4,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
               "state": "finite"
+            },
+            "overCost": {
+              "value": -20,
+              "availability": "available"
             }
           }
         }
       ],
       "returnedRowCount": 1,
-      "wholeResultTotal": {
-        "value": 1,
-        "availability": "available"
-      },
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
-        "datasetVersion": "canonical-20260905-01",
-        "queryTemplateVersion": "account-summary-v3",
-        "metricVersion": "account-metrics-v2",
-        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
-        "timezone": "Asia/Shanghai",
-        "dayCut": "business_day_0300",
-        "metadataAvailability": "known",
+        "datasetVersion": null,
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "queryTemplateVersion": "v2",
+        "metricVersion": "account-summary-v2",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
-          "role": "default_authoritative"
-        },
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-05",
-          "preset": "month_to_date"
+          "role": "comparison_reference"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -129,19 +136,34 @@
           ]
         },
         "coverage": {
-          "complete": true
+          "complete": true,
+          "requestedObjects": 1,
+          "returnedObjects": 1
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY"
+        ]
       },
       "warnings": [
-        "2026-09-05 单日现金 CPA 41.2 超考核价，窗口累计 37.9 仍达标"
-      ]
+        "BUDGET_SOURCE_NOT_READY"
+      ],
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      }
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v3-yellow",
+    "requestId": "fixture",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "同上，真响应。09-01 当天现金 50 > 当天目标 40、整窗 60 ≤ 80 → costStatus=yellow、costStatusReason=day_over_window_ok、onTarget 仍为 true（判的是整窗）"
   }
 }

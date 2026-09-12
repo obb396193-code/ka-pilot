@@ -5,40 +5,44 @@
     "source": {
       "queryId": "account.dimension",
       "rowSchemaVersion": "account.dimension/v3",
-      "status": "ready",
       "dimension": "task",
+      "status": "ready",
       "rows": [
         {
-          "key": "fixture-task-ready",
-          "label": "AAC 拉新",
+          "key": "t-1",
+          "label": "投放任务",
           "metrics": {
             "cost": {
-              "value": 9000.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 7030.8,
+              "value": 120,
               "availability": "available"
             },
             "exposure": {
-              "value": 72000,
-              "availability": "available"
-            },
-            "click": {
               "value": 3000,
               "availability": "available"
             },
+            "click": {
+              "value": 150,
+              "availability": "available"
+            },
             "conversion": {
-              "value": 225,
+              "value": 12,
               "availability": "available"
             },
             "realConversion": {
-              "value": 214,
+              "value": 6,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 90,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1101.2,
+              "value": 30,
               "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             },
             "wakeUv": {
               "value": null,
@@ -50,23 +54,23 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.0417,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.075,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 42.06,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 32.85,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
-                "value": 0.0514,
+                "value": 1,
                 "state": "finite"
               },
               "potentialRate": {
@@ -80,133 +84,49 @@
             }
           },
           "assessment": {
+            "priceSource": "history",
             "price": {
-              "value": 38.0,
+              "value": 20,
               "effectiveDate": "2026-09-01"
             },
-            "priceSource": "history",
             "onTarget": true,
             "costStatus": "green",
             "costStatusReason": "window_ok",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": 6,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -30,
+              "availability": "available"
             }
           },
           "anomaly": false
-        },
-        {
-          "key": "fixture-task-nocap",
-          "label": "闲鱼潜客转化",
-          "metrics": {
-            "cost": {
-              "value": 4200.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 3281.04,
-              "availability": "available"
-            },
-            "exposure": {
-              "value": 30000,
-              "availability": "available"
-            },
-            "click": {
-              "value": 1400,
-              "availability": "available"
-            },
-            "conversion": {
-              "value": 92,
-              "availability": "available"
-            },
-            "realConversion": {
-              "value": 80,
-              "availability": "available"
-            },
-            "costSpace": {
-              "value": -241.04,
-              "availability": "available"
-            },
-            "wakeUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "potentialUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "ratios": {
-              "ctr": {
-                "value": 0.0467,
-                "state": "finite"
-              },
-              "cvr": {
-                "value": 0.0657,
-                "state": "finite"
-              },
-              "realCpa": {
-                "value": 52.5,
-                "state": "finite"
-              },
-              "cashCpa": {
-                "value": 41.01,
-                "state": "finite"
-              },
-              "gap": {
-                "value": 0.15,
-                "state": "finite"
-              },
-              "potentialRate": {
-                "value": null,
-                "state": "undefined"
-              },
-              "biConversionRate": {
-                "value": null,
-                "state": "undefined"
-              }
-            }
-          },
-          "assessment": {
-            "price": {
-              "value": 38.0,
-              "effectiveDate": "2026-09-01"
-            },
-            "priceSource": "history",
-            "onTarget": false,
-            "costStatus": "red",
-            "costStatusReason": "window_over",
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
-            }
-          },
-          "anomaly": true
         }
       ],
-      "returnedRowCount": 2,
-      "wholeResultTotal": {
-        "value": 2,
-        "availability": "available"
-      },
+      "returnedRowCount": 1,
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
-        "datasetVersion": "canonical-20260905-01",
-        "queryTemplateVersion": "account-summary-v3",
-        "metricVersion": "account-metrics-v2",
-        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
-        "timezone": "Asia/Shanghai",
-        "dayCut": "business_day_0300",
-        "metadataAvailability": "known",
+        "datasetVersion": null,
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "queryTemplateVersion": "account-dimension-window-v1",
+        "metricVersion": "account-dimension-v3",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
           "role": "default_authoritative"
-        },
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-05",
-          "preset": "month_to_date"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -217,20 +137,34 @@
           ]
         },
         "coverage": {
-          "complete": true
+          "complete": true,
+          "requestedObjects": 2,
+          "returnedObjects": 2
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY"
+        ]
       },
-      "warnings": []
+      "warnings": [
+        "BUDGET_SOURCE_NOT_READY"
+      ],
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      }
     }
   },
   "meta": {
     "requestId": "fixture",
-    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
-    "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "8 维之一：任务（team 空间有源；行 = 任务，label = 任务名）"
+    "_note": "POST /data/query {queryId:\"account.dimension\", dimensionType:\"task\"}：真响应，窗口内账户日齐全。"
   }
 }
