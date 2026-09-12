@@ -7431,3 +7431,32 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 **仍等你裁的三条**（上一封已报，这里只提醒不重复论证）：`ready-lineage.json` 不重导、`table-v3.json` 的 v2/v3 矛盾、三份钉着 `agent_type`/`deduction_range` 的 dimension fixture 是否照 (c) 换成能跑的维度。这三条不裁，「四键转必填」就落不了地。
 
 **下一步**：按你的序做 ④ Q-041 ⑧⑨（团队 ka-data 三维 + partial、`source.timezone`）。
+
+### 序 ④ 之 Q-041 ⑨ 交付；⑧ 的「未配置」判定条件与阻断点（be2 2026-09-12，v1.9.42）
+
+**交付 SHA**：`95823298`（分支 `be/r017`，路径限定提交、未 push）
+
+**⑨ `source.timezone` 受控配置——做完了**
+- 原来 `lineage.timezone` 四处**硬写 null**。现在来自新 env `DATA_SOURCE_TIMEZONE`，**起服务时就按 IANA 名校形**（配错直接起不来，而不是让每条响应都带一个没人看得懂的时区）。
+- **不配就还是 null**。我没有去读服务器本地时区——那是最顺手也最错的做法：时区等于在宣称「这份数按哪天切的」，服务器和媒体不在一个时区时就整整差一天，而页面上完全看不出来。
+- `dayCut` 仍是 null：知道时区**不等于**知道切日规则，不能因为拿到一个就顺手编另一个。所以 `metadataAvailability` 照样是 `partial`，不会因为多了一项就冒充「血缘齐备」。
+- 真库验证 3 条：配了就发出去、没配就 null、两种情况下 `metadataAvailability` 都如实。另加 5 条配置校验（`Shanghai` / `UTC+8` / 带分号的注入形 / 空白 一律在启动时拒）。
+- `docs/deploy/部署提示词-数据分析真数.md` 已补这个键，并注明**可不配**（不配只是血缘标「不知道」，页面照常能用）。
+
+**⑧ 团队 ka-data 三维 + partial——没做，先报边界（你要的「未配置」判定条件）**
+本地**两道闸**，任一不满足团队侧就走不到源：
+1. **路由闸**（`apps/worker/src/data/data-source-routing.ts:77`）：`workspaceKind === "team"` 且 `policy.kaDataEnabled` 为假 → `SOURCE_UNAVAILABLE: "Team data source is not configured"`。`kaDataEnabled` 来自 `KA_DATA_ENABLED === "true"`（`data-api-config.ts`），**默认 false**。这一闸在碰源之前就拦掉了。
+2. **组装闸**（`apps/worker/src/data-api.ts:92`）：即使开了开关，`createKaDataClientFromEnv` 还要求 `KA_DATA_BASE_URL` 与 `KA_DATA_READER_TOKEN` 非空、且 `KA_DATA_ACCESS_MODE`（若给）只能是 `internal_trial_shared_reader`；缺任一直接抛。没开开关时装的是 `DisabledKaDataSource`，它恒抛 `SOURCE_UNAVAILABLE: "KA Data is disabled by server configuration"`——**从不伪造行或血缘，也无法被请求打开**。
+
+所以本地我只能做到「实现 + 无库单测」，**跑不出团队侧的真响应**，也就验不了你最在意的那件事（成员路径与 SQL 直出汇总两条路的 partial 口径是否一致——`api.md:1482` 写明这正是 ⑧ 的核心）。上一次 P0 的教训就是「合成用例全绿、真库全红」，我不想在团队侧再来一遍。
+
+**两个请你定的**：
+1. 团队侧能不能给我一套可连的 `KA_DATA_BASE_URL`/`READER_TOKEN`（哪怕是只读、随时失效的），让我在交付前自己打一遍真响应？给不了的话，
+2. ⑧ 是否改成「我实现 + 无库单测交付，真响应回放由你在内网跑 A42 验」——那我在回执里会**明确写「团队侧未实测」**，不按已完成报。
+
+**门禁**：domain **1548** / db **157 文件 1759** / worker **204 文件 2328**（2 skipped）/ web **288**；eslint 0 error、tsc 全净。
+（db 有一次跑出 3 条红，紧接着连跑三次都是 157/157 全绿，**没能定位到具体用例**，按抖动记一笔；符合你 A39 说的测试库残留那一类，如果你的门禁也见到再说。）
+
+**发出形状变了**：`lineage.timezone` 现在可能是非 null 字符串（配置了才有）。前端若假定它恒为 null 需要跟一下。
+
+**下一步**：等你对 ⑧ 那两个问题的裁决；同时往下做 ⑤ Q-042（小时采样 job，验收清单第 7 项）——它不依赖团队源。
