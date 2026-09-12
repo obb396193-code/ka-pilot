@@ -815,3 +815,32 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 
 ### 078c940c ✅ 已合 main `9d1ec19a`；收口完成（arch 2026-09-10 循环第 22 圈）
 门禁 domain 98 / db 154 / worker 198 / gw 8 / web 244 全绿。503 那条你改用例的理由成立（025 装上后个人 hourly 源是启航落库，KA 关闭不该禁它；切 team 且 KA 关闭仍 503 保留）。多值筛选 `de98a243` 一并取了；selfcheck10/11 七份 fixture 已收进契约包。`R010-状态.md` 的 44 项移交清单 be2 从那接。你这支到此**停派**，不用再回执。这几天的活质量很高，谢谢。
+
+---
+
+### ★复工派单（arch 2026-09-12）：P-192 … P-197，全部避开 be2 的数据链
+
+你的分支 `be/r010` 落后 main 154 提交、工作树无改动。**第一步：`git merge main`**（同一个仓，不用等 push），读 `docs/plans/2026-09-12-数据分析第一可用版验收清单.md` 的并行边界表——**`apps/worker/src/data/**` 与 domain 的窗口/指标那批文件归 be2，你一律不动**；冲突了停手报我。
+
+老板现在只认一件事：**别人拿提示词部署出来，打开数据分析页看到自己的真数据，页面上没有假数据。** 你这批的作用是把「按钮点了没反应 / 显示示例」这类洞补上。
+
+**P-192（最先，能立刻改善观感）一期不做的十条挂 501 存根**
+契约 v1.9.31 列的十条：停止测试(#3)、自治度升档(#11)、订阅/定时「立即发送一次」(#13/#21)、值守换班(#15)、素材复刻(#18)、设计交付(#20)、AI 提效估时(#26)、月度拍板(#27)、搜索结果项动作(#28)、重新复盘(#24 已 501)。各自在对应路由回 `501 NOT_IMPLEMENTED`（错误体照 v1.9.19 的固定形），BFF 透传。前端已按 501 显「这一块一期未开放」，你落地后那些「当前为示例」提示会自动换掉。
+
+**P-193 治理后台成员与授权**（未开放入口清单 #4–#7）
+`PATCH /api/v1/admin/members/:identityId {role?, is_active?}`、`PUT /api/v1/admin/members/:identityId/grants`（整体替换，响应回替换后的全量）。已有 `POST /admin/members`（F-OS-004）那套的鉴权/审计口径照抄；**撤权必须同时让该成员已有会话的账户范围立刻收窄**（老规矩：撤权不生效比没有撤权更糟）。BFF 路由一并接上。
+
+**P-194 纯忽略 + 考核价变更记录**（v1.9.38/39 裁决）
+① `POST /work-items/:id/ignore` 不带 `mute_days` 时置 `ignored` 且不写 `account_mutes`（现在回 503）；`apps/web/lib/data/r010-command-bff.ts:130` 那句「不带 mute_days 的 200 判上游无效」同步改成「请求带了才要求响应带」——**这一行 web 文件授权你改**。
+② `GET /api/v1/settings/change-log?kinds=&task_id=&media=&cursor=`（契约 §B8）+ BFF 路由：任务详情与任务管理的「考核价历史」弹层要它；落地前前端读 `tasks/:id/timeline`，落地后切过去。
+
+**P-195 你自己交接里挂的两红**（`docs/plans/R010-状态.md` P190）
+`system/etl-runs` 与 `admin/data/reconcile` 缺 BFF、`reset-password` 缺后端——三条补齐，双向路由覆盖那两条断言转绿。
+
+**P-196 归因树**（Q-046，契约 §3.7）
+`GET /api/v1/tasks/:id/attribution?window_from&window_to&mode=volume|cost`。只算有公式的节点；`availability:"undeterminable"` 的节点 `gap=missing`，**不得显示「可优化空间」金额**。数据源只用已有 canonical，不新增 ETL。
+
+**P-197 自助报表**（Q-047，契约 §3.8）
+`GET/POST /api/v1/reports/configs`、`POST /api/v1/reports/render {config|config_id, window?}` → `{rows, columns, highlights, lineage}`。
+
+**纪律**：`[be2]` 不是你的前缀，用 `[codex]`；路径限定提交、不 push；每笔交付前 `git merge main`（A41）+ `git status --porcelain` 无未跟踪源文件（A44）；发出形状变了要在回执里声明（A40）；回执写 `docs/relay/inbox-arch.md`。门禁我在 `ka-arch-gates` 跑，你本地跑完 `packages/domain`、`packages/db`、`apps/worker` 三包再交。
