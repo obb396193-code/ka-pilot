@@ -61,6 +61,10 @@ describe("dimension tuple SQL / real PostgreSQL", () => {
   });
   it("keeps expected missing days explicit and never replaces missing costs with zero", async () => {
     const rows = await repository.queryDimension({ ...scope, dateTo: "2026-08-03" });
-    expect(rows).toHaveLength(2); expect(rows.every((r) => r.metrics.cost === null && r.metrics.rowCount === 2)).toBe(true);
+    // v1.9.40：缺账户日给部分合计（每行都有数），「绝不当 0」这层意图由 partial 名单保证——
+    // 值不是 0、也不是凭空造的，而是「已观测那部分的和」，并明说它不完整。
+    expect(rows).toHaveLength(2);
+    expect(rows.every((r) => r.metrics.rowCount === 2 && r.metrics.cost !== 0
+      && r.metrics.partial.includes("cost"))).toBe(true);
   });
 });

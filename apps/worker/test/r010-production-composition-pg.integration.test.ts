@@ -94,7 +94,12 @@ describe("R010 actual production composition with KA disabled", () => {
     const hourly = { queryId: "account.hourly", params: { date: "2026-09-01", media: "KUAISHOU" } };
     // The personal Qihang hour reader is now installed. KA=false does not
     // disable a different source. Existing table + absent samples is a valid
-    // missing grid, never fabricated zeros or a claim of complete data.
+    // grid, never fabricated zeros or a claim of complete data.
+    //
+    // v1.9.39: with the table present and this account carrying no sample for the
+    // whole day, the grid is `pending` — nothing has been collected yet — not
+    // `missing`, which reads as "we looked and this account genuinely spent
+    // nothing". Coverage stays incomplete either way: a state is not data.
     const missingHourly = await call("/api/v1/query", hourly);
     expect(missingHourly.response.status).toBe(200);
     expect(missingHourly.body).toMatchObject({ ok: true, data: { mode: "platform", source: {
@@ -103,7 +108,7 @@ describe("R010 actual production composition with KA disabled", () => {
     } } });
     expect(missingHourly.body.data.source.rows).toHaveLength(25);
     for (const row of missingHourly.body.data.source.rows) expect(row).toMatchObject({ media: "KUAISHOU", accountId: "synthetic-same",
-      cumulative: { cost: { value: null, availability: "missing" } } });
+      cumulative: { cost: { value: null, availability: "pending" }, cashCost: { value: null, availability: "pending" } } });
     // A real stored sample is independent of KA availability; same IDs on
     // other media/workspaces must not leak into this approved personal tuple.
     for (const [workspace, media, cost] of [[ws, "KUAISHOU", 25], [ws, "TENCENT", 900], [team, "KUAISHOU", 800]] as const)

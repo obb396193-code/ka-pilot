@@ -7,7 +7,7 @@ import {
 import {
   queryWindowSchema, summaryWindowRowSchema, dailyAssessmentInputSchema,
   comparisonWindow, computeWindowAssessment, compareWindowPoints, unavailableWindowComparison,
-  sumMetricValues, sumMetricValuesPartial, type SummaryWindowRow,
+  sumMetricValuesPartial, type SummaryWindowRow,
   calendarDateSchema, dashboardFiltersSchema,
   type LineageWarning,
 } from "@ka/domain";
@@ -111,22 +111,18 @@ export class PlatformWindowQuery {
         summary.accountCount !== lineage.returnedAccounts || summary.rowCount !== lineage.canonicalRows ||
         history.some((row) => row.ds < scope.dateFrom || row.ds > scope.dateTo) ||
         (!selected && new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0))) return invalid();
-      if (!equalMetric(sumMetricValues(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
-        !equalMetric(sumMetricValues(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
-      const assessment = (() => { try { return computeWindowAssessment(history); } catch { return invalid(); } })();
       /**
-       * v1.9.35：窗口里缺账户日时，两个**逐日可证**的指标改发「部分合计」——
-       * 现金花费与考核 BI 数在 `history` 里是逐日的，加得出有数那部分的和。
-       * 其余字段（cost/exposure/click…）仍走 SQL 的整窗口径：那条聚合是多查询共用的
-       * `expected_metric` CTE，给它加 partial 属于 Codex 那批共享聚合的活，我不在这一笔里动它。
-       * 判定已经因为 partial 挂起，所以「部分」绝不会被读成「达标」。
+       * 一致性核对：SQL 侧的窗口合计必须与逐日证据侧算出来的一致。
+       *
+       * ⚠️ 两边必须是**同一个口径**才能对拍。2026-09-12 的 P0 就是这里炸的：SQL 改成按
+       * 账户日给部分合计（Σ 有数的那部分），而证据侧 `load` 还是按天塌陷（同一天有一个账户
+       * 缺数就整天不算），于是同一个窗口两边算出不同的数，每一个有缺口的真实窗口都被
+       * `invalid()` 判废，大盘直接打不开。现在两边都是账户日级部分合计，用同一个求和函数对拍。
        */
-      const partialMetrics = assessment.costSpace.availability === "partial"
-        ? {
-          cashCost: sumMetricValuesPartial(history.map((row) => row.cashCost)),
-          realConversion: sumMetricValuesPartial(history.map((row) => row.realConversion)),
-        }
-        : {};
+      if (!equalMetric(sumMetricValuesPartial(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
+        !equalMetric(sumMetricValuesPartial(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
+      const assessment = (() => { try { return computeWindowAssessment(history); } catch { return invalid(); } })();
+
       const onTargetRate = targetRate(await repository.loadAccountCounts(scope), input.accounts.length, summary.accountCount);
       let compare: SummaryWindowRow["compare"];
       if (input.compare) {
@@ -175,7 +171,7 @@ export class PlatformWindowQuery {
         warnings: [...new Set(["BUDGET_SOURCE_NOT_READY", ...selection.warnings])],
         namedGaps: named,
         row: summaryWindowRowSchema.parse({
-          ...summary, metrics: { ...summary.metrics, ...partialMetrics, costSpace: assessment.costSpace },
+          ...summary, metrics: { ...summary.metrics, costSpace: assessment.costSpace },
           assessment: assessment.assessment, ...(compare ? { compare } : {}),
         }),
       };

@@ -13,6 +13,8 @@ const MAX_BYTES = 16 * 1024 * 1024;
 const snapshotSchema = z.object({
   workspaceId: z.string().uuid(), date: calendarDateSchema,
   rows: z.array(accountHourlyStoredRowSchema.extend({ sourceRunId: accountHourlyStoredRowSchema.shape.sourceRunId.nullable() })).max(10000),
+  // v1.9.39：这一整天采过样的账户（仓储按整日单独问）。老快照没有这个键 → 退回旧行为。
+  sampledAccounts: z.array(z.object({ media: z.string().regex(/^[A-Z0-9_]{1,32}$/), accountId: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/) }).strict()).max(1000).optional(),
   coefficient: z.object({ id: z.string().min(1), value: z.number().finite().positive(), op: z.enum(["multiply", "divide"]), effectiveDate: calendarDateSchema }).strict().nullable(),
 }).strict();
 interface Reader { read(auth: ApprovedWorkspaceAuthContext, request: unknown): Promise<unknown> }
@@ -54,6 +56,9 @@ export class PlatformHourlyQuery implements HourlyQueryPort {
       const snapshot = snapshotSchema.parse(raw);
       if (snapshot.workspaceId !== auth.workspaceId) throw new HourlySourceError("FORBIDDEN");
       if (snapshot.date !== date || (snapshot.coefficient && snapshot.coefficient.effectiveDate > date)) invalid();
+      for (const account of snapshot.sampledAccounts ?? []) {
+        if (!allowed.has(key(account))) throw new HourlySourceError("FORBIDDEN");
+      }
       for (const row of snapshot.rows) {
         if (row.workspaceId !== auth.workspaceId || !allowed.has(key(row))) throw new HourlySourceError("FORBIDDEN");
         if (row.ds !== date || row.hh < Math.max(0, from - 1) || row.hh > to) invalid();
@@ -69,7 +74,8 @@ export class PlatformHourlyQuery implements HourlyQueryPort {
         elapsedDayFraction: null,
       }));
       const rows = projectAccountHourly({ workspaceId: auth.workspaceId, date, accounts: accounts.map(a => ({ media: a.media, accountId: a.accountId })),
-        hhFrom: from, hhTo: to, observations });
+        hhFrom: from, hhTo: to, observations,
+        ...(snapshot.sampledAccounts === undefined ? {} : { sampledAccounts: snapshot.sampledAccounts })});
       const current = snapshot.rows.filter(row => row.hh >= from && row.hh <= to);
       const dataAsOf = current.length ? new Date(Math.min(...current.map(row => Date.parse(row.lastSyncTime)))).toISOString() : null;
       const complete = rows.length > 0 && current.length === rows.length && current.every(row => row.complete) &&

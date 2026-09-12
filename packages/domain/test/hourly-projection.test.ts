@@ -125,3 +125,51 @@ describe("trusted account cumulative hourly projection", () => {
     expect(value).toEqual(before);
   });
 });
+
+/**
+ * v1.9.39：整天一行都没采到的账户，空值给 `pending`（还没采），不是 `missing`（采过了就是没有）。
+ *
+ * 两者在页面上都是「−」，但一个该等下一轮采集、一个该去查为什么没数。原来整日 25 行全 `missing`
+ * 会让人以为这个账户当天真的没花钱。这个事实**必须由仓储按整日单独给**，不能从窗口内的
+ * observations 反推：窗口选 0–10 点而账户 20 点才开始投放时，反推会把正常账户说成没采到。
+ */
+describe("v1.9.39 an entirely unsampled day is pending, not missing", () => {
+  const other = { media: "KUAISHOU", accountId: "second" };
+  const pending = { value: null, availability: "pending" as const };
+
+  it("marks every hour of an unsampled account pending while a sampled one is unaffected", () => {
+    const rows = projectAccountHourly({
+      ...input(), accounts: [account, other], sampledAccounts: [account],
+    });
+    const unsampled = rows.filter((row) => row.accountId === other.accountId);
+    expect(unsampled).toHaveLength(2);
+    for (const row of unsampled) {
+      expect(row.cumulative).toEqual({ cost: pending, cashCost: pending, conversion: pending, realConversion: pending });
+      // 「还没采」推不出任何增量或比率，这些仍旧是不可计算，不是 0。
+      expect(row.delta.cost).toEqual(mv(null));
+      expect(row.ratios.realCpa).toEqual({ value: null, state: "undefined" });
+      expect(row.lastSyncAt).toBeNull();
+    }
+    expect(rows.find((row) => row.accountId === account.accountId)!.cumulative.cost).toEqual(mv(10));
+  });
+
+  it("keeps missing for a sampled account whose requested hours happen to be empty", () => {
+    // 这一条是整条改动的分界线：采过样、只是这几个小时没有 —— 那就是 missing，不是 pending。
+    const rows = projectAccountHourly({ ...input([observation(1)]), sampledAccounts: [account] });
+    expect(rows[0]!.cumulative.cost).toEqual(mv(null));
+    expect(rows[1]!.cumulative.cost).toEqual(mv(10));
+  });
+
+  it("behaves exactly as before when the caller supplies no sampling list", () => {
+    expect(projectAccountHourly({ ...input(), accounts: [account, other] })
+      .filter((row) => row.accountId === other.accountId)
+      .every((row) => row.cumulative.cost.availability === "missing")).toBe(true);
+  });
+
+  it("refuses evidence that contradicts itself", () => {
+    // 说这户整天没采到，却又交上来一条它当天的观测 —— 两句话来自同一张表，不能各显各的。
+    expect(() => projectAccountHourly({ ...input(), sampledAccounts: [] })).toThrow();
+    // 名单里出现授权范围外的账户同理。
+    expect(() => projectAccountHourly({ ...input(), sampledAccounts: [other] })).toThrow();
+  });
+});
