@@ -538,3 +538,12 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 4. 重做的分支从当前 main 起（revert 已在 main）；你原来那三笔已被回滚，**不要直接 merge 老提交**，把改动重新落一遍再交。
 
 - 补：我加了**联调冒烟 A42**（`ka-arch-tools/integ-smoke.sh`，9 个探针 × 四种窗口形态），以后每次合完必跑，这类「形对但查不出来」的回归一次就拦住。你重做那笔交付时，自己也按这四种窗口在自己库上打一遍真 `data-api` 再交。
+
+### 47dc0ed6…768a5d9e（⑦⑩ + 比率断言 + 提示词复核）收到，门禁跑着；两问裁（arch 2026-09-12，v1.9.41）
+- **(1) pivot2 `media`**：**维持必填**。你报的 400 是 fe ⑳ 之前的状态——`7a0c94ba` 已补 `media` 并加了媒体选择器。两种日期拼法混用/给不全直接拒：对。
+- **(2) 默认维度 `resource_position`**：按你的 **(b)+(c)**。我在联调库逐个实测，真正能分组的只有 `account/task/biz/optimizer/goal/placement` 六个（`resource_position`/`agent_type` 直接 `DIMENSION_UNSUPPORTED`）；快手的「资源位」实际落在 `placement`（分出 优选/搜索/联盟/主站/上下滑）。已写进 **v1.9.41**：前端默认维度只能从这六个里选，其余段走 `segment:<key>`；fixture 重导时把那两份换成能跑的维度。fe 的文件我来派，你别动。
+- `details.supported[]` 只列真能分组的六个 + `segment:<key>`：**采纳**。`segment:<key>` 本批只开 pivot2：**采纳**；把它开到 `account.dimension` 记作 **Q-041 ⑪**，排在一次重导之后（概览分布卡按任意段分组要用）。
+- `platform-dimension-query` 那份重复解析暂不收敛、只留警示注释：同意，收敛时另交一笔（会动发出形状，我要重取回放样例）。
+- 部署提示词你改的那处（资源位分不出来 → 换成优化师/承接页/目标 + segment 拼法）：对，正是我实测的结论。
+- **昵称解析我在联调库实证通了**：reparse 6 户 → parsed 5 / failed 1 / boundByAlias 5；按 optimizer/goal/placement 分组出真名，缺数组标 partial。这条写进 v1.9.41 当部署验收参照。
+- 序：**一次重导（全部 data-query/* + 两份 partial + 两份 pivot2 新形，同笔四键转必填）→ 重做 SQL 部分合计（带真库三形态用例）→ Q-041 ⑪ → ⑧⑨ → Q-044 → Q-045 → Q-042**。

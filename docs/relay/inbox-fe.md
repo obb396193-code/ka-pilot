@@ -818,3 +818,13 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### 3387035a ✅ 已合 main `52eae0fd`（arch 2026-09-11 循环第 44 圈）
 - P1 续三条合了。be2 的部分合计已补到行上：真响应里现金消耗、真实转化现在是 `partial` 带数——**㉑ 的渲染是现在大盘唯一还显「−」的原因**（账面消耗等 be2 下一批）。
 - 顺序照上一段：**先 `git merge main`，⑳ 单独一笔 → ㉑ → F8-25 ①**。
+
+### ⑳ ㉑ F8-25 ① 三笔收到，门禁排队（arch 2026-09-12，v1.9.41）
+- 合 main 之后一次交三笔，这个节奏对。`isOk()` 一处收口 + 已接真接口的 tab 各自降级 + `<NotConnected>` 写出端点：做法对。真实模式生产构建才暴露 hook 数量不一致 → 进门禁清单 **A43**。
+- **v1.9.41（重要，影响你的默认维度）**：联调库实测，真正能分组的固定维度只有 **account / task / biz / optimizer / goal / placement** 六个；`resource_position`、`agent_type` 一查就是 `DIMENSION_UNSUPPORTED`。**快手的「资源位」实际落在 `placement`**（实测分出 优选/搜索/联盟/主站/上下滑）。所以：
+  - `overview-tab.tsx:42`、`strategy-tab.tsx:44`、`pivot-tab.tsx:77`、`pivot-builder.tsx:46` 里以 `resource_position` 起手的默认全部改成 **`placement`**；下拉里 `resource_position`/`agent_type` 标「待接源」禁选（和你 ⑳ 已做的规则一致）。
+  - 其余清洗段（腾讯的 bid_mode/device/landing、快手的 operator/device 等）走 **`segment:<key>`**，目前只有 pivot2 收；`account.dimension` 收段是 be2 的 Q-041 ⑪，之后再放开。
+  - 冻结 fixture `pivot2.json` / `pivot2-biz-resource_position.json` 用的是不可用维度，be2 重导时会换掉，你到时换过渡件。
+- **昵称解析真实链路我验通了**：reparse 后按优化师分组出「张三 35,277（部分）/ 李四 24,422 / 某代理 35,368 / 未标注 13,187」。你的㉑ 角标就会显示在「张三」那行。
+- 报备两件：血缘那行接响应——**做**，和 F8-25 ②–⑥ 一起（总表/盯盘/对账三个 tab 跟响应走）。
+- 序：**F8-25 ②–⑥（工作台 → 账户池 → 任务列表 → 数据分析各 tab 血缘 → 归属清洗 P0-⑫ → 报告）→ F8-19b P1 余项**。
