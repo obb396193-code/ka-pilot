@@ -1498,3 +1498,13 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **`account.pivot2` 的 `media` 维持必填**：fe 的 ⑳（`7a0c94ba`）已补上并加了媒体选择器，be2 报的那条 400 是 ⑳ 之前的状态。`dateFrom/dateTo` 与 `window_from/window_to` 两种拼法**混用直接拒、给不全直接拒**（be2 已实现，采纳）。
 - **昵称解析链路实证**（联调库，供部署验收参照）：`POST /admin/account-names/reparse {media}` → `{reparsed:6, byStatus:{parsed:5, failed:1}, boundByAlias:5}`；随后按 optimizer/goal/placement 分组各出 4/4/6 组真名（张三、李四、某代理、未标注…），缺数组标 `partial`。部署提示词 5b 之后应照此自验。
 - **比率在部分合计上保持 finite**（be2 实测已然，补了断言）：分子分母任一为 partial 时比率照算，前端挂「部分」标，不得压成 `undefined`。
+
+## v1.9.42 追加（2026-09-12 arch；钉钉出站投递与两处「待 arch 定」的入口）
+- **出站投递缺一环（实证）**：`outbound_messages` 只有入队方（`failure-notifier`、`quality/check-handler` 等），**没有任何进程消费它**，`status` 永远停在 `queued`——告警/派发/审批/日报一条都发不出去。补 **出站投递器**（Codex P-198）：
+  - 单轮消费口径与 `worker:once` 一致（取一批 `status='queued'` 且到期的行 → 发送 → `sent`/`failed` + `attempts+1` + `fail_reason`），跨实例单飞锁沿用现有 job 锁；**不引入常驻循环**，由 worker HTTP 触发口或部署侧定时器驱动。
+  - 通道先只做 `channel='dingtalk'`：群机器人 webhook（`DINGTALK_ROBOT_WEBHOOK` + `DINGTALK_ROBOT_SECRET` 签名）与单聊二选一由 `target` 决定；**URL 白名单**沿用入站那套防 SSRF 的校验，非钉钉域直接 `failed` 不重试。
+  - 失败重试：指数退避、`attempts` 上限 5，超过置 `failed` 并落 `fail_reason`（不含密钥与完整 URL）。**同一 `id` 不得重复发送**（发送前置 `sending` + 条件更新，崩溃恢复按 `sent_at` 判定）。
+  - 未配置凭证时：不报错、不重试、整体跳过并在 `worker:diagnose` 里显 `dingtalkOutbound:"not_configured"`——内网未配通道不该让 ETL 看起来是坏的。
+- **#13 订阅「立即发送一次」**：`POST /api/v1/integrations/subscriptions/:id/test-send` → 立刻渲染该订阅当前窗口的一条消息入 `outbound_messages`（`kind` 后缀 `_test`），响应 `{outboundId, target /*脱敏*/, renderedAt}`；**只入队不绕过投递器**，这样「发不出去」与「渲染不对」能分开判。限流：同一订阅 1 分钟 1 次，超出 `429 RATE_LIMITED`。
+- **#15 值守换班**：`PUT /api/v1/integrations/on-call {userId, note?}` → 写 `on_call_shifts`（新表，Codex 落迁移，取当时下一个空号）`{workspace_id, user_id, from_at, note, changed_by}`，旧行 `to_at` 截止；`GET /api/v1/integrations/on-call` 返回当前值守与最近 20 条换班记录。**P0 告警的接收人按值守表解析**，没有值守记录时回落到工作区 admin 并在响应里标 `fallback:true`。
+- 订阅相关三条（未开放清单 #14 新建订阅、#22 报告定时启停、#30 设置通知编辑）**从 be2 改派 Codex**（be2 数据链满载）：`POST /integrations/subscriptions`、`PATCH /integrations/subscriptions/:id`，字段照 §B9。

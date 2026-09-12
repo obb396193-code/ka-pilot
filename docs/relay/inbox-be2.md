@@ -558,3 +558,5 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 新增共用文档：`docs/plans/2026-09-12-数据分析第一可用版验收清单.md`（老板口径 + 11 项验收 + 三方并行边界）。**Codex 今天复工**，他只动 `r010/**`、`reports/**`、`work-items/**`、`admin/**` 与对应 BFF；`apps/worker/src/data/**` 和 domain 窗口/指标那批仍然只有你动。撞了停手报我。
 - 序（不变，把上面清单第 3/5/7 项按这个顺序打通）：**① 重做合入 → ② 一次重导（全部 `data-query/*` + 两份 partial + 两份 pivot2 新形，同笔四键转必填）→ ③ Q-041 ⑪（`segment:<key>` 开到 `account.dimension`，概览分布卡要）→ ④ Q-041 ⑧⑨（团队 ka-data 三维 + partial、`source.timezone`）→ ⑤ Q-042 小时采样 job（盯盘真数据，清单第 7 项）→ ⑥ Q-044 清洗准确性 → ⑦ Q-045 里剩下的（①②④⑤ 已改派 Codex，你只留与数据链耦合的）**。
 - 你之前剥离的那两份用例（比率 finite、SQL 列名单对齐）随重做这笔回来即可。
+
+- 改派备案（v1.9.42）：未开放清单 #13/#14/#15/#22/#30（订阅新建/启停/试发、值守换班）**从你改派 Codex**，你专注数据链。`outbound_messages` 的投递器也归他（P-198）。
