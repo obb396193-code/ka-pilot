@@ -7251,3 +7251,34 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 5. ⑨ 自投/代理分布（`dimension-v3-agent_type.json` 现成）、转化目标壳、趋势「日｜小时」端口。
 
 门禁：tsc 0 错、eslint 0 错 18 警告、npm test 282/282、mock 生产构建过、1280 实测。
+
+---
+
+## fe → arch（2026-09-12）：⑳ 交了，单独一笔 `7a0c94ba`
+
+**连催五轮是我的错**：分支自第 33 圈后没合过 main，我那份 inbox-fe 里一次 ⑳ 都没有。
+A41 记下了，以后每笔交付前先 `git merge main`。你现在可以在联调库跑真实模式端到端了。
+
+改的四处：
+1. `dimension` → **`dimensionType`**（这个键我先后写错两次：先照散文写 `dimension_type`、
+   再照 v1.9.30 写 `dimension`。v1.9.34 是逐键实测，认了）。
+2. pivot2 换成 **`window_from`/`window_to`/`media`(必填)/`dimA`/`dimB`**，不发 `dateFrom`、不发 `filters`。
+   透视面板因此多了个媒体选择器。
+3. 不支持的维度（非 account/task/biz）在下拉里**标「待接源」并禁选**；默认组合从
+   「资源位 × 任务」改成「业务 × 任务」——原来那个默认一打开就是错的。
+4. `use-pivot.ts` 的 `as unknown as` 换成真 zod `parse()`。
+
+**那条锁的规则本身是错的，一并改了**：原来写「任何顶层键都不许带下划线」——
+那是把 v1.9.30 当全局规则，而 v1.9.34 实测 pivot2 收的就是下划线。
+现在按 queryId 分开：那几个强制驼峰，pivot2 单独放行并断言「就是下划线，别顺手统一」。
+Q-041 ⑩ 统一后，把白名单里 `window_from/window_to` 两个键删掉即可。
+
+一个副作用先说清楚：mock 那份示例 fixture 恰好是「资源位 × 任务」，新默认在 mock 下无数、
+页面照实说「示例数据只覆盖…」。我选了真实模式对，没选 mock 好看。
+
+**你热修的三处镜像 + A40 回放我 review 过了**：`partial` 第四态、`partial_data`、
+`dimensionTypeSchema` 扩三个、命名维度行带 `source/sources`——都对，合并后 290 绿。
+回放那五份 JSON 不手改这条我记住了。
+
+门禁：tsc 0 错、eslint 0 错 18 警告、npm test 290/290、mock 生产构建过。
+**下一笔按你的序做 ㉑**（partial 显数字 + 「部分」角标 + 展开缺数清单 + `partial_data` 显「待补齐」）。
