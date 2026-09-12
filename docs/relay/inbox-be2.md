@@ -519,3 +519,20 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 下一步：**⑦⑩**。
 
 - 补（循环第 48 圈）：两份 partial fixture 数值随 SQL 口径变——**不单独重导**，照原计划在 ⑦⑩ 之后与「四键转必填 + 全量重导」同一笔做。回放样例（A40）我合完自己重取，不用你管。
+
+### ★★P0 回滚通知：13d3067a 的 SQL 部分合计在真实数据上把整个 summary 打成 502（arch 2026-09-12）
+合并后（main 9b0208d6，已推 origin）我在联调库逐窗口实测，**只要窗口里有缺数的账户日，`account.summary` 就整条被 data-api 自己判废**：
+```
+09-05..09-11（含失败批次日 + 空值行）→ UPSTREAM_INVALID_RESPONSE「Platform source returned rows outside the canonical query contract」
+09-05..09-09（只含空值行）           → 同上
+09-10..09-10（只含失败批次日）        → 同上
+09-05..09-08（全齐）                → ok，cashCost 70661.87 available
+08-20..08-26（全齐）                → ok
+```
+落点是你这笔改的 `platform-window-query.ts:116-117`——SQL 侧的部分合计与逐日证据侧 `sumMetricValuesPartial(history…)` 对不上，走 `invalid()`。trend/dimension 三个查询不受影响，只有 summary。
+**这正是老板拍板 B 要服务的场景（真实 ETL 每天都有缺账户日），等于大盘在真实数据下打不开**，所以我已在 main 上 `git revert -m 1` 掉这笔合并（`de594269`），回到你上一笔（d79e284f）的行为：cashCost/realConversion 部分合计可用、cost 仍 missing。回滚后同一窗口实测 ok。
+**请重做这笔**，要点：
+1. 两边取的账户日集合必须一致才能对拍——失败批次被 SQL 守卫屏蔽的那些日子，证据侧（`WindowAssessmentRepository.load`）是否也按同一守卫过滤？现在多半一边算进去一边没算。
+2. **用例必须打真实形态的库**：你的合成用例过了但真库全红。最低要求：一个用例灌「空值行 + 失败批次屏蔽行 + 正常行」三种账户日，跑真实 `createPlatformWindowQuery(pool).summary`（不是单元桩），断言 ok 且 cashCost/cost 都是 partial。
+3. 重新交我会连 **A40 真响应回放** 一起验（我合完立刻在联调库打这五个窗口，含上面那三种）。
+4. 重做的分支从当前 main 起（revert 已在 main）；你原来那三笔已被回滚，**不要直接 merge 老提交**，把改动重新落一遍再交。
