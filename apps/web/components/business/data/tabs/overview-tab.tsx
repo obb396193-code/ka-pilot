@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 
-import { DimensionChart } from "@/components/business/data/dashboard/dimension-chart"
+import { DistributionCard } from "@/components/business/data/dashboard/distribution-card"
 import { DrillTable } from "@/components/business/data/dashboard/drilldown"
 import { KpiRows } from "@/components/business/data/dashboard/kpi-rows"
 import { MissingDataNotice, type LineageWarning } from "@/components/business/data/dashboard/missing-data-notice"
@@ -53,6 +53,8 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery }: {
   const resourceRows = resourceQuery.data ?? []
   // ★任务大类顶层行走**和 summary 同源**的那份，不用契约里那份 personal 的 biz fixture：
   //   两者口径不同，挂在一起会让分摊的分母整个错（审查 ③ 点名）。
+  const goalQuery = useDashboardDimension("goal", window, workspaceId, mockOptimizerRows())
+  const goalRows = goalQuery.data ?? []
   const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows())
   const bizRows = bizQuery.data ?? []
 
@@ -180,17 +182,18 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery }: {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="pt-5">
-          <DimensionChart
-            id="overview.resource_position"
-            title="资源位分布"
-            description="按账面花费；只画有消耗的资源位"
-            rows={resourceRows}
-            colorKey={colorKey}
-          />
-        </CardContent>
-      </Card>
+      {/*
+        F8-26 ④：分布补成**三张**，每张配同源明细表（契约 v1.9.29：只有饼图不算完成）。
+        饼图只能回答「谁占得多」，回答不了「它达标没有、成本多少、这个数是几个账户堆出来的」——
+        优化师做决定时看的是后面这几个。
+        「资源位」这一维在真实模式下必炸（没有解析器产出），已换成 `placement`（v1.9.41）。
+        自投/代理等其余清洗段等 be2 Q-041 ⑪ 把 `segment:<key>` 开到 `account.dimension` 再加。
+      */}
+      <div className="grid gap-4 @4xl/main:grid-cols-2 @6xl/main:grid-cols-3">
+        <DistributionCard id="overview.placement" title="资源位分布" description="按账面花费；只画有消耗的项" rows={resourceRows} colorKey={colorKey} warnings={lineage?.warnings} />
+        <DistributionCard id="overview.goal" title="转化目标分布" description="按账面花费；只画有消耗的项" rows={goalRows} colorKey={colorKey} warnings={lineage?.warnings} />
+        <DistributionCard id="overview.optimizer" title="优化师分布" description="按账面花费；只画有消耗的项" rows={optimizerRows} colorKey={colorKey} warnings={lineage?.warnings} />
+      </div>
 
       {lineage ? <LineageFooter lineage={lineage} extra={<span>账户 {summary.accountCount} · 异常行 {summary.anomalyRows}</span>} /> : null}
     </div>
