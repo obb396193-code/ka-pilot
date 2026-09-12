@@ -53,7 +53,10 @@ describe("strict bounded window aggregate assembly", () => {
   it("today comparisons remain undefined with no previous-period request", () => {
     const { plan, raw } = setup("dod", true);
     const result = assembleKaWindowAggregates(raw, plan, "dod");
-    expect(Object.values(result.row.compare!.deltas)).toEqual(Array(5).fill({ value: null, state: "undefined" }));
+    // v1.9.43 起六项（realCpa 与 cashCpa 并列）；键名一并钉住，漏发一个不会只是少个数字。
+    expect(Object.keys(result.row.compare!.deltas).sort())
+      .toEqual(["cashCost", "cashCpa", "cost", "onTargetRate", "realConversion", "realCpa"]);
+    expect(Object.values(result.row.compare!.deltas)).toEqual(Array(6).fill({ value: null, state: "undefined" }));
   });
   it.each(["missing-day", "duplicate-window", "wrong-period", "wrong-date", "wrong-member-count", "too-many-accounts", "bad-price", "bad-number", "bad-target", "wrong-on-target-count", "wrong-day-over", "wrong-sum"])(
     "rejects corrupt aggregate proof %s", (kind) => {

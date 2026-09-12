@@ -160,6 +160,6 @@ export function comparisonWindow(input: unknown, mode: WindowComparisonMode) {
 export function unavailableWindowComparison(mode: WindowComparisonMode) {
   return windowComparisonSchema.parse({ mode, deltas: {
     cost: undefinedRatio, cashCost: undefinedRatio, realConversion: undefinedRatio,
-    cashCpa: undefinedRatio, onTargetRate: undefinedRatio,
+    realCpa: undefinedRatio, cashCpa: undefinedRatio, onTargetRate: undefinedRatio,
   } });
 }

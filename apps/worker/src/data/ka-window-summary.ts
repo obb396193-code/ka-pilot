@@ -32,7 +32,7 @@ function summarize(members: readonly KaWindowMember[], window: Window) {
   return {
     row: summaryWindowRowSchema.parse({ ...base, metrics: { ...base.metrics, costSpace: assessment.costSpace }, assessment: assessment.assessment }),
     point: { cost: base.metrics.cost, cashCost: base.metrics.cashCost, realConversion: base.metrics.realConversion,
-      cashCpa: base.metrics.ratios.cashCpa, onTargetRate },
+      realCpa: base.metrics.ratios.realCpa, cashCpa: base.metrics.ratios.cashCpa, onTargetRate },
     warnings: assessment.warnings,
   };
 }

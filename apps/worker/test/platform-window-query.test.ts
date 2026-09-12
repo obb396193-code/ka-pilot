@@ -126,7 +126,10 @@ describe("personal window query composition", () => {
     const { query, repository } = setup();
     const result = await query.summary({ ...input, window: { ...input.window, preset: "today" }, compare: "dod" });
     expect(repository.querySummary).toHaveBeenCalledTimes(1);
-    expect(Object.values(result.row.compare!.deltas)).toEqual(Array(5).fill({ value: null, state: "undefined" }));
+    // v1.9.43 起六项（realCpa 与 cashCpa 并列）；键名一并钉住，漏发一个不会只是少个数字。
+    expect(Object.keys(result.row.compare!.deltas).sort())
+      .toEqual(["cashCost", "cashCpa", "cost", "onTargetRate", "realConversion", "realCpa"]);
+    expect(Object.values(result.row.compare!.deltas)).toEqual(Array(6).fill({ value: null, state: "undefined" }));
   });
   it("missing history prices do not borrow the cached costSpace or invent effective dates", async () => {
     const { query, repository } = setup();

@@ -119,7 +119,8 @@ export function assembleKaWindowAggregates(input: unknown, plan: KaDataWindowQue
   const summary = rowSummary(current.window);
   const point = (row: Row) => {
     const metrics = rowSummary(row).metrics;
-    return { cost: metrics.cost, cashCost: metrics.cashCost, realConversion: metrics.realConversion, cashCpa: metrics.ratios.cashCpa,
+    return { cost: metrics.cost, cashCost: metrics.cashCost, realConversion: metrics.realConversion,
+      realCpa: metrics.ratios.realCpa, cashCpa: metrics.ratios.cashCpa,
       onTargetRate: !row.determinable_count ? ratioUnknown : { value: row.on_target_count! / row.determinable_count, state: "finite" as const } };
   };
   const comparison = compare === undefined ? undefined : previous === undefined ? unavailableWindowComparison(compare)
