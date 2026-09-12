@@ -16,6 +16,11 @@ const observationSchema = z.object({
 const inputSchema = z.object({
   workspaceId: z.string().uuid(), date: calendarDateSchema, accounts: z.array(tupleSchema).max(1000),
   hhFrom: hourSchema, hhTo: hourSchema, observations: z.array(observationSchema).max(10000),
+  /**
+   * v1.9.39：**这一整天**采过样的账户（由仓储按整日单独问出来，不是从 `observations` 反推）。
+   * 不给就退回旧行为（全部当已采过），老调用方不受影响。
+   */
+  sampledAccounts: z.array(tupleSchema).max(1000).optional(),
 }).strict();
 type Observation = z.infer<typeof observationSchema>;
 const fields = ["cost", "cashCost", "conversion", "realConversion"] as const;
@@ -33,6 +38,16 @@ function difference(current: CanonicalMetricValue, previous: CanonicalMetricValu
 }
 function emptyVolume(): AccountHourlyRow["cumulative"] {
   return { cost: metricValue(null), cashCost: metricValue(null), conversion: metricValue(null), realConversion: metricValue(null) };
+}
+/**
+ * v1.9.39：整天一行没采到的账户，空值是 `pending`（还没采）而不是 `missing`（采过了就是没有）。
+ *
+ * 两者在页面上都是「−」，但一个该等下一轮、一个该去查为什么没数。整日 25 行全 `missing`
+ * 会让人以为这个账户当天真的没花钱，实际只是小时级采集还没跑到它。
+ */
+function pendingVolume(): AccountHourlyRow["cumulative"] {
+  const pending = { value: null, availability: "pending" } as const;
+  return { cost: pending, cashCost: pending, conversion: pending, realConversion: pending };
 }
 
 /** Pure arithmetic projection; not an authorization service or source completeness
@@ -59,10 +74,20 @@ export function projectAccountHourly(raw: unknown): AccountHourlyRow[] {
   }
   const rows: AccountHourlyRow[] = [];
   const ordered = [...input.accounts].sort((a, b) => key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0);
+  // 名单缺席 = 老调用方，一切照旧；给了名单，名单外的账户就是「今天一行都没采到」。
+  // 名单里出现授权范围外的账户属于证据自相矛盾，不能默默忽略。
+  const sampled = input.sampledAccounts === undefined ? null : new Set(input.sampledAccounts.map(account => key(account)));
+  if (sampled !== null) {
+    for (const account of input.sampledAccounts!) if (!allowed.has(key(account))) invalid();
+  }
   for (const account of ordered) {
+    const unsampled = sampled !== null && !sampled.has(key(account));
+    // 「整天没采到」却又交上来一条这一天的观测，是证据自相矛盾——两句话来自同一张表。
+    // 容忍它就等于让两份互相打架的事实各显各的，而页面上看不出哪份是对的。
+    if (unsampled && input.observations.some(observation => key(observation) === key(account))) invalid();
     for (let hh = input.hhFrom; hh <= input.hhTo; hh++) {
       const current = observations.get(key(account, hh)), previous = observations.get(key(account, hh - 1));
-      const cumulative = current?.cumulative ?? emptyVolume(), delta = emptyVolume();
+      const cumulative = current?.cumulative ?? (unsampled ? pendingVolume() : emptyVolume()), delta = emptyVolume();
       if (current && hh < 24) {
         for (const field of fields) delta[field] = difference(cumulative[field], hh === 0 ? metricValue(0) : previous?.cumulative[field] ?? metricValue(null));
       }
