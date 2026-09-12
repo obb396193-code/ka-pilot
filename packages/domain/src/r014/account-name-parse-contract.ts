@@ -206,7 +206,12 @@ export function extractTaskIds(value: string): { bare: string; taskIds: string[]
 
 function splitTokens(name: string, separators: readonly string[]): string[] {
   const escaped = separators.map((separator) => separator.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("");
-  return name.split(new RegExp(`[${escaped}]`)).map((token) => token.trim()).filter((token) => token.length > 0);
+  // v1.9.29 ①（Q-044）：**空段留着占位**，不能删。
+  // 原来 `filter(token.length > 0)` 把空段丢掉、后面整体前移一格，于是
+  // `自投--任务A-备注` 里的「任务A」被顶到优化师那一格，还报 parsed ——
+  // 一个明显写错的昵称被当成解析成功，优化师看到的是别人的名字。
+  // 留着空串，它自然对不上任何段（见 `matchesSegment`），那一段记未匹配、后面按位不动。
+  return name.split(new RegExp(`[${escaped}]`)).map((token) => token.trim());
 }
 
 /** 枚举候选：开了 `matchLongest` 就按长度倒序，先长后短，避免长别名被短的截胡。 */
@@ -218,6 +223,9 @@ function enumValues(segment: NamingSegment): readonly string[] {
 }
 
 function matchesSegment(segment: NamingSegment, token: string): boolean {
+  // 空段谁也不匹配。显式写在这里而不是靠各分支自己兜：`regex` 段的 pattern 可能允许空
+  //（例如 `^\d*$`），那样一个空格子会被它认领，错位就又回来了。
+  if (token.length === 0) return false;
   const { bare } = extractTaskIds(token);
   if (segment.source === "free") return token.length > 0;
   if (segment.source === "regex") return new RegExp(segment.pattern!).test(token);
@@ -309,7 +317,9 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
   }
 
   // 中间剩下的整体归吸收段（可含分隔符）。
-  const middle = tokens.slice(head, end + 1);
+  // 吸收段与 leftover 看的是「真写了什么」，空占位不是内容：
+  // 全是空格子时吸收段应算没匹配，而不是产出一串分隔符当值。
+  const middle = tokens.slice(head, end + 1).filter((token) => token.length > 0);
   if (absorb !== null) {
     if (middle.length === 0) {
       unmatched.push(absorb.key);
@@ -330,7 +340,7 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
     }
   }
 
-  const leftover = absorb === null ? tokens.slice(head, end + 1) : [];
+  const leftover = absorb === null ? tokens.slice(head, end + 1).filter((token) => token.length > 0) : [];
   const taskIds = [...new Set(Object.values(segments).flatMap((segment) => segment.taskIds))];
   const matchedCount = Object.keys(segments).length;
   /**
