@@ -1498,3 +1498,25 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **`account.pivot2` 的 `media` 维持必填**：fe 的 ⑳（`7a0c94ba`）已补上并加了媒体选择器，be2 报的那条 400 是 ⑳ 之前的状态。`dateFrom/dateTo` 与 `window_from/window_to` 两种拼法**混用直接拒、给不全直接拒**（be2 已实现，采纳）。
 - **昵称解析链路实证**（联调库，供部署验收参照）：`POST /admin/account-names/reparse {media}` → `{reparsed:6, byStatus:{parsed:5, failed:1}, boundByAlias:5}`；随后按 optimizer/goal/placement 分组各出 4/4/6 组真名（张三、李四、某代理、未标注…），缺数组标 `partial`。部署提示词 5b 之后应照此自验。
 - **比率在部分合计上保持 finite**（be2 实测已然，补了断言）：分子分母任一为 partial 时比率照算，前端挂「部分」标，不得压成 `undefined`。
+
+## v1.9.42 追加（2026-09-12 arch；钉钉出站投递与两处「待 arch 定」的入口）
+- **出站投递缺一环（实证）**：`outbound_messages` 只有入队方（`failure-notifier`、`quality/check-handler` 等），**没有任何进程消费它**，`status` 永远停在 `queued`——告警/派发/审批/日报一条都发不出去。补 **出站投递器**（Codex P-198）：
+  - 单轮消费口径与 `worker:once` 一致（取一批 `status='queued'` 且到期的行 → 发送 → `sent`/`failed` + `attempts+1` + `fail_reason`），跨实例单飞锁沿用现有 job 锁；**不引入常驻循环**，由 worker HTTP 触发口或部署侧定时器驱动。
+  - 通道先只做 `channel='dingtalk'`：群机器人 webhook（`DINGTALK_ROBOT_WEBHOOK` + `DINGTALK_ROBOT_SECRET` 签名）与单聊二选一由 `target` 决定；**URL 白名单**沿用入站那套防 SSRF 的校验，非钉钉域直接 `failed` 不重试。
+  - 失败重试：指数退避、`attempts` 上限 5，超过置 `failed` 并落 `fail_reason`（不含密钥与完整 URL）。**同一 `id` 不得重复发送**（发送前置 `sending` + 条件更新，崩溃恢复按 `sent_at` 判定）。
+  - 未配置凭证时：不报错、不重试、整体跳过并在 `worker:diagnose` 里显 `dingtalkOutbound:"not_configured"`——内网未配通道不该让 ETL 看起来是坏的。
+- **#13 订阅「立即发送一次」**：`POST /api/v1/integrations/subscriptions/:id/test-send` → 立刻渲染该订阅当前窗口的一条消息入 `outbound_messages`（`kind` 后缀 `_test`），响应 `{outboundId, target /*脱敏*/, renderedAt}`；**只入队不绕过投递器**，这样「发不出去」与「渲染不对」能分开判。限流：同一订阅 1 分钟 1 次，超出 `429 RATE_LIMITED`。
+- **#15 值守换班**：`PUT /api/v1/integrations/on-call {userId, note?}` → 写 `on_call_shifts`（新表，Codex 落迁移，取当时下一个空号）`{workspace_id, user_id, from_at, note, changed_by}`，旧行 `to_at` 截止；`GET /api/v1/integrations/on-call` 返回当前值守与最近 20 条换班记录。**P0 告警的接收人按值守表解析**，没有值守记录时回落到工作区 admin 并在响应里标 `fallback:true`。
+- 订阅相关三条（未开放清单 #14 新建订阅、#22 报告定时启停、#30 设置通知编辑）**从 be2 改派 Codex**（be2 数据链满载）：`POST /integrations/subscriptions`、`PATCH /integrations/subscriptions/:id`，字段照 §B9。
+
+## v1.9.43 追加（2026-09-12 arch；大盘对照 v7 借鉴记录与我方设计文档的差距裁决）
+逐文件核过实现（`overview-tab.tsx` / `kpi-rows.tsx` / `trend-chart.tsx` / `dimension-chart.tsx` / `drilldown.tsx` / `window-picker.tsx` / `data-page.tsx`），差距与裁决：
+- **趋势图目前恒读契约 fixture，真实模式也一样**：`overview-tab.tsx:51` 取 `trend-v3.json` 的五天行；`useDashboardTrend`（`use-dashboard.ts:139`）**全仓无调用点**。同时「换窗口重算」也建立在这份假按天数据上（`fixtures/dashboard.ts:118`）。**必须改为调 `account.trend` 真接口**，窗口重算由后端算。这是大盘上最后一处假数据。
+- **数据日写死**：`data-page.tsx:15` `DATA_DATE = "2026-09-05"`，所有窗口预设以它为终点——真实部署里「近 7 天」会算到一个与今天无关的日期上。**改为取响应 `lineage.dataAsOf`（业务日，上海 03:00 日切）**，取不到时回落今天并在页头标「数据日未知」。
+- **KPI 指标与环比错配**（`kpi-rows.tsx:92-93`）：「转化数」显 `metrics.conversion`（媒体侧）却挂 `deltas.realConversion` 的环比；「转化成本」显 `ratios.realCpa` 却挂 `deltas.cashCpa`。裁决：**第一行「转化数」改显 `metrics.realConversion`**（与 deltas 对齐，媒体侧 `conversion` 放进 tooltip）；「转化成本」显 `ratios.realCpa`，**环比等 `compare.deltas.realCpa`**（be2 随 Q-041 ⑧⑨ 一笔补进 deltas，与现有 cost/cashCost/realConversion/cashCpa/onTargetRate 并列）；`deltas.cashCpa` 挂到第二行「BI 现金成本」卡的 tooltip。
+- **分布组件不满足 v1.9.29 的硬要求**：`dimension-chart.tsx` 只画账面花费，数据表只有「维度/账面消耗/占比」。**必须补成图 + 同源明细表五列**：花费、转化、现金 CPA、考核达标、样本量（账户数）。
+- **分布卡数量不足**：大盘现在只有一张「资源位分布」，且该维度真实模式必炸（v1.9.41）。裁决：**改为三张** —— 版位分布（`placement`）、转化目标分布（`goal`）、优化师分布（`optimizer`）；自投/代理分布等 Q-041 ⑪ 开放 `segment:<key>` 到 `account.dimension` 后走 `segment:operator`（快手）。
+- **窗口预设缺档**：现有 昨天 / 近 7 天 / 本月至今 / 上月 / 自定义。**补「今天」与「近 30 天」**；「近 30 天」按已裁的 (b) 落成 `custom` + from/to，不动 preset 枚举。
+- **大盘没有筛选栏**：`GET /data/filters` 级联选项后端已在（be2 Q-041 ①），前端从未接。**补多值级联筛选栏**（优化师 / 任务大类 / 任务 / 资源位，只列窗口内 cost>0，下游随上游收窄）+ **媒体选择器**（多媒体账户必需；pivot2 的 `media` 必填也靠它）+ 账户 ID 多值过滤。
+- **导出与视图**：概览与分布的「导出 CSV」前端直出（无接口）；图表偏好现在只存 localStorage（`use-chart-prefs.ts:7`），**接 `PATCH /me/views` 的 `config.charts`**；保存视图现在只在内存（`data-page.tsx:48`），接 `/me/views` 真接口。
+- 不做/暂缓（写明以免反复问）：小时粒度趋势等 Q-042；自助报表设计器、图表联动、栅格拖拽仍是 P1；竞情 P2。

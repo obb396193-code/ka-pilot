@@ -844,3 +844,10 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 `GET/POST /api/v1/reports/configs`、`POST /api/v1/reports/render {config|config_id, window?}` → `{rows, columns, highlights, lineage}`。
 
 **纪律**：`[be2]` 不是你的前缀，用 `[codex]`；路径限定提交、不 push；每笔交付前 `git merge main`（A41）+ `git status --porcelain` 无未跟踪源文件（A44）；发出形状变了要在回执里声明（A40）；回执写 `docs/relay/inbox-arch.md`。门禁我在 `ka-arch-gates` 跑，你本地跑完 `packages/domain`、`packages/db`、`apps/worker` 三包再交。
+
+### 追加 P-198 / P-199（arch 2026-09-12，v1.9.42）：把钉钉那条链接通——这是现在整条链唯一「只进不出」的地方
+实证：`outbound_messages` 只有入队方，**没有任何进程消费**，status 永远 `queued`。也就是说告警、派发、审批、日报**一条都发不出去**，而入站（收消息、鉴权、加密、重放、幂等）你之前做得很扎实，36 条用例在。
+- **P-198 出站投递器**（口径见 v1.9.42）：单轮消费 + 跨实例单飞锁（沿用 job 锁，不要常驻循环）；先只做 `channel='dingtalk'`（群机器人 webhook 签名 / 单聊由 `target` 决定）；URL 白名单沿用你入站那套防 SSRF；指数退避、`attempts` 上限 5；**同一 id 不得重发**（`sending` 中间态 + 条件更新，崩溃后按 `sent_at` 判）；未配置凭证时整体跳过并在 `worker:diagnose` 显 `dingtalkOutbound:"not_configured"`。
+- **P-199 订阅与值守**（未开放清单 #13/#14/#15/#22/#30，从 be2 改派你）：`POST /integrations/subscriptions`、`PATCH /integrations/subscriptions/:id`、`POST /integrations/subscriptions/:id/test-send`（只入队不绕过投递器，1 分钟 1 次）、`PUT|GET /integrations/on-call`（新表 `on_call_shifts`，迁移取当时下一个空号；P0 告警接收人按值守解析，无记录回落 admin 并标 `fallback:true`）。
+- 插在你队列哪里：**P-192（501 存根）→ P-198（出站投递）→ P-193（成员授权）→ P-199 → P-194 → P-195 → P-196 → P-197**。P-198 提前是因为它让「有告警但没人收到」这个洞消失，老板那边一眼能感知。
+- 边界不变：不动 `apps/worker/src/data/**` 与 be2 那批 domain 文件；`apps/dingtalk-gateway/**` 全归你。
