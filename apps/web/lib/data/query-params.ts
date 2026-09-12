@@ -10,8 +10,20 @@
  * 键名错了要在 `npm test` 里红，不能等到浏览器里八个请求一起 400 才发现。
  */
 
-/** 线上允许的顶层键。改这里之前先改 `packages/contract/api.md` 的 wire 清单。 */
-export const DATA_QUERY_PARAM_KEYS = ["dateFrom", "dateTo", "media", "dimension", "dimA", "dimB", "filters", "compare"] as const
+/**
+ * 线上允许的顶层键，**以 `api.md` v1.9.34 的逐键实测表为准**（那张表取代了 v1.9.30 那段）。
+ *
+ * 注意这里混着两种拼法，不是笔误：
+ *   · `account.summary/trend/dimension/table` 是驼峰 `dateFrom/dateTo`；
+ *   · `account.pivot2` 现在用的是 **`window_from/window_to`**（后端现状，另一套键）。
+ * be2 Q-041 ⑩ 把 pivot2 统一到 `dateFrom/dateTo` 之后，这两个下划线键才能删。
+ */
+export const DATA_QUERY_PARAM_KEYS = [
+  "dateFrom", "dateTo", "media", "dimensionType", "dimA", "dimB", "filters", "compare",
+  "accountIds", "taskId", "taskIds", "preset", "page", "pageSize",
+  // pivot2 现状专用（v1.9.34；be2 Q-041 ⑩ 统一后删）
+  "window_from", "window_to",
+] as const
 
 /** `filters` **内部**保持下划线（Codex de98a243 已落地），和顶层键名规则不同，别顺手改成驼峰。 */
 export const DATA_QUERY_FILTER_KEYS = ["optimizer", "biz", "resource_position", "goal", "task_id"] as const
@@ -60,15 +72,45 @@ export function buildFilters(input: Record<string, unknown> | undefined): { filt
   return { ...(Object.keys(filters).length ? { filters } : {}), unsupported }
 }
 
-/** `account.dimension`：维度键是 **`dimension`**，不是 `dimension_type`。 */
+/**
+ * `account.dimension`：维度键是 **`dimensionType`**。
+ *
+ * 我先后写错过两次：`dimension_type`（照契约散文里的命名）、`dimension`（照 v1.9.30）。
+ * v1.9.34 是 arch 在联调库**逐键实测**出来的——只有 `dimensionType` 过，另外两个都 400。
+ * 改它之前先看 api.md 那张表，别再照散文猜。
+ */
 export function dimensionParams(dimension: string, window: QueryWindow, filters?: Record<string, unknown>): { params: QueryParams; unsupported: string[] } {
   const built = buildFilters(filters)
-  return { params: { ...windowParams(window), dimension, ...(built.filters ? { filters: built.filters } : {}) }, unsupported: built.unsupported }
+  return { params: { ...windowParams(window), dimensionType: dimension, ...(built.filters ? { filters: built.filters } : {}) }, unsupported: built.unsupported }
 }
 
-/** `account.pivot2`：行维 `dimA`、列维 `dimB`；不分列时不发 `dimB`。 */
-export function pivotParams(dimA: string, dimB: string | null, window: QueryWindow): QueryParams {
-  return { ...windowParams(window), dimA, ...(dimB ? { dimB } : {}) }
+/**
+ * `account.pivot2` —— **现在是另一套键**（v1.9.34 实测）：
+ * `window_from` / `window_to` / `media`（**必填**）/ `dimA` / `dimB`，可选 `taskIds[]`。
+ * 不收 `dateFrom`，不收 `filters`——发了就是整条 400。
+ *
+ * 这不是我抄错了：pivot2 的注册表比其它几个 queryId 早一版，be2 Q-041 ⑩ 会统一到
+ * `dateFrom/dateTo`（`window_from/to` 保留一版当别名）。统一之后把这个函数并回 `windowParams`。
+ */
+export function pivotParams(dimA: string, dimB: string | null, window: QueryWindow, media: string, taskIds?: string[]): QueryParams {
+  return {
+    window_from: window.from,
+    window_to: window.to,
+    media,
+    dimA,
+    ...(dimB ? { dimB } : {}),
+    ...(taskIds?.length ? { taskIds } : {}),
+  }
+}
+
+/**
+ * pivot2 现在只支持这三个维度（快手源实测）；其它维度和 `segment:<key>` 一律
+ * `DIMENSION_UNSUPPORTED`。be2 Q-041 ⑩ 会扩到全集 + 命名规则段。
+ * 界面上把不支持的维度标「待接源」而不是让人选了再吃一个报错。
+ */
+export const PIVOT_SUPPORTED_DIMENSIONS = ["account", "task", "biz"] as const
+export function pivotDimensionSupported(value: string): boolean {
+  return (PIVOT_SUPPORTED_DIMENSIONS as readonly string[]).includes(value)
 }
 
 
