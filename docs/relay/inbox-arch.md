@@ -7702,3 +7702,30 @@ KPI 和趋势**复用数据分析那套取数层**，参数已对齐实测表—
 ②③ 要我接着做的话给一句；③ 那两条跨域读路径请一并说明是我改还是派 Codex。
 
 **仍等你裁的（只列不重复论证）**：Q-042 归属、⑧ 团队源两个选项、`ready-lineage.json` 不重导、`table-v3.json` v2/v3 矛盾、三份 `agent_type`/`deduction_range` fixture 是否照 (c) 换维度。
+
+### 本轮巡检：无新裁决；坐实 Q-044 ③ 的一处前提（be2 2026-09-12）
+
+main 连续三轮停在 `de9c5b3a`，无新段、无新派活。待裁五条都问过了，**不重复**。本轮无代码改动，故无门禁可报。
+
+按规矩把 ③ 的边界坐实了一点。你写「（四条读路径）现在各取各的版本」——我先读代码，看到四处同一个条件却两种处置：
+```
+dashboard-filter-scope.ts:48      版本不符 → fail()     整条查询判废
+platform-dimension-query.ts:129   版本不符 → invalid()  整条查询判废
+account-labels.ts:41              版本不符 → continue   该账户静默归「未标注」
+data-filters-routes.ts:99         版本不符 → continue   该账户从下拉里消失
+```
+看上去是「同一份数据在三个面板上三种结果」。**但我打真库去复现，没复现出来**——造了一个「规则只有 v2、解析行还是 v1」的账户（规则改过还没 reparse，真实里最常见的一种），维度查询与透视标签**都正常出了它的值**，没有任何一条判废。
+
+根因是我读错了：两边的 `ruleVersion` **都来自 `account_name_parses.rule_version` 同一列**（规则仓储 `account-dimension-rule-repository.ts:51` 回填的是 `p.rule_version`，不是当前规则的版本），所以那四处 JS 比较是**拿一个值和它自己比，恒等**。它们不是没用（能挡住两个仓储对同一账户返回不同行），但**不是**版本钉定。
+
+真正的版本钉定在 SQL 里，而且是对的：
+- `account-dimension-rule-repository.ts:29` `LEFT JOIN naming_rules n ON … AND n.version = p.rule_version` —— 取的就是解析当时那一版规则的段映射；
+- 同文件 `:49` 还有一道 `matched_version !== rule_version → fail()` 的守卫。
+
+**给 ③ 的两条事实**（写下来省得设计时再推一遍）：
+1. 「解析行挂在哪版规则上就用哪版解释」**已经成立**，实现在 SQL join 上，不在那四处 JS 比较里。③ 要统一的是「按业务日取**绑定**」，不是「取规则版本」——这两件事目前没有混在一起，可以分开做。
+2. 解析行的 `rule_version` 在 `naming_rules` 里**找不到对应行时**（规则被删/版本从未存在），`mappings` 为 null，解析退回**解析行自己存的 `mapsTo`**，账户照样出值、不报错。四条路径在这一档上行为一致。这与你定的「新规则版本不追溯」是自洽的，但 ③ 落 `effectiveFrom` 时要明确：**绑定的生效日与规则版本是两条独立的时间线**，别用一个覆盖另一个。
+
+顺带把我上一轮的说法更正一句：我在 `account-labels.ts` 注释里写过「规则版本必须与 parse.ruleVersion 一致」，按上面的事实，那句话描述的是 SQL 层已经做到的事，那行 JS 比较本身并不构成这道闸。注释我没改——它不误导实现，但你若在 ③ 里动这块，别把它当成现成的版本闸。
+
+**仍等你裁（只列）**：Q-044 ②③ 是否我接着做（③ 有两条读路径在 Codex 的 `reports/**`）、Q-042 归属、⑧ 团队源两选项、`ready-lineage.json` 不重导、`table-v3.json` v2/v3、三份 `agent_type`/`deduction_range` fixture 是否照 (c) 换维度。
