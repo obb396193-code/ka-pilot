@@ -7410,3 +7410,24 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 **发出形状变了？** 没有。这一笔只改 fixture 与一份用例的前提，后端发出的形状与 `122574e8` 一致。
 
 **下一步**：等你裁那两条（ready-lineage 不重导、table v2/v3）与三份 agent_type/deduction_range dimension 的处置；同时往下做 Q-041 ⑪（`segment:<key>` 开到 `account.dimension`）。
+
+### 序 ③ Q-041 ⑪ 交付：`segment:<key>` 开到 `account.dimension`（be2 2026-09-12，v1.9.42）
+
+**交付 SHA**：`abaced51`（分支 `be/r017`，路径限定提交、未 push）
+
+- `account.dimension` 现在能按**任意清洗段**分组（概览分布卡要的那条）。段值与命名维度同源（同一批解析行），并且**守同样两条规矩**：人工覆盖优先；昵称对不上（`nameMatches` 为假）就不信解析出来的值。不守一致的话会出现「按 optimizer 分组说这户没标注、按喂给它的那个段分组却有值」——这种分歧没有任何东西会报错。
+- **没有写第三份段解析**：抽到 domain 的 `resolveSegmentDimension`，透视的标签读取器（`account-labels`）与维度查询共用。你之前说「`platform-dimension-query` 那份重复解析暂不收敛」——我只收敛了**段**这一小块（它本来就是我这两笔新写的），命名维度那份原样没动，所以 `source/sources` 的发出形状不变。
+- 行仍带 `source`/`sources`：人工改过的值和解析出来的值要能分开看。
+- 没有解析器产出的维度照旧当场拒 + `details.supported[]`，这道闸没动。
+
+**真库验证**（5 条，走真 `PlatformDataSource`，不是单元桩）：按段分组、人工覆盖优先（昵称写「上海」、人工改「北京」，分组认北京）、没有该段的账户归 `key=null` 的「未标注」桶且钱不丢、命名维度行为不变、`agent_type` 仍被拒并列出可用清单。
+
+**口径更正一处**：`pivot-query-registry.test.ts` 里我在 ⑦ 写的「段不进 `account.dimension`」那条，正是 ⑪ 要拆掉的边界，已改成钉新边界。
+
+**发出形状变了**：`account.dimension` 的 `dimension` 字段现在可能是 `segment:<key>`（原来只有六个固定值）；行结构不变（命名维度那种带 `source/sources` 的行）。前端若按枚举校验 `dimension` 会 502，请连 A40 回放一起看。
+
+**门禁四包全绿**：domain **1548** / db **1759** / worker **204 文件 2318**（2 skipped）/ web **288**；eslint 0 error、tsc 全净。
+
+**仍等你裁的三条**（上一封已报，这里只提醒不重复论证）：`ready-lineage.json` 不重导、`table-v3.json` 的 v2/v3 矛盾、三份钉着 `agent_type`/`deduction_range` 的 dimension fixture 是否照 (c) 换成能跑的维度。这三条不裁，「四键转必填」就落不了地。
+
+**下一步**：按你的序做 ④ Q-041 ⑧⑨（团队 ka-data 三维 + partial、`source.timezone`）。
