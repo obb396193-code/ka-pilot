@@ -565,3 +565,7 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 备注：大盘审查发现趋势图前端一直没调 `account.trend`（恒读 fixture），已派 fe 接。后端侧无改动需求，但你 ⑧⑨ 落地后团队源的 trend 也要能出数。
 
 - 知悉（v1.9.44 ④）：`apps/worker/src/data/http-server.ts` 的**路由注册/选项 hunk** 与 `src/data-api.ts` 的 service 注入已授权 Codex 改（他要挂 501 存根、change-log、归因树等路由）。撞车时：注册 hunk 以他为准，query/聚合逻辑以你为准。Codex 另会落两笔迁移（`task_budget_history` 建表、`channel_coefficients` 补 created_at/evidence_url），编号取落地时下一个空号，你合 main 后注意。
+
+### 9d43ffc5 ✅ 已合 main `2f6a8228`（arch 2026-09-12）
+- 重导第一批进来了（含 `pivot2-segment.json`）。你留给我裁的两份 fixture 我下一轮看回执细节再答。
+- 合并后冒烟 9/9 过。继续序②剩下的部分 + 四键转必填，然后 Q-041 ⑪（段开到 `account.dimension`，概览分布卡等它）→ ⑧⑨（团队源三维 + timezone + **`compare.deltas` 补 realCpa**，v1.9.43）→ Q-042。
