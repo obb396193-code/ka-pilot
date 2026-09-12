@@ -7251,3 +7251,67 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 5. ⑨ 自投/代理分布（`dimension-v3-agent_type.json` 现成）、转化目标壳、趋势「日｜小时」端口。
 
 门禁：tsc 0 错、eslint 0 错 18 警告、npm test 282/282、mock 生产构建过、1280 实测。
+
+### Q-041 ⑦⑩ 交付 + v1.9.40 比率补齐 + 部署提示词复核（be2 2026-09-12）
+
+**交付 SHA**（分支 `be/r017`，均路径限定提交、未 push）
+- `47dc0ed6` — Q-041 ⑦⑩（v1.9.34）：pivot2 收 `dateFrom/dateTo` + `filters`；两轴开放到命名维度与 `segment:<key>`
+- `f53610ba` — v1.9.40 收尾：部分合计的比率保持 finite（你循环第 44 圈点名的那条）+ SQL 列名单与响应侧映射的对齐绊线
+- `a9fc9992` — `docs/deploy/部署提示词-数据分析真数.md` 复核与更正
+
+**⑩ 做了什么**
+- `pivot2` 参数与 summary 对齐：收 `dateFrom/dateTo`，`window_from/to` 保留一版别名，`media` 仍必填，新增 `filters`（与 summary 同形）。两种拼法**混用直接拒**、给不全直接拒——静默挑一个的代价是查了一个谁都没要求的窗口，而且看不出来。
+- 归一化后下游只见 `dateFrom/dateTo` 一种形状。
+
+**⑦ 做了什么**
+- 两条轴接受 `optimizer/goal/placement` 与任意清洗段 `segment:<key>`；`segmentDimensionKey()` 是唯一的形状判定处。
+- 新增 `apps/worker/src/data/account-labels.ts`：昵称标签的**共用读取器**。两条不猜的规矩——解析行挂在哪版规则上就用哪版解释（拿最新规则解释旧解析结果，标签会凭空变）；解析证据坏了当这户没标签，不拿半份结果冒充。
+- 标签按**授权范围**取，不按快照返回的账户取：让读取范围跟着上游响应走，等于让上游决定我们去查谁。
+- 没标注的账户**自成 null 桶**，不并进已标注的桶、也不丢掉——两种做法都会让某个人的成本凭空多出来或少掉。
+- `DIMENSION_UNSUPPORTED` 带 `details.supported[]`（envelope 里只装代码自己造的清单，不透传内部细节）。
+
+**★ 三处我自己改窄/改正的地方，请复核**
+1. `details.supported[]` 我**只列真能分组的六个** + `segment:<key>`。我第一版把 `agent_type`/`resource_position` 也列了进去，是错的：它们在 `dimensionTypeSchema` 里合法，但 `resolveNamedDimensions` 只产出 optimizer/goal/placement，没有任何解析器产出它们。列进去等于告诉调用方「换这个维度试试」，然后在更深处炸成一个它看不懂的解析错误。
+2. `segment:<key>` **只对 pivot2 开放**，`account.dimension` 不收：它的下游只解析命名维度，放段进去不会立刻报错，会在更深处炸。我第一版把两者合成一张按源的表，会顺带把 ka_data 的 `account.dimension` 从六维收窄到三维——你没派这个，已撤回。
+3. 透视查询**自己也验一遍维度**，不只靠注册表挡：注册表管的是 HTTP 入口，查询类还被集成测试和脚本直接构造。少这道闸，一个没人解析的维度会静悄悄变成「所有账户归同一个空桶」，页面上是一张完全正常的一行透视表。
+
+**发出形状变了**（按你的规矩声明）：`stableDataQueryErrorSchema` 多一个可选 `details:{supported:string[]}`，只在 `DIMENSION_UNSUPPORTED` 时出现；`pivot2` 多收 `dateFrom/dateTo/filters`。
+
+**v1.9.40 那条比率**：实测已经是 finite（4.5/5/0.1/0.08 都对），因为 SQL 侧比率就是拿部分合计的和去除的——13d3067a 那笔顺带解决了，**不需要再改代码**。但没有任何断言钉着它，下一个看到「分子带 partial」的人很可能顺手把比率压成 `undefined`，用户就从「4.98（部分）」退回一个「−」。已补断言（cashCpa/realCpa/ctr/cvr/gap）。
+另补一条绊线：SQL 的 `SUM_COLUMNS`（snake_case）与 `PARTIAL_COLUMN_BY_FIELD` 的取值必须逐字相等。加一列时漏掉一边不会报错——`partialAware` 的 `?? field` 兜底会拿 camelCase 去找 snake_case，一个也找不到，那一列就永远把部分合计当完整合计发。**已验证这条绊线在我故意删掉一条映射时确实变红。**
+
+**★ 报两个我不能自己动的发现（都是实测，不是读代码猜的）**
+
+**(1) `account.pivot2` 从真前端打过来必 400 —— 现在就是坏的。**
+`apps/web/lib/data/query-params.ts` 的 `pivotParams()` 只发 `{dateFrom, dateTo, dimA, dimB}`，**不发 `media`**，而你冻的契约里 `media` 必填。我拿它的真实产出逐字打注册表：
+```
+{dateFrom,dateTo,dimA,dimB}            → INVALID_REQUEST "Invalid query parameter set"
+{dateFrom,dateTo,dimA,dimB,media}      → OK
+```
+另外它发的是 `dateFrom/dateTo`（走 `windowParams()`），而 ⑩ 之前 pivot2 只认 `window_from/window_to`——**日期拼法这一条我这笔已经修好了**，剩下的 `media` 在 fe 那边，我没动。请裁决：是 fe 补 `media`，还是 pivot2 放宽 `media`（你原话是「`media` 仍必填」，所以我按必填做的）。
+
+**(2) 前端多处默认维度是 `resource_position`，而后端解析不出这个维度。**
+`pivot-tab.tsx:77`、`pivot-builder.tsx:46`、`strategy-tab.tsx:44`、`overview-tab.tsx:42` 都以 `resource_position` 起手；冻结 fixture `pivot2.json`（dimA=resource_position）、`pivot2-biz-resource_position.json` 也是这个维度。但 `resolveNamedDimensions` 只产出 optimizer/goal/placement，所以真部署下这几块一进页面就是 `DIMENSION_UNSUPPORTED`。
+两个种子规则里这些段**其实都在**，只是 `mapsTo` 落不到固定维度上：快手 `operator→agent_type`、`device→device`、`landing→landing`；腾讯 `resource_position→placement`、`ad_slot→null`。
+三条路你选：**(a)** 固定维度扩到 `agent_type/resource_position`（要动 `namedDimensionTypeSchema` 与 `resolveAccountDimensions`，是契约改动）；**(b)** fe 默认维度改成 `placement`，其余走 ⑦ 刚开的 `segment:<key>`（腾讯就是 `segment:resource_position`，快手是 `segment:operator`/`segment:device`）；**(c)** 维持现状，fixture 重导时把这两份换成能跑的维度。我倾向 (b)+(c)——⑦ 上线后 `segment:<key>` 已经覆盖了全部清洗段，再往固定枚举里加维度，下次规则多一段又要改一次契约。**等你裁决，我不动 fe 的文件。**
+
+**一处重复实现，报备未收敛**：`platform-dimension-query.ts:122-129` 有一份与 `loadAccountLabels` 同样的解析（同样的规则版本核对、同样的 `resolveNamedDimensions`），只是它还要带出 `source/sources` 所以形状不同。收敛它会改动维度查询的发出形状，而你刚为 `source,sources` 热修过前端镜像，所以这笔**没动**，在 `account-labels.ts` 顶上写了警示注释。要收敛我另交一笔。
+
+**部署提示词复核（`a9fc9992`）**
+逐条对着代码核了：迁移数 20 ✓、四个 seed/discover 命令名与参数形（`seed:bootstrap` 的 identities/workspaces/memberships/grants 四键、`seed:qihang-identity` 的 `{workspace_id,user_id,qihang_user_id}` → `bound|unchanged|replaced`、`discover:accounts -- --media X` 的精确旗标）✓、`/healthz` → `{"ok":true}` ✓、worker 触发路径 `/internal/worker/once` 与 `x-worker-trigger-token` ✓、`WORKER_ONCE_WORKSPACE_ID/MEDIA` ✓、**22 个 ENV 键全部在代码里存在** ✓、5b 三条路由（`PUT naming-rules` / `POST account-names/reparse` / `GET account-names`）与 `meta.dryRun.hitRate`、`parsed/failed` ✓、六个引用的文件路径全在 ✓。
+**改了一处**：验收步骤原本让操作者「按优化师 / 资源位 / 业务维度分组」——资源位分不出来（同上第 (2) 条），照原文做会让人以为部署坏了，去查一个根本没坏的东西。已改成优化师 / 承接页 / 目标三个真能用的，注明业务维度来自任务表与昵称无关，并把其余段指向 `segment:<段名>`；5b 也补了「哪些段是固定维度、哪些要用 segment 拼法」。
+
+**门禁（PG 挂着，四包只跑通三包，如实报）**
+- domain：**100 文件 / 1544 通过**，绿。
+- web：**288 通过**，绿。
+- worker：**154 文件 / 2025 通过**；**48 文件红，全部是 `Error: connect ECONNREFUSED 127.0.0.1:55432`**。我逐个核过：`AssertionError` 计数为 **0**，没有一条是断言失败。
+- db：**没能跑**，同一个原因。
+- `npx eslint .` 三包（worker/domain/db）全过；worker `tsc --noEmit` 干净。
+
+**外部阻断（不是代码问题，我处理不了）**：本机 PostgreSQL `127.0.0.1:55432` 连不上（`pg_isready` 一直 `no response`），根因是 Docker 守护进程没响应——`docker ps` / `docker info` 直接挂住不返回，Docker Desktop 的界面进程在但守护进程死了。后台等待循环挂着，好了我立刻补跑 db 与 worker 全量。
+
+**因此这两件按你的序该做、但做不了，没有冒充完成**：
+- ⑦ 的两份 fixture `pivot2-optimizer-goal.json` / `pivot2-segment.json` —— 导出脚本要连本地隔离库跑真路由。照你循环第 40/48 圈的安排，它们本来就和「四键转必填 + 全量重导」同一笔，PG 一回来我一起导。
+- 「一次重导」整笔同理。
+
+**下一步**（PG 不回来也能做的，按你的序往下）：Q-043 ⑦ `tasks/list-manage` 行加 `budget`、hourly 整日无采样判 `pending`（v1.9.39）。这两件的代码部分不依赖 PG，fixture 部分依赖，我先把代码和单测做掉，fixture 攒进重导那一笔。A39 那条 P2（`contract-v1-3-migration` 的 `beforeAll` 自清 v1.9.28 残留）要连库验证才有意义，等 PG。
