@@ -7232,3 +7232,16 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 - **新增路由挂载边界**：当前 R010 的生产注册仅在禁止修改的 `apps/worker/src/data/http-server.ts`；后续 change-log/归因/report 请授权该文件的注册/option hunk（不动 data/query），以及 `src/data-api.ts` service 注入，或由 arch/be2 代接。
 - **P-195 已有**：main 的两条 BFF 与 reset-password 后端都在，PENDING 已清空；正在复验，不重复开发。
 - 不空等：先做已有权威 fixture 的 P-194 change-log Domain/DB/Service。计划 `docs/plans/2026-09-13-Codex复工接口收口.md`，未宣称交付。
+- **P-194 数据源实读补充**：主分支 migrations 全扫 + 真 PG migration replay 后，`task_budget_history` 不存在（schema.sql:774 只是契约）；`channel_coefficients` 无 created_at/evidence_url。不可把 effective_date 伪造为 at。请分配预算表迁移与系数审计字段迁移；现先实现 assessment_price-only 内核，显式请求缺失来源报 SOURCE_UNAVAILABLE。不在测试里 CREATE 假表掩盖部署缺口。
+- 考核价 `op=revoke` 已在 027；change-log fixture 尚无作废字段，v1.9.28 只要求显示「作废标记」未定 wire key。请给该行完整 fixture（及 changedBy/at 历史为空的展示形）。在裁决前不能把 revoke 当 set 出，内核遇到它显式 unavailable。旧值当前按写入时间+id 的前一个版本理解，若需「生效日当时价」也请定口径。
+
+### Codex P-194 内核交审 / P-195 已有实现复验（2026-09-13）
+
+- **代码 SHA 9ed8ec5c**；基线 main@802e31a4，提交前 merge main 已 up to date。未 push、未合流；前端视觉、data/**、窗口/指标源文件零 diff。
+- **范围**：strict change-log fixture schema + 只读 Repository + Service +4份测试。仅考核价单源已真PG可读；预算/系数/revoke/缺旧元数据显式 unavailable，**没有注册 HTTP/BFF**，不称 P-194 完成。
+- **P-195**：已有两 BFF/reset 后端复验通过：HTTP/覆盖53、PG+HTTP11、BFF20；PENDING 空，未重复实现。
+- **门禁**：Domain101files/1575；DB158files/1773真实PG；Worker202passed+2skipped、2285passed+2skipped（外部 ASR/SDK，非PG）。三包 typecheck/lint 全过；git diff --check 通过。
+- **形状声明 A40**：没有现有响应形变，没有新公开响应。内部 schema 严格接现有 camelCase settings/change-log fixture；不能让前端以为路由已可调。
+- **唯一额外既有测试改动**：`packages/db/test/r014/assessment-price-selection.test.ts` 加具名历史查询豁免（不是按生效日选当前价），原守卫仍验证它不得按 effective_date 上界过滤；请审查这1行。tuple 共用 helper 未改，真PG同号跨媒体/空间/空grant/撤权/过期link均过。
+- **待裁内容**：见上一条完整清单（P192 paths、P193 request/response+全局个人成员范围、P194纯忽略DTO+历史缺源/revoke、注册点授权）。不越过这些缺口发明 API。
+- **证据**：`docs/plans/2026-09-13-P194内核质量回执.md`；`output/codex-20260913-{domain-full,db-full,db-full-r2,worker-full}.log`。首轮DB3红保留，两新绊线已修，迁移残留后完整重跑全绿，不降门槛。

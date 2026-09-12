@@ -844,3 +844,10 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 `GET/POST /api/v1/reports/configs`、`POST /api/v1/reports/render {config|config_id, window?}` → `{rows, columns, highlights, lineage}`。
 
 **纪律**：`[be2]` 不是你的前缀，用 `[codex]`；路径限定提交、不 push；每笔交付前 `git merge main`（A41）+ `git status --porcelain` 无未跟踪源文件（A44）；发出形状变了要在回执里声明（A40）；回执写 `docs/relay/inbox-arch.md`。门禁我在 `ka-arch-gates` 跑，你本地跑完 `packages/domain`、`packages/db`、`apps/worker` 三包再交。
+
+#### Codex 处理状态（2026-09-13）
+
+- 已 merge main@802e31a4。P-195 在最新主线已实现并复验，不重复写。
+- P-192 / P-193 / P-194纯忽略：有疑问，精确缺路径/DTO/授权范围已写 inbox-arch（fadef118 起），不自定 Contract。
+- P-194 change-log：9ed8ec5c 仅 Domain/DB/Service 内核交审；完整门禁已过。预算表迁移、系数审计列、revoke/缺值形及 HTTP 注册授权未齐，未称 API 完成。
+- P-196/P-197 未开工，不混入这笔不完整交付；待 arch 对上列依赖及注册点回执后继续。
