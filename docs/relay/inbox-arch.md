@@ -7222,3 +7222,13 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 5. ⑨ 自投/代理分布（`dimension-v3-agent_type.json` 现成）、转化目标壳、趋势「日｜小时」端口。
 
 门禁：tsc 0 错、eslint 0 错 18 警告、npm test 282/282、mock 生产构建过、1280 实测。
+
+### Codex 复工核验与契约缺口（2026-09-13；P-192…197 新批次）
+
+- 已按令在 be/r010 合本机 main@802e31a4，fast-forward，无冲突。按新并行边界，不改 data/**。
+- **P-192 阻断信息**：v1.9.31 只列按钮+501；`2026-09-10-未开放入口清单.md` 中 #3/#11/#13=#21/#15/#18/#20/#26/#27/#28 仍无方法/路径。请冻结这些 HTTP method/path；#24 的三 review 路由已有 501。不能自造 API 路径后宣称契约完成。
+- **P-193 请定形**：PATCH 成功是否沿用 `adminMemberV195Schema` 单成员+现有 meta？PUT body 是否 `{items:[{media,accountId,accessLevel}]}`（无 grantedAt，服务端生成），回现有 `adminMemberGrantsResponseSchema`？全局管理员只改目标唯一 personal membership，还是也改 team membership？当前 GET grants 仍 workspace-local（team 固定空），与此次全局管理目标不一致，请同时裁 GET 的个人目标解析。
+- **P-194 纯忽略**：内部 `WorkItemCommandRepository.apply(ignore)` 已能只改状态并审计；公开成功 DTO 未冻结。当前 ignore+mute 真响应是 `{mutedUntil,scope}`，不是 `mute_days`。请给纯 ignore 完整 data 字段/fixture，再同步 BFF 的 strict schema；只删第130行仍会被 muteResultSchema 拦。
+- **新增路由挂载边界**：当前 R010 的生产注册仅在禁止修改的 `apps/worker/src/data/http-server.ts`；后续 change-log/归因/report 请授权该文件的注册/option hunk（不动 data/query），以及 `src/data-api.ts` service 注入，或由 arch/be2 代接。
+- **P-195 已有**：main 的两条 BFF 与 reset-password 后端都在，PENDING 已清空；正在复验，不重复开发。
+- 不空等：先做已有权威 fixture 的 P-194 change-log Domain/DB/Service。计划 `docs/plans/2026-09-13-Codex复工接口收口.md`，未宣称交付。
