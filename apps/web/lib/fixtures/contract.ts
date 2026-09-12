@@ -11,7 +11,24 @@ export type FixtureOk<T> = { ok: true; data: T; meta?: FixtureMeta }
 export type FixtureErr = { ok: false; error: { code: string; message: string; retryable?: boolean; requestId?: string; [key: string]: unknown }; meta?: FixtureMeta }
 export type Fixture<T> = FixtureOk<T> | FixtureErr
 
+/**
+ * ★A35 开关（F8-25 ①，老板拍板「内网不放假数据」）。
+ *
+ * `packages/contract/fixtures` 是**给 mock 模式用的样例数据**。真实模式下页面渲染它，
+ * 用户看到的是一屏看着很真、其实和库里对不上的数字——devix 用改库探针实证过
+ * （改 account-6 的名字，页面上纹丝不动；账户池九态合计 39 户，库里只有 6 户）。
+ * 这比空页面坏得多：空页面只是没做完，假数字是**错的且看不出来**。
+ *
+ * 收口收在这一个函数上，而不是去改 52 个组件：所有 fixture 消费者都得先过 `isOk` 才拿得到
+ * `.data`（这点由 TypeScript 保证——`Fixture<T>` 是联合类型，不窄化编译不过）。
+ * 所以真实模式下让它恒 false，fixture 数据就一个字节也到不了界面。
+ *
+ * 加新页面时不需要记得做什么，默认就是安全的：忘了接真接口 → 空态，不会变成假数据。
+ */
+export const FIXTURES_ENABLED = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
+
 export function isOk<T>(fixture: Fixture<T>): fixture is FixtureOk<T> {
+  if (!FIXTURES_ENABLED) return false
   return fixture.ok === true
 }
 

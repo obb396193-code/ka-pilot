@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { NotConnected } from "@/components/business/state/not-connected"
+import { FIXTURES_ENABLED, fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { reportConfigFixture, reportRenderFixture, windowLabel, windowPresets, type SavedView, type WindowPreset } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 
@@ -37,7 +38,17 @@ const groupOptions = [
   { key: "product", label: "产品名" },
 ]
 
-export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveView: (name: string, columns: string[]) => void }) {
+/**
+ * A35（F8-25 ①）：真实模式下不显样例数据。这个 tab 还没接真接口，照实说。
+ * 外面包一层是因为**早退必须在所有 hook 之前**，而里面那个组件第一行就开始用 hook——
+ * 在它内部早退会违反 rules-of-hooks（真实/mock 两种模式下 hook 数量不一致）。
+ */
+export function ReportsTab(props: Parameters<typeof ReportsTabInner>[0]) {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="POST /reports/render · GET /reports/configs" hint="be2 Q-047 登记中。" />
+  return <ReportsTabInner {...props} />
+}
+
+function ReportsTabInner({ views, onSaveView }: { views: SavedView[]; onSaveView: (name: string, columns: string[]) => void }) {
   const template = isOk(reportConfigFixture) ? reportConfigFixture.data : null
   const render = isOk(reportRenderFixture) ? reportRenderFixture.data : null
   const [step, setStep] = useState(0)

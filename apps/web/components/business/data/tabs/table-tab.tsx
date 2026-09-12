@@ -68,8 +68,8 @@ export function TableTab({ onSaveView, window, workspaceId }: { onSaveView: (nam
   const data = useMemo(() => rows.filter((row) => (media === "all" || row.media === media) && (account === "all" || row.accountId === account)), [rows, media, account])
   const { ordered, reorder } = useLocalOrder(data, rowId)
   const table = useGridTable({ data: ordered, columns, pageSize: 100, getRowId: rowId, initialColumnVisibility: { accountId: false, wakeUv: false, potentialUv: false, potentialRate: false, biRate: false, exposure: false, click: false } })
-  if (!isOk(fixture)) return null
-  const lineage = fixture.data.source.lineage
+  // A35 同上：总表的数据来自 `account.table` 真接口
+  const lineage = isOk(fixture) ? fixture.data.source.lineage : null
   const accounts = [...new Map(rows.map((row) => [row.accountId, row.accountName])).entries()]
 
   return (
@@ -104,8 +104,12 @@ export function TableTab({ onSaveView, window, workspaceId }: { onSaveView: (nam
         bulkActions={<Button variant="outline" size="sm" onClick={() => openAgentDrawer(`分析所选 ${table.getSelectedRowModel().rows.length} 条账户日行`)}>分析所选</Button>}
       />
       <div className={cn("flex flex-wrap items-center justify-between gap-2")}>
-        <LineageFooter lineage={lineage} extra={<span>异常日行（dataAnomaly）左侧红标</span>} />
-        {fixture.data.source.warnings.length ? <span className="text-xs text-status-warning">{fixture.data.source.warnings.join("；")}</span> : null}
+        {/* 血缘和告警目前还挂在样例上（真实模式下取不到）；数据本身走 `account.table` 真接口。
+            接响应里的 lineage 是下一笔的事，先各自降级，别把整个 tab 拖成空白。 */}
+        {lineage ? <LineageFooter lineage={lineage} extra={<span>异常日行（dataAnomaly）左侧红标</span>} /> : null}
+        {(isOk(fixture) ? fixture.data.source.warnings : []).length
+          ? <span className="text-xs text-status-warning">{(isOk(fixture) ? fixture.data.source.warnings : []).join("；")}</span>
+          : null}
       </div>
     </div>
   )

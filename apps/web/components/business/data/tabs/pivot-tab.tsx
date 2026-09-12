@@ -7,6 +7,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { DataGrid, selectionColumn, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { ExampleBadge } from "@/components/business/state/page-state"
+import { NotConnected } from "@/components/business/state/not-connected"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -48,7 +49,8 @@ function DimensionTable({ dimension }: { dimension: Dimension }) {
       </div>
     )
   }
-  if (!isOk(fixture)) return null
+  // A35：真实模式下没有样例可用，也还没接真接口 —— 照实说，不显样例
+  if (!isOk(fixture)) return <NotConnected endpoint="POST /data/query · account.pivot2（单维明细）" hint="「自定义透视」那个模式已经接通，可以先用它。" />
   const minimal = fixture.meta?.requestId === "fe-minimal-mock"
   return (
     <div className="relative flex flex-col gap-3">

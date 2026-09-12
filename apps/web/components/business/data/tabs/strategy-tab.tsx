@@ -12,7 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { isOk, mv, rv } from "@/lib/fixtures/contract"
+import { NotConnected } from "@/components/business/state/not-connected"
+import { FIXTURES_ENABLED, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { dimensionFixtures, dimensions, pivot2Fixtures, pivot2UnsupportedFixture, strategyPresets, type Dimension, type Pivot2Row } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { CostStatusDot, LineageFooter } from "./shared"
@@ -26,7 +27,17 @@ function crosstab(rows: Pivot2Row[]) {
   return { aKeys, bKeys, cells }
 }
 
+/**
+ * A35（F8-25 ①）：真实模式下不显样例数据。这个 tab 还没接真接口，照实说。
+ * 外面包一层是因为**早退必须在所有 hook 之前**，而里面那个组件第一行就开始用 hook——
+ * 在它内部早退会违反 rules-of-hooks（真实/mock 两种模式下 hook 数量不一致）。
+ */
 export function StrategyTab() {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="并入「维度透视 · 自定义透视」的三个预设" hint="自定义透视已经接通，策略分析的预设会并进去（arch 第 30 圈裁）。" />
+  return <StrategyTabInner  />
+}
+
+function StrategyTabInner() {
   const params = useSearchParams()
   const router = useRouter()
   const view = params.get("view") === "library" ? "library" : "analysis"
