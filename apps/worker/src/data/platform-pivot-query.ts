@@ -1,12 +1,15 @@
 import type { Pool } from "pg";
 import { z } from "zod";
-import { PlatformPivotRepository, PlatformPivotContractError } from "@ka/db";
+import { PlatformPivotRepository, PlatformPivotContractError, withSemanticReadSnapshot } from "@ka/db";
 import {
   aggregatePivotWindow, approvedWorkspaceAuthContextSchema, queryWindowSchema, dimensionTypeSchema,
   canonicalMetricSetSchema, dailyAssessmentInputSchema, calendarDateSchema,
   aggregateWindowMetrics, computeWindowAssessment, pivotWindowRowsSchema,
 } from "@ka/domain";
 import { taskQueryIdSchema } from "./query-registry.js";
+import {
+  type AccountLabels, accountLabelKey, groupableDimension, loadAccountLabels, needsAccountLabels,
+} from "./account-labels.js";
 
 const inputSchema = z.object({ auth: approvedWorkspaceAuthContextSchema, window: queryWindowSchema,
   dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
@@ -23,6 +26,9 @@ const observationSchema = z.object({ expectedAccountDays: z.number().int().nonne
 const snapshotSchema = z.object({ window: queryWindowSchema, members: z.array(memberSchema).max(10000), observation: observationSchema }).strict();
 type Member = z.infer<typeof memberSchema>;
 export interface PlatformPivotReader { read(auth: unknown, window: unknown): Promise<unknown> }
+export interface AccountLabelReader {
+  read(input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[] }): Promise<AccountLabels>;
+}
 export class PlatformPivotQueryError extends Error {
   readonly retryable = false;
   constructor(readonly code: "DIMENSION_UNSUPPORTED" | "SOURCE_UNAVAILABLE" | "UPSTREAM_INVALID_RESPONSE") {
@@ -36,21 +42,38 @@ function bounded(value: unknown): void {
   if (!value || typeof value !== "object" || !("members" in value) || !Array.isArray(value.members) || value.members.length > 10000) return invalid();
   try { if (Buffer.byteLength(JSON.stringify(value)) >= 16 * 1024 * 1024) return invalid(); } catch { return invalid(); }
 }
-function axis(member: Member, dimension: "account" | "task" | "biz") {
+/**
+ * v1.9.34 ⑩（Q-041 ⑦）：透视的两条轴开放到**全部清洗维度**与任意清洗段 `segment:<key>`。
+ * 固定三维从 member 自己身上取；其余从昵称标签取——标签由 `loadAccountLabels` 一处算，
+ * 与维度查询、级联选项同源（三处各读各的必然分组结果对不上，而且不会报错）。
+ * 标签里没有这一维 = 这个账户没标注 → key 为 null，前端归「未标注」桶，**不猜不填默认值**。
+ */
+function axis(member: Member, dimension: string, labels: AccountLabels) {
   if (dimension === "account") return { key: `${member.media}:${member.accountId}`, label: member.accountName };
   if (dimension === "task") return { key: member.taskId, label: member.taskName };
-  return { key: member.bizName, label: member.bizName };
+  if (dimension === "biz") return { key: member.bizName, label: member.bizName };
+  const value = labels.get(accountLabelKey(member))?.[dimension] ?? null;
+  return { key: value, label: value };
 }
-const supportedDimension = z.enum(["account", "task", "biz"]);
 
 /** A verified account-day partition, not an authority/ready certification. No source fallback. */
 export class PlatformPivotQuery {
-  constructor(private readonly reader: PlatformPivotReader) {}
+  constructor(
+    private readonly reader: PlatformPivotReader,
+    /** 昵称标签读取器；没有它就只能做 account/task/biz 三维。 */
+    private readonly labels?: AccountLabelReader,
+  ) {}
   async query(raw: unknown) {
     const input = inputSchema.parse(raw);
-    const dimA = supportedDimension.safeParse(input.dimA), dimB = supportedDimension.safeParse(input.dimB);
-    if (!dimA.success || !dimB.success) throw new PlatformPivotQueryError("DIMENSION_UNSUPPORTED");
+    const dimA = String(input.dimA), dimB = String(input.dimB);
     if (input.auth.workspaceKind !== "personal") throw new PlatformPivotQueryError("SOURCE_UNAVAILABLE");
+    // 没有解析器产出的维度（ubp/bid_tool/…）当场拒；要靠昵称标签分组、
+    // 而这套部署没接标签读取器时同样拒——两种情况都不能悄悄退回「全 null 一个桶」，
+    // 那在页面上跟「所有账户都没标注」长得一模一样。
+    const labelled = needsAccountLabels(dimA) || needsAccountLabels(dimB);
+    if (!groupableDimension(dimA) || !groupableDimension(dimB) || (labelled && !this.labels)) {
+      throw new PlatformPivotQueryError("DIMENSION_UNSUPPORTED");
+    }
     const accounts = input.auth.scope.accounts.map(({ media, accountId }) => ({ media, accountId }));
     const days = (Date.parse(`${input.window.to}T00:00:00Z`) - Date.parse(`${input.window.from}T00:00:00Z`)) / 86400000 + 1;
     if (days > 31 || days * accounts.length > 10000 || new Set(accounts.map(a => JSON.stringify(a))).size !== accounts.length) return invalid();
@@ -63,6 +86,11 @@ export class PlatformPivotQuery {
     if (!parsed.success) return invalid();
     const snapshot = parsed.data;
     if (snapshot.window.from !== input.window.from || snapshot.window.to !== input.window.to || snapshot.window.preset !== input.window.preset) return invalid();
+    // 标签按**授权范围**取，不按快照里出现的账户取：快照里没有的账户本来就不会成行，
+    // 而让读取范围跟着快照走，等于让上游响应决定我们去查谁。
+    const labels: AccountLabels = labelled
+      ? await this.labels!.read({ workspaceId: input.auth.workspaceId, accounts })
+      : new Map();
     const cells = new Map<string, { a: ReturnType<typeof axis>; b: ReturnType<typeof axis>; members: Member[] }>();
     const observedAccounts = new Set<string>(); let observedAccountDays = 0, missingComputedAt = 0;
     let earliestComputedAt: string | null = null, latestComputedAt: string | null = null;
@@ -80,7 +108,7 @@ export class PlatformPivotQuery {
           if (latestComputedAt === null || clock > latestComputedAt) latestComputedAt = clock;
         }
       }
-      const a = axis(member, dimA.data), b = axis(member, dimB.data), key = JSON.stringify([a.key, b.key]);
+      const a = axis(member, dimA, labels), b = axis(member, dimB, labels), key = JSON.stringify([a.key, b.key]);
       const cell = cells.get(key) ?? { a, b, members: [] };
       if (cell.a.label !== a.label || cell.b.label !== b.label) return invalid();
       cell.members.push(member); cells.set(key, cell);
@@ -93,7 +121,7 @@ export class PlatformPivotQuery {
     let aggregated: ReturnType<typeof aggregatePivotWindow>;
     try {
       aggregated = aggregatePivotWindow({ workspaceId: input.auth.workspaceId, source: "history", granularity: "account_day",
-        accounts, window: input.window, dimA: dimA.data, dimB: dimB.data,
+        accounts, window: input.window, dimA, dimB,
         cells: [...cells.values()].map(cell => ({ a: cell.a, b: cell.b, members: cell.members.map(member => ({
           workspaceId: member.workspaceId, media: member.media, accountId: member.accountId, metrics: member.metrics, assessment: member.assessment,
         })) })),
@@ -121,5 +149,9 @@ export class PlatformPivotQuery {
   }
 }
 export function createPlatformPivotQuery(pool: Pick<Pool, "connect">): PlatformPivotQuery {
-  return new PlatformPivotQuery(new PlatformPivotRepository(pool));
+  return new PlatformPivotQuery(new PlatformPivotRepository(pool), {
+    // 标签与透视快照各取一次连接：标签是账户级元数据、快照是账户日事实，
+    // 两者不共享一次事务也不会互相矛盾（标签按解析行自己的规则版本解释）。
+    read: (input) => withSemanticReadSnapshot(pool, (connection) => loadAccountLabels(connection, input)),
+  });
 }
