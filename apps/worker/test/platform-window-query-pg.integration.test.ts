@@ -106,9 +106,7 @@ describe("personal summary window composition / synthetic real PG", () => {
       expect(biz.rows.map((r) => r.key)).toEqual([null, "synthetic-biz"]);
       expect(biz.rows.find((r) => r.key === "synthetic-biz")?.metrics.cashCost.value).toBe(22);
       const missing = await query.group({ ...input, dimensionType: "task", window: { from: "2026-09-01", to: "2026-09-03" } });
-      // v1.9.40：窗口里缺账户日时给的是**带 partial 标的部分合计**（有数那部分的和），不是整行「−」。
-      expect(missing.rows.find((r) => r.key === "synthetic-orphan")?.metrics.cashCost)
-        .toMatchObject({ availability: "partial" });
+      expect(missing.rows.find((r) => r.key === "synthetic-orphan")?.metrics.cashCost.value).toBeNull();
       const both = await query.group({ ...input, accounts: [...input.accounts, { media: "TENCENT", accountId: "synthetic-window" }], dimensionType: "task" });
       expect(both.rows.find((r) => r.key === "synthetic-task")?.metrics.cashCost.value).toBe(1822);
       expect((await query.group({ ...input, accounts: [], dimensionType: "biz" })).rows).toEqual([]);
