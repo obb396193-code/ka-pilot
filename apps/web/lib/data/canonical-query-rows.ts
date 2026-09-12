@@ -151,6 +151,8 @@ export const accountSummaryRowSchema = z.object({
   }),
   compare: z.object({ mode: z.enum(["dod", "wow", "prev_window"]), deltas: z.object({
     cost: ratioValueSchema, cashCost: ratioValueSchema, realConversion: ratioValueSchema, cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
+    /** F8-26 ③：转化成本卡的环比。be2 还没发（arch 已派），所以 optional——收得到就显，收不到不显。 */
+    realCpa: ratioValueSchema.optional(),
   }).strict() }).strict().optional(),
 }).strict().superRefine(refineAssessmentMetrics)
 

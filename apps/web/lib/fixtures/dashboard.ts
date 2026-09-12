@@ -54,7 +54,9 @@ export type DashboardSummaryRow = {
    * ★不再自造 `previous` + 前端相减：窗口口径、缺数怎么算、除零怎么办全在后端，
    *   前端自己算必然和日报/结算对不上。后端没给 compare 就不显环比。
    */
-  compare?: { mode: "dod" | "wow" | "prev_window"; deltas: Partial<Record<"cost" | "cashCost" | "realConversion" | "cashCpa" | "onTargetRate", RatioValue>> }
+  /** `realCpa` 是 F8-26 ③ 要的：转化成本卡的环比。be2 还没发，所以是可选——没有就不显环比，
+   *  不拿 cashCpa 的顶上（数和环比不同口径 = 假话）。 */
+  compare?: { mode: "dod" | "wow" | "prev_window"; deltas: Partial<Record<"cost" | "cashCost" | "realConversion" | "cashCpa" | "realCpa" | "onTargetRate", RatioValue>> }
 }
 
 

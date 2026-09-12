@@ -106,8 +106,28 @@ export function KpiRows({ row, windowed, warnings }: {
             warnings={warnings}
             hint="账面花费里由平台激励承担的部分；不进结算。团队（ka-data）源不提供这个数。"
           />
-          <Kpi label="转化数" value={scoped ? int(scoped.conversion) : mv(now.conversion)} partial={!scoped && isPartial(now.conversion)} warnings={warnings} delta={showDelta ? <Delta delta={deltas?.realConversion} /> : undefined} />
-          <Kpi label="转化成本" value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")} partial={!scoped && ratioPartial} warnings={warnings} hint="账面花费 / 真实转化数。分子分母有一个是部分合计，这个比率也是部分的。" delta={showDelta ? <Delta delta={deltas?.cashCpa} goodWhenDown /> : undefined} />
+          {/* ★F8-26 ③：这张卡原来**显媒体侧 `conversion`、却挂 `deltas.realConversion` 的环比**——
+              数和环比不是一个口径，等于「这个数涨了 8%」是句假话。
+              改成显真实转化（环比本来就是它的），媒体侧那个放进 tooltip 供对照。 */}
+          <Kpi
+            label="真实转化"
+            value={scoped ? int(scoped.conversion) : mv(now.realConversion)}
+            partial={!scoped && isPartial(now.realConversion)}
+            warnings={warnings}
+            hint={`BI 认可的转化数。媒体侧上报的转化数是 ${mv(now.conversion)}，两者的缺口就是回传 GAP ${rv(now.ratios.gap)}。`}
+            delta={showDelta ? <Delta delta={deltas?.realConversion} /> : undefined}
+          />
+          {/* ★F8-26 ③：原来显 `realCpa` 却挂 `deltas.cashCpa` 的环比——同样是数和环比不同口径。
+              `deltas.realCpa` be2 还没发（arch 已派），**没有就不显环比**，不拿另一个口径的顶上。
+              cashCpa 的环比挪到第二行「BI 现金成本」那张卡。 */}
+          <Kpi
+            label="转化成本"
+            value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")}
+            partial={!scoped && ratioPartial}
+            warnings={warnings}
+            hint="账面花费 / 真实转化数。分子分母有一个是部分合计，这个比率也是部分的。"
+            delta={showDelta ? <Delta delta={deltas?.realCpa} goodWhenDown /> : undefined}
+          />
         </div>
       </section>
 
@@ -128,7 +148,7 @@ export function KpiRows({ row, windowed, warnings }: {
             value={biCostText(assess.biCashCost, assess.biConv)}
             partial={isPartial(assess.biCashCost) || isPartial(assess.biConv) || isPartial(now.cashCost)}
             warnings={warnings}
-            hint="现金花费 / 考核 BI 数。考核看的就是这个成本；花了钱但一个 BI 都没回传时显「∞ · 无 BI 回传」。"
+            hint={`现金花费 / 考核 BI 数。考核看的就是这个成本；花了钱但一个 BI 都没回传时显「∞ · 无 BI 回传」。现金 CPA 环比 ${deltas?.cashCpa && deltas.cashCpa.state === "finite" ? percent.format(deltas.cashCpa.value ?? 0) : "−"}。`}
             tone={assess.costStatus === "red" ? "critical" : assess.costStatus === "yellow" ? "warning" : undefined}
           />
           <Kpi
