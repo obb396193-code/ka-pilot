@@ -315,17 +315,11 @@ describe("SemanticQueryRepository", () => {
     expect(result.ratios.realCpa).toEqual({ value: null, state: "undefined" });
   });
 
-  it("labels a missing account-day as a partial total instead of passing it off as complete", async () => {
+  it("propagates a missing account-day instead of summing only observed members", async () => {
     const result = await repository.querySummary({ workspaceId,
       dateFrom: "2026-08-18", dateTo: "2026-08-19" });
-    // v1.9.40（老板拍板 B）：缺成员时给 Σ 有数的那部分，并在 `partial` 里点名哪几列不完整。
-    // 原来的做法是整窗抹成 null——一屏「−」比不完整的数更没用；而「不完整」这件事没被丢掉，
-    // 它一路带到 DTO 的 availability:"partial"，判定那侧据此挂起。
-    expect(result).toMatchObject({ rowCount: 3, accountCount: 2,
-      partial: expect.arrayContaining(["cost", "real_conversion"]) });
-    // 比率照着部分合计算：它是「已观测那部分的 CPA」，不是凭空造的数；
-    // 不可比这件事由 partial 名单表达，而不是把比率也抹掉。
-    expect(result.ratios.realCpa.state).toBe("finite");
+    expect(result).toMatchObject({ rowCount: 3, accountCount: 2, cost: null, realConversion: null });
+    expect(result.ratios.realCpa).toEqual({ value: null, state: "undefined" });
   });
 
   it("an empty approved tuple scope cannot obtain values or expected-day rows", async () => {
@@ -343,12 +337,9 @@ describe("SemanticQueryRepository", () => {
     expect((await repository.querySummary(scope)).cost).toBe(0);
     await pool.query("UPDATE account_metrics_daily SET cost=NULL WHERE workspace_id=$1 AND ds='2026-08-18'", [workspaceId]);
     const partial = await repository.querySummary(scope);
-    // v1.9.40：单列 NULL 也是「缺一部分」——给那一列的部分合计（这里 08-19 的 0）并点名它，
-    // 其它列不受影响。关键是「不完整」没被吞掉，而不是把这一列抹成 null。
-    expect(partial.cost).toBe(0);
-    expect(partial.partial).toContain("cost");
+    expect(partial.cost).toBeNull();
     expect(partial.exposure).toBe(2200);
-    expect(partial.partial).not.toContain("exposure");
+    expect(partial.ratios.realCpa).toEqual({ value: null, state: "undefined" });
     await pool.query("UPDATE account_metrics_daily SET cost='NaN'::numeric WHERE workspace_id=$1 AND ds='2026-08-19'", [workspaceId]);
     await expect(repository.querySummary(scope)).rejects.toBeInstanceOf(SemanticQueryContractError);
   });
@@ -361,11 +352,9 @@ describe("SemanticQueryRepository", () => {
       filters: { ownerUserId: ownerId },
     });
 
-    // v1.9.40：某天只有一部分账户有数 → 给那部分的和（08-18 的 100），整天没有数才是 null。
-    // 「哪天缺」这件事由 accountCount 与 partial 名单表达，不靠把当天的和抹掉。
     expect(rows.map((row) => [row.ds, row.metrics.cost, row.metrics.accountCount])).toEqual([
       ["2026-08-17", null, 0],
-      ["2026-08-18", 100, 1],
+      ["2026-08-18", null, 1],
       ["2026-08-19", 170, 2],
       ["2026-08-20", null, 0],
     ]);
@@ -391,16 +380,20 @@ describe("SemanticQueryRepository", () => {
       dimension: "biz",
     });
 
-    // v1.9.40：a-2 缺一天 → 给有数那天的和（50）而不是整行 null；不完整由 partial 名单表达。
     expect(accounts.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
       ["a-1", 220],
-      ["a-2", 50],
+      ["a-2", null],
     ]);
-    // v1.9.40：未归属那一组（key=null）同样给部分合计；顺序按 key 排，null 组在前。
-    expect(new Map(tasks.map((row) => [row.dimensionKey, row.metrics.cost])))
-      .toEqual(new Map([[taskOneId, 100], [taskTwoId, 50], [null, 120]]));
-    expect(new Map(businesses.map((row) => [row.dimensionKey, row.metrics.cost])))
-      .toEqual(new Map([["业务甲", 100], ["业务乙", 50], [null, 120]]));
+    expect(tasks.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
+      [taskOneId, 100],
+      [taskTwoId, 50],
+      [null, null],
+    ]);
+    expect(businesses.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
+      ["业务甲", 100],
+      ["业务乙", 50],
+      [null, null],
+    ]);
     expect(accounts[0]!.metrics.ratios.realCpa).toEqual({
       value: 220 / 18,
       state: "finite",

@@ -33,22 +33,12 @@ const SUM_COLUMNS = ["cost", "exposure", "click", "conversion", "real_conversion
   "cash_cost", "cost_space", "wake_uv", "potential_uv"] as const;
 
 // These identifiers are code-owned, never request SQL. NULL cannot conceal a corrupt NaN/Infinity.
-/**
- * v1.9.40（老板拍板 B 的主体）：窗口聚合按**部分合计**出数——
- * `sum()` 天然跳过缺的账户日，所以这里直接给 Σ 有数的那部分，另发一列
- * `<col>_complete` 说明它完不完整。**缺不再等于整窗空**：一屏「−」比不完整的数更没用；
- * 而「不完整」这件事由 `_complete=false` 一路带到 DTO 的 `availability:"partial"`，
- * 判定那侧据此挂起，所以部分值读不成「达标」。
- *
- * 坏值仍然不许被掩盖：NaN/Infinity 出现时照旧让它进 sum（解码层会抛），
- * 不能因为「有缺就给部分」而把坏值一起吞掉。
- */
 export const METRIC_AGGREGATE_SQL = `
   count(*) FILTER (WHERE metric.observed)::text AS row_count,
   count(DISTINCT (metric.media, metric.account_id)) FILTER (WHERE metric.observed)::text AS account_count,
-  ${SUM_COLUMNS.map((column) => `sum(metric.${column}) AS ${column},
-    (count(metric.${column})=count(*)
-     OR bool_or(metric.${column}::text IN ('NaN','Infinity','-Infinity'))) AS ${column}_complete`).join(",\n  ")},
+  ${SUM_COLUMNS.map((column) => `CASE WHEN count(metric.${column})=count(*)
+    OR bool_or(metric.${column}::text IN ('NaN','Infinity','-Infinity'))
+    THEN sum(metric.${column}) ELSE NULL END AS ${column}`).join(",\n  ")},
   count(*) FILTER (WHERE metric.data_anomaly)::text AS anomaly_rows`;
 
 /** Expected account-days remain visible even when ETL has no row; observed counts stay factual.
@@ -82,7 +72,7 @@ function subtractOne(ratio: ReturnType<typeof safeDivide>): ReturnType<typeof sa
     : ratio;
 }
 
-function buildRatios(values: Omit<MetricSummary, "ratios" | "partial">): MetricRatios {
+function buildRatios(values: Omit<MetricSummary, "ratios">): MetricRatios {
   return {
     ctr: safeDivide(values.click, values.exposure),
     cvr: safeDivide(values.conversion, values.click),
@@ -98,16 +88,8 @@ function buildRatios(values: Omit<MetricSummary, "ratios" | "partial">): MetricR
   };
 }
 
-/** `<col>_complete=false` = 这一列是部分合计（有数的那部分）。缺列名当完整，老调用方行为不变。 */
-function partialColumns(row: AggregateDatabaseRow): string[] {
-  return SUM_COLUMNS.filter((column) => {
-    const complete = (row as unknown as Record<string, unknown>)[`${column}_complete`];
-    return complete === false && (row as unknown as Record<string, unknown>)[column] !== null;
-  }).map((column) => column);
-}
-
 export function mapMetricSummary(row: AggregateDatabaseRow): MetricSummary {
-  const values: Omit<MetricSummary, "ratios" | "partial"> = {
+  const values: Omit<MetricSummary, "ratios"> = {
     rowCount: requiredNumber(row.row_count),
     accountCount: requiredNumber(row.account_count),
     cost: nullableNumber(row.cost),
@@ -121,7 +103,7 @@ export function mapMetricSummary(row: AggregateDatabaseRow): MetricSummary {
     potentialUv: nullableNumber(row.potential_uv),
     anomalyRows: requiredNumber(row.anomaly_rows),
   };
-  return { ...values, ratios: buildRatios(values), partial: partialColumns(row) };
+  return { ...values, ratios: buildRatios(values) };
 }
 
 export async function queryMetricSummary(
