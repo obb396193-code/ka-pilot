@@ -8,37 +8,41 @@
       "status": "ready",
       "rows": [
         {
-          "rowCount": 1,
-          "accountCount": 1,
+          "rowCount": 4,
+          "accountCount": 2,
           "anomalyRows": 0,
           "metrics": {
             "cost": {
-              "value": 10,
+              "value": 200,
               "availability": "available"
             },
             "exposure": {
-              "value": 100,
+              "value": 5000,
               "availability": "available"
             },
             "click": {
-              "value": 10,
+              "value": 250,
               "availability": "available"
             },
             "conversion": {
-              "value": 2,
+              "value": 20,
               "availability": "available"
             },
             "realConversion": {
-              "value": 1,
-              "availability": "available"
-            },
-            "cashCost": {
               "value": 10,
               "availability": "available"
             },
-            "costSpace": {
-              "value": 0,
+            "cashCost": {
+              "value": 150,
               "availability": "available"
+            },
+            "costSpace": {
+              "value": 50,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             },
             "wakeUv": {
               "value": null,
@@ -50,19 +54,19 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.1,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.2,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 10,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 10,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
@@ -82,8 +86,8 @@
           "assessment": {
             "priceSource": "history",
             "price": {
-              "value": 10,
-              "effectiveDate": "2026-08-01"
+              "value": 20,
+              "effectiveDate": "2026-09-01"
             },
             "onTarget": true,
             "costStatus": "green",
@@ -91,33 +95,33 @@
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": 10,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -50,
+              "availability": "available"
             }
           }
         }
       ],
       "returnedRowCount": 1,
-      "wholeResultTotal": {
-        "value": 1,
-        "availability": "available"
-      },
       "lineage": {
-        "workspaceKind": "personal",
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-02",
-          "preset": "custom"
-        },
-        "warnings": [
-          "BUDGET_SOURCE_NOT_READY"
-        ],
         "source": "canonical",
+        "workspaceKind": "personal",
         "datasetVersion": null,
-        "queryTemplateVersion": "v2",
-        "metricVersion": "account-summary-v2",
-        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
         "timezone": null,
         "dayCut": null,
         "metadataAvailability": "partial",
+        "queryTemplateVersion": "v2",
+        "metricVersion": "account-summary-v2",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
@@ -133,17 +137,32 @@
         },
         "coverage": {
           "complete": true,
-          "returnedObjects": 1
+          "returnedObjects": 2
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY"
+        ]
       },
       "warnings": [
         "BUDGET_SOURCE_NOT_READY"
-      ]
+      ],
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      }
     }
   },
   "meta": {
-    "_note": "v1.9.22/26（Codex 自查 10/11 合成 PG→真 HTTP 导出，arch 2026-09-10 收进契约包；筛选/维度键位以 api.md v1.9.26/27 为准）"
+    "requestId": "fixture",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /data/query {queryId:\"account.summary\", filters:{optimizer:[\"张三\"]}}：真响应，同一套筛选下的大盘合计"
   }
 }

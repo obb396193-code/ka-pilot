@@ -5,38 +5,42 @@
     "source": {
       "queryId": "account.summary",
       "rowSchemaVersion": "account.summary/v3",
-      "status": "partial",
+      "status": "ready",
       "rows": [
         {
-          "rowCount": 3,
-          "accountCount": 3,
-          "anomalyRows": 1,
+          "rowCount": 2,
+          "accountCount": 1,
+          "anomalyRows": 0,
           "metrics": {
             "cost": {
-              "value": 12500.0,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 9765.0,
+              "value": 80,
               "availability": "available"
             },
             "exposure": {
-              "value": 100000,
+              "value": 2000,
               "availability": "available"
             },
             "click": {
-              "value": 4000,
+              "value": 100,
               "availability": "available"
             },
             "conversion": {
-              "value": 320,
+              "value": 8,
               "availability": "available"
             },
             "realConversion": {
               "value": null,
               "availability": "missing"
             },
+            "cashCost": {
+              "value": 60,
+              "availability": "available"
+            },
             "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "incentiveCost": {
               "value": null,
               "availability": "missing"
             },
@@ -50,7 +54,7 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.04,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
@@ -80,45 +84,48 @@
             }
           },
           "assessment": {
+            "priceSource": "history",
             "price": {
-              "value": 38.0,
+              "value": 20,
               "effectiveDate": "2026-09-01"
             },
-            "priceSource": "history",
             "onTarget": null,
             "costStatus": null,
             "costStatusReason": "conversion_missing",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "biCashCost": {
+              "value": null,
+              "state": "undefined"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
             }
           }
         }
       ],
       "returnedRowCount": 1,
-      "wholeResultTotal": {
-        "value": 1,
-        "availability": "available"
-      },
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
-        "datasetVersion": "canonical-20260905-01",
-        "queryTemplateVersion": "account-summary-v3",
-        "metricVersion": "account-metrics-v2",
-        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
-        "timezone": "Asia/Shanghai",
-        "dayCut": "business_day_0300",
-        "metadataAvailability": "known",
+        "datasetVersion": null,
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "queryTemplateVersion": "v2",
+        "metricVersion": "account-summary-v2",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
-          "role": "default_authoritative"
-        },
-        "window": {
-          "from": "2026-09-05",
-          "to": "2026-09-05",
-          "preset": "today"
+          "role": "comparison_reference"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -129,20 +136,52 @@
           ]
         },
         "coverage": {
-          "complete": true
+          "complete": true,
+          "requestedObjects": 1,
+          "returnedObjects": 1
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY",
+          {
+            "code": "ACCOUNT_DAY_MISSING",
+            "media": "KUAISHOU",
+            "accountId": "acc-1",
+            "businessDate": "2026-09-01",
+            "fields": [
+              "realConversion"
+            ]
+          },
+          {
+            "code": "ACCOUNT_DAY_MISSING",
+            "media": "KUAISHOU",
+            "accountId": "acc-1",
+            "businessDate": "2026-09-02",
+            "fields": [
+              "realConversion"
+            ]
+          }
+        ]
       },
       "warnings": [
-        "cash_yuan 为 null：现金口径缺数，达标与色标不判"
-      ]
+        "BUDGET_SOURCE_NOT_READY"
+      ],
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      }
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v3-conversion-missing",
+    "requestId": "fixture",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.7.4 P-058：现金与考核价可得、真实转化缺 → conversion_missing，onTarget/costStatus null，cashCpa/costSpace 不算"
+    "_note": "同上，真响应。现金与考核价可得、真实转化全缺 → costSpace 算不出来，costStatusReason=conversion_missing，cashCpa 为 undefined"
   }
 }

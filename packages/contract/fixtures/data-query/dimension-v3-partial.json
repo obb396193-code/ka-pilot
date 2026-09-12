@@ -9,35 +9,140 @@
       "status": "ready",
       "rows": [
         {
-          "key": "KUAISHOU:synthetic-partial",
+          "key": "KUAISHOU:acc-1",
           "label": null,
           "metrics": {
             "cost": {
-              "value": null,
-              "availability": "missing"
+              "value": 80,
+              "availability": "available"
             },
             "exposure": {
-              "value": null,
-              "availability": "missing"
+              "value": 2000,
+              "availability": "available"
             },
             "click": {
+              "value": 100,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 8,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 4,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 60,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 20,
+              "availability": "available"
+            },
+            "incentiveCost": {
               "value": null,
               "availability": "missing"
             },
-            "conversion": {
+            "wakeUv": {
               "value": null,
               "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": {
+              "value": 20,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 4,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -20,
+              "availability": "available"
+            }
+          },
+          "anomaly": false,
+          "media": "KUAISHOU",
+          "accountId": "acc-1"
+        },
+        {
+          "key": "KUAISHOU:acc-2",
+          "label": null,
+          "metrics": {
+            "cost": {
+              "value": 20,
+              "availability": "partial"
+            },
+            "exposure": {
+              "value": 500,
+              "availability": "partial"
+            },
+            "click": {
+              "value": 25,
+              "availability": "partial"
+            },
+            "conversion": {
+              "value": 2,
+              "availability": "partial"
             },
             "realConversion": {
               "value": 1,
               "availability": "partial"
             },
             "cashCost": {
-              "value": 22,
+              "value": 15,
               "availability": "partial"
             },
             "costSpace": {
-              "value": -2,
+              "value": 5,
               "availability": "partial"
             },
             "incentiveCost": {
@@ -54,24 +159,24 @@
             },
             "ratios": {
               "ctr": {
-                "value": null,
-                "state": "undefined"
+                "value": 0.05,
+                "state": "finite"
               },
               "cvr": {
-                "value": null,
-                "state": "undefined"
+                "value": 0.08,
+                "state": "finite"
               },
               "realCpa": {
-                "value": null,
-                "state": "undefined"
+                "value": 20,
+                "state": "finite"
               },
               "cashCpa": {
-                "value": null,
-                "state": "undefined"
+                "value": 15,
+                "state": "finite"
               },
               "gap": {
-                "value": null,
-                "state": "undefined"
+                "value": 1,
+                "state": "finite"
               },
               "potentialRate": {
                 "value": null,
@@ -101,7 +206,7 @@
               "availability": "partial"
             },
             "biCashCost": {
-              "value": 22,
+              "value": 15,
               "state": "finite"
             },
             "overCost": {
@@ -111,15 +216,15 @@
           },
           "anomaly": false,
           "media": "KUAISHOU",
-          "accountId": "synthetic-partial"
+          "accountId": "acc-2"
         }
       ],
-      "returnedRowCount": 1,
+      "returnedRowCount": 2,
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
         "datasetVersion": null,
-        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
         "timezone": null,
         "dayCut": null,
         "metadataAvailability": "partial",
@@ -139,13 +244,12 @@
           ]
         },
         "coverage": {
-          "complete": false,
-          "reason": "Canonical account-day coverage is incomplete",
-          "requestedObjects": 1,
-          "returnedObjects": 1
+          "complete": true,
+          "requestedObjects": 2,
+          "returnedObjects": 2
         },
         "truncated": false,
-        "partial": true,
+        "partial": false,
         "window": {
           "from": "2026-09-01",
           "to": "2026-09-02",
@@ -159,18 +263,15 @@
         "BUDGET_SOURCE_NOT_READY"
       ],
       "wholeResultTotal": {
-        "value": null,
-        "availability": "partial",
-        "reason": "Canonical account-day coverage is incomplete"
+        "value": 2,
+        "availability": "available"
       }
     }
   },
   "meta": {
     "requestId": "fixture",
-    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
-    "businessDate": "2026-09-02",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "POST /data/query {queryId:\"account.dimension\", dimensionType:\"account\"}：同一个缺天窗口的真响应。维度行与 summary 同口径：部分合计带 partial 标、判定挂起；缺的账户日不被当成 0，也不让整行变成一屏「−」"
+    "_note": "POST /data/query {queryId:\"account.dimension\", dimensionType:\"account\"}：同一个缺天窗口的真响应。缺数的 acc-2 那一行是部分合计 + 判定挂起；三天齐的 acc-1 仍是 available，**不被染成 partial**"
   }
 }

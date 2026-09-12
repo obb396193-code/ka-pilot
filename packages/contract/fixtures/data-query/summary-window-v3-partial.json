@@ -8,36 +8,36 @@
       "status": "ready",
       "rows": [
         {
-          "rowCount": 1,
-          "accountCount": 1,
+          "rowCount": 4,
+          "accountCount": 2,
           "anomalyRows": 0,
           "metrics": {
             "cost": {
-              "value": null,
-              "availability": "missing"
+              "value": 100,
+              "availability": "partial"
             },
             "exposure": {
-              "value": null,
-              "availability": "missing"
+              "value": 2500,
+              "availability": "partial"
             },
             "click": {
-              "value": null,
-              "availability": "missing"
+              "value": 125,
+              "availability": "partial"
             },
             "conversion": {
-              "value": null,
-              "availability": "missing"
+              "value": 10,
+              "availability": "partial"
             },
             "realConversion": {
-              "value": 1,
+              "value": 5,
               "availability": "partial"
             },
             "cashCost": {
-              "value": 22,
+              "value": 75,
               "availability": "partial"
             },
             "costSpace": {
-              "value": -2,
+              "value": -15,
               "availability": "partial"
             },
             "incentiveCost": {
@@ -54,24 +54,24 @@
             },
             "ratios": {
               "ctr": {
-                "value": null,
-                "state": "undefined"
+                "value": 0.05,
+                "state": "finite"
               },
               "cvr": {
-                "value": null,
-                "state": "undefined"
+                "value": 0.08,
+                "state": "finite"
               },
               "realCpa": {
-                "value": null,
-                "state": "undefined"
+                "value": 20,
+                "state": "finite"
               },
               "cashCpa": {
-                "value": null,
-                "state": "undefined"
+                "value": 15,
+                "state": "finite"
               },
               "gap": {
-                "value": null,
-                "state": "undefined"
+                "value": 1,
+                "state": "finite"
               },
               "potentialRate": {
                 "value": null,
@@ -97,11 +97,11 @@
               "state": "undefined"
             },
             "biConv": {
-              "value": 1,
+              "value": 5,
               "availability": "partial"
             },
             "biCashCost": {
-              "value": 22,
+              "value": 15,
               "state": "finite"
             },
             "overCost": {
@@ -116,7 +116,7 @@
         "source": "canonical",
         "workspaceKind": "personal",
         "datasetVersion": null,
-        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
         "timezone": null,
         "dayCut": null,
         "metadataAvailability": "partial",
@@ -136,13 +136,12 @@
           ]
         },
         "coverage": {
-          "complete": false,
-          "reason": "Canonical account-day coverage is incomplete",
-          "requestedObjects": 1,
-          "returnedObjects": 1
+          "complete": true,
+          "requestedObjects": 2,
+          "returnedObjects": 2
         },
         "truncated": false,
-        "partial": true,
+        "partial": false,
         "window": {
           "from": "2026-09-01",
           "to": "2026-09-02",
@@ -153,7 +152,7 @@
           {
             "code": "ACCOUNT_DAY_MISSING",
             "media": "KUAISHOU",
-            "accountId": "synthetic-partial",
+            "accountId": "acc-2",
             "businessDate": "2026-09-02",
             "fields": [
               "cashCost",
@@ -167,18 +166,15 @@
         "BUDGET_SOURCE_NOT_READY"
       ],
       "wholeResultTotal": {
-        "value": null,
-        "availability": "partial",
-        "reason": "Canonical window coverage is incomplete"
+        "value": 1,
+        "availability": "available"
       }
     }
   },
   "meta": {
     "requestId": "fixture",
-    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
-    "businessDate": "2026-09-02",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "POST /data/query {queryId:\"account.summary\"}：**窗口里缺一个账户日**的真响应（apps/worker/scripts/export-partial-window-fixtures.ts 对本地隔离库 + 真 PlatformDataSource 导出）。v1.9.35：cashCost/realConversion/costSpace 是 availability=\"partial\" 的**部分合计**（有数那部分的和，带真值），判定一律挂起 —— onTarget/costStatus 为 null、costStatusReason=\"partial_data\"；lineage.partial=true，lineage.warnings 逐条点名缺的账户日（ACCOUNT_DAY_MISSING / 有失败批次记录时 BATCH_FAILED）"
+    "_note": "同上，真响应。**窗口里缺一个账户日**（acc-2 的 09-02 是空值行）→ v1.9.40 部分合计：每个可加字段给「有数那部分的和」并标 availability=\"partial\"（带真值，不是 0 也不是 −），由部分分子/分母算出的比率照常 finite；判定一律挂起 —— onTarget/costStatus 为 null、costStatusReason=\"partial_data\""
   }
 }
