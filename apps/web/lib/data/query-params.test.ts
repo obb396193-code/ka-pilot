@@ -74,12 +74,7 @@ test("★透视是另一套键：window_from/window_to + media 必填（v1.9.34 
   assert.equal("dimB" in pivotParams("biz", null, WINDOW, "KUAISHOU"), false)
 })
 
-test("透视只支持 账户/任务/业务 —— 其余维度界面上要标「待接源」", () => {
-  for (const value of ["account", "task", "biz"]) assert.ok(pivotDimensionSupported(value), value)
-  for (const value of ["resource_position", "optimizer", "segment:bid_mode"]) {
-    assert.equal(pivotDimensionSupported(value), false, `${value} 现在会 DIMENSION_UNSUPPORTED`)
-  }
-})
+
 
 test("★兜底：任何构造出的顶层键都必须在 wire 白名单里", () => {
   const bodies = [
@@ -126,9 +121,15 @@ test("快手的「资源位」查的是 placement，不是 resource_position", (
   assert.ok(dimensionSupported("placement"))
 })
 
-test("pivot2 比 account.dimension 还窄：只有三个", () => {
-  // segment:<key> 本批只对 pivot2 开放，但 be2 ⑦⑩ 还没合——合了之后把段加进来
-  for (const value of ["optimizer", "goal", "placement"]) {
-    assert.equal(pivotDimensionSupported(value), false, `${value} 在 dimension 可用、在 pivot2 还不行`)
+test("★pivot2 收 segment:<key> —— 这是「按昵称字段透视」的入口（be2 ⑦⑩ 落地后）", () => {
+  // 老板要的核心那件事：按账户昵称里清洗出来的字段透视。
+  // 段一律放行，由后端按源判断（不支持时返 DIMENSION_UNSUPPORTED + details.supported[]）。
+  for (const value of ["segment:bid_mode", "segment:device", "segment:landing", "segment:operator"]) {
+    assert.ok(pivotDimensionSupported(value), `${value} 应当可选`)
   }
+  // 固定维度仍受 v1.9.41 那六个限制
+  for (const value of ["account", "task", "biz", "optimizer", "goal", "placement"]) {
+    assert.ok(pivotDimensionSupported(value), value)
+  }
+  assert.equal(pivotDimensionSupported("resource_position"), false, "合法但查不出来的，照样标待接源")
 })

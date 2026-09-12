@@ -120,13 +120,19 @@ export function dimensionSupported(value: string): boolean {
 }
 
 /**
- * pivot2 比 `account.dimension` 还窄：现在只有这三个（v1.9.34 快手源实测）。
- * `segment:<key>` 本批只对 pivot2 开放，但 be2 ⑦⑩ 还没合——合了之后把段加进来。
- * 界面上把不支持的标「待接源」，而不是让人选了再吃一个报错。
+ * pivot2 能用哪些维度。**be2 Q-041 ⑦⑩ 合入后放开了**（`ea30f7e4`）：
+ * 两轴都收命名维度和 **`segment:<key>`**（和 `account.dimension` 用同一个命名规则解析器）。
+ *
+ * 这条解锁的正是老板要的那件事——**按账户昵称里清洗出来的字段透视**
+ * （腾讯的 bid_mode/device/landing、快手的 operator/device 等）。
+ *
+ * 固定维度仍受 v1.9.41 那六个限制（schema 合法 ≠ 查得出来）；段则一律放行，
+ * 由后端按源判断：不支持时返 `DIMENSION_UNSUPPORTED` 且 `details.supported[]` 列出该源可用维度，
+ * 我们把那份清单原样显给用户——**后端说的比前端猜的准**。
  */
-export const PIVOT_SUPPORTED_DIMENSIONS = ["account", "task", "biz"] as const
 export function pivotDimensionSupported(value: string): boolean {
-  return (PIVOT_SUPPORTED_DIMENSIONS as readonly string[]).includes(value)
+  if (value.startsWith("segment:")) return true
+  return dimensionSupported(value)
 }
 
 

@@ -96,7 +96,19 @@ export function usePivot(rowDim: string, colDim: string | null, metric: string, 
         if (!response.ok) { setError({ message: response.error.message, requestId: response.error.requestId }); return }
         if (response.data.mode === "reconcile") { setUnavailable("这个查询返回了对账结果，不是透视"); return }
         const source = response.data.source
-        if (source.status === "unavailable") { setUnavailable(source.error?.message ?? "这个维度组合暂不支持"); setCells([]); return }
+        if (source.status === "unavailable") {
+          // 后端不支持这个维度时会在 `details.supported[]` 里列出**这个源实际可用的维度**。
+          // 把那份清单原样转给用户——后端说的比前端猜的准，而且换个媒体源可用集就不一样。
+          const details = (source.error as { details?: { supported?: unknown } } | undefined)?.details
+          const supported = Array.isArray(details?.supported) ? details.supported.filter((item): item is string => typeof item === "string") : []
+          setUnavailable(
+            supported.length
+              ? `${source.error?.message ?? "这个维度组合暂不支持"}。这个源现在可用的维度：${supported.join("、")}`
+              : source.error?.message ?? "这个维度组合暂不支持",
+          )
+          setCells([])
+          return
+        }
         // ★不再 `as unknown as`：那种断言一个字段都不校验，形状对不上要等用户点开才炸。
         //   解析失败就照实说「返回的形状对不上」，不把半截数据画成表。
         const parsed = z.array(pivotRowSchema).safeParse(source.rows)
@@ -119,7 +131,7 @@ export function usePivot(rowDim: string, colDim: string | null, metric: string, 
       data: [] as PivotCell[],
       loading: false,
       error: null,
-      unavailable: `「${unsupportedDim}」这个维度后端还没接（现在只支持 账户 / 任务 / 业务）`,
+      unavailable: `「${unsupportedDim}」这个维度后端还没接——它在 schema 里合法，但没有解析器产出它（v1.9.41）`,
       reload,
     }
   }
