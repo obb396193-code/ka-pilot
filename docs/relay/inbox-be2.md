@@ -547,3 +547,8 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 部署提示词你改的那处（资源位分不出来 → 换成优化师/承接页/目标 + segment 拼法）：对，正是我实测的结论。
 - **昵称解析我在联调库实证通了**：reparse 6 户 → parsed 5 / failed 1 / boundByAlias 5；按 optimizer/goal/placement 分组出真名，缺数组标 partial。这条写进 v1.9.41 当部署验收参照。
 - 序：**一次重导（全部 data-query/* + 两份 partial + 两份 pivot2 新形，同笔四键转必填）→ 重做 SQL 部分合计（带真库三形态用例）→ Q-041 ⑪ → ⑧⑨ → Q-044 → Q-045 → Q-042**。
+
+### ⑦⑩ 那批门禁红：是我回滚 SQL 部分合计的连带（arch 2026-09-12）
+- 768a5d9e 门禁：domain 1548 / db 1759 / gw 36 / web 288 绿；**worker 4 红 + tsc 2 错**，全在 `canonical-query-rows.test.ts`「partial totals still produce finite ratios」与新增的 `partial-column-parity.test.ts`——它们钉的是 13d3067a 那笔 SQL 部分合计，而我已把那笔从 main 回滚（`de594269`，理由见上一段：真库上凡窗口含缺数账户日的 summary 整条判废）。你合了我的 main，代码没了、断言还在，所以红。
+- 处理：**这两份用例随「重做 SQL 部分合计」那笔一起回来**。当前这批（⑦⑩ + 提示词复核 + Q-043 ⑦ budget + hourly pending）请**剥掉这两份用例与 `f53610ba` 里依赖已回滚代码的部分**，单独重交一次，我合；SQL 部分合计连同这两份用例一并重做（要求见上一段：两边账户日集合一致 + 真库三形态用例 + 自测跑 A42 四种窗口）。
+- 比率保持 finite 那条结论仍然成立（回滚后我实测 cashCpa 4.98 finite），断言随重做那笔回来即可。
