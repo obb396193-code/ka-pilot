@@ -59,7 +59,8 @@ export function HourlyTab({ window, workspaceId }: { window: DataWindow; workspa
   const byHour = useMemo(() => new Map(rows.map((row) => [row.hh, row])), [rows])
   const hours = Array.from({ length: 24 }, (_, hh) => hh)
   const lastSync = rows.find((row) => row.lastSyncAt)?.lastSyncAt ?? null
-  if (!isOk(hourlyFixture)) return null
+  // A35 同上：盯盘的数据来自 `account.hourly` 真接口，别因为样例没了就空白
+  const lineage = isOk(hourlyFixture) ? hourlyFixture.data.source.lineage : null
 
   return (
     <div className="grid gap-4 @4xl/main:grid-cols-12">
@@ -153,8 +154,8 @@ export function HourlyTab({ window, workspaceId }: { window: DataWindow; workspa
           </Table>
         </CardContent>
         <div className="flex flex-wrap items-center gap-2 px-4 pb-1">
-          <LineageFooter lineage={hourlyFixture.data.source.lineage} />
-          {hourlyFixture.data.source.warnings.map((warning) => <Badge key={warning} variant="outline" className="text-status-warning">{warning}</Badge>)}
+          {lineage ? <LineageFooter lineage={lineage} /> : null}
+          {(isOk(hourlyFixture) ? hourlyFixture.data.source.warnings : []).map((warning: string) => <Badge key={warning} variant="outline" className="text-status-warning">{warning}</Badge>)}
         </div>
       </Card>
     </div>

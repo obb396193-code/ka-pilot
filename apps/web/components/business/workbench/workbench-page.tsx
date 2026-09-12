@@ -19,6 +19,13 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { timelineFixture } from "@/lib/fixtures/accounts"
+import { useDashboardSummary, useDashboardTrend } from "@/lib/data/use-dashboard"
+import { useWorkItems, workItemsIsMock } from "@/lib/data/use-work-items"
+import { resolvePreset } from "@/components/business/data/dashboard/window-picker"
+
+// 数据日：所有预设以它为终点往前推，不是以今天——今天的数还没跑完。
+// TODO(F8-25 ⑥)：接会话/健康条的 dataAsOf 后改成从会话取（和 data-page.tsx 同一处 TODO）。
+const DATA_DATE = "2026-09-05"
 import { fieldText } from "@/lib/fixtures/automation"
 import { changesetStatusText, fmtTime, isOk, mv, rv, costStatusReasonShort, costStatusReasonText } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel } from "@/lib/fixtures/data-analysis"
@@ -48,16 +55,35 @@ export function WorkbenchPage() {
   const [queueFilter, setQueueFilter] = useState<QueueFilter>("all")
   const [briefVariant, setBriefVariant] = useState<"ready" | "pending">("ready")
 
+  /**
+   * F8-25 ②：工作台接真接口。
+   *
+   * 首屏是打开产品看到的第一眼，**挂着假 KPI 和假队列最误导**（老板拍板「内网不放假数据」）。
+   * 三块分别接：
+   *   · KPI / 趋势 → `account.summary` + `account.trend`（复用数据分析那套取数层，参数已对齐实测表）
+   *   · 待处理队列 → `GET /work-items`
+   * 其余块（变更集 / 工作流 / 警报 / 早报 / 派发待回执）后端还没有，A35 开关一开自然是空的。
+   */
+  const dataWindow = useMemo(() => resolvePreset("month_to_date", DATA_DATE, { preset: "month_to_date", from: DATA_DATE, to: DATA_DATE }), [])
+  const workspaceId = session?.activeWorkspace.id
+  const summaryQuery = useDashboardSummary(dataWindow, workspaceId)
+  const trendQuery = useDashboardTrend(dataWindow, workspaceId)
+  const workItems = useWorkItems({ status: "open", pageSize: 50 })
+
   const summary = summaryFixtures.green
-  const row = isOk(summary) ? summary.data.source.rows[0] : null
-  const trendRows = isOk(trendFixture) ? trendFixture.data.source.rows : []
+  const mockRow = isOk(summary) ? summary.data.source.rows[0] : null
+  // mock 下读样例，真实模式下读 `account.summary` 的第一行——两边用同一套渲染
+  const row = workItemsIsMock ? mockRow : (summaryQuery.data?.row as typeof mockRow) ?? null
+  const mockTrendRows = isOk(trendFixture) ? trendFixture.data.source.rows : []
+  const trendRows = workItemsIsMock ? mockTrendRows : (trendQuery.data as typeof mockTrendRows) ?? []
   const queue = workItemLists[queueVariant]
   const detail = isOk(workItemDetailFixture) ? workItemDetailFixture.data : null
-  const queueItems = useMemo<WorkItem[]>(() => {
+  const mockQueueItems = useMemo<WorkItem[]>(() => {
     const items = isOk(queue) ? [...queue.data.items] : []
     if (detail && isOk(queue) && !items.some((item) => item.workItemId === detail.workItemId)) items.unshift(detail)
     return items
   }, [queue, detail])
+  const queueItems = workItemsIsMock ? mockQueueItems : workItems.items ?? []
   const coverage = queue.meta?.coverage
   const counts = useMemo(() => ({ all: queueItems.length, P0: queueItems.filter((item) => item.severity === "P0").length, P1: queueItems.filter((item) => item.severity === "P1").length, opportunity: queueItems.filter((item) => item.severity === "opportunity").length }), [queueItems])
   const visible = queueItems.filter((item) => queueFilter === "all" || item.severity === queueFilter)
@@ -89,7 +115,10 @@ export function WorkbenchPage() {
     ...(isOk(approvalsFixture) ? approvalsFixture.data.toApprove.filter((item) => item.status === "pending").map((item) => ({ id: item.approvalId, label: `待批：${item.title}`, kind: "提审" })) : []),
     ...(alerts ? alerts.items.filter((item) => !item.ackBy).map((item) => ({ id: item.escalationId, label: `待确认：${item.title}`, kind: "告警" })) : []),
   ]
-  const windowText = isOk(summary) ? windowLabel(summary.data.source.lineage.window?.preset) : ""
+  // 窗口标签跟着真实响应的 lineage 走；样例那份只在 mock 下用
+  const windowText = workItemsIsMock
+    ? (isOk(summary) ? windowLabel(summary.data.source.lineage.window?.preset) : "")
+    : windowLabel((summaryQuery.data?.lineage as { window?: { preset?: string } } | null)?.window?.preset)
 
   return (
     <PageBody>
@@ -133,7 +162,24 @@ export function WorkbenchPage() {
                     </CardHeader>
                     <CardContent className="flex flex-col gap-3">
                       {degraded ? <div role="alert" className={cn("rounded-lg border px-3 py-2 text-sm", queue.meta?.dataState === "stale" ? "border-status-critical/30 bg-status-critical/10 text-status-critical" : "border-status-warning/30 bg-status-warning/10 text-status-warning")}>{queue.meta?.dataState === "stale" ? "队列数据过期（首次全量未完成或源过期）：只展示上次结果，执行入口置灰。" : "覆盖不完整：只展示已返回的工作项，不做全量结论。"}</div> : null}
-                      {visible.length ? visible.map((item) => <WorkItemCard key={item.workItemId} item={item} detail={detail && detail.workItemId === item.workItemId ? detail : null} disabled={degraded} />) : <p className="py-6 text-center text-sm text-muted-foreground">该分组没有待处理项</p>}
+                      {/* 空队列和「还没取到」看起来一样，但意思完全相反：
+                          一个是「今天没事」，一个是「不知道有没有事」。必须分开说。 */}
+                      {!workItemsIsMock && workItems.loading && queueItems.length === 0
+                        ? <p className="py-6 text-center text-sm text-muted-foreground">正在取待处理项…</p>
+                        : !workItemsIsMock && workItems.error
+                        ? (
+                          <p className="py-6 text-center text-sm text-status-critical">
+                            取待处理项失败：{workItems.error.message}
+                            {workItems.error.requestId ? <span className="ml-1 text-muted-foreground">（问题编号 {workItems.error.requestId}）</span> : null}
+                            <button type="button" onClick={workItems.reload} className="ml-2 underline underline-offset-2">重试</button>
+                          </p>
+                        )
+                        : visible.length
+                        ? visible.map((item) => <WorkItemCard key={item.workItemId} item={item} detail={detail && detail.workItemId === item.workItemId ? detail : null} disabled={degraded} />)
+                        : <p className="py-6 text-center text-sm text-muted-foreground">该分组没有待处理项</p>}
+                      {!workItemsIsMock && workItems.incomplete
+                        ? <p className="py-2 text-center text-xs text-status-warning">{workItems.incomplete}</p>
+                        : null}
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         {coverage && coverage.checked !== undefined ? (
                           <>

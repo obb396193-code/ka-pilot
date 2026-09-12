@@ -53,7 +53,11 @@ export function GapTab({ window, workspaceId }: { window: DataWindow; workspaceI
   const mockRows = useMemo(() => (supported && isOk(gapFixture) ? gapFixture.data.source.rows : []), [supported, gapFixture])
   const rows = operationalIsMock ? mockRows : remote.rows ?? []
   const table = useGridTable({ data: rows, columns, pageSize: 50, getRowId: (row) => row.group.key })
-  if (!isOk(gapFixture)) return null
+  // A35：真实模式下 fixture 一律不可用（`isOk` 恒 false），但这个 tab 的**数据**来自
+  // `account.gap` 真接口——不能因为拿不到样例就整个 tab 空白。
+  // 只有规则版本和血缘还挂在 fixture 上，那两处各自降级即可。
+  const lineage = isOk(gapFixture) ? gapFixture.data.source.lineage : null
+  const ruleSetVersion = isOk(gapFixture) ? gapFixture.meta?.ruleSetVersion : null
   return (
     <div className="flex flex-col gap-3">
       <DataGrid
@@ -77,9 +81,9 @@ export function GapTab({ window, workspaceId }: { window: DataWindow; workspaceI
             <span className="text-xs text-muted-foreground">回传（OCPX）vs 真实（BI）· 偏高阈值由规则引擎给</span>
           </>
         }
-        actions={<Badge variant="outline" className="font-mono text-[11px]">规则版本 {gapFixture.meta?.ruleSetVersion ?? "−"}</Badge>}
+        actions={ruleSetVersion ? <Badge variant="outline" className="font-mono text-[11px]">规则版本 {ruleSetVersion}</Badge> : null}
       />
-      <LineageFooter lineage={gapFixture.data.source.lineage} />
+      {lineage ? <LineageFooter lineage={lineage} /> : null}
     </div>
   )
 }

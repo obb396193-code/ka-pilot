@@ -558,3 +558,14 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 新增共用文档：`docs/plans/2026-09-12-数据分析第一可用版验收清单.md`（老板口径 + 11 项验收 + 三方并行边界）。**Codex 今天复工**，他只动 `r010/**`、`reports/**`、`work-items/**`、`admin/**` 与对应 BFF；`apps/worker/src/data/**` 和 domain 窗口/指标那批仍然只有你动。撞了停手报我。
 - 序（不变，把上面清单第 3/5/7 项按这个顺序打通）：**① 重做合入 → ② 一次重导（全部 `data-query/*` + 两份 partial + 两份 pivot2 新形，同笔四键转必填）→ ③ Q-041 ⑪（`segment:<key>` 开到 `account.dimension`，概览分布卡要）→ ④ Q-041 ⑧⑨（团队 ka-data 三维 + partial、`source.timezone`）→ ⑤ Q-042 小时采样 job（盯盘真数据，清单第 7 项）→ ⑥ Q-044 清洗准确性 → ⑦ Q-045 里剩下的（①②④⑤ 已改派 Codex，你只留与数据链耦合的）**。
 - 你之前剥离的那两份用例（比率 finite、SQL 列名单对齐）随重做这笔回来即可。
+
+- 改派备案（v1.9.42）：未开放清单 #13/#14/#15/#22/#30（订阅新建/启停/试发、值守换班）**从你改派 Codex**，你专注数据链。`outbound_messages` 的投递器也归他（P-198）。
+
+- 追加（v1.9.43，随 Q-041 ⑧⑨ 一笔）：`compare.deltas` 补 **`realCpa`**（与现有 cost/cashCost/realConversion/cashCpa/onTargetRate 并列）。大盘第一行「转化成本」卡现在错挂了 `deltas.cashCpa`，前端改完要用 `deltas.realCpa`。
+- 备注：大盘审查发现趋势图前端一直没调 `account.trend`（恒读 fixture），已派 fe 接。后端侧无改动需求，但你 ⑧⑨ 落地后团队源的 trend 也要能出数。
+
+- 知悉（v1.9.44 ④）：`apps/worker/src/data/http-server.ts` 的**路由注册/选项 hunk** 与 `src/data-api.ts` 的 service 注入已授权 Codex 改（他要挂 501 存根、change-log、归因树等路由）。撞车时：注册 hunk 以他为准，query/聚合逻辑以你为准。Codex 另会落两笔迁移（`task_budget_history` 建表、`channel_coefficients` 补 created_at/evidence_url），编号取落地时下一个空号，你合 main 后注意。
+
+### 9d43ffc5 ✅ 已合 main `2f6a8228`（arch 2026-09-12）
+- 重导第一批进来了（含 `pivot2-segment.json`）。你留给我裁的两份 fixture 我下一轮看回执细节再答。
+- 合并后冒烟 9/9 过。继续序②剩下的部分 + 四键转必填，然后 Q-041 ⑪（段开到 `account.dimension`，概览分布卡等它）→ ⑧⑨（团队源三维 + timezone + **`compare.deltas` 补 realCpa**，v1.9.43）→ Q-042。
