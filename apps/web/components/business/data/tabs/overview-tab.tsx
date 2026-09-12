@@ -40,7 +40,10 @@ export function OverviewTab({ colorKey, window, workspaceId }: { colorKey?: stri
     (Parameters<typeof LineageFooter>[0]["lineage"] & { window?: { from: string; to: string; preset?: string }; warnings?: LineageWarning[] }) | null
 
   const optimizerQuery = useDashboardDimension("optimizer", window, workspaceId, mockOptimizerRows())
-  const resourceQuery = useDashboardDimension("resource_position", window, workspaceId, mockResourcePositionRows())
+  // ★查询用 `placement`，界面仍叫「资源位」：快手的资源位实际落在 placement 维度
+  //   （v1.9.41 实测分出 优选/搜索/联盟/主站/上下滑）。`resource_position` 这个键
+  //   在 schema 里合法但没有解析器产出，查了直接 DIMENSION_UNSUPPORTED。
+  const resourceQuery = useDashboardDimension("placement", window, workspaceId, mockResourcePositionRows())
   const optimizerRows = optimizerQuery.data ?? []
   const resourceRows = resourceQuery.data ?? []
   // ★任务大类顶层行走**和 summary 同源**的那份，不用契约里那份 personal 的 biz fixture：

@@ -104,9 +104,25 @@ export function pivotParams(dimA: string, dimB: string | null, window: QueryWind
 }
 
 /**
- * pivot2 现在只支持这三个维度（快手源实测）；其它维度和 `segment:<key>` 一律
- * `DIMENSION_UNSUPPORTED`。be2 Q-041 ⑩ 会扩到全集 + 命名规则段。
- * 界面上把不支持的维度标「待接源」而不是让人选了再吃一个报错。
+ * **哪些维度今天真的能分组**（v1.9.41，arch 在联调库逐个实测）。
+ *
+ * 关键坑：`dimensionTypeSchema` 里合法 ≠ 查得出来。`resource_position` / `agent_type` /
+ * `bid_tool` / `ubp` / `deduction_range` 都在 schema 里，但**没有任何解析器产出它们**，
+ * 一查就是 `DIMENSION_UNSUPPORTED`。所以「合法维度表」不能拿来当下拉选项。
+ *
+ * ★快手的**「资源位」实际落在 `placement`**（实测分出 优选/搜索/联盟/主站/上下滑）。
+ * 界面上仍叫「资源位」——那是业务的叫法；查询用 `placement`——那是后端的键。
+ * 两者不是一回事，别为了「统一」把界面文案也改了。
+ */
+export const DIMENSION_SUPPORTED = ["account", "task", "biz", "optimizer", "goal", "placement"] as const
+export function dimensionSupported(value: string): boolean {
+  return (DIMENSION_SUPPORTED as readonly string[]).includes(value)
+}
+
+/**
+ * pivot2 比 `account.dimension` 还窄：现在只有这三个（v1.9.34 快手源实测）。
+ * `segment:<key>` 本批只对 pivot2 开放，但 be2 ⑦⑩ 还没合——合了之后把段加进来。
+ * 界面上把不支持的标「待接源」，而不是让人选了再吃一个报错。
  */
 export const PIVOT_SUPPORTED_DIMENSIONS = ["account", "task", "biz"] as const
 export function pivotDimensionSupported(value: string): boolean {

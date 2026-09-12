@@ -52,7 +52,7 @@ function StrategyTabInner() {
 
 function AnalysisView() {
   const [preset, setPreset] = useState(strategyPresets[0].value)
-  const [custom, setCustom] = useState<{ a: Dimension; b: Dimension }>({ a: "resource_position", b: "task" })
+  const [custom, setCustom] = useState<{ a: Dimension; b: Dimension }>({ a: "placement", b: "task" })
   const active = preset === "custom" ? custom : { a: strategyPresets.find((item) => item.value === preset)!.dimA, b: strategyPresets.find((item) => item.value === preset)!.dimB }
   const [selected, setSelected] = useState<string[]>([])
   const unsupported = ["a", "b"].map((side) => active[side as "a" | "b"]).find((dim) => "unsupported" in dimensionFixtures[dim])

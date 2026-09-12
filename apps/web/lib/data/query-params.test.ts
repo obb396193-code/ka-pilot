@@ -6,6 +6,7 @@ import {
   PREV_WINDOW_COMPARE_READY,
   buildFilters,
   dimensionParams,
+  dimensionSupported,
   pivotDimensionSupported,
   pivotParams,
   windowParams,
@@ -103,4 +104,31 @@ test("★驼峰规则只管 pivot2 以外的 queryId —— pivot2 那两个下�
   }
   const pivot = pivotParams("biz", "task", WINDOW, "KUAISHOU")
   assert.ok("window_from" in pivot && "window_to" in pivot, "pivot2 就是下划线，别顺手统一成驼峰")
+})
+
+test("★可分组维度只有六个 —— schema 里合法 ≠ 查得出来（v1.9.41）", () => {
+  // 这条锁的是一个反直觉的事实：`dimensionTypeSchema` 里合法的维度里，
+  // 有一半没有任何解析器产出，一查就是 DIMENSION_UNSUPPORTED。
+  // 所以下拉选项**不能**照着「合法维度表」生成。
+  for (const value of ["account", "task", "biz", "optimizer", "goal", "placement"]) {
+    assert.ok(dimensionSupported(value), `${value} 应当可分组`)
+  }
+  for (const value of ["resource_position", "agent_type", "bid_tool", "ubp", "deduction_range"]) {
+    assert.equal(dimensionSupported(value), false, `${value} 合法但查不出来，必须标「待接源」`)
+  }
+})
+
+test("快手的「资源位」查的是 placement，不是 resource_position", () => {
+  // 界面上仍叫「资源位」（业务的叫法），查询用 placement（后端的键）。
+  // 两者不是一回事，别为了「统一」把界面文案也改了。
+  const { params } = dimensionParams("placement", WINDOW)
+  assert.equal(params.dimensionType, "placement")
+  assert.ok(dimensionSupported("placement"))
+})
+
+test("pivot2 比 account.dimension 还窄：只有三个", () => {
+  // segment:<key> 本批只对 pivot2 开放，但 be2 ⑦⑩ 还没合——合了之后把段加进来
+  for (const value of ["optimizer", "goal", "placement"]) {
+    assert.equal(pivotDimensionSupported(value), false, `${value} 在 dimension 可用、在 pivot2 还不行`)
+  }
 })
