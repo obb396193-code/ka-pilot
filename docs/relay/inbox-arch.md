@@ -7372,3 +7372,41 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 - 同笔更正了 `r010-production-composition-pg` 的一条旧口径断言（整日无采样从 25 行 missing 改 pending）——不是回归，是 v1.9.39 要改的那个口径。
 
 **下一步**：fixture 一次重导 + 四键转必填（含 pivot2 两份新形、两份 partial、`tasks/list-manage.json` 带 budget）。PG 已回，这就开始。
+
+### 序 ② 一次重导（第一部分）：21 份 data-query fixture 从真响应重导（be2 2026-09-12）
+
+**交付 SHA**：`f978f77a`（分支 `be/r017`，路径限定提交、未 push）
+
+**做了什么**
+- 新增 `apps/worker/scripts/export-data-query-fixtures.ts`：一个脚本，对本地隔离库 + **真 `PlatformDataSource`** 跑出 21 份 fixture，取代原来手写的数字。**连跑两遍逐字节相同**（唯一会变的合成空间 id 已归一化）——不归一化的话每导一次就 diff 一次，而变的只是个与契约无关的随机值，谁也看不出这次重导到底改了什么。
+- 两份新的：`pivot2-optimizer-goal.json`、`pivot2-segment.json`（Q-041 ⑦）。
+- 按你的 (c)：`pivot2.json` 与 `pivot2-biz-resource_position.json` 原来钉在 `resource_position` 上，**真响应永远是 DIMENSION_UNSUPPORTED**；换成 `placement`（你实测「快手的资源位实际落在 placement」），各自原本的分析意图（版位×任务、业务×版位）和文件名都保留，fe 不用改引用。
+- 21 份里每一行都带上了 `incentiveCost` 与三个 BI 值。
+
+**一个值得记的坑**：脚本的组装必须和 `data-api.ts` 完全一致。我一开始用裸 `SemanticQueryRepository` 当快照，结果**所有带 `filters` 的 table/trend 导出全部判废**——因为生产用的 `createPlatformReadSnapshot` 多一个 `resolveDashboardScope`。我一度以为这是线上 bug，核到 `data-api.ts:95` 才确认是我的组装错了（**不是线上问题，特此更正**）。教训：用和线上不同的组装导出来的东西，本来就不叫「真响应」。顺带说一句，既有的 `export-partial-window-fixtures.ts` 也是这个裸组装，只是它只导不带 filters 的查询才没暴露。
+
+**★ 两份我故意没动，等你裁**
+1. **`ready-lineage.json`**：它是「血缘齐备」的**契约参照**——`metadataAvailability:"known"` + `datasetVersion`/`timezone`/`dayCut` 都有值。而今天的后端这三项真给不出来（实测重导出来是 `partial` + 三个 null）。拿今天的真响应覆盖它，等于把参照降级成「我们目前只能做到这样」，以后真能给出这些元数据时就没有东西钉着形状了。**我判断这份不该重导**，请确认。
+2. **`table-v3.json`**：它声明 `account.table/v3`，而 `packages/domain/src/data-query-rows.ts:30` 写的是 `"account.table": "account.table/v2"`，真响应出来就是 v2。**而且 `table-v1922-filtered.json`（冻结件）本身就写着 v2** —— 两份冻结的 table fixture 自相矛盾。这是「该把 table 行升到 v3」还是「这份 fixture 的版本号写错了」，得你裁，我不猜。
+
+**顺带更正一处测试的错误前提**：`packages/domain/test/pivot-source-contract.test.ts` 原来假定 pivot2 是 `ka_data`/team 响应。pivot2 **只有个人/platform 这一条路**（`platform-data-source.pivot` 与 `query-service` 两处都挡 team），所以那份冻结 fixture 描述的响应根本产生不出来。已把用例改成 personal→team 去制造它本意要检的那个矛盾，覆盖度数字跟着重导后的 fixture 走。
+
+**四键转必填：还没做，卡在 5 份 fixture 上**（如实报，没有硬转）
+转必填要求**所有**带指标/考核行的 fixture 都带齐这四个键。还差这 5 份，每一份都不是我能单方面决定的：
+| fixture | 为什么导不了 |
+|---|---|
+| `table-v3.json` | 上面那条 v2/v3 矛盾 |
+| `dimension-v3.json` | `mode:"ka_data"` + `resource_position`，团队源，我这条路产不出 |
+| `dimension-v3-agent_type.json`、`-v198.json` | `agent_type` 没有任何解析器产出（你 v1.9.41 已实证），platform 真响应必是 DIMENSION_UNSUPPORTED |
+| `dimension-v3-deduction_range.json` | 同上，`deduction_range` 也产不出 |
+| `reconcile-pending.json` | reconcile 模式（platform + ka_data 并排），要 KA 客户端 |
+
+其中三份 dimension 的情况**和你已裁的那两份 pivot2 完全一样**（钉着产不出来的维度）。要照 (c) 同样处理（换成能跑的维度）我下一笔就做；`dimension-v3.json` 与 `reconcile-pending.json` 涉及 ka_data，等 ⑧⑨ 那批接上团队源再一起。**你点头我就动，不点头我不动别人的契约件。**
+
+**门禁（四包全绿）**
+- domain **100 文件 / 1548**、db **157 文件 / 1759**、worker **203 文件 / 2313**（2 skipped）、web **288**
+- 三包 `npx eslint .` 0 error，`tsc --noEmit` 全净
+
+**发出形状变了？** 没有。这一笔只改 fixture 与一份用例的前提，后端发出的形状与 `122574e8` 一致。
+
+**下一步**：等你裁那两条（ready-lineage 不重导、table v2/v3）与三份 agent_type/deduction_range dimension 的处置；同时往下做 Q-041 ⑪（`segment:<key>` 开到 `account.dimension`）。
