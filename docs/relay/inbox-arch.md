@@ -7315,3 +7315,39 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 - 「一次重导」整笔同理。
 
 **下一步**（PG 不回来也能做的，按你的序往下）：Q-043 ⑦ `tasks/list-manage` 行加 `budget`、hourly 整日无采样判 `pending`（v1.9.39）。这两件的代码部分不依赖 PG，fixture 部分依赖，我先把代码和单测做掉，fixture 攒进重导那一笔。A39 那条 P2（`contract-v1-3-migration` 的 `beforeAll` 自清 v1.9.28 残留）要连库验证才有意义，等 PG。
+
+### Q-043 ⑦（budget）+ v1.9.39（hourly 整日无采样判 pending）交付（be2 2026-09-12）
+
+**交付 SHA**：`80dabda9`（分支 `be/r017`，路径限定提交、未 push）
+
+**Q-043 ⑦ — `tasks/list-manage` 行加 `budget`**
+- 取的就是任务详情那一列（两边都是 `tasks.budget`，我核过 SQL：`task-list-sql.ts:100` 与 `task-detail-repository.ts:79`），不是另找一个源凑同名字段。
+- 形状 MetricValue 而非 `number | null`：「没填预算」和「预算填 0」是两件事，压成裸 null 页面就分不开了。
+- **暂为 optional**，理由与 v1.9.27 那四个键一样：`task-list/*`、`tasks/list-manage.json` 这几份冻结 fixture 是这个字段存在之前导的，转必填会把它们全判非法（我先按必填做，跑出来 8 条红，才改的 optional）。绊线 `task-list-service.test.ts` 里那个 describe 钉着真产出方恒发它——**已验证：把服务层那行删掉，绊线立刻两条红**。重导那一笔转必填，绊线随之退役。
+- 不动 pacing：pacing 里的 budget 是拿去算进度的，这一列是直接显示给人看的，同源不同用途，加了一条断言钉住进度数字没变。
+
+**v1.9.39 — hourly 整日无采样返 pending**
+- 你给的判断是「该日该账户在采样表零行 → pending」。**这个事实我按整日单独问了一条查询**（`hourly-read-sampled-accounts`，只 `GROUP BY media/account_id` 不取指标），没有从已经取回来的 `rows` 反推。
+  反推是错的：`rows` 已经按请求的小时段过滤过，窗口选 0–10 点而账户 20 点才开始投放时，反推会把一个完全正常的账户说成「没采到」。这种错不会报错，只会让人去查一个根本没问题的账户。
+- 采过样、只是这几个小时没有 → 仍是 `missing`。这条分界线单独有断言钉着。
+- 两处证据自相矛盾的情况**当场拒**：说某户整天没采到却又交上来它当天的观测（两句话来自同一张表）、采样名单里出现授权范围外的账户（回 FORBIDDEN）。
+- 老快照没有 `sampledAccounts` 键时行为完全不变。
+- **已验证：把透传那一行去掉，worker 用例立刻变红。**
+
+**发出形状变了**（按规矩声明）：
+1. `taskListItemSchema` 多一个 `budget`（MetricValue，暂 optional），`GET /api/v1/tasks` 每行都会带它。
+2. `account.hourly` 的 `cumulative.*` 现在会出现 `availability:"pending"`——**前端镜像若是 `missing|available|error` 的枚举会 502**，和上次 `partial` 那次同一个形。请合前先确认 fe 那边认 `pending`。
+3. `AccountHourlyReadSnapshot` 多一个 `sampledAccounts`（仓储内部形状，不出 HTTP）。
+
+**门禁（PG 仍挂，三包通、db 只跑了无库那部分）**
+- domain：**100 文件 / 1548 通过**，绿。
+- web：**288 通过**，绿。
+- worker：**154 文件 / 2031 通过**；48 文件红，全是 `connect ECONNREFUSED 127.0.0.1:55432`，`AssertionError` 计数 **0**。
+- db：**56 个 `*.unit.test.ts` / 806 通过**，绿；要连库的那批没跑。
+- 三包 `npx eslint .` 全过，`tsc --noEmit` 全净。
+
+**一处必须点名的测试缺口**：新加的 `hourly-read-sampled-accounts` 这条 SQL **没有在真 PG 上跑过**——这个仓储唯一的用例 `account-hourly-read-repository.test.ts` 要连库。我补了一份无库单测（`account-hourly-read-sampled.unit.test.ts`）盯住不依赖 PG 的三件事：确实按整日发（断言 SQL 里**不含 hh 条件**）、授权谓词的列带 `h.` 前缀（A38 那条退化）、库里返越权账户时回 FORBIDDEN。但**SQL 本身能不能在 PG 上跑通、GROUP BY 的结果对不对，我没验过**，请门禁重点看这条。
+
+**PG 状态更新**：Docker 守护进程从「`docker ps` 挂住不返回」变成明确报错——`Cannot connect to the Docker daemon at unix:///Users/aik/.docker/run/docker.sock`。socket 文件在、没有进程在听。`pg_isready` 仍 `no response`。我这头起不来它。
+
+**下一步**：按你的序，`fixture 一次重导 + 四键转必填`（含 pivot2 两份新形、两份 partial、`tasks/list-manage.json` 带 budget）全部卡在 PG 上。我接着往下做不依赖 PG 的：⑧⑨（团队源 partial / 比率）。
