@@ -7322,3 +7322,53 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 **PG 状态更新**：Docker 守护进程从「`docker ps` 挂住不返回」变成明确报错——`Cannot connect to the Docker daemon at unix:///Users/aik/.docker/run/docker.sock`。socket 文件在、没有进程在听。`pg_isready` 仍 `no response`。我这头起不来它。
 
 **下一步**：按你的序，`fixture 一次重导 + 四键转必填`（含 pivot2 两份新形、两份 partial、`tasks/list-manage.json` 带 budget）全部卡在 PG 上。我接着往下做不依赖 PG 的：⑧⑨（团队源 partial / 比率）。
+
+### ★P0 重做交付：v1.9.40 部分合计（两边同口径）（be2 2026-09-12）
+
+**交付 SHA**：`122574e8`（分支 `be/r017`，从当前 main 起——你的 revert `de594269` 我已 merge 进来，**没有** merge 那三笔老提交，改动是重新落的）
+
+**根因（在真库上复现出来了，不是读代码猜的）**
+你说「两边取的账户日集合必须一致」，方向对，具体机制是这样：
+- SQL 侧（`METRIC_AGGREGATE_SQL`）按**账户日**求和。
+- 证据侧（`WindowAssessmentRepository.load`）是 `GROUP BY metric.ds`——**按天分组**，而且天内用的是「`count(col)=count(*)` 否则整列 NULL」，所以**同一天只要有一个账户缺数，整天塌成 NULL**。
+
+上一笔只把 SQL 改成部分合计，证据侧还是按天塌陷，于是同一个窗口两边算出的数不同，`platform-window-query` 一致性核对走 `invalid()`。**只要窗口里有一个缺口，这个差就必然出现**——所以真库全红而我的合成用例全绿：合成用例从来没造出「同一天里只有一个账户缺」这个形态。
+
+**顺带一个不该放过的发现**：回滚后的行为（也就是 d79e284f 那版）在我这个真实形态的库上给的是 **cashCost=30 partial**，而正确答案是 **70**。30 是「按天塌陷」的结果——它把另一个账户在那两天花掉的 40 块整个丢了，然后给这个数挂了个「部分」的标。**带着 partial 标的错数比一个「−」更难发现**，这一档也一并修掉了。
+
+**改法：把两边都放到账户日口径，而不是把核对放松**
+1. `window-assessment-repository.load`：`sum()` + 逐日 `<field>_complete` 标记；不完整的那天解码成 `availability:"partial"` 的 MetricValue。**partial 这一档跟着值一起传出去**，所以 `computeWindowAssessment` 照样挂起判定（它是从值上的标记看的，不是从「缺了几天」猜的）。
+2. SQL 聚合恢复部分合计 + `<col>_complete`；坏值（NaN/Infinity）仍进 sum 让解码层抛。
+3. 三处一致性核对（window 一处、dimension 两处）统一用 `sumMetricValuesPartial`。
+4. 行上手补那两段撤掉——手补只覆盖 cashCost/realConversion，漏掉账面消耗等于 B 只做一半。
+5. 在 `METRIC_AGGREGATE_SQL` 和核对处各写了一段注释，点名「这两处口径必须一致，否则整条 summary 被判废」，免得下一个人只改一边。
+
+**用例按你第 2、3 条要求做的**（`apps/worker/test/partial-window-real-shape-pg.integration.test.ts`）
+一个库造齐真实 ETL 每天都会出现的三种账户日，并且**让缺口发生在「同一天里只有一个账户缺」**（分歧只在这里显形）：
+- `ws-full`：09-01/02/03 全正常
+- `ws-gappy`：09-01 正常、09-02 空值行、09-03 行在但属失败批次被守卫屏蔽
+
+断言：
+- `summary` **答得出来**（这条就是打回那条的最小复现）
+- `cashCost` = 70 partial、`realConversion` = 7 partial、**`cost` = 150 partial**（消耗类也给，大盘第一张卡）
+- `ratios.cashCpa` = 10 finite（由部分分子分母算出的比率照常算）
+- `onTarget`/`costStatus` 为 null、`costStatusReason` = `partial_data`
+- 维度行与 summary 同口径；三天齐的那户仍是 `available`，**不被染成 partial**
+- 窗口缩到两边都齐的一天 → `available` + `window_ok`
+
+**第 3 条「自己按四种窗口打一遍真 data-api」**：已搬进同一个用例——起真 `createDataApiServer`，POST `/api/v1/data/query`，四种窗口形态（三种齐全 + 全齐）逐个断言 `status=200 / ok=true / error=undefined`，并断言 `availability` 是 partial 还是 available。上一版正是这一层全 502。
+
+**门禁（PG 已恢复，四包全跑）**
+- domain：**100 文件 / 1548 通过**
+- db：**157 文件 / 1759 通过**
+- worker：**203 文件 / 2313 通过**（2 skipped）
+- web：**288 通过**（第一次跑出现 1 条失败，连跑三次均 288/288，判为抖动，没有定位到具体用例，如果你的门禁也见到再说）
+- 三包 `npx eslint .` 0 error，`tsc --noEmit` 全净
+
+**发出形状变了**（照规矩声明）：summary/trend/dimension/pivot2 的指标块会出现 `availability:"partial"`；`MetricSummary` 多 `partial: string[]`；`DailyAssessmentInput.cashCost/realConversion` 现在可能是 partial（仓储内部形状）。与上次同形，合完请按 A40 重取回放样例。
+
+**另外两笔也在这条分支上**（PG 恢复后补跑，都已四包绿）：
+- `cb2426e7` v1.9.39 整日采样那条 SQL 的真 PG 覆盖（四个用例，含「只在 20 点采过、窗口问 1–2 点仍算采过」那条；验证过把查询窄到请求小时段就变红）。上一封回执里我点名说这条 SQL 没在真库跑过，现在跑过了。
+- 同笔更正了 `r010-production-composition-pg` 的一条旧口径断言（整日无采样从 25 行 missing 改 pending）——不是回归，是 v1.9.39 要改的那个口径。
+
+**下一步**：fixture 一次重导 + 四键转必填（含 pivot2 两份新形、两份 partial、`tasks/list-manage.json` 带 budget）。PG 已回，这就开始。
