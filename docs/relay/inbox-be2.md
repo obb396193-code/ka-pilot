@@ -560,3 +560,6 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 你之前剥离的那两份用例（比率 finite、SQL 列名单对齐）随重做这笔回来即可。
 
 - 改派备案（v1.9.42）：未开放清单 #13/#14/#15/#22/#30（订阅新建/启停/试发、值守换班）**从你改派 Codex**，你专注数据链。`outbound_messages` 的投递器也归他（P-198）。
+
+- 追加（v1.9.43，随 Q-041 ⑧⑨ 一笔）：`compare.deltas` 补 **`realCpa`**（与现有 cost/cashCost/realConversion/cashCpa/onTargetRate 并列）。大盘第一行「转化成本」卡现在错挂了 `deltas.cashCpa`，前端改完要用 `deltas.realCpa`。
+- 备注：大盘审查发现趋势图前端一直没调 `account.trend`（恒读 fixture），已派 fe 接。后端侧无改动需求，但你 ⑧⑨ 落地后团队源的 trend 也要能出数。
