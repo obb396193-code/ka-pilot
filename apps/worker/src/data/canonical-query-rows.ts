@@ -102,7 +102,7 @@ function subtractOne(ratio: RatioValue): RatioValue {
  * 有值且在这份名单里 → `availability:"partial"`；没值仍是 `missing`。
  * 名单缺席时一切照旧（KA 源、老调用方不受影响）。
  */
-const PARTIAL_COLUMN_BY_FIELD: Record<string, string> = {
+export const PARTIAL_COLUMN_BY_FIELD: Record<string, string> = {
   cost: "cost", exposure: "exposure", click: "click", conversion: "conversion",
   realConversion: "real_conversion", cashCost: "cash_cost", costSpace: "cost_space",
   wakeUv: "wake_uv", potentialUv: "potential_uv",

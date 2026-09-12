@@ -294,3 +294,47 @@ describe("canonical query row adapters", () => {
     }], "w")).toThrow(CanonicalQueryRowError);
   });
 });
+
+/**
+ * v1.9.35/40 部分合计：`partial` 名单里的列标 `availability:"partial"`，
+ * 而**由它们算出的比率照常给 finite**（arch 2026-09-11 循环第 44 圈点名）。
+ *
+ * 这条绊线盯的是一种很容易「改对了又改回去」的回归：有人看到分子带 partial，
+ * 顺手把比率也压成 `undefined`，页面上就从「4.98（部分）」变回一个「−」——
+ * 而「算不出来」和「算出来了但只覆盖部分天」在用户眼里完全不是一回事。
+ */
+describe("partial totals still produce finite ratios", () => {
+  // 名单里是 **SQL 侧列名**（snake_case），不是响应字段名——写错了不会报错，
+  // 只会静默地一个 partial 都标不上，正是这条绊线要盯住的。
+  const partialRow = (partial: string[]) => ({
+    rowCount: 2, accountCount: 2, anomalyRows: 0, partial,
+    cost: 100, exposure: 1_000, click: 100, conversion: 8, realConversion: 20, cashCost: 90,
+    costSpace: null, wakeUv: null, potentialUv: null,
+  });
+
+  it("labels the partial columns and keeps every derived ratio finite", () => {
+    const row = canonicalSummaryBaseRow(partialRow(["cash_cost", "real_conversion", "cost", "click"]), "platform");
+    expect(row.metrics.cashCost).toEqual({ value: 90, availability: "partial" });
+    expect(row.metrics.realConversion).toEqual({ value: 20, availability: "partial" });
+    // 90/20 = 4.5：分子分母都是「有数那部分的和」，比率就是那部分的比率，照给。
+    expect(row.metrics.ratios.cashCpa).toEqual({ value: 4.5, state: "finite" });
+    expect(row.metrics.ratios.realCpa).toEqual({ value: 5, state: "finite" });
+    expect(row.metrics.ratios.ctr).toEqual({ value: 0.1, state: "finite" });
+    expect(row.metrics.ratios.cvr).toEqual({ value: 0.08, state: "finite" });
+    expect(row.metrics.ratios.gap).toEqual({ value: -0.6, state: "finite" });
+  });
+
+  it("marks only the columns actually named, leaving the rest available", () => {
+    const row = canonicalSummaryBaseRow(partialRow(["cash_cost"]), "platform");
+    expect(row.metrics.cashCost.availability).toBe("partial");
+    expect(row.metrics.cost.availability).toBe("available");
+    expect(row.metrics.realConversion.availability).toBe("available");
+  });
+
+  it("never turns an absent value into partial just because the column is named", () => {
+    // 名单说「这列是部分合计」，但这一行根本没值——那就是 missing。
+    // 把 null 标成 partial 等于宣称「有一部分数据」，而其实一条都没有。
+    const row = canonicalSummaryBaseRow({ ...partialRow(["cost_space"]), costSpace: null }, "platform");
+    expect(row.metrics.costSpace).toEqual({ value: null, availability: "missing" });
+  });
+});
