@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useAccounts, accountsIsMock } from "@/lib/data/use-accounts"
 import { accountsFixture, infraFixture, lifecycleLabel, pipelineFixture, poolStatusMap, type AccountItem, type LifecycleStage } from "@/lib/fixtures/accounts"
 import { isOk } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
@@ -62,7 +63,19 @@ export function AccountsPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [dialog, setDialog] = useState<DialogKind>(null)
 
-  const items = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items : []), [])
+  /**
+   * F8-25 ④：账户池接真接口（`GET /accounts`）。
+   *
+   * devix 的改库探针就是拿这一页证的：改 account-6 的名字页面纹丝不动，
+   * **九态合计 39 户而库里只有 6 户**。账户池是最容易看出假数据的一页，
+   * 也是最容易被当真的一页——人会照着它去分配账户。
+   *
+   * 先按空筛选整页取（后端一页最多 100 条），页内筛选仍在前端做；
+   * 服务端筛选/分页等 F8-27 的筛选栏一起接，那时把 `q/stage/starred` 传下去。
+   */
+  const accounts = useAccounts({ pageSize: 100 })
+  const mockItems = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items : []), [])
+  const items = accountsIsMock ? mockItems : accounts.items ?? []
   const stages = isOk(pipelineFixture) ? pipelineFixture.data.stages : []
   const asOf = isOk(pipelineFixture) ? pipelineFixture.data.asOf : ""
   // 分层卡 / 流程条的「全部账户」= 九态之和（与九态同源 pipeline），不能拿列表页的 total —— 那是当前筛选后的行数，会出现「全部 5、投放中 18」的自相矛盾
@@ -137,6 +150,16 @@ export function AccountsPage() {
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="账户池扩展字段接口接入后切换为真数据" empty={{ title: "当前空间没有可见账户", description: "个人空间只看本人授权账户；导入认领或新建账户后出现。" }}>
+          {/* 取数状态照实说：空列表和「还没取到 / 取失败」在屏幕上一样，意思完全相反 */}
+          {!accountsIsMock && (accounts.loading || accounts.error || accounts.incomplete) ? (
+            <p className={cn("mb-3 rounded-lg border border-dashed px-3 py-2 text-sm", accounts.error ? "text-status-critical" : "text-muted-foreground")}>
+              {accounts.loading && !accounts.items
+                ? "正在读取账户…"
+                : accounts.error
+                ? <>读取账户失败：{accounts.error.message}{accounts.error.requestId ? <span className="ml-1 text-muted-foreground">（问题编号 {accounts.error.requestId}）</span> : null}<button type="button" onClick={accounts.reload} className="ml-2 underline underline-offset-2">重试</button></>
+                : <span className="text-status-warning">{accounts.incomplete}</span>}
+            </p>
+          ) : null}
           {tab === "pool" ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
