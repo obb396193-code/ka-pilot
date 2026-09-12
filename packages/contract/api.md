@@ -1520,3 +1520,25 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **大盘没有筛选栏**：`GET /data/filters` 级联选项后端已在（be2 Q-041 ①），前端从未接。**补多值级联筛选栏**（优化师 / 任务大类 / 任务 / 资源位，只列窗口内 cost>0，下游随上游收窄）+ **媒体选择器**（多媒体账户必需；pivot2 的 `media` 必填也靠它）+ 账户 ID 多值过滤。
 - **导出与视图**：概览与分布的「导出 CSV」前端直出（无接口）；图表偏好现在只存 localStorage（`use-chart-prefs.ts:7`），**接 `PATCH /me/views` 的 `config.charts`**；保存视图现在只在内存（`data-page.tsx:48`），接 `/me/views` 真接口。
 - 不做/暂缓（写明以免反复问）：小时粒度趋势等 Q-042；自助报表设计器、图表联动、栅格拖拽仍是 P1；竞情 P2。
+
+## v1.9.44 追加（2026-09-12 arch；冻结 Codex 复工阻断的六处：501 路径、成员授权形、纯忽略 DTO、注册点授权、change-log 数据源与 revoke）
+**① 十条「一期不做」端点的方法与路径冻结**（Codex P-192 只需挂 501 `NOT_IMPLEMENTED`，错误体照 v1.9.19；**不实现任何业务逻辑**）：
+
+| 清单# | 入口 | 冻结路径 |
+|---|---|---|
+| 3 | 账户池·测试「停止」 | `POST /api/v1/accounts/:media/:accountId/tests/:testId/stop` |
+| 11 | 自动化·影子「确认升档」 | `POST /api/v1/rules/:ruleId/autonomy/promote` |
+| 13 / 21 | 订阅与报告定时「立即发送一次」 | `POST /api/v1/integrations/subscriptions/:id/test-send`（**这条 v1.9.42 已定为真做，归 Codex P-199，不挂 501**） |
+| 15 | 集成·值守「换班」 | `PUT /api/v1/integrations/on-call`（**同上，v1.9.42 真做，不挂 501**） |
+| 18 | 素材「复刻」 | `POST /api/v1/materials/:id/replicate` |
+| 20 | 素材·交付「发送 / 登记交付」 | `POST /api/v1/materials/deliveries` |
+| 24 | 报告·复盘「重新复盘」 | `POST /api/v1/tasks/:id/review`（已 501，保持） |
+| 26 | 报告·AI 提效「估时保存」 | `PUT /api/v1/reports/ai-impact/estimates` |
+| 27 | 报告·月度「拍板三键」 | `POST /api/v1/reports/monthly-exec/decisions` |
+| 28 | 搜索结果项动作 | `POST /api/v1/search/actions` |
+
+**② 成员与授权（P-193）定形**：`PATCH /admin/members/:identityId` 成功体沿用 `adminMemberV195Schema` 单成员 + 现有 meta；`PUT /admin/members/:identityId/grants` 请求体 `{items:[{media, accountId, accessLevel}]}`（**服务端生成 grantedAt**），响应沿用 `adminMemberGrantsResponseSchema`。**范围统一为 workspace-local**：三个端点（GET/PATCH/PUT）都只作用于**当前活动空间**里的那条 membership 与其账户授权；团队空间按 v1.4 不建账户授权，GET 返回空是对的。治理后台要管别的空间，先切空间——不引入跨空间的全局改写（那会让"我在哪个空间"这件事失去意义）。
+**③ 纯忽略 DTO（P-194）**：请求不带 `mute_days` 时响应 `{workItemId, status:"ignored", ignoredAt, reasonChip?}`，**不含** `mutedUntil/scope`；带 `mute_days` 时维持现形 `{workItemId, status:"ignored", ignoredAt, mutedUntil, scope, reasonChip?}`。BFF 改成**按请求分支的联合**（带静音才要求静音字段），只删 `r010-command-bff.ts:130` 那一行不够，`muteResultSchema` 同步拆成两形。Codex 从真响应导 `work-items/ignore-plain.json` 与 `work-items/ignore-mute.json` 两份 fixture。
+**④ 注册点授权**：`apps/worker/src/data/http-server.ts` 的**路由注册/选项 hunk** 与 `src/data-api.ts` 的 service 注入，**授权 Codex 改**（仅注册与注入，不碰 query/聚合逻辑）；be2 知悉，撞了以 Codex 的注册 hunk 为准、聚合逻辑以 be2 为准。
+**⑤ change-log 的数据源缺口**（Codex 实读发现，属实）：`task_budget_history` 表在 `schema.sql` 里有、迁移里没有；`channel_coefficients` 缺 `created_at`/`evidence_url`。**授权 Codex 落两笔迁移**（编号取落地时的下一个空号）：建 `task_budget_history`（`workspace_id, task_id, daily_cap, effective_date, changed_by, evidence_url, created_at`，只增不改）、给 `channel_coefficients` 补 `created_at DEFAULT now()` 与 `evidence_url`。**不许在测试里 CREATE 假表掩盖部署缺口**——这条判断对。
+**⑥ change-log 行形与 revoke**：`{id, at, kind:"assessment_price"|"daily_budget_cap"|"channel_coefficient", op:"set"|"revoke", scope:{taskId?|media?}, oldValue, newValue, effectiveDate, changedBy:{userId,name}|null, evidenceUrl|null}`；`op:"revoke"` 行 `newValue=null`。**「旧值」按生效日排序的前一版**（同生效日多版本用 `created_at` 兜底），不是按写入时间——用户问的是"这个价之前是多少"，不是"上一次有人动过什么"。历史元数据缺失（老行没有 changedBy/evidenceUrl）时该字段给 null，**不得整行 unavailable**。

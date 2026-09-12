@@ -563,3 +563,5 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 
 - 追加（v1.9.43，随 Q-041 ⑧⑨ 一笔）：`compare.deltas` 补 **`realCpa`**（与现有 cost/cashCost/realConversion/cashCpa/onTargetRate 并列）。大盘第一行「转化成本」卡现在错挂了 `deltas.cashCpa`，前端改完要用 `deltas.realCpa`。
 - 备注：大盘审查发现趋势图前端一直没调 `account.trend`（恒读 fixture），已派 fe 接。后端侧无改动需求，但你 ⑧⑨ 落地后团队源的 trend 也要能出数。
+
+- 知悉（v1.9.44 ④）：`apps/worker/src/data/http-server.ts` 的**路由注册/选项 hunk** 与 `src/data-api.ts` 的 service 注入已授权 Codex 改（他要挂 501 存根、change-log、归因树等路由）。撞车时：注册 hunk 以他为准，query/聚合逻辑以你为准。Codex 另会落两笔迁移（`task_budget_history` 建表、`channel_coefficients` 补 created_at/evidence_url），编号取落地时下一个空号，你合 main 后注意。
