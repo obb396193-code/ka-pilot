@@ -818,3 +818,27 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 ### 3387035a ✅ 已合 main `52eae0fd`（arch 2026-09-11 循环第 44 圈）
 - P1 续三条合了。be2 的部分合计已补到行上：真响应里现金消耗、真实转化现在是 `partial` 带数——**㉑ 的渲染是现在大盘唯一还显「−」的原因**（账面消耗等 be2 下一批）。
 - 顺序照上一段：**先 `git merge main`，⑳ 单独一笔 → ㉑ → F8-25 ①**。
+
+### ⑳ ㉑ F8-25 ① 三笔收到，门禁排队（arch 2026-09-12，v1.9.41）
+- 合 main 之后一次交三笔，这个节奏对。`isOk()` 一处收口 + 已接真接口的 tab 各自降级 + `<NotConnected>` 写出端点：做法对。真实模式生产构建才暴露 hook 数量不一致 → 进门禁清单 **A43**。
+- **v1.9.41（重要，影响你的默认维度）**：联调库实测，真正能分组的固定维度只有 **account / task / biz / optimizer / goal / placement** 六个；`resource_position`、`agent_type` 一查就是 `DIMENSION_UNSUPPORTED`。**快手的「资源位」实际落在 `placement`**（实测分出 优选/搜索/联盟/主站/上下滑）。所以：
+  - `overview-tab.tsx:42`、`strategy-tab.tsx:44`、`pivot-tab.tsx:77`、`pivot-builder.tsx:46` 里以 `resource_position` 起手的默认全部改成 **`placement`**；下拉里 `resource_position`/`agent_type` 标「待接源」禁选（和你 ⑳ 已做的规则一致）。
+  - 其余清洗段（腾讯的 bid_mode/device/landing、快手的 operator/device 等）走 **`segment:<key>`**，目前只有 pivot2 收；`account.dimension` 收段是 be2 的 Q-041 ⑪，之后再放开。
+  - 冻结 fixture `pivot2.json` / `pivot2-biz-resource_position.json` 用的是不可用维度，be2 重导时会换掉，你到时换过渡件。
+- **昵称解析真实链路我验通了**：reparse 后按优化师分组出「张三 35,277（部分）/ 李四 24,422 / 某代理 35,368 / 未标注 13,187」。你的㉑ 角标就会显示在「张三」那行。
+- 报备两件：血缘那行接响应——**做**，和 F8-25 ②–⑥ 一起（总表/盯盘/对账三个 tab 跟响应走）。
+- 序：**F8-25 ②–⑥（工作台 → 账户池 → 任务列表 → 数据分析各 tab 血缘 → 归属清洗 P0-⑫ → 报告）→ F8-19b P1 余项**。
+
+### ★三笔都卡在一个未提交的文件上（arch 2026-09-12）
+- 门禁树 tsc 两条红：`drilldown.tsx:11` / `kpi-rows.tsx:8` 找不到 `./partial-mark`。**`apps/web/components/business/data/dashboard/partial-mark.tsx` 在你工作树里是未跟踪文件（`??`），没进任何一笔提交**。你本地 tsc/测试/构建都绿，是因为文件在磁盘上；门禁树按提交检出就没有它。web 295 绿也是同一原因。
+- 这是 F8-15 ⑦ 那次（路由文件漏 add）的同一类错，第二次了。**交付前 `git status --porcelain` 必须没有 `??` 的源文件**——进门禁清单 **A44**。你现在补一笔 `git add` 那个文件即可，其余不用动，我立刻重跑门禁。
+- 这三笔本身我已读过、做法认可（见上一段裁决与 v1.9.41 的默认维度改动），补完就合。
+
+### 接下来的序（arch 2026-09-12）：补完文件就合，然后逐页接真接口
+- 先补 `partial-mark.tsx` 的 `git add`（A44），我立刻重跑门禁合入。
+- 新增共用文档：`docs/plans/2026-09-12-数据分析第一可用版验收清单.md`——老板口径是「别人部署出来打开数据分析页看到自己的真数据、能按昵称字段透视、没有假数据」，11 项验收里第 4/5/6 项是你的。**Codex 今天复工**做 501 存根与治理后台，他不动 `apps/web/**`（只有 `r010-command-bff.ts` 一行例外，我已授权他改），你照旧。
+- 序：
+  1. **默认维度改 `placement`**（v1.9.41）：`overview-tab.tsx:42`、`strategy-tab.tsx:44`、`pivot-tab.tsx:77`、`pivot-builder.tsx:46`；`resource_position`/`agent_type` 标「待接源」禁选。**这一条和补文件一起交**，它现在让概览第三张卡在真实模式必炸。
+  2. **F8-25 ②–⑥ 逐页接真接口**：工作台 → 账户池（含详情）→ 任务列表 → 数据分析三个 tab 的血缘跟响应走 → 归属清洗 P0-⑫（三处按钮接真接口，现在是「提示成功其实没存」）→ 报告页。每页交付时给「真取数 / 空态」矩阵。
+  3. F8-19b P1 余项（KpiCard 抽公共要先出截图给老板拍板）。
+- 后端这边你能用上的新东西：`segment:<key>` 透视（be2 ⑦⑩ 待合）、`list-manage` 的 `budget` 列、盯盘整日无采样返 `pending`。
