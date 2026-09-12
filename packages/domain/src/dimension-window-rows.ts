@@ -57,7 +57,11 @@ export const dimensionWindowRowSchema = z.union([accountDimensionWindowRowSchema
  * 10,000 rows is the bounded canonical result; sources still must prove they were not hard-cap truncated.
  */
 export const dimensionWindowRowsSchema = z.union([
-  z.object({ dimension: namedDimensionTypeSchema, rows: namedDimensionWindowRowSchema.array().max(10000) }).strict(),
+  // v1.9.42（Q-041 ⑪）：命名维度与任意清洗段共用同一种行（都带 source/sources），
+  // 因为两者的分组值都来自昵称解析行。
+  z.object({ dimension: z.union([namedDimensionTypeSchema, z.string().refine(
+    value => segmentDimensionKey(value) !== null, "Unsupported segment dimension")]),
+    rows: namedDimensionWindowRowSchema.array().max(10000) }).strict(),
   z.object({ dimension: z.literal("account"), rows: z.array(accountDimensionWindowRowSchema).max(10000) }).strict(),
   z.object({ dimension: z.literal("agent_type"), rows: z.array(agentTypeRowSchema).max(10000) }).strict(),
   z.object({

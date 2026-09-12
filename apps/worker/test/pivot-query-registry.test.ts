@@ -45,12 +45,16 @@ describe("pivot Registry admission", () => {
       .toThrowError(expect.objectContaining({ code: "DIMENSION_UNSUPPORTED",
         details: { supported: ["account", "task", "biz", "optimizer", "goal", "placement", "segment:<key>"] } }));
   });
-  it("keeps segments out of account.dimension, whose resolver only knows named dimensions", () => {
-    // 段只对透视开放。这里放行不会立刻出错，会在更深的地方炸成一个调用方看不懂的解析错误。
+  /** v1.9.42（Q-041 ⑪）：段从「只开 pivot2」扩到 `account.dimension`（概览分布卡要按任意段分组）。 */
+  it("admits a segment on account.dimension too, and still names the usable set", () => {
+    expect(createDataQueryRegistry().resolve("account.dimension",
+      { dateFrom: "2026-09-01", dateTo: "2026-09-02", dimensionType: "segment:city", media: "KUAISHOU" }, "platform").params)
+      .toMatchObject({ dimensionType: "segment:city" });
+    // 没有任何解析器产出的维度仍然当场拒——放行的后果不是报错，是一张「全归一个空桶」的表。
     expect(() => createDataQueryRegistry().resolve("account.dimension",
-      { dateFrom: "2026-09-01", dateTo: "2026-09-02", dimensionType: "segment:city", media: "KUAISHOU" }, "platform"))
+      { dateFrom: "2026-09-01", dateTo: "2026-09-02", dimensionType: "agent_type", media: "KUAISHOU" }, "platform"))
       .toThrowError(expect.objectContaining({ code: "DIMENSION_UNSUPPORTED",
-        details: { supported: ["account", "task", "biz", "optimizer", "goal", "placement"] } }));
+        details: { supported: ["account", "task", "biz", "optimizer", "goal", "placement", "segment:<key>"] } }));
   });
   it.each(["ka_data", "reconcile"])("does not borrow %s", view => {
     expect(() => createDataQueryRegistry().resolve("account.pivot2", params, view))

@@ -9,7 +9,8 @@ import {
   accountDimensionWindowRowSchema, groupedDimensionWindowRowSchema, dailyAssessmentInputSchema, queryWindowSchema,
   computeWindowAssessment, type MetricValue,
   namedDimensionTypeSchema, namedDimensionWindowRowSchema, accountDimensionRuleSchema,
-  resolveNamedDimensions, summarizeDimensionSources, aggregateWindowMetrics,
+  resolveNamedDimensions, resolveSegmentDimension, segmentDimensionKey,
+  summarizeDimensionSources, aggregateWindowMetrics,
   dashboardFiltersSchema, calendarDateSchema,
 
   sumMetricValuesPartial,
@@ -47,7 +48,14 @@ const groupInputSchema = z.object({ ...inputFields,
   const result = inputSchema.safeParse({ workspaceId: value.workspaceId, accounts: value.accounts, window: value.window });
   if (!result.success) for (const issue of result.error.issues) ctx.addIssue({ code: "custom", path: issue.path, message: issue.message });
 });
-const namedInputSchema = z.object({ ...inputFields, dimensionType: namedDimensionTypeSchema }).strict();
+/**
+ * v1.9.42（Q-041 ⑪）：维度查询的分组键从「三个命名维度」扩到「命名维度 + 任意清洗段」。
+ * 概览的分布卡要按任意段分组，而段名由各媒体的命名规则决定，枚举不出来，只能校验形状。
+ */
+const namedInputSchema = z.object({ ...inputFields,
+  dimensionType: z.union([namedDimensionTypeSchema, z.string().refine(
+    value => segmentDimensionKey(value) !== null, "Unsupported named dimension")]),
+}).strict();
 const membershipLabelsSchema = z.object({ taskId: z.string().trim().min(1).nullable(), bizName: z.string().trim().min(1).nullable() });
 function key(account: { media: string; accountId: string }): string { return `${account.media}:${account.accountId}`; }
 function span(from: string, to: string): number { return (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000 + 1; }
@@ -92,6 +100,7 @@ export class PlatformDimensionQuery {
   constructor(private readonly snapshot: Snapshot) {}
   async named(value: unknown): Promise<NamedResult> {
     const { dimensionType, ...rawInput } = namedInputSchema.parse(value), input = inputSchema.parse(rawInput);
+    const segmentKey = segmentDimensionKey(dimensionType);
     return this.snapshot(async repository => {
       if (!repository.loadEvidence || !repository.loadRules) return invalid();
       // Bind existing account computation to this very connection, without a
@@ -125,8 +134,12 @@ export class PlatformDimensionQuery {
           if (!stored.parse.nameMatches) warnings.add("NAMING_PARSE_STALE");
           if (rule.mappings === null) warnings.add("NAMING_RULE_MISSING");
           try {
-            dimension = resolveNamedDimensions({ segments: stored.parse.segments, override: stored.parse.override ?? {},
-              nameMatches: stored.parse.nameMatches, ruleMappings: rule.mappings })[dimensionType];
+            // 段走 `resolveSegmentDimension`（不经过 mapsTo），命名维度走原来的解析器；
+            // 两者用的是同一套「人工覆盖优先、昵称对不上就不信」的规矩。
+            dimension = segmentKey === null
+              ? resolveNamedDimensions({ segments: stored.parse.segments, override: stored.parse.override ?? {},
+                nameMatches: stored.parse.nameMatches, ruleMappings: rule.mappings })[dimensionType as "optimizer"]
+              : resolveSegmentDimension(stored.parse, segmentKey);
           } catch { return invalid(); }
         }
         const members = groups.get(dimension.value) ?? []; members.push({ row, source: dimension.source, days }); groups.set(dimension.value, members);

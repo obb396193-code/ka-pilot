@@ -1,7 +1,9 @@
 import {
   AccountDimensionEvidenceRepository, AccountDimensionRuleRepository, type SemanticReadConnection,
 } from "@ka/db";
-import { accountDimensionRuleSchema, resolveNamedDimensions, segmentDimensionKey } from "@ka/domain";
+import {
+  accountDimensionRuleSchema, resolveNamedDimensions, resolveSegmentDimension, segmentDimensionKey,
+} from "@ka/domain";
 
 /**
  * 账户的**昵称清洗标签**：命名维度（optimizer/goal/placement…）与任意清洗段（`segment:<key>`）。
@@ -47,15 +49,13 @@ export async function loadAccountLabels(
         entry[dimension] = (value as { value: string | null }).value;
       }
     } catch { continue; }
-    // 段值来自解析行本身（人工覆盖优先），不经过 mapsTo——`segment:<key>` 问的就是
-    // 「这一段写了什么」，而不是「这一段落到哪个维度」。待确认段照样能看，但它不进维度。
-    const segments = row.parse.segments as Record<string, { value?: unknown } | undefined>;
+    // 段值走 domain 那个共享解析器（`resolveSegmentDimension`）——维度查询用的是同一个，
+    // 两处各写一份的话，「透视里按某段分组」和「维度里按同一段分组」迟早给出不同答案，
+    // 而这种分歧不会有任何东西报错。
+    const segments = row.parse.segments as Record<string, unknown>;
     const override = (row.parse.override ?? {}) as Record<string, unknown>;
-    for (const [key, segment] of Object.entries(segments)) {
-      const manual = override[key];
-      const value = typeof manual === "string" ? manual
-        : typeof segment?.value === "string" ? segment.value : null;
-      entry[`segment:${key}`] = value === "" ? null : value;
+    for (const key of new Set([...Object.keys(segments), ...Object.keys(override)])) {
+      entry[`segment:${key}`] = resolveSegmentDimension(row.parse, key).value;
     }
     labels.set(accountLabelKey(row), entry);
   }

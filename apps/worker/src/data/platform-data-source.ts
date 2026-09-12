@@ -13,7 +13,8 @@ import type {
   SourceQueryResult,
   ApprovedWorkspaceAuthContext,
 } from "@ka/domain";
-import { canonicalRowSchemaVersionByQueryId, sourceQueryResultSchema, approvedWorkspaceAuthContextSchema } from "@ka/domain";
+import {
+  segmentDimensionKey, canonicalRowSchemaVersionByQueryId, sourceQueryResultSchema, approvedWorkspaceAuthContextSchema } from "@ka/domain";
 import { PlatformPivotQueryError, type PlatformPivotQuery } from "./platform-pivot-query.js";
 import { DataSourceRoutingError } from "./data-source-routing.js";
 import { createDashboardScopeResolver, type DashboardScopeResolver } from "./dashboard-filter-scope.js";
@@ -262,12 +263,16 @@ export class PlatformDataSource {
     try {
       if (resolved.queryId === "account.dimension") {
         const dimension = resolved.params.dimensionType;
-        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz", "optimizer", "goal", "placement"].includes(dimension)) throw new Error("Dimension reader unavailable");
+        // v1.9.42（Q-041 ⑪）：命名维度之外再收 `segment:<key>`（按任意清洗段分组），
+        // 它和命名维度走同一条 `named` 路 —— 分组值都来自昵称解析行。
+        const segment = dimension !== undefined && segmentDimensionKey(dimension) !== null;
+        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension
+          || !(segment || ["account", "task", "biz", "optimizer", "goal", "placement"].includes(dimension))) throw new Error("Dimension reader unavailable");
         const input = { workspaceId: execution.workspaceId,
           ...(resolved.params.filters === undefined ? {} : { filters: resolved.params.filters }),
           accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
           window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } };
-        const named = ["optimizer", "goal", "placement"].includes(dimension);
+        const named = segment || ["optimizer", "goal", "placement"].includes(dimension);
         if (named && !this.dimensionQuery.named) throw new Error("Named dimension reader unavailable");
         const result = dimension === "account" ? await this.dimensionQuery.account(input)
           : named ? await this.dimensionQuery.named!({ ...input, dimensionType: dimension })
