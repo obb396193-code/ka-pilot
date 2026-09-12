@@ -7633,3 +7633,42 @@ KPI 和趋势**复用数据分析那套取数层**，参数已对齐实测表—
 3. **四键转必填仍缺你三条裁决**：`ready-lineage.json` 不重导、`table-v3.json` 的 v2/v3 矛盾、三份钉着 `agent_type`/`deduction_range` 的 dimension fixture 是否照 (c) 换维度。
 
 **下一步**：⑧ 没裁的话我往下做 ⑤ Q-042（小时采样 job），它不依赖团队源。
+
+### 本轮巡检：无新裁决；两条实证发现 + Q-042 归属请裁（be2 2026-09-12）
+
+本轮 main 无新段（\`de9c5b3a\` 已合），**没有新活可做，也没有硬造活**。按规矩做了自查与边界收紧，下面两条都是实证的，不是读代码猜的。
+
+**① fe 的维度闸还没跟上 ⑪，段分组现在点不出来**
+后端 \`account.dimension\` 已经收 \`segment:<key>\`（\`abaced51\`），但 \`apps/web/lib/data/query-params.ts:117-120\` 的 \`DIMENSION_SUPPORTED\` 仍是六个固定值，\`dimensionSupported()\` 对 \`segment:*\` 返 false；\`pivot-tab.tsx:97\` 拿它判「这个维度能不能选」。同一个文件里 \`pivotDimensionSupported()\`（133 行）已经放行了段——**两个闸不一致**，所以现在是「透视能按段分、概览分布卡不能」。
+概览分布卡正是你派 ⑪ 的理由，所以这条不通它就落不了地。**fe 的文件我不动**，请你派：\`dimensionSupported\` 加一行与 \`pivotDimensionSupported\` 同样的 \`segment:\` 放行即可（后端不支持时会回 \`DIMENSION_UNSUPPORTED\` 带 \`details.supported[]\`，前端照原样显就行，不用自己判）。
+
+**② 我刚开的段维度那条路自查过了，无越权/无上限读/无 SQL 拼接**
+- 上限：账户数 schema 封顶 1000（\`platform-dimension-query.ts:22\`），分组数 ≤ 账户数，远低于行 schema 的 10000 上限——不存在「段取值多到撑爆」这一档。
+- SQL：段名**从不进 SQL**，分组在 JS 里做；\`segmentDimensionKey\` 只认 \`[A-Za-z0-9_]{1,64}\`，拼接面为零。
+- 越权：段值走的是 \`accountResult\` 那条已按授权 tuple 收过的路，没有另开读取面。
+- 重复实现：段解析已收敛到 domain 的 \`resolveSegmentDimension\`，透视与维度共用一份（命名维度那份按你的意思没动）。
+
+**③ Q-042 归属对不上，请裁（这是我下一步唯一待办，卡在这里）**
+我按序准备开工 Q-042，先核了现状——**采样 job 根本不存在**，但零件齐了：
+| 件 | 状态 |
+|---|---|
+| 迁移 \`025_account_metrics_hourly.cjs\` | 在 |
+| domain \`normalizeAccountHourlySample\` | 在 |
+| db \`AccountHourlyWriteRepository\` | 在，但**整个 \`apps/worker\` 没有任何代码调用它** |
+| 启航 client 的 \`hh\` 支持 | 在（\`qihang/client.ts:312,316\`） |
+| \`apps/worker/src/etl/account-hourly-sample.ts\` | **只是一行兼容再导出**，不是采样器 |
+| 小时调度（HH:05 抓 hh=HH−1/HH） | **没有** |
+
+所以缺的就是「采样 job + 它的调度 + 注入」这一段。但归属两处写法冲突：
+- \`api.md:1191\`（F-P153-1 冻结段）写的是「**实施链（Codex）**：021 迁移 → client → **ETL 小时 job** → 批准 tuple reader → factory 注入 \`data-api.ts\`」；
+- \`docs/plans/2026-09-12-数据分析第一可用版验收清单.md\` 第 7 行写的是「**be2 Q-042**」。
+
+而且它要落在 \`apps/worker/src/etl/\` 与 \`scheduling/\`，**不在你给我划的 \`apps/worker/src/data/**\` + domain 窗口/指标那块**；写库那条还必须挂在现成的 \`etl_incr\` job/run/lease 上（\`account-hourly-write-repository.ts\` 的守卫要求 \`job_type='etl_incr'\`、\`run_kind='incr'\`、租约有效），会直接动到 ETL 主干。按红线「不改别人的文件」，**我不动**，等你一句话：
+- 给我 → 我连 ETL 那段一起写，交付前按你 A42 的路子在自己库上把采样→读回打通再交；
+- 给 Codex → 我把这份现状清单留着，转做 ⑥ Q-044（清洗准确性），它在我的域内。
+
+另：\`api.md:1457\` 那条我也记着——**团队小时源（holo \`qihang_account_report_hour\`）在单位与去重口径确认前不得接**，所以 Q-042 无论谁做都只做个人/启航这一路。
+
+**仍等你裁的（不重复论证，只列）**：⑧ 团队源两个选项、\`ready-lineage.json\` 不重导、\`table-v3.json\` 的 v2/v3 矛盾、三份 \`agent_type\`/\`deduction_range\` dimension fixture 是否照 (c) 换维度。后三条不裁，四键转必填落不了地。
+
+本轮无代码改动，故无门禁可报。
