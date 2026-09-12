@@ -4,7 +4,9 @@ import { IconArrowDownRight, IconArrowUpRight, IconMinus } from "@tabler/icons-r
 
 import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { biCostText, mv, rv } from "@/lib/fixtures/contract"
+import { biCostText, isPartial, mv, rv } from "@/lib/fixtures/contract"
+import { PartialMark } from "./partial-mark"
+import type { LineageWarning } from "./missing-data-notice"
 import type { DashboardSummaryRow } from "@/lib/fixtures/dashboard"
 import type { RatioValue } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
@@ -40,7 +42,12 @@ function Delta({ delta, goodWhenDown }: { delta?: RatioValue; goodWhenDown?: boo
   )
 }
 
-function Kpi({ label, value, delta, hint, tone }: { label: string; value: string; delta?: React.ReactNode; hint?: string; tone?: "critical" | "warning" | "success" }) {
+function Kpi({ label, value, delta, hint, tone, partial, warnings }: {
+  label: string; value: string; delta?: React.ReactNode; hint?: string; tone?: "critical" | "warning" | "success"
+  /** 这个数是部分合计（窗口里有账户日还没到）——显数字 + 角标，不降饱和不打「−」 */
+  partial?: boolean
+  warnings?: LineageWarning[]
+}) {
   return (
     <Card className="gap-0 p-3">
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -52,15 +59,20 @@ function Kpi({ label, value, delta, hint, tone }: { label: string; value: string
         ) : label}
       </div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
-        <span className={cn("text-xl font-semibold tabular-nums", tone === "critical" && "text-status-critical", tone === "warning" && "text-status-warning", tone === "success" && "text-status-success")}>{value}</span>
+        <span className={cn("flex items-center gap-1 text-xl font-semibold tabular-nums", tone === "critical" && "text-status-critical", tone === "warning" && "text-status-warning", tone === "success" && "text-status-success")}>
+          {value}
+          {partial ? <PartialMark warnings={warnings} /> : null}
+        </span>
         {delta}
       </div>
     </Card>
   )
 }
 
-export function KpiRows({ row, windowed }: {
+export function KpiRows({ row, windowed, warnings }: {
   row: DashboardSummaryRow
+  /** lineage 里的缺数点名，角标 tooltip 用它列「缺了谁、哪天」 */
+  warnings?: LineageWarning[]
   /** 用户选的窗口内按天重算的结果；给了就以它为准，没给（窗口内没有天）用后端那份 */
   windowed?: { days: number; cost: number | null; cashCost: number | null; conversion: number | null; realCpa: number | null } | null
 }) {
@@ -70,6 +82,9 @@ export function KpiRows({ row, windowed }: {
   const deltas = row.compare?.deltas
   // 窗口是用户临时选的时候，后端那份 compare 对不上这个区间——**宁可不显，也不拿别的窗口的环比冒充**
   const showDelta = !scoped
+  // v1.9.35：比率照常算，但分子分母只要有一个是部分合计，这个比率也是部分的——
+  // 不挂标的话，一个「部分的成本」会被当成定稿数字拿去对结算
+  const ratioPartial = isPartial(now.cost) || isPartial(now.realConversion) || isPartial(now.conversion)
 
   return (
     <div className="flex flex-col gap-3">
@@ -81,38 +96,46 @@ export function KpiRows({ row, windowed }: {
         {/* 四列的门槛放到 @4xl（56rem）：1280 屏 + 侧栏展开时，main 容器只有 ~976px，
             卡在 @5xl（64rem）门槛下面，于是最常见的桌面尺寸反而只有两列（审查员 C 点名）。 */}
         <div className="grid gap-2 @2xl/main:grid-cols-2 @4xl/main:grid-cols-4">
-          <Kpi label="账面花费" value={scoped ? money0(scoped.cost) : mv(now.cost, "money0")} delta={showDelta ? <Delta delta={deltas?.cost} /> : undefined} />
+          <Kpi label="账面花费" value={scoped ? money0(scoped.cost) : mv(now.cost, "money0")} partial={!scoped && isPartial(now.cost)} warnings={warnings} delta={showDelta ? <Delta delta={deltas?.cost} /> : undefined} />
           {/* ★激励花费读 `incentiveCost`，不是 costSpace——costSpace 是「离考核线还剩多少」，两者含义无关。
               ka-data 源恒 missing（不是 0），所以那边显「−」是对的，别补 0（v1.9.32） */}
           <Kpi
             label="激励花费"
             value={mv(now.incentiveCost, "money0")}
+            partial={isPartial(now.incentiveCost)}
+            warnings={warnings}
             hint="账面花费里由平台激励承担的部分；不进结算。团队（ka-data）源不提供这个数。"
           />
-          <Kpi label="转化数" value={scoped ? int(scoped.conversion) : mv(now.conversion)} delta={showDelta ? <Delta delta={deltas?.realConversion} /> : undefined} />
-          <Kpi label="转化成本" value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")} hint="账面花费 / 真实转化数。" delta={showDelta ? <Delta delta={deltas?.cashCpa} goodWhenDown /> : undefined} />
+          <Kpi label="转化数" value={scoped ? int(scoped.conversion) : mv(now.conversion)} partial={!scoped && isPartial(now.conversion)} warnings={warnings} delta={showDelta ? <Delta delta={deltas?.realConversion} /> : undefined} />
+          <Kpi label="转化成本" value={scoped ? money2(scoped.realCpa) : rv(now.ratios.realCpa, "money")} partial={!scoped && ratioPartial} warnings={warnings} hint="账面花费 / 真实转化数。分子分母有一个是部分合计，这个比率也是部分的。" delta={showDelta ? <Delta delta={deltas?.cashCpa} goodWhenDown /> : undefined} />
         </div>
       </section>
 
       <section aria-label="考核口径">
         <p className="mb-1.5 text-xs font-medium text-muted-foreground">考核口径 · 结算认的数</p>
         <div className="grid gap-2 @2xl/main:grid-cols-2 @4xl/main:grid-cols-4">
-          <Kpi label="现金花费" value={scoped ? money0(scoped.cashCost) : mv(now.cashCost, "money0")} hint="扣掉激励后自己真花的钱，结算按它算。" delta={showDelta ? <Delta delta={deltas?.cashCost} /> : undefined} />
+          <Kpi label="现金花费" value={scoped ? money0(scoped.cashCost) : mv(now.cashCost, "money0")} partial={!scoped && isPartial(now.cashCost)} warnings={warnings} hint="扣掉激励后自己真花的钱，结算按它算。" delta={showDelta ? <Delta delta={deltas?.cashCost} /> : undefined} />
           <Kpi
             label="考核 BI 数"
             value={mv(assess.biConv)}
+            partial={isPartial(assess.biConv)}
+            warnings={warnings}
             // 回传 GAP：平台转化和 BI 认可之间差了多少，优化师最关心这个缺口
             hint={`回传给 BI 并被认可的转化数。与平台转化数的缺口（回传 GAP）：${rv(now.ratios.gap)}。`}
           />
           <Kpi
             label="BI 现金成本"
             value={biCostText(assess.biCashCost, assess.biConv)}
+            partial={isPartial(assess.biCashCost) || isPartial(assess.biConv) || isPartial(now.cashCost)}
+            warnings={warnings}
             hint="现金花费 / 考核 BI 数。考核看的就是这个成本；花了钱但一个 BI 都没回传时显「∞ · 无 BI 回传」。"
             tone={assess.costStatus === "red" ? "critical" : assess.costStatus === "yellow" ? "warning" : undefined}
           />
           <Kpi
             label="超成本金额"
             value={mv(assess.overCost, "money0")}
+            partial={isPartial(assess.overCost)}
+            warnings={warnings}
             hint="现金花费 − Σ（当日考核 BI 数 × 当日生效考核价）。正数 = 超出考核价；负数 = 还有余量。"
             // 负数是「还有余量」，是好事——不能和超成本一样标红
             tone={(assess.overCost?.value ?? 0) > 0 ? "critical" : (assess.overCost?.value ?? 0) < 0 ? "success" : undefined}

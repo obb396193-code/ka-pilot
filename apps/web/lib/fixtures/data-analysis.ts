@@ -17,6 +17,9 @@ import gapTask from "@contract/fixtures/data-query/gap-task.json"
 import gapBiz from "@contract/fixtures/data-query/gap-biz.json"
 import pivot2 from "@contract/fixtures/data-query/pivot2.json"
 import pivot2BizPosition from "@contract/fixtures/data-query/pivot2-biz-resource_position.json"
+import dimensionOptimizer from "@contract/fixtures/data-query/dimension-v1922-optimizer.json"
+import dimensionGoal from "@contract/fixtures/data-query/dimension-v1922-goal.json"
+import dimensionPlacement from "@contract/fixtures/data-query/dimension-v1922-placement.json"
 import pivot2Unsupported from "@contract/fixtures/data-query/pivot2-unsupported.json"
 import exportQueued from "@contract/fixtures/exports/queued.json"
 import watchlist from "@contract/fixtures/me/watchlist.json"
@@ -89,13 +92,25 @@ export type RenderRow = { group: Record<string, string>; metrics: { cost: Metric
 export const reportRenderFixture = reportRender as unknown as Fixture<{ rows: RenderRow[]; columns: { key: string; label: string }[]; highlights: { rowIndex: number; metric: string; style: string }[]; lineage: Lineage }>
 
 // 8 维透视：契约枚举 + 各维现状（ubp 永久无源；bid_tool 映射表未提案；agent_type 只账户级）
-export type Dimension = "task" | "biz" | "account" | "agent_type" | "resource_position" | "bid_tool" | "ubp" | "deduction_range"
+/**
+ * 维度清单。**顺序按「今天查得出来」排前面**（v1.9.41 联调实测的六个：
+ * account/task/biz/optimizer/goal/placement），查不出来的排后面并由界面标「待接源」。
+ *
+ * ★「资源位」这一项的 value 是 `placement`：快手的资源位实际落在 placement 维度
+ *   （实测分出 优选/搜索/联盟/主站/上下滑）。旧的 `resource_position` 键在 schema 里合法、
+ *   但没有任何解析器产出它，查了直接 DIMENSION_UNSUPPORTED——所以它留在列表里只是为了
+ *   界面上能显示「待接源」，不是可用选项。
+ */
+export type Dimension = "task" | "biz" | "account" | "optimizer" | "goal" | "placement" | "agent_type" | "resource_position" | "bid_tool" | "ubp" | "deduction_range"
 export const dimensions: { value: Dimension; label: string }[] = [
   { value: "task", label: "任务" },
   { value: "biz", label: "业务" },
   { value: "account", label: "账户" },
+  { value: "optimizer", label: "优化师/代理商" },
+  { value: "goal", label: "出价目标" },
+  { value: "placement", label: "资源位" },
   { value: "agent_type", label: "代理 / 自投" },
-  { value: "resource_position", label: "资源位" },
+  { value: "resource_position", label: "资源位（旧键）" },
   { value: "bid_tool", label: "出价工具" },
   { value: "ubp", label: "UBP" },
   { value: "deduction_range", label: "扣量区间" },
@@ -105,7 +120,12 @@ const dimensionUnsupportedFixture = dimensionUnsupported as unknown as { ok: fal
 
 const dimensionFixture = (json: unknown) => json as unknown as QueryFixture<DimensionRow>
 export const dimensionFixtures: Record<Dimension, QueryFixture<DimensionRow> | { unsupported: true; message: string }> = {
+  // placement 有自己的冻结样例（v1922 那批就是按新维度导的）
+  placement: dimensionFixture(dimensionPlacement),
+  // 旧键留在表里只为界面能显示「待接源」，不是可用选项
   resource_position: dimensionReady,
+  optimizer: dimensionFixture(dimensionOptimizer),
+  goal: dimensionFixture(dimensionGoal),
   task: dimensionFixture(dimensionTask),
   biz: dimensionFixture(dimensionBiz),
   account: dimensionFixture(dimensionAccount),
@@ -116,7 +136,7 @@ export const dimensionFixtures: Record<Dimension, QueryFixture<DimensionRow> | {
 }
 
 export const strategyPresets: { value: string; label: string; dimA: Dimension; dimB: Dimension }[] = [
-  { value: "position_task", label: "版位 × 任务", dimA: "resource_position", dimB: "task" },
+  { value: "position_task", label: "版位 × 任务", dimA: "placement", dimB: "task" },
   { value: "bidtool_task", label: "出价工具 × 任务", dimA: "bid_tool", dimB: "task" },
-  { value: "biz_position", label: "业务 × 版位", dimA: "biz", dimB: "resource_position" },
+  { value: "biz_position", label: "业务 × 版位", dimA: "biz", dimB: "placement" },
 ]
