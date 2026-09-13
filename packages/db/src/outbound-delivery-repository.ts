@@ -3,6 +3,7 @@ import type { Pool, PoolClient } from "pg";
 import { deliveryOutcomeSchema, nextOutboundDeliveryState, outboundInstantSchema,
   prepareOutboundBusinessIdentity, type OutboundDeliveryState, outboundWorkspaceSchema,
   durableOutboundClaimSchema as claimSchema, outboundStoredRowSchema as dbRowSchema,
+  outboundDeliveryContextSchema, outboundStaffIdSchema, type OutboundDeliveryContext,
   type DurableOutboundClaim, type OutboundStoredRow as DeliveryRow } from "@ka/domain";
 const fields = `o.id,o.workspace_id,o.channel,
   CASE WHEN octet_length(o.target)<=8192 THEN o.target ELSE NULL END AS target,
@@ -14,7 +15,8 @@ const fields = `o.id,o.workspace_id,o.channel,
     WHEN octet_length(r.run_date::text)<=12 THEN r.run_date ELSE '"INVALID_DATE"'::jsonb END AS run_date`;
 // Date hints are joined within the same tenant. No casts of arbitrary payload IDs.
 const joins = `LEFT JOIN jobs j ON j.workspace_id=o.workspace_id AND j.id::text=o.payload->>'jobId'
-  LEFT JOIN LATERAL (SELECT CASE WHEN scope ? 'businessDate' THEN scope->'businessDate'
+  LEFT JOIN LATERAL (SELECT id::text AS run_id,CASE WHEN octet_length(step_failed)<=512 THEN step_failed ELSE NULL END AS step_failed,
+    CASE WHEN scope ? 'businessDate' THEN scope->'businessDate'
     WHEN run_kind='full' THEN scope->'asOfDate'
     WHEN run_kind IN ('incr','quality','backfill_day') THEN scope->'ds' ELSE NULL END AS run_date
     FROM etl_runs WHERE workspace_id=o.workspace_id AND job_id::text=o.payload->>'jobId'
@@ -137,6 +139,38 @@ export class OutboundDeliveryRepository {
           AND evidence.status='sent' AND evidence.sent_at BETWEEN clock_timestamp()-interval '24 hours' AND clock_timestamp())`,
       [c.workspaceId,c.id,row.id,c.leaseToken]);
       if(updated.rowCount !== 1) throw new Error("Lost outbound evidence or lease");
+    });
+  }
+
+  async deliveryContext(input:DurableOutboundClaim):Promise<OutboundDeliveryContext> {
+    return this.transaction(async client=>{
+      const c=await this.owned(client,input);
+      const result=await client.query(`SELECT ${fields},
+        CASE WHEN ${rowBytes}<16777216 THEN o.payload ELSE NULL END AS payload,
+        CASE WHEN octet_length(w.name)<=1024 THEN w.name ELSE NULL END AS workspace_name,
+        CASE WHEN octet_length((j.payload->'media')::text)<=34 THEN j.payload->'media' ELSE NULL END AS media,
+        r.run_id,r.step_failed FROM outbound_messages o ${joins}
+        JOIN workspaces w ON w.id=o.workspace_id AND w.is_active=true WHERE o.workspace_id=$1 AND o.id=$2`,[c.workspaceId,c.id]);
+      if(result.rows.length!==1)throw new Error();
+      const raw=result.rows[0],row=dbRowSchema.parse(raw);
+      const identity=prepareOutboundBusinessIdentity({workspaceId:c.workspaceId,kind:row.kind,target:row.target,payload:row.payload,
+        createdAt:row.created_at.toISOString(),jobBusinessDate:row.job_date??null,runBusinessDate:row.run_date??null});
+      if(identity.dedupeKey!==c.dedupeKey)throw new Error();
+      return outboundDeliveryContextSchema.parse({workspaceId:c.workspaceId,messageId:c.id,workspaceName:raw.workspace_name,
+        businessDate:identity.businessDate,media:raw.media??null,runId:raw.run_id??null,step:raw.step_failed??null});
+    });
+  }
+
+  async directRecipient(input:DurableOutboundClaim,userId:string):Promise<string|null> {
+    return this.transaction(async client=>{
+      const c=await this.owned(client,input),user=outboundWorkspaceSchema.parse(userId);
+      if(c.target!==`user:${user}`)throw new Error();
+      const result=await client.query(`SELECT CASE WHEN octet_length(m.external_id)<=1024 THEN m.external_id ELSE NULL END AS staff_id
+        FROM identity_mappings m JOIN users u ON u.workspace_id=m.workspace_id AND u.id=m.user_id AND u.is_active=true
+        JOIN workspaces w ON w.id=u.workspace_id AND w.is_active=true
+        WHERE m.workspace_id=$1 AND m.provider='dingtalk' AND m.user_id=$2 ORDER BY m.id LIMIT 2`,[c.workspaceId,user]);
+      if(result.rows.length!==1)return null;
+      const parsed=outboundStaffIdSchema.safeParse(result.rows[0].staff_id);return parsed.success?parsed.data:null;
     });
   }
 

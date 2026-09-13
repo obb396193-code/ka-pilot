@@ -10,6 +10,18 @@ function fixture() {
   return { env, args: [], read, close, write, open: vi.fn(() => ({ read, close })) };
 }
 describe("read-only once diagnostic boundary", () => {
+  it("reports only workspace-specific group and DM configuration, never credentials", async () => {
+    const f = fixture();
+    const configured = { ...env, DINGTALK_ROBOT_WEBHOOK_BY_WORKSPACE: JSON.stringify({
+      [env.WORKER_ONCE_WORKSPACE_ID]: { webhook: "https://oapi.dingtalk.com/robot/send?access_token=synthetic-private", secret: "synthetic-private" },
+    }), DINGTALK_CLIENT_ID: "synthetic-private", DINGTALK_CLIENT_SECRET: "synthetic-private", DINGTALK_ROBOT_CODE: "synthetic-private" };
+    await runWorkerOnceDiagnosis({ ...f, env: configured });
+    expect(JSON.parse(f.write.mock.calls[0]![0]).dingtalkOutbound).toEqual({ group: "configured", dm: "configured" });
+    expect(f.write.mock.calls[0]![0]).not.toContain("synthetic-private");
+    f.write.mockClear();
+    await runWorkerOnceDiagnosis({ ...f, env: { ...configured, WORKER_ONCE_WORKSPACE_ID: "00000000-0000-4000-8000-000000000002", DINGTALK_CLIENT_SECRET: "" } });
+    expect(JSON.parse(f.write.mock.calls[0]![0]).dingtalkOutbound).toEqual({ group: "not_configured", dm: "not_configured" });
+  });
   it("reports presence only, not qihang connectivity or ETL success", async () => {
     const f = fixture(); await runWorkerOnceDiagnosis(f);
     const result = JSON.parse(f.write.mock.calls[0]![0]);

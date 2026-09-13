@@ -55,7 +55,7 @@ export interface DailyReportFacts {
   /** 未处理工作项的最高等级，用来给健康度定档；没有未处理项就是 ok。 */
   highestOpenSeverity: "P0" | "P1" | "P2" | null;
   dataAsOf: string | null;
-  delivery: { status: "not_sent" | "queued" | "sent" | "failed"; at: string | null; target: string | null };
+  delivery: { status: "not_sent" | "queued" | "sent" | "failed" | "deduplicated"; at: string | null; target: string | null };
 }
 
 /**
@@ -291,7 +291,7 @@ export class DailyReportRepository {
     if (message === undefined) return { status: "not_sent", at: null, target: null };
 
     const status = String(message.status);
-    const mapped = status === "sent" ? "sent" : status === "failed" || status === "dead" ? "failed" : "queued";
+    const mapped = status === "sent" ? "sent" : status === "deduplicated" ? "deduplicated" : status === "failed" || status === "dead" ? "failed" : "queued";
     return {
       status: mapped,
       at: mapped === "sent" && message.sent_at !== null ? requireTimestamp(message.sent_at).toISOString() : null,

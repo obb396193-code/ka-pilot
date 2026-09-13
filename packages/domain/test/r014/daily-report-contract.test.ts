@@ -9,6 +9,10 @@ const fixture = (name: string): { data: unknown } =>
   JSON.parse(readFileSync(new URL(`../../../contract/fixtures/reports/${name}`, import.meta.url), "utf8"));
 
 describe("v1.5 1.8 daily report (D7)", () => {
+  it("represents deduplication without inventing a send timestamp", () => {
+    expect(dailyDeliverySchema.parse({ status: "deduplicated", at: null, target: "群" })).toEqual({ status: "deduplicated", at: null, target: "群" });
+    expect(() => dailyDeliverySchema.parse({ status: "deduplicated", at: "2026-09-13T00:00:00Z", target: "群" })).toThrow();
+  });
   it("parses both frozen fixtures", () => {
     const sent = dailyReportSchema.parse(fixture("daily-v1.json").data);
     expect(sent.modules).toHaveLength(13);

@@ -25,6 +25,10 @@ function groupUrl(value:string):URL {
     url.pathname!=="/robot/send" || !url.searchParams.get("access_token")) throw new Error();
   return url;
 }
+export function isTrustedDingTalkGroup(input:unknown):boolean {
+  const parsed=groupSchema.safeParse(input);if(!parsed.success)return false;
+  try{groupUrl(parsed.data.webhook);return true;}catch{return false;}
+}
 function validText(value:unknown):value is string {
   return typeof value==="string" && value.trim().length>0 && Buffer.byteLength(value)<=4000;
 }
