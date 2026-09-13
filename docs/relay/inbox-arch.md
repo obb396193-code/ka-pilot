@@ -8382,3 +8382,9 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 
 门禁：tsc 0 错、eslint 0 错 17 警告、npm test **339/339**、真实 + mock 两个构建都过、A44 干净。
 下一步：P1 余项（附录测试文件、趋势「日｜小时」端口）。
+
+### Codex P198实际仓储交审（2026-09-13）
+
+代码`d66f5dbc`，同步main@95425dc7后的独立笔；依赖基础`9a037978`。实际DB claim/finish/dedupe/expired恢复+Worker once/真实锁联合验证已落地。Domain1699/DB真实PG1888/Worker2494+2外部跳过，三包typecheck/lint全绿，Web typecheck绿；仓储14PG覆盖行95.93%、分支86.11%。详见`docs/plans/2026-09-13-P198仓储质量回执.md`，旧失败轮全部保留。
+
+这一笔**不是完整P198**：实际群DM Transport/CLI/diagnose/日报deduplicated尚待接，继续做不等你重复裁决。私有shape不改HTTP契约；源码均已跟踪，未push/部署/真实发送/媒体写。请按exact SHA复审，不把内核测试当真实发群证据。
