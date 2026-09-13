@@ -1,8 +1,8 @@
 import {
-  AccountDimensionEvidenceRepository, AccountDimensionRuleRepository, type SemanticReadConnection,
+  AccountLabelHistoryRepository, type AccountLabelHistoryRow, type SemanticReadConnection,
 } from "@ka/db";
 import {
-  accountDimensionRuleSchema, resolveNamedDimensions, resolveSegmentDimension, segmentDimensionKey,
+  pickAccountLabelBasis, resolveNamedDimensions, resolveSegmentDimension, segmentDimensionKey,
 } from "@ka/domain";
 
 /**
@@ -10,56 +10,95 @@ import {
  *
  * v1.9.34 ⑩（Q-041 ⑦）老板要「每个清洗字段都能拿来做分析和透视」，透视这条路由此而来。
  *
- * ⚠️ `platform-dimension-query.ts` 目前**另有一份同样的解析**（同样的规则版本核对、同样的
- * `resolveNamedDimensions`），只是它还要带出 `source/sources` 所以形状不同。两份不收敛的后果是
- * 「透视里按优化师分组是一个结果、维度查询里是另一个」——这种分歧不会有任何东西报错。
- * 收敛动作会改动维度查询的发出形状（arch 刚为 `source,sources` 热修过前端镜像），另笔报备后做。
+ * v1.9.49 ①（Q-044 ③）：标签**按业务日**取。账户 9-10 从张三改名李四，看 9 月上旬就该归张三——
+ * 原来只读最新一行，历史窗口跟着今天的归属走，而且看不出来。选哪一行只由 domain 的
+ * `pickAccountLabelBasis` 决定，透视、团队维度都走这里，不各自选。
  *
  * 两条不猜的规矩：
  * - **解析行挂在哪版规则上就用哪版解释**；拿最新规则去解释旧解析结果，标签会凭空变。
- * - 解析证据坏了就当这个账户没有标签（全 null），不拿半份结果冒充——
+ * - 解析证据坏了就当这个账户这段日子没有标签（`dimensions: null`），不拿半份结果冒充——
  *   分组里多一个凭空出现的桶，比少一个桶更难发现。
  */
-export type AccountLabels = Map<string, Record<string, string | null>>;
+export type LabelSource = ReturnType<typeof resolveSegmentDimension>["source"];
+
+/** 某个账户在某个业务日用的那一行归属。 */
+export interface AccountLabelBasis {
+  effectiveFrom: string;
+  /** 这一天早于该账户所有行，用的是最早一行——调用方必须发 `LABEL_BASIS_EARLIEST_KNOWN`。 */
+  earliestKnown: boolean;
+  nameMatches: boolean;
+  /** 这一行挂的规则版本不在库里。 */
+  ruleMissing: boolean;
+  /** 维度/段 → 值与来源；这一行的解析证据解释不了时为 null。 */
+  dimensions: Record<string, { value: string | null; source: LabelSource }> | null;
+}
+
+export interface AccountLabelsAsOf {
+  /** 这个账户在这个业务日的归属；一行归属都没有时为 null。 */
+  on(account: { media: string; accountId: string }, businessDate: string): AccountLabelBasis | null;
+}
 
 export const accountLabelKey = (row: { media: string; accountId: string }): string =>
   `${row.media}:${row.accountId}`;
 
-export async function loadAccountLabels(
-  connection: SemanticReadConnection,
-  input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[] },
-): Promise<AccountLabels> {
-  const labels: AccountLabels = new Map();
-  if (input.accounts.length === 0) return labels;
-  const scope = { workspaceId: input.workspaceId, accounts: input.accounts };
-  const evidence = await new AccountDimensionEvidenceRepository(connection).load(scope);
-  const rules = await new AccountDimensionRuleRepository(connection).load(scope);
-  const rulesByKey = new Map(rules.map((row) => [accountLabelKey(row), accountDimensionRuleSchema.parse(row)]));
+/** 分组要的那一个值；没有归属、证据坏了、这一维没标注，统统是 null（归「未标注」）。 */
+export function labelValue(basis: AccountLabelBasis | null, dimension: string): string | null {
+  return basis?.dimensions?.[dimension]?.value ?? null;
+}
 
-  for (const row of evidence) {
-    const rule = rulesByKey.get(accountLabelKey(row));
-    if (rule === undefined || row.parse === null || rule.ruleVersion !== row.parse.ruleVersion) continue;
-    const entry: Record<string, string | null> = {};
-    try {
-      const named = resolveNamedDimensions({
-        segments: row.parse.segments, override: row.parse.override ?? {},
-        nameMatches: row.parse.nameMatches, ruleMappings: rule.mappings,
-      });
-      for (const [dimension, value] of Object.entries(named)) {
-        entry[dimension] = (value as { value: string | null }).value;
-      }
-    } catch { continue; }
+function dimensionsOf(row: AccountLabelHistoryRow): AccountLabelBasis["dimensions"] {
+  try {
+    const entry: NonNullable<AccountLabelBasis["dimensions"]> = {};
+    const named = resolveNamedDimensions({
+      segments: row.parse.segments, override: row.parse.override ?? {},
+      nameMatches: row.parse.nameMatches, ruleMappings: row.mappings,
+    });
+    for (const [dimension, value] of Object.entries(named)) entry[dimension] = { value: value.value, source: value.source };
     // 段值走 domain 那个共享解析器（`resolveSegmentDimension`）——维度查询用的是同一个，
-    // 两处各写一份的话，「透视里按某段分组」和「维度里按同一段分组」迟早给出不同答案，
-    // 而这种分歧不会有任何东西报错。
-    const segments = row.parse.segments as Record<string, unknown>;
-    const override = (row.parse.override ?? {}) as Record<string, unknown>;
-    for (const key of new Set([...Object.keys(segments), ...Object.keys(override)])) {
-      entry[`segment:${key}`] = resolveSegmentDimension(row.parse, key).value;
+    // 两处各写一份的话，「透视里按某段分组」和「维度里按同一段分组」迟早给出不同答案。
+    const override = row.parse.override ?? {};
+    for (const key of new Set([...Object.keys(row.parse.segments), ...Object.keys(override)])) {
+      entry[`segment:${key}`] = resolveSegmentDimension(row.parse, key);
     }
-    labels.set(accountLabelKey(row), entry);
+    return entry;
+  } catch {
+    return null;
   }
-  return labels;
+}
+
+/** 把历史行变成「按天问」的读取器。每行只解释一次，按天只是选行。 */
+export function accountLabelsFromHistory(rows: readonly AccountLabelHistoryRow[]): AccountLabelsAsOf {
+  const byAccount = new Map<string, { effectiveFrom: string; basis: Omit<AccountLabelBasis, "earliestKnown"> }[]>();
+  for (const row of rows) {
+    const history = byAccount.get(accountLabelKey(row)) ?? [];
+    history.push({ effectiveFrom: row.effectiveFrom, basis: {
+      effectiveFrom: row.effectiveFrom, nameMatches: row.parse.nameMatches,
+      ruleMissing: row.mappings === null, dimensions: dimensionsOf(row),
+    } });
+    byAccount.set(accountLabelKey(row), history);
+  }
+  return {
+    on(account, businessDate) {
+      const picked = pickAccountLabelBasis(byAccount.get(accountLabelKey(account)) ?? [], businessDate);
+      return picked === null ? null : { ...picked.row.basis, earliestKnown: picked.earliestKnown };
+    },
+  };
+}
+
+/**
+ * v1.9.49 ①：四条读路径共用的入口。窗口 `[from, to]` 内任意一天都能问，窗口外的天不保证有候选行。
+ * 在调用方的 RR/RO 快照上读；账户必须来自已批准的授权上下文。
+ */
+export async function resolveAccountLabelsAsOf(
+  connection: SemanticReadConnection,
+  input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[]; from: string; to: string },
+): Promise<AccountLabelsAsOf> {
+  if (input.accounts.length === 0) return accountLabelsFromHistory([]);
+  const rows = await new AccountLabelHistoryRepository(connection).load({
+    workspaceId: input.workspaceId, accounts: input.accounts.map(({ media, accountId }) => ({ media, accountId })),
+    from: input.from, to: input.to,
+  });
+  return accountLabelsFromHistory(rows);
 }
 
 /** 账户日事实自带的三维，不用查标签。 */

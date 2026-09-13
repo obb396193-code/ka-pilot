@@ -250,6 +250,8 @@ export class PlatformDataSource {
           coverage: { complete, requestedObjects: auth.scope.accounts.length, returnedObjects: observation.observedAccounts,
             ...(!complete ? { reason: "Canonical account-day coverage or time is incomplete" } : {}) },
           partial: !complete, truncated: false,
+          // v1.9.49 ①：用了「最早已知」归属行的账户日逐条进 lineage（对象形）；顶层 warnings 仍只放字符串。
+          ...(result.labelBasis.length === 0 ? {} : { warnings: [...result.warnings, ...result.labelBasis] }),
         }, warnings: result.warnings,
       });
       return { source, cellCoverage: result.cellCoverage };

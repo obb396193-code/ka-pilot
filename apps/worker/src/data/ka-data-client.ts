@@ -1,6 +1,8 @@
 import {
   namedDimensionWindowRowSchema,
   summarizeDimensionSources,
+  labelBasisEarliestKnownWarning,
+  type LineageWarning,
   canonicalRowSchemaVersionByQueryId,
   type SourceAuthority,
   type SourceLineage,
@@ -19,6 +21,7 @@ import {
   type KaDataQueryPlan,
 } from "./query-registry.js";
 import { decodeKaWindowMembers } from "./ka-window-members.js";
+import type { AccountLabelsAsOf } from "./account-labels.js";
 import { summarizeKaWindowMembers, summarizeKaWindowGroup } from "./ka-window-summary.js";
 import { assembleKaWindowAggregates } from "./ka-window-aggregate.js";
 import {
@@ -47,8 +50,9 @@ type FetchLike = (input: string | URL | Request, init?: RequestInit) => Promise<
  * 不能悄悄退回「全部归未标注」，那在页面上跟「这批账户都没标注」长得一模一样。
  */
 export interface KaDimensionLabelReader {
-  read(input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[] }):
-    Promise<Map<string, Record<string, string | null>>>;
+  /** v1.9.49 ①：按窗口读归属历史；每个账户日按自己的业务日选行。 */
+  read(input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[]; from: string; to: string }):
+    Promise<AccountLabelsAsOf>;
 }
 
 export interface KaDataClientOptions {
@@ -426,12 +430,19 @@ export class KaDataClient {
     catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid team member grid", false); }
     const accounts = [...new Map(members.map((member) =>
       [`${member.media}:${member.accountId}`, { media: member.media, accountId: member.accountId }])).values()];
-    const labels = await this.#labels.read({ workspaceId: scope.workspaceId, accounts });
+    // v1.9.49 ①：成员网格是账户日粒度，归属按每个成员自己的 `ds` 选行——
+    // 窗口跨改名日时，改名前后的钱各归各的。
+    const labels = await this.#labels.read({ workspaceId: scope.workspaceId, accounts,
+      from: plan.previousWindow?.from ?? plan.window.from, to: plan.window.to });
     const groups = new Map<string | null, typeof members>();
     const sources = new Map<string | null, (string | null)[]>();
+    const labelBasis: LineageWarning[] = [];
     for (const member of members) {
-      const entry = labels.get(`${member.media}:${member.accountId}`);
-      const value = entry?.[dimension] ?? null;
+      const basis = labels.on(member, member.ds);
+      if (basis?.earliestKnown) {
+        labelBasis.push(labelBasisEarliestKnownWarning({ media: member.media, accountId: member.accountId, businessDate: member.ds }));
+      }
+      const value = basis?.dimensions?.[dimension]?.value ?? null;
       groups.set(value, [...(groups.get(value) ?? []), member]);
       // 标签有没有来源这件事按**账户**算，不按账户日算，否则一个投了 30 天的账户会把来源票数刷爆。
       const seen = sources.get(value) ?? [];
@@ -448,7 +459,7 @@ export class KaDataClient {
     const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
     return { rows, dimension, window: plan.window,
       lineage: sourceLineage(resolved, scope, envelope, accounts.length, false, true, reason, plan.queryTemplateVersion),
-      warnings: [reason] };
+      warnings: [reason], labelBasis };
   }
 
   private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {
@@ -532,7 +543,8 @@ export class KaDataClient {
         queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         dimension: result.dimension, status: "ready", rows: result.rows, returnedRowCount: result.rows.length,
         wholeResultTotal: { value: null, availability: "partial", reason: "Team inventory coverage is unknown" },
-        lineage: { ...result.lineage, window: result.window, warnings: result.warnings }, warnings: result.warnings,
+        // 对象形告警只进 lineage；顶层 warnings 仍只放字符串。
+        lineage: { ...result.lineage, window: result.window, warnings: [...result.warnings, ...result.labelBasis] }, warnings: result.warnings,
       };
     }
     if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
