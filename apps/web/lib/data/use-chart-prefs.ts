@@ -19,8 +19,26 @@ import type { ChartKind } from "@/components/charts/chart-frame"
 const KEY = "ka-pilot.charts"
 const IS_MOCK = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
 
+const KINDS: readonly ChartKind[] = ["line", "bar", "pie", "donut"]
+
+/**
+ * 读本机偏好。**逐项校验，不用类型断言**（审查员 D 的 P1）。
+ *
+ * `as Record<string, ChartKind>` 是句谎话：localStorage 里的东西可能是上个版本写的、
+ * 可能被人手改过、可能是别的站点同名 key 的残留。断言一下就当成合法图型传给 ECharts，
+ * 拿到 `"garbge"` 时它会直接抛——**整块图表崩在一个存储里的脏字符串上**。
+ * 认识的留下、不认识的丢掉，比什么都信要好。
+ */
 function read(): Record<string, ChartKind> {
-  try { return JSON.parse(localStorage.getItem(KEY) ?? "{}") as Record<string, ChartKind> } catch { return {} }
+  try {
+    const raw: unknown = JSON.parse(localStorage.getItem(KEY) ?? "{}")
+    if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return {}
+    const out: Record<string, ChartKind> = {}
+    for (const [id, kind] of Object.entries(raw)) {
+      if (typeof kind === "string" && (KINDS as readonly string[]).includes(kind)) out[id] = kind as ChartKind
+    }
+    return out
+  } catch { return {} }
 }
 
 /** 偏好挂在哪个视图上。没有专属视图时用页面自己的 key——后端按 `page` 找得到。 */

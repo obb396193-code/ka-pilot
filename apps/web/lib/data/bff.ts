@@ -18,6 +18,7 @@ import {
   type StableDataQueryError,
 } from "./contracts.ts"
 import { handleSessionRequest } from "./session-bff.ts"
+import { parseTolerant } from "./tolerant-parse.ts"
 import { sessionSuccessResponseSchema } from "./session-contracts.ts"
 import { semanticQueryRequestSchema } from "./semantic-query-request.ts"
 
@@ -108,8 +109,10 @@ async function handleQueryRequest(request: Request, dependencies: Dependencies, 
     if (!hasCorrelatedRequestId(upstream, requestId)) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response requestId did not match the BFF request", false, requestId), requestId }
     const payload = await readBoundedJson(upstream)
     if (payload === null) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response reached the 16 MB truncation boundary", false, requestId), requestId }
-    const envelope = dataQueryResponseSchema.safeParse(payload)
-    if (!envelope.success) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response did not match the canonical contract", false, requestId), requestId }
+    // 只多未知键就放行（F8-28）：契约加个可选字段不该让用户看到整页读取失败
+    const tolerant = parseTolerant(dataQueryResponseSchema, payload, "data/query")
+    if (!tolerant.ok) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response did not match the canonical contract", false, requestId), requestId }
+    const envelope = { success: true as const, data: tolerant.data as import("./contracts.ts").DataQueryResponse }
     if (!envelope.data.ok && bodyRequestId(envelope.data) !== requestId) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query error requestId did not match the BFF request", false, requestId), requestId }
     if (upstream.status !== expectedStatus(envelope.data)) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query status did not match the canonical contract", false, requestId), requestId }
     if (envelope.data.ok) {

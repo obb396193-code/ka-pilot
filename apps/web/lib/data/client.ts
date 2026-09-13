@@ -1,4 +1,5 @@
 import { dataQueryResponseSchema, type DataQueryResponse, type QueryRequest } from "./contracts.ts"
+import { parseTolerant } from "./tolerant-parse.ts"
 import { getMockResponse } from "./mock-data.ts"
 
 export const INTERNAL_DATA_QUERY_PATH = "/api/internal/data-query"
@@ -10,18 +11,29 @@ export const INTERNAL_DATA_QUERY_PATH = "/api/internal/data-query"
 export const INTERNAL_OPERATIONAL_QUERY_PATH = "/api/internal/query"
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 type ClientOptions = { mode?: "mock" | "internal_api"; fetchImpl?: FetchLike; allowMock?: boolean; endpoint?: "data" | "operational" }
-export interface DataClient { query(request: QueryRequest): Promise<DataQueryResponse> }
+/**
+ * `signal` 让调用方**真的取消**在飞的请求，而不只是丢弃它的结果。
+ * 连点几次窗口时，丢结果只解决「显示对不对」，请求还是一个个发出去、后端照样算——
+ * 取消才省掉那几次白算（审查员 D 的 P1）。
+ */
+export interface DataClient { query(request: QueryRequest, signal?: AbortSignal): Promise<DataQueryResponse> }
 
 class MockDataClient implements DataClient { async query(request: QueryRequest) { return getMockResponse(request) } }
 class InternalApiDataClient implements DataClient {
   private readonly fetchImpl: FetchLike
   private readonly path: string
   constructor(fetchImpl: FetchLike, path: string = INTERNAL_DATA_QUERY_PATH) { this.fetchImpl = fetchImpl; this.path = path }
-  async query(request: QueryRequest) {
+  async query(request: QueryRequest, signal?: AbortSignal) {
     const { queryId, params } = request
-    const response = await this.fetchImpl(this.path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ queryId, params }), cache: "no-store", signal: AbortSignal.timeout(12_000) })
+    // 超时仍然要有（12s 是浏览器侧预算）；调用方给了 signal 就两个一起生效，
+    // 谁先触发都算取消——不能因为接了取消就把超时兜底丢了
+    const abort = signal ? AbortSignal.any([signal, AbortSignal.timeout(12_000)]) : AbortSignal.timeout(12_000)
+    const response = await this.fetchImpl(this.path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ queryId, params }), cache: "no-store", signal: abort })
     const payload = await response.json()
-    return dataQueryResponseSchema.parse(payload)
+    // 同 F8-28 的规则：多出来的字段不该把整条响应打死
+    const tolerant = parseTolerant(dataQueryResponseSchema, payload, `data/query ${queryId}`)
+    if (!tolerant.ok) return dataQueryResponseSchema.parse(payload) // 让 zod 抛出可读的错，交由上层的 catch 呈现
+    return tolerant.data
   }
 }
 export function createDataClient(options: ClientOptions = {}): DataClient {
