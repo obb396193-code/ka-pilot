@@ -257,3 +257,49 @@ test("Q-030 refuses a query parameter the backend never declared", async () => {
   // 白名单之外的参数在 BFF 就挡掉：否则浏览器侧随手加个参数就绕过后端入参校验。
   assert.equal(result.status, 400)
 })
+
+/**
+ * F8-28：**上游多了未知键不该判 502**。
+ *
+ * 三次同根因的事故：契约加了个可选新键（`lineage.warnings` 对象形 / `op:"revoke"` /
+ * `config.charts`），我的 `.strict()` 镜像没跟上 → 整条响应判废 → **用户看到整页读取失败**，
+ * 而数据本身是好的。规则改成「发出去的严、收回来的宽」，这几条钉住它。
+ */
+
+test("★上游多返回一个镜像里没有的字段 → 放行，不判 502", async () => {
+  const result = await forwardToBackend(req(), {
+    path: "/api/v1/me/counts", method: "GET", dataSchema: meCountsSchema, environment,
+    requestId: () => "req-extra",
+    fetchImpl: async () => ok({ ...COUNTS, brandNewFieldFromBackend: 42 }, "req-extra"),
+  })
+  assert.equal(result.status, 200, "后端按契约加个字段，不该让用户看到读取失败")
+})
+
+test("★但缺必填字段照旧 502 —— 那是真的对不上", async () => {
+  const { workItems: _omitted, ...withoutRequired } = COUNTS
+  const result = await forwardToBackend(req(), {
+    path: "/api/v1/me/counts", method: "GET", dataSchema: meCountsSchema, environment,
+    requestId: () => "req-missing",
+    fetchImpl: async () => ok(withoutRequired, "req-missing"),
+  })
+  assert.equal(result.status, 502)
+})
+
+test("★类型不对也照旧 502，不能因为「宽松」就把脏数据放进来", async () => {
+  const result = await forwardToBackend(req(), {
+    path: "/api/v1/me/counts", method: "GET", dataSchema: meCountsSchema, environment,
+    requestId: () => "req-bad",
+    fetchImpl: async () => ok({ ...COUNTS, notificationsUnread: "七条" }, "req-bad"),
+  })
+  assert.equal(result.status, 502)
+})
+
+test("放行未知键时，requestId / 状态码这些硬校验一个都不能少", async () => {
+  // 别把「宽松」理解成「什么都放过」：requestId 对不上仍然是 502
+  const result = await forwardToBackend(req(), {
+    path: "/api/v1/me/counts", method: "GET", dataSchema: meCountsSchema, environment,
+    requestId: () => "req-x",
+    fetchImpl: async () => ok({ ...COUNTS, extra: 1 }, "req-WRONG"),
+  })
+  assert.equal(result.status, 502)
+})
