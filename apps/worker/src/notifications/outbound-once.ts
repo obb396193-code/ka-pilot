@@ -1,15 +1,9 @@
 import { deliveryOutcomeSchema, nextOutboundDeliveryState, outboundInstantSchema, wasOutboundSentRecently,
-  type OutboundDeliveryState } from "@ka/domain";
+  type OutboundDeliveryState, durableOutboundClaimSchema as claimSchema, outboundMaintenanceLimitSchema } from "@ka/domain";
 import { z } from "zod";
 
 const configSchema = z.object({ workspaceId: z.uuid(), configured: z.boolean(), batchSize: z.number().int().min(1).max(100) }).strict();
 const dedupeKeySchema = z.string().regex(/^outbound:v1:[a-f0-9]{64}$/);
-const claimSchema = z.object({
-  id: z.uuid(), workspaceId: z.uuid(), channel: z.literal("dingtalk"), leaseToken: z.uuid(),
-  target: z.string().min(1).max(2048), kind: z.string().min(1).max(2048), payload: z.record(z.string(), z.unknown()),
-  dedupeKey: dedupeKeySchema, attempts: z.number().int().min(1).max(5),
-  consecutiveUnknown: z.number().int().min(0).max(1), sentAt: z.null(),
-}).strict().refine(value => value.consecutiveUnknown < value.attempts);
 const sentEvidenceSchema = z.object({ workspaceId: z.uuid(), dedupeKey: dedupeKeySchema, sentAt: outboundInstantSchema }).strict();
 export type OutboundClaim = z.infer<typeof claimSchema>;
 
@@ -54,6 +48,7 @@ export async function runOutboundOnce(input: unknown, ports: OutboundOncePorts, 
       if (controller.signal.aborted) return { ...stats, status: "aborted" };
       const raw = await ports.store.claim(config.workspaceId);
       if (raw === null) return stats;
+      if (outboundMaintenanceLimitSchema.safeParse(raw).success) return { ...stats, status: "batch_limit" };
       const claim = claimSchema.parse(raw);
       if (claim.workspaceId !== config.workspaceId || seen.has(claim.id)) throw new Error("Invalid outbound claim");
       seen.add(claim.id); stats.claimed++;
