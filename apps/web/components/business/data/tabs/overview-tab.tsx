@@ -8,7 +8,8 @@ import { DrillTable } from "@/components/business/data/dashboard/drilldown"
 import { KpiRows } from "@/components/business/data/dashboard/kpi-rows"
 import { MissingDataNotice, type LineageWarning } from "@/components/business/data/dashboard/missing-data-notice"
 import { ScopeSwitch } from "@/components/business/data/dashboard/scope-switch"
-import { TrendChart, type TrendPoint } from "@/components/business/data/dashboard/trend-chart"
+import { TrendChart } from "@/components/business/data/dashboard/trend-chart"
+import { trendPoints, type TrendPoint } from "@/lib/data/trend-points"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FIXTURES_ENABLED as IS_MOCK, isOk } from "@/lib/fixtures/contract"
@@ -83,32 +84,8 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
     [mockDays, trendQuery.data],
   )
 
-  /**
-   * 趋势的横轴 = **窗口里的每一天**，不是「后端返回了哪几天」。
-   *
-   * 之前是把返回的行过滤一遍就画——某天整天缺数时那一天在轴上**根本不存在**，
-   * 于是 09-02 和 09-04 直接挨在一起，看着像连续的，缺的那天神不知鬼不觉（审查 ⑦）。
-   * 现在按窗口铺满日期，没有的那天给 null：线在那里断开，人一眼看得见。
-   */
-  const points = useMemo<TrendPoint[]>(() => {
-    const byDate = new Map(days.map((row) => [row.ds, row]))
-    const out: TrendPoint[] = []
-    // 用 UTC 推进，避免夏令时/时区把某一天跳过去或算重
-    for (let cursor = new Date(`${window.from}T00:00:00.000Z`); ; cursor = new Date(cursor.getTime() + 86_400_000)) {
-      const ds = cursor.toISOString().slice(0, 10)
-      if (ds > window.to) break
-      const row = byDate.get(ds)
-      out.push({
-        ds,
-        cost: row?.metrics.cost.value ?? null,
-        conversion: row?.metrics.conversion.value ?? null,
-        cpa: row?.metrics.ratios.realCpa.value ?? null,
-      })
-      // 窗口异常长时兜一下，别把页面卡死（一年封顶）
-      if (out.length > 366) break
-    }
-    return out
-  }, [days, window.from, window.to])
+  // 横轴生成抽到 `lib/data/trend-points.ts`（组件测不了，纯逻辑才盖得住门禁）
+  const points = useMemo<TrendPoint[]>(() => trendPoints(days as never, window.from, window.to), [days, window.from, window.to])
 
   /**
    * ★窗口一换，KPI 必须跟着变——否则那个选择器就是个摆设（老板 2026-09-10 问的就是这个）。

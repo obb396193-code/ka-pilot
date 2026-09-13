@@ -17,55 +17,16 @@ import { cn } from "@/lib/utils"
  * 选完通过 `onChange` 往上抛，页面据此重新取数（真实模式重查、示例数据按天重算）。
  */
 
-export type DataWindow = { preset: WindowPreset; from: string; to: string }
-// ★取值必须是契约冻结的窗口枚举的子集（`today|yesterday|last_7d|month_to_date|last_month|task_period|custom`）——
-// 这个 preset 会随「保存视图」写进 `saved_views.config.window`，自造一个 last_30d 后端不认。
-// 任务期（task_period）要有任务上下文，数据分析页没有，所以这里不列。
-export type WindowPreset = "today" | "yesterday" | "last_7d" | "month_to_date" | "last_month" | "custom"
+// 预设推算搬到了 `lib/data/window-presets.ts`——`.tsx` 里的东西 node:test 引不了
+// （测试 glob 只跑 `lib/data/*.test.ts`），纯逻辑放那边才盖得住门禁。这里只做转发。
+export { resolvePreset, windowPresetLabel, shiftDays, type DataWindow, type WindowPreset } from "@/lib/data/window-presets"
+import { iso, resolvePreset, shiftDays, windowPresetLabel, type DataWindow, type WindowPreset } from "@/lib/data/window-presets"
 
-export const windowPresetLabel: Record<WindowPreset, string> = {
-  today: "今天",
-  yesterday: "昨天",
-  last_7d: "近 7 天",
-  month_to_date: "本月至今",
-  last_month: "上月",
-  custom: "自定义",
-}
-
-/** 数据只到「数据日」，所以所有预设都以它为终点往前推，而不是以今天 */
-function iso(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-}
-/**
- * 字符串 ↔ Date 的边界只在这两处。
- * 内部一律用 `YYYY-MM-DD` 字符串：Date 带时区，`new Date("2026-09-01")` 会按 UTC 解析，
- * 用户机器在 UTC-7 时退成 8 月 31 日；所以转 Date 时**按本地年月日构造**，不走字符串解析。
- */
+/** 日历组件吃 Date，我们的窗口是 `YYYY-MM-DD` 字符串——两边转换只在这个文件里用 */
+const fromDate = iso
 function toDate(day: string): Date {
   const [year, month, date] = day.split("-").map(Number)
-  return new Date(year, month - 1, date)
-}
-function fromDate(date: Date): string {
-  return iso(date)
-}
-function shiftDays(day: string, delta: number): string {
-  const [year, month, date] = day.split("-").map(Number)
-  return iso(new Date(year, month - 1, date + delta))
-}
-
-export function resolvePreset(preset: WindowPreset, dataDate: string, current: DataWindow): DataWindow {
-  const [year, month] = dataDate.split("-").map(Number)
-  switch (preset) {
-    // 「今天」用真今天，不是数据日——它问的就是「今天到现在跑了多少」，
-    // 后端会照实返回还没跑完的那部分（缺的小时按缺数处理，不补 0）
-    case "today": { const now = iso(new Date()); return { preset, from: now, to: now } }
-    case "yesterday": return { preset, from: dataDate, to: dataDate }
-    case "last_7d": return { preset, from: shiftDays(dataDate, -6), to: dataDate }
-    case "month_to_date": return { preset, from: iso(new Date(year, month - 1, 1)), to: dataDate }
-    case "last_month": return { preset, from: iso(new Date(year, month - 2, 1)), to: iso(new Date(year, month - 1, 0)) }
-    // 自定义保留现有区间，只是把标签切过去——不然点一下「自定义」区间就被清空了
-    case "custom": return { ...current, preset }
-  }
+  return new Date(year!, month! - 1, date!)
 }
 
 export function WindowPicker({ value, dataDate, onChange, className }: {
