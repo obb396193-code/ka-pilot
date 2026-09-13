@@ -775,7 +775,7 @@ CREATE TABLE task_budget_history (   -- 日预算卡版本化，写法与 assess
   id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
   task_id TEXT NOT NULL,
   FOREIGN KEY (workspace_id, task_id) REFERENCES tasks(workspace_id, task_id),
-  daily_budget_cap NUMERIC NOT NULL,   -- 元/日；任务级；无卡的任务不落行（使用率显 missing）
+  daily_cap NUMERIC NOT NULL,          -- 元/日；任务级；无卡的任务不落行（使用率显 missing）。v1.9.48 更正：物理列名以迁移为准为 daily_cap；同日多版本合法（只增不改），无同日 UNIQUE
   effective_date DATE NOT NULL,
   changed_by UUID, evidence_url TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),

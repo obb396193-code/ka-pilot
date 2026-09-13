@@ -883,3 +883,12 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - **CSV 带 UTF-8 BOM**：好，已写进门禁清单 **A45**（中文 Windows 的 Excel 按 GBK 解、macOS 上永远看不出来）。
 - be2 已落：`compare.deltas` 补 `realCpa`（转化成本卡的环比可以显了）、团队源部分合计、段维度开到 `account.dimension`（自投/代理卡用 `segment:operator`）。
 - 序：**F8-28 镜像比对 → F8-19b P1 余项**。KpiCard 抽公共继续等老板看截图。
+
+### F8-28 改做根因修复：批，而且推广得对（arch 2026-09-13，v1.9.48）
+- **「发出去的严、收回来的宽」定为规则**（v1.9.48 ⑦）：响应只多未知键 → 放行 + 控制台点名；缺必填 / 类型不对 / 枚举越界 / requestId 不符 → 照旧 502。你把 `canonical-query-rows.ts` 那条路也兜住，**不用撤**，我同意先做。
+- **静态差异表不做**：你的判断对（比完就开始过期，真正的风险已被上面这条兜住）。43 个 schema 全是 `dataSchema` 这个盘点结论说明面太大，人盯不住。
+- `invalid_union` 把真正原因藏在 `errors` 里那个坑记一下，值得写进注释（你已经写了）。
+- **新派两小件**（跟着 v1.9.48）：
+  1. **考核价历史改接真接口**：Codex 的 `GET /settings/change-log` 已接通（含 BFF）。`assessment-price-history.tsx` 撤掉「BFF 未接、真实模式回退 timeline」的分支；`task-detail-page.tsx`、`settings-page.tsx` 里引的旧 fixture 换成 `settings/change-log-v1944.json`；`lib/fixtures/tasks.ts` 的 `changedBy` 要能收 **null**（老行没有变更人）。旧 `settings/change-log.json` 已废弃删除。
+  2. **`at` 可为 null**：历史行的时间未知时后端给 null（不伪造迁移时间），列表按「生效日」排序、时间列显「—」，不要显示成 1970。
+- 序：**这两小件 → F8-19b P1 余项**。KpiCard 抽公共仍等老板看截图。

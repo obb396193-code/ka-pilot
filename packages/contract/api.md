@@ -1565,3 +1565,28 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 **④ 镜像与契约的全量比对：做，单独一轮**（fe 已连撞三次同类：`lineage.warnings` 对象形、`assessmentPriceChangeSchema` 少 `op`、`savedViewConfigSchema` 少 `charts`）。范围 = `apps/web/lib/data/r014/schemas.ts` 与 `canonical-query-rows.ts` 的每个 `.strict()` 对象 vs api.md 字段清单，产出差异表并把「契约可选键镜像必须收」写成用例。**记作 F8-28**，排在 F8-19b P1 余项之前。
 **⑤ 更正 v1.9.4 的一句话**（be2 实读发现）：原文「团队 ka-data 源的 SQL 直出汇总拿不到逐成员缺失信息」**不成立**——`ka-window-aggregate-sql` 的 `COUNT(col)`/`COUNT(ds)` 本来就是逐成员完整性，只是此前被用来做「缺一个就整列 NULL」。这句是 v1.9.35 暂缓团队 partial 的依据，现予更正；团队源部分合计已按 v1.9.46 落地。
 **⑥ 导出 CSV 必须带 UTF-8 BOM**（fe 提）：不带的话中文 Windows 的 Excel 按 GBK 解，整张表乱码，而 macOS 上永远看不出来。写进门禁清单 A45。
+
+## v1.9.48 追加（2026-09-13 arch；钉钉出站收件人与模板定形、change-log 三处收口、归一大小写、镜像宽收规则）
+**① 出站收件人解析（Codex P-198 的最后阻塞）**：现有入队方写的 `target` 是 `user:<workspace-local UUID>` 与 `workspace:<UUID>:admins`，不是群/单聊地址。冻结解析链：
+- `workspace:<id>:admins` → 该空间的**群机器人 webhook**（配置项 `DINGTALK_ROBOT_WEBHOOK_BY_WORKSPACE`，JSON `{workspaceId: {webhook, secret}}`）。**没有该空间的配置 → 这一条置 `failed` + `fail_reason:"NO_CHANNEL_FOR_WORKSPACE"`，不回落到任何默认群**——把 A 空间的告警发进 B 空间的群，比不发严重得多。
+- `user:<userId>` → 需要该用户的钉钉 staffId 映射（`identity_mappings`，provider=`dingtalk`）。**没有映射 → 置 `failed` + `fail_reason:"NO_DM_BINDING"`，只跳这一条，不影响整轮**。
+- 缺凭证**只跳该类**（群缺群配置、单聊缺映射），整轮继续；`worker:diagnose` 增 `dingtalkOutbound:{group:"configured|not_configured", dm:"configured|not_configured"}`。
+**② 出站去重键（三种现有 kind）**：`dedupe_key = workspace_id | kind | target | 业务主键 | 业务日`。
+| kind | 业务主键 | 业务日 |
+|---|---|---|
+| ETL 失败通知（`failure-notifier`） | `jobId` | 该 job 的 `business_date`；payload 没有就取 run 的业务日；再没有取入队日（上海业务日） |
+| 质量检查（`quality/check-handler`） | `ds + failedChecks` 的稳定哈希 | `ds` |
+| 其它/未来 kind | payload 里的 `refId`，缺则整条 payload 的稳定哈希 | 入队日 |
+**旧 queued 行**（没有 dedupe_key）：投递器按上表**补算一次**再判重，不跳过、不丢。
+**③ 出站消息模板（只发这三类，字段白名单）**：统一「标题 + 三到五行事实 + 一个可点链接」，**不外发原始错误文本**（`failure.error` 只取已净化的 `code` 与 `step`，原文留库里）。
+- ETL 失败：`【KA Pilot】拉数失败`｜空间名 · 媒体 · 业务日 · 失败步骤 · 错误码 · 重试次数｜链接到治理后台的 ETL 运行记录。
+- 质量检查：`【KA Pilot】数据质量告警`｜业务日 · 失败项数 · 前三项名称｜链接到对账页。
+- 未来 kind：**未识别 kind 一律 `failed` + `fail_reason:"UNSUPPORTED_KIND"`**（terminal，不重试），不猜模板。
+- `channel='inbox'` 的行（派发、考核价通知）**仍只站内**，投递器不碰。
+**④ 命中已发过的重复行**：状态用 **`deduplicated`**（不谎称 `sent`），`fail_reason` 留空、`sent_at` 为 null，额外记 `dedupe_of`（首发那行的 id）。`daily-report-repository.ts:293` 那处「未识别状态一律显 queued」同步改：`deduplicated` 显「已去重（同内容已发）」，不得显示成永久排队。
+**⑤ change-log 三处收口**（Codex P-194 ②）：
+- **历史时间未知**：老行 `at` 保留 null（不伪造迁移时间）；成功形的 `at` 改 `timestamp | null`；排序按 `COALESCE(at, effective_date 的当日 00:00)`，游标用 `(排序键, id)` 复合，`at=null` 行排在同排序键的最后。**不因为有 null 就整条 503**。
+- **列名**：物理列以迁移为准 = `daily_cap`；`schema.sql:778` 的 `daily_budget_cap` 与同日 UNIQUE **是旧稿，予以更正**（同日多版本合法，只增不改）。arch 同步 schema.sql。
+- **旧 fixture**：`settings/change-log.json`（缺 id/op、带旧 `recomputedDays`）**废弃删除**，统一用真响应导的 `settings/change-log-v1944.json`；fe 那三处引用同步改（见给 fe 的派单）。
+**⑥ 归一大小写（be2 自加的收紧）**：**批**。`IOS/ios/iOs → iOS` 属于同一取值，要求规则作者穷举每种大小写既记不全也必漏；实现按「先精确、再忽略大小写」不抢别名命中，这个顺序是对的。
+**⑦ 镜像宽收规则（fe F8-28 的根因修复）**：**批，并推广到 `canonical-query-rows.ts` 那条路**（fe 已做）。规则固定为：**发出去的严、收回来的宽**——响应只多未知键 → 放行并在控制台点名；缺必填 / 类型不对 / 枚举越界 / requestId 不符 → 照旧 502。这条**不替代**补镜像，它把「契约加个可选键」从整页崩降级成日志一行。静态差异表不做（会过期，收益已被此规则覆盖）。
