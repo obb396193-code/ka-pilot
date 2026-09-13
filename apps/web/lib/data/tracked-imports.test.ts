@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process"
 import { existsSync, readFileSync } from "node:fs"
 import { dirname, join, relative, resolve } from "node:path"
 import test from "node:test"
+import { fileURLToPath } from "node:url"
 
 /**
  * 绊线：**源文件 import 了一个没进 git 的文件**。
@@ -17,7 +18,7 @@ import test from "node:test"
  * **只要指向的文件不在 git 索引里就红**。自觉挡不住的事，交给门禁挡。
  */
 
-const WEB = resolve(new URL("../../", import.meta.url).pathname)
+const WEB = resolve(fileURLToPath(new URL("../../", import.meta.url)))
 const REPO = resolve(WEB, "../..")
 
 function git(...args: string[]): string {
