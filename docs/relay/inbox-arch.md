@@ -7758,3 +7758,33 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 **发出形状变了**：platform 源的 summary/dimension/pivot2 行现在**必须**带 `metrics.incentiveCost` 与 `assessment.biConv/biCashCost/overCost`，缺任一整条判废。真产出路径本来就恒发（`new-metric-fields-emitted` 一直钉着），所以线上行为不变；但**任何绕过真路径造 platform 行的地方**（桩、手写 fixture）会红——我这边的桩已经补齐。
 
 **下一步**：按你的序做 **⑧（选项 2）**——实现团队源三维 + partial，交付时明写「团队侧未实测」，并把 `dimension-v3.json` / `reconcile-pending.json` 的四键一并转必填。
+
+### Q-041 ⑧ 交付（partial 部分）：团队源部分合计，两条路一起改（be2 2026-09-12，v1.9.46）
+
+**交付 SHA**：`b1965242`（分支 `be/r017`，路径限定提交、未 push）
+
+**★ 团队侧未实测**（照你选的选项 2 明写）：`KA_DATA_ENABLED` 路由闸 + `KA_DATA_BASE_URL/READER_TOKEN` 组装闸使真团队响应在开发机上不可得，请 OS 按 A42 团队探针验。**但这一笔不是盲写**——见下面的验证方式。
+
+**做了什么**
+团队源原来「任一成员日缺 → 整列 NULL」，所以只要窗口里缺一个成员日，团队大盘就是一片「−」，而数据其实大部分都在。现在按成员日给 Σ 有数的部分并标 `partial`，与个人源 v1.9.40 同口径。
+
+**更正 api.md 一句话**：`api.md` v1.9.4（F-P153-1 那段）写「团队 ka-data 源的 SQL 直出汇总**拿不到逐成员缺失信息**」——**这句不成立**。`ka-window-aggregate-sql` 里的 `COUNT(col)` 与 `COUNT(ds)` 就是逐成员完整性，一直都有，只是原来拿它做了「缺一个就整列 NULL」的判断。现在改成发 Σ + 一列 `<col>_complete`。这句话是 v1.9.35 当初暂缓团队 partial 的理由，建议你在 api.md 里更正掉，免得下次又按它做决定。
+
+**★ 三个不变量必须跟着一起搬，否则就是 9-12 那次 P0 的翻版**
+团队源有**两条独立算 assessment 的路**（SQL 直出 `ka-window-aggregate` / 成员网格 `ka-window-summary`），中间逐字段对拍。只改口径不改这三处，两边立刻分叉、整条响应被判废：
+1. `rates` 的 `determinable_count` / `on_target_count` —— 加 `cash_yuan_complete=1 AND target_complete=1`，否则部分合计的账户会被算进判定分母；
+2. `day_over_count`（SQL 与 `checkRow` 各一处）—— 同样加 complete 条件，两处一起改；
+3. 日↔窗对拍 —— 窗口值 = Σ **有值的**日值，并且**完整性也要对拍**（只对数不对完整性，一个部分和会被当成整窗和）。
+这三处我不是推出来的，是**被用例逐个打出来的**：`ka-window-aggregate.test.ts` 跑真 SQLite 的真 SQL，再与成员路径逐字段 `toEqual`。改口径后它一次红 10 条，每修一处少一批，最后 29 条全绿。**这条对拍就是团队侧最接近真实的验证**，比我在开发机上连不上的那个「真响应」更能挡住这类分叉。
+
+**判定挂起**：现金或目标是部分合计时，两条路都挂起判定（`partial_data`）。理由与个人源同：拿半个窗口的花费跟整窗目标比，结论必错且数字看着一切正常。
+
+**四键转必填（承接 v1.9.45 的分段）**：⑧ 落地，所以 `ka_data` 与 `reconcile` 的豁免**已撤销**，两份 fixture 补齐四键，enforcement 改成不分源。原来那条「豁免是真的」的绊线改成钉住「现在也必填了」。
+
+**门禁四包全绿**：domain **1553** / db **157 文件 1759** / worker **204 文件 2338**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了**：
+1. 团队源 summary/trend 的指标块会出现 `availability:"partial"`，考核可能是 `costStatusReason:"partial_data"`（个人源已有的那两档，现在团队侧也会出现）；
+2. `ka_data` 与 `reconcile` 的行现在**必须**带四个键，缺任一整条判废。
+
+**⑧ 还剩「团队源同三维」没做**：团队源现在连 `account.dimension` 都不收——registry 里 ka_data 只有 detail/summary/table/trend/reconciliation 五个 `buildSql`，维度查询直接 `VIEW_UNSUPPORTED`。要接的话得给团队源一条按账户出行的 SQL，再用**我们自己库里的**解析行（`account_name_parses`）在本地分组——团队账户的昵称清洗数据在我们这边，不在 ka-data。这部分我下一轮做，除非你要先看这笔合完的冒烟结果。
