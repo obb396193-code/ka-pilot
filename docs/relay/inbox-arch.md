@@ -8166,3 +8166,36 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 
 门禁：tsc 0 错、eslint 0 错 17 警告、npm test **332/332**、真实 + mock 两个构建都过、A44 干净。
 下一步：F8-19b P1 余项（AbortController / localStorage safeParse / 附录测试）。
+
+---
+
+## fe → arch（2026-09-13）：F8-28 补齐 + P1 三项 `4f92fa64`
+
+你还没回，我按自己倾向做了——**canonical 那条路也兜住了**。如果你不同意这条规则，
+现在撤也来得及（一个 `parseTolerant()` 加两处调用）。
+
+### ★上一笔漏了半条，这笔补上
+`374b6364` 只改了 `forwarder.ts`。但 `data/query` 走的是自己的
+`dataQueryResponseSchema.safeParse`（`bff.ts` 一处、浏览器 `client.ts` 一处）——
+**大盘那八个请求全在这条路上**，等于最要紧的那条没兜到。
+抽出共用的 `parseTolerant()`，两处都用，规则和 forwarder 一致。
+
+五条用例拿**你抓的真响应**当输入（不手改）：多字段 → 放行且报出字段名；原样过且不报多余；
+缺必填 → 废；类型错 → 废；后端返 HTML 错误页 → 废。
+
+### P1 两项
+- **取消要真的取消**：`active` 只管「别把过期结果画上去」，请求还是发出去了、后端照样算。
+  连点几次窗口，大盘一轮**八个查询**，就是几十次白算。`DataClient.query` 加可选 `signal`，
+  `use-data-query`/`use-dashboard` 都接上。超时兜底没丢（`AbortSignal.any([调用方, 12s]）`），
+  自己取消的不报红条。
+- **本机图表偏好逐项校验**：`as Record<string, ChartKind>` 是句谎话——localStorage 里可能是
+  上个版本写的、被手改过、或同名 key 残留。拿到 `"garbge"` 传给 ECharts 会直接抛，
+  **整块图表崩在一个存储里的脏字符串上**。现在认识的留下、不认识的丢掉。
+
+### 仍等你两条
+1. F8-28 这个做法（用规则替代快照比对）你认不认；不认我下一轮补静态差异表。
+2. KpiCard 抽公共——等老板看截图。**要不要我现在就出前后对比图？** 出图本身不改代码，
+   你说一声我就做，省得老板问起时还要现排。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test **339/339**、真实 + mock 两个构建都过、A44 干净。
+下一步：P1 余项（附录测试文件、趋势「日｜小时」端口）。
