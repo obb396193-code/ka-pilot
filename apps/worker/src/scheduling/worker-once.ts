@@ -15,6 +15,10 @@ const configSchema = z.object({
   }),
   maxMs: z.coerce.number().int().positive().max(2_147_483_647).default(600_000),
   leaseSeconds: z.coerce.number().int().positive().max(3600).default(60),
+  // v1.9.47（Q-042）：源的业务时区（IANA）。小时采样靠它判断「这个小时过完了没有」；
+  // 没配就不采——判不出完整性的行会被错标，比缺行更糟。
+  sourceTimeZone: z.string().trim().regex(/^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){1,2}$/, "Invalid IANA timezone").nullish()
+    .transform((value) => value ?? null),
 }).strict();
 export type WorkerOnceConfig = z.infer<typeof configSchema>;
 
@@ -24,6 +28,7 @@ export function parseWorkerOnceConfig(env: Readonly<NodeJS.ProcessEnv>): WorkerO
     workspaceId: env.WORKER_ONCE_WORKSPACE_ID, media: env.WORKER_ONCE_MEDIA, mode: env.WORKER_ONCE_MODE,
     databaseUrl: env.DATABASE_URL, qihangBaseUrl: env.QIHANG_BASE_URL,
     maxMs: env.WORKER_ONCE_MAX_MS, leaseSeconds: env.WORKER_LEASE_SECONDS,
+    sourceTimeZone: env.DATA_SOURCE_TIMEZONE,
   });
 }
 

@@ -42,6 +42,7 @@ async function main(): Promise<void> {
     qihang,
     leaseSeconds: config.leaseSeconds,
     serviceQihangUserId: config.serviceQihangUserId,
+    sourceTimeZone: config.sourceTimeZone,
     onNotificationError: (error) => {
       process.stderr.write(`Worker notification failed: ${String(error)}\n`);
     },

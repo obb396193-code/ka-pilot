@@ -20,7 +20,7 @@ describe("identity missing once recovery / real PG", () => {
     await pool.query("INSERT INTO workspace_memberships(workspace_id,identity_id,user_id,role) VALUES($1,$2,$3,'optimizer')", [workspaceId, identityId, userId]);
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','synthetic-recovery')", [workspaceId]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','synthetic-recovery','read')", [workspaceId, identityId]);
-    config = { workspaceId, media: "KUAISHOU", mode: "full", databaseUrl, qihangBaseUrl: "https://synthetic.invalid/get_data", maxMs: 30000, leaseSeconds: 60 };
+    config = { workspaceId, media: "KUAISHOU", mode: "full", databaseUrl, qihangBaseUrl: "https://synthetic.invalid/get_data", maxMs: 30000, leaseSeconds: 60, sourceTimeZone: null };
   });
   afterAll(async () => {
     if (!pool) return;

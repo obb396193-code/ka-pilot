@@ -15,6 +15,7 @@ import { errorSummary } from "./run-utils.js";
 import { withEtlAttempt } from "./attempt-scope.js";
 import type { AdHourlyStore, EtlRunStore, QihangQueryPort } from "./types.js";
 import { partialExecution, queryWithBatchFailure, accountQueryBatches, type BatchFailurePort } from "./partial-query.js";
+import { sampleAccountHourly, type AccountHourlyWritePort } from "./account-hourly-job.js";
 
 export interface IncrementalEtlDependencies {
   qihang: QihangQueryPort;
@@ -22,6 +23,12 @@ export interface IncrementalEtlDependencies {
   jobs: JobEnqueuerPort;
   hourly: AdHourlyStore;
   failures?: BatchFailurePort;
+  /**
+   * v1.9.47（Q-042）：账户级小时采样。可选——没注入就不采，日级链路完全不受影响。
+   * 它必须跑在这次 attempt 里：写库那道闸要求同一个 `etl_incr` 活跃租约 + 运行中的 run，
+   * 那道闸保证「同一时刻只有一个持租约的进程在写这批账户」。
+   */
+  accountHourly?: { writer: AccountHourlyWritePort; timeZone: string | null };
 }
 
 export function createIncrementalEtlHandler(
@@ -99,6 +106,20 @@ export function createIncrementalEtlHandler(
         await ingestFocusedAds(dependencies, payload, runId, ingest, (step) => {
           currentStep = step;
         });
+      }
+      // v1.9.47（Q-042）：小时采样。**失败只吞这一格**——盯盘的小时面是辅助视图，
+      // 不该让它把整条增量 ETL 拖失败；账面数字的来源是下面那条日级 canonical。
+      // 没有租约就没有写的资格——写库那道闸本来也会拒，这里提前跳过，不去白打一次源。
+      if (dependencies.accountHourly !== undefined && job.leaseToken !== null) {
+        currentStep = "account_hourly";
+        try {
+          const sampled = await sampleAccountHourly(dependencies.qihang, dependencies.accountHourly.writer, {
+            workspaceId: payload.workspaceId, jobId: job.id, leaseToken: job.leaseToken, runId,
+            userId: payload.userId, media: payload.media, accountIds: payload.accountIds,
+            timeZone: dependencies.accountHourly.timeZone, now: new Date(),
+          });
+          rowsIngested += sampled.writtenRows;
+        } catch { /* 采样失败不影响日级链路；这一格缺行就是缺行，永不补 0。 */ }
       }
       currentStep = "enqueue:canonical";
       await dependencies.jobs.enqueue({

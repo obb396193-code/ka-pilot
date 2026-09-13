@@ -1,5 +1,6 @@
 import {
   BackfillRepository,
+  AccountHourlyWriteRepository,
   AdHourlyMetricsRepository,
   CredentialRepository,
   DataQualityRepository,
@@ -36,6 +37,12 @@ export interface WorkerRuntimeOptions {
   qihang: QihangClient;
   leaseSeconds: number;
   serviceQihangUserId: string | null;
+  /**
+   * v1.9.47（Q-042）：源的业务时区（IANA，来自 `DATA_SOURCE_TIMEZONE`）。
+   * **没配就不采小时数据**——判不出「这个小时过完了没有」，采回来的行会被错标，
+   * 比不采更糟。绝不拿服务器本地时区蒙一个。
+   */
+  sourceTimeZone?: string | null;
   leaseScope?: JobLeaseScope;
   onJobState?: (event: JobStateEvent) => void;
   onNotificationError?: (error: unknown) => void;
@@ -49,6 +56,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   const rawMetrics = new RawMetricsRepository(options.pool);
   const metrics = new MetricsRepository(options.pool);
   const hourly = new AdHourlyMetricsRepository(options.pool);
+  const accountHourly = new AccountHourlyWriteRepository(options.pool);
   const outbound = new OutboundMessageRepository(options.pool);
   const batches = new BackfillRepository(options.pool);
   const quality = new DataQualityRepository(options.pool);
@@ -75,7 +83,8 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
       // fenced ledger persistence. Discovery/auth/invalid rows/DB errors still abort.
       etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs, failures })),
       etl_incr: identity(
-        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs, hourly, failures }),
+        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs, hourly, failures,
+          accountHourly: { writer: accountHourly, timeZone: options.sourceTimeZone ?? null } }),
       ),
       backfill_historical: identity(
         createBackfillCoordinatorHandler({
