@@ -31,37 +31,46 @@ test("defaults to the Shanghai business date with a 03:00 cutoff", () => {
   assert.equal(shanghaiBusinessDate(new Date("2026-12-31T20:00:00.000Z")), "2027-01-01")
 })
 
-test("canonical errors preserve code, message, requestId and retryable", () => {
-  const parsed = dataQueryResponseSchema.parse({ ok: false, error: { code: "UPSTREAM_TIMEOUT", message: "Timed out", requestId: "req-timeout-1", retryable: true } })
-  assert.deepEqual(parsed, { ok: false, error: { code: "UPSTREAM_TIMEOUT", message: "Timed out", requestId: "req-timeout-1", retryable: true } })
-})
+/**
+ * 补 URL 那两个读写函数的覆盖（审查附录）。
+ * 它们决定「刷新页面 / 把链接发给同事」时看到的是不是同一屏——
+ * 写错了不会报错，只会让分享出去的链接落到别的视图或别的状态上。
+ */
 
-test("MetricValue distinguishes missing and denominator zero from numeric zero", () => {
-  assert.equal(metricValueSchema.parse({ value: 0, availability: "available" }).value, 0)
-  assert.equal(metricValueSchema.parse({ value: null, availability: "missing" }).value, null)
-  assert.equal(metricValueSchema.parse({ value: null, availability: "denominator_zero" }).value, null)
-  assert.equal(metricValueSchema.safeParse({ value: 0, availability: "missing" }).success, false)
-})
-
-test("mock mode follows selected view and never invents reconcile deltas when unavailable", () => {
-  const ka = getMockResponse({ queryId: "account.table", dataView: "ka_data", params: { date: "2026-08-24" } })
-  const platform = getMockResponse({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } })
-  const unavailable = getMockResponse({ queryId: "reconcile.account_daily", dataView: "reconcile", params: { date: "2026-08-24" }, mockState: "unavailable" })
-  assert.equal(ka.ok && ka.data.mode, "ka_data")
-  assert.equal(platform.ok && platform.data.mode, "platform")
-  assert.equal(unavailable.ok && unavailable.data.mode, "reconcile")
-  if (unavailable.ok && unavailable.data.mode === "reconcile") { assert.equal(unavailable.data.comparison.status, "unavailable"); assert.equal(unavailable.data.comparison.rows.length, 0) }
-})
-
-test("mock account reconciliation uses shared key and missing is never zero", () => {
-  const response = getMockResponse({ queryId: "reconcile.account_daily", dataView: "reconcile", params: { date: "2026-08-24" } })
-  assert.equal(response.ok, true)
-  if (response.ok && response.data.mode === "reconcile") {
-    const row = response.data.comparison.rows.find((item) => item.key.account_id === "demo-account-18")
-    assert.ok(row)
-    assert.equal(row.metrics.cpa.platform.availability, "missing")
-    assert.equal(row.metrics.cpa.platform.value, null)
-    assert.equal(row.metrics.cpa.delta.availability, "missing")
-    assert.doesNotMatch(JSON.stringify(response), /账户待映射|账户映射|mappingStatus|unified/)
+test("★readDataState：认识的状态原样返回，不认识的一律回落 ready", () => {
+  for (const state of ["loading", "ready", "empty", "error", "unavailable", "truncated", "partial", "stale", "unauthorized", "forbidden", "timeout", "too-large"]) {
+    assert.equal(readDataState(state), state)
   }
+  // URL 是用户能手改的：塞个乱七八糟的值不能让页面进未定义状态
+  for (const junk of ["", "READY", "loadin", "'; drop table", undefined]) {
+    assert.equal(readDataState(junk as never), "ready", String(junk))
+  }
+})
+
+test("readDataViewMode 同理，回落到自建平台版", () => {
+  assert.equal(readDataViewMode("ka_data"), "ka_data")
+  assert.equal(readDataViewMode("reconcile"), "reconcile")
+  assert.equal(readDataViewMode("nonsense"), "platform")
+  assert.equal(readDataViewMode(undefined), "platform")
+})
+
+test("★同一个 query 参数出现多次时取第一个 —— 不能拼成 'a,b' 送进 schema", () => {
+  // `?state=empty&state=error` 在 Next 里是数组。取首值是明确的选择，
+  // 不取的话数组会被 schema 判非法、静默回落，用户以为筛了其实没筛。
+  assert.equal(readDataState(["empty", "error"]), "empty")
+  assert.equal(readDataViewMode(["reconcile", "ka_data"]), "reconcile")
+})
+
+test("★buildDataViewHref 只带兼容的筛选键，空串丢掉", () => {
+  const href = buildDataViewHref("/data", "ka_data", { media: "KUAISHOU", account_id: "", not_a_filter: "x" })
+  const url = new URL(href, "http://x")
+  assert.equal(url.searchParams.get("data_view"), "ka_data")
+  assert.equal(url.searchParams.get("media"), "KUAISHOU")
+  assert.equal(url.searchParams.has("account_id"), false, "空串不该占一个参数位")
+  assert.equal(url.searchParams.has("not_a_filter"), false, "白名单外的键不许带过去")
+})
+
+test("buildDataViewHref 的数组参数同样取首值", () => {
+  const url = new URL(buildDataViewHref("/data", "platform", { media: ["KUAISHOU", "TENCENT"] }), "http://x")
+  assert.equal(url.searchParams.get("media"), "KUAISHOU")
 })

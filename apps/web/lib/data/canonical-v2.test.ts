@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { readFile } from "node:fs/promises"
 import test from "node:test"
-import { dataQueryResponseSchema } from "./contracts.ts"
+import { dataQueryResponseSchema, metricValueSchema } from "./contracts.ts"
 import { canonicalQueryRowSchemaById, canonicalQueryRowsSchema, canonicalRowSchemaVersionByQueryId, ratioValueSchema } from "./canonical-query-rows.ts"
 import { adaptAnalysis, adaptWorkbench } from "./adapters.ts"
 import { getMockResponse } from "./mock-data.ts"
@@ -97,4 +97,22 @@ test("lineage requires explicit valid workspaceKind, not a default personal valu
     lineage.workspaceKind = value
     assert.equal(dataQueryResponseSchema.safeParse(response).success, false)
   }
+})
+
+/**
+ * 从 `data-view.test.ts` 迁过来的（审查附录点名「四条错位用例迁走」）。
+ * 它们测的是契约信封与 MetricValue 的形状，和数据视图的 URL 读写没关系——
+ * 放错文件的后果不是跑不了，是**红的时候看错方向**。
+ */
+
+test("canonical errors preserve code, message, requestId and retryable", () => {
+  const parsed = dataQueryResponseSchema.parse({ ok: false, error: { code: "UPSTREAM_TIMEOUT", message: "Timed out", requestId: "req-timeout-1", retryable: true } })
+  assert.deepEqual(parsed, { ok: false, error: { code: "UPSTREAM_TIMEOUT", message: "Timed out", requestId: "req-timeout-1", retryable: true } })
+})
+
+test("MetricValue distinguishes missing and denominator zero from numeric zero", () => {
+  assert.equal(metricValueSchema.parse({ value: 0, availability: "available" }).value, 0)
+  assert.equal(metricValueSchema.parse({ value: null, availability: "missing" }).value, null)
+  assert.equal(metricValueSchema.parse({ value: null, availability: "denominator_zero" }).value, null)
+  assert.equal(metricValueSchema.safeParse({ value: 0, availability: "missing" }).success, false)
 })
