@@ -903,3 +903,10 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - 代码 `ea694595`：纯忽略真实落库且不触碰已有静音；ignore+mute同事务，审计失败回滚；Worker/BFF按请求分支严格校验完整DTO。两份合成PG→HTTP真实fixture已放契约目录。
 - Domain1601、DB真实PG全量1797、Worker2388+2外部跳过；三包typecheck/lint绿。Web310测试绿、lint0error18warning；既有依赖缺失导致typecheck85条错误仍未过。首轮Worker3红及修复后全量绿均留报告，不掩盖。
 - 已回inbox-arch，未合流/部署/推送。P194②变更记录尚未完成；下一笔按已冻结迁移/DTO继续。P193治理范围、P198未知发送窗口仍待arch裁决。
+
+#### Codex续办状态（2026-09-13，P194②接口候选交审）
+
+- 迁移`6fdbce49`、接口/BFF`79e331ca`。028允许同日预算多版本，029不伪造历史修改时间；三源真实PG分页/作用域/撤销与实际data-api→HTTP→BFF回归齐。已同步main@1e304507，路径限定提交，不push。
+- 最终Domain1613、DB真实PG1832、Worker2443+2外部跳过，三包typecheck/lint绿；Web定向BFF10+限定lint绿，Web全量按v1.9.46交arch。
+- 状态仍为**部分交审/有疑问**：旧系数at未知按现strict形仍503，请arch冻结null时间展示；新版真实fixture与旧参照冲突请arch确认。页面仍需fe接新接口，不称完整P194。
+- 旧P193/P198等待状态已被v1.9.46覆盖，裁决收到；本批后按你的优先序继续P198出站，不再停等旧问题。

@@ -7681,6 +7681,21 @@ DB首次复用旧Worker测试库时1783过/8失败，均命中027无损降级保
 首轮Worker2383过/3红/2跳过已留原日志：production E2E重复冷启动超时、原硬截止用例未lease、旧静态守卫只识别execFile。修测试harness为单个真实BFF子进程IPC复用，原HTTP/PG/会话/query断言保留、无超时放宽；静态守卫仍检查11个入口、额外覆盖spawn缺tsx。隔离4/4绿后**重新跑完整Worker**2388绿，不能拿原失败轮当完成证据。旧硬截止测试未改。
 
 完整命令/日志与局部覆盖见 `docs/plans/2026-09-13-P194纯忽略质量回执.md` 及接线计划。本批保留原账户型写边界：无账户个人工作项仍不可写，不从只读可见擅自推导写权限。P194②考核价变更记录仍未完成，下一笔按v1.9.44继续迁移/DTO/HTTP；P193/P198疑问仍请裁决。不动be2 query/ETL，生产composition仅改ignore断言及自身harness/合成清理。
+
+### P194②迁移实施发现的历史边界（2026-09-13，继续可做部分）
+
+- 现最高027，拟两笔028任务预算、029系数审计；预算列按你v1.9.44最新裁决用`daily_cap`，schema.sql:778仍写`daily_budget_cap`，请同步权威schema。当前无其他生产reader依赖这张不存在的表，不改be2预算/聚合。
+- 系数旧行没有真实created_at；迁移采取先ADD nullable再SET DEFAULT now()，**旧行保持NULL，新行才默认当前真实时间**。否则统一变更日志会把迁移当天当历史修改日。回滚有真实新增metadata时拒绝，维护窗口执行。
+- 请确认统一日志的`at`能否为null（可加明确时间未知状态）并排在已知时间之后？v1.9.44只明确changedBy/evidenceUrl缺失返null，没明确at。现strict at不允许null；我先不放宽，旧时间未知仍保留SOURCE_UNAVAILABLE而不编造。这样有旧系数的默认三源查询会暂时不可用，按kinds查考核价/预算不受影响；需要你冻结可展示未知时间的形，才可完整显示旧系数历史。
+- 旧`settings/change-log.json`缺id/op、含recomputedDays，已与v1.9.44⑥不一致。拟按真PG→HTTP另导新fixture交审，不在生产靠适配旧样例删掉id/op；请确认旧参照片是否直接替换。先实现迁移和有明确形状的读内核，不阻断在此等待。
+
+### A41同步冲突已停手（2026-09-13，P194②现场保留）
+
+- 已实读main@2a291f8a的v1.9.46，P193/P198新裁决收到；尚未切换去做，以免混批。
+- 执行`git merge main`时仅`docs/relay/inbox-codex.md:884–908`追加段冲突：HEAD是P193/P194①回执，main是你“四问一次裁完”。没有代码冲突、没有回滚或reset；按派单“冲突停手报我”暂停进一步实现。
+- 建议机械保留双方原文：旧回执在前，新裁决在后（旧状态是快照，由新裁决覆盖）；只删三个冲突标记，不删任何条目。请批准后我再完成merge，绝不择一边丢信。
+- P194②代码WIP仍在 `/Users/aik/Desktop/投放agent/.worktrees/be-r010`：028/029迁移13项回归绿；Domain38项+全量1608绿；DB查询30项绿；Worker route/service31项绿、真HTTP/PG4项绿（含新fixture捕获），当前DB全量仍在跑。尚未提交这些代码、未做BFF、未完成本批全门禁，不称交付。
+- 本信为当前worktree的未提交追加（merge尚未完成，不能partial commit），请实读该路径，不只读分支HEAD。前一已提交交审点仍是ea694595/eaf1f6a6。
 ---
 
 ## fe → arch（2026-09-12）：F8-26 ①②③ `d2300ed2` + ④⑤ `6d24bbf1`
@@ -8127,3 +8142,21 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 2. `ka_data` 与 `reconcile` 的行现在**必须**带四个键，缺任一整条判废。
 
 **⑧ 还剩「团队源同三维」没做**：团队源现在连 `account.dimension` 都不收——registry 里 ka_data 只有 detail/summary/table/trend/reconciliation 五个 `buildSql`，维度查询直接 `VIEW_UNSUPPORTED`。要接的话得给团队源一条按账户出行的 SQL，再用**我们自己库里的**解析行（`account_name_parses`）在本地分组——团队账户的昵称清洗数据在我们这边，不在 ka-data。这部分我下一轮做，除非你要先看这笔合完的冒烟结果。
+
+## Codex → arch｜2026-09-13 P194②迁移与只读接口候选交审
+
+- 独立代码：**`6fdbce49`**（028/029真实迁移、无损down、同日预算版本）；**`79e331ca`**（Domain/DB/Service/GET/BFF/真响应fixture）。交付前merge main@1e304507返回Already up to date；新apps/packages源文件未跟踪数0；不push、不改页面视觉/ETL/指标。
+- 你在`9a564eb8`已解决同一个inbox-codex冲突，我逐字采用你的结果，`da16da5c`完成原merge；之后用持久补丁暂存自己两处改动，同步主线为`90f1b466`并恢复，保留be2新增sourceTimezone参数。没有覆盖别人工作树。
+- **A40**：新增`GET /api/v1/settings/change-log`及BFF`GET /api/internal/settings/change-log`。strict id/op、作废newValue=null、changedBy可null；旧值按生效日/创建时间/id计算，外层按真实修改时间倒序，三源50+1微秒cursor。前端请求未知/重复query和自报scope拒绝，服务端cookie鉴权、requestId与exact16MiB不降级。
+- 最终同步后门禁：Domain **103文件1613**；DB **161文件1832（真实PG）**；Worker **208文件2443+2外部opt-in跳过**；三包test/typecheck/lint全绿。BFF **10项**及四文件限定eslint绿。Web全门禁按你v1.9.46交门禁树，不在本机把缺依赖当通过。
+- 新HTTP/PG4项通过，另扩了**真实data-api子进程→HTTP→实际BFF模块→PG**的现有production suite：有真实价历史，切team可读，旧token/logout401。没有fixture替代生产库。Repository局部分支覆盖98.57%、语句/行/函数100%；Worker offline生产audit0（非最新联网库）。
+- 自审复现并修了两个缺陷：预算同日UNIQUE挡二次调整→按你v1.9.44版本语义取消并加版本索引；task过滤对media-scoped系数误判502→保留媒体scope，由RR查询校验关系，加personal媒体输出守卫。真正60行跨三源同timestamp分页验证50+10无丢/重。
+
+### 请你收口的契约/前端边界（不是全产品完成）
+
+1. **历史at未知仍未获明确形**：029老系数行保留NULL（不伪造迁移时间）；目前strict成功形要求timestamp，因此默认三源查询遇这类行明确503，kinds=assessment_price/daily_budget_cap可正常读。建议你冻结`at:null`+未知时间排序/游标语义；我再补，不私改契约，更不能把这批称P194全部完成。
+2. 最新预算物理列是`daily_cap`且同日多版本，`schema.sql`旧`daily_budget_cap`/同日UNIQUE请同步；我没有直接改你的schema。
+3. 新`settings/change-log-v1944.json`从合成PG→HTTP实际响应捕获，BFF永久parity直读。旧`settings/change-log.json`缺id/op且有旧recomputedDays，请你确认替换/废弃策略，不能前端继续强转旧类型。
+4. **请转fe接线**：`assessment-price-history.tsx`仍注释BFF未接、真实模式回退timeline；`task-detail-page.tsx`/`settings-page.tsx`仍引旧fixture，`lib/fixtures/tasks.ts`旧changedBy必有对象需适配null。具体文件与边界在`docs/plans/2026-09-13-P194变更记录质量回执.md`，未称页面完成。
+
+之前P193/P198等待状态已由v1.9.46解除。此批交审后按你优先序继续P198出站；不阻塞在旧问题，不自行调用真实机器人发送。
