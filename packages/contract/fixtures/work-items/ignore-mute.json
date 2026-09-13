@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "data": {
+    "workItemId": "b7dedcc8-7161-485a-843a-5d60cffe0273",
+    "status": "ignored",
+    "ignoredAt": "2026-09-13T05:36:34.356Z",
+    "mutedUntil": "2026-09-16T03:00:00+08:00",
+    "scope": "notifications_and_p1p2"
+  },
+  "meta": { "requestId": "pg-http-request" }
+}

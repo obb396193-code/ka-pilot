@@ -7,6 +7,7 @@ import {
 import { readBoundedResponseBody } from "./bounded-response.ts"
 import {
   commandErrorSchema, commandErrorStatus, commandSuccessSchema, dryRunRequestSchema, ignoreRequestSchema, muteRequestSchema,
+  ignoreSuccessSchema, ignoreMuteSuccessSchema,
   preflightPresentationResponseSchema,
   type CommandErrorCode, type CommandResponse,
 } from "./r010-command-contracts.ts"
@@ -126,10 +127,11 @@ export async function handleR010CommandRequest(request: Request, deps: {
           return fail("UPSTREAM_INVALID_RESPONSE")
         return { status: 200, requestId, body: result.data }
       }
-      // A plain ignore must not masquerade as ignore+mute.
-      if (kind === "ignore" && !("mute_days" in parsed.data)) return fail("UPSTREAM_INVALID_RESPONSE")
-      const result = commandSuccessSchema.safeParse(raw)
+      const shape = kind !== "ignore" ? commandSuccessSchema : "mute_days" in parsed.data ? ignoreMuteSuccessSchema : ignoreSuccessSchema
+      const result = shape.safeParse(raw)
       if (!result.success || result.data.meta.requestId !== requestId) return fail("UPSTREAM_INVALID_RESPONSE")
+      if (kind === "ignore" && (!("workItemId" in result.data.data) || command.upstreamPath !== `/api/v1/work-items/${result.data.data.workItemId}/ignore`))
+        return fail("UPSTREAM_INVALID_RESPONSE")
       return { status: 200, requestId, body: result.data }
     }
     const result = commandErrorSchema.safeParse(raw)
