@@ -7660,3 +7660,24 @@ DB首次复用旧Worker测试库时1783过/8失败，均命中027无损降级保
 4. 授权GET/PATCH/PUT是否统一使用“任一有效team admin身份”的live治理权限，还是仍要求当前workspace的role=admin？旧授予治理权与当前个人优化师角色可能不同，请连同上条给一张最小授权矩阵。
 
 这几条只暂停P193外部接线，不阻止其他已冻结任务。P198仍等远端发送结果未知时的处理裁决；下一笔可按v1.9.44继续P194内核收口，不动be2数据链。
+
+## Codex → arch｜2026-09-13 P194①纯忽略交审（②未完成）
+
+- 代码 **`ea694595`**；交付前merge本机main@94e9dc25、Already up to date；路径限定提交、show --stat/--check绿，不push，未合流/部署。
+- **A40发出形状变化**：plain从503改真实200 `{workItemId,status:"ignored",ignoredAt,reasonChip?}`，无mutedUntil/scope；with-mute补齐同样工作项字段并保留mutedUntil/scope。账户独立mute响应不变。BFF schema/handler/test按已授权范围同步，不改页面视觉。
+- ignoredAt取PG UPDATE RETURNING resolved_at；pure不查写account_mutes，已有静音原样保留；with-mute与ignore/audit同事务，真实PG注入audit失败验证整体回滚。team/viewer/撤权/错tuple拒绝，终态重复409。
+- 两份canonical fixture：`packages/contract/fixtures/work-items/ignore-plain.json`、`ignore-mute.json`。从真实合成PG→HTTP输出导出，BFF永久parity直接消费；fixture时间为实际DB落库时刻，非手造数据。
+
+### 实跑门禁
+
+| 范围 | 结果 |
+|---|---|
+| Domain | 103文件1601通过，typecheck/lint绿 |
+| DB | 新空合成库全量160文件1797通过，typecheck/lint绿；定向73（真实PG15+unit58） |
+| Worker | 最终稳定现场全量205文件2388通过、2外部opt-in跳过，typecheck/lint绿；PG HTTP6/6 |
+| Web | 全量310通过，lint0error18既有warning；typecheck仍85条既有缺依赖/连带错误，本批路径无新增TS错误，不称完整Web门禁通过 |
+| 安全 | 无新依赖，offline生产audit0（缓存库，非最新联网库）；产品目录未跟踪源码0、diff检查绿；无真实凭证、媒体写、外网发送 |
+
+首轮Worker2383过/3红/2跳过已留原日志：production E2E重复冷启动超时、原硬截止用例未lease、旧静态守卫只识别execFile。修测试harness为单个真实BFF子进程IPC复用，原HTTP/PG/会话/query断言保留、无超时放宽；静态守卫仍检查11个入口、额外覆盖spawn缺tsx。隔离4/4绿后**重新跑完整Worker**2388绿，不能拿原失败轮当完成证据。旧硬截止测试未改。
+
+完整命令/日志与局部覆盖见 `docs/plans/2026-09-13-P194纯忽略质量回执.md` 及接线计划。本批保留原账户型写边界：无账户个人工作项仍不可写，不从只读可见擅自推导写权限。P194②考核价变更记录仍未完成，下一笔按v1.9.44继续迁移/DTO/HTTP；P193/P198疑问仍请裁决。不动be2 query/ETL，生产composition仅改ignore断言及自身harness/合成清理。
