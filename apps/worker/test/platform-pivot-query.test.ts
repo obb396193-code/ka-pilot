@@ -173,7 +173,7 @@ describe("PlatformPivotQuery labelled axes", () => {
   const asOf = (rows: Record<string, Record<string, string | null>>): AccountLabelsAsOf => ({
     on: (account) => {
       const entry = rows[`${account.media}:${account.accountId}`];
-      return entry === undefined ? null : { effectiveFrom: "2026-08-01", earliestKnown: false, nameMatches: true, ruleMissing: false,
+      return entry === undefined ? null : { effectiveFrom: "2026-08-01", earliestKnown: false, nameMatches: true, ruleMissing: false, namedDimensionsInvalid: false,
         dimensions: Object.fromEntries(Object.entries(entry).map(([key, value]) => [key, { value, source: value === null ? null : "nickname" as const }])) };
     },
   });

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { labelBasisEarliestKnownWarning, pickAccountLabelBasis } from "../src/account-label-basis.js";
+import {
+  LABEL_BASIS_WARNING_LIMIT, capLabelBasisWarnings, labelBasisEarliestKnownWarning, pickAccountLabelBasis,
+} from "../src/account-label-basis.js";
 import { lineageWarningSchema } from "../src/data-query-contract.js";
 
 /** v1.9.49 ①：改名前一行、改名当天起一行。 */
@@ -43,5 +45,21 @@ describe("v1.9.49 pickAccountLabelBasis", () => {
       { code: "LABEL_BASIS_EARLIEST_KNOWN", media: "KUAISHOU", accountId: "acc-1", businessDate: "2026-08-31" });
     expect(lineageWarningSchema.safeParse({ ...warning, fields: ["cost"] }).success).toBe(false);
     expect(lineageWarningSchema.safeParse({ ...warning, businessDate: "2026-02-30" }).success).toBe(false);
+  });
+
+  it("dedupes and orders warnings so every emitter lists the same account-days the same way", () => {
+    const day = (accountId: string, businessDate: string) => labelBasisEarliestKnownWarning({ media: "KUAISHOU", accountId, businessDate });
+    expect(capLabelBasisWarnings([day("b", "2026-09-01"), day("a", "2026-09-02"), day("a", "2026-09-01"), day("b", "2026-09-01")]))
+      .toEqual([day("a", "2026-09-01"), day("a", "2026-09-02"), day("b", "2026-09-01")]);
+    expect(capLabelBasisWarnings([])).toEqual([]);
+  });
+
+  it("caps the list and says how many there really were", () => {
+    const many = Array.from({ length: LABEL_BASIS_WARNING_LIMIT + 5 }, (_, index) =>
+      labelBasisEarliestKnownWarning({ media: "KUAISHOU", accountId: `acc-${String(index).padStart(4, "0")}`, businessDate: "2026-09-01" }));
+    const capped = capLabelBasisWarnings(many);
+    expect(capped).toHaveLength(LABEL_BASIS_WARNING_LIMIT + 1);
+    expect(capped.at(-1)).toBe(`LABEL_BASIS_EARLIEST_KNOWN_TRUNCATED:${LABEL_BASIS_WARNING_LIMIT + 5}`);
+    expect(capped.every((warning) => lineageWarningSchema.safeParse(warning).success)).toBe(true);
   });
 });

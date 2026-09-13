@@ -4,8 +4,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import type { AddressInfo } from "node:net";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { runMigrations, SemanticQueryRepository, WindowAssessmentRepository, AccountDimensionEvidenceRepository,
-  AccountDimensionRuleRepository, withSemanticReadSnapshot } from "@ka/db";
+import { runMigrations, SemanticQueryRepository, WindowAssessmentRepository, withSemanticReadSnapshot } from "@ka/db";
+import { resolveAccountLabelsAsOf } from "../src/data/account-labels.js";
 import { createPlatformDimensionQuery, PlatformDimensionQuery } from "../src/data/platform-dimension-query.js";
 import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { DataQueryService } from "../src/data/query-service.js";
@@ -80,12 +80,12 @@ describe("P211 personal named dimensions / real PG + HTTP", () => {
   it("one RR snapshot cannot mix metrics and names across a concurrent edit", async () => {
     const query = new PlatformDimensionQuery(read => withSemanticReadSnapshot(pool, connection => {
       const semantic = new SemanticQueryRepository(connection), assessment = new WindowAssessmentRepository(connection);
-      const evidence = new AccountDimensionEvidenceRepository(connection), rules = new AccountDimensionRuleRepository(connection);
       return read({ queryDimension: semantic.queryDimension.bind(semantic), queryLineage: semantic.queryLineage.bind(semantic),
-        loadByAccount: assessment.loadByAccount.bind(assessment), loadRules: rules.load.bind(rules),
-        loadEvidence: async scope => {
+        loadByAccount: assessment.loadByAccount.bind(assessment),
+        // v1.9.49 ①：归属历史也必须读在同一个快照上——读之前别处改了覆盖，这次查询看不见。
+        loadLabels: async labelInput => {
           await pool.query("UPDATE account_name_parses SET override=$2 WHERE workspace_id=$1 AND media='KUAISHOU' AND account_id='a'", [ws, JSON.stringify({ optimizer: "changed" })]);
-          return evidence.load(scope);
+          return resolveAccountLabelsAsOf(connection, labelInput);
         } });
     }));
     try {

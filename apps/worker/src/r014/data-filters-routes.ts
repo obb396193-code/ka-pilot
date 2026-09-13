@@ -1,13 +1,12 @@
 import {
-  AccountDimensionEvidenceRepository, AccountDimensionRuleRepository,
   DashboardAccountCostRepository, DashboardAccountDaysRepository, withSemanticReadSnapshot,
 } from "@ka/db";
 import {
-  accountDimensionRuleSchema, buildDashboardFilterOptions, dashboardFiltersSchema,
-  resolveNamedDimensions, type FilterOptionDay,
+  buildDashboardFilterOptions, dashboardFiltersSchema, type FilterOptionDay,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
+import { labelValue, resolveAccountLabelsAsOf } from "../data/account-labels.js";
 import { R014HttpError, guardedRoute, requireMethod, sendData } from "./http.js";
 import type { R014Route } from "./routes.js";
 
@@ -84,36 +83,22 @@ export function createDataFiltersRoutes(pool: Pool): R014Route[] {
         // 于是选项里出现「有花费但当天还没归属」这种自相矛盾的行。
         const days = await new DashboardAccountDaysRepository(connection)
           .load({ workspaceId: auth.workspaceId, accounts, dateFrom, dateTo });
-        const evidenceScope = { workspaceId: auth.workspaceId, accounts };
-        const evidence = await new AccountDimensionEvidenceRepository(connection).load(evidenceScope);
-        const rules = await new AccountDimensionRuleRepository(connection).load(evidenceScope);
+        // v1.9.49 ①（Q-044 ③）：选项按账户日取归属——账户窗口中途改名，改名前的那几天仍算在旧人名下，
+        // 选项里的「花费」与看板按同一人筛出来的数才对得上。解析证据解释不了的当没标签（labelValue 给 null）。
+        const labels = await resolveAccountLabelsAsOf(connection, { workspaceId: auth.workspaceId, accounts, from: dateFrom, to: dateTo });
         const costs = await new DashboardAccountCostRepository(connection)
           .load({ workspaceId: auth.workspaceId, accounts, dateFrom, dateTo });
 
-        const key = (row: { media: string; accountId: string }) => `${row.media}:${row.accountId}`;
-        const rulesByKey = new Map(rules.map((row) => [key(row), accountDimensionRuleSchema.parse(row)]));
-        const labels = new Map<string, ReturnType<typeof resolveNamedDimensions>>();
-        for (const row of evidence) {
-          const rule = rulesByKey.get(key(row));
-          // 解析行挂在哪版规则上就用哪版：拿最新规则去解释旧解析结果，标签会凭空变。
-          if (rule === undefined || row.parse === null || rule.ruleVersion !== row.parse.ruleVersion) continue;
-          try {
-            labels.set(key(row), resolveNamedDimensions({
-              segments: row.parse.segments, override: row.parse.override ?? {},
-              nameMatches: row.parse.nameMatches, ruleMappings: rule.mappings,
-            }));
-          } catch { /* 解析证据坏了就当这个账户没标签，不拿半份结果冒充 */ }
-        }
         const costByKey = new Map(costs.map((row) => [`${row.media}:${row.accountId}:${row.ds}`, row.cost]));
         const rows: FilterOptionDay[] = days.map((day) => {
-          const named = labels.get(key(day));
+          const basis = labels.on(day, day.ds);
           return {
             media: day.media, accountId: day.accountId, ds: day.ds,
-            optimizer: named?.optimizer.value ?? null,
+            optimizer: labelValue(basis, "optimizer"),
             biz: day.bizName,
             taskId: day.taskId,
             taskName: day.taskName,
-            resourcePosition: named?.placement.value ?? null,
+            resourcePosition: labelValue(basis, "placement"),
             // 这一天没有 canonical 行（或批次失败被屏蔽）→ null，不是 0。
             cost: costByKey.get(`${day.media}:${day.accountId}:${day.ds}`) ?? null,
           };

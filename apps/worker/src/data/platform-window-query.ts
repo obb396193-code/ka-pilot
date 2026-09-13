@@ -93,8 +93,10 @@ export class PlatformWindowQuery {
     };
     return this.snapshot(async (repository) => {
       if (input.filters !== undefined && !repository.resolveDashboardScope) return invalid();
-      const selection = input.filters === undefined ? { scope: baseScope, warnings: [] }
+      const selection = input.filters === undefined ? { scope: baseScope, warnings: [], labelBasis: [] }
         : await repository.resolveDashboardScope!(baseScope, input.filters);
+      // v1.9.49 ①：筛选借了「最早已知」归属行的账户日（本窗 + 对比窗），与缺数点名一起进 lineage.warnings。
+      const labelBasis: LineageWarning[] = [...selection.labelBasis];
       const scope = selection.scope, selected = scope.filters?.accountDays !== undefined || input.taskId !== undefined;
       const expectedDays = dayCount(scope.dateFrom, scope.dateTo), expectedMembers = input.accounts.length * expectedDays;
       const parsedLineage = lineageSchema.safeParse(await repository.queryLineage(scope));
@@ -130,10 +132,11 @@ export class PlatformWindowQuery {
         if (previousWindow === null) compare = unavailableWindowComparison(input.compare);
         else {
           const previousBase = { ...baseScope, dateFrom: previousWindow.from, dateTo: previousWindow.to };
-          const previousSelection = input.filters === undefined ? { scope: previousBase, warnings: [] }
+          const previousSelection = input.filters === undefined ? { scope: previousBase, warnings: [], labelBasis: [] }
             : await repository.resolveDashboardScope!(previousBase, input.filters);
           const previousScope = previousSelection.scope;
           selection.warnings.push(...previousSelection.warnings);
+          labelBasis.push(...previousSelection.labelBasis);
           const previous = canonicalSummary(await repository.querySummary(previousScope));
           if (previous.accountCount > input.accounts.length || previous.rowCount > expectedMembers) return invalid();
           if (selected) {
@@ -169,7 +172,7 @@ export class PlatformWindowQuery {
         // 但调用方还要知道「这个数是不完整的」才敢往下用。
         lineage: { ...lineage, ...(missing.length > 0 ? { partial: true } : {}) },
         warnings: [...new Set(["BUDGET_SOURCE_NOT_READY", ...selection.warnings])],
-        namedGaps: named,
+        namedGaps: [...named, ...labelBasis],
         row: summaryWindowRowSchema.parse({
           ...summary, metrics: { ...summary.metrics, costSpace: assessment.costSpace },
           assessment: assessment.assessment, ...(compare ? { compare } : {}),

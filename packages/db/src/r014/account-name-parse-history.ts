@@ -40,3 +40,20 @@ export function latestParseSql(alias: string): string {
       AND latest_parse.media = ${alias}.media
       AND latest_parse.account_id = ${alias}.account_id)`;
 }
+
+const DATE_PARAM = /^\$\d+::date$/;
+
+/**
+ * v1.9.49 ①：某个业务日**可能**用到的候选行——那天生效的一行，或（该日早于所有行时）最早一行。
+ * 只收窄候选、不做选择：选哪一行只由 domain 的 `pickAccountLabelBasis` 决定，SQL 里不写第二份规则。
+ * 日期只收 `$n::date` 形式的占位符，不收值。
+ */
+export function labelBasisCandidateSql(alias: string, dateParam: string): string {
+  if (!ALIAS.test(alias)) throw new Error("Invalid account name parse alias");
+  if (!DATE_PARAM.test(dateParam)) throw new Error("Invalid label basis date parameter");
+  const same = `candidate.workspace_id = ${alias}.workspace_id AND candidate.media = ${alias}.media
+      AND candidate.account_id = ${alias}.account_id`;
+  return `${alias}.effective_from IN (
+    (SELECT max(candidate.effective_from) FROM account_name_parses AS candidate WHERE ${same} AND candidate.effective_from <= ${dateParam}),
+    (SELECT min(candidate.effective_from) FROM account_name_parses AS candidate WHERE ${same}))`;
+}

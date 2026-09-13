@@ -45,3 +45,23 @@ export function labelBasisEarliestKnownWarning(input: { media: string; accountId
     media: input.media, accountId: input.accountId, businessDate: input.businessDate,
   };
 }
+export type LabelBasisEarliestKnownWarning = ReturnType<typeof labelBasisEarliestKnownWarning>;
+
+/** 与缺数点名（v1.9.33）同一个上限：再多前端读不完，响应也不该被告警撑爆。 */
+export const LABEL_BASIS_WARNING_LIMIT = 200;
+
+/**
+ * 发出前的最后一道：去重、按 (media, accountId, businessDate) 排好、封顶；
+ * 超出上限补一条 `LABEL_BASIS_EARLIEST_KNOWN_TRUNCATED:<总数>`，让「只列了一部分」这件事本身也被说出来。
+ * 透视、团队维度、看板筛选都经过这里，所以同一个窗口在几处给出的清单一致。
+ */
+export function capLabelBasisWarnings(
+  warnings: readonly LabelBasisEarliestKnownWarning[],
+): (LabelBasisEarliestKnownWarning | string)[] {
+  const unique = new Map<string, LabelBasisEarliestKnownWarning>();
+  for (const warning of warnings) unique.set(JSON.stringify([warning.media, warning.accountId, warning.businessDate]), warning);
+  const sorted = [...unique.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([, warning]) => warning);
+  const capped: (LabelBasisEarliestKnownWarning | string)[] = sorted.slice(0, LABEL_BASIS_WARNING_LIMIT);
+  if (sorted.length > LABEL_BASIS_WARNING_LIMIT) capped.push(`LABEL_BASIS_EARLIEST_KNOWN_TRUNCATED:${sorted.length}`);
+  return capped;
+}

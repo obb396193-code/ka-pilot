@@ -2,7 +2,9 @@ import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { runMigrations } from "@ka/db";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { createPlatformDimensionQuery } from "../src/data/platform-dimension-query.js";
 import { createPlatformPivotQuery } from "../src/data/platform-pivot-query.js";
+import { createPlatformWindowQuery } from "../src/data/platform-window-query.js";
 
 /**
  * v1.9.49 ①（Q-044 ③）：归属按业务日生效，真库端到端。
@@ -72,6 +74,33 @@ describe("v1.9.49 label history through the real pivot factory", () => {
       ["张三", "KUAISHOU:renamed", 30],
       ["李四", "KUAISHOU:renamed", 30],
     ].sort((x, y) => JSON.stringify(x) < JSON.stringify(y) ? -1 : 1));
+    expect(result.labelBasis).toEqual([
+      { code: "LABEL_BASIS_EARLIEST_KNOWN", media: "KUAISHOU", accountId: "manual", businessDate: "2026-09-01" },
+    ]);
+  });
+
+  it("filters the dashboard by the owner in effect on each day", async () => {
+    // 看板筛选同一规则：按「张三」筛，只剩改名前那两天（10 + 20）；按「李四」只剩改名当天（30）。
+    const summary = createPlatformWindowQuery(pool);
+    const accounts = auth.scope.accounts.map(({ media, accountId }) => ({ media, accountId }));
+    const before = await summary.summary({ workspaceId, accounts, window, filters: { optimizer: ["张三"] } });
+    expect(before.row.metrics.cashCost.value).toBe(30);
+    expect(before.lineage).toMatchObject({ requestedAccountDays: 2, requestedDates: ["2026-09-01", "2026-09-02"] });
+    expect((await summary.summary({ workspaceId, accounts, window, filters: { optimizer: ["李四"] } })).row.metrics.cashCost.value).toBe(30);
+    const manual = await summary.summary({ workspaceId, accounts, window, filters: { optimizer: ["人工王五"] } });
+    expect(manual.row.metrics.cashCost.value).toBe(300);
+    // namedGaps 里还有这几天的缺数点名（合成数据只灌了现金与转化）；这里只看归属那一类。
+    expect(manual.namedGaps.filter(warning => typeof warning !== "string" && warning.code === "LABEL_BASIS_EARLIEST_KNOWN")).toEqual([
+      { code: "LABEL_BASIS_EARLIEST_KNOWN", media: "KUAISHOU", accountId: "manual", businessDate: "2026-09-01" },
+    ]);
+  });
+
+  it("splits the renamed account in the named dimension query too", async () => {
+    const accounts = auth.scope.accounts.map(({ media, accountId }) => ({ media, accountId }));
+    const result = await createPlatformDimensionQuery(pool).named({ workspaceId, accounts, window, dimensionType: "optimizer" });
+    expect(result.rows.map(row => [row.key, row.metrics.cashCost.value, row.source])).toEqual([
+      ["人工王五", 300, "manual"], ["张三", 30, "nickname"], ["李四", 30, "nickname"],
+    ]);
     expect(result.labelBasis).toEqual([
       { code: "LABEL_BASIS_EARLIEST_KNOWN", media: "KUAISHOU", accountId: "manual", businessDate: "2026-09-01" },
     ]);

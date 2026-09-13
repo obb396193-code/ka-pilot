@@ -2,7 +2,8 @@ import {
   namedDimensionWindowRowSchema,
   summarizeDimensionSources,
   labelBasisEarliestKnownWarning,
-  type LineageWarning,
+  capLabelBasisWarnings,
+  type LabelBasisEarliestKnownWarning,
   canonicalRowSchemaVersionByQueryId,
   type SourceAuthority,
   type SourceLineage,
@@ -436,7 +437,7 @@ export class KaDataClient {
       from: plan.previousWindow?.from ?? plan.window.from, to: plan.window.to });
     const groups = new Map<string | null, typeof members>();
     const sources = new Map<string | null, (string | null)[]>();
-    const labelBasis: LineageWarning[] = [];
+    const labelBasis: LabelBasisEarliestKnownWarning[] = [];
     for (const member of members) {
       const basis = labels.on(member, member.ds);
       if (basis?.earliestKnown) {
@@ -459,7 +460,7 @@ export class KaDataClient {
     const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
     return { rows, dimension, window: plan.window,
       lineage: sourceLineage(resolved, scope, envelope, accounts.length, false, true, reason, plan.queryTemplateVersion),
-      warnings: [reason], labelBasis };
+      warnings: [reason], labelBasis: capLabelBasisWarnings(labelBasis) };
   }
 
   private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {

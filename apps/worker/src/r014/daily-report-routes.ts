@@ -93,9 +93,11 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
       // 维度值取自解析表；解析读失败不该让整张日报 500，拿不到就全部归「未标注」。
       let dimensionOf = new Map<string, Record<string, { value: string | null }>>();
       try {
+        // v1.9.49 ①：日报按报表日期取那天生效的归属——账户后来改名，旧日报不跟着变。
         dimensionOf = await parses.dimensionsFor(
           context.auth,
           facts.dimensions.account.map((row) => ({ media: row.media!, accountId: row.accountId! })),
+          { asOf: date },
         ) as never;
       } catch {
         dimensionOf = new Map();
@@ -107,6 +109,7 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
         parsedBiz = await parses.bizFor(
           context.auth,
           facts.dimensions.account.map((row) => ({ media: row.media!, accountId: row.accountId! })),
+          { asOf: date },
         );
       } catch {
         parsedBiz = new Map();

@@ -1,12 +1,11 @@
-import { BUSINESS_DATE_TODAY_SQL, latestParseSql } from "./account-name-parse-history.js";
+import { BUSINESS_DATE_TODAY_SQL, latestParseSql, labelBasisCandidateSql } from "./account-name-parse-history.js";
 import {
   calendarDateSchema,
   EMPTY_DIMENSIONS_DTO, applyOverride, namingRuleSchema, parseAccountName, parsedSegmentsSchema,
   parseOverrideSchema, parseStatusSchema, pendingSegmentDefs,
   resolveAccountDimensions, toDimensionsDto, toNamingRule,
   type AccountDimensionsDto, type ApprovedWorkspaceAuthContext, type NamingRule,
-  type ParseConflict, type ParseStatus, type TaskAlias,
-} from "@ka/domain";
+  type ParseConflict, type ParseStatus, type TaskAlias, pickAccountLabelBasis } from "@ka/domain";
 import type { Pool } from "pg";
 
 import {
@@ -166,6 +165,23 @@ function assertAccountInScope(auth: ApprovedWorkspaceAuthContext, media: string,
   if (!allowed) throw new R014RepositoryError("NOT_FOUND");
 }
 const MEDIA = /^[A-Z0-9_]{1,32}$/;
+
+/**
+ * v1.9.49 ①：按某个业务日取归属时，每个账户在候选行里选一行。规则只用 domain 那一份（`pickAccountLabelBasis`）。
+ * 不给 `asOf` 时 SQL 已经钉死最新一行，原样返回。
+ */
+function pickRowsAsOf(rows: Record<string, unknown>[], asOf: string | undefined): Record<string, unknown>[] {
+  if (asOf === undefined) return rows;
+  const byAccount = new Map<string, (Record<string, unknown> & { effectiveFrom: string })[]>();
+  for (const row of rows) {
+    const key = `${String(row.media)}:${String(row.account_id)}`;
+    byAccount.set(key, [...(byAccount.get(key) ?? []), { ...row, effectiveFrom: String(row.effective_from) }]);
+  }
+  return [...byAccount.values()].flatMap((history) => {
+    const picked = pickAccountLabelBasis(history, asOf);
+    return picked === null ? [] : [picked.row];
+  });
+}
 
 export class AccountNameParseRepository {
   constructor(private readonly pool: Pool) {}
@@ -592,20 +608,26 @@ export class AccountNameParseRepository {
   async dimensionsFor(
     auth: ApprovedWorkspaceAuthContext,
     tuples: readonly { media: string; accountId: string }[],
+    /** v1.9.49 ①：不给 = 当前态（账户列表）；给了 = 那个业务日生效的归属（日报）。 */
+    options: { asOf?: string | undefined } = {},
   ): Promise<Map<string, AccountDimensionsDto>> {
     const approved = approveAuth(auth);
+    const { asOf } = options;
+    if (asOf !== undefined && !calendarDateSchema.safeParse(asOf).success) throw new R014RepositoryError("INVALID_INPUT");
     const result = new Map<string, AccountDimensionsDto>();
     if (tuples.length === 0) return result;
 
-    const rows = (await this.pool.query(
-      `SELECT parse.media, parse.account_id, parse.segments, parse.override, parse.rule_version
+    const rows = pickRowsAsOf((await this.pool.query(
+      `SELECT parse.media, parse.account_id, parse.effective_from::text AS effective_from,
+         parse.segments, parse.override, parse.rule_version
        FROM account_name_parses AS parse
        WHERE parse.workspace_id=$1
          AND (parse.media, parse.account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))
-         -- v1.9.49：账户列表要当前态；按业务日取归属的是另一个 helper。
-         AND ${latestParseSql("parse")}`,
-      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId)],
-    )).rows as Record<string, unknown>[];
+         AND ${asOf === undefined ? latestParseSql("parse") : labelBasisCandidateSql("parse", "$4::date")}
+       ORDER BY parse.effective_from`,
+      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId),
+        ...(asOf === undefined ? [] : [asOf])],
+    )).rows as Record<string, unknown>[], asOf);
     if (rows.length === 0) return result;
 
     // 规范按 media 存，一次列表最多几个 media，按 media 缓存避免逐行查规范。
@@ -651,17 +673,24 @@ export class AccountNameParseRepository {
   async bizFor(
     auth: ApprovedWorkspaceAuthContext,
     tuples: readonly { media: string; accountId: string }[],
+    /** v1.9.49 ①：同 `dimensionsFor`。 */
+    options: { asOf?: string | undefined } = {},
   ): Promise<Map<string, string>> {
     const approved = approveAuth(auth);
+    const { asOf } = options;
+    if (asOf !== undefined && !calendarDateSchema.safeParse(asOf).success) throw new R014RepositoryError("INVALID_INPUT");
     const found = new Map<string, string>();
     if (tuples.length === 0) return found;
 
-    const rows = (await this.pool.query(
-      `SELECT parse.media, parse.account_id, parse.segments, parse.override FROM account_name_parses AS parse
+    const rows = pickRowsAsOf((await this.pool.query(
+      `SELECT parse.media, parse.account_id, parse.effective_from::text AS effective_from, parse.segments, parse.override
+       FROM account_name_parses AS parse
        WHERE parse.workspace_id=$1 AND (parse.media, parse.account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))
-         AND ${latestParseSql("parse")}`,
-      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId)],
-    )).rows as Record<string, unknown>[];
+         AND ${asOf === undefined ? latestParseSql("parse") : labelBasisCandidateSql("parse", "$4::date")}
+       ORDER BY parse.effective_from`,
+      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId),
+        ...(asOf === undefined ? [] : [asOf])],
+    )).rows as Record<string, unknown>[], asOf);
 
     const rules = new Map<string, NamingRule | null>();
     for (const row of rows) {

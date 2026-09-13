@@ -2,21 +2,21 @@ import type { Pool } from "pg";
 import { z } from "zod";
 import {
   SemanticQueryRepository, WindowAssessmentRepository, SemanticQueryContractError, withSemanticReadSnapshot,
-  AccountDimensionEvidenceRepository, AccountDimensionRuleRepository,
   type AccountDailyAssessment, type SemanticQueryScope,
 } from "@ka/db";
 import {
   accountDimensionWindowRowSchema, groupedDimensionWindowRowSchema, dailyAssessmentInputSchema, queryWindowSchema,
   computeWindowAssessment, type MetricValue,
-  namedDimensionTypeSchema, namedDimensionWindowRowSchema, accountDimensionRuleSchema,
-  resolveNamedDimensions, resolveSegmentDimension, segmentDimensionKey,
+  namedDimensionTypeSchema, namedDimensionWindowRowSchema,
+  capLabelBasisWarnings, labelBasisEarliestKnownWarning, segmentDimensionKey, type LabelBasisEarliestKnownWarning,
   summarizeDimensionSources, aggregateWindowMetrics,
   dashboardFiltersSchema, calendarDateSchema,
 
-  sumMetricValuesPartial,
+  sumMetricValuesPartial, type LineageWarning,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
-import { createDashboardScopeResolver, type DashboardScopeResolver } from "./dashboard-filter-scope.js";
+import { resolveAccountLabelsAsOf, type AccountLabelsAsOf, type LabelSource } from "./account-labels.js";
+import { createDashboardScopeResolver, type DashboardScopeResolver, type DashboardScopeSelection } from "./dashboard-filter-scope.js";
 
 const tupleSchema = z.object({ media: z.string().regex(/^[A-Z0-9_]{1,32}$/), accountId: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/) }).strict();
 const inputFields = { workspaceId: z.string().uuid(), accounts: tupleSchema.array().max(1000), window: queryWindowSchema,
@@ -34,11 +34,14 @@ interface DimensionRepository {
   queryDimension: SemanticQueryRepository["queryDimension"];
   queryLineage: SemanticQueryRepository["queryLineage"];
   loadByAccount: WindowAssessmentRepository["loadByAccount"];
-  loadEvidence?: AccountDimensionEvidenceRepository["load"];
-  loadRules?: AccountDimensionRuleRepository["load"];
+  /** v1.9.49 ①：按窗口读归属历史，按账户日选行。 */
+  loadLabels?: (input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[]; from: string; to: string })
+    => Promise<AccountLabelsAsOf>;
 }
 type Result = { rows: z.infer<typeof accountDimensionWindowRowSchema>[]; window: z.infer<typeof queryWindowSchema>;
-  lineage: z.infer<typeof lineageSchema>; warnings: string[] };
+  lineage: z.infer<typeof lineageSchema>; warnings: string[];
+  /** v1.9.49 ①：借了「最早已知」归属行的账户日（对象形，只进 lineage.warnings）。 */
+  labelBasis: LineageWarning[] };
 type GroupResult = Omit<Result, "rows"> & { rows: z.infer<typeof groupedDimensionWindowRowSchema>[] };
 type NamedResult = Omit<Result, "rows"> & { rows: z.infer<typeof namedDimensionWindowRowSchema>[] };
 type Snapshot = <T>(read: (repository: DimensionRepository) => Promise<T>) => Promise<T>;
@@ -92,6 +95,13 @@ function expectedCounts(scope: SemanticQueryScope, input: z.infer<typeof inputSc
     (allowedDays !== null && days.some(day => !allowedDays.has(`${accountKey}:${day.ds}`))))) return invalid();
   return counts;
 }
+async function selectionFor(repository: DimensionRepository, input: z.infer<typeof inputSchema>): Promise<DashboardScopeSelection> {
+  const baseScope: SemanticQueryScope = { workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
+    filters: { accountScopes: input.accounts } };
+  if (input.filters !== undefined && !repository.resolveDashboardScope) return invalid();
+  return input.filters === undefined ? { scope: baseScope, warnings: [], labelBasis: [] }
+    : repository.resolveDashboardScope!(baseScope, input.filters);
+}
 
 /** Three repository reads on one RR/RO connection; task/biz adds one overlap probe.
  * No row-level N+1 and no live-source fallback.
@@ -100,49 +110,67 @@ export class PlatformDimensionQuery {
   constructor(private readonly snapshot: Snapshot) {}
   async named(value: unknown): Promise<NamedResult> {
     const { dimensionType, ...rawInput } = namedInputSchema.parse(value), input = inputSchema.parse(rawInput);
-    const segmentKey = segmentDimensionKey(dimensionType);
+    const segment = segmentDimensionKey(dimensionType) !== null;
     return this.snapshot(async repository => {
-      if (!repository.loadEvidence || !repository.loadRules) return invalid();
+      if (!repository.loadLabels) return invalid();
       // Bind existing account computation to this very connection, without a
       // second transaction. Capture its already-read daily inputs for weighting.
       let historyRows: AccountDailyAssessment[] = [];
-      const accountResult = await new PlatformDimensionQuery(async read => read({ ...repository,
-        loadByAccount: async scope => { historyRows = await repository.loadByAccount(scope); return historyRows; },
-      })).account(input);
-      const history = groupHistory(historyRows, input), scope = { workspaceId: input.workspaceId, accounts: input.accounts };
-      const evidence = await repository.loadEvidence(scope), rules = await repository.loadRules(scope);
-      const allowed = new Set(input.accounts.map(key));
-      for (const rows of [evidence, rules]) {
-        if (!Array.isArray(rows) || rows.length > input.accounts.length || Buffer.byteLength(JSON.stringify(rows)) >= 16 * 1024 * 1024) return invalid();
-        const seen = new Set<string>();
-        for (const row of rows) {
-          if (!row || row.workspaceId !== input.workspaceId || !allowed.has(key(row)) || seen.has(key(row))) return invalid();
-          seen.add(key(row));
-        }
-      }
-      const evidenceByKey = new Map(evidence.map(row => [key(row), row])), rulesByKey = new Map(rules.map(row => [key(row), accountDimensionRuleSchema.parse(row)]));
-      const warnings = new Set(accountResult.warnings);
-      type Member = { row: Result["rows"][number]; source: ReturnType<typeof resolveNamedDimensions>["optimizer"]["source"]; days: z.infer<typeof dailyAssessmentInputSchema>[] };
+      const capturing: DimensionRepository = { ...repository,
+        loadByAccount: async scope => { historyRows = await repository.loadByAccount(scope); return historyRows; } };
+      const accountResult = await this.accountWith(capturing, input, await selectionFor(repository, input));
+      const history = groupHistory(historyRows, input);
+      /*
+       * v1.9.49 ①（Q-044 ③）：归属按账户日选行。窗口里归属没变的账户（绝大多数）照旧一户一行；
+       * 跨改名日的账户按归属值切段，每段在同一快照上用账户日选择重取一次账户行——改名前后的钱各归各的，
+       * 而且走的是同一套覆盖与金额核对，不另起一份聚合。
+       */
+      const labels = await repository.loadLabels({ workspaceId: input.workspaceId, accounts: input.accounts,
+        from: input.window.from, to: input.window.to });
+      const warnings = new Set(accountResult.warnings), borrowed: LabelBasisEarliestKnownWarning[] = [];
+      type Member = { row: Result["rows"][number]; source: LabelSource; days: z.infer<typeof dailyAssessmentInputSchema>[] };
       const groups = new Map<string | null, Member[]>();
+      const join = (groupKey: string | null, member: Member) => {
+        const members = groups.get(groupKey) ?? []; members.push(member); groups.set(groupKey, members);
+      };
       for (const row of accountResult.rows) {
-        const stored = evidenceByKey.get(row.key), rule = rulesByKey.get(row.key), days = history.get(row.key);
-        if (!stored || !rule || !days || rule.ruleVersion !== (stored.parse?.ruleVersion ?? null)) return invalid();
-        if (stored.parse !== null && (typeof stored.parse !== "object" || Array.isArray(stored.parse))) return invalid();
-        let dimension: ReturnType<typeof resolveNamedDimensions>["optimizer"] = { value: null, source: null };
-        if (stored.parse === null) warnings.add("NAMING_PARSE_MISSING");
-        else {
-          if (!stored.parse.nameMatches) warnings.add("NAMING_PARSE_STALE");
-          if (rule.mappings === null) warnings.add("NAMING_RULE_MISSING");
-          try {
-            // 段走 `resolveSegmentDimension`（不经过 mapsTo），命名维度走原来的解析器；
-            // 两者用的是同一套「人工覆盖优先、昵称对不上就不信」的规矩。
-            dimension = segmentKey === null
-              ? resolveNamedDimensions({ segments: stored.parse.segments, override: stored.parse.override ?? {},
-                nameMatches: stored.parse.nameMatches, ruleMappings: rule.mappings })[dimensionType as "optimizer"]
-              : resolveSegmentDimension(stored.parse, segmentKey);
-          } catch { return invalid(); }
+        const days = history.get(row.key);
+        if (!days) return invalid();
+        const account = { media: row.media, accountId: row.accountId };
+        const parts = new Map<string | null, { source: LabelSource; days: typeof days }>();
+        for (const day of days) {
+          const basis = labels.on(account, day.ds);
+          let dimension: { value: string | null; source: LabelSource } = { value: null, source: null };
+          if (basis === null) warnings.add("NAMING_PARSE_MISSING");
+          else {
+            if (!basis.nameMatches) warnings.add("NAMING_PARSE_STALE");
+            if (basis.ruleMissing) warnings.add("NAMING_RULE_MISSING");
+            // 证据解释不了就整条判废，不当「未标注」：那样这户的钱会悄悄挪进空桶。
+            if (basis.dimensions === null || (!segment && basis.namedDimensionsInvalid)) return invalid();
+            if (basis.earliestKnown) borrowed.push(labelBasisEarliestKnownWarning({ ...account, businessDate: day.ds }));
+            dimension = basis.dimensions[dimensionType] ?? dimension;
+          }
+          const part = parts.get(dimension.value) ?? { source: dimension.source, days: [] };
+          // 同一个值在窗口里换过来源（先昵称、后人工）时，按最近那天的来源计。
+          part.source = dimension.source; part.days.push(day); parts.set(dimension.value, part);
         }
-        const members = groups.get(dimension.value) ?? []; members.push({ row, source: dimension.source, days }); groups.set(dimension.value, members);
+        if (parts.size === 1) {
+          const [groupKey, part] = [...parts][0]!;
+          join(groupKey, { row, source: part.source, days: part.days });
+          continue;
+        }
+        const pieces: Result["rows"] = [];
+        for (const [groupKey, part] of parts) {
+          const piece = await this.accountWith(repository, { ...input, accounts: [account] }, { warnings: [], labelBasis: [],
+            scope: { workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
+              filters: { accountScopes: [account], accountDays: part.days.map(day => ({ ...account, ds: day.ds })) } } });
+          if (piece.rows.length !== 1 || piece.rows[0]!.key !== row.key) return invalid();
+          pieces.push(piece.rows[0]!);
+          join(groupKey, { row: piece.rows[0]!, source: part.source, days: part.days });
+        }
+        // 切段只是换个分法：各段相加必须回到整户那一行，对不上就说明段取重了或取漏了。
+        if (!equal(sumMetricValuesPartial(pieces.map(piece => piece.metrics.cashCost)), row.metrics.cashCost) ||
+          !equal(sumMetricValuesPartial(pieces.map(piece => piece.metrics.realConversion)), row.metrics.realConversion)) return invalid();
       }
       // Sort with the same deterministic JS comparator on all engines; no DB locale dependence.
       const rows = [...groups.entries()].sort(([a], [b]) => a === b ? 0 : a === null ? -1 : b === null ? 1 : a < b ? -1 : 1)
@@ -153,7 +181,12 @@ export class PlatformDimensionQuery {
             metrics: { ...aggregateWindowMetrics(members.map(member => member.row.metrics)), costSpace: assessment.costSpace },
             assessment: assessment.assessment, anomaly: members.some(member => member.row.anomaly) });
         });
-      return { ...accountResult, rows, warnings: [...warnings] };
+      // 看板筛选点过名的账户日与这里分组点名的是同一批时只列一次。
+      const inherited = accountResult.labelBasis.filter((warning): warning is LabelBasisEarliestKnownWarning =>
+        typeof warning !== "string" && warning.code === "LABEL_BASIS_EARLIEST_KNOWN");
+      const labelBasis = [...capLabelBasisWarnings([...inherited, ...borrowed]),
+        ...accountResult.labelBasis.filter(warning => typeof warning === "string")];
+      return { ...accountResult, rows, warnings: [...warnings], labelBasis };
     });
   }
   async group(value: unknown): Promise<GroupResult> {
@@ -162,7 +195,7 @@ export class PlatformDimensionQuery {
       filters: { accountScopes: input.accounts } };
     return this.snapshot(async (repository) => {
       if (input.filters !== undefined && !repository.resolveDashboardScope) return invalid();
-      const selection = input.filters === undefined ? { scope: baseScope, warnings: [] }
+      const selection = input.filters === undefined ? { scope: baseScope, warnings: [], labelBasis: [] }
         : await repository.resolveDashboardScope!(baseScope, input.filters);
       const scope = selection.scope;
       const lineage = lineageSchema.parse(await repository.queryLineage(scope));
@@ -204,61 +237,58 @@ export class PlatformDimensionQuery {
       // One account may occur in several groups across days: group counts are not a distinct account total.
       if (observedRows !== lineage.canonicalRows || groupAccounts < lineage.returnedAccounts ||
         (lineage.canonicalRows > 0 && lineage.returnedAccounts === 0)) return invalid();
-      return { rows, window: input.window, lineage, warnings: ["BUDGET_SOURCE_NOT_READY", ...selection.warnings] };
+      return { rows, window: input.window, lineage, warnings: ["BUDGET_SOURCE_NOT_READY", ...selection.warnings], labelBasis: selection.labelBasis };
     });
   }
   async account(value: unknown): Promise<Result> {
     const input = inputSchema.parse(value);
-    const baseScope: SemanticQueryScope = { workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
-      filters: { accountScopes: input.accounts } };
-    return this.snapshot(async (repository) => {
-      if (input.filters !== undefined && !repository.resolveDashboardScope) return invalid();
-      const selection = input.filters === undefined ? { scope: baseScope, warnings: [] }
-        : await repository.resolveDashboardScope!(baseScope, input.filters);
-      const scope = selection.scope;
-      const lineage = lineageSchema.parse(await repository.queryLineage(scope));
-      const raw = await repository.queryDimension({ ...scope, dimension: "account" });
-      const history = groupHistory(await repository.loadByAccount(scope), input);
-      const counts = expectedCounts(scope, input, history);
-      if (!Array.isArray(raw) || raw.length > input.accounts.length || raw.length !== history.size ||
-        lineage.requestedAccountDays !== [...counts.values()].reduce((a, b) => a + b, 0) ||
-        lineage.returnedAccountDays > lineage.requestedAccountDays || lineage.canonicalRows !== lineage.returnedAccountDays ||
-        lineage.returnedAccounts > input.accounts.length) return invalid();
-      const allowed = new Set(input.accounts.map(key)), seen = new Set<string>();
-      let observedRows = 0, observedAccounts = 0;
-      const rows = raw.map((row) => {
-        if (typeof row !== "object" || row === null || Array.isArray(row) ||
-          typeof row.metrics !== "object" || row.metrics === null || Array.isArray(row.metrics)) return invalid();
-        const identity = row.accountIdentity;
-        if (!identity || identity.workspaceId !== input.workspaceId || row.dimensionKey !== identity.accountId) return invalid();
-        const accountKey = key(identity), members = history.get(accountKey);
-        const expectedDays = counts.get(accountKey);
-        if (!allowed.has(accountKey) || seen.has(accountKey) || !members || expectedDays === undefined || members.length !== expectedDays) return invalid();
-        seen.add(accountKey);
-        const summary = canonicalSummaryBaseRow(row.metrics as unknown as Record<string, unknown>, "platform");
-        if (summary.accountCount > 1 || summary.accountCount !== (summary.rowCount > 0 ? 1 : 0) || summary.rowCount > expectedDays || summary.anomalyRows! > summary.rowCount ||
-          !equal(summary.metrics.cashCost, sumMetricValuesPartial(members.map((day) => day.cashCost))) ||
-          !equal(summary.metrics.realConversion, sumMetricValuesPartial(members.map((day) => day.realConversion)))) return invalid();
-        observedRows += summary.rowCount; observedAccounts += summary.accountCount;
-        const assessment = computeWindowAssessment(members);
-        return accountDimensionWindowRowSchema.parse({ key: accountKey, label: row.dimensionLabel, media: identity.media,
-          accountId: identity.accountId,
-          metrics: { ...summary.metrics,
-            costSpace: assessment.costSpace },
-          assessment: assessment.assessment, anomaly: summary.anomalyRows! > 0 });
-      });
-      if (observedRows !== lineage.canonicalRows || observedAccounts !== lineage.returnedAccounts) return invalid();
-      return { rows, window: input.window, lineage, warnings: ["BUDGET_SOURCE_NOT_READY", ...selection.warnings] };
+    return this.snapshot(async (repository) => this.accountWith(repository, input, await selectionFor(repository, input)));
+  }
+  /** 账户行的全部核对都在这里；`named` 按归属切段重取某一户时走同一套，不另写一份。 */
+  private async accountWith(repository: DimensionRepository, input: z.infer<typeof inputSchema>, selection: DashboardScopeSelection): Promise<Result> {
+    const scope = selection.scope;
+    const lineage = lineageSchema.parse(await repository.queryLineage(scope));
+    const raw = await repository.queryDimension({ ...scope, dimension: "account" });
+    const history = groupHistory(await repository.loadByAccount(scope), input);
+    const counts = expectedCounts(scope, input, history);
+    if (!Array.isArray(raw) || raw.length > input.accounts.length || raw.length !== history.size ||
+      lineage.requestedAccountDays !== [...counts.values()].reduce((a, b) => a + b, 0) ||
+      lineage.returnedAccountDays > lineage.requestedAccountDays || lineage.canonicalRows !== lineage.returnedAccountDays ||
+      lineage.returnedAccounts > input.accounts.length) return invalid();
+    const allowed = new Set(input.accounts.map(key)), seen = new Set<string>();
+    let observedRows = 0, observedAccounts = 0;
+    const rows = raw.map((row) => {
+      if (typeof row !== "object" || row === null || Array.isArray(row) ||
+        typeof row.metrics !== "object" || row.metrics === null || Array.isArray(row.metrics)) return invalid();
+      const identity = row.accountIdentity;
+      if (!identity || identity.workspaceId !== input.workspaceId || row.dimensionKey !== identity.accountId) return invalid();
+      const accountKey = key(identity), members = history.get(accountKey);
+      const expectedDays = counts.get(accountKey);
+      if (!allowed.has(accountKey) || seen.has(accountKey) || !members || expectedDays === undefined || members.length !== expectedDays) return invalid();
+      seen.add(accountKey);
+      const summary = canonicalSummaryBaseRow(row.metrics as unknown as Record<string, unknown>, "platform");
+      if (summary.accountCount > 1 || summary.accountCount !== (summary.rowCount > 0 ? 1 : 0) || summary.rowCount > expectedDays || summary.anomalyRows! > summary.rowCount ||
+        !equal(summary.metrics.cashCost, sumMetricValuesPartial(members.map((day) => day.cashCost))) ||
+        !equal(summary.metrics.realConversion, sumMetricValuesPartial(members.map((day) => day.realConversion)))) return invalid();
+      observedRows += summary.rowCount; observedAccounts += summary.accountCount;
+      const assessment = computeWindowAssessment(members);
+      return accountDimensionWindowRowSchema.parse({ key: accountKey, label: row.dimensionLabel, media: identity.media,
+        accountId: identity.accountId,
+        metrics: { ...summary.metrics,
+          costSpace: assessment.costSpace },
+        assessment: assessment.assessment, anomaly: summary.anomalyRows! > 0 });
     });
+    if (observedRows !== lineage.canonicalRows || observedAccounts !== lineage.returnedAccounts) return invalid();
+    return { rows, window: input.window, lineage, warnings: ["BUDGET_SOURCE_NOT_READY", ...selection.warnings], labelBasis: selection.labelBasis };
   }
 }
 
 export function createPlatformDimensionQuery(pool: Pick<Pool, "connect">): PlatformDimensionQuery {
   return new PlatformDimensionQuery((read) => withSemanticReadSnapshot(pool, (connection) => {
     const semantic = new SemanticQueryRepository(connection), assessment = new WindowAssessmentRepository(connection);
-    const evidence = new AccountDimensionEvidenceRepository(connection), rules = new AccountDimensionRuleRepository(connection);
     return read({ resolveDashboardScope: createDashboardScopeResolver(connection),
       queryDimension: semantic.queryDimension.bind(semantic), queryLineage: semantic.queryLineage.bind(semantic),
-      loadByAccount: assessment.loadByAccount.bind(assessment), loadEvidence: evidence.load.bind(evidence), loadRules: rules.load.bind(rules) });
+      loadByAccount: assessment.loadByAccount.bind(assessment),
+      loadLabels: (labelInput) => resolveAccountLabelsAsOf(connection, labelInput) });
   }));
 }

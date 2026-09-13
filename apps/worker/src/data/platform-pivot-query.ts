@@ -4,7 +4,7 @@ import { PlatformPivotRepository, PlatformPivotContractError, withSemanticReadSn
 import {
   aggregatePivotWindow, approvedWorkspaceAuthContextSchema, queryWindowSchema, dimensionTypeSchema,
   canonicalMetricSetSchema, dailyAssessmentInputSchema, calendarDateSchema,
-  aggregateWindowMetrics, computeWindowAssessment, pivotWindowRowsSchema, labelBasisEarliestKnownWarning, type LineageWarning } from "@ka/domain";
+  aggregateWindowMetrics, computeWindowAssessment, pivotWindowRowsSchema, capLabelBasisWarnings, labelBasisEarliestKnownWarning } from "@ka/domain";
 import { taskQueryIdSchema } from "./query-registry.js";
 import {
   type AccountLabelsAsOf, groupableDimension, labelValue, needsAccountLabels, resolveAccountLabelsAsOf,
@@ -136,15 +136,9 @@ export class PlatformPivotQuery {
       members: selectedTasks.size === 0 ? cell.members : cell.members.filter(member => member.taskId !== null && selectedTasks.has(member.taskId)),
     })).filter(cell => cell.members.length > 0);
     // 早于该账户所有归属行的账户日，用的是最早一行——逐条点名，只点真正进了结果的成员。
-    const labelBasis: LineageWarning[] = [];
-    if (labels !== null) {
-      for (const member of selectedCells.flatMap(cell => cell.members)) {
-        if (labels.on(member, member.assessment.ds)?.earliestKnown) {
-          labelBasis.push(labelBasisEarliestKnownWarning({ media: member.media, accountId: member.accountId, businessDate: member.assessment.ds }));
-        }
-      }
-      labelBasis.sort((a, b) => { const x = JSON.stringify(a), y = JSON.stringify(b); return x < y ? -1 : x > y ? 1 : 0; });
-    }
+    const labelBasis = labels === null ? [] : capLabelBasisWarnings(selectedCells.flatMap(cell => cell.members)
+      .filter(member => labels.on(member, member.assessment.ds)?.earliestKnown === true)
+      .map(member => labelBasisEarliestKnownWarning({ media: member.media, accountId: member.accountId, businessDate: member.assessment.ds })));
     let projection: ReturnType<typeof pivotWindowRowsSchema.parse>;
     try { projection = selectedTasks.size === 0 ? aggregated : pivotWindowRowsSchema.parse({
       queryId: aggregated.queryId, rowSchemaVersion: aggregated.rowSchemaVersion, dimA: aggregated.dimA, dimB: aggregated.dimB,

@@ -29,8 +29,13 @@ export interface AccountLabelBasis {
   nameMatches: boolean;
   /** 这一行挂的规则版本不在库里。 */
   ruleMissing: boolean;
-  /** 维度/段 → 值与来源；这一行的解析证据解释不了时为 null。 */
+  /** 维度/段 → 值与来源；这一行的解析证据整体解释不了时为 null。 */
   dimensions: Record<string, { value: string | null; source: LabelSource }> | null;
+  /**
+   * 命名维度（optimizer/goal/placement）解释不了（比如段与规则的映射对不上）。
+   * 段值不经过 mapsTo，不受它连累，照样在 `dimensions` 里；要按命名维度判定的调用方自己决定判废还是归未标注。
+   */
+  namedDimensionsInvalid: boolean;
 }
 
 export interface AccountLabelsAsOf {
@@ -46,23 +51,27 @@ export function labelValue(basis: AccountLabelBasis | null, dimension: string): 
   return basis?.dimensions?.[dimension]?.value ?? null;
 }
 
-function dimensionsOf(row: AccountLabelHistoryRow): AccountLabelBasis["dimensions"] {
+function dimensionsOf(row: AccountLabelHistoryRow): Pick<AccountLabelBasis, "dimensions" | "namedDimensionsInvalid"> {
+  const entry: NonNullable<AccountLabelBasis["dimensions"]> = {};
   try {
-    const entry: NonNullable<AccountLabelBasis["dimensions"]> = {};
-    const named = resolveNamedDimensions({
-      segments: row.parse.segments, override: row.parse.override ?? {},
-      nameMatches: row.parse.nameMatches, ruleMappings: row.mappings,
-    });
-    for (const [dimension, value] of Object.entries(named)) entry[dimension] = { value: value.value, source: value.source };
     // 段值走 domain 那个共享解析器（`resolveSegmentDimension`）——维度查询用的是同一个，
     // 两处各写一份的话，「透视里按某段分组」和「维度里按同一段分组」迟早给出不同答案。
     const override = row.parse.override ?? {};
     for (const key of new Set([...Object.keys(row.parse.segments), ...Object.keys(override)])) {
       entry[`segment:${key}`] = resolveSegmentDimension(row.parse, key);
     }
-    return entry;
   } catch {
-    return null;
+    return { dimensions: null, namedDimensionsInvalid: true };
+  }
+  try {
+    const named = resolveNamedDimensions({
+      segments: row.parse.segments, override: row.parse.override ?? {},
+      nameMatches: row.parse.nameMatches, ruleMappings: row.mappings,
+    });
+    for (const [dimension, value] of Object.entries(named)) entry[dimension] = { value: value.value, source: value.source };
+    return { dimensions: entry, namedDimensionsInvalid: false };
+  } catch {
+    return { dimensions: entry, namedDimensionsInvalid: true };
   }
 }
 
@@ -73,7 +82,7 @@ export function accountLabelsFromHistory(rows: readonly AccountLabelHistoryRow[]
     const history = byAccount.get(accountLabelKey(row)) ?? [];
     history.push({ effectiveFrom: row.effectiveFrom, basis: {
       effectiveFrom: row.effectiveFrom, nameMatches: row.parse.nameMatches,
-      ruleMissing: row.mappings === null, dimensions: dimensionsOf(row),
+      ruleMissing: row.mappings === null, ...dimensionsOf(row),
     } });
     byAccount.set(accountLabelKey(row), history);
   }
