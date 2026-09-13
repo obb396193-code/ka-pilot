@@ -77,6 +77,10 @@
                 "value": null,
                 "state": "undefined"
               }
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             }
           },
           "assessment": {
@@ -91,6 +95,18 @@
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "biCashCost": {
+              "value": null,
+              "state": "undefined"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
             }
           },
           "anomaly": false
@@ -164,6 +180,10 @@
                 "value": null,
                 "state": "undefined"
               }
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             }
           },
           "assessment": {
@@ -178,6 +198,18 @@
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "biCashCost": {
+              "value": null,
+              "state": "undefined"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
             }
           },
           "anomaly": true
@@ -251,6 +283,10 @@
                 "value": null,
                 "state": "undefined"
               }
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
             }
           },
           "assessment": {
@@ -265,6 +301,18 @@
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "biCashCost": {
+              "value": null,
+              "state": "undefined"
+            },
+            "overCost": {
+              "value": null,
+              "availability": "missing"
             }
           },
           "anomaly": false

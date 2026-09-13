@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { calendarDateSchema, ratioValueSchema } from "./data-query-base-rows.js";
-import { canonicalMetricValueSchema, metricValue, sumMetricValues, sumMetricValuesPartial, type CanonicalMetricValue } from "./metric-value.js";
+import { canonicalMetricValueSchema, metricValue, sumMetricValuesPartial, type CanonicalMetricValue } from "./metric-value.js";
 import { dashboardBiFrom } from "./dashboard-bi-math.js";
 import { queryWindowSchema, windowAssessmentSchema, windowComparisonSchema, type WindowComparisonMode } from "./summary-window.js";
 
@@ -56,15 +56,15 @@ export function computeKaDailyWindowAssessment(input: readonly unknown[], budget
 }
 
 /**
- * v1.9.35 部分合计**只对个人源（history 价）这条路径开**。
+ * v1.9.46（Q-041 ⑧）：部分合计**两个源都开**。
  *
- * 团队 KA 源那条（`ka_daily`）这版仍走「缺一个成员就整体缺」：它的窗口汇总另有一条
- * 由 SQL 直接出总数的对拍路径（`ka-window-aggregate`），那条拿不到逐成员的缺失信息，
- * 两边口径必须一致，否则同一个窗口会出现「成员路径说部分、汇总路径说缺失」。
- * 团队源接 partial 属于 Q-041 ⑧ 的活，届时两条路一起改。
+ * v1.9.35 时团队源（`ka_daily`）暂缓，理由写的是「SQL 直出汇总拿不到逐成员缺失信息」——
+ * 那句话不成立：`ka-window-aggregate-sql` 里的 `COUNT(col)` 与 `COUNT(ds)` 就是逐成员完整性，
+ * 一直都有，只是原来拿它做了「缺一个就整列 NULL」的判断。现在 SQL 改发 Σ 有数的成员日
+ * 加一列 `<col>_complete`，与这条成员路径同口径，两边照旧逐字段对拍。
  */
 function computeWeightedAssessment(rows: readonly WeightedDay[], evidence: PriceEvidence, budgetUsageRate: unknown) {
-  const sum = evidence.priceSource === "history" ? sumMetricValuesPartial : sumMetricValues;
+  const sum = sumMetricValuesPartial;
   const completePrices = rows.length > 0 && rows.every((row) => row.price !== null);
   // v1.9.35：窗口聚合走部分合计（缺几天就给有数那部分并标 partial）。
   const cash = sum(rows.map((row) => row.cashCost));

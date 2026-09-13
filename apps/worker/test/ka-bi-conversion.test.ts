@@ -15,7 +15,11 @@ function mapped(queryId: DataQueryId, fields: Record<string, unknown>) {
   const input = queryId === "account.summary" ? {
     ...canonicalSummaryBaseRow(raw, "ka_data"),
     assessment: { priceSource: "ka_daily", price: null, onTarget: null, costStatus: null,
-      costStatusReason: "assessment_missing", budgetUsageRate: { value: null, state: "undefined" } },
+      costStatusReason: "assessment_missing", budgetUsageRate: { value: null, state: "undefined" },
+      // v1.9.46（⑧ 落地）：三个 BI 值对团队源也必填了，桩不发就是造了一份线上不会出现的行。
+      biConv: { value: null, availability: "missing" },
+      biCashCost: { value: null, state: "undefined" },
+      overCost: { value: null, availability: "missing" } },
   } : raw;
   const [row] = canonicalizeQueryRows(queryId, "ka_data", [input], workspaceId);
   return row!.metrics;

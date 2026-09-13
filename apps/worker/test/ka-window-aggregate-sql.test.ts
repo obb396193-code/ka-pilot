@@ -46,15 +46,18 @@ describe("bounded team window aggregate SQL", () => {
   it("retains missing days and excludes undeterminable accounts from the rate denominator", () => {
     insert(20260801, "a"); insert(20260802, "a"); insert(20260801, "b");
     const { rows } = run({ ...window, from: "2026-08-01", to: "2026-08-02" });
+    // v1.9.46：缺的成员日不再把整列抹成 null —— 给 Σ 有数那部分，另发 `<col>_complete=0`。
+    // 判定分母仍只数**齐全**的账户（`determinable_count` 加了 complete 条件），
+    // 所以「部分合计」不会被拿去判达标。
     expect(rows.find((row) => row.kind === "window")).toMatchObject({ expected_count: 4, member_count: 4,
-      observed_count: 3, account_count: 2, catalog_count: 2, cash_yuan: null, target: null,
-      missing_price_count: 1, determinable_count: 1, on_target_count: 1 });
+      observed_count: 3, account_count: 2, catalog_count: 2, cash_yuan: 24, cash_yuan_complete: 0,
+      target_complete: 0, missing_price_count: 1, determinable_count: 1, on_target_count: 1 });
   });
   it("empty inventory returns only a zero-count window proof, not fabricated daily zeros", () => {
     const { rows } = run();
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ kind: "window", expected_count: 0, member_count: 0, catalog_count: 0,
-      observed_count: 0, account_count: 0, cash_yuan: null, target: null, price_count: 0,
+      observed_count: 0, account_count: 0, cash_yuan: null, cash_yuan_complete: 0, target: null, price_count: 0,
       determinable_count: 0, on_target_count: 0 });
   });
   it("duplicate account-days stay detectable after aggregation", () => {

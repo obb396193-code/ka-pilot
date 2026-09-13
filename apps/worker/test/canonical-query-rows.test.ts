@@ -307,7 +307,7 @@ describe("canonical query row adapters", () => {
    * 漏发时页面只是静悄悄显「−」，而「后端没算」与「真没有数」长得一模一样——
    * 这条绊线就是把那个区别变成一条错误。
    */
-  describe("v1.9.45 the four metric fields are required on platform, exempt on ka_data", () => {
+  describe("v1.9.45/46 the four metric fields are required on every source", () => {
     const summaryRow = (source: "platform" | "ka_data") =>
       sourceRow("account.summary", source) as unknown as Record<string, unknown>;
 
@@ -325,13 +325,13 @@ describe("canonical query row adapters", () => {
         .toThrow(CanonicalQueryRowError);
     });
 
-    it("still accepts a ka_data row without them, so the exemption is real", () => {
+    it("requires them on ka_data too, now that ⑧ has landed", () => {
+      // v1.9.45 时团队源豁免，理由是本地连不上、硬转必填会逼出假 fixture。
+      // v1.9.46 团队源部分合计落地，两条团队路径都恒发这四个键，豁免随之撤销。
       const row = summaryRow("ka_data");
       Reflect.deleteProperty(row.metrics as Record<string, unknown>, "incentiveCost");
-      for (const field of ["biConv", "biCashCost", "overCost"]) {
-        Reflect.deleteProperty(row.assessment as Record<string, unknown>, field);
-      }
-      expect(canonicalizeQueryRows("account.summary", "ka_data", [row], workspaceId)).toHaveLength(1);
+      expect(() => canonicalizeQueryRows("account.summary", "ka_data", [row], workspaceId))
+        .toThrow(CanonicalQueryRowError);
     });
 
     it("does not demand the BI values on rows that carry no assessment", () => {
