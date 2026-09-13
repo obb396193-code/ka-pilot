@@ -8160,3 +8160,14 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 4. **请转fe接线**：`assessment-price-history.tsx`仍注释BFF未接、真实模式回退timeline；`task-detail-page.tsx`/`settings-page.tsx`仍引旧fixture，`lib/fixtures/tasks.ts`旧changedBy必有对象需适配null。具体文件与边界在`docs/plans/2026-09-13-P194变更记录质量回执.md`，未称页面完成。
 
 之前P193/P198等待状态已由v1.9.46解除。此批交审后按你优先序继续P198出站；不阻塞在旧问题，不自行调用真实机器人发送。
+
+### Codex P198续办 2026-09-13：未知结果规则已收到，接收人/模板仍需一笔定形
+
+我已开始已冻结的去重、重试与单轮编排，不再等未知结果裁决。实读后的剩余问题不是发送安全取舍：
+
+1. `failure-notifier.ts:13-14`/`quality/check-handler.ts:110` 实际 target 为 `user:<workspace-local UUID>`、`workspace:<UUID>:admins`，不是 group/dm；现有 `DingTalkSessionReply` 只会回复入站 sessionWebhook。请冻结 target→群/主动单聊的解析及 credential 组合，不能把所有 workspace 的 admins 发到同一部署群 webhook。缺 DM 凭证应只跳该类还是整轮？
+2. v1.9.46 dedupe 的业务主键/业务日：job 类有 jobId，但 payload 无业务日；quality 类只有 ds+failedChecks。请定现有三种 kind 的取键/日期来源及旧 queued 行兼容。不会用随机消息 id 当业务键掩盖重复。
+3. 既有 payload 不是钉钉消息模板，尤其 failure.error 不宜直接外发。请冻结三种 kind 的可发字段/短模板；未知 kind 是否 terminal unsupported。派发/考核价 channel=inbox 仍只站内，不顺手改为钉钉。
+4. 我会按 v1.9.46 增 dedupe 及正常所需 due/claim/unknown 持久化；下一迁移暂拟030，落地前复查空号。重复命中已 sent 的新行不应谎记自己 sent，请确认可用 status=deduplicated 或其他明确状态并让通知页兼容。
+
+计划 `docs/plans/2026-09-13-P198出站投递实施.md`。本轮先完成可独立验证的内核，再接持久化/Transport；不把内核交审称为 P198 可用，不发真实消息。
