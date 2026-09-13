@@ -7729,3 +7729,32 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 顺带把我上一轮的说法更正一句：我在 `account-labels.ts` 注释里写过「规则版本必须与 parse.ruleVersion 一致」，按上面的事实，那句话描述的是 SQL 层已经做到的事，那行 JS 比较本身并不构成这道闸。注释我没改——它不误导实现，但你若在 ③ 里动这块，别把它当成现成的版本闸。
 
 **仍等你裁（只列）**：Q-044 ②③ 是否我接着做（③ 有两条读路径在 Codex 的 `reports/**`）、Q-042 归属、⑧ 团队源两选项、`ready-lineage.json` 不重导、`table-v3.json` v2/v3、三份 `agent_type`/`deduction_range` fixture 是否照 (c) 换维度。
+
+### v1.9.45 序②收尾 + platform 侧四键转必填（be2 2026-09-12）
+
+**交付 SHA**：`28396d97`（分支 `be/r017`，路径限定提交、未 push）
+
+六条裁决全部照做，逐条对账：
+
+| 裁决 | 做法 |
+|---|---|
+| `ready-lineage.json` 不重导 | 保留手写；**但 `_note` 塞不进去**，见下 |
+| `table-v3.json` 版本号写错 | `rowSchemaVersion` 改 `account.table/v2`，文件名保留，`_note` 写清「`-v3` 指三态口径不是行版本」 |
+| 两份 agent_type → `segment:operator` | 重导为 `dimension-v3-segment-operator.json`（真响应：自投 150 / 代投 30，带 source=nickname），原两份删 |
+| `deduction_range` 删除 | 已删 |
+| 四键转必填分两段 | platform 必填、ka_data 与 reconcile 豁免（实现见下） |
+| ⑧ 走选项 2 | 收到，下一笔按这个做 |
+
+**一处没能照字面做，说明理由**：`ready-lineage.json` 的 `_note` **写不进去**。这份要过 `dataQueryResponseSchema`，它的 `meta` 是**严格三选一**（`{cellCoverage}` / hourly / gap），多任何一个键整条判非法（我试了，四条用例当场红）。所以「参照件，非当前后端产物」这句话和你要的那条绊线一起放进了 `data-query-response-fixtures.test.ts`：钉住四项元数据都非空、钉住这份不许有 `meta`，并写明**退役条件**（`metadataAvailability` 能真给到 `known` 时必须换真响应）。要它出现在文件里的话，得先放宽信封的 meta，那是契约改动，我没动。
+
+**四键转必填的落法**（这条请重点看）：行 schema 里的 `.optional()` **我没去掉**，因为它是 platform 与 ka_data 共用的——去掉就等于逼团队侧造假 fixture，正是你不要的。必填落在**知道源是谁**的那一层：`canonicalizeQueryRows` 拿到 `source`，platform 的行缺任一键直接 `CanonicalQueryRowError`。判定函数 `missingPlatformRowFields` 在 domain，两边共用一份。
+- 没有 `assessment` 的行（趋势/明细）**不要求** BI 三值——要求一个不存在的东西只会把正常响应判废；
+- ka_data 行原样放行，绊线里专门有一条钉住「豁免是真的」，免得 ⑧ 落地时有人以为已经转过了。
+
+**顺带处理**：`agentTypeRowSchema` 这个**行形状还在契约里**（将来接了源就是它），所以删 fixture 时没把它的守卫一起删掉——unknown 桶不许猜成 self/agency、代理字段只许出现在这一维，这两条改用用例内联样本（`packages/domain/test/fixtures/agent-type-row-shape.json`），并写明**它是形状样本、不是「后端能返这个」的证据**。
+
+**门禁四包全绿**：domain **100 文件 1553** / db **157 文件 1759** / worker **204 文件 2334**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了**：platform 源的 summary/dimension/pivot2 行现在**必须**带 `metrics.incentiveCost` 与 `assessment.biConv/biCashCost/overCost`，缺任一整条判废。真产出路径本来就恒发（`new-metric-fields-emitted` 一直钉着），所以线上行为不变；但**任何绕过真路径造 platform 行的地方**（桩、手写 fixture）会红——我这边的桩已经补齐。
+
+**下一步**：按你的序做 **⑧（选项 2）**——实现团队源三维 + partial，交付时明写「团队侧未实测」，并把 `dimension-v3.json` / `reconcile-pending.json` 的四键一并转必填。
