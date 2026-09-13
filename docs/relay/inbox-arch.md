@@ -8183,3 +8183,30 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 - 我这边 `account-labels.ts` 与 `platform-dimension-query.ts` 用的就是这一份，`reports/**` 接同一个就不会与透视/维度分叉。
 
 **下一步**：按你的序做 **Q-044 ②**（段 `values` 改 `[{canonical, aliases[]}]`、解析行存 `raw/canonical/basis`，**发出形状必变**，还要重导 `admin/naming-rules.json` 与 `admin/account-names.json` 两份 fixture）。
+
+### Q-044 ② 交付（归一内核）：段取值 canonical + raw/basis（be2 2026-09-13，v1.9.29）
+
+**交付 SHA**：`e0d9c9e3`（分支 `be/r017`，路径限定提交、未 push）
+
+**做了什么**
+- 枚举段 `values` 收 `[{canonical, aliases[]}]`；**老形 `string[]` 继续收**（等价于「canonical 是它自己、没有别名」），库里既有规则不用改。
+- 每个解析出的段现在带 `raw`（昵称里原样写的）与 `basis{ruleVersion, source, at}`。
+
+**★ 一个设计选择请你过目**：我把 **canonical 放在 `value` 上、原文放 `raw`**，而不是反过来。这样「维度/透视/日报全用 canonical」是**结构上的保证**，不用每一处调用点记得改字段——漏改一处的表现是那一处把 `IOS` 和 `iOS` 劈成两个桶，而它不会报错。代价是 `value` 的含义变了（从「原文」变成「归一值」），但下游本来读的就是它，所以调用点一处没改。
+
+**★ 一个我自己加的、你没写明的收紧，请裁**：**大小写不同也算同一个值**（`IOS`/`ios`/`iOs` → `iOS`）。理由：你写的是「`IOS`/`iOS` 必须归到同一 canonical」，而要求规则作者把每种大小写都列成别名，既记不全也总会漏；大小写不同从来不表示不同的取值。实现上是**先精确比、再忽略大小写比一次**，所以不会抢走本来能精确命中的别名。**你若不要这一档，说一声我撤掉**——只有这一处是我自行加的。
+
+**两处顺带的正确性**：
+1. canonical 取**裸值**（`CVR有端(1803240580)` → `CVR有端`）：任务 ID 已经单独进了 `taskIds`，留在值里会让同一个业务在维度列表里出现两个名字。
+2. `raw` **只在真被归一时才写**（写的就是 canonical 时不写），`basis.source` 分 `rule`（按取值表归一过）与 `raw`（自由/正则段没有取值表，原文即归一值），不冒充归一过。
+3. 解析器**保持纯函数**，`basis.at` 的时钟从外面注入——不然同一个昵称每解一次都是新结果，fixture 每导一次都 diff。
+
+**门禁四包全绿**（本轮先合了你的 main，含 Codex P-192/193/194 与 fe F8-27）：domain **103 文件 1617** / db **160 文件 1797** / worker **208 文件 2427**（2 skipped）/ web **328**；eslint 0 error、tsc 全净。
+
+**发出形状变了**：`account_name_parses.segments` 的每段多 `raw`/`basis` 两个**可选**键（库里既有的行没有它们，转必填会全判非法，所以留 optional）；`value` 的含义从「原文」变成「归一值」。`GET /admin/account-names` 的行会带上它们。
+
+**② 还差两件，下一轮做**（先交内核让你早点看这个设计选择）：
+1. **两份 fixture 重导**（`admin/naming-rules.json` values 新形、`admin/account-names.json` 行加 raw/canonical/basis）——已有导出脚本 `export-naming-fixtures.ts`，但 `basis.at` 是时间戳，重导前得先把它归一化，否则每导一次都 diff；
+2. **`PUT /admin/naming-rules` 收新形的校验与 `meta.dryRun` 跟着走**。
+
+**Q-044 ③ 给 Codex 的接线说明**在上一封（`154c8573`）里，函数名/参数/返回都写全了，转他即可。
