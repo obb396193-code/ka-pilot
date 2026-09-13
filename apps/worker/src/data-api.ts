@@ -10,6 +10,7 @@ import {
   AdminMemberProvisioningRepository,
   EtlRunListRepository,
   EtlRunRerunRepository,
+  SettingsChangeLogRepository,
   ChangeSetRepository,
   AuthSessionRepository,
   createPool,
@@ -21,6 +22,7 @@ import {
 
 import { loadDataApiConfig } from "./data/data-api-config.js";
 import { AccountListService } from "./accounts/account-list-service.js";
+import { SettingsChangeLogService } from "./admin/settings-change-log-service.js";
 import { createDataApiServer } from "./data/http-server.js";
 import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
@@ -107,6 +109,7 @@ async function main(): Promise<void> {
     // be: pilot source-off preflight. Never inject a mock/stored-value provider.
     dryRunService: new ChangeSetDryRunService({ store: new ChangeSetRepository(pool) }),
     accountMuteService: new AccountMuteService(new AccountMuteRepository(pool)),
+    settingsChangeLogService: new SettingsChangeLogService(new SettingsChangeLogRepository(pool)),
     agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
     adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
     adminMembersService: new AdminMembersService(new AdminMembersRepository(pool), undefined, new AdminMemberProvisioningRepository(pool)),

@@ -60,13 +60,17 @@ describe("R010 actual production composition with KA disabled", () => {
     // tsx/Node process for every click tests repeated cold imports, not the route.
     bffChild = spawn(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
       `const {handleR010CommandRequest}=await import(process.argv[1]).then(m=>m.default??m);
+       const {handleSettingsChangeLogRequest}=await import(process.argv[2]).then(m=>m.default??m);
        process.on('message',async p=>{try {
-         const result=await handleR010CommandRequest(new Request('https://web.example'+p.path,{method:'POST',
-           headers:{origin:'https://web.example','content-type':'application/json',cookie:p.cookie,'x-ka-workspace-id':p.team,'x-ka-account-scope':'*'},body:JSON.stringify(p.body)}),
+         const history=p.path.startsWith('/api/internal/settings/change-log');
+         const handle=history?handleSettingsChangeLogRequest:handleR010CommandRequest;
+         const result=await handle(new Request('https://web.example'+p.path,{method:history?'GET':'POST',
+           headers:{origin:'https://web.example','content-type':'application/json',cookie:p.cookie,'x-ka-workspace-id':p.team,'x-ka-account-scope':'*'},...(history?{}:{body:JSON.stringify(p.body)})}),
            {environment:{KA_DATA_BACKEND_ORIGIN:p.base,KA_DATA_SERVICE_TOKEN:p.token},requestId:()=> 'r010-bff-pg'});
          process.send({kind:'result',result});
        }catch{process.send({kind:'error'});}}); process.send({kind:'ready'});`,
-      new URL("../../web/lib/data/r010-command-bff.ts", import.meta.url).href], { stdio: ["ignore", "ignore", "ignore", "ipc"] });
+      new URL("../../web/lib/data/r010-command-bff.ts", import.meta.url).href,
+      new URL("../../web/lib/data/settings-change-log-bff.ts", import.meta.url).href], { stdio: ["ignore", "ignore", "ignore", "ipc"] });
     await new Promise<void>((resolve, reject) => {
       const runner = bffChild!;
       const cleanup = () => { clearTimeout(timer); runner.off("message", ready); runner.off("error", failed); runner.off("exit", failed); };
@@ -115,6 +119,11 @@ describe("R010 actual production composition with KA disabled", () => {
   }
   it("queries real scoped pivot, persists mute/ignore, then rejects team and logged-out session", async () => {
     expect((await call("/api/v1/auth/session", {}, "GET")).response.status).toBe(200);
+    // P194 production entrypoint (not injected service) → real PG → actual BFF module.
+    const historyPath = "/api/internal/settings/change-log?kinds=assessment_price&task_id=synthetic-task";
+    const history = await bff(historyPath, {});
+    expect(history.status).toBe(200);
+    expect(history.body.data).toMatchObject({ items: [{ kind: "assessment_price", op: "set", scope: { taskId: "synthetic-task" }, newValue: 20 }], nextCursor: null });
     const hourly = { queryId: "account.hourly", params: { date: "2026-09-01", media: "KUAISHOU" } };
     // The personal Qihang hour reader is now installed. KA=false does not
     // disable a different source. Existing table + absent samples is a valid
@@ -180,6 +189,8 @@ describe("R010 actual production composition with KA disabled", () => {
     expect((await pool.query("SELECT status FROM work_items WHERE id=$1", [workItem])).rows[0].status).toBe("ignored");
     const old = cookie, switched = await call("/api/v1/auth/workspace", { workspaceId: team });
     expect(switched.response.status).toBe(200); cookie = switched.response.headers.get("set-cookie")!.split(";")[0]!;
+    expect((await bff(historyPath, {}, old)).status).toBe(401);
+    expect((await bff(historyPath, {})).status).toBe(200);
     const teamHourly = await call("/api/v1/query", hourly);
     expect(teamHourly.response.status).toBe(503);
     expect(teamHourly.body).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
@@ -193,6 +204,7 @@ describe("R010 actual production composition with KA disabled", () => {
       expect((await bff(path, body)).status).toBe(403);
     }
     expect((await call("/api/v1/auth/session", {}, "DELETE")).response.status).toBe(200);
+    expect((await bff(historyPath, {})).status).toBe(401);
     for (const path of ["/api/v1/query", "/api/v1/accounts/KUAISHOU/synthetic-same/mute", `/api/v1/work-items/${workItem}/ignore`])
       expect((await call(path, {})).response.status).toBe(401);
     for (const [path, body] of [["/api/internal/accounts/KUAISHOU/synthetic-same/mute", { days: 1, reason_chip: "synthetic" }],
