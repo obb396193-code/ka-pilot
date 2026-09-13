@@ -38,6 +38,18 @@ function accountHref(key: string): string | null {
 
 const cny2 = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY", maximumFractionDigits: 2 })
 
+/**
+ * 考核价在不同层是两种形状：summary 行是 MetricValue（带 availability），
+ * 维度行是 `{value, effectiveDate}`。类型上是 `unknown`——这里按形状取，不做断言。
+ * 取不到就显「−」，**不拿上级的价往下套**：各任务的考核价可以不同。
+ */
+function priceOf(value: unknown): number | null {
+  if (typeof value !== "object" || value === null) return null
+  const record = value as { value?: unknown; availability?: unknown }
+  if (record.availability !== undefined && record.availability !== "available") return null
+  return typeof record.value === "number" ? record.value : null
+}
+
 /** 「分」= 这个数是按消耗占比从上级分摊来的，不是该层实测值 */
 function Allocated() {
   return <span className="rounded bg-muted px-1 text-[10px] text-muted-foreground" title="按消耗占比从上级分摊，不是该层实测值">分</span>
@@ -86,6 +98,14 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
   const biCost = backendBiCost.known ? backendBiCost.value : derivedBiCost
   // 派生出来的成本同样是「分」的——它建立在分摊值之上（审查员 D ③）
   const biCostAllocated = !backendBiCost.known && !backendBiCost.infinite && isAllocated
+  // 同级消耗之和当分母（和 allocateBi 一个口径）；父行消耗含着没返回的行，拿它算会全偏小
+  const siblingCost = siblings.reduce<number | null>((sum, item) => {
+    if (sum === null) return null
+    const value = item.metrics.cost.value
+    return value === null ? null : sum + value
+  }, 0)
+  const ownCost = row.metrics.cost.value
+  const share = siblingCost !== null && siblingCost > 0 && ownCost !== null ? ownCost / siblingCost : null
   const href = accountHref(row.key)
   const childRows = kids.data ?? []
 
@@ -132,20 +152,33 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
             : <span className="inline-flex items-center gap-1">{cny2.format(biCost)}{biCostAllocated ? <Allocated /> : null}</span>}
         </TableCell>
         <TableCell className="text-right tabular-nums">{rv(row.metrics.ratios.realCpa, "money")}</TableCell>
+        {/* 考核价：这一层拿不到就显「−」，不拿上级的价往下套——各任务的考核价可以不同 */}
+        <TableCell className="text-right tabular-nums">
+          {priceOf(row.assessment.price) === null ? <span className="text-muted-foreground">−</span> : cny2.format(priceOf(row.assessment.price)!)}
+        </TableCell>
+        {/* 超成本：负数是「还有余量」，是好事，标绿；正数才是超了 */}
+        <TableCell className={cn("text-right tabular-nums", (row.assessment.overCost?.value ?? 0) > 0 && "text-status-critical", (row.assessment.overCost?.value ?? 0) < 0 && "text-status-success")}>
+          {mv(row.assessment.overCost, "money0")}
+        </TableCell>
+        {/* 消耗占比：分母是**同级已返回行之和**，不是父行消耗——列表被截断时父行含着没返回的部分，
+            拿它当分母算出来的占比会全部偏小（和分摊同一个道理） */}
+        <TableCell className="text-right tabular-nums text-muted-foreground">
+          {share === null ? "−" : `${(share * 100).toFixed(1)}%`}
+        </TableCell>
         <TableCell>
           {row.assessment.onTarget === null ? <span className="text-muted-foreground">−</span>
             : row.assessment.onTarget ? <StatusChip tone="success">达标</StatusChip> : <StatusChip tone="critical">超线</StatusChip>}
         </TableCell>
       </TableRow>
       {open && kids.error ? (
-        <TableRow><TableCell colSpan={10} className="text-xs text-status-critical" style={{ paddingLeft: 30 + depth * 18 }}>
+        <TableRow><TableCell colSpan={13} className="text-xs text-status-critical" style={{ paddingLeft: 30 + depth * 18 }}>
           展开失败：{kids.error.message}
           {kids.error.requestId ? <span className="ml-1 text-muted-foreground">（问题编号 {kids.error.requestId}）</span> : null}
           <button type="button" onClick={kids.reload} className="ml-2 underline underline-offset-2">重试</button>
         </TableCell></TableRow>
       ) : null}
       {open && !kids.loading && !kids.error && childRows.length === 0 ? (
-        <TableRow><TableCell colSpan={10} className="text-xs text-muted-foreground" style={{ paddingLeft: 30 + depth * 18 }}>没有下一级</TableCell></TableRow>
+        <TableRow><TableCell colSpan={13} className="text-xs text-muted-foreground" style={{ paddingLeft: 30 + depth * 18 }}>没有下一级</TableCell></TableRow>
       ) : null}
       {open ? childRows.map((kid) => (
         <Row
@@ -200,6 +233,9 @@ export function DrillTable({ rows, caption, levels, window, workspaceId, rootBi 
               <TableHead className="text-right">回传 GAP</TableHead>
               <TableHead className="text-right">BI 现金成本</TableHead>
               <TableHead className="text-right">转化成本</TableHead>
+              <TableHead className="text-right">考核价</TableHead>
+              <TableHead className="text-right">超成本</TableHead>
+              <TableHead className="text-right">占比</TableHead>
               <TableHead>达标</TableHead>
             </TableRow>
           </TableHeader>

@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 
 import { DistributionCard } from "@/components/business/data/dashboard/distribution-card"
+import { WidgetBoundary } from "@/components/business/state/widget-boundary"
 import { DrillTable } from "@/components/business/data/dashboard/drilldown"
 import { KpiRows } from "@/components/business/data/dashboard/kpi-rows"
 import { MissingDataNotice, type LineageWarning } from "@/components/business/data/dashboard/missing-data-notice"
@@ -167,7 +168,7 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
 
       <Card>
         <CardContent className="pt-5">
-          <TrendChart id="overview.trend" points={points} colorKey={colorKey} />
+          <WidgetBoundary label="趋势图"><TrendChart id="overview.trend" points={points} colorKey={colorKey} /></WidgetBoundary>
         </CardContent>
       </Card>
 
@@ -183,10 +184,10 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
               <TabsTrigger value="optimizer">优化师视角</TabsTrigger>
             </TabsList>
             <TabsContent value="biz" className="mt-3">
-              <DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" levels={["biz", "task", "account"]} window={window} workspaceId={workspaceId} rootBi={summary.assessment.biConv} />
+              <WidgetBoundary label="任务大类表现"><DrillTable rows={bizRows} caption="任务大类 → 细分任务 → 账户" levels={["biz", "task", "account"]} window={window} workspaceId={workspaceId} rootBi={summary.assessment.biConv} /></WidgetBoundary>
             </TabsContent>
             <TabsContent value="optimizer" className="mt-3">
-              <DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" levels={["optimizer", "biz", "task", "account"]} window={window} workspaceId={workspaceId} rootBi={summary.assessment.biConv} />
+              <WidgetBoundary label="优化师视角"><DrillTable rows={optimizerRows} caption="优化师 → 任务大类 → 细分任务 → 账户" levels={["optimizer", "biz", "task", "account"]} window={window} workspaceId={workspaceId} rootBi={summary.assessment.biConv} /></WidgetBoundary>
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -200,10 +201,10 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
         自投/代理等其余清洗段等 be2 Q-041 ⑪ 把 `segment:<key>` 开到 `account.dimension` 再加。
       */}
       <div className="grid gap-4 @4xl/main:grid-cols-2 @6xl/main:grid-cols-3">
-        <DistributionCard id="overview.placement" title="资源位分布" description="按账面花费；只画有消耗的项" rows={resourceRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
-        <DistributionCard id="overview.goal" title="转化目标分布" description="按账面花费；只画有消耗的项" rows={goalRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
-        <DistributionCard id="overview.optimizer" title="优化师分布" description="按账面花费；只画有消耗的项" rows={optimizerRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
-        <DistributionCard id="overview.operator" title="自投 / 代理分布" description="按账面花费；来自账户昵称的 operator 段" rows={operatorRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
+        <WidgetBoundary label="分布卡"><DistributionCard id="overview.placement" title="资源位分布" description="按账面花费；只画有消耗的项" rows={resourceRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} /></WidgetBoundary>
+        <WidgetBoundary label="分布卡"><DistributionCard id="overview.goal" title="转化目标分布" description="按账面花费；只画有消耗的项" rows={goalRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} /></WidgetBoundary>
+        <WidgetBoundary label="分布卡"><DistributionCard id="overview.optimizer" title="优化师分布" description="按账面花费；只画有消耗的项" rows={optimizerRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} /></WidgetBoundary>
+        <WidgetBoundary label="分布卡"><DistributionCard id="overview.operator" title="自投 / 代理分布" description="按账面花费；来自账户昵称的 operator 段" rows={operatorRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} /></WidgetBoundary>
       </div>
 
       {lineage ? <LineageFooter lineage={lineage} extra={<span>账户 {summary.accountCount} · 异常行 {summary.anomalyRows}</span>} /> : null}
