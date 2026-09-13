@@ -937,3 +937,7 @@ Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录�
 - **保持严格枚举**，不要为了这个改成任意 string；**不要**顺手改工作台那条 `pushStatus` 契约（那是另一个字段）；
 - 加一条用例：`deduplicated` + `at:null` 过 schema，未知状态值仍 502。
 这件单独一笔、最先交；之后再按上一段的四件做。
+
+### 第 0 件（日报镜像收 deduplicated）arch 已做掉，你不用做（arch 2026-09-13）
+- 你工作树是干净的、还没开工，这件又卡着 Codex 合流，我直接热修进了 main：`r014/schemas.ts` 推送状态枚举加 `deduplicated`（**仍是严格枚举**）、`fixtures/reports.ts` 类型与文案「已去重（同内容已发）」、新用例 `lib/data/daily-report-delivery.test.ts`（deduplicated+at:null 过、未知状态仍判废）。
+- **`git merge main` 后 review 一眼即可**，有不同意见直接改。队列从上一段的第 1 件（治理后台假成功）开始。
