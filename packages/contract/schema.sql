@@ -1160,7 +1160,11 @@ CREATE TABLE naming_rules (            -- 按渠道版本化的命名规范模�
 );
 CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与人工确认
   workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
-  account_name TEXT NOT NULL,          -- 解析时的原名（改名后重解析、留旧行做历史）
+  -- v1.9.49 ①（迁移 031）：归属按业务日生效。原主键 (workspace_id, media, account_id) 与「留旧行做历史」
+  -- 自相矛盾——reparse 即覆盖。现在一个账户按 effective_from 多行；读窗口时逐业务日取
+  -- effective_from <= 该日的最新一行。业务日 = UTC 时刻 + 5 小时取日期（上海 03:00 切日）。
+  effective_from DATE NOT NULL DEFAULT (((now() AT TIME ZONE 'UTC') + interval '5 hours')::date),
+  account_name TEXT NOT NULL,          -- 解析时的原名（改名后重解析写新的一行，旧行留作历史）
   rule_version INTEGER NOT NULL,
   status TEXT NOT NULL,                -- parsed|partial|failed|conflict|confirmed|overridden
   segments JSONB NOT NULL DEFAULT '{}'::jsonb,     -- 解析出的各段
@@ -1168,7 +1172,7 @@ CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与�
   conflicts JSONB,                     -- [{field, fromNickname, fromPlatform, source}]
   override JSONB,                      -- 人工改过的段；永远优先，重解析不覆盖
   parsed_at TIMESTAMPTZ DEFAULT now(), confirmed_by UUID, confirmed_at TIMESTAMPTZ,
-  PRIMARY KEY (workspace_id, media, account_id),
+  PRIMARY KEY (workspace_id, media, account_id, effective_from),
   FOREIGN KEY (workspace_id, media, account_id)
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
 );

@@ -1,4 +1,5 @@
 import { namedEvidenceScopeSchema, accountDimensionRuleSchema, type AccountDimensionRuleValue } from "@ka/domain";
+import { latestParseSql } from "./r014/account-name-parse-history.js";
 import { AccountDimensionEvidenceError } from "./account-dimension-evidence-repository.js";
 import type { SemanticReadConnection } from "./semantic-read-snapshot.js";
 
@@ -26,6 +27,7 @@ export class AccountDimensionRuleRepository {
         FROM jsonb_to_recordset($2::jsonb) wanted(media text,"accountId" text)
         JOIN accounts a ON a.workspace_id=$1 AND a.media=wanted.media AND a.account_id=wanted."accountId"
         LEFT JOIN account_name_parses p ON p.workspace_id=a.workspace_id AND p.media=a.media AND p.account_id=a.account_id
+          AND ${latestParseSql("p")}
         LEFT JOIN naming_rules n ON n.workspace_id=p.workspace_id AND n.media=p.media AND n.version=p.rule_version
         ORDER BY a.media COLLATE "C",a.account_id COLLATE "C" LIMIT 1001
       ), projected AS (

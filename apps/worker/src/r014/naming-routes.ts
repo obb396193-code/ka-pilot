@@ -1,5 +1,7 @@
 import { AccountNameParseRepository } from "@ka/db";
 import {
+  calendarDateSchema,
+  shanghaiTaskBusinessDate,
   applyOverride, computeConflicts, matchTaskAliasesLongest, namingRuleSchema, parseAccountName,
   statusWithConflicts, toNamingRule, withEffectiveAnalyzable, type NamingRule,
 } from "@ka/domain";
@@ -176,6 +178,19 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
       if (accountIds !== undefined && !Array.isArray(accountIds)) {
         throw new R014HttpError(400, "INVALID_REQUEST", "accountIds must be an array when present");
       }
+      /*
+       * v1.9.49 ①（Q-044 ③）：`from` = 这批重解析从哪个业务日起生效。
+       * 不给就写今天——「新规则版本不追溯」；给了才往回写历史。
+       * **拒绝未来日期**：未来的 effective_from 会让这条归属在那天之前完全不可见，
+       * 看上去像重解析没生效，而其实是被排到了以后。
+       */
+      const from = body?.from === undefined ? undefined : String(body.from);
+      if (from !== undefined && !calendarDateSchema.safeParse(from).success) {
+        throw new R014HttpError(400, "INVALID_REQUEST", "from must be a calendar date (YYYY-MM-DD)");
+      }
+      if (from !== undefined && from > shanghaiTaskBusinessDate()) {
+        throw new R014HttpError(400, "INVALID_REQUEST", "from cannot be a future business date");
+      }
       const candidates = await repository.reparseCandidates(context.auth, {
         ...(media === undefined ? {} : { media }),
         ...(accountIds === undefined ? {} : { accountIds: accountIds as string[] }),
@@ -210,6 +225,7 @@ export function createNamingRoutes(pool: Pool): R014Route[] {
           segments: parse.segments,
           taskIds,
           conflicts,
+          ...(from === undefined ? {} : { effectiveFrom: from }),
         });
         summary.reparsed += 1;
         summary.byStatus[saved.status] = (summary.byStatus[saved.status] ?? 0) + 1;

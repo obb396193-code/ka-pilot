@@ -1,4 +1,5 @@
 import { parseConflictSchema, parseOverrideSchema, parseStatusSchema, type ParsedSegment } from "@ka/domain";
+import { latestParseSql } from "./r014/account-name-parse-history.js";
 import type { SemanticReadConnection } from "./semantic-read-snapshot.js";
 
 export class AccountDimensionEvidenceError extends Error {
@@ -86,6 +87,7 @@ export class AccountDimensionEvidenceRepository {
         FROM jsonb_to_recordset($2::jsonb) AS wanted(media text,"accountId" text)
         JOIN accounts a ON a.workspace_id=$1 AND a.media=wanted.media AND a.account_id=wanted."accountId"
         LEFT JOIN account_name_parses p ON p.workspace_id=a.workspace_id AND p.media=a.media AND p.account_id=a.account_id
+          AND ${latestParseSql("p")}
         ORDER BY a.media COLLATE "C",a.account_id COLLATE "C" LIMIT 1001
       ), sized AS (
         SELECT *,sum(COALESCE(octet_length(segments::text),0)+COALESCE(octet_length(override::text),0)+
