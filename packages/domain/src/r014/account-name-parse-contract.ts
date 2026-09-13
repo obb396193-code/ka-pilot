@@ -13,7 +13,17 @@ export const namingSegmentSchema = z.object({
   label: z.string().min(1).max(64),
   order: z.number().int().nonnegative(),
   source: namingSegmentSourceSchema,
-  values: z.array(z.string().min(1)).optional(),
+  /**
+   * v1.9.29 ②（Q-044）：枚举取值支持**归一形** `[{canonical, aliases[]}]`，老形 `string[]` 继续收。
+   *
+   * 为什么要归一：同一个东西在昵称里有好几种写法（`IOS`/`iOS`/`ios`、「优选」与「优选广告位」），
+   * 不归一的话它们在维度里是**不同的桶**——一个优化师的花费被劈成三份，看上去像三个人。
+   * 老形不废弃：一个裸字符串等价于「canonical 是它自己、没有别名」。
+   */
+  values: z.array(z.union([
+    z.string().min(1),
+    z.object({ canonical: z.string().min(1).max(128), aliases: z.array(z.string().min(1).max(128)).max(50).optional() }).strict(),
+  ])).optional(),
   /**
    * v1.9.22 ①：**锚点段**。昵称里位置飘的时候（少写一段、多写一段），按位置硬切必错；
    * 锚点段先在全串里找到自己，其余段再按**相对它的位置**切。
@@ -158,7 +168,18 @@ export type ParseStatus = z.infer<typeof parseStatusSchema>;
 
 export interface ParsedSegment {
   key: string;
+  /**
+   * v1.9.29 ②（Q-044）：**这里放的是 canonical（归一后的值）**，不是昵称里的原文。
+   *
+   * 把归一值放在 `value` 上、原文另存 `raw`，是为了让「维度/透视/日报全用 canonical」
+   * 成为**结构上的保证**，而不是靠每一处调用点记得改用另一个字段——
+   * 漏改一处的表现是那一处把 `IOS` 和 `iOS` 分成两个桶，而它不会报错。
+   */
   value: string;
+  /** 昵称里**原样**写的那一段。给人看（归属清洗页要显示「他实际写的是什么」）与审计用，不参与分组。 */
+  raw?: string | undefined;
+  /** 归一的依据：哪版规则、来自哪里、什么时候。人工改过的值与解析出来的值要能分开看。 */
+  basis?: { ruleVersion: number | null; source: "rule" | "manual" | "raw"; at: string } | undefined;
   mapsTo: string | null;
   /** 该段解析出的任务 ID（括号里的）；业务段常见，其他段可能也有。 */
   taskIds: string[];
@@ -170,7 +191,16 @@ export interface ParsedSegment {
  */
 export const parsedSegmentSchema = z.object({
   key: z.string().min(1).max(64),
+  /** canonical（归一后的值）。见 `ParsedSegment.value` 的注释：分组一律用它。 */
   value: z.string().max(512),
+  // v1.9.29 ②（Q-044）：两者**可选**——库里还有这两个字段出现之前写的解析行，
+  // 转必填会把它们全判非法；重新 reparse 之后才会有。
+  raw: z.string().max(512).optional(),
+  basis: z.object({
+    ruleVersion: z.number().int().positive().nullable(),
+    source: z.enum(["rule", "manual", "raw"]),
+    at: z.iso.datetime({ offset: true }),
+  }).strict().optional(),
   mapsTo: z.string().min(1).max(64).nullable(),
   taskIds: z.array(z.string().max(128)).max(64),
 }).strict();
@@ -214,26 +244,49 @@ function splitTokens(name: string, separators: readonly string[]): string[] {
   return name.split(new RegExp(`[${escaped}]`)).map((token) => token.trim());
 }
 
-/** 枚举候选：开了 `matchLongest` 就按长度倒序，先长后短，避免长别名被短的截胡。 */
-function enumValues(segment: NamingSegment): readonly string[] {
-  const values = segment.values ?? [];
+/**
+ * v1.9.29 ②（Q-044）：枚举候选**摊平成 `{canonical, alias}` 对**。
+ * 老形（裸字符串）等价于「canonical 是它自己」，所以两种形状在这里之后就没有区别了。
+ */
+function enumCandidates(segment: NamingSegment): readonly { canonical: string; alias: string }[] {
+  const pairs = (segment.values ?? []).flatMap((entry) => typeof entry === "string"
+    ? [{ canonical: entry, alias: entry }]
+    : [{ canonical: entry.canonical, alias: entry.canonical },
+      ...(entry.aliases ?? []).map((alias) => ({ canonical: entry.canonical, alias }))]);
+  // `matchLongest` 按**别名**长度倒序：截胡发生在别名这一层（「优选」把「优选广告位」截了）。
   return segment.matchLongest === true
-    ? [...values].sort((left, right) => right.length - left.length)
-    : values;
+    ? [...pairs].sort((left, right) => right.alias.length - left.alias.length)
+    : pairs;
+}
+
+/**
+ * 命中哪个 canonical。先精确比，再**忽略大小写**比一次。
+ *
+ * 大小写那一档是这条需求的要害：`IOS` / `iOS` / `ios` 指的是同一个东西，不归一的话
+ * 一个优化师的花费会被劈进三个桶，看上去像三个人。要求规则作者把每种写法都列成别名
+ * 既记不全也总会漏，而大小写不同从来不表示不同的取值。
+ */
+function matchEnum(segment: NamingSegment, token: string): string | null {
+  const { bare } = extractTaskIds(token);
+  const candidates = enumCandidates(segment);
+  for (const { canonical, alias } of candidates) {
+    if (alias === token || extractTaskIds(alias).bare === bare) return canonical;
+  }
+  const lower = token.toLowerCase(), lowerBare = bare.toLowerCase();
+  for (const { canonical, alias } of candidates) {
+    if (alias.toLowerCase() === lower || extractTaskIds(alias).bare.toLowerCase() === lowerBare) return canonical;
+  }
+  return null;
 }
 
 function matchesSegment(segment: NamingSegment, token: string): boolean {
   // 空段谁也不匹配。显式写在这里而不是靠各分支自己兜：`regex` 段的 pattern 可能允许空
   //（例如 `^\d*$`），那样一个空格子会被它认领，错位就又回来了。
   if (token.length === 0) return false;
-  const { bare } = extractTaskIds(token);
   if (segment.source === "free") return token.length > 0;
   if (segment.source === "regex") return new RegExp(segment.pattern!).test(token);
   // 枚举值自带括号（如「CVR有端(1803240580)」），所以裸值与原值都试一次。
-  return enumValues(segment).some((value) => {
-    const candidate = extractTaskIds(value).bare;
-    return value === token || candidate === bare;
-  });
+  return matchEnum(segment, token) !== null;
 }
 
 /**
@@ -246,16 +299,36 @@ function matchesSegment(segment: NamingSegment, token: string): boolean {
  * 尾段一律**可缺省**（规范明写「若未设置增量/扣量回传，可不写」），
  * 所以倒着认时匹配不上就跳过该段继续，而不是判定整条失败。
  */
-export function parseAccountName(rawName: string, rawRule: NamingRule): AccountNameParse {
+export function parseAccountName(
+  rawName: string,
+  rawRule: NamingRule,
+  // v1.9.29 ②（Q-044）：`basis.at` 要记「什么时候归一的」。时钟从外面给，
+  // 解析器本身保持纯函数——不然同一个昵称每解一次都是新结果，fixture 每导一次都 diff。
+  options: { now?: Date } = {},
+): AccountNameParse {
+  const now = options.now ?? new Date();
   const rule = namingRuleSchema.parse(rawRule);
   const ordered = [...rule.segments].sort((a, b) => a.order - b.order);
   const tokens = splitTokens(rawName, rule.separators);
 
   const segments: Record<string, ParsedSegment> = {};
   const unmatched: string[] = [];
+  const parsedAt = new Date(now).toISOString();
   const record = (segment: NamingSegment, token: string): void => {
     const { bare, taskIds } = extractTaskIds(token);
-    segments[segment.key] = { key: segment.key, value: bare, mapsTo: segmentMapsTo(segment), taskIds };
+    // v1.9.29 ②（Q-044）：枚举段存**归一后的 canonical**；自由/正则段没有取值表，原文即归一值。
+    // `raw` 留住昵称里实际写的那一段——归属清洗页要让优化师看见「他到底写了什么」，
+    // 只给归一值的话，写错了的人永远不知道自己写错在哪。
+    // 枚举值自带任务 ID 括号（「CVR有端(1803240580)」），canonical 也取裸值：
+    // ID 已经单独进了 `taskIds`，留在值里会让同一个业务在维度里出现两个名字。
+    const matched = segment.source === "enum" ? matchEnum(segment, token) : null;
+    const canonical = matched === null ? null : extractTaskIds(matched).bare;
+    const value = canonical ?? bare;
+    segments[segment.key] = {
+      key: segment.key, value, mapsTo: segmentMapsTo(segment), taskIds,
+      ...(value === bare ? {} : { raw: bare }),
+      basis: { ruleVersion: rule.version, source: canonical === null ? "raw" : "rule", at: parsedAt },
+    };
   };
 
   /**
