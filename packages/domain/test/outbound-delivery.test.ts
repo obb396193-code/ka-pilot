@@ -56,7 +56,7 @@ describe("P198 deterministic delivery policy (synthetic data)", () => {
     expect(nextOutboundDeliveryState({ ...attempt, attempts: 5 }, outcome))
       .toMatchObject({ status: "failed", runAfter: null, sentAt: null, failReason: "ATTEMPTS_EXHAUSTED" });
   });
-  it.each(["UNTRUSTED_DESTINATION", "INVALID_TARGET", "UNSUPPORTED_MESSAGE", "REMOTE_REJECTED"])("permanent failure never retries: %s", reason => {
+  it.each(["UNTRUSTED_DESTINATION", "INVALID_TARGET", "UNSUPPORTED_MESSAGE", "REMOTE_REJECTED", "NO_CHANNEL_FOR_WORKSPACE", "NO_DM_BINDING", "UNSUPPORTED_KIND"])("permanent failure never retries: %s", reason => {
     expect(nextOutboundDeliveryState(attempt, { kind: "permanent_failure", reason }))
       .toMatchObject({ status: "failed", sentAt: null, runAfter: null, failReason: reason });
   });
