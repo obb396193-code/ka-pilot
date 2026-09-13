@@ -7814,3 +7814,33 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 **发出形状变了**：`account.dimension` 现在对 `ka_data` 源可用（原来恒 `VIEW_UNSUPPORTED`）；团队维度行与个人源同形（带 `source`/`sources` 的命名维度行）。fe 若按「团队空间没有维度查询」写过分支，可以拆了。
 
 **下一步**：⑧⑨ 都完了，按你的序做 **⑤ Q-042 小时采样 job**（你 v1.9.45 已裁归我）。现状我上一轮核过：迁移 025、domain normalizer、db 写库、启航 client 的 `hh` 都在，缺的是采样 job + 调度 + 注入；写库要挂在现成的 `etl_incr` job/run/lease 上。
+
+### Q-042 交付：小时采样 job（be2 2026-09-12，v1.9.47）
+
+**交付 SHA**：`7cbaf761`（分支 `be/r017`，路径限定提交、未 push）
+
+**现状与缺口**（上一轮核过，这轮补齐最后一块）：迁移 025 建了表、domain 有 normalizer、db 有写库、启航 client 早就收 `hh`——**但 worker 里没有任何代码去采**，所以那张表一直是空的，盯盘页没有真实小时源。现在补上了。
+
+**挂在增量 ETL 的一次 attempt 里，不自己起定时器**——这不是图省事：`AccountHourlyWriteRepository` 的写入守卫要求 `job_type='etl_incr'` 的活跃租约 + `run_kind='incr'` 的运行中 run，那道闸正是「同一时刻只有一个持租约的进程在写这批账户」的保证。另起一条路等于绕开它。
+
+**三个决定请重点看**
+1. **源时区只配不猜**。`complete`（这个小时过完了没有）要按源时区算。我没有新造一个固定偏移的配置——**有夏令时的地区在切换日会整整错一小时**，而 `complete=false` 的行是会被下一轮覆盖的，判错就意味着一个已定格的小时被当成还在涨、或者反过来。改成从 ⑨ 已有的 `DATA_SOURCE_TIMEZONE`（IANA）**按业务日算出当天偏移**，实测覆盖了整点/半小时/夏令时/UTC 四种。**没配就完全不采**——带着蒙出来的完整性标记的行，比没有行更糟。
+2. **`sampledAt` 在拿到响应之后取**，不是之前。先取的话，一次慢请求会让这一格早早够到「小时末 + 5 分钟」而被判成 complete，于是一个还在涨的小时被冻住。
+3. **采样失败只吞这一格**，不拖垮整条增量 ETL：小时面是盯盘的辅助视图，账面数字来自日级 canonical。缺行就是缺行，**永不补 0**（api.md F-P153-1 的原话）。
+
+另外跨日那一格单独处理了：上海 00:05 时「上一个小时」是**昨天的 23 点**，直接 `hh-1` 会写到今天、盖掉今天真正的累计。用例钉了这一条。
+
+**契约对齐**：按 api.md F-P153-1「每小时 HH:05 抓 `hh=HH−1`（已完整）与 `hh=HH`（当前小时，`complete=false`，下一轮覆盖）」；一批 ≤50 户，与 `accountHourlyStorageBatchSchema` 的上限一致。
+
+**门禁四包全绿**：domain **1557** / db **157 文件 1759** / worker **206 文件 2352**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了？** 接口响应**没变**。变的是**部署配置**：`DATA_SOURCE_TIMEZONE` 现在 **worker 进程也要配**（原来只有 data-api 用它填血缘）。两个进程配同一个值；**不配也能跑**，只是盯盘页没有真实小时数据。部署提示词已改。
+
+**Q-044 ③ 给 Codex 的接线说明**（你要我在回执里给，转他即可）：
+- **函数**：`resolveSegmentDimension(parse, key)`，在 `packages/domain/src/named-dimension.ts`，已导出。
+- **参数**：`parse` = 解析行对象（要有 `segments` / `override` / `nameMatches` 三个字段，就是 `account_name_parses` 那一行解出来的形状）；`key` = 段名（`segment:` 前缀**不要带**，只给 `city` 这样的裸段名）。
+- **返回**：`{ value: string | null, source: "manual" | "nickname" | null }`。人工覆盖优先并标 `manual`；昵称对不上（`nameMatches` 为假）一律返 `{value:null, source:null}`——昵称改过，段值多半已过期；空串按没填算。
+- **要点**：命名维度（optimizer/goal/placement）**不要用它**，那条走 `resolveNamedDimensions`。两者守同一套规矩，分开只是因为段不经过 `mapsTo`。
+- 我这边 `account-labels.ts` 与 `platform-dimension-query.ts` 用的就是这一份，`reports/**` 接同一个就不会与透视/维度分叉。
+
+**下一步**：按你的序做 **Q-044 ②**（段 `values` 改 `[{canonical, aliases[]}]`、解析行存 `raw/canonical/basis`，**发出形状必变**，还要重导 `admin/naming-rules.json` 与 `admin/account-names.json` 两份 fixture）。
