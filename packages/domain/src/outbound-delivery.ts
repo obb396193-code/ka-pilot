@@ -23,6 +23,7 @@ export const deliveryOutcomeSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("retryable_failure"), reason: z.enum(["REMOTE_RATE_LIMITED", "REMOTE_UNAVAILABLE"]) }).strict(),
   z.object({ kind: z.literal("permanent_failure"), reason: z.enum([
     "UNTRUSTED_DESTINATION", "INVALID_TARGET", "UNSUPPORTED_MESSAGE", "REMOTE_REJECTED",
+    "NO_CHANNEL_FOR_WORKSPACE", "NO_DM_BINDING", "UNSUPPORTED_KIND",
   ]) }).strict(),
 ]);
 export type OutboundDeliveryOutcome = z.infer<typeof deliveryOutcomeSchema>;
@@ -41,7 +42,8 @@ export interface OutboundDeliveryState {
   runAfter: string | null;
   consecutiveUnknown: number;
   failReason: "UNKNOWN_OUTCOME" | "ATTEMPTS_EXHAUSTED" | "REMOTE_RATE_LIMITED" | "REMOTE_UNAVAILABLE"
-    | "UNTRUSTED_DESTINATION" | "INVALID_TARGET" | "UNSUPPORTED_MESSAGE" | "REMOTE_REJECTED" | null;
+    | "UNTRUSTED_DESTINATION" | "INVALID_TARGET" | "UNSUPPORTED_MESSAGE" | "REMOTE_REJECTED"
+    | "NO_CHANNEL_FOR_WORKSPACE" | "NO_DM_BINDING" | "UNSUPPORTED_KIND" | null;
 }
 
 /** arch v1.9.46: bounded at-least-once attempts, not exactly-once delivery. */

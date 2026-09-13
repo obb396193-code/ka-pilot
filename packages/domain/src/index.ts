@@ -109,3 +109,5 @@ export * from "./dashboard-filters.js";
 export * from "./dashboard-filter-options.js";
 export * from "./settings-change-log.js";
 export * from "./outbound-delivery.js";
+export * from "./outbound-business-identity.js";
+export * from "./outbound-storage-contract.js";

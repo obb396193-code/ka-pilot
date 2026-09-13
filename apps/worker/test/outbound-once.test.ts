@@ -173,4 +173,10 @@ describe("P198 bounded outbound pass, no real external sends", () => {
     expect(await runOutboundOnce(options, ports)).toMatchObject({ status: "aborted", claimed: 1 });
     expect(ports.transport.send).not.toHaveBeenCalled();
   });
+  it("bounded store maintenance is batch_limit, never a falsely drained queue", async () => {
+    const { ports, options } = setup();
+    ports.store.claim.mockResolvedValue({ maintenanceLimit: true });
+    expect(await runOutboundOnce(options, ports)).toMatchObject({ status: "batch_limit", claimed: 0, sent: 0 });
+    expect(ports.transport.send).not.toHaveBeenCalled();
+  });
 });

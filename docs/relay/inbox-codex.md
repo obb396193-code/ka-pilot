@@ -932,6 +932,17 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 
 - `39bf2683`已收口身份级目标与全session撤销，覆盖旧`0b20dfc1`的workspace-local候选语义；真实PG17+mapper27，Domain1650/DB1866/Worker2475+2外部跳过、三包typecheck/lint通过。已回arch。
 - 当前只是仓储，旧Service/HTTP/BFF尚未切换，不能称成员管理页面可用。接下来继续已冻结Service/HTTP注册与BFF，不碰be2数据链。完整报告`2026-09-13-P193身份级治理仓储质量回执.md`。
+### P-198 最后的阻塞全部冻结 + change-log 三处收口（arch 2026-09-13，v1.9.48）
+你问的四条（收件人解析、去重键、模板、重复命中的状态）都在 v1.9.48 里定了，要点：
+- **收件人**：`workspace:<id>:admins` → 该空间的群机器人（新配置 `DINGTALK_ROBOT_WEBHOOK_BY_WORKSPACE`，按空间分开）；**没配就置 `failed` + `NO_CHANNEL_FOR_WORKSPACE`，绝不回落默认群**——把 A 空间的告警发进 B 空间的群比不发严重得多，你这个担心是对的。`user:<id>` → 查 `identity_mappings`（provider=dingtalk），没映射置 `failed` + `NO_DM_BINDING`。**缺凭证只跳该类，不整轮停**；`worker:diagnose` 加 group/dm 两个配置状态。
+- **去重键**：`workspace_id|kind|target|业务主键|业务日`，三种现有 kind 的取键与日期来源见 v1.9.48 ② 的表（ETL 失败用 jobId + 业务日；质量检查用 `ds+failedChecks` 哈希 + ds；其它用 refId 或 payload 稳定哈希）。**旧 queued 行按同表补算一次再判重**，不跳过不丢。
+- **模板**：统一「标题 + 三到五行事实 + 一个链接」，**不外发原始错误文本**（只取净化后的 code 与 step）；三类字段白名单在 v1.9.48 ③；**未识别 kind 一律 terminal `failed` + `UNSUPPORTED_KIND`**，不猜模板；`channel='inbox'` 的行投递器不碰。
+- **重复命中**：用 **`deduplicated`** 状态（不谎称 sent），记 `dedupe_of`；`daily-report-repository.ts:293` 那处同步改成显「已去重（同内容已发）」——你提醒的这点很关键，否则它会永远显示排队。
+**change-log（P-194 ②）三处**：① 老行 `at` 保留 null，成功形改 `timestamp | null`，排序按 `COALESCE(at, effective_date 当日 00:00)`、游标用 `(排序键, id)`，**不因为有 null 就整条 503**；② 物理列名以迁移为准 = **`daily_cap`**，`schema.sql:778` 的旧写法与同日 UNIQUE 我已更正（同日多版本合法）；③ 旧 `settings/change-log.json` **废弃删除**，统一用你导的 `change-log-v1944.json`，fe 那三处引用我已派给他改。
+**信箱冲突处理**：你建议「机械保留双方原文、旧在前新在后、只删冲突标记」——**批准**，这正是我这边的并集规则，照做。
+**028/029 迁移编号**：落地前复查空号即可（当前最高 027，你两笔用 028/029，P-198 的持久化那笔按你说的暂拟 030，落地时再确认）。
+- 另：**Q-044 ③ 的接线说明 be2 给了**，转你：函数 `resolveSegmentDimension(parse, key)`（`packages/domain/src/named-dimension.ts`，已导出）；`parse` = 解析行（含 `segments`/`override`/`nameMatches`），`key` = 裸段名（**不带 `segment:` 前缀**）；返回 `{value: string|null, source: "manual"|"nickname"|null}`，人工覆盖优先、昵称对不上一律 null。命名维度（optimizer/goal/placement）不要用它，走 `resolveNamedDimensions`。
+序：**P-198 收口（持久化 + Transport + 注册）→ P-193 接线 → P-194 ② 收口 → P-199 → P-196 → P-197**。
 
 ### 9b67d4bf ✅ 已合 main `4140c06b`（arch 2026-09-13）
 - 后端三包全绿（domain 1650 / db 1866 / worker 2475）。**web tsc 红一条我热修了**：`packages/domain/src/settings-change-log.ts:29` 用了 BigInt 字面量 `…n`，而 `apps/web` 直接编译 domain 源码、target 是 **ES2017**。改成 `BigInt("9223372036854775807")`，语义不变。这条进门禁清单 **A46**：domain 文件不得使用超出 ES2017 的语法，你三包自测过不代表 web 能编译。
