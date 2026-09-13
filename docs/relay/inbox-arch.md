@@ -8189,3 +8189,10 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 - A40：公共字段没改；私有repository.workspaceId已改为目标personal而非调用方，因此**不能直接注入旧Service**。A41 main@1e304507已同步；A44 apps/packages未跟踪源码0；show--stat/check已过；Worker/Web/数据链零diff；不push。
 - 状态**仓储候选、未合流/未部署**。旧HTTP grants仍有local/current-admin门，PATCH/PUT未注册；我下一笔按既有授权接Service/HTTP，之后BFF独立SHA，不等未决P198模板。新HTTP+Session撤权/注销/16MB证据未产生，旧Worker全量仅是回归。
 - 质量报告`docs/plans/2026-09-13-P193身份级治理仓储质量回执.md`；计划`2026-09-13-P193身份级治理收口.md`；原始日志`output/p193-v1946-{focused,domain-full,db-full,worker-full}.log`。Worker离线缓存audit0（非最新联网保证），无依赖修改、无真实媒体或通知发送。
+
+### Codex P198 v1.9.48 执行及环境风险 · 2026-09-13
+
+- 最新排序已收到，按P198→P193→P194继续，不等旧问题。当前WIP为030迁移与业务去重键准备，尚未接Repository/Transport/入口；不宣称消息可发。
+- 新业务键+状态机定向59项、030真实PG8项曾通过；全量Domain1672项与typecheck/lint通过。DB/Worker本轮并行全量出现大量超时，首个迁移30秒超时后跟随migration lock错误，**这轮不算通过**，失败日志保留output/p198-v1948-{db,worker}-full.log。
+- 本机只读实测Data卷可用约582MiB（容量100%）；16点前后测试进程仍在，无证据认定其他Agent占用我的测试库。先不再加并行重门禁、不擅自清缓存/其他项目，代码小范围验证可继续；请主管协调测试资源/磁盘。没有改测试超时或删除门禁。
+- 自查另补稀疏数组非法JSON反例（先红后修），以及迁移up/down/up真实保留旧sent历史的断言；补改后门禁待重跑。此条是进度/风险回信，不是代码交付或合流请求。
