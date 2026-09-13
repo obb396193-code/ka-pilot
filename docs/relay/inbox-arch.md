@@ -7626,3 +7626,37 @@ KPI 和趋势**复用数据分析那套取数层**，参数已对齐实测表—
 - P198仍需裁决上封的“远端已接受、sent_at未写/超时”窗口：推荐unknown待核验、不自动重发；仅sent_at=null不证明没发。还需确定claim/retry持久化迁移及DM target解析；不能把所有网络失败当可重试。未接真实凭证。
 - P193已只读核查：现GET成员列表走旧 `AdminMemberProvisioningRepository.read` 全局personal列表，v1.9.44要求workspace-local；实施时会收窄GET并补PATCH/PUT的同空间授权，不保留全局列表漏洞。新增/重置密码原有能力不在本笔擅自改语义。
 - P194仍为旧内核待收口，P196公式待裁决，Q044③等be2给helper；不将这些计为已完成。
+
+## Codex → arch（2026-09-13）：P193内核候选 `0b20dfc1`；治理范围需点名澄清
+
+### 本笔交付（不是完整P193）
+
+- 交付前merge本机main@94e9dc25，Already up to date；独立路径限定代码SHA `0b20dfc1`，未push。
+- Domain增加strict PATCH/PUT请求和V195单成员响应；DB新增未注册的 `AdminMemberManagementRepository`（read/grants/patch/replaceGrants），复用旧live治理鉴权。原provisioning只把治理函数改名导出，原全局GET/create/reset行为不变。
+- 原子整批授权：当前workspace+media+account三键存在检查，revoked_at留痕，audit同事务；授权撤掉后同一旧token下一次解析立即收窄。team固定空grant且PUT拒绝。并发替换只保留一整套，不并集混写；任一非法账户/audit失败整批回滚。
+- **发出形状未变**：本笔没有HTTP/Service/BFF接线，Worker/Web 0 diff；新仓储没有生产调用者。试做的接线因下列歧义已撤回，补丁只保存在 `output/p193-unwired-scope-proposal.patch`，不交作产品代码。
+- 候选内核的停用实现为“仅当前membership失活、仅该workspace session撤销”，这是待你确认的语义，**不申请把候选当作已冻结接口直接上线**。
+
+### 门禁与安全
+
+| 范围 | 实跑结果 |
+|---|---|
+| Domain | TDD新增13红→13绿；全量102文件/1592绿，typecheck/lint绿 |
+| DB | 定向真实PG45/45（新10+旧provisioning19+unit16）；全量160文件/1791绿，typecheck/lint绿 |
+| Worker | 全量205文件/2374绿，2外部凭证opt-in跳过；typecheck/lint绿 |
+| Web | npm test 308/308；本批零diff，前轮缺依赖的typecheck阻断仍保留，不称Web完整门禁绿 |
+| 覆盖 | 新repository V8 statements/lines/functions100%，branches89.65%，非全仓覆盖 |
+| 安全 | diff --check绿、产品目录未跟踪源码0、依赖清单/lock零diff；offline生产依赖audit0（不是联网最新漏洞库）；无真实凭证/媒体写/真实钉钉调用 |
+
+DB首次复用旧Worker测试库时1783过/8失败，均命中027无损降级保护 `tasks still carry v1.9.28 fields`。未删业务字段或放松保护；新建空合成库 `ka_be_r010_p193_test` 同代码1791全绿。日志两份都保留，见 `docs/plans/2026-09-13-P193内核质量回执.md`。后续迁移全量与Worker造数应隔离库。
+
+### 必须更正我上一封的一句判断，烦请点名裁决
+
+上一封我写“现GET全局是漏洞、实施时收窄GET”，该判断过于武断，**撤回这句断言**。实读契约：`api.md:1351` v1.9.21明确总成员GET/POST/reset是全局；`:1540` v1.9.44的“GET/PATCH/PUT三个端点”没有点名GET路径，可能指的是授权GET。
+
+1. v1.9.44里的GET是否**仅指 `GET /admin/members/:identityId/grants`**？总 `GET /admin/members` 是否仍按v1.9.21全局？若也收窄，请明确覆盖旧条款。
+2. 新建用户仍有独立personal workspace，治理管理员没有该workspace membership；现session switch只能切已加入空间，又不能往别人的personal塞管理员。故“先切空间”目前不足以管理新用户授权。请明确合法的目标空间选择/治理权限流程；我不通过伪造session或越权跨空间来接通。
+3. 停用是仅撤当前workspace会话，还是仍撤identity全部会话？旧 `api.md:890` 与 `schema.sql:997` 明写全部，新workspace-local条款是否覆盖该点？候选按前者测试，HTTP仍未开放。
+4. 授权GET/PATCH/PUT是否统一使用“任一有效team admin身份”的live治理权限，还是仍要求当前workspace的role=admin？旧授予治理权与当前个人优化师角色可能不同，请连同上条给一张最小授权矩阵。
+
+这几条只暂停P193外部接线，不阻止其他已冻结任务。P198仍等远端发送结果未知时的处理裁决；下一笔可按v1.9.44继续P194内核收口，不动be2数据链。
