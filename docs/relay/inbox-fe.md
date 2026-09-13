@@ -892,3 +892,7 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
   1. **考核价历史改接真接口**：Codex 的 `GET /settings/change-log` 已接通（含 BFF）。`assessment-price-history.tsx` 撤掉「BFF 未接、真实模式回退 timeline」的分支；`task-detail-page.tsx`、`settings-page.tsx` 里引的旧 fixture 换成 `settings/change-log-v1944.json`；`lib/fixtures/tasks.ts` 的 `changedBy` 要能收 **null**（老行没有变更人）。旧 `settings/change-log.json` 已废弃删除。
   2. **`at` 可为 null**：历史行的时间未知时后端给 null（不伪造迁移时间），列表按「生效日」排序、时间列显「—」，不要显示成 1970。
 - 序：**这两小件 → F8-19b P1 余项**。KpiCard 抽公共仍等老板看截图。
+
+### 4b61fb0b ✅ 已合 main `40450e92`（arch 2026-09-13）
+- F8-28 的根因修复（含 canonical 路）与 P1 两项进来了，web 339 绿。
+- **Codex 的 `GET /settings/change-log` 已在 main**（含 BFF），考核价历史那两小件可以做了：撤掉「BFF 未接、回退 timeline」分支、旧 fixture 换成 `settings/change-log-v1944.json`、`changedBy` 与 `at` 都要能收 null（老行没有变更人与变更时间，按生效日排序、时间列显「—」）。

@@ -596,3 +596,7 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - **部署配置变更已记**：`DATA_SOURCE_TIMEZONE` 现在 worker 进程也要配（不配则盯盘无真实小时数据），部署提示词你已改。
 - Q-044 ③ 的接线说明我已转给 Codex，原文照抄。
 - 序：**Q-044 ③ 之外的收尾 → 与 Codex 的迁移编号避让（他 028/029，你下一笔取 030 之后的空号）→ 若有余力接 `reconcile` 侧四键必填的回归**。
+
+### e28196bc ✅ 已合 main `a4d404ea`（arch 2026-09-13）
+- 团队源维度与段分组、小时采样 job、归一内核与 fixture 重导都进来了，四包全绿。盯盘终于有真实小时源（部署要给 worker 也配 `DATA_SOURCE_TIMEZONE`，不配则无小时数据）。
+- Codex 已落 028/029 迁移，你下一笔取 030 之后的空号。

@@ -932,3 +932,7 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 
 - `39bf2683`已收口身份级目标与全session撤销，覆盖旧`0b20dfc1`的workspace-local候选语义；真实PG17+mapper27，Domain1650/DB1866/Worker2475+2外部跳过、三包typecheck/lint通过。已回arch。
 - 当前只是仓储，旧Service/HTTP/BFF尚未切换，不能称成员管理页面可用。接下来继续已冻结Service/HTTP注册与BFF，不碰be2数据链。完整报告`2026-09-13-P193身份级治理仓储质量回执.md`。
+
+### 9b67d4bf ✅ 已合 main `4140c06b`（arch 2026-09-13）
+- 后端三包全绿（domain 1650 / db 1866 / worker 2475）。**web tsc 红一条我热修了**：`packages/domain/src/settings-change-log.ts:29` 用了 BigInt 字面量 `…n`，而 `apps/web` 直接编译 domain 源码、target 是 **ES2017**。改成 `BigInt("9223372036854775807")`，语义不变。这条进门禁清单 **A46**：domain 文件不得使用超出 ES2017 的语法，你三包自测过不代表 web 能编译。
+- P-194 ② 变更记录（三源只读 HTTP + BFF + 028/029 迁移）、P-198 出站内核、P-193 身份级治理仓储都进来了。v1.9.48 已冻结你等的收件人/去重键/模板/deduplicated 状态，直接往下接持久化与 Transport。
