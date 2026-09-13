@@ -309,10 +309,21 @@ try {
     ],
   });
   await seedNaming(pivot.workspaceId, {
-    "acc-1": { optimizer: "张三", goal: "拉新", placement: "优选", city: "杭州" },
-    "acc-2": { optimizer: "李四", goal: "拉新", placement: "搜索", city: "杭州" },
-    "acc-3": { optimizer: "张三", goal: "促活", placement: "优选", city: "北京" },
+    "acc-1": { optimizer: "张三", goal: "拉新", placement: "优选", city: "杭州", operator: "自投" },
+    "acc-2": { optimizer: "李四", goal: "拉新", placement: "搜索", city: "杭州", operator: "代投" },
+    "acc-3": { optimizer: "张三", goal: "促活", placement: "优选", city: "北京", operator: "自投" },
   });
+  /* v1.9.45（arch 裁 c）：原来的 `dimension-v3-agent_type.json` / `-v198.json` 钉在 `agent_type` 上，
+     而**没有任何解析器产出这个维度**，真响应永远是 DIMENSION_UNSUPPORTED。
+     快手的自投/代投实际落在清洗段 `operator` 上，所以重导为 `segment:operator`。
+     `dimension-v3-deduction_range.json` 直接删：返点区间是派生桶，同样没有解析器，一期不做。 */
+  write("dimension-v3-segment-operator.json",
+    await run(pivot, "account.dimension", { ...WINDOW, dimensionType: "segment:operator" }),
+    "POST /data/query {queryId:\"account.dimension\", dimensionType:\"segment:operator\"}：真响应。"
+    + "自投/代理分布按**清洗段**分组。v1.9.45 起本份取代 `dimension-v3-agent_type.json` 与 `-v198.json`："
+    + "那两份钉的 `agent_type` 在 dimensionTypeSchema 里合法但没有任何解析器产出，真响应必是 "
+    + "DIMENSION_UNSUPPORTED；快手的自投/代投实际就落在 `operator` 这个段上。"
+    + "同批删除的还有 `dimension-v3-deduction_range.json`（返点区间是派生桶，一期不做）");
   writePivot("pivot2-optimizer-goal.json", await runPivot(pivot, "optimizer", "goal"),
     "POST /data/query {queryId:\"account.pivot2\", dimA:\"optimizer\", dimB:\"goal\"}：真响应"
     + "（apps/worker/scripts/export-data-query-fixtures.ts 对本地隔离库 + 真 PlatformDataSource 导出）。"

@@ -1,0 +1,270 @@
+{
+  "dimension": "agent_type",
+  "rows": [
+    {
+      "key": "agency",
+      "label": "代理",
+      "metrics": {
+        "cost": {
+          "value": 11000.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 8593.2,
+          "availability": "available"
+        },
+        "exposure": {
+          "value": 86000,
+          "availability": "available"
+        },
+        "click": {
+          "value": 3600,
+          "availability": "available"
+        },
+        "conversion": {
+          "value": 270,
+          "availability": "available"
+        },
+        "realConversion": {
+          "value": 255,
+          "availability": "available"
+        },
+        "costSpace": {
+          "value": 1096.8,
+          "availability": "available"
+        },
+        "wakeUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "potentialUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "ratios": {
+          "ctr": {
+            "value": 0.0419,
+            "state": "finite"
+          },
+          "cvr": {
+            "value": 0.075,
+            "state": "finite"
+          },
+          "realCpa": {
+            "value": 43.14,
+            "state": "finite"
+          },
+          "cashCpa": {
+            "value": 33.7,
+            "state": "finite"
+          },
+          "gap": {
+            "value": 0.0588,
+            "state": "finite"
+          },
+          "potentialRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "biConversionRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      "assessment": {
+        "price": {
+          "value": 38.0,
+          "effectiveDate": "2026-09-01"
+        },
+        "priceSource": "history",
+        "onTarget": true,
+        "costStatus": "green",
+        "costStatusReason": "window_ok",
+        "budgetUsageRate": {
+          "value": null,
+          "state": "undefined"
+        }
+      },
+      "anomaly": false,
+      "agent_type": "agency",
+      "agency_name": "星火代理"
+    },
+    {
+      "key": "self",
+      "label": "自投",
+      "metrics": {
+        "cost": {
+          "value": 1800.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 1406.16,
+          "availability": "available"
+        },
+        "exposure": {
+          "value": 14000,
+          "availability": "available"
+        },
+        "click": {
+          "value": 600,
+          "availability": "available"
+        },
+        "conversion": {
+          "value": 40,
+          "availability": "available"
+        },
+        "realConversion": {
+          "value": 36,
+          "availability": "available"
+        },
+        "costSpace": {
+          "value": -38.16,
+          "availability": "available"
+        },
+        "wakeUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "potentialUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "ratios": {
+          "ctr": {
+            "value": 0.0429,
+            "state": "finite"
+          },
+          "cvr": {
+            "value": 0.0667,
+            "state": "finite"
+          },
+          "realCpa": {
+            "value": 50.0,
+            "state": "finite"
+          },
+          "cashCpa": {
+            "value": 39.06,
+            "state": "finite"
+          },
+          "gap": {
+            "value": 0.1111,
+            "state": "finite"
+          },
+          "potentialRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "biConversionRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      "assessment": {
+        "price": {
+          "value": 38.0,
+          "effectiveDate": "2026-09-01"
+        },
+        "priceSource": "history",
+        "onTarget": false,
+        "costStatus": "red",
+        "costStatusReason": "window_over",
+        "budgetUsageRate": {
+          "value": null,
+          "state": "undefined"
+        }
+      },
+      "anomaly": false,
+      "agent_type": "self"
+    },
+    {
+      "key": "unknown",
+      "label": "未标注",
+      "metrics": {
+        "cost": {
+          "value": 2400.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 1874.88,
+          "availability": "available"
+        },
+        "exposure": {
+          "value": 19000,
+          "availability": "available"
+        },
+        "click": {
+          "value": 800,
+          "availability": "available"
+        },
+        "conversion": {
+          "value": 52,
+          "availability": "available"
+        },
+        "realConversion": {
+          "value": 48,
+          "availability": "available"
+        },
+        "costSpace": {
+          "value": -50.88,
+          "availability": "available"
+        },
+        "wakeUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "potentialUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "ratios": {
+          "ctr": {
+            "value": 0.0421,
+            "state": "finite"
+          },
+          "cvr": {
+            "value": 0.065,
+            "state": "finite"
+          },
+          "realCpa": {
+            "value": 50.0,
+            "state": "finite"
+          },
+          "cashCpa": {
+            "value": 39.06,
+            "state": "finite"
+          },
+          "gap": {
+            "value": 0.0833,
+            "state": "finite"
+          },
+          "potentialRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "biConversionRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      "assessment": {
+        "price": {
+          "value": 38.0,
+          "effectiveDate": "2026-09-01"
+        },
+        "priceSource": "history",
+        "onTarget": false,
+        "costStatus": "red",
+        "costStatusReason": "window_over",
+        "budgetUsageRate": {
+          "value": null,
+          "state": "undefined"
+        }
+      },
+      "anomaly": false,
+      "agent_type": "unknown"
+    }
+  ]
+}

@@ -117,3 +117,31 @@ export const accountAnomalyRowSchema = accountDailyRowSchema.extend({
 
 export type AccountSummaryRow = z.infer<typeof accountSummaryRowSchema>;
 export type AccountDailyRow = z.infer<typeof accountDailyRowSchema>;
+
+/**
+ * v1.9.45：四个键（`incentiveCost` 与三个 BI 值）对 **platform（个人）源转必填**。
+ *
+ * 为什么不直接把 schema 里的 `.optional()` 去掉：团队 `ka_data` 与 `reconcile` 那两条路
+ * 本地连不上，硬转必填只会逼出假 fixture（arch v1.9.45 裁：豁免到 Q-041 ⑧ 落地）。
+ * 所以「必填」落在**知道源是谁**的那一层——行 schema 仍然宽，规范化入口按源收紧。
+ *
+ * 「optional」从来不等于「可以不发」：漏发时页面只是静悄悄显「−」，
+ * 而「后端没算」与「真没有数」在页面上长得一模一样。这个函数就是把那个区别变成一条错误。
+ */
+export function missingPlatformRowFields(row: unknown): string[] {
+  if (row === null || typeof row !== "object") return [];
+  const record = row as Record<string, unknown>;
+  const missing: string[] = [];
+  const metrics = record.metrics;
+  if (metrics !== null && typeof metrics === "object" && !Object.hasOwn(metrics, "incentiveCost")) {
+    missing.push("metrics.incentiveCost");
+  }
+  const assessment = record.assessment;
+  // 只有带考核结论的行才有这三个值；趋势/明细行没有 assessment，不该被要求。
+  if (assessment !== null && typeof assessment === "object" && Object.hasOwn(assessment, "costStatusReason")) {
+    for (const field of ["biConv", "biCashCost", "overCost"]) {
+      if (!Object.hasOwn(assessment, field)) missing.push(`assessment.${field}`);
+    }
+  }
+  return missing;
+}

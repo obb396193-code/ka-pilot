@@ -4,7 +4,7 @@
     "mode": "platform",
     "source": {
       "queryId": "account.table",
-      "rowSchemaVersion": "account.table/v3",
+      "rowSchemaVersion": "account.table/v2",
       "status": "ready",
       "rows": [
         {
@@ -344,6 +344,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "账户日行：账面/现金两组并排；dataAnomaly 行着色"
+    "_note": "`account.table` 的行版本就是 **v2**（`packages/domain/src/data-query-rows.ts` 定的，真响应也是 v2）；本文件名里的 `-v3` 指的是 v1.9.x 那批**三态口径**，不是行版本号，两者别混。v1.9.45：原来这里写成 `account.table/v3`，是版本号写错——同目录的 `table-v1922-filtered.json` 一直是 v2，两份冻结件自相矛盾。升 table 行到 v3 没有需求驱动，不做。"
   }
 }

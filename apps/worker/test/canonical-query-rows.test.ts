@@ -57,6 +57,11 @@ describe("canonical query row adapters", () => {
         priceSource: source === "ka_data" ? "ka_daily" : "history",
         price: null, onTarget: null, costStatus: null, costStatusReason: "assessment_missing",
         budgetUsageRate: { value: null, state: "undefined" },
+        // v1.9.45：三个 BI 值对 platform 源必填。真产出路径恒发它们，
+        // 桩不发就等于造了一份线上不可能出现的行。
+        biConv: { value: null, availability: "missing" },
+        biCashCost: { value: null, state: "undefined" },
+        overCost: { value: null, availability: "missing" },
       },
     };
     if (queryId === "account.trend") return { ds: "2026-08-24", metrics: summary };
@@ -292,6 +297,48 @@ describe("canonical query row adapters", () => {
       ...sourceRow("account.table", "platform"),
       ds: "2026-02-31",
     }], "w")).toThrow(CanonicalQueryRowError);
+  });
+  /**
+   * v1.9.45：四个键（`incentiveCost` + 三个 BI 值）对 **platform 源必填**，
+   * 团队 `ka_data` 与 reconcile 豁免到 Q-041 ⑧ 落地（那两条路本地连不上，
+   * 硬转必填只会逼出假 fixture）。
+   *
+   * 行 schema 仍留 optional，所以「必填」只能落在**知道源是谁**的这一层。
+   * 漏发时页面只是静悄悄显「−」，而「后端没算」与「真没有数」长得一模一样——
+   * 这条绊线就是把那个区别变成一条错误。
+   */
+  describe("v1.9.45 the four metric fields are required on platform, exempt on ka_data", () => {
+    const summaryRow = (source: "platform" | "ka_data") =>
+      sourceRow("account.summary", source) as unknown as Record<string, unknown>;
+
+    it("refuses a platform summary row missing incentiveCost", () => {
+      const row = summaryRow("platform");
+      Reflect.deleteProperty(row.metrics as Record<string, unknown>, "incentiveCost");
+      expect(() => canonicalizeQueryRows("account.summary", "platform", [row], workspaceId))
+        .toThrow(CanonicalQueryRowError);
+    });
+
+    it.each(["biConv", "biCashCost", "overCost"])("refuses a platform summary row missing %s", (field) => {
+      const row = summaryRow("platform");
+      Reflect.deleteProperty(row.assessment as Record<string, unknown>, field);
+      expect(() => canonicalizeQueryRows("account.summary", "platform", [row], workspaceId))
+        .toThrow(CanonicalQueryRowError);
+    });
+
+    it("still accepts a ka_data row without them, so the exemption is real", () => {
+      const row = summaryRow("ka_data");
+      Reflect.deleteProperty(row.metrics as Record<string, unknown>, "incentiveCost");
+      for (const field of ["biConv", "biCashCost", "overCost"]) {
+        Reflect.deleteProperty(row.assessment as Record<string, unknown>, field);
+      }
+      expect(canonicalizeQueryRows("account.summary", "ka_data", [row], workspaceId)).toHaveLength(1);
+    });
+
+    it("does not demand the BI values on rows that carry no assessment", () => {
+      // 趋势/明细行没有考核结论，要求它们带 BI 值就是要求一个不存在的东西。
+      const trend = sourceRow("account.trend", "platform") as unknown as Record<string, unknown>;
+      expect(canonicalizeQueryRows("account.trend", "platform", [trend], workspaceId)).toHaveLength(1);
+    });
   });
 });
 
