@@ -133,3 +133,12 @@ test("★pivot2 收 segment:<key> —— 这是「按昵称字段透视」的入
   }
   assert.equal(pivotDimensionSupported("resource_position"), false, "合法但查不出来的，照样标待接源")
 })
+
+test("★筛选条件必须进 params —— 否则筛选栏是摆设", () => {
+  // 选了优化师而数字纹丝不动，是这类功能最典型的坏法：控件在、看着生效了，
+  // 其实请求里压根没带条件。这条锁住「选中的值确实变成了 filters」。
+  const { params } = dimensionParams("biz", WINDOW, { optimizer: ["张三"], task_id: ["T-1"] })
+  assert.deepEqual(params.filters, { optimizer: ["张三"], task_id: ["T-1"] })
+  // 没选任何条件时不发 filters 键（发一个空对象是多余的未知形状）
+  assert.equal("filters" in dimensionParams("biz", WINDOW, {}).params, false)
+})

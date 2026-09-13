@@ -30,13 +30,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
  * 数据源：`assessment.biConv/biCashCost/overCost` 与环比是契约 v1.9.22 新增，后端 Codex P-210 未到，
  * 现读 `lib/data/fixtures/v1922/` 的过渡 fixture（自写、按 api.md 形，落地后并回删除）。
  */
-export function OverviewTab({ colorKey, window, workspaceId, summaryQuery }: {
+export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filters }: {
   colorKey?: string
   window: DataWindow
   workspaceId?: string
   /** summary 由页面层取好传进来：页头要用它的 `lineage.dataAsOf` 定数据日，
    *  这里再取一次就是两个请求打同一个端点（审查员 D 的「组件只吃 props」） */
   summaryQuery: ReturnType<typeof useDashboardSummary>
+  /** 页头筛选栏选中的条件；进每个查询的 params，不然筛选栏就是摆设 */
+  filters?: Record<string, unknown>
 }) {
   const summary = summaryQuery.data?.row ?? null
   // ★lineage 跟着这次响应走，不再固定读 mock fixture——真实模式下那等于把假的「数据截至」
@@ -44,18 +46,18 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery }: {
   const lineage = (summaryQuery.data?.lineage ?? null) as
     (Parameters<typeof LineageFooter>[0]["lineage"] & { window?: { from: string; to: string; preset?: string }; warnings?: LineageWarning[] }) | null
 
-  const optimizerQuery = useDashboardDimension("optimizer", window, workspaceId, mockOptimizerRows())
+  const optimizerQuery = useDashboardDimension("optimizer", window, workspaceId, mockOptimizerRows(), filters)
   // ★查询用 `placement`，界面仍叫「资源位」：快手的资源位实际落在 placement 维度
   //   （v1.9.41 实测分出 优选/搜索/联盟/主站/上下滑）。`resource_position` 这个键
   //   在 schema 里合法但没有解析器产出，查了直接 DIMENSION_UNSUPPORTED。
-  const resourceQuery = useDashboardDimension("placement", window, workspaceId, mockResourcePositionRows())
+  const resourceQuery = useDashboardDimension("placement", window, workspaceId, mockResourcePositionRows(), filters)
   const optimizerRows = optimizerQuery.data ?? []
   const resourceRows = resourceQuery.data ?? []
   // ★任务大类顶层行走**和 summary 同源**的那份，不用契约里那份 personal 的 biz fixture：
   //   两者口径不同，挂在一起会让分摊的分母整个错（审查 ③ 点名）。
-  const goalQuery = useDashboardDimension("goal", window, workspaceId, mockOptimizerRows())
+  const goalQuery = useDashboardDimension("goal", window, workspaceId, mockOptimizerRows(), filters)
   const goalRows = goalQuery.data ?? []
-  const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows())
+  const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows(), filters)
   const bizRows = bizQuery.data ?? []
 
   /**
@@ -65,7 +67,7 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery }: {
    * 趋势图、以及建立在它之上的「换窗口重算」，在真实部署里画的全是样例数据。
    * 更尴尬的是 `useDashboardTrend` 我早写好了，**全仓没有一处调用**。
    */
-  const trendQuery = useDashboardTrend(window, workspaceId)
+  const trendQuery = useDashboardTrend(window, workspaceId, filters)
   const mockDays = useMemo(() => (isOk(trendFixture) ? trendFixture.data.source.rows : []), [])
   const days = useMemo(
     () => (IS_MOCK ? mockDays : (trendQuery.data as typeof mockDays) ?? []),

@@ -5,6 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
 import { useDashboardSummary } from "@/lib/data/use-dashboard"
+import { FilterBar } from "@/components/business/data/dashboard/filter-bar"
+import type { FilterSelection } from "@/lib/data/use-data-filters"
+import { mediaOptions } from "@/lib/fixtures/naming"
 import { useChartColorKey } from "@/lib/theme/use-chart-color-key"
 import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
@@ -56,11 +59,17 @@ export function DataPage() {
     return resolvePreset("month_to_date", fallback, { preset: "month_to_date", from: fallback, to: fallback })
   })
   const pickedByUser = useRef(false)
+  /**
+   * F8-27 筛选栏。媒体和筛选条件都提到页面层：
+   * 大盘、透视、对账都要用同一份——分散在各 tab 里会出现「这个 tab 筛了、那个没筛」。
+   */
+  const [media, setMedia] = useState(mediaOptions[0]!.value)
+  const [filters, setFilters] = useState<FilterSelection>({})
   const chooseWindow = useCallback((next: DataWindow) => { pickedByUser.current = true; setDataWindow(next) }, [])
 
   // 概览的 summary 提到这一层：页头要用它的 `lineage.dataAsOf` 定数据日，
   // 而 OverviewTab 也要用同一份——放两处就是两次请求打同一个端点
-  const summaryQuery = useDashboardSummary(dataWindow, session?.activeWorkspace.id)
+  const summaryQuery = useDashboardSummary(dataWindow, session?.activeWorkspace.id, filters)
   /**
    * 数据日的兜底链，从最准到最糙：
    *   1. `lineage.dataAsOf` —— 后端明说的截数时刻；
@@ -98,9 +107,17 @@ export function DataPage() {
         }
       />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
+
+      {/* 筛选栏只在**看数**的 tab 上出现：归因树/竞情/自助报表还没接真接口，
+          给它们挂一条不生效的筛选栏是假的可用性 */}
+      {(["overview", "table", "pivot", "gap"] as Tab[]).includes(tab) ? (
+        <div className="px-4 lg:px-6">
+          <FilterBar window={dataWindow} media={media} onMediaChange={setMedia} value={filters} onChange={setFilters} />
+        </div>
+      ) : null}
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
-          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} workspaceId={session?.activeWorkspace.id} summaryQuery={summaryQuery} /> : null}
+          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} workspaceId={session?.activeWorkspace.id} summaryQuery={summaryQuery} filters={filters} /> : null}
           {tab === "table" ? <TableTab onSaveView={saveView} window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
           {tab === "pivot" ? <PivotTab window={dataWindow} workspaceId={session?.activeWorkspace.id} colorKey={colorKey} /> : null}
           {tab === "hourly" ? <HourlyTab window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
