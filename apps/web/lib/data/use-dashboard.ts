@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { runtimeDataClient } from "./client"
-import { dimensionParams, windowParams, type QueryParams } from "./query-params"
+import { buildFilters, dimensionParams, windowParams, type QueryParams } from "./query-params"
 import type { DataQueryResponse, DataQueryWarning } from "./contracts"
 import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import {
@@ -118,10 +118,11 @@ function useQuery<T>(
  */
 export type DashboardSummary = { row: DashboardSummaryRow; lineage: SourceLineage | null }
 
-export function useDashboardSummary(window: DataWindow, workspaceId: string | undefined) {
+export function useDashboardSummary(window: DataWindow, workspaceId: string | undefined, filters?: Record<string, unknown>) {
   const remote = useQuery<DashboardSummary>(
     "account.summary",
-    windowParams(window),
+    // 筛选条件必须进 params，否则筛选栏就是个摆设：选了优化师而数字纹丝不动
+    { ...windowParams(window), ...(buildFilters(filters).filters ? { filters: buildFilters(filters).filters } : {}) },
     !IS_MOCK,
     (response) => {
       if (!response.ok || response.data.mode === "reconcile") return null
@@ -136,20 +137,20 @@ export function useDashboardSummary(window: DataWindow, workspaceId: string | un
   return { data: row ? { row, lineage } : null, loading: false, isValidating: false, error: null, reload: () => {} }
 }
 
-export function useDashboardTrend(window: DataWindow, workspaceId: string | undefined) {
+export function useDashboardTrend(window: DataWindow, workspaceId: string | undefined, filters?: Record<string, unknown>) {
   return useQuery<{ ds: string; metrics: DashboardRow["metrics"] }[]>(
     "account.trend",
-    windowParams(window),
+    { ...windowParams(window), ...(buildFilters(filters).filters ? { filters: buildFilters(filters).filters } : {}) },
     !IS_MOCK,
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as { ds: string; metrics: DashboardRow["metrics"] }[]) : null),
     workspaceId,
   )
 }
 
-export function useDashboardDimension(dimension: string, window: DataWindow, workspaceId: string | undefined, fallback: DashboardRow[]) {
+export function useDashboardDimension(dimension: string, window: DataWindow, workspaceId: string | undefined, fallback: DashboardRow[], filters?: Record<string, unknown>) {
   const remote = useQuery<DashboardRow[]>(
     "account.dimension",
-    dimensionParams(dimension, window).params,
+    dimensionParams(dimension, window, filters).params,
     !IS_MOCK,
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as DashboardRow[]) : null),
     workspaceId,

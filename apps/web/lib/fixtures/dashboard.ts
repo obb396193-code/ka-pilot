@@ -54,7 +54,9 @@ export type DashboardSummaryRow = {
    * ★不再自造 `previous` + 前端相减：窗口口径、缺数怎么算、除零怎么办全在后端，
    *   前端自己算必然和日报/结算对不上。后端没给 compare 就不显环比。
    */
-  compare?: { mode: "dod" | "wow" | "prev_window"; deltas: Partial<Record<"cost" | "cashCost" | "realConversion" | "cashCpa" | "onTargetRate", RatioValue>> }
+  /** `realCpa` 是 F8-26 ③ 要的：转化成本卡的环比。be2 还没发，所以是可选——没有就不显环比，
+   *  不拿 cashCpa 的顶上（数和环比不同口径 = 假话）。 */
+  compare?: { mode: "dod" | "wow" | "prev_window"; deltas: Partial<Record<"cost" | "cashCost" | "realConversion" | "cashCpa" | "realCpa" | "onTargetRate", RatioValue>> }
 }
 
 
@@ -81,65 +83,6 @@ export const bizDimensionFixture = checked<{ mode: string; source: { rows: Dashb
 export const resourcePositionFixture = checked<{ mode: string; source: { rows: DashboardRow[]; dimension: string; lineage: unknown } }>(resourceDim, dimensionWindowRowSchema, "dimension-resource-position")
 export const drillFixture = drill as unknown as Fixture<{ byParent: Record<string, DashboardRow[]> }>
 
-/**
- * BI 数按消耗占比分摊到下级（契约 v1.9.22 口径，与同事 v7 一致）。
- *
- * ★分母是**已返回子行的消耗之和**，不是父行消耗——列表被截断/分页时，父行消耗里含着
- * 没返回的那些子行，拿它当分母会把每个可见子行的份额系统性调小，加起来对不上父行。
- *
- * 三种情况**整列不分摊**（返回 null，界面显「−」）：
- * ① 父行没有考核 BI 数（missing / pending）——没有可分的总量；
- * ② 结果被截断或只是部分（truncated / partial）——分母不完整；
- * ③ 子行自己消耗缺数——占比算不出来。
- * 宁可整列空着，也不给一个偷偷算错的数：这列是拿去对考核的。
- */
-export function allocateBi(input: {
-  parentBi: MetricValue | null | undefined
-  /** 已返回的同级子行（分母取它们的消耗之和） */
-  siblings: { metrics: Pick<DashboardMetrics, "cost"> }[]
-  childCost: number | null
-  /** 结果被截断或只是部分时不分摊 */
-  incomplete?: boolean
-}): number | null {
-  const { parentBi, siblings, childCost, incomplete } = input
-  // bi 可能是 0（真的一个都没回传）——用 != null 判断，别被 falsy 吃掉
-  if (incomplete || childCost === null) return null
-  if (!parentBi || parentBi.availability !== "available" || parentBi.value === null) return null
-  const denominator = siblings.reduce<number | null>((total, row) => {
-    const value = row.metrics.cost.value
-    return total === null || value === null ? null : total + value
-  }, 0)
-  if (denominator === null || denominator === 0) return null
-  return Math.round((childCost / denominator) * parentBi.value)
-}
-
-/**
- * 按选中的窗口从**按天**的趋势行重算汇总。
- * 为什么要重算而不是直接显示后端那份 summary：窗口是用户选的，选了之后数字不动，
- * 这个选择器就是个摆设（老板 2026-09-10 问的正是这个）。
- * 真实模式下换窗口 = 重发一次 `POST /data/query` 由后端算（F8-19b ① 接上后走这条）；
- * 这里是过渡期用手上的按天数据自己合，口径与后端一致。
- */
-export function aggregateDays(days: { ds: string; metrics: DashboardMetrics }[], from: string, to: string) {
-  const inWindow = days.filter((day) => day.ds >= from && day.ds <= to)
-  if (inWindow.length === 0) return null
-  const sum = (pick: (m: DashboardMetrics) => MetricValue) =>
-    inWindow.reduce<number | null>((total, day) => {
-      const value = pick(day.metrics).value
-      // 只要有一天缺数，和就是「不完整」——返回 null，不把缺的当 0 加进去
-      return total === null || value === null ? null : total + value
-    }, 0)
-  const cost = sum((m) => m.cost)
-  const cashCost = sum((m) => m.cashCost)
-  const conversion = sum((m) => m.conversion)
-  const realConversion = sum((m) => m.realConversion)
-  // 比率必须用「总和 ÷ 总和」重算，**不能对每天的比率取平均**——那会被小消耗日拉偏
-  const ratio = (numerator: number | null, denominator: number | null) =>
-    numerator === null || !denominator ? null : numerator / denominator
-  return {
-    days: inWindow.length,
-    cost, cashCost, conversion, realConversion,
-    realCpa: ratio(cost, realConversion),
-    cashCpa: ratio(cashCost, realConversion),
-  }
-}
+// 这两个算术搬到了 `lib/data/dashboard-math.ts`——测试 glob 只跑 `lib/data/*.test.ts`，
+// 放在这个目录下的测试根本不会执行（审查员 D 点名）。这里只做转发，调用方不用改。
+export { allocateBi, aggregateDays } from "@/lib/data/dashboard-math"

@@ -11,6 +11,7 @@ import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, Sta
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
+import { NotConnected } from "@/components/business/state/not-connected"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,7 @@ import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdow
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { FIXTURES_ENABLED, fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { dataStatusMeta, deliveryLabel, exportFixtures, libraryFixture, renderFixture, reportConfigFixture, reportKindLabel, settlementTemplatesFixture, subscriptionKindLabel, subscriptionsFixture, type ReportLibraryItem, type SettlementTemplate, type Subscription } from "@/lib/fixtures/reports"
 import { cn } from "@/lib/utils"
 import { DailyReportView } from "./daily-report"
@@ -62,7 +63,17 @@ const libColumns = libHelper.columns([
   )),
 ])
 
+/**
+ * A35：真实模式不显样例，这个 tab 还没接真接口，照实说清楚缺哪个端点。
+ * 外面包一层无 hook 的壳——早退必须在所有 hook 之前，
+ * 写在组件内部会让两种模式的 hook 数量不一致（rules-of-hooks）。
+ */
 function BusinessTab() {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="GET /reports/configs · POST /reports/render" hint="报告库和渲染结果都要这两个端点，后端还没有。" />
+  return <BusinessTabInner />
+}
+
+function BusinessTabInner() {
   const items = isOk(libraryFixture) ? libraryFixture.data.items : []
   const table = useGridTable({ data: items, columns: libColumns, pageSize: 20, getRowId: (item) => item.id })
   const config = isOk(reportConfigFixture) ? reportConfigFixture.data : null
@@ -115,7 +126,17 @@ const tplColumns = tplHelper.columns([
   )),
 ])
 
+/**
+ * A35：真实模式不显样例，这个 tab 还没接真接口，照实说清楚缺哪个端点。
+ * 外面包一层无 hook 的壳——早退必须在所有 hook 之前，
+ * 写在组件内部会让两种模式的 hook 数量不一致（rules-of-hooks）。
+ */
 function TemplatesTab() {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="GET /settlement-templates · GET /reports/configs" hint="结算模板与报告模板，后端还没有。" />
+  return <TemplatesTabInner />
+}
+
+function TemplatesTabInner() {
   const items = isOk(settlementTemplatesFixture) ? settlementTemplatesFixture.data.items : []
   const table = useGridTable({ data: items, columns: tplColumns, pageSize: 20, getRowId: (item) => `${item.templateId}-${item.templateVersion}`, initialColumnVisibility: { templateId: false } })
   const config = isOk(reportConfigFixture) ? reportConfigFixture.data : null
@@ -144,7 +165,17 @@ function makeSubColumns(onToggle: (sub: Subscription, enabled: boolean) => void)
   ])
 }
 
+/**
+ * A35：真实模式不显样例，这个 tab 还没接真接口，照实说清楚缺哪个端点。
+ * 外面包一层无 hook 的壳——早退必须在所有 hook 之前，
+ * 写在组件内部会让两种模式的 hook 数量不一致（rules-of-hooks）。
+ */
 function SchedulesTab() {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="GET /subscriptions/mine" hint="定时推送订阅，后端还没有。" />
+  return <SchedulesTabInner />
+}
+
+function SchedulesTabInner() {
   const [enabled, setEnabled] = useState<Record<number, boolean>>({})
   const items = useMemo(() => (isOk(subscriptionsFixture) ? subscriptionsFixture.data.items : []).filter((item) => item.kind !== "alert").map((item) => ({ ...item, enabled: enabled[item.id] ?? item.enabled })), [enabled])
   const columns = useMemo(() => makeSubColumns((sub, next) => { setEnabled((prev) => ({ ...prev, [sub.id]: next })); toast(`${subscriptionKindLabel[sub.kind]}已${next ? "启用" : "停用"}`, { description: `接口接入后生效（当前为示例）` }) }), [])
