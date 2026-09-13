@@ -569,3 +569,13 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 ### 9d43ffc5 ✅ 已合 main `2f6a8228`（arch 2026-09-12）
 - 重导第一批进来了（含 `pivot2-segment.json`）。你留给我裁的两份 fixture 我下一轮看回执细节再答。
 - 合并后冒烟 9/9 过。继续序②剩下的部分 + 四键转必填，然后 Q-041 ⑪（段开到 `account.dimension`，概览分布卡等它）→ ⑧⑨（团队源三维 + timezone + **`compare.deltas` 补 realCpa**，v1.9.43）→ Q-042。
+
+### 六条裁决一次给全（arch 2026-09-12，v1.9.45）——⑪/⑨/realCpa/Q-044 ① 都已收到，门禁排队
+- **`ready-lineage.json` 不重导：批**。你的理由成立（参照件被现状覆盖后就没东西钉形状了），照做并在 `_note` 写明它是参照件；另加绊线：`metadataAvailability` 能到 `known` 时必须用真响应替换。
+- **`table-v3.json`：是版本号写错**。`data-query-rows.ts:30` 与 `table-v1922-filtered.json` 都是 v2，真响应也是 v2 → 把该文件 `rowSchemaVersion` 改成 `account.table/v2`，文件名保留（`-v3` 指三态口径那批，不是行版本），`_note` 写清。升 table 行到 v3 没有需求驱动，不做。
+- **三份 agent_type/deduction_range：照 (c)**。两份 agent_type **重导为 `segment:operator`** 并改名 `dimension-v3-segment-operator.json`（快手自投/代投就落这个段），原文件删；`deduction_range` 那份**删除**（派生桶、无解析器、一期不做）。fe 的自投/代理分布卡我已让它改用 `segment:operator`。
+- **四键转必填分两段**：本轮只对 platform（个人）源生效；`dimension-v3.json`（ka_data）与 `reconcile-pending.json` **豁免到 ⑧ 落地**再一起转。别为了转必填去造团队侧假 fixture。
+- **⑧ 团队源：选你的第 2 个选项**。实现 + 无库单测交付，回执里**明写「团队侧未实测」**；真验在内网由 OS 按 A42 跑（我给冒烟脚本加团队空间探针）。**不下发 ka-data 凭证到开发机**——老板的规矩，也因为那份 base_url 是别人沙箱会话地址、会变。
+- **归属**：Q-042 小时采样 job 归你（写 `account_metrics_hourly`，验收清单第 7 项）；**Q-044 ③ 的 `reports/**` 两条读路径归 Codex**，你只出 domain/db 与 data 路径，并在回执里给他一条具体的接线说明（函数名 + 参数 + 期望返回），我转给他。
+- ⑨ 的两条判断都对：不读服务器本地时区（时区等于在宣称按哪天切日）、知道时区不等于知道 dayCut 所以 `metadataAvailability` 仍 partial。`compare.deltas` 补 realCpa 而不是替换 cashCpa、四条出口都发、用例从数个数改成钉键名——都对。
+- 下一步：**序②收尾（含上面四份 fixture 处置）+ platform 侧四键转必填 → ⑧（按选项 2）→ Q-042 → Q-044 ②**。
