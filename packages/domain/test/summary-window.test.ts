@@ -11,7 +11,10 @@ const fixture = (name: string) => JSON.parse(readFileSync(new URL(`../../contrac
 const metrics = () => structuredClone(fixture("summary-window-v3-green").data.source.rows[0].metrics);
 const finite = (value: number): RatioValue => ({ value, state: "finite" });
 const missing = { value: null, state: "undefined" as const };
-const point = () => ({ cost: mv(100), cashCost: mv(80), realConversion: mv(2), cashCpa: finite(40), onTargetRate: finite(0.5) });
+// v1.9.43：比较点带两个 CPA。realCpa = cost/realConversion = 50，cashCpa = cashCost/realConversion = 40 —— 
+// 两者数值不同是刻意的：大盘「转化成本」卡要的是前者，之前错挂了后者。
+const point = () => ({ cost: mv(100), cashCost: mv(80), realConversion: mv(2),
+  realCpa: finite(50), cashCpa: finite(40), onTargetRate: finite(0.5) });
 // Synthetic v1.7.4 row for invariant tests; the three direct arch fixture gates below stay unchanged.
 const personalRow = () => {
   const row = structuredClone(fixture("summary-window-v3-green").data.source.rows[0]);
@@ -108,7 +111,8 @@ describe("v3 compare canonical ratios", () => {
     expect(result.deltas.cashCpa).toEqual(finite(2)); expect(result.deltas.onTargetRate.value).toBeCloseTo(0.3);
   });
   it("zero previous produces NEW, zero/zero 0, missing side undefined", () => {
-    const previous = point(); previous.cost = mv(0); previous.cashCost = mv(0); previous.cashCpa = finite(0); previous.realConversion = mv(null);
+    const previous = point(); previous.cost = mv(0); previous.cashCost = mv(0);
+    previous.realCpa = finite(0); previous.cashCpa = finite(0); previous.realConversion = mv(null);
     const current = point(); current.cashCost = mv(0); current.onTargetRate = missing;
     const result = compareWindowPoints("dod", current, previous);
     expect(result.deltas.cost).toEqual({ value: null, state: "infinite" });

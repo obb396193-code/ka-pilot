@@ -93,7 +93,8 @@ async function main(): Promise<void> {
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool), createPlatformReadSnapshot(pool),
-      createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), createPlatformPivotQuery(pool)),
+      createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), createPlatformPivotQuery(pool),
+      config.sourceTimezone),
     sourcePolicy: {
       diagnosticEnabled: config.dataDiagnosticEnabled,
       kaDataEnabled: config.kaDataEnabled,

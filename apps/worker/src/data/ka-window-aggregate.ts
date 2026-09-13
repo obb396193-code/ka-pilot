@@ -8,11 +8,18 @@ const count = z.number().int().nonnegative().safe();
 const metric = z.number().finite().nullable();
 const ratioUnknown = { value: null, state: "undefined" } as const;
 const metrics = ["cost_yuan", "cash_yuan", "show", "click", "conv", "target"] as const;
+const flag = z.union([z.literal(0), z.literal(1)]);
+/** 有值、但没覆盖全部成员日 → 部分合计。没值仍是缺失：partial 的前提是「有一部分」。 */
+const isPartial = (row: Row, key: typeof metrics[number]): boolean =>
+  row[key] !== null && row[`${key}_complete`] === 0;
 const rowSchema = z.object({
   kind: z.enum(["window", "day"]), period: z.enum(["current", "previous"]),
   date_from: calendarDateSchema, date_to: calendarDateSchema, ds: calendarDateSchema.nullable(),
   expected_count: count, member_count: count, observed_count: count, account_count: count, catalog_count: count,
   invalid_count: z.literal(0), cost_yuan: metric, cash_yuan: metric, show: metric, click: metric, conv: metric, target: metric,
+  // v1.9.46（Q-041 ⑧）：与上面六列成对，说明那个和是否覆盖了全部成员日。
+  cost_yuan_complete: flag, cash_yuan_complete: flag, show_complete: flag,
+  click_complete: flag, conv_complete: flag, target_complete: flag,
   missing_price_count: count, price_count: count, unique_price: metric,
   determinable_count: count.nullable(), on_target_count: count.nullable(), day_over_count: count,
 }).strict();
@@ -33,27 +40,47 @@ function checkRow(row: Row) {
     row.missing_price_count > row.member_count || row.price_count > row.member_count - row.missing_price_count ||
     (row.price_count === 1) !== (row.unique_price !== null) ||
     (row.member_count > row.missing_price_count && row.price_count === 0)) invalid();
-  // The target is complete iff every price and BI conversion is present. SQL
-  // supplies invalid_count before missing propagation, so overflow is not null.
-  const targetKnown = row.member_count > 0 && row.missing_price_count === 0 && row.conv !== null;
-  if ((row.target !== null) !== targetKnown) invalid();
+  // v1.9.46：目标**齐全**的条件是每个价和每个 BI 转化都在；部分合计下 `target` 会有值
+  // 但不齐全，所以判据从「非空」改成「非空且 complete」——否则一个部分目标会被当成整窗目标，
+  // 拿去跟整窗花费比，判出来的达标是错的。
+  const targetKnown = row.member_count > 0 && row.missing_price_count === 0
+    && row.conv !== null && row.conv_complete === 1;
+  if ((row.target !== null && row.target_complete === 1) !== targetKnown) invalid();
   if (row.catalog_count === 0 && metrics.some((key) => row[key] !== null)) invalid();
+  // 没值就不能自称齐全——`<col>_complete=1` 而 `<col>` 为 null 是自相矛盾的证据。
+  if (metrics.some((key) => row[key] === null && row[`${key}_complete`] === 1)) invalid();
   if (row.kind === "day") {
     if (row.ds === null || row.member_count !== row.catalog_count || row.determinable_count !== null || row.on_target_count !== null ||
-      row.day_over_count !== Number(row.cash_yuan !== null && row.target !== null && row.cash_yuan > row.target)) invalid();
+      row.day_over_count !== Number(row.cash_yuan !== null && row.target !== null
+        && row.cash_yuan_complete === 1 && row.target_complete === 1 && row.cash_yuan > row.target)) invalid();
   } else if (row.ds !== null || row.determinable_count === null || row.on_target_count === null ||
     row.on_target_count > row.determinable_count || row.determinable_count > row.account_count) invalid();
 }
 
+/** SQL 侧列名 → 响应字段名；与 `canonical-query-rows` 那张表同理，两边必须对得上。 */
+const PARTIAL_COLUMN_BY_KA_KEY: Partial<Record<typeof metrics[number], string>> = {
+  cost_yuan: "cost", cash_yuan: "cash_cost", show: "exposure", click: "click", conv: "real_conversion",
+};
+
 function rowSummary(row: Row) {
+  // v1.9.46（Q-041 ⑧）：团队源也发部分合计。名单里的列在 DTO 层标 availability="partial"。
+  const partial = metrics.filter((key) => isPartial(row, key))
+    .map((key) => PARTIAL_COLUMN_BY_KA_KEY[key]).filter((column): column is string => column !== undefined);
   const base = canonicalSummaryBaseRow({ row_count: row.observed_count, account_count: row.account_count,
-    cost_yuan: row.cost_yuan, cash_yuan: row.cash_yuan, show: row.show, click: row.click, conv: row.conv }, "ka_data");
+    cost_yuan: row.cost_yuan, cash_yuan: row.cash_yuan, show: row.show, click: row.click, conv: row.conv,
+    partial }, "ka_data");
   const completePrices = row.member_count > 0 && row.missing_price_count === 0;
-  const reason = !completePrices ? "assessment_missing" : row.cash_yuan === null ? "cash_missing" : row.target === null
+  // v1.9.46：参与判定的任一项是部分合计就**挂起判定**（与个人源 `partial_data` 同一条道理）——
+  // 拿「有数那部分」的花费去跟整窗目标比，结论必错，而且数字看着一切正常。
+  const partialJudgement = isPartial(row, "cash_yuan") || isPartial(row, "target");
+  const reason = !completePrices ? "assessment_missing" : partialJudgement ? "partial_data"
+    : row.cash_yuan === null ? "cash_missing" : row.target === null
     ? "conversion_missing" : row.cash_yuan > row.target ? "window_over" : row.day_over_count > 0 ? "day_over_window_ok" : "window_ok";
   const determined = reason === "window_ok" || reason === "day_over_window_ok" || reason === "window_over";
-  const costSpace = metricValue(
-    row.cash_yuan === null || row.target === null ? null : row.target - row.cash_yuan);
+  const space = row.cash_yuan === null || row.target === null ? null : row.target - row.cash_yuan;
+  // 成本空间照给（两边都有值就算得出来），但它可能是「部分」的——判定已经挂起，读不成「达标」。
+  const costSpace = space !== null && partialJudgement
+    ? { value: space, availability: "partial" as const } : metricValue(space);
   // v1.9.27 ③（Q-041 ②）：KA 这条路自己拼 assessment（不走 computeWeightedAssessment），
   // 三个 BI 值也必须在这儿补齐——少发它们前端只会静悄悄显「−」，看不出是后端没算。
   // 用的是同一个算术入口，口径与个人源那条路一致。
@@ -98,8 +125,14 @@ export function assembleKaWindowAggregates(input: unknown, plan: KaDataWindowQue
       total.price_count < Math.max(0, ...days.map((row) => row.price_count)) ||
       total.price_count > days.reduce((n, row) => n + row.price_count, 0)) invalid();
     for (const key of metrics) {
-      const expected = days.length === 0 || days.some((row) => row[key] === null) ? null : days.reduce((n, row) => n + row[key]!, 0);
+      // v1.9.46：窗口值 = **Σ 有值的日值**（部分合计），完整性 = 每一天都完整且一天不缺。
+      // 这两件必须一起对拍：只对数不对完整性，一个部分和会被当成整窗和；
+      // 只对完整性不对数，两边口径分叉时不会有任何东西报警（2026-09-12 个人源那次 P0 就是这么炸的）。
+      const present = days.filter((row) => row[key] !== null);
+      const expected = present.length === 0 ? null : present.reduce((n, row) => n + row[key]!, 0);
       if (!equalMetric(total[key], expected)) invalid();
+      const complete = days.length > 0 && days.every((row) => row[`${key}_complete`] === 1) ? 1 : 0;
+      if (days.length > 0 && total[`${key}_complete`] !== complete) invalid();
     }
     if (total.price_count === 1 && days.some((row) => row.unique_price !== null && row.unique_price !== total.unique_price)) invalid();
     periods.set(period, { window: total, days });
@@ -119,7 +152,8 @@ export function assembleKaWindowAggregates(input: unknown, plan: KaDataWindowQue
   const summary = rowSummary(current.window);
   const point = (row: Row) => {
     const metrics = rowSummary(row).metrics;
-    return { cost: metrics.cost, cashCost: metrics.cashCost, realConversion: metrics.realConversion, cashCpa: metrics.ratios.cashCpa,
+    return { cost: metrics.cost, cashCost: metrics.cashCost, realConversion: metrics.realConversion,
+      realCpa: metrics.ratios.realCpa, cashCpa: metrics.ratios.cashCpa,
       onTargetRate: !row.determinable_count ? ratioUnknown : { value: row.on_target_count! / row.determinable_count, state: "finite" as const } };
   };
   const comparison = compare === undefined ? undefined : previous === undefined ? unavailableWindowComparison(compare)

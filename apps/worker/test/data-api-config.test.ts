@@ -96,3 +96,26 @@ describe("data API config", () => {
     }
   });
 });
+
+/**
+ * v1.9.42（Q-041 ⑨）：canonical 数据的业务时区**只能配置、不能推断**。
+ * 从服务器本地时区猜一个出来，会把「这份数按哪天切的」说错一整天，而页面上完全看不出来。
+ */
+describe("v1.9.42 controlled source timezone", () => {
+  const base = {
+    DATABASE_URL: "postgres://ka:ka@127.0.0.1:5432/ka",
+    DATA_API_INTERNAL_TOKEN: "x".repeat(32),
+  };
+  it("defaults to null rather than to the server's own timezone", () => {
+    expect(loadDataApiConfig({ ...base } as NodeJS.ProcessEnv).sourceTimezone).toBeNull();
+  });
+  it("passes a configured IANA zone through verbatim", () => {
+    expect(loadDataApiConfig({ ...base, DATA_SOURCE_TIMEZONE: "Asia/Shanghai" } as NodeJS.ProcessEnv).sourceTimezone)
+      .toBe("Asia/Shanghai");
+  });
+  it.each(["Shanghai", "not a zone", "Asia/Shanghai; DROP", "  ", "UTC+8"])(
+    "refuses %s at startup instead of shipping a meaningless zone", (value) => {
+      // 配错了要在起服务时就炸，而不是让每条响应都带一个没人看得懂的时区。
+      expect(() => loadDataApiConfig({ ...base, DATA_SOURCE_TIMEZONE: value } as NodeJS.ProcessEnv)).toThrow();
+    });
+});

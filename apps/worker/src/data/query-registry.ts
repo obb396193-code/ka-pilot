@@ -539,20 +539,19 @@ export class DataQueryRegistry {
       if (dataView.data !== "platform") throw new QueryRegistryError("VIEW_UNSUPPORTED", "Dashboard filters are not available for this source");
       assertDateBudget(parsedParams.data, 31);
     }
-    // v1.9.34 ⑦：`segment:<key>` 是「按某个清洗段分析」——老板要每个清洗字段都能拿来透视，
-    // 段名由各媒体的命名规则决定、注册表不可能穷举，所以只校验形状。
-    // **只有 pivot2 收段**：`account.dimension` 的下游只解析命名维度，放段进去会在更深处炸。
+    // v1.9.34 ⑦ / v1.9.42 ⑪：`segment:<key>` 是「按某个清洗段分析」——老板要每个清洗字段
+    // 都能拿来分析和透视，段名由各媒体的命名规则决定、注册表不可能穷举，所以只校验形状。
+    // pivot2 与 account.dimension **都收**（⑪ 起，概览分布卡要按任意段分组）。
     // 不支持时把可用清单一并交出去，调用方不用猜。
-    const usable = (dimension: string | undefined, segments: boolean): boolean =>
-      dimension !== undefined && (FIXED_DIMENSIONS.includes(dimension)
-        || (segments && segmentDimensionKey(dimension) !== null));
-    if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !usable(dim, true))) {
+    const usable = (dimension: string | undefined): boolean =>
+      dimension !== undefined && (FIXED_DIMENSIONS.includes(dimension) || segmentDimensionKey(dimension) !== null);
+    if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !usable(dim))) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source",
         { supported: [...FIXED_DIMENSIONS, "segment:<key>"] });
     }
-    if (queryId.data === "account.dimension" && !usable(parsedParams.data.dimensionType, false)) {
+    if (queryId.data === "account.dimension" && !usable(parsedParams.data.dimensionType)) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source",
-        { supported: [...FIXED_DIMENSIONS] });
+        { supported: [...FIXED_DIMENSIONS, "segment:<key>"] });
     }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
       (queryId.data === "account.summary" || queryId.data === "account.trend")) {

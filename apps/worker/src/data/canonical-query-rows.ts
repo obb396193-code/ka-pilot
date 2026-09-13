@@ -1,4 +1,5 @@
 import {
+  missingPlatformRowFields,
   canonicalMetricValueSchema,
   canonicalQueryRowSchemaById,
   accountSummaryRowSchema,
@@ -260,6 +261,11 @@ export function canonicalizeQueryRows(
   return mapped.map((row) => {
     const parsed = schema.safeParse(row);
     if (!parsed.success) throw new CanonicalQueryRowError();
+    // v1.9.45 起 platform 必填；**v1.9.46（⑧ 落地）起团队 ka_data 与 reconcile 一并转必填**。
+    // 行 schema 仍留 optional 只是为了不判死那些字段存在之前导出的冻结件；
+    // 「必填」落在这里——**这一层知道源是谁**。漏发时页面只会静悄悄显「−」，
+    // 而「后端没算」和「真没有数」长得一模一样，所以要在这里变成一条错误。
+    if (missingPlatformRowFields(parsed.data).length > 0) throw new CanonicalQueryRowError();
     return parsed.data as Record<string, unknown>;
   });
 }

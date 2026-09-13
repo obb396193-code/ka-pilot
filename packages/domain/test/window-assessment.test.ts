@@ -96,6 +96,11 @@ describe("window comparison alignment", () => {
   it("today has no comparable daily snapshot and preset defaults to custom", () => {
     expect(comparisonWindow({ from: "2026-09-06", to: "2026-09-06", preset: "today" }, "dod")).toBeNull();
     expect(queryWindowSchema.parse({ from: "2026-09-01", to: "2026-09-01" }).preset).toBe("custom");
-    expect(Object.values(unavailableWindowComparison("dod").deltas)).toEqual(Array(5).fill(missingRatio));
+    // v1.9.43 起是六项（realCpa 与 cashCpa 并列）。数量写死是故意的：
+    // 加了新 delta 却忘了在「比不了」这条路上一并给 undefined，就会漏发一个键。
+    const deltas = unavailableWindowComparison("dod").deltas;
+    expect(Object.keys(deltas).sort())
+      .toEqual(["cashCost", "cashCpa", "cost", "onTargetRate", "realConversion", "realCpa"]);
+    expect(Object.values(deltas)).toEqual(Array(6).fill(missingRatio));
   });
 });

@@ -566,3 +566,80 @@ describe("v1.9.28 ③ 按任务别名最长命中绑任务", () => {
     expect(matchTaskAliasesLongest("任意名字", [{ taskId: "T-0", alias: "   " }])).toEqual([]);
   });
 });
+
+/**
+ * v1.9.29 ①（Q-044）：**空段不顶位**。
+ *
+ * 原来 `splitTokens` 把空 token 直接删掉，后面的段整体前移一格。Codex 的反例
+ * `自投--任务A-备注`：运营方之后本该是优化师，但优化师那一格是空的，于是「任务A」
+ * 被顶上去当了优化师，而且整条报 `parsed` —— 一个明显写错的昵称被当成解析成功，
+ * 优化师视角里看到的是**别人的名字**，没有任何东西会报警。
+ *
+ * 现在空段占位保留：它谁也不匹配，那一段记未匹配、后面按位不动，必填段缺了就是 partial。
+ */
+describe("v1.9.29 ① empty segments hold their position", () => {
+  const MINIMAL: NamingRule = namingRuleSchema.parse({
+    media: "KUAISHOU", version: 1, separators: ["-"],
+    segments: [
+      { key: "agent_type", label: "运营方", order: 0, source: "enum", values: ["自投", "代投"], required: true, mapsTo: "agent_type" },
+      { key: "optimizer", label: "优化师", order: 1, source: "free", required: true, mapsTo: "optimizer" },
+      { key: "biz", label: "业务", order: 2, source: "free", required: true, mapsTo: "biz" },
+      { key: "note", label: "备注", order: 3, source: "free", mapsTo: null },
+    ],
+  });
+
+  it("does not pull a later value into the empty slot", () => {
+    const parse = parseAccountName("自投--任务A-备注", MINIMAL);
+    // 空着的是优化师那一格：它未匹配，「任务A」留在它本来的业务位上。
+    expect(parse.segments.optimizer).toBeUndefined();
+    expect(parse.unmatched).toContain("optimizer");
+    expect(parse.segments.biz?.value).toBe("任务A");
+    expect(parse.segments.note?.value).toBe("备注");
+    // 必填段缺了 → partial。报 parsed 等于宣称这条昵称是好的。
+    expect(parse.status).toBe("partial");
+  });
+
+  it("still parses the same nickname cleanly once the slot is filled", () => {
+    const parse = parseAccountName("自投-张三-任务A-备注", MINIMAL);
+    expect(parse.status).toBe("parsed");
+    expect(parse.segments.optimizer?.value).toBe("张三");
+    expect(parse.segments.biz?.value).toBe("任务A");
+  });
+
+  it("treats a leading empty segment the same way, shifting nothing", () => {
+    const parse = parseAccountName("-张三-任务A", MINIMAL);
+    expect(parse.unmatched).toContain("agent_type");
+    expect(parse.segments.optimizer?.value).toBe("张三");
+    expect(parse.segments.biz?.value).toBe("任务A");
+  });
+
+  it("does not let a permissive regex claim an empty slot", () => {
+    // `^\d*$` 能匹配空串。空格子若被它认领，后面又会整体错位——所以空段在
+    // `matchesSegment` 里一律不匹配，与各段自己的 pattern 无关。
+    const rule: NamingRule = namingRuleSchema.parse({
+      media: "KUAISHOU", version: 1, separators: ["-"],
+      segments: [
+        { key: "code", label: "编号", order: 0, source: "regex", pattern: "^\\d*$", required: true, mapsTo: null },
+        { key: "optimizer", label: "优化师", order: 1, source: "free", required: true, mapsTo: "optimizer" },
+      ],
+    });
+    const parse = parseAccountName("-张三", rule);
+    expect(parse.segments.code).toBeUndefined();
+    expect(parse.segments.optimizer?.value).toBe("张三");
+  });
+
+  it("keeps an all-empty multi segment unmatched rather than emitting separators as its value", () => {
+    const rule: NamingRule = namingRuleSchema.parse({
+      media: "KUAISHOU", version: 1, separators: ["-"],
+      segments: [
+        { key: "agent_type", label: "运营方", order: 0, source: "enum", values: ["自投"], required: true, mapsTo: "agent_type" },
+        { key: "special", label: "专项", order: 1, source: "free", multi: true, mapsTo: "special" },
+        { key: "landing", label: "承接", order: 2, source: "regex", pattern: "^\\d+$", mapsTo: "landing" },
+      ],
+    });
+    const parse = parseAccountName("自投---13177", rule);
+    // 吸收段中间全是空格子：它没有值，而不是一个 "--" 那样的假值。
+    expect(parse.segments.special).toBeUndefined();
+    expect(parse.segments.landing?.value).toBe("13177");
+  });
+});

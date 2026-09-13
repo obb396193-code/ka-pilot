@@ -106,8 +106,9 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
         userId: "00000000-0000-4000-8000-000000000001", scopeKind: "team_workspace_readonly", accounts: [] });
       expect(result.lineage).toMatchObject({ truncated: false, partial: true, coverage: { complete: false } });
       expect(result.rowSchemaVersion).toBe(`${queryId}/v3`);
+      // v1.9.46：缺成员日的窗口给部分合计（有数那部分的和 + partial），不再整列 missing。
       if (queryId === "account.summary") expect(result.rows[0]).toMatchObject({
-        metrics: { cost: { value: null, availability: "missing" } },
+        metrics: { cost: { value: 10, availability: "partial" } },
       });
     }
   });

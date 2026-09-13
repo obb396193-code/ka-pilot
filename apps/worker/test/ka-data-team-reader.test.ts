@@ -41,7 +41,10 @@ describe("server-bound team reader", () => {
       const client = createKaDataClientFromEnv(env, { fetchFn });
       const hostileGrants = { ...scope, accounts: [{ media: "INVALID'", accountId: "malicious-grant" }] };
       const summary = await client.query(registry.resolve("account.summary", params, "ka_data"), hostileGrants);
-      expect(summary.rows[0]).toMatchObject({ accountCount: 2, metrics: { cost: { value: null, availability: "missing" } } });
+      // v1.9.46：缺的成员日（missing-day 账户没有 08-24）不再把整列抹成 null——
+      // 给 Σ 有数那部分并标 partial。**12 = 3+4+5，不含 TENCENT 那 1000**：
+      // 媒体隔离照旧生效，部分合计只是「该算的那些里有数的部分」，不是「放宽范围」。
+      expect(summary.rows[0]).toMatchObject({ accountCount: 2, metrics: { cost: { value: 12, availability: "partial" } } });
       expect(summary.lineage).toMatchObject({ workspaceKind: "team", metadataAvailability: "unknown", partial: true, truncated: false, coverage: { complete: false, returnedObjects: 2 } });
       expect(summary.lineage.coverage.requestedObjects).toBeUndefined();
       expect(summary.rowSchemaVersion).toBe("account.summary/v3");

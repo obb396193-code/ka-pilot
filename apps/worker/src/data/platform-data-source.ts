@@ -13,7 +13,8 @@ import type {
   SourceQueryResult,
   ApprovedWorkspaceAuthContext,
 } from "@ka/domain";
-import { canonicalRowSchemaVersionByQueryId, sourceQueryResultSchema, approvedWorkspaceAuthContextSchema } from "@ka/domain";
+import {
+  segmentDimensionKey, canonicalRowSchemaVersionByQueryId, sourceQueryResultSchema, approvedWorkspaceAuthContextSchema } from "@ka/domain";
 import { PlatformPivotQueryError, type PlatformPivotQuery } from "./platform-pivot-query.js";
 import { DataSourceRoutingError } from "./data-source-routing.js";
 import { createDashboardScopeResolver, type DashboardScopeResolver } from "./dashboard-filter-scope.js";
@@ -117,6 +118,7 @@ function sourceLineage(
   scope: DataQueryExecutionScope,
   lineage: SemanticLineageResult,
   truncated: boolean,
+  timezone: string | null = null,
 ): SourceLineage {
   if (
     scope.scopeKind === "explicit_accounts" &&
@@ -129,10 +131,13 @@ function sourceLineage(
     : lineage.requestedAccountDays === 0 ||
       lineage.returnedAccountDays >= lineage.requestedAccountDays;
   const partial = truncated || !coverageComplete;
+  // v1.9.42（Q-041 ⑨）：时区来自受控配置，没配就是 null。
+  // 从服务器本地时区推一个出来，会把「这份数按哪天切的」说错一整天而且页面上看不出来。
+  // `dayCut` 仍是 null：切日规则还没有可信来源，不能因为知道时区就顺手编一个。
   const sourceMetadata = {
     datasetVersion: null,
     dataAsOf: lineage.dataAsOf,
-    timezone: null,
+    timezone,
     dayCut: null,
   };
   return {
@@ -218,6 +223,8 @@ export class PlatformDataSource {
     private readonly windowQuery?: Pick<PlatformWindowQuery, "summary">,
     private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group"> & Partial<Pick<PlatformDimensionQuery, "named">>,
     private readonly pivotQuery?: Pick<PlatformPivotQuery, "query">,
+    /** v1.9.42（Q-041 ⑨）：canonical 数据的业务时区，来自受控配置；缺省 null = 不知道。 */
+    private readonly sourceTimezone: string | null = null,
   ) {}
 
   async pivot(resolved: ResolvedDataQuery, authInput: ApprovedWorkspaceAuthContext) {
@@ -236,7 +243,8 @@ export class PlatformDataSource {
         wholeResultTotal: complete ? { value: result.rows.length, availability: "available" }
           : { value: null, availability: "partial", reason: "Canonical account-day coverage or time is incomplete" },
         lineage: { source: "canonical", workspaceKind: "personal", window: result.window,
-          datasetVersion: null, dataAsOf, timezone: null, dayCut: null, metadataAvailability: dataAsOf === null ? "unknown" : "partial",
+          datasetVersion: null, dataAsOf, timezone: this.sourceTimezone, dayCut: null,
+          metadataAvailability: dataAsOf === null && this.sourceTimezone === null ? "unknown" : "partial",
           queryTemplateVersion: resolved.queryTemplateVersion, metricVersion: resolved.metricVersion, authority: authorityFor(resolved),
           objectIdentity: { objectType: "account", joinKeys: ["workspace_id", "media", "account_id"] },
           coverage: { complete, requestedObjects: auth.scope.accounts.length, returnedObjects: observation.observedAccounts,
@@ -262,18 +270,22 @@ export class PlatformDataSource {
     try {
       if (resolved.queryId === "account.dimension") {
         const dimension = resolved.params.dimensionType;
-        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz", "optimizer", "goal", "placement"].includes(dimension)) throw new Error("Dimension reader unavailable");
+        // v1.9.42（Q-041 ⑪）：命名维度之外再收 `segment:<key>`（按任意清洗段分组），
+        // 它和命名维度走同一条 `named` 路 —— 分组值都来自昵称解析行。
+        const segment = dimension !== undefined && segmentDimensionKey(dimension) !== null;
+        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension
+          || !(segment || ["account", "task", "biz", "optimizer", "goal", "placement"].includes(dimension))) throw new Error("Dimension reader unavailable");
         const input = { workspaceId: execution.workspaceId,
           ...(resolved.params.filters === undefined ? {} : { filters: resolved.params.filters }),
           accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
           window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } };
-        const named = ["optimizer", "goal", "placement"].includes(dimension);
+        const named = segment || ["optimizer", "goal", "placement"].includes(dimension);
         if (named && !this.dimensionQuery.named) throw new Error("Named dimension reader unavailable");
         const result = dimension === "account" ? await this.dimensionQuery.account(input)
           : named ? await this.dimensionQuery.named!({ ...input, dimensionType: dimension })
           : await this.dimensionQuery.group({ ...input, dimensionType: dimension });
         const rows = canonicalizeQueryRows(resolved.queryId, "platform", result.rows, execution.workspaceId);
-        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings: result.warnings };
+        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false, this.sourceTimezone), window: result.window, warnings: result.warnings };
         return { queryId: resolved.queryId, rowSchemaVersion: resolved.rowSchemaVersion, dimension, status: "ready",
           rows, returnedRowCount: rows.length, lineage, warnings: result.warnings,
           wholeResultTotal: lineage.partial ? { value: null, availability: "partial", reason: "Canonical account-day coverage is incomplete" }
@@ -292,7 +304,7 @@ export class PlatformDataSource {
         // v1.9.33：缺数点名进 `lineage.warnings`（结构化对象），与原有字符串告警并存。
         // 一屏「−」而不点名，用户分不清「这天没投」还是「这天没拉到」。
         const warnings = [...result.warnings, ...result.namedGaps];
-        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings };
+        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false, this.sourceTimezone), window: result.window, warnings };
         return { queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
           status: "ready", rows, returnedRowCount: rows.length, lineage, warnings: result.warnings,
           wholeResultTotal: lineage.partial ? { value: null, availability: "partial", reason: "Canonical window coverage is incomplete" }
@@ -415,6 +427,7 @@ export class PlatformDataSource {
         execution,
         semanticLineage,
         truncated,
+        this.sourceTimezone,
       );
       if (resolved.queryId === "account.trend") lineage.window = {
         from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
