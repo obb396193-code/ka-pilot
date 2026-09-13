@@ -1,4 +1,5 @@
 import {
+  withSemanticReadSnapshot,
   AccountListRepository,
   AccountMuteRepository,
   AccountNameParseRepository,
@@ -25,6 +26,7 @@ import { createDataApiServer } from "./data/http-server.js";
 import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
 import { PlatformDataSource, createPlatformReadSnapshot } from "./data/platform-data-source.js";
+import { loadAccountLabels } from "./data/account-labels.js";
 import { createPlatformWindowQuery } from "./data/platform-window-query.js";
 import { createPlatformDimensionQuery } from "./data/platform-dimension-query.js";
 import { createPlatformPivotQuery } from "./data/platform-pivot-query.js";
@@ -90,7 +92,11 @@ async function main(): Promise<void> {
     registry: createDataQueryRegistry(),
     hourly: createPlatformHourlyQuery(pool),
     kaData: config.kaDataEnabled
-      ? createKaDataClientFromEnv(process.env)
+      // v1.9.46（Q-041 ⑧）：团队维度分组要的标签在**我们自己的库**里，所以把读取器注进去。
+      // 用的是透视那条路同一个 `loadAccountLabels`——两处各读各的，分组结果迟早对不上。
+      ? createKaDataClientFromEnv(process.env, {
+        labels: { read: (input) => withSemanticReadSnapshot(pool, (connection) => loadAccountLabels(connection, input)) },
+      })
       : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool), createPlatformReadSnapshot(pool),
       createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), createPlatformPivotQuery(pool),
