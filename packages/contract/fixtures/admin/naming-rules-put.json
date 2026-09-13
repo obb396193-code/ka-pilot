@@ -92,7 +92,13 @@
         "source": "enum",
         "values": [
           "安卓",
-          "IOS",
+          {
+            "canonical": "iOS",
+            "aliases": [
+              "IOS",
+              "苹果"
+            ]
+          },
           "双端"
         ],
         "required": true,

@@ -63,13 +63,24 @@ function body(result: Captured): { ok: boolean; data: unknown; meta: Record<stri
   return result.body as { ok: boolean; data: unknown; meta: Record<string, unknown> };
 }
 
+/**
+ * v1.9.29 ②（Q-044）：解析行里的 `basis.at` 是**解析发生的时刻**，每导一次都不一样。
+ * 不归一化的话，每次重导都 diff，而变的只是个与契约无关的时间戳——
+ * 谁也看不出这次重导到底改了什么。
+ */
+const STABLE_PARSED_AT = "2026-09-13T00:00:00.000Z";
+function stabilizeBasis(payload: unknown): unknown {
+  return JSON.parse(JSON.stringify(payload, (key, value) =>
+    key === "at" && typeof value === "string" && /^\d{4}-\d{2}-\d{2}T/.test(value) ? STABLE_PARSED_AT : value));
+}
+
 function write(name: string, payload: unknown, note: string): void {
   const target = new URL(name, FIXTURES);
   const withNote = payload as { meta: Record<string, unknown> };
   withNote.meta = { requestId: "fixture", ...CONTRACT_META, ...withNote.meta, _note: note };
   delete (withNote.meta as { requestId?: unknown }).requestId;
   withNote.meta = { requestId: "fixture", ...withNote.meta };
-  writeFileSync(target, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  writeFileSync(target, `${JSON.stringify(stabilizeBasis(payload), null, 2)}\n`, "utf8");
   console.log(`wrote ${target.pathname}`);
 }
 
