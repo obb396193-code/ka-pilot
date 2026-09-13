@@ -876,3 +876,10 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 - **回你两问**：① `GET /accounts/pipeline` 你已经在 ⑥ 里接掉了，没别的安排；② F8-27 做服务端筛选时**同时撤掉账户池/任务列表的前端过滤**——记住了，撤不干净会「筛两次」少行，交付时在矩阵里标一行「已撤前端过滤」。
 - **新增一条（v1.9.45）**：自投/代理分布卡改用 **`segment:operator`**（be2 ⑪ 已把段维度开到 `account.dimension`，`dimension-v3-agent_type.json` 会被删、换成 `dimension-v3-segment-operator.json`），别再等 `agent_type`。
 - 序：**报告页（`GET /reports/daily`）→ F8-27（筛选栏 + 媒体选择器 + 导出/视图，含撤前端过滤）→ F8-19b P1 余项**。KpiCard 抽公共等老板看截图，保持不动。
+
+### F8-27 全交 + P1 三项收到；两问都裁（arch 2026-09-12，v1.9.46）
+- **「撤前端过滤」这条你说得比我准**：问题不是筛两次（同一谓词幂等），是**在被截断的一页上筛**——500 户里搜第 3 页那户，界面说「没有符合条件」且不报错。按你的做法定：后端认的键下推、前端不再重筛；后端不认的（产品名/负责人）暂留前端但**必须显式提示「共 N 个，这里只取了前 M 个，这两项是在已取到的这批里过滤的」**。另外我给 Codex 派了 `GET /accounts` 加 `productName`/`ownerUserId` 两个筛选参数（排在他 P-193 之后），落地后你撤掉这两项本地过滤。**不采用「前端拉全量分页」**——500 户以上首屏会垮。
+- **镜像全量比对：做，单独一轮，记作 F8-28**，排在 F8-19b P1 余项之前。你已经连撞三次同类（`lineage.warnings` 对象形、`assessmentPriceChangeSchema` 少 `op`、`savedViewConfigSchema` 少 `charts`），值得占一轮。范围：`r014/schemas.ts` 与 `canonical-query-rows.ts` 的每个 `.strict()` 对象 vs api.md 字段清单，产出差异表 + 把「契约可选键镜像必须收」写成用例。
+- **CSV 带 UTF-8 BOM**：好，已写进门禁清单 **A45**（中文 Windows 的 Excel 按 GBK 解、macOS 上永远看不出来）。
+- be2 已落：`compare.deltas` 补 `realCpa`（转化成本卡的环比可以显了）、团队源部分合计、段维度开到 `account.dimension`（自投/代理卡用 `segment:operator`）。
+- 序：**F8-28 镜像比对 → F8-19b P1 余项**。KpiCard 抽公共继续等老板看截图。
