@@ -4,6 +4,7 @@ import type { EChartsCoreOption } from "echarts/core"
 
 import { ChartFrame, chartPalette, chartToken, type ChartKind } from "@/components/charts/chart-frame"
 import { useChartKind } from "@/lib/data/use-chart-prefs"
+import { dimensionSeries } from "@/lib/data/dimension-series"
 import type { DashboardRow } from "@/lib/fixtures/dashboard"
 
 // F8-19：按维度分布的图（资源位环图是它的一种）。老板要求每个图能换类型，所以这里一份数据四种画法。
@@ -20,14 +21,8 @@ export function DimensionChart({ id, title, description, rows, colorKey, default
   height?: number
 }) {
   const [kind, setKind] = useChartKind(id, defaultKind)
-  // 只画有消耗的项：0 消耗的维度值画出来是根看不见的柱/一条缝的扇形，纯噪音
-  const data = rows
-    .map((row) => ({ name: row.label, value: row.metrics.cost.value ?? 0 }))
-    .filter((item) => item.value > 0)
-    .sort((a, b) => b.value - a.value)
-  // ★缺数的项要**点出来**，不能默默不画：一张「分布图」少了几项，占比就全是错的，
-  //   而用户从图上完全看不出少了东西（审查 ⑦）。缺数 ≠ 0 消耗，两者分开数。
-  const missing = rows.filter((row) => row.metrics.cost.value === null).length
+  // 整形抽到 `lib/data/dimension-series.ts`：0 消耗剔除、缺数单独计数、按消耗降序
+  const { data, missing } = dimensionSeries(rows as never)
 
   const option = (element: HTMLElement, current: ChartKind): EChartsCoreOption => {
     const palette = chartPalette(element)

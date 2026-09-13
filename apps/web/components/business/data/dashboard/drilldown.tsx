@@ -11,6 +11,7 @@ import { isPartial, mv, normalizeBiCost, rv } from "@/lib/fixtures/contract"
 import { PartialMark } from "./partial-mark"
 import { allocateBi, type DashboardRow } from "@/lib/fixtures/dashboard"
 import { useDrillChildren } from "@/lib/data/use-dashboard"
+import { accountHref, childFilters, drillPath } from "@/lib/data/drill-path"
 import { cn } from "@/lib/utils"
 
 /**
@@ -23,18 +24,7 @@ import { cn } from "@/lib/utils"
  * 比「先查一遍全部只为决定要不要画箭头」诚实也便宜。
  */
 
-/** 每一级维度对应的 filter 键：逐级把上游选中的值带下去 */
-const FILTER_KEY: Record<string, string> = { optimizer: "optimizer", biz: "biz", task: "task_id", account: "account_id" }
 
-/**
- * 账户行按 **key 的形态**判，不按层级深度：`<MEDIA>:<accountId>` 才是账户。
- * 按 depth 判是错的——优化师树的账户在第 3 层、任务大类树在第 2 层，
- * 写死 depth 会让后者永远不是链接（审查员 C ⑭）。
- */
-function accountHref(key: string): string | null {
-  const match = /^([A-Z0-9_]{1,32}):([A-Za-z0-9_-]{1,128})$/.exec(key)
-  return match ? `/accounts/${encodeURIComponent(match[1])}/${encodeURIComponent(match[2])}` : null
-}
 
 const cny2 = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY", maximumFractionDigits: 2 })
 
@@ -80,9 +70,9 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
   const nextDimension = levels[depth + 1]
   const isLeaf = nextDimension === undefined
   const open = expanded.has(path)
-  const childFilters = { ...filters, [FILTER_KEY[levels[depth]] ?? levels[depth]]: [row.key] }
+  const nextFilters = childFilters(filters, levels[depth]!, row.key)
   // 只有展开时才查下一层（未展开时 path 传空，hook 内不发请求）
-  const kids = useDrillChildren(open ? path : "", nextDimension ?? "account", childFilters, window, workspaceId)
+  const kids = useDrillChildren(open ? path : "", nextDimension ?? "account", nextFilters, window, workspaceId)
 
   // 后端给了这一层的考核 BI 数就直接用，不重算；没给才按消耗占比从上级分摊
   const own = row.assessment.biConv
@@ -182,13 +172,13 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
       ) : null}
       {open ? childRows.map((kid) => (
         <Row
-          key={`${path}|${kid.key}`}
+          key={drillPath(path, kid.key)}
           row={kid}
           depth={depth + 1}
           siblings={childRows}
           parentBi={own ?? parentBi}
-          path={`${path}|${kid.key}`}
-          filters={childFilters}
+          path={drillPath(path, kid.key)}
+          filters={nextFilters}
           shared={shared}
         />
       )) : null}

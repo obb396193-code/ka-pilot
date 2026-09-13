@@ -3,7 +3,7 @@
 import { IconArrowDownRight, IconArrowUpRight, IconMinus } from "@tabler/icons-react"
 
 import { Card } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { MetricHint } from "@/components/business/metric-hint"
 import { biCostText, isPartial, mv, rv } from "@/lib/fixtures/contract"
 import { PartialMark } from "./partial-mark"
 import type { LineageWarning } from "./missing-data-notice"
@@ -51,12 +51,8 @@ function Kpi({ label, value, delta, hint, tone, partial, warnings }: {
   return (
     <Card className="gap-0 p-3">
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-        {hint ? (
-          <Tooltip>
-            <TooltipTrigger asChild><span className="cursor-help border-b border-dotted border-muted-foreground/50">{label}</span></TooltipTrigger>
-            <TooltipContent className="max-w-64">{hint}</TooltipContent>
-          </Tooltip>
-        ) : label}
+        {/* 口径说明统一走 `MetricHint`（老板 2026-09-13 拍板：只统一这一处，不换整张卡） */}
+        <MetricHint label={label}>{hint}</MetricHint>
       </div>
       <div className="mt-1.5 flex items-end justify-between gap-2">
         <span className={cn("flex items-center gap-1 text-xl font-semibold tabular-nums", tone === "critical" && "text-status-critical", tone === "warning" && "text-status-warning", tone === "success" && "text-status-success")}>

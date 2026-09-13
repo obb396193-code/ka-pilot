@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 import { StatusChip } from "@/components/business/data-grid/data-grid"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { MetricHint } from "@/components/business/metric-hint"
 import { costStatusDot, costStatusLabel, mv, rv, type CostStatus } from "@/lib/fixtures/contract"
 import type { AssessmentV3, Lineage, MetricsV3 } from "@/lib/fixtures/data-analysis"
 import { windowLabel } from "@/lib/fixtures/data-analysis"
@@ -41,13 +42,9 @@ export function LineageFooter({ lineage, extra }: { lineage: Lineage; extra?: Re
   )
 }
 
+/** 表头里的口径说明。统一走 `MetricHint`，别再各写各的（老板 2026-09-13 拍板） */
 export function MetricDefinitionHint({ label, formula }: { label: string; formula: string }) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild><span className="cursor-help underline decoration-dotted underline-offset-4">{label}</span></TooltipTrigger>
-      <TooltipContent side="bottom" className="max-w-72">{formula}</TooltipContent>
-    </Tooltip>
-  )
+  return <MetricHint label={label}>{formula}</MetricHint>
 }
 
 /** 常用指标单元格（右对齐等宽数字） */
