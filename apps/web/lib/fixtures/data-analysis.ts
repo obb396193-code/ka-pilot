@@ -101,7 +101,9 @@ export const reportRenderFixture = reportRender as unknown as Fixture<{ rows: Re
  *   但没有任何解析器产出它，查了直接 DIMENSION_UNSUPPORTED——所以它留在列表里只是为了
  *   界面上能显示「待接源」，不是可用选项。
  */
-export type Dimension = "task" | "biz" | "account" | "optimizer" | "goal" | "placement" | "agent_type" | "resource_position" | "bid_tool" | "ubp" | "deduction_range"
+// v1.9.42/45：清洗段维度用 `segment:<key>` 传（be2 Q-041 ⑦⑪ 已开到 pivot2 与 account.dimension）；
+// 固定维度里 agent_type/resource_position/bid_tool/ubp/deduction_range 没有解析器产出，留在联合里只为界面能显示「待接源」。
+export type Dimension = "task" | "biz" | "account" | "optimizer" | "goal" | "placement" | "agent_type" | "resource_position" | "bid_tool" | "ubp" | "deduction_range" | `segment:${string}`
 export const dimensions: { value: Dimension; label: string }[] = [
   { value: "task", label: "任务" },
   { value: "biz", label: "业务" },
