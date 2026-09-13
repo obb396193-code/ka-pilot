@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { costStatusDot, costStatusLabel, isOk, rv } from "@/lib/fixtures/contract"
+import { useTasks, tasksIsMock } from "@/lib/data/use-tasks"
 import { taskAccountsFixture, taskListStates, taskStageMap, taskStages, tasksFixture, type TaskItem } from "@/lib/fixtures/tasks"
 import { watchlistFixture } from "@/lib/fixtures/settings"
 import { cn } from "@/lib/utils"
@@ -88,7 +89,12 @@ export function TasksPage() {
   const [status, setStatus] = useState<StatusTab>("all")
   const [scope, setScope] = useState<Scope>("all")
   const [legacyState, setLegacyState] = useState<keyof typeof taskListStates | "v151">("v151")
-  const all = useMemo(() => (isOk(tasksFixture) ? tasksFixture.data.items : []), [])
+  // F8-25 ⑤：任务列表接真接口（`GET /tasks`）。页内筛选仍在前端做，
+  // 服务端筛选/分页等 F8-27 的筛选栏一起接。
+  // 服务端能筛的下推（status）；「我负责的 / 关注」后端不认，留前端并提示截断
+  const tasksQuery = useTasks({ pageSize: 100, status: status === "all" ? undefined : status })
+  const mockAll = useMemo(() => (isOk(tasksFixture) ? tasksFixture.data.items : []), [])
+  const all = tasksIsMock ? mockAll : tasksQuery.items ?? []
   const legacy = legacyState === "v151" ? null : taskListStates[legacyState]
   // 关注 = me/watchlist（v1.7.4：项可为 account 或 task；无 type 视为 account）→ 账户型按任务挂载账户命中，任务型按 taskId 命中
   const starred = useMemo(() => {
@@ -136,7 +142,12 @@ export function TasksPage() {
               ) : null}
               <DataGrid
                 table={table}
-                empty={legacy ? "该样例没有可展示的任务行" : "没有符合条件的任务"}
+                empty={
+                  // 空列表和「还没取到 / 取失败」在屏幕上一样，意思相反——分开说
+                  !tasksIsMock && tasksQuery.loading && !tasksQuery.items ? "正在读取任务…"
+                  : !tasksIsMock && tasksQuery.error ? `读取任务失败：${tasksQuery.error.message}${tasksQuery.error.requestId ? `（问题编号 ${tasksQuery.error.requestId}）` : ""}`
+                  : legacy ? "该样例没有可展示的任务行" : "没有符合条件的任务"
+                }
                 onReorder={reorder}
                 toolbar={
                   <>

@@ -34,7 +34,7 @@ async function boundary<T>(work: () => Promise<T>): Promise<T> {
 }
 
 /** Session-derived context is only a selector: live identity + any active team admin grant authorizes governance. */
-async function governance(connection: SemanticReadConnection, auth: ApprovedWorkspaceAuthContext, lock: boolean): Promise<void> {
+export async function requireMemberGovernance(connection: SemanticReadConnection, auth: ApprovedWorkspaceAuthContext, lock: boolean): Promise<void> {
   const actor = await connection.query(`SELECT i.id FROM workspace_memberships m
     JOIN workspaces w ON w.id=m.workspace_id AND w.is_active=true AND w.kind=$4 AND w.is_demo=false
     JOIN users u ON u.id=m.user_id AND u.workspace_id=m.workspace_id AND u.is_active=true
@@ -61,7 +61,7 @@ export class AdminMemberProvisioningRepository {
     if (!parsed.success) return fail("INVALID_REQUEST");
     const input = parsed.data;
     return boundary(() => inTransaction(this.pool, async client => {
-      await governance(client, auth, true);
+      await requireMemberGovernance(client, auth, true);
       // v1.9.21 says duplicate provider_subject, not merely the DB's (provider, subject).
       // Serialize this path across providers; the lock holds until commit/rollback, no new table.
       await client.query("SELECT pg_advisory_xact_lock(hashtextextended('admin-member-subject:' || $1::text,0))", [input.provider_subject]);
@@ -93,7 +93,7 @@ export class AdminMemberProvisioningRepository {
     if (typeof rawIdentityId !== "string" || !uuid.test(rawIdentityId)) return fail("INVALID_REQUEST");
     const identityId = rawIdentityId.toLowerCase();
     return boundary(() => inTransaction(this.pool, async client => {
-      await governance(client, auth, true);
+      await requireMemberGovernance(client, auth, true);
       const target = (await client.query("SELECT provider,is_active FROM auth_identities WHERE id=$1 FOR UPDATE", [identityId])).rows[0];
       if (!target) return fail("NOT_FOUND");
       if (target.provider !== "internal_test" || target.is_active !== true) return fail("CONFLICT");
@@ -109,7 +109,7 @@ export class AdminMemberProvisioningRepository {
   async read(rawAuth: unknown) {
     const auth = approve(rawAuth);
     return boundary(() => withSemanticReadSnapshot(this.pool, async client => {
-      await governance(client, auth, false);
+      await requireMemberGovernance(client, auth, false);
       const { rows } = await client.query(`SELECT m.identity_id,m.user_id,m.role,
         (m.is_active AND i.is_active AND u.is_active AND w.is_active) AS is_active,
         CASE WHEN octet_length(i.display_name)<=1024 THEN i.display_name END AS display_name,

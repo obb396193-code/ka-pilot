@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "data": {
+    "workItemId": "d305784d-06bf-4452-83c7-4b9fa3920407",
+    "status": "ignored",
+    "ignoredAt": "2026-09-13T05:36:34.385Z"
+  },
+  "meta": { "requestId": "pg-http-request" }
+}

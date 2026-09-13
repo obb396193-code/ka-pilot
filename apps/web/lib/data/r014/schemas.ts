@@ -126,6 +126,12 @@ const savedViewConfigSchema = z.object({
   columns: z.array(z.string().min(1)).max(200).optional(),
   sort: z.array(z.object({ by: z.string().min(1), dir: z.enum(["asc", "desc"]) }).strict()).max(20).optional(),
   window: z.record(z.string(), z.unknown()).optional(),
+  /**
+   * 每个图表组件记住的图型（契约 v1.9.29：`view/v1` 的可选新键，不升版本）。
+   * 我的镜像原来漏了它，而这个 schema 是 `.strict()`——后端一旦回带 `charts`，
+   * 整条响应会被判废、BFF 返 502。补上。
+   */
+  charts: z.record(z.string(), z.enum(["bar", "pie", "donut", "line"])).optional(),
 }).strict()
 
 export const savedViewSchema = z.object({

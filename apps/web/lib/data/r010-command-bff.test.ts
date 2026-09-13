@@ -10,6 +10,9 @@ const uuid = "00000000-0000-4000-8000-000000000001"
 const mute = "/api/internal/accounts/KUAISHOU/acc-1/mute", ignore = `/api/internal/work-items/${uuid}/ignore`, dryRun = `/api/internal/changesets/${uuid}/dry-run`
 const data = { mutedUntil: "2026-09-09T03:00:00+08:00", scope: "notifications_and_p1p2" }
 const success = { ok: true, data, meta: { requestId: id } }
+const ignored = { workItemId: uuid, status: "ignored", ignoredAt: "2026-09-13T00:00:00Z" }
+const ignoreSuccess = { ...success, data: ignored }
+const ignoreMuteSuccess = { ...success, data: { ...ignored, ...data } }
 function error(code: string, requestId = id) { return { ok: false, error: { code, message: "upstream-secret-do-not-reflect", retryable: false, requestId } } }
 function json(body: unknown, status = 200, requestId = id) { return Response.json(body, { status, headers: { "x-request-id": requestId } }) }
 function request(options: { path?: string; method?: string; raw?: string; headers?: HeadersInit } = {}) {
@@ -30,10 +33,10 @@ for (const [path, body] of [[mute, { days: 1, reason_chip: "synthetic" }], [igno
         assert.equal(headers.get("cookie"), cookie); assert.equal(headers.get("x-request-id"), id)
         assert.equal([...headers.keys()].some(k => k.startsWith("x-ka-")), false)
         assert.deepEqual(JSON.parse(init?.body as string), body); assert.equal(init?.redirect, "error"); assert.equal(init?.cache, "no-store")
-        return json(success)
+        return json(path === ignore ? ignoreMuteSuccess : success)
       },
     })
-    assert.equal(calls, 1); assert.equal(result.status, 200); assert.deepEqual(result.body, success)
+    assert.equal(calls, 1); assert.equal(result.status, 200); assert.deepEqual(result.body, path === ignore ? ignoreMuteSuccess : success)
   })
 }
 test("dry-run and plain ignore preserve honest 503, never reflect raw upstream messages", async () => {
@@ -41,6 +44,29 @@ test("dry-run and plain ignore preserve honest 503, never reflect raw upstream m
     const result = await handleR010CommandRequest(request({ path, raw: "{}" }), { ...deps, fetchImpl: async () => json(error("SOURCE_UNAVAILABLE"), 503) })
     assert.equal(result.status, 503); assert.equal(result.body.error?.code, "SOURCE_UNAVAILABLE")
     assert.equal(JSON.stringify(result).includes("upstream-secret"), false)
+  }
+})
+test("plain ignore accepts only its selected canonical shape and exact work item", async () => {
+  const result = await handleR010CommandRequest(request({ path: ignore, raw: "{}" }), { ...deps, fetchImpl: async () => json(ignoreSuccess) })
+  assert.equal(result.status, 200); assert.deepEqual(result.body, ignoreSuccess)
+  for (const [body, output] of [
+    [{}, ignoreMuteSuccess], [{ mute_days: 3 }, ignoreSuccess],
+    [{}, { ...ignoreSuccess, data: { ...ignored, workItemId: "00000000-0000-4000-8000-000000000099" } }],
+    [{}, { ...ignoreSuccess, data: { ...ignored, ignoredAt: "2026-02-31T00:00:00Z" } }],
+    [{ mute_days: 3 }, { ...ignoreMuteSuccess, data: { ...ignoreMuteSuccess.data, scope: "all" } }],
+  ]) {
+    const invalid = await handleR010CommandRequest(request({ path: ignore, raw: JSON.stringify(body) }), { ...deps, fetchImpl: async () => json(output) })
+    assert.equal(invalid.status, 502); assert.equal(invalid.body.error?.code, "UPSTREAM_INVALID_RESPONSE")
+  }
+})
+test("PG/HTTP-captured plain and mute fixtures cross the BFF without shape rewriting", async () => {
+  for (const name of ["ignore-plain", "ignore-mute"]) {
+    const fixture = JSON.parse(readFileSync(new URL(`../../../../packages/contract/fixtures/work-items/${name}.json`, import.meta.url), "utf8"))
+    const result = await handleR010CommandRequest(request({ path: `/api/internal/work-items/${fixture.data.workItemId}/ignore`,
+      raw: name === "ignore-mute" ? '{"mute_days":3}' : "{}" }), {
+      environment, requestId: () => fixture.meta.requestId, fetchImpl: async () => json(fixture, 200, fixture.meta.requestId),
+    })
+    assert.equal(result.status, 200); assert.deepEqual(result.body, fixture)
   }
 })
 test("rejects non-same-origin fetch metadata even with matching Origin, and rejects non-json", async () => {
@@ -93,7 +119,7 @@ test("browser same-origin metadata works through internal localhost for all thre
         assert.equal(url, environment.KA_DATA_BACKEND_ORIGIN + path.replace("/api/internal/", "/api/v1/"))
         assert.equal(new Headers(init?.headers).get("forwarded"), null)
         assert.equal(new Headers(init?.headers).get("x-forwarded-host"), null)
-        return path === dryRun ? json(error("SOURCE_UNAVAILABLE"), 503) : json(success)
+        return path === dryRun ? json(error("SOURCE_UNAVAILABLE"), 503) : json(path === ignore ? ignoreMuteSuccess : success)
       } })
       assert.equal(calls, 1); assert.equal(result.status, path === dryRun ? 503 : 200)
       assert.equal(result.requestId, id)

@@ -21,9 +21,10 @@ export type DataWindow = { preset: WindowPreset; from: string; to: string }
 // ★取值必须是契约冻结的窗口枚举的子集（`today|yesterday|last_7d|month_to_date|last_month|task_period|custom`）——
 // 这个 preset 会随「保存视图」写进 `saved_views.config.window`，自造一个 last_30d 后端不认。
 // 任务期（task_period）要有任务上下文，数据分析页没有，所以这里不列。
-export type WindowPreset = "yesterday" | "last_7d" | "month_to_date" | "last_month" | "custom"
+export type WindowPreset = "today" | "yesterday" | "last_7d" | "month_to_date" | "last_month" | "custom"
 
 export const windowPresetLabel: Record<WindowPreset, string> = {
+  today: "今天",
   yesterday: "昨天",
   last_7d: "近 7 天",
   month_to_date: "本月至今",
@@ -55,6 +56,9 @@ function shiftDays(day: string, delta: number): string {
 export function resolvePreset(preset: WindowPreset, dataDate: string, current: DataWindow): DataWindow {
   const [year, month] = dataDate.split("-").map(Number)
   switch (preset) {
+    // 「今天」用真今天，不是数据日——它问的就是「今天到现在跑了多少」，
+    // 后端会照实返回还没跑完的那部分（缺的小时按缺数处理，不补 0）
+    case "today": { const now = iso(new Date()); return { preset, from: now, to: now } }
     case "yesterday": return { preset, from: dataDate, to: dataDate }
     case "last_7d": return { preset, from: shiftDays(dataDate, -6), to: dataDate }
     case "month_to_date": return { preset, from: iso(new Date(year, month - 1, 1)), to: dataDate }
@@ -78,7 +82,13 @@ export function WindowPicker({ value, dataDate, onChange, className }: {
     setOpen(next)
     if (next) setDraft({ from: toDate(value.from), to: toDate(value.to) })
   }
-  const presets: WindowPreset[] = ["yesterday", "last_7d", "month_to_date", "last_month"]
+  const presets: WindowPreset[] = ["today", "yesterday", "last_7d", "month_to_date", "last_month"]
+  /**
+   * 「近 30 天」这类快捷键**只是 UI 快捷方式**，落成 `custom` + 起止日（arch 第四次答：(b)）。
+   * 不往 `WindowPreset` 里自造 `last_30d`：这个 preset 会随「保存视图」写进
+   * `saved_views.config.window`，后端枚举里没有的值存进去，视图就再也读不回来了。
+   */
+  const quickRanges: { label: string; days: number }[] = [{ label: "近 30 天", days: 30 }]
 
   return (
     <Popover open={open} onOpenChange={toggle}>
@@ -105,6 +115,22 @@ export function WindowPicker({ value, dataDate, onChange, className }: {
                 {windowPresetLabel[preset]}
               </Button>
             ))}
+            {quickRanges.map((range) => {
+              const from = shiftDays(dataDate, -(range.days - 1))
+              const active = value.preset === "custom" && value.from === from && value.to === dataDate
+              return (
+                <Button
+                  key={range.label}
+                  variant="ghost"
+                  size="sm"
+                  aria-pressed={active}
+                  className={cn("h-7 justify-start px-2 text-xs font-normal", active && "bg-foreground text-background hover:bg-foreground hover:text-background")}
+                  onClick={() => { onChange({ preset: "custom", from, to: dataDate }); setOpen(false) }}
+                >
+                  {range.label}
+                </Button>
+              )
+            })}
           </div>
           <div className="border-l pl-4">
             <p className="mb-1 text-[11px] text-muted-foreground">自己选区间</p>

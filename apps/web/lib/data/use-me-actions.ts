@@ -142,3 +142,49 @@ export function muteAccount(media: string, accountId: string, days: 1 | 3 | 7, r
     "静音失败",
   )
 }
+
+/**
+ * 归属清洗的三个动作（F8-25 ⑥，契约 v1.8）。
+ *
+ * 这三个按钮之前是**「提示成功其实没存」**——点完弹一个绿色的「已确认」，
+ * 刷新页面全没了。这比按钮置灰坏得多：置灰只是不能用，假成功会让人以为活干完了。
+ */
+
+/** 批量重解析（`POST /admin/account-names/reparse`）。人工改过的段不被覆盖。 */
+export async function reparseAccountNames(media: string): Promise<{ ok: boolean; reparsed?: number; byStatus?: Record<string, number> }> {
+  if (IS_MOCK) { toast("已发起重解析", { description: "示例数据，改动不落库" }); return { ok: true } }
+  try {
+    const response = await fetch("/api/internal/admin/account-names/reparse", {
+      method: "POST", credentials: "same-origin",
+      headers: { accept: "application/json", "content-type": "application/json" },
+      body: JSON.stringify({ media }),
+    })
+    const body = await response.json().catch(() => null)
+    if (!response.ok || !body?.ok) {
+      toast.error("重解析失败", { description: resolveErrorMessage(body?.error?.code ?? "", body?.error?.message ?? `请求失败（${response.status}）`) })
+      return { ok: false }
+    }
+    const data = body.data as { reparsed?: number; byStatus?: Record<string, number>; boundByAlias?: number } | undefined
+    // 把后端真实结果说出来，而不是一句笼统的「已发起」——用户要知道到底动了多少条
+    toast.success(`已重解析 ${data?.reparsed ?? 0} 条`, {
+      description: data?.byStatus
+        ? `解析成功 ${data.byStatus.parsed ?? 0} · 失败 ${data.byStatus.failed ?? 0}${data.boundByAlias ? ` · 按别名绑定 ${data.boundByAlias}` : ""}`
+        : "人工改过的段没有被覆盖",
+    })
+    return { ok: true, reparsed: data?.reparsed, byStatus: data?.byStatus }
+  } catch {
+    toast.error("重解析失败", { description: "网络异常，稍后重试" })
+    return { ok: false }
+  }
+}
+
+/** 批量确认（`POST /admin/account-names/confirm`）。只放行 parsed——conflict/failed 必须人工看。 */
+export function confirmAccountNames(media: string, accountIds: string[]): Promise<boolean> {
+  if (accountIds.length === 0) return Promise.resolve(false)
+  return call(
+    "/api/internal/admin/account-names/confirm",
+    { method: "POST", body: JSON.stringify({ media, account_ids: accountIds }) },
+    `已确认 ${accountIds.length} 条`,
+    "确认失败",
+  )
+}

@@ -69,7 +69,9 @@ export function TableTab({ onSaveView, window, workspaceId }: { onSaveView: (nam
   const { ordered, reorder } = useLocalOrder(data, rowId)
   const table = useGridTable({ data: ordered, columns, pageSize: 100, getRowId: rowId, initialColumnVisibility: { accountId: false, wakeUv: false, potentialUv: false, potentialRate: false, biRate: false, exposure: false, click: false } })
   // A35 同上：总表的数据来自 `account.table` 真接口
-  const lineage = isOk(fixture) ? fixture.data.source.lineage : null
+  // ★血缘跟着**这次响应**走：固定读样例的话，真实模式下等于把假的
+  //   「数据截至 / 来源」贴在真数字旁边——比不显更糟。mock 下才回落到样例。
+  const lineage = (remote.lineage as Parameters<typeof LineageFooter>[0]["lineage"] | null) ?? (isOk(fixture) ? fixture.data.source.lineage : null)
   const accounts = [...new Map(rows.map((row) => [row.accountId, row.accountName])).entries()]
 
   return (

@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
 import test from "node:test"
+import { fileURLToPath } from "node:url"
 
 /**
  * 绊线：**BFF handler 有、浏览器侧路由忘了建**。
@@ -14,7 +15,7 @@ import test from "node:test"
  * 要么是路由漏了，要么是这个 handler 该删。两种都得有人看见。
  */
 
-const WEB = new URL("../../", import.meta.url).pathname
+const WEB = fileURLToPath(new URL("../../", import.meta.url))
 
 function walk(dir: string): string[] {
   const out: string[] = []

@@ -16,7 +16,7 @@ function setup() {
     void _args;
     if (sql.includes("FOR UPDATE")) return { rows: [item] };
     if (sql.includes("FOR SHARE")) return { rows: [{ allowed: true }] };
-    if (sql.includes("UPDATE work_items")) return { rows: [{ ...item, status: "ignored" }] };
+    if (sql.includes("UPDATE work_items")) return { rows: [{ ...item, status: "ignored", resolved_at: new Date("2026-09-08T00:00:00Z") }] };
     if (sql.includes("INSERT INTO account_mutes")) return { rows: [mute] };
     return { rows: [] };
   });
@@ -25,13 +25,35 @@ function setup() {
 }
 describe("ignore + account mute atomic boundary", () => {
   it("locks real work-item tuple and authority, then performs both writes in one transaction", async () => {
-    const s = setup(); expect(await s.repo.ignoreAndMute(auth, input)).toMatchObject({ workspaceId, mutedUntil: input.mutedUntil });
+    const s = setup(); expect(await s.repo.ignoreAndMute(auth, input)).toMatchObject({ workspaceId, workItemId, mute: { mutedUntil: input.mutedUntil } });
     const sql = s.query.mock.calls.map(([sql]) => sql);
     expect(sql.filter(sql => sql === "BEGIN")).toHaveLength(1);
     expect(sql.indexOf("COMMIT")).toBeGreaterThan(sql.findIndex(sql => sql.includes("INSERT INTO account_mutes")));
     const update = s.query.mock.calls.find(([sql]) => sql.includes("UPDATE work_items"))!;
     expect(update[0]).not.toContain("muted_until"); expect(update[1]).toContain("known");
     expect(s.release).toHaveBeenCalledOnce();
+  });
+  it("plain ignore has no mute query, uses persisted time and audits in the same transaction", async () => {
+    const s = setup(), result = await s.repo.ignoreAndMute(auth, { workItemId, reasonChip: "known" });
+    expect(result).toMatchObject({ workspaceId, workItemId, ignoredAt: new Date("2026-09-08T00:00:00Z"), mute: null });
+    expect(s.query.mock.calls.some(([sql]) => sql.includes("account_mutes"))).toBe(false);
+    expect(s.query.mock.calls.some(([sql]) => sql.includes("INSERT INTO audit_log"))).toBe(true);
+  });
+  it("audit failure rolls back plain ignore", async () => {
+    const s = setup(), original = s.query.getMockImplementation()!;
+    s.query.mockImplementation(async (sql, args) => { if (sql.includes("INSERT INTO audit_log")) throw new Error("audit failed"); return original(sql, args); });
+    await expect(s.repo.ignoreAndMute(auth, { workItemId, reasonChip: null })).rejects.toThrow("audit failed");
+    expect(s.query).toHaveBeenCalledWith("ROLLBACK"); expect(s.query).not.toHaveBeenCalledWith("COMMIT");
+  });
+  it.each([null, new Date("bad"), "2026-09-08T00:00:00Z"])("rejects invalid persisted time %s before mute and commit", async time => {
+    const s = setup(), original = s.query.getMockImplementation()!;
+    s.query.mockImplementation(async (sql, args) => {
+      if (sql.includes("UPDATE work_items")) return { rows: [{ ...s.item, status: "ignored", resolved_at: time }] };
+      return original(sql, args);
+    });
+    await expect(s.repo.ignoreAndMute(auth, input)).rejects.toMatchObject({ code: "INVALID_RESULT" });
+    expect(s.query.mock.calls.some(([sql]) => sql.includes("INSERT INTO account_mutes"))).toBe(false);
+    expect(s.query).not.toHaveBeenCalledWith("COMMIT");
   });
   it.each(["team", "empty", "user"])("rejects %s before connect", async mode => {
     const s = setup(), forged = structuredClone(auth);
@@ -73,7 +95,7 @@ describe("ignore + account mute atomic boundary", () => {
   it("snapshots arguments and authorization before the pool await", async () => {
     const s = setup(), context = structuredClone(auth), args = { ...input };
     const result = s.repo.ignoreAndMute(context, args); context.workspaceId = userId; args.workItemId = userId; args.mutedUntil = "2099-01-01";
-    expect(await result).toMatchObject({ workspaceId, mutedUntil: input.mutedUntil });
+    expect(await result).toMatchObject({ workspaceId, mute: { mutedUntil: input.mutedUntil } });
     expect(s.query.mock.calls.find(([sql]) => sql.includes("FOR UPDATE"))?.[1]).toEqual([
       workspaceId, workItemId, "explicit_accounts", '[{"media":"KUAISHOU","account_id":"synthetic"}]',
     ]);

@@ -21,6 +21,7 @@ const EXEMPT: { file: string; why: string }[] = [
   { file: "r014/task-timeline-repository.ts", why: "时间线列的是「改价这件事」本身，作废也是一次事件" },
   { file: "r014/task-detail-repository.ts", why: "historyCount 数的是改过几次，含作废行" },
   { file: "r014/assessment-price-repository.ts", why: "写入路径（INSERT）与按生效日定位待作废段" },
+  { file: "settings-change-log-repository.ts", why: "P194 按写入时间列改价事件，不按生效日选价；作废展示形未冻结时明确 unavailable，不过滤成正常 set" },
 ];
 
 function sources(directory: URL): URL[] {

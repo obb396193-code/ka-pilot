@@ -56,7 +56,9 @@ export function GapTab({ window, workspaceId }: { window: DataWindow; workspaceI
   // A35：真实模式下 fixture 一律不可用（`isOk` 恒 false），但这个 tab 的**数据**来自
   // `account.gap` 真接口——不能因为拿不到样例就整个 tab 空白。
   // 只有规则版本和血缘还挂在 fixture 上，那两处各自降级即可。
-  const lineage = isOk(gapFixture) ? gapFixture.data.source.lineage : null
+  // ★血缘跟着**这次响应**走：固定读样例的话，真实模式下等于把假的
+  //   「数据截至 / 来源」贴在真数字旁边——比不显更糟。mock 下才回落到样例。
+  const lineage = (remote.lineage as Parameters<typeof LineageFooter>[0]["lineage"] | null) ?? (isOk(gapFixture) ? gapFixture.data.source.lineage : null)
   const ruleSetVersion = isOk(gapFixture) ? gapFixture.meta?.ruleSetVersion : null
   return (
     <div className="flex flex-col gap-3">

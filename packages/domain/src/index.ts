@@ -71,6 +71,7 @@ export * from "./pivot-window.js";
 export * from "./hourly-projection.js";
 // be: P096 business-day account mute policy; HTTP and rule scan are separate.
 export * from "./account-mute-policy.js";
+export * from "./work-item-ignore-wire.js";
 // be: hourly/Gap request syntax; source authorization/Registry admission separate.
 export * from "./operational-query-request.js";
 export * from "./r014/task-bindings-contract.js";
@@ -106,3 +107,4 @@ export * from "./dashboard-bi.js";
 export * from "./named-dimension.js";
 export * from "./dashboard-filters.js";
 export * from "./dashboard-filter-options.js";
+export * from "./settings-change-log.js";

@@ -1,12 +1,12 @@
 import { AccountMuteRepositoryError, type AccountMuteRepository, type AccountMuteRecord } from "@ka/db";
-import { accountMuteDaysSchema, accountMuteDeadline, accountMuteRequestSchema, accountMuteResultSchema,
+import { accountMuteDeadline, accountMuteRequestSchema, accountMuteResultSchema,
+  workItemIgnoreRequestSchema, workItemIgnoreResultSchema, workItemIgnoreMuteResultSchema,
   approvedAccountAccessSchema, approvedWorkspaceAuthContextSchema, type ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { z } from "zod";
 
 type Personal = Extract<ApprovedWorkspaceAuthContext, { workspaceKind: "personal" }>;
 type Target = { media: string; accountId: string };
 const targetSchema = approvedAccountAccessSchema.pick({ media: true, accountId: true });
-const ignoreMuteSchema = z.object({ mute_days: accountMuteDaysSchema, reason_chip: z.string().max(4096).optional() }).strict();
 export class AccountMuteServiceError extends Error {
   constructor(readonly code: "FORBIDDEN" | "INVALID_REQUEST" | "NOT_FOUND" | "INVALID_STATE" | "UPSTREAM_INVALID_RESPONSE" | "INTERNAL_ERROR") {
     super(`Account mute ${code}`); this.name = "AccountMuteServiceError";
@@ -14,7 +14,7 @@ export class AccountMuteServiceError extends Error {
 }
 function authorize(raw: unknown): Personal {
   const parsed = approvedWorkspaceAuthContextSchema.safeParse(raw);
-  if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.scope.accounts.length === 0) throw new AccountMuteServiceError("FORBIDDEN");
+  if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.role === "viewer" || parsed.data.scope.accounts.length === 0) throw new AccountMuteServiceError("FORBIDDEN");
   return parsed.data;
 }
 function allows(auth: Personal, target: Target): boolean {
@@ -56,13 +56,30 @@ export class AccountMuteService {
   }
 
   async ignoreAndMute(rawAuth: unknown, rawId: unknown, rawRequest: unknown) {
-    const auth = authorize(rawAuth), id = z.string().uuid().safeParse(rawId), request = ignoreMuteSchema.safeParse(rawRequest);
+    const auth = authorize(rawAuth), id = z.string().uuid().safeParse(rawId), request = workItemIgnoreRequestSchema.safeParse(rawRequest);
     if (!id.success || !request.success) throw new AccountMuteServiceError("INVALID_REQUEST");
     try {
-      const deadline = accountMuteDeadline(request.data.mute_days, this.now()), reason = request.data.reason_chip ?? null;
-      const row = await this.store.ignoreAndMute(structuredClone(auth), { workItemId: id.data, mutedUntil: deadline.storedDate, reasonChip: reason });
-      validateResult(row, auth, deadline.storedDate, reason);
-      return accountMuteResultSchema.parse({ mutedUntil: deadline.mutedUntil, scope: deadline.scope });
+      const deadline = request.data.mute_days === undefined ? null : accountMuteDeadline(request.data.mute_days, this.now());
+      const reason = request.data.reason_chip ?? null;
+      const row = await this.store.ignoreAndMute(structuredClone(auth), { workItemId: id.data,
+        ...(deadline === null ? {} : { mutedUntil: deadline.storedDate }), reasonChip: reason });
+      if (!row || row.workspaceId !== auth.workspaceId || row.workItemId !== id.data || row.reasonChip !== reason ||
+          !targetSchema.safeParse({ media: row.media, accountId: row.accountId }).success || !allows(auth, row) ||
+          !(row.ignoredAt instanceof Date) || !Number.isFinite(row.ignoredAt.valueOf()) ||
+          Object.keys(row).some(key => !["workspaceId", "workItemId", "media", "accountId", "ignoredAt", "reasonChip", "mute"].includes(key)))
+        throw new AccountMuteServiceError("UPSTREAM_INVALID_RESPONSE");
+      const plain = { workItemId: id.data, status: "ignored", ignoredAt: row.ignoredAt.toISOString(), ...(reason === null ? {} : { reasonChip: reason }) };
+      if (deadline === null) {
+        if (row.mute !== null) throw new AccountMuteServiceError("UPSTREAM_INVALID_RESPONSE");
+        const result = workItemIgnoreResultSchema.safeParse(plain);
+        if (!result.success) throw new AccountMuteServiceError("UPSTREAM_INVALID_RESPONSE");
+        return result.data;
+      }
+      if (row.mute === null) throw new AccountMuteServiceError("UPSTREAM_INVALID_RESPONSE");
+      validateResult(row.mute, auth, deadline.storedDate, reason, row);
+      const result = workItemIgnoreMuteResultSchema.safeParse({ ...plain, mutedUntil: deadline.mutedUntil, scope: deadline.scope });
+      if (!result.success) throw new AccountMuteServiceError("UPSTREAM_INVALID_RESPONSE");
+      return result.data;
     } catch (error) { return failure(error); }
   }
 }
