@@ -1,8 +1,9 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 
 export type R010ErrorCode = "INVALID_REQUEST" | "FORBIDDEN" | "NOT_FOUND" | "INVALID_STATE"
-  | "SOURCE_UNAVAILABLE" | "UPSTREAM_INVALID_RESPONSE" | "SOURCE_TRUNCATED" | "INTERNAL_ERROR";
+  | "SOURCE_UNAVAILABLE" | "UPSTREAM_INVALID_RESPONSE" | "SOURCE_TRUNCATED" | "INTERNAL_ERROR" | "NOT_IMPLEMENTED";
 const messages: Record<R010ErrorCode, string> = {
+  NOT_IMPLEMENTED: "This capability is not part of the first release",
   INVALID_REQUEST: "The request is not valid", FORBIDDEN: "Access is not allowed",
   NOT_FOUND: "The resource does not exist", INVALID_STATE: "The resource is in a conflicting state",
   SOURCE_UNAVAILABLE: "The requested operation is not available",
