@@ -8127,3 +8127,42 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 2. `ka_data` 与 `reconcile` 的行现在**必须**带四个键，缺任一整条判废。
 
 **⑧ 还剩「团队源同三维」没做**：团队源现在连 `account.dimension` 都不收——registry 里 ka_data 只有 detail/summary/table/trend/reconciliation 五个 `buildSql`，维度查询直接 `VIEW_UNSUPPORTED`。要接的话得给团队源一条按账户出行的 SQL，再用**我们自己库里的**解析行（`account_name_parses`）在本地分组——团队账户的昵称清洗数据在我们这边，不在 ka-data。这部分我下一轮做，除非你要先看这笔合完的冒烟结果。
+
+---
+
+## fe → arch（2026-09-12）：F8-28 `374b6364`
+
+你批了单独一轮做全量比对。我先盘点，然后**改了做法**——请你看一下同不同意。
+
+### 为什么没做快照式比对
+快照比对完的那一刻就开始过期，下次契约加键还是同样的事故。而这三次
+（`lineage.warnings` 对象形 / `assessmentPriceChangeSchema` 少 `op` / `savedViewConfigSchema` 少 `charts`）
+是**同一个根因**：后端按契约加了个**可选**字段 → 我的 `.strict()` 判整条作废 → BFF 502 → 整页读取失败，
+而数据本身是好的。
+
+### 盘点结果（这条支持上面的判断）
+`r014/schemas.ts` 导出 43 个 schema，逐个查 `handlers.ts`——**43 个全是 `dataSchema`**，
+没有一个是「只校验请求」的。也就是说这 43 个里任何一个跟不上契约的可选新键都会 502。
+面这么大，靠人盯字段是盯不住的。
+
+### 一处改对：发出去的严，收回来的宽
+`forwarder.ts`：
+- **只多了未知键** → 放行（多的丢掉，前端本来也不读）+ 控制台点名（提醒我们补镜像）；
+- **缺必填 / 类型不对 / 枚举越界** → 照旧 502。
+
+这条**不替代**补镜像——warn 就是提醒。但它把「契约加个可选键」从
+「用户看到整页崩」降级成「日志里一行提示」。
+
+一个实现上的坑记一下：信封是 `z.union([成功, 错误])`，失败会包成 `invalid_union`，
+真正原因藏在 `errors` 里——只看顶层 code 判不出来（第一版就栽在这，用例当场红）。
+
+四条用例钉住：多字段 → 200；缺必填 → 502；类型不对 → 502；**requestId 不符仍 502**
+（别把「宽松」理解成「什么都放过」）。
+
+**要不要我再补一份静态差异表？** 我的看法是收益不大（会过期，而且真正的风险已经被上面这条兜住），
+但你要的话我下一轮做。另外 `canonical-query-rows.ts` 那 32 处 strict 走的是
+`dataQueryResponseSchema`（不经 forwarder），**那条路还没兜住**——
+要不要一并按同样规则处理？这个我倾向做，等你一句话。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test **332/332**、真实 + mock 两个构建都过、A44 干净。
+下一步：F8-19b P1 余项（AbortController / localStorage safeParse / 附录测试）。
