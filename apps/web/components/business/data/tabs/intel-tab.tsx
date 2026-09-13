@@ -14,12 +14,23 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { fmtTime, isOk } from "@/lib/fixtures/contract"
+import { NotConnected } from "@/components/business/state/not-connected"
+import { FIXTURES_ENABLED, fmtTime, isOk } from "@/lib/fixtures/contract"
 import { tasksFixture } from "@/lib/fixtures/tasks"
 import { costTierLabel, intelFixture, type IntelMaterial } from "@/lib/fixtures/v17"
 
 // 数据分析 · 竞情 tab（v1.7 3.12，AppGrowing；接入方式 = OS 联调项 → 示例态）：竞品素材流卡片 + 导入 CSV / 登记链接 + 关联到任务/素材；一期只显 estCostTier 档位，不显消耗估算数值
+/**
+ * A35（F8-25 ①）：真实模式下不显样例数据。这个 tab 还没接真接口，照实说。
+ * 外面包一层是因为**早退必须在所有 hook 之前**，而里面那个组件第一行就开始用 hook——
+ * 在它内部早退会违反 rules-of-hooks（真实/mock 两种模式下 hook 数量不一致）。
+ */
 export function IntelTab() {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="AppGrowing 接入（OS 联调项）" hint="契约 §3.12 定的示例态，接通一处撤一处。" />
+  return <IntelTabInner  />
+}
+
+function IntelTabInner() {
   const data = isOk(intelFixture) ? intelFixture.data : null
   const tasks = isOk(tasksFixture) ? tasksFixture.data.items : []
   const [dialog, setDialog] = useState<"import" | "link" | null>(null)

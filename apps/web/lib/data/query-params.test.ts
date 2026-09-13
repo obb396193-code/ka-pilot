@@ -6,6 +6,8 @@ import {
   PREV_WINDOW_COMPARE_READY,
   buildFilters,
   dimensionParams,
+  dimensionSupported,
+  pivotDimensionSupported,
   pivotParams,
   windowParams,
 } from "./query-params.ts"
@@ -35,9 +37,12 @@ test("环比开关关着时不发 compare —— strict params 下带上就整�
   else assert.equal("compare" in params, false, "be2 Q-041 ③ 落地前不许发 compare")
 })
 
-test("维度键是 dimension，不是 dimension_type", () => {
+test("★维度键是 dimensionType —— 另外两种拼法都 400", () => {
+  // 我先后写错过两次：`dimension_type`（照契约散文的命名）、`dimension`（照 v1.9.30）。
+  // v1.9.34 是 arch 在联调库逐键实测的结论：只有 dimensionType 过。
   const { params } = dimensionParams("optimizer", WINDOW)
-  assert.equal(params.dimension, "optimizer")
+  assert.equal(params.dimensionType, "optimizer")
+  assert.equal(params.dimension, undefined)
   assert.equal(params.dimension_type, undefined)
 })
 
@@ -58,21 +63,73 @@ test("空数组过滤条件不发：含义不确定的参数不发", () => {
   assert.deepEqual(buildFilters({ optimizer: [] }), { unsupported: [] })
 })
 
-test("透视是 dimA/dimB；不分列时不发 dimB", () => {
-  assert.deepEqual(pivotParams("resource_position", "task", WINDOW), { dateFrom: "2026-09-01", dateTo: "2026-09-02", dimA: "resource_position", dimB: "task" })
-  assert.equal("dimB" in pivotParams("biz", null, WINDOW), false)
+test("★透视是另一套键：window_from/window_to + media 必填（v1.9.34 现状）", () => {
+  // pivot2 的注册表比其它 queryId 早一版：不收 dateFrom、不收 filters。
+  // be2 Q-041 ⑩ 统一后这条要跟着改回驼峰。
+  assert.deepEqual(
+    pivotParams("task", "biz", WINDOW, "KUAISHOU"),
+    { window_from: "2026-09-01", window_to: "2026-09-02", media: "KUAISHOU", dimA: "task", dimB: "biz" },
+  )
+  assert.equal("dateFrom" in pivotParams("task", null, WINDOW, "KUAISHOU"), false)
+  assert.equal("dimB" in pivotParams("biz", null, WINDOW, "KUAISHOU"), false)
 })
+
+
 
 test("★兜底：任何构造出的顶层键都必须在 wire 白名单里", () => {
   const bodies = [
     windowParams(WINDOW),
     dimensionParams("biz", WINDOW, { optimizer: ["张"] }).params,
-    pivotParams("biz", "task", WINDOW),
+    pivotParams("biz", "task", WINDOW, "KUAISHOU"),
   ]
   for (const body of bodies) {
     for (const key of Object.keys(body)) {
-      assert.ok(ALLOWED.has(key), `顶层键 ${key} 不在 api.md 的 wire 清单里，会 400`)
-      assert.ok(!key.includes("_"), `顶层键 ${key} 带下划线——线上是驼峰（filters 内部才是下划线）`)
+      assert.ok(ALLOWED.has(key), `顶层键 ${key} 不在 api.md v1.9.34 的实测表里，会 400`)
     }
   }
+})
+
+test("★驼峰规则只管 pivot2 以外的 queryId —— pivot2 那两个下划线键是后端现状", () => {
+  // 原来这条写的是「任何顶层键都不许带下划线」。那是把 v1.9.30 当成了全局规则，
+  // 而 v1.9.34 实测 pivot2 收的就是 window_from/window_to。规则按 queryId 分开写，
+  // 别再拿一个 queryId 的约定去管另一个。
+  const camelOnly = [windowParams(WINDOW), dimensionParams("biz", WINDOW).params]
+  for (const body of camelOnly) {
+    for (const key of Object.keys(body)) assert.ok(!key.includes("_"), `${key} 带下划线——这几个 queryId 是驼峰`)
+  }
+  const pivot = pivotParams("biz", "task", WINDOW, "KUAISHOU")
+  assert.ok("window_from" in pivot && "window_to" in pivot, "pivot2 就是下划线，别顺手统一成驼峰")
+})
+
+test("★可分组维度只有六个 —— schema 里合法 ≠ 查得出来（v1.9.41）", () => {
+  // 这条锁的是一个反直觉的事实：`dimensionTypeSchema` 里合法的维度里，
+  // 有一半没有任何解析器产出，一查就是 DIMENSION_UNSUPPORTED。
+  // 所以下拉选项**不能**照着「合法维度表」生成。
+  for (const value of ["account", "task", "biz", "optimizer", "goal", "placement"]) {
+    assert.ok(dimensionSupported(value), `${value} 应当可分组`)
+  }
+  for (const value of ["resource_position", "agent_type", "bid_tool", "ubp", "deduction_range"]) {
+    assert.equal(dimensionSupported(value), false, `${value} 合法但查不出来，必须标「待接源」`)
+  }
+})
+
+test("快手的「资源位」查的是 placement，不是 resource_position", () => {
+  // 界面上仍叫「资源位」（业务的叫法），查询用 placement（后端的键）。
+  // 两者不是一回事，别为了「统一」把界面文案也改了。
+  const { params } = dimensionParams("placement", WINDOW)
+  assert.equal(params.dimensionType, "placement")
+  assert.ok(dimensionSupported("placement"))
+})
+
+test("★pivot2 收 segment:<key> —— 这是「按昵称字段透视」的入口（be2 ⑦⑩ 落地后）", () => {
+  // 老板要的核心那件事：按账户昵称里清洗出来的字段透视。
+  // 段一律放行，由后端按源判断（不支持时返 DIMENSION_UNSUPPORTED + details.supported[]）。
+  for (const value of ["segment:bid_mode", "segment:device", "segment:landing", "segment:operator"]) {
+    assert.ok(pivotDimensionSupported(value), `${value} 应当可选`)
+  }
+  // 固定维度仍受 v1.9.41 那六个限制
+  for (const value of ["account", "task", "biz", "optimizer", "goal", "placement"]) {
+    assert.ok(pivotDimensionSupported(value), value)
+  }
+  assert.equal(pivotDimensionSupported("resource_position"), false, "合法但查不出来的，照样标待接源")
 })

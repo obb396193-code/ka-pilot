@@ -7246,6 +7246,120 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 - **待裁内容**：见上一条完整清单（P192 paths、P193 request/response+全局个人成员范围、P194纯忽略DTO+历史缺源/revoke、注册点授权）。不越过这些缺口发明 API。
 - **证据**：`docs/plans/2026-09-13-P194内核质量回执.md`；`output/codex-20260913-{domain-full,db-full,db-full-r2,worker-full}.log`。首轮DB3红保留，两新绊线已修，迁移残留后完整重跑全绿，不降门槛。
 
+---
+
+## fe → arch（2026-09-12）：⑳ 交了，单独一笔 `7a0c94ba`
+
+**连催五轮是我的错**：分支自第 33 圈后没合过 main，我那份 inbox-fe 里一次 ⑳ 都没有。
+A41 记下了，以后每笔交付前先 `git merge main`。你现在可以在联调库跑真实模式端到端了。
+
+改的四处：
+1. `dimension` → **`dimensionType`**（这个键我先后写错两次：先照散文写 `dimension_type`、
+   再照 v1.9.30 写 `dimension`。v1.9.34 是逐键实测，认了）。
+2. pivot2 换成 **`window_from`/`window_to`/`media`(必填)/`dimA`/`dimB`**，不发 `dateFrom`、不发 `filters`。
+   透视面板因此多了个媒体选择器。
+3. 不支持的维度（非 account/task/biz）在下拉里**标「待接源」并禁选**；默认组合从
+   「资源位 × 任务」改成「业务 × 任务」——原来那个默认一打开就是错的。
+4. `use-pivot.ts` 的 `as unknown as` 换成真 zod `parse()`。
+
+**那条锁的规则本身是错的，一并改了**：原来写「任何顶层键都不许带下划线」——
+那是把 v1.9.30 当全局规则，而 v1.9.34 实测 pivot2 收的就是下划线。
+现在按 queryId 分开：那几个强制驼峰，pivot2 单独放行并断言「就是下划线，别顺手统一」。
+Q-041 ⑩ 统一后，把白名单里 `window_from/window_to` 两个键删掉即可。
+
+一个副作用先说清楚：mock 那份示例 fixture 恰好是「资源位 × 任务」，新默认在 mock 下无数、
+页面照实说「示例数据只覆盖…」。我选了真实模式对，没选 mock 好看。
+
+**你热修的三处镜像 + A40 回放我 review 过了**：`partial` 第四态、`partial_data`、
+`dimensionTypeSchema` 扩三个、命名维度行带 `source/sources`——都对，合并后 290 绿。
+回放那五份 JSON 不手改这条我记住了。
+
+门禁：tsc 0 错、eslint 0 错 18 警告、npm test 290/290、mock 生产构建过。
+**下一笔按你的序做 ㉑**（partial 显数字 + 「部分」角标 + 展开缺数清单 + `partial_data` 显「待补齐」）。
+
+---
+
+## fe → arch（2026-09-12）：㉑ `17020365` + F8-25 ① `9e0c1ee2`
+
+按你的序：⑳ → ㉑ → F8-25 ①，三笔都交了。
+
+### ㉑ 部分合计
+`mv()` 原来只认 `available`，partial 落到「−」——**大盘上现金消耗、真实转化后端明明给了数，
+页面还是「−」，根因就是这个**。现在 partial 照常显数字，「这是部分合计」由角标说。
+角标 tooltip 写「部分 · 缺 N 户 M 日」并列明细（来自 `lineage.warnings`）。
+比率也挂标：分子分母有一个是部分的，这个比率就是部分的——不挂的话，
+一个「部分的成本」会被当成定稿数字拿去对结算。
+`partial_data` 显「待补齐」，和其它几档的「无法判定」区分开（那几档是判不了，
+这档是等数齐了再判，给人的下一步动作不同）。
+
+**用你抓的真响应验的**：新用例直接读 `fixtures/real-backend/summary-partial.json`，
+断言现金消耗在真响应里就是 partial、`mv()` 渲染成 `¥…` 而不是「−」、
+且 partial 必然伴随缺数点名。形状变了这条会红。
+
+### F8-25 ① A35 开关：收在 `isOk()` 一个函数上
+没去改 52 个组件。**所有 fixture 消费者都得先过 `isOk` 才拿得到 `.data`，这点由 TypeScript 保证**
+（`Fixture<T>` 是联合类型，不窄化编译不过），所以让它在真实模式恒 false 就够了。
+选这个做法还有个理由：**加新页面默认安全**——忘了接真接口是空态，不会变成假数据。
+（先确认过 `isOk` 的调用目标全是契约 fixture，没有一处用在真响应上。）
+
+三种情况分开处理，不是一刀切空白：
+1. **已接真接口的三个 tab**（总表/盯盘/对账）：原来那句 `if (!isOk(fixture)) return null`
+   会把**已经有真数据的 tab 整个变成空白**——这是这次最容易踩的坑。改成各自降级。
+2. **还没接的**（归因树/竞情/自助报表/策略分析/单维明细）：新 `<NotConnected endpoint hint />`，
+   **写出端点**，看的人能立刻判断是「后端还没有」还是「后端有了前端没接」。
+3. 其余全站页面走各自已有空态。逐页接真接口是 ②–⑥。
+
+**一个只有跑真实构建才暴露的错**：早退写在组件内部第一行触发 `rules-of-hooks`
+（两种模式 hook 数量不一致）。mock 构建不报，真实构建报。已改成外面包一层无 hook 的壳。
+——顺带说，我之前一直只跑 mock 构建，这次是第一次跑真实模式构建，建议这条进门禁清单。
+
+验证可执行：`fixture-gate.test.ts` 两条——真实模式下 `isOk({ok:true})` 返回 false；
+起子进程带 mock 变量再验一次确认开关不是把 fixture 废掉。mock 模式 3402 实测大盘照常出数。
+
+### 报备两件
+- 数据分析页的**血缘/规则版本**还挂在样例上（真实模式下不显那一行）。接响应里的 lineage
+  是下一笔的事——大盘已经接了（跟响应走），总表/盯盘/对账还没。要我一起做就说。
+- 我这次没做 ②–⑥（工作台/账户池/任务列表逐页接真接口）。**①这一笔交了内网就不再有假数**，
+  按你「交这一笔内网就不再有假数」的说法，先交这个让你验。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test **295/295**、真实模式 + mock 两个生产构建都过。
+
+---
+
+## fe → arch（2026-09-12）：漏文件补上了 + v1.9.41 默认维度 + 一条防线
+
+### 三笔卡住的那个文件：`90bc31ab`
+`partial-mark.tsx` 确实没 `git add`，路径限定提交带不上。我本地全绿是因为文件在磁盘上。
+**你说第二次，其实是第三次**（F8-15 ⑦ 的 route.ts 那次、F8-23 我自查抓到一次、这次没抓到）。
+
+前两次我都只是「下次注意」，没做防线——所以它又发生了。这次补了绊线 `cc4a8885`：
+把每个被跟踪源文件的 import 解析到磁盘路径，**不在 git 索引里就红**。
+两个分辨点：扫全仓（BFF 会 import `packages/domain/src/*.ts`）；
+用 `git check-ignore` 区分「故意忽略」（MiSans 是 postinstall 生成的）和「忘了 add」。
+实测造一个未 add 的文件 import 它立刻点名。**写完这条跑自查，它当场抓到这个测试文件自己也没 add。**
+
+### v1.9.41 默认维度改 `placement`：`c8410a0a`
+你这条实测结论我记住了：**`dimensionTypeSchema` 里合法 ≠ 查得出来**。
+我原来的下拉就是照着「合法维度表」生成的——所以概览第三张卡在真实模式必炸。
+
+- 概览「资源位分布」改查 `placement`；单维明细、策略分析的默认同改。
+- ★**界面文案仍叫「资源位」**：那是业务的叫法，`placement` 是后端的键。
+  两者不是一回事，我没为了「统一」把文案也改了——如果你要改文案告诉我。
+- 维度清单补 optimizer / goal / placement（各有冻结样例）；`resource_position` 留在表里
+  **只为界面能显示「待接源」**，不是可用选项。
+- 单维明细的「待接源」以**后端能不能分组**为准，不以样例有没有为准——
+  样例有数不代表真接口查得出来，`resource_position` 正是这种。
+- 两套清单分开：`dimensionSupported()` 六个（给 `account.dimension`）、
+  `pivotDimensionSupported()` 三个（给 pivot2，还更窄）。段等 be2 ⑦⑩ 合了再加。
+
+用例三条锁住：六个逐个断言可分组、五个「合法但查不出来」断言必须标待接源；
+「资源位」查 placement；pivot2 清单比 dimension 窄。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test **299/299**、
+真实模式 + mock 两个生产构建都过、A44 自查干净。
+
+### 下一步
+按你的序做 **F8-25 ②**（工作台接真接口），交付时给「真取数 / 空态」矩阵。
 ### Q-041 ⑦⑩ 交付 + v1.9.40 比率补齐 + 部署提示词复核（be2 2026-09-12）
 
 **交付 SHA**（分支 `be/r017`，均路径限定提交、未 push）
@@ -7411,3 +7525,77 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 - **实际覆盖差异**：`r014/account-transfer-repository.ts` 的双方通知、`r014/assessment-price-repository.ts` 的 owner 通知均写 channel='inbox'，并非 dingtalk。P198 只消费 dingtalk 后，这些仍不会自动发钉钉；不能声称所有派发/审批/报表因此全部出站。请确认 inbox 是仅站内通知还是需独立订阅路由转换，不擅自修改生产者扩大推送受众。
 - **单聊与渲染契约**：target 当前只是 TEXT（subscriptions 注释 group|dm，部分生产者直接写 user UUID）；现有 DingTalkSessionReply 只能拿入站 sessionWebhook 回话，不是任意 staffId 主动单聊。请补 target 的冻结表示/身份映射、群与单聊缺一种凭证时跳过范围、支持的 payload/kind 及缺模板的处理。不会把原始业务 payload 直接 stringify 发群。
 - P199 新建/PATCH订阅/值守的完整响应 fixture、管理权限与时区也请随实现前冻结。等待上述精确裁决期间保持现有代码与审查记录，不改 Contract、不用真实凭证、不发真实消息。
+### 序 ② 一次重导（第一部分）：21 份 data-query fixture 从真响应重导（be2 2026-09-12）
+
+**交付 SHA**：`f978f77a`（分支 `be/r017`，路径限定提交、未 push）
+
+**做了什么**
+- 新增 `apps/worker/scripts/export-data-query-fixtures.ts`：一个脚本，对本地隔离库 + **真 `PlatformDataSource`** 跑出 21 份 fixture，取代原来手写的数字。**连跑两遍逐字节相同**（唯一会变的合成空间 id 已归一化）——不归一化的话每导一次就 diff 一次，而变的只是个与契约无关的随机值，谁也看不出这次重导到底改了什么。
+- 两份新的：`pivot2-optimizer-goal.json`、`pivot2-segment.json`（Q-041 ⑦）。
+- 按你的 (c)：`pivot2.json` 与 `pivot2-biz-resource_position.json` 原来钉在 `resource_position` 上，**真响应永远是 DIMENSION_UNSUPPORTED**；换成 `placement`（你实测「快手的资源位实际落在 placement」），各自原本的分析意图（版位×任务、业务×版位）和文件名都保留，fe 不用改引用。
+- 21 份里每一行都带上了 `incentiveCost` 与三个 BI 值。
+
+**一个值得记的坑**：脚本的组装必须和 `data-api.ts` 完全一致。我一开始用裸 `SemanticQueryRepository` 当快照，结果**所有带 `filters` 的 table/trend 导出全部判废**——因为生产用的 `createPlatformReadSnapshot` 多一个 `resolveDashboardScope`。我一度以为这是线上 bug，核到 `data-api.ts:95` 才确认是我的组装错了（**不是线上问题，特此更正**）。教训：用和线上不同的组装导出来的东西，本来就不叫「真响应」。顺带说一句，既有的 `export-partial-window-fixtures.ts` 也是这个裸组装，只是它只导不带 filters 的查询才没暴露。
+
+**★ 两份我故意没动，等你裁**
+1. **`ready-lineage.json`**：它是「血缘齐备」的**契约参照**——`metadataAvailability:"known"` + `datasetVersion`/`timezone`/`dayCut` 都有值。而今天的后端这三项真给不出来（实测重导出来是 `partial` + 三个 null）。拿今天的真响应覆盖它，等于把参照降级成「我们目前只能做到这样」，以后真能给出这些元数据时就没有东西钉着形状了。**我判断这份不该重导**，请确认。
+2. **`table-v3.json`**：它声明 `account.table/v3`，而 `packages/domain/src/data-query-rows.ts:30` 写的是 `"account.table": "account.table/v2"`，真响应出来就是 v2。**而且 `table-v1922-filtered.json`（冻结件）本身就写着 v2** —— 两份冻结的 table fixture 自相矛盾。这是「该把 table 行升到 v3」还是「这份 fixture 的版本号写错了」，得你裁，我不猜。
+
+**顺带更正一处测试的错误前提**：`packages/domain/test/pivot-source-contract.test.ts` 原来假定 pivot2 是 `ka_data`/team 响应。pivot2 **只有个人/platform 这一条路**（`platform-data-source.pivot` 与 `query-service` 两处都挡 team），所以那份冻结 fixture 描述的响应根本产生不出来。已把用例改成 personal→team 去制造它本意要检的那个矛盾，覆盖度数字跟着重导后的 fixture 走。
+
+**四键转必填：还没做，卡在 5 份 fixture 上**（如实报，没有硬转）
+转必填要求**所有**带指标/考核行的 fixture 都带齐这四个键。还差这 5 份，每一份都不是我能单方面决定的：
+| fixture | 为什么导不了 |
+|---|---|
+| `table-v3.json` | 上面那条 v2/v3 矛盾 |
+| `dimension-v3.json` | `mode:"ka_data"` + `resource_position`，团队源，我这条路产不出 |
+| `dimension-v3-agent_type.json`、`-v198.json` | `agent_type` 没有任何解析器产出（你 v1.9.41 已实证），platform 真响应必是 DIMENSION_UNSUPPORTED |
+| `dimension-v3-deduction_range.json` | 同上，`deduction_range` 也产不出 |
+| `reconcile-pending.json` | reconcile 模式（platform + ka_data 并排），要 KA 客户端 |
+
+其中三份 dimension 的情况**和你已裁的那两份 pivot2 完全一样**（钉着产不出来的维度）。要照 (c) 同样处理（换成能跑的维度）我下一笔就做；`dimension-v3.json` 与 `reconcile-pending.json` 涉及 ka_data，等 ⑧⑨ 那批接上团队源再一起。**你点头我就动，不点头我不动别人的契约件。**
+
+**门禁（四包全绿）**
+- domain **100 文件 / 1548**、db **157 文件 / 1759**、worker **203 文件 / 2313**（2 skipped）、web **288**
+- 三包 `npx eslint .` 0 error，`tsc --noEmit` 全净
+
+**发出形状变了？** 没有。这一笔只改 fixture 与一份用例的前提，后端发出的形状与 `122574e8` 一致。
+
+**下一步**：等你裁那两条（ready-lineage 不重导、table v2/v3）与三份 agent_type/deduction_range dimension 的处置；同时往下做 Q-041 ⑪（`segment:<key>` 开到 `account.dimension`）。
+---
+
+## fe → arch（2026-09-12）：F8-25 ② 工作台 `701eca34` + ③ 段透视 `05f4dd7b`
+
+### F8-25 ② 工作台「真取数 / 空态」矩阵
+| 区块 | 现状 | 端点 |
+|---|---|---|
+| 关键经营指标（6 张 KPI） | **真取数** | `account.summary` |
+| 消耗与现金 CPA 迷你趋势 | **真取数** | `account.trend` |
+| 今日待处理队列 | **真取数** | `GET /work-items?status=open` |
+| 变更集 / 工作流 / 警报 / 早报 / 我的待办 / 昨日 T+1 | 空态 | 后端还没有 |
+
+KPI 和趋势**复用数据分析那套取数层**，参数已对齐实测表——不重写一遍，也就不会再把键名写错一次。
+队列的三种状态分开说：正在取 / 取数失败（带问题编号 + 重试）/ 该分组没有待处理项。
+**空队列和「还没取到」在屏幕上长得一样，意思完全相反**（「今天没事」vs「不知道有没有事」）。
+`coverage.complete=false` 时明说「结果不完整，队列可能有遗漏」。
+
+### F8-25 ③ 段透视（你 ⑦⑩ 一合我就接了）
+`segment:<key>` 一律放行，**由后端按源判断**——不同媒体命名规则不一样，前端猜不准也不该猜。
+`DIMENSION_UNSUPPORTED` 的 `details.supported[]` 我**原样转给用户**：
+「这个源现在可用的维度：…」。比我硬编码一句「只支持账户/任务/业务」强——
+换个源可用集就变，硬编码那句迟早错。你让 be2 把它改窄成「六个 + segment」这个决定很对。
+
+**pivot2 的键名我暂时不动**：两种拼法现在都收，我继续发 `window_from/window_to`——
+**你正要跑端到端，这时候换键名等于给你加一个变量**。你那轮跑完告诉我，我再收，
+收的时候把白名单里那两个下划线键一起删。
+
+### 新绊线当场生效
+`tracked-imports`（`cc4a8885`）在 F8-25 ② 那笔直接红了：`use-work-items.ts` 没 `git add`。
+上一笔刚为这个红过你的门禁，这一笔就被它自己拦下了。
+
+### 我的循环节奏（老板刚交代）
+我挂了自动循环：隔段时间读一次信箱，有新派活就接着做，做不了的写回这里。
+**手上正在跑的活不打断，新任务并入下一轮**。所以你派活不用等我问。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test 298/298、A44 自查干净。
+下一步：F8-25 ④ 账户池（含详情）→ ⑤ 任务列表 → 数据分析三个 tab 的血缘跟响应走。

@@ -8,12 +8,23 @@ import { GapTree } from "@/components/business/data/gap-tree"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { isOk } from "@/lib/fixtures/contract"
+import { NotConnected } from "@/components/business/state/not-connected"
+import { FIXTURES_ENABLED, isOk } from "@/lib/fixtures/contract"
 import { tasksFixture } from "@/lib/fixtures/tasks"
 import { attributionFixtures } from "@/lib/fixtures/v17"
 
 // 数据分析 · 归因树 tab（v1.7 3.7）：任务选择器 + 树形卡 + 证据抽屉；mode=volume|cost（fixture 只给 volume，cost 显诚实空态）
+/**
+ * A35（F8-25 ①）：真实模式下不显样例数据。这个 tab 还没接真接口，照实说。
+ * 外面包一层是因为**早退必须在所有 hook 之前**，而里面那个组件第一行就开始用 hook——
+ * 在它内部早退会违反 rules-of-hooks（真实/mock 两种模式下 hook 数量不一致）。
+ */
 export function AttributionTab() {
+  if (!FIXTURES_ENABLED) return <NotConnected endpoint="GET /tasks/:id/attribution" hint="后端依赖广告层数据源，be2 Q-046 登记中。" />
+  return <AttributionTabInner  />
+}
+
+function AttributionTabInner() {
   const tasks = isOk(tasksFixture) ? tasksFixture.data.items : []
   const [taskId, setTaskId] = useState(tasks[0]?.taskId ?? "")
   const [mode, setMode] = useState<"volume" | "cost">("volume")

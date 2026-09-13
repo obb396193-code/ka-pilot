@@ -4,26 +4,135 @@
     "mode": "platform",
     "source": {
       "queryId": "account.dimension",
-      "dimension": "placement",
       "rowSchemaVersion": "account.dimension/v3",
+      "dimension": "placement",
       "status": "ready",
       "rows": [
         {
-          "source": null,
-          "sources": {},
-          "key": null,
-          "label": "未标注",
+          "source": "nickname",
+          "sources": {
+            "nickname": 2
+          },
+          "key": "优选",
+          "label": "优选",
           "metrics": {
             "cost": {
-              "value": 80,
-              "availability": "available"
-            },
-            "exposure": {
               "value": 200,
               "availability": "available"
             },
+            "exposure": {
+              "value": 5000,
+              "availability": "available"
+            },
             "click": {
+              "value": 250,
+              "availability": "available"
+            },
+            "conversion": {
               "value": 20,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 10,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 150,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 50,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": {
+              "value": 20,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 10,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -50,
+              "availability": "available"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "source": "nickname",
+          "sources": {
+            "nickname": 1
+          },
+          "key": "搜索",
+          "label": "搜索",
+          "metrics": {
+            "cost": {
+              "value": 40,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 1000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 50,
               "availability": "available"
             },
             "conversion": {
@@ -35,103 +144,17 @@
               "availability": "available"
             },
             "cashCost": {
-              "value": 25,
-              "availability": "available"
-            },
-            "costSpace": {
-              "value": 5,
-              "availability": "available"
-            },
-            "wakeUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "potentialUv": {
-              "value": null,
-              "availability": "missing"
-            },
-            "ratios": {
-              "ctr": {
-                "value": 0.1,
-                "state": "finite"
-              },
-              "cvr": {
-                "value": 0.2,
-                "state": "finite"
-              },
-              "realCpa": {
-                "value": 40,
-                "state": "finite"
-              },
-              "cashCpa": {
-                "value": 12.5,
-                "state": "finite"
-              },
-              "gap": {
-                "value": 1,
-                "state": "finite"
-              },
-              "potentialRate": {
-                "value": null,
-                "state": "undefined"
-              },
-              "biConversionRate": {
-                "value": null,
-                "state": "undefined"
-              }
-            }
-          },
-          "assessment": {
-            "priceSource": "history",
-            "price": null,
-            "priceVersions": 2,
-            "onTarget": true,
-            "costStatus": "yellow",
-            "costStatusReason": "day_over_window_ok",
-            "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
-            }
-          },
-          "anomaly": false
-        },
-        {
-          "source": "mixed",
-          "sources": {
-            "manual": 1,
-            "nickname": 1
-          },
-          "key": "synthetic-placement",
-          "label": "synthetic-placement",
-          "metrics": {
-            "cost": {
-              "value": 160,
-              "availability": "available"
-            },
-            "exposure": {
-              "value": 400,
-              "availability": "available"
-            },
-            "click": {
-              "value": 40,
-              "availability": "available"
-            },
-            "conversion": {
-              "value": 8,
-              "availability": "available"
-            },
-            "realConversion": {
-              "value": 4,
-              "availability": "available"
-            },
-            "cashCost": {
-              "value": 50,
+              "value": 30,
               "availability": "available"
             },
             "costSpace": {
               "value": 10,
               "availability": "available"
             },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
             "wakeUv": {
               "value": null,
               "availability": "missing"
@@ -142,19 +165,19 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.1,
+                "value": 0.05,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.2,
+                "value": 0.08,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 40,
+                "value": 20,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 12.5,
+                "value": 15,
                 "state": "finite"
               },
               "gap": {
@@ -173,43 +196,44 @@
           },
           "assessment": {
             "priceSource": "history",
-            "price": null,
-            "priceVersions": 2,
+            "price": {
+              "value": 20,
+              "effectiveDate": "2026-09-01"
+            },
             "onTarget": true,
-            "costStatus": "yellow",
-            "costStatusReason": "day_over_window_ok",
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
+            },
+            "biConv": {
+              "value": 2,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -10,
+              "availability": "available"
             }
           },
           "anomaly": false
         }
       ],
       "returnedRowCount": 2,
-      "wholeResultTotal": {
-        "value": 2,
-        "availability": "available"
-      },
       "lineage": {
-        "workspaceKind": "personal",
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-02",
-          "preset": "custom"
-        },
-        "warnings": [
-          "BUDGET_SOURCE_NOT_READY",
-          "NAMING_PARSE_MISSING"
-        ],
         "source": "canonical",
+        "workspaceKind": "personal",
         "datasetVersion": null,
-        "queryTemplateVersion": "account-dimension-window-v1",
-        "metricVersion": "account-dimension-v3",
-        "dataAsOf": "2026-09-02T10:00:00.000Z",
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
         "timezone": null,
         "dayCut": null,
         "metadataAvailability": "partial",
+        "queryTemplateVersion": "account-dimension-window-v1",
+        "metricVersion": "account-dimension-v3",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
@@ -229,15 +253,29 @@
           "returnedObjects": 3
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY"
+        ]
       },
       "warnings": [
-        "BUDGET_SOURCE_NOT_READY",
-        "NAMING_PARSE_MISSING"
-      ]
+        "BUDGET_SOURCE_NOT_READY"
+      ],
+      "wholeResultTotal": {
+        "value": 2,
+        "availability": "available"
+      }
     }
   },
   "meta": {
-    "_note": "v1.9.22/26（Codex 自查 10/11 合成 PG→真 HTTP 导出，arch 2026-09-10 收进契约包；筛选/维度键位以 api.md v1.9.26/27 为准）"
+    "requestId": "fixture",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /data/query {queryId:\"account.dimension\", dimensionType:\"placement\"}：真响应。命名维度由昵称清洗规则解析；行上的 `source`/`sources` 说明这个值是从哪来的（nickname = 昵称解析，manual = 人工覆盖），缺标注的账户归「未标注」桶"
   }
 }

@@ -7,9 +7,11 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { openAgentDrawer } from "@/components/business/command/events"
 import { DataGrid, selectionColumn, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { ExampleBadge } from "@/components/business/state/page-state"
+import { NotConnected } from "@/components/business/state/not-connected"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { dimensionSupported } from "@/lib/data/query-params"
 import { isOk } from "@/lib/fixtures/contract"
 import { dimensionFixtures, dimensions, type Dimension, type DimensionRow } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
@@ -48,7 +50,8 @@ function DimensionTable({ dimension }: { dimension: Dimension }) {
       </div>
     )
   }
-  if (!isOk(fixture)) return null
+  // A35：真实模式下没有样例可用，也还没接真接口 —— 照实说，不显样例
+  if (!isOk(fixture)) return <NotConnected endpoint="POST /data/query · account.pivot2（单维明细）" hint="「自定义透视」那个模式已经接通，可以先用它。" />
   const minimal = fixture.meta?.requestId === "fe-minimal-mock"
   return (
     <div className="relative flex flex-col gap-3">
@@ -74,7 +77,8 @@ function DimensionTable({ dimension }: { dimension: Dimension }) {
  */
 export function PivotTab({ window, workspaceId, colorKey }: { window: DataWindow; workspaceId?: string; colorKey?: string }) {
   const [mode, setMode] = useState<"custom" | "single">("custom")
-  const [dimension, setDimension] = useState<Dimension>("resource_position")
+  // 默认落在能查出来的维度上（v1.9.41 六个之一）；「资源位」这个键查不出来
+  const [dimension, setDimension] = useState<Dimension>("placement")
   return (
     <div className="flex flex-col gap-4">
       <Tabs value={mode} onValueChange={(value) => setMode(value as "custom" | "single")}>
@@ -87,7 +91,17 @@ export function PivotTab({ window, workspaceId, colorKey }: { window: DataWindow
         <>
           <Tabs value={dimension} onValueChange={(value) => setDimension(value as Dimension)}>
             <TabsList className="flex-wrap">
-              {dimensions.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}{"unsupported" in dimensionFixtures[item.value] ? <span className="ml-1 text-[10px] text-muted-foreground">待接</span> : null}</TabsTrigger>)}
+              {/* 「待接源」以**后端今天能不能分组**为准（v1.9.41 的六个），不以样例有没有为准：
+                  样例有数不代表真接口查得出来——`resource_position` 就是有样例但一查必炸的那种。 */}
+              {dimensions.map((item) => {
+                const ready = dimensionSupported(item.value)
+                return (
+                  <TabsTrigger key={item.value} value={item.value} disabled={!ready}>
+                    {item.label}
+                    {ready ? null : <span className="ml-1 text-[10px] text-muted-foreground">待接源</span>}
+                  </TabsTrigger>
+                )
+              })}
             </TabsList>
           </Tabs>
           <DimensionTable key={dimension} dimension={dimension} />

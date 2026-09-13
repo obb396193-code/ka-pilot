@@ -15,7 +15,10 @@ describe("pivot2 canonical source envelope", () => {
   });
   it("requires a window and the matching source of price", async () => {
     const input = await source(); delete input.lineage.window; expect(sourceQueryResultSchema.safeParse(input).success).toBe(false);
-    const mismatch = await source(); mismatch.lineage.workspaceKind = "personal";
+    // 空间性质与考核价来源必须对得上。v1.9.41 重导后这份 fixture 是**个人空间**的真响应
+    // （pivot2 只有个人/platform 这一条路，`platform-data-source.pivot` 与 `query-service`
+    // 两处都挡 team），价来自 history；把它改标成 team 就与 ka_daily 的口径对不上了。
+    const mismatch = await source(); mismatch.lineage.workspaceKind = "team";
     expect(sourceQueryResultSchema.safeParse(mismatch).success).toBe(false);
   });
   it("rejects duplicate cells and present-invalid metrics", async () => {
@@ -25,12 +28,15 @@ describe("pivot2 canonical source envelope", () => {
     expect(sourceQueryResultSchema.safeParse(invalid).success).toBe(false);
   });
   it("requires finite bounded cell coverage without inferring it from source rows", async () => {
-    const input = { ok: true, data: { mode: "ka_data", source: await source() },
-      meta: { cellCoverage: { cells: 3, withData: 2, undeterminable: 1 } } };
+    const input = { ok: true, data: { mode: "platform", source: await source() },
+      // v1.9.41 重导后这份 fixture 是两格、都有数、没有不可判定的格子的真响应。
+      meta: { cellCoverage: { cells: 2, withData: 2, undeterminable: 0 } } };
     expect(dataQueryResponseSchema.safeParse(input).success).toBe(true);
     expect(dataQueryResponseSchema.safeParse({ ok: true, data: input.data }).success).toBe(false);
-    for (const coverage of [{ cells: 2, withData: 2, undeterminable: 1 }, { cells: 3, withData: 4, undeterminable: 1 },
-      { cells: 3, withData: 2, undeterminable: 0 }, { cells: 3, withData: "2", undeterminable: 1 }]) {
+    // 格数对不上行数、有数的格多过总格数、凭空多出不可判定的格子、类型不对：一律拒。
+    // 这些数字**必须由响应自己的行推出来**，不能让调用方随手填一个覆盖度。
+    for (const coverage of [{ cells: 3, withData: 2, undeterminable: 0 }, { cells: 2, withData: 3, undeterminable: 0 },
+      { cells: 2, withData: 2, undeterminable: 1 }, { cells: 2, withData: "2", undeterminable: 0 }]) {
       expect(dataQueryResponseSchema.safeParse({ ...input, meta: { cellCoverage: coverage } }).success).toBe(false);
     }
   });

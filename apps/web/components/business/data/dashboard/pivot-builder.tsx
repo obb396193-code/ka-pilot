@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useChartKind } from "@/lib/data/use-chart-prefs"
 import { PIVOT_METRICS, pivotDimensions } from "@/lib/data/pivot-dimensions"
+import { pivotDimensionSupported } from "@/lib/data/query-params"
+import { mediaOptions } from "@/lib/fixtures/naming"
 import { usePivot, type PivotCell } from "@/lib/data/use-pivot"
 import { cn } from "@/lib/utils"
 
@@ -43,14 +45,21 @@ export function PivotBuilder({ window, workspaceId, colorKey }: {
   colorKey?: string
 }) {
   const dimensions = useMemo(() => pivotDimensions(), [])
-  const [rowDim, setRowDim] = useState("resource_position")
+  // 默认落在**后端支持的**维度上（v1.9.34：只有 account/task/biz）。
+  // 原来默认是「资源位 × 任务」——那个组合现在会 DIMENSION_UNSUPPORTED，
+  // 等于一打开这个 tab 就是错的。
+  // 副作用：mock 的那份示例 fixture 恰好是「资源位 × 任务」，所以 mock 下默认组合无数、
+  // 页面照实说「示例数据只覆盖…」。真实模式对 > mock 好看（数据分析页本来就要去 fixture）。
+  const [rowDim, setRowDim] = useState("biz")
   const [colDim, setColDim] = useState("task")
   const [metric, setMetric] = useState("cost")
+  // pivot2 的 `media` 是**必填**参数（v1.9.34 实测），所以这里必须有个选择器
+  const [media, setMedia] = useState(mediaOptions[0]!.value)
   const [kind, setKind] = useChartKind("pivot.chart", "bar")
   const [asTable, setAsTable] = useState(true)
 
   const metricMeta = PIVOT_METRICS.find((item) => item.value === metric) ?? PIVOT_METRICS[0]
-  const pivot = usePivot(rowDim, colDim === NONE ? null : colDim, metric, window, workspaceId)
+  const pivot = usePivot(rowDim, colDim === NONE ? null : colDim, metric, window, media, workspaceId)
 
   // 行/列表头由返回的格子推导，不预设顺序——后端按什么序返回就按什么序显示
   const { rowKeys, colKeys, grid } = useMemo(() => {
@@ -79,7 +88,16 @@ export function PivotBuilder({ window, workspaceId, colorKey }: {
             return (
               <SelectGroup key={group}>
                 <SelectLabel>{group}</SelectLabel>
-                {items.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}
+                {items.map((item) => {
+                  // 后端现在只认 账户/任务/业务；其余标「待接源」并禁选——
+                  // 让人选完再吃一个 DIMENSION_UNSUPPORTED，不如一开始就说清楚（v1.9.34）
+                  const ready = pivotDimensionSupported(item.value)
+                  return (
+                    <SelectItem key={item.value} value={item.value} disabled={!ready}>
+                      {item.label}{ready ? "" : " · 待接源"}
+                    </SelectItem>
+                  )
+                })}
               </SelectGroup>
             )
           })}
@@ -131,6 +149,13 @@ export function PivotBuilder({ window, workspaceId, colorKey }: {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
+        <label className="flex items-center gap-1.5 text-sm">
+          <span className="text-muted-foreground">媒体</span>
+          <Select value={media} onValueChange={setMedia}>
+            <SelectTrigger size="sm" className="w-24" aria-label="媒体"><SelectValue /></SelectTrigger>
+            <SelectContent>{mediaOptions.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
+          </Select>
+        </label>
         {picker(rowDim, setRowDim, "行维")}
         {picker(colDim, setColDim, "列维", true)}
         <label className="flex items-center gap-1.5 text-sm">
@@ -206,6 +231,7 @@ export function PivotBuilder({ window, workspaceId, colorKey }: {
 
       <p className="text-[11px] text-muted-foreground">
         维度下拉里「命名规则段」来自当前媒体的账户昵称解析规则——规则里新增一个可分析段，这里自动多一项。
+        标「待接源」的维度后端还没接（现在只支持 账户 / 任务 / 业务），接通一个开放一个。
         缺的格子显「−」不补 0：那个组合没有数，不是花了 0 块。
       </p>
     </div>

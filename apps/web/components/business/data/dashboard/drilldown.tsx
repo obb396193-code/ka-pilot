@@ -7,7 +7,8 @@ import { IconChevronRight, IconLoader2 } from "@tabler/icons-react"
 import { StatusChip } from "@/components/business/data-grid/data-grid"
 import type { DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { mv, normalizeBiCost, rv } from "@/lib/fixtures/contract"
+import { isPartial, mv, normalizeBiCost, rv } from "@/lib/fixtures/contract"
+import { PartialMark } from "./partial-mark"
 import { allocateBi, type DashboardRow } from "@/lib/fixtures/dashboard"
 import { useDrillChildren } from "@/lib/data/use-dashboard"
 import { cn } from "@/lib/utils"
@@ -111,10 +112,16 @@ function Row({ row, depth, siblings, parentBi, path, filters, shared }: {
             {href ? <Link href={href} className="underline-offset-4 hover:underline">{row.label}</Link> : <span className={cn(depth === 0 && "font-medium")}>{row.label}</span>}
           </span>
         </TableCell>
-        <TableCell className="text-right tabular-nums">{mv(row.metrics.cost, "money0")}</TableCell>
+        <TableCell className="text-right tabular-nums">
+          <span className="inline-flex items-center gap-1">{mv(row.metrics.cost, "money0")}{isPartial(row.metrics.cost) ? <PartialMark /> : null}</span>
+        </TableCell>
         <TableCell className="text-right tabular-nums">{mv(row.metrics.incentiveCost, "money0")}</TableCell>
-        <TableCell className="text-right tabular-nums">{mv(row.metrics.cashCost, "money0")}</TableCell>
-        <TableCell className="text-right tabular-nums">{mv(row.metrics.conversion)}</TableCell>
+        <TableCell className="text-right tabular-nums">
+          <span className="inline-flex items-center gap-1">{mv(row.metrics.cashCost, "money0")}{isPartial(row.metrics.cashCost) ? <PartialMark /> : null}</span>
+        </TableCell>
+        <TableCell className="text-right tabular-nums">
+          <span className="inline-flex items-center gap-1">{mv(row.metrics.conversion)}{isPartial(row.metrics.conversion) ? <PartialMark /> : null}</span>
+        </TableCell>
         <TableCell className="text-right tabular-nums">
           {bi === null ? "−" : <span className="inline-flex items-center gap-1">{bi.toLocaleString("zh-CN")}{isAllocated ? <Allocated /> : null}</span>}
         </TableCell>
