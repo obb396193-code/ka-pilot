@@ -87,11 +87,14 @@ function useQuery<T>(
 
   useEffect(() => {
     if (!enabled || !runtime) return
+    // 连点窗口时，除了丢弃过期结果，还要**取消在飞的请求**——
+    // 否则大盘八个查询会一轮一轮堆上去，后端白算（审查员 D 的 P1）
+    const controller = new AbortController()
     let active = true
     setValidating(true)
     setError(null)
     runtime.client
-      .query({ queryId, params, dataView: "platform" })
+      .query({ queryId, params, dataView: "platform" }, controller.signal)
       .then((response) => {
         if (!active) return
         const failure = errorOf(response)
@@ -100,10 +103,13 @@ function useQuery<T>(
         held.current = value
         setData(value)
       })
-      .catch((cause: unknown) => { if (active) setError(errorOf(null, cause)) })
+      .catch((cause: unknown) => {
+        // 自己取消的不算失败
+        if (active && !controller.signal.aborted) setError(errorOf(null, cause))
+      })
       .finally(() => { if (active) setValidating(false) })
-    // 组件卸载或 key 变化时把这次结果作废：连点窗口时先发的后到会覆盖新结果
-    return () => { active = false }
+    // 组件卸载或 key 变化时：作废这次结果 + 取消在飞的请求
+    return () => { active = false; controller.abort() }
     // key 是 queryId+params 的指纹；pick 每次渲染新建，放进依赖会每帧重查
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, enabled, nonce, runtime])

@@ -1590,3 +1590,16 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **旧 fixture**：`settings/change-log.json`（缺 id/op、带旧 `recomputedDays`）**废弃删除**，统一用真响应导的 `settings/change-log-v1944.json`；fe 那三处引用同步改（见给 fe 的派单）。
 **⑥ 归一大小写（be2 自加的收紧）**：**批**。`IOS/ios/iOs → iOS` 属于同一取值，要求规则作者穷举每种大小写既记不全也必漏；实现按「先精确、再忽略大小写」不抢别名命中，这个顺序是对的。
 **⑦ 镜像宽收规则（fe F8-28 的根因修复）**：**批，并推广到 `canonical-query-rows.ts` 那条路**（fe 已做）。规则固定为：**发出去的严、收回来的宽**——响应只多未知键 → 放行并在控制台点名；缺必填 / 类型不对 / 枚举越界 / requestId 不符 → 照旧 502。这条**不替代**补镜像，它把「契约加个可选键」从整页崩降级成日志一行。静态差异表不做（会过期，收益已被此规则覆盖）。
+
+## v1.9.49 追加（2026-09-13 arch；归属历史表形、三条集成/凭证端点冻结与改派、趋势小时端口、工作台数据日）
+**① Q-044 ③ 归属按业务日生效：选 (a)**（采纳 be2 倾向）。`account_name_parses` 主键 `(workspace_id, media, account_id)` 与 `schema.sql` 注释「改名后重解析、留旧行做历史」自相矛盾——现状 reparse 即覆盖，今天读 9 月窗口用的是今天的归属，账户 10 月改过名则 9 月报表跟着变且看不出来。
+- 主键改为 `(workspace_id, media, account_id, effective_from)`（`effective_from DATE NOT NULL`），迁移给既有行补 `effective_from = parsed_at 的上海业务日`；编号取落地时下一个空号（Codex 已占 028/029、暂拟 030）。
+- **读取规则**：窗口内每个业务日取 `effective_from <= 该日` 的最新一行；若该账户所有行都晚于该日，用最早一行并在 `lineage.warnings` 发 `{code:"LABEL_BASIS_EARLIEST_KNOWN", media, accountId, businessDate}`——不静默套用。
+- **写入规则**：`reparse {from}` 写 `effective_from = from` 的新行；不带 `from` 写 `effective_from = 今天（业务日）`，历史行不动。**人工 override 继承到新行**（人工覆盖永远优先，重解析不得丢）。
+- **四条读路径统一一个 helper**（be2 出 `resolveAccountLabelsAsOf`）：列表 / 透视 / 维度（be2 栏）+ 日报 / 看板（Codex 栏，be2 给接线说明、Codex 接）。
+**② 未开放清单 #12 / #23 / #29 冻结并改派 Codex**（它们落在 integrations / reports / settings 路由，属 Codex 栏）：
+- **#12** `DELETE /api/v1/integrations/:id` → **软删**：连接置 `disconnected` 并记 `deleted_at/deleted_by`，其下订阅**置 paused 不删**（历史投递记录保留），响应 `204`。
+- **#23** 报告定时**不新增 `/report-schedules`**：并入订阅 `POST /integrations/subscriptions {kind:"report", schedule_cron, target, config}`（v1.9.42），前端按钮改调它。一个概念一个入口。
+- **#29** `DELETE /api/v1/credentials/:provider` → 解绑当前身份在该 provider 的凭证引用；**正在跑的 ETL 不中断**，排队中的该身份任务在下一次调度 tick 以既有 `QIHANG_IDENTITY_MISSING` 机制阻塞（不删 job）；响应 `{provider, unboundAt, affectedQueuedJobs}`。只能解绑本人的；team admin 代解需在审计记 actor/target。
+**③ 趋势「日｜小时」端口：选 fe 的 (b)**——本期大盘趋势**不加小时开关**。`account.hourly` 按账户，大盘级小时趋势需要跨账户聚合与覆盖语义（部分账户当小时未采到怎么算），小时采样今天才落地，口径没有实测依据；按账户看小时已由盯盘 tab 承担。大盘级 hourly 聚合记 P1，待内网采样跑满一周再定。
+**④ 工作台数据日**：`workbench-page.tsx:28` 仍 `DATA_DATE = "2026-09-05"`，工作台 KPI/趋势虽已接真接口，窗口仍以写死日期为终点。按数据分析页同一兜底链修（`lineage.dataAsOf → lineage.window.to → 今天 + 标注`）。

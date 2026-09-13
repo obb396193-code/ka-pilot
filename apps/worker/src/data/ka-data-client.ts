@@ -1,4 +1,6 @@
 import {
+  namedDimensionWindowRowSchema,
+  summarizeDimensionSources,
   canonicalRowSchemaVersionByQueryId,
   type SourceAuthority,
   type SourceLineage,
@@ -17,7 +19,7 @@ import {
   type KaDataQueryPlan,
 } from "./query-registry.js";
 import { decodeKaWindowMembers } from "./ka-window-members.js";
-import { summarizeKaWindowMembers } from "./ka-window-summary.js";
+import { summarizeKaWindowMembers, summarizeKaWindowGroup } from "./ka-window-summary.js";
 import { assembleKaWindowAggregates } from "./ka-window-aggregate.js";
 import {
   CanonicalQueryRowError,
@@ -38,6 +40,17 @@ export interface DataQueryExecutionScope {
 
 type FetchLike = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
+/**
+ * v1.9.46（Q-041 ⑧）：团队账户的昵称清洗标签**在我们自己库里**（`account_name_parses`），
+ * 不在 ka-data。所以团队维度分组 = ka-data 出账户日事实 + 这个读取器出标签。
+ * 没注入它就只能做大盘与趋势，维度查询照旧回 `VIEW_UNSUPPORTED`——
+ * 不能悄悄退回「全部归未标注」，那在页面上跟「这批账户都没标注」长得一模一样。
+ */
+export interface KaDimensionLabelReader {
+  read(input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[] }):
+    Promise<Map<string, Record<string, string | null>>>;
+}
+
 export interface KaDataClientOptions {
   baseUrl: string;
   token: string;
@@ -45,10 +58,13 @@ export interface KaDataClientOptions {
   fetchFn?: FetchLike;
   timeoutMs?: number;
   maxResponseBytes?: number;
+  labels?: KaDimensionLabelReader;
 }
 
 export interface KaDataClientRuntimeOverrides {
   fetchFn?: FetchLike;
+  /** 团队账户的昵称标签读取器；缺省时团队维度查询回 `VIEW_UNSUPPORTED`，不静默降级。 */
+  labels?: KaDimensionLabelReader;
 }
 
 const kaDataEnvelopeSchema = z
@@ -323,6 +339,7 @@ export class KaDataClient {
   readonly #timeoutMs: number;
   readonly #maxResponseBytes: number;
   readonly #teamWorkspaceId: string | undefined;
+  readonly #labels: KaDimensionLabelReader | undefined;
   readonly #registry = createDataQueryRegistry();
 
   constructor(options: KaDataClientOptions) {
@@ -332,6 +349,7 @@ export class KaDataClient {
     const binding = z.string().uuid().safeParse(options.teamWorkspaceId);
     this.#teamWorkspaceId = binding.success ? binding.data : undefined;
     this.#fetchFn = options.fetchFn ?? fetch;
+    this.#labels = options.labels;
     this.#timeoutMs = positiveInteger(options.timeoutMs ?? DEFAULT_KA_DATA_TIMEOUT_MS, "timeoutMs");
     this.#maxResponseBytes = positiveInteger(
       options.maxResponseBytes ?? DEFAULT_KA_DATA_MAX_RESPONSE_BYTES,
@@ -377,6 +395,60 @@ export class KaDataClient {
       return { row: summary.row, window: snapshot.window, lineage: snapshot.lineage,
         warnings: [...snapshot.warnings, ...summary.warnings] };
     } catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window summary response", false); }
+  }
+
+  /**
+   * v1.9.46（Q-041 ⑧）：团队源按命名维度/清洗段分组。
+   *
+   * 事实来自 ka-data 的成员网格（与大盘同一张），标签来自我们自己的库——
+   * 团队账户的昵称解析行在我们这边，ka-data 没有。两者按 `media:accountId` 对齐。
+   * 分组汇总复用 `summarizeKaWindowGroup`（就是大盘那份），不另写一套聚合：
+   * 再加一份的话，「按优化师分组的合计」与「大盘合计」迟早对不上，而且不会有东西报错。
+   */
+  private async queryTeamDimension(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown) {
+    if (scope.scopeKind !== "team_workspace_readonly" || this.#teamWorkspaceId === undefined
+      || scope.workspaceId !== this.#teamWorkspaceId) {
+      throw new KaDataClientError("FORBIDDEN", "Team dimension query requires approved team context", false);
+    }
+    const dimension = resolved.params.dimensionType;
+    if (dimension === undefined) throw new KaDataClientError("INVALID_REQUEST", "Dimension type is required", false);
+    if (this.#labels === undefined) {
+      throw new KaDataClientError("VIEW_UNSUPPORTED", "Team naming labels are not configured for this source", false);
+    }
+    const plan = this.#registry.buildTeamKaWindowPlan(resolved, window);
+    const { envelope, exactLimit } = await this.#readPlan(plan);
+    if (exactLimit || envelope.truncated || envelope.limit_clamped || envelope.rowCount !== envelope.rows.length
+      || envelope.rows.length >= plan.limit) {
+      throw new KaDataClientError("SOURCE_TRUNCATED", "Team dimension response is incomplete", false);
+    }
+    let members;
+    try { members = decodeKaWindowMembers(envelope.rows, plan, resolved, scope.workspaceId); }
+    catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid team member grid", false); }
+    const accounts = [...new Map(members.map((member) =>
+      [`${member.media}:${member.accountId}`, { media: member.media, accountId: member.accountId }])).values()];
+    const labels = await this.#labels.read({ workspaceId: scope.workspaceId, accounts });
+    const groups = new Map<string | null, typeof members>();
+    const sources = new Map<string | null, (string | null)[]>();
+    for (const member of members) {
+      const entry = labels.get(`${member.media}:${member.accountId}`);
+      const value = entry?.[dimension] ?? null;
+      groups.set(value, [...(groups.get(value) ?? []), member]);
+      // 标签有没有来源这件事按**账户**算，不按账户日算，否则一个投了 30 天的账户会把来源票数刷爆。
+      const seen = sources.get(value) ?? [];
+      if (!seen.includes(member.accountId)) sources.set(value, [...seen, member.accountId]);
+    }
+    const rows = [...groups.entries()]
+      .sort(([a], [b]) => a === b ? 0 : a === null ? -1 : b === null ? 1 : a < b ? -1 : 1)
+      .map(([key, items]) => namedDimensionWindowRowSchema.parse({
+        key, label: key ?? "未标注",
+        ...summarizeDimensionSources(sources.get(key)!.map(() => key === null ? null : "nickname")),
+        ...summarizeKaWindowGroup(items, plan.window),
+        anomaly: false,
+      }));
+    const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
+    return { rows, dimension, window: plan.window,
+      lineage: sourceLineage(resolved, scope, envelope, accounts.length, false, true, reason, plan.queryTemplateVersion),
+      warnings: [reason] };
   }
 
   private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {
@@ -451,6 +523,17 @@ export class KaDataClient {
         "KA Data direct queries require an explicit approved account scope",
         false,
       );
+    }
+    // v1.9.46（Q-041 ⑧）：团队源的维度分组走成员网格 + 我们自己的标签，不走 ka-data 的 SQL 下推。
+    if (resolved.queryId === "account.dimension" && team) {
+      const result = await this.queryTeamDimension(resolved, scope, {
+        from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" });
+      return {
+        queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
+        dimension: result.dimension, status: "ready", rows: result.rows, returnedRowCount: result.rows.length,
+        wholeResultTotal: { value: null, availability: "partial", reason: "Team inventory coverage is unknown" },
+        lineage: { ...result.lineage, window: result.window, warnings: result.warnings }, warnings: result.warnings,
+      };
     }
     if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
       const window = { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" };

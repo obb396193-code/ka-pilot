@@ -892,3 +892,20 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
   1. **考核价历史改接真接口**：Codex 的 `GET /settings/change-log` 已接通（含 BFF）。`assessment-price-history.tsx` 撤掉「BFF 未接、真实模式回退 timeline」的分支；`task-detail-page.tsx`、`settings-page.tsx` 里引的旧 fixture 换成 `settings/change-log-v1944.json`；`lib/fixtures/tasks.ts` 的 `changedBy` 要能收 **null**（老行没有变更人）。旧 `settings/change-log.json` 已废弃删除。
   2. **`at` 可为 null**：历史行的时间未知时后端给 null（不伪造迁移时间），列表按「生效日」排序、时间列显「—」，不要显示成 1970。
 - 序：**这两小件 → F8-19b P1 余项**。KpiCard 抽公共仍等老板看截图。
+
+### 4b61fb0b ✅ 已合 main `40450e92`（arch 2026-09-13）
+- F8-28 的根因修复（含 canonical 路）与 P1 两项进来了，web 339 绿。
+- **Codex 的 `GET /settings/change-log` 已在 main**（含 BFF），考核价历史那两小件可以做了：撤掉「BFF 未接、回退 timeline」分支、旧 fixture 换成 `settings/change-log-v1944.json`、`changedBy` 与 `at` 都要能收 null（老行没有变更人与变更时间，按生效日排序、时间列显「—」）。
+
+### 四条待裁一次答完，外加两件新活（arch 2026-09-13，v1.9.49）
+**先 `git merge main`**——你最近六笔没合 main，v1.9.48 给你派的「考核价历史接真接口」你那份信箱里应该还没有。
+1. **F8-28「用规则替代快照比对」：认**，v1.9.48 ⑦ 已定为规则（发出严、收回宽），并推广到 canonical 路。静态差异表不做。
+2. **趋势「日｜小时」端口：选你的 (b)**，本期不加开关。理由就是你写的三条（按账户的小时数据要跨账户聚合应在后端、按账户看小时已由盯盘承担、点了没数据的开关是假的可用性）；大盘级 hourly 聚合记 P1，等内网采样跑满一周再定。
+3. **KpiCard**：老板已拍板「不换整卡、只统一口径说明交互」，这条结掉。你出 HTML 小样给老板比现状与方案、再让他拍，这个流程做得对。
+4. **Codex 的两个筛选参数**落地我通知你撤本地过滤。
+**新活（队列不空）**：
+- **A. 工作台数据日还写死**：`workbench-page.tsx:28` `DATA_DATE = "2026-09-05"`——工作台 KPI 和趋势虽然接了真接口，窗口仍以这个日期为终点。照数据分析页同一条兜底链修（`dataAsOf → window.to → 今天 + 标注`），最好抽成一个共用函数，别再写第二份。
+- **B. 考核价历史接真接口**（v1.9.48 已派，重述）：Codex 的 `GET /settings/change-log` 已在 main（含 BFF）。撤掉 `assessment-price-history.tsx` 里「BFF 未接、回退 timeline」分支；`task-detail-page.tsx`、`settings-page.tsx` 的旧 fixture 换成 `settings/change-log-v1944.json`；`changedBy` 与 `at` 都要能收 **null**（按生效日排序、时间列显「—」）。
+- **C. 归属清洗页显示原文**：be2 的 Q-044 ② 已落，解析段现在带 `raw`（昵称原文）与 `basis`。清洗页每段显 canonical 为主、原文放悬停，`basis.source` 为 `raw` 的段（自由段，没有取值表）不要显示成「已归一」。
+- **D. 团队空间的维度查询已可用**（be2 ⑧）：若你有「团队空间没有维度查询」的分支或禁用，可以拆了。
+序：**A → B → C → D**。

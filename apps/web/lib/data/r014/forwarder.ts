@@ -132,10 +132,39 @@ export async function forwardToBackend(request: Request, options: ForwardOptions
     }
     const schema = options.dataSchema === undefined ? envelope(z.unknown()) : envelope(options.dataSchema)
     const parsed = schema.safeParse(body)
-    if (!parsed.success || bodyRequestId(body) !== requestId || !statusMatchesBody(body, response.status)) {
+    // ★F8-28：**只多了未知键，不算不合契约**。
+    //
+    // 我的镜像是 `.strict()`，而契约经常加**可选新键**（v1.9.27 的 `lineage.warnings` 对象形、
+    // v1.9.28 的 `op:"revoke"`、v1.9.29 的 `config.charts`）。每一次都是：后端按契约加了个字段，
+    // 我的镜像没跟上 → 整条响应判废 → **用户看到整页读取失败**，而实际上数据是好的。
+    // 三次事故同一个根因，与其一遍遍追字段，不如把这条规则改对：
+    //   · 多了不认识的键 → 放行（把它丢掉），控制台点名，让我们知道该补镜像；
+    //   · 缺必填字段 / 类型不对 / 枚举越界 → 照旧 502（那是真的对不上，不能放行）。
+    // 「发出去的严、收回来的宽」——请求形状写错必须当场失败，响应多个字段不该打死用户。
+    // 信封是 `z.union([成功, 错误])`，所以失败会被包成 `invalid_union`，
+    // 真正的原因藏在 `errors` 里——得往里看一层，不能只看顶层 code。
+    // 判定用**成功分支**那组问题：错误分支当然对不上（它期待的是 `{ok:false}`）。
+    const unknownKeysOnly = (issues: readonly { code: string; errors?: unknown[][] }[]): boolean =>
+      issues.length > 0 && issues.every((issue) => {
+        if (issue.code === "unrecognized_keys") return true
+        if (issue.code === "invalid_union" && Array.isArray(issue.errors) && issue.errors.length > 0) {
+          // 只要有**一个分支**是「仅多了未知键」，就说明形状本身是对的
+          return issue.errors.some((branch) => unknownKeysOnly(branch as { code: string; errors?: unknown[][] }[]))
+        }
+        return false
+      })
+    const onlyUnknownKeys = !parsed.success && unknownKeysOnly(parsed.error.issues as never)
+    if (onlyUnknownKeys) {
+      console.warn(
+        `[bff] 上游 ${options.path} 返回了镜像里没有的字段，已放行并丢弃：`,
+        parsed.error.issues.flatMap((issue) => (issue as { keys?: string[] }).keys ?? []),
+      )
+    }
+    if ((!parsed.success && !onlyUnknownKeys) || bodyRequestId(body) !== requestId || !statusMatchesBody(body, response.status)) {
       return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "The upstream response did not match the canonical contract", false, requestId), requestId }
     }
-    return { status: response.status, body: parsed.data, requestId }
+    // 只多未知键时 `parsed.data` 没有值，退回原始 body——那些多出来的字段前端本来也不读
+    return { status: response.status, body: parsed.success ? parsed.data : body, requestId }
   } catch (cause) {
     const timeout = isTimeoutCause(cause)
     return {

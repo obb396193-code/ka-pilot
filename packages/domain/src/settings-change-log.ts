@@ -26,7 +26,9 @@ export const settingsChangeLogKindSchema = z.enum(["assessment_price", "daily_bu
 export const settingsChangeLogPositionSchema = z.object({ v: z.literal(1), at: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$/)
   .refine(v => date.safeParse(v.slice(0, 10)).success && Number.isFinite(Date.parse(v))),
   kind: settingsChangeLogKindSchema, id: z.string().regex(/^[1-9][0-9]{0,18}$/)
-    .refine(v => BigInt(v) <= 9223372036854775807n),
+    // A46：domain 文件被 apps/web 直接编译（target ES2017），**不能用 BigInt 字面量**（`…n`）。
+    // 改成字符串构造，语义不变：id 是 bigint 主键的十进制串，上界即 int8 max。
+    .refine(v => BigInt(v) <= BigInt("9223372036854775807")),
 }).strict();
 export const settingsChangeLogRequestSchema = z.object({
   kinds: z.array(settingsChangeLogKindSchema).min(1).max(3).refine(kinds => new Set(kinds).size === kinds.length).optional(),

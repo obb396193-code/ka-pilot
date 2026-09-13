@@ -11,42 +11,77 @@
         "segments": {
           "biz": {
             "key": "biz",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "CVR有端",
             "mapsTo": "biz",
             "taskIds": []
           },
           "rta": {
             "key": "rta",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "有R",
             "mapsTo": "rta",
             "taskIds": []
           },
           "goal": {
             "key": "goal",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "激活",
             "mapsTo": "goal",
             "taskIds": []
           },
           "custom": {
             "key": "custom",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "A",
             "mapsTo": null,
             "taskIds": []
           },
           "device": {
             "key": "device",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "安卓",
             "mapsTo": "device",
             "taskIds": []
           },
           "channel": {
             "key": "channel",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "DAU",
             "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "13177",
             "mapsTo": "landing",
             "taskIds": []
@@ -59,24 +94,44 @@
           },
           "bid_mode": {
             "key": "bid_mode",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "单出价",
             "mapsTo": "bid_mode",
             "taskIds": []
           },
           "operator": {
             "key": "operator",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "自投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "张三",
             "mapsTo": "optimizer",
             "taskIds": []
           },
           "placement": {
             "key": "placement",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "优选",
             "mapsTo": "placement",
             "taskIds": []
@@ -101,42 +156,78 @@
         "segments": {
           "biz": {
             "key": "biz",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "CVR有端",
             "mapsTo": "biz",
             "taskIds": []
           },
           "rta": {
             "key": "rta",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "有R",
             "mapsTo": "rta",
             "taskIds": []
           },
           "goal": {
             "key": "goal",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "激活",
             "mapsTo": "goal",
             "taskIds": []
           },
           "custom": {
             "key": "custom",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "B",
             "mapsTo": null,
             "taskIds": []
           },
           "device": {
             "key": "device",
-            "value": "IOS",
+            "raw": "IOS",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
+            "value": "iOS",
             "mapsTo": "device",
             "taskIds": []
           },
           "channel": {
             "key": "channel",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "DAU",
             "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "13178",
             "mapsTo": "landing",
             "taskIds": []
@@ -149,24 +240,44 @@
           },
           "bid_mode": {
             "key": "bid_mode",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "单出价",
             "mapsTo": "bid_mode",
             "taskIds": []
           },
           "operator": {
             "key": "operator",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "自投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "张三",
             "mapsTo": "optimizer",
             "taskIds": []
           },
           "placement": {
             "key": "placement",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "上下滑",
             "mapsTo": "placement",
             "taskIds": []
@@ -191,42 +302,77 @@
         "segments": {
           "biz": {
             "key": "biz",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "M运动",
             "mapsTo": "biz",
             "taskIds": []
           },
           "rta": {
             "key": "rta",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "非R",
             "mapsTo": "rta",
             "taskIds": []
           },
           "goal": {
             "key": "goal",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "付费",
             "mapsTo": "goal",
             "taskIds": []
           },
           "custom": {
             "key": "custom",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "C",
             "mapsTo": null,
             "taskIds": []
           },
           "device": {
             "key": "device",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "双端",
             "mapsTo": "device",
             "taskIds": []
           },
           "channel": {
             "key": "channel",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "DAU",
             "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "13179",
             "mapsTo": "landing",
             "taskIds": []
@@ -239,24 +385,44 @@
           },
           "bid_mode": {
             "key": "bid_mode",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "双出价",
             "mapsTo": "bid_mode",
             "taskIds": []
           },
           "operator": {
             "key": "operator",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "代投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "某代理",
             "mapsTo": "optimizer",
             "taskIds": []
           },
           "placement": {
             "key": "placement",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "联盟",
             "mapsTo": "placement",
             "taskIds": []
@@ -281,42 +447,77 @@
         "segments": {
           "biz": {
             "key": "biz",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "M运动",
             "mapsTo": "biz",
             "taskIds": []
           },
           "rta": {
             "key": "rta",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "非R",
             "mapsTo": "rta",
             "taskIds": []
           },
           "goal": {
             "key": "goal",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "付费",
             "mapsTo": "goal",
             "taskIds": []
           },
           "custom": {
             "key": "custom",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "D",
             "mapsTo": null,
             "taskIds": []
           },
           "device": {
             "key": "device",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "安卓",
             "mapsTo": "device",
             "taskIds": []
           },
           "channel": {
             "key": "channel",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "DAU",
             "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "13180",
             "mapsTo": "landing",
             "taskIds": []
@@ -329,24 +530,44 @@
           },
           "bid_mode": {
             "key": "bid_mode",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "单出价",
             "mapsTo": "bid_mode",
             "taskIds": []
           },
           "operator": {
             "key": "operator",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "代投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "某代理",
             "mapsTo": "optimizer",
             "taskIds": []
           },
           "placement": {
             "key": "placement",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "主站",
             "mapsTo": "placement",
             "taskIds": []
@@ -371,42 +592,77 @@
         "segments": {
           "biz": {
             "key": "biz",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "闲鱼DAU",
             "mapsTo": "biz",
             "taskIds": []
           },
           "rta": {
             "key": "rta",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "有R",
             "mapsTo": "rta",
             "taskIds": []
           },
           "goal": {
             "key": "goal",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "唤起",
             "mapsTo": "goal",
             "taskIds": []
           },
           "custom": {
             "key": "custom",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "E",
             "mapsTo": null,
             "taskIds": []
           },
           "device": {
             "key": "device",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "安卓",
             "mapsTo": "device",
             "taskIds": []
           },
           "channel": {
             "key": "channel",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "DAU",
             "mapsTo": null,
             "taskIds": []
           },
           "landing": {
             "key": "landing",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "13181",
             "mapsTo": "landing",
             "taskIds": []
@@ -419,24 +675,44 @@
           },
           "bid_mode": {
             "key": "bid_mode",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "单出价",
             "mapsTo": "bid_mode",
             "taskIds": []
           },
           "operator": {
             "key": "operator",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "自投",
             "mapsTo": "agent_type",
             "taskIds": []
           },
           "optimizer": {
             "key": "optimizer",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "raw",
+              "ruleVersion": 1
+            },
             "value": "李四",
             "mapsTo": "optimizer",
             "taskIds": []
           },
           "placement": {
             "key": "placement",
+            "basis": {
+              "at": "2026-09-13T00:00:00.000Z",
+              "source": "rule",
+              "ruleVersion": 1
+            },
             "value": "搜索",
             "mapsTo": "placement",
             "taskIds": []

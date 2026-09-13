@@ -9,6 +9,8 @@ describe("worker config", () => {
       pollIntervalMs: 1_000,
       leaseSeconds: 60,
       serviceQihangUserId: null,
+    // v1.9.47（Q-042）：源时区没配就是 null —— 不采小时数据，而不是拿服务器本地时区蒙。
+    sourceTimeZone: null,
       materialSources: {
         allowedHosts: [],
         maxContentBytes: 524_288_000,

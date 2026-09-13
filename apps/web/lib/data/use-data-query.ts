@@ -17,10 +17,19 @@ export function useDataQuery(request: QueryRequest) {
   const [response, setResponse] = useState<DataQueryResponse | null>(null)
   useEffect(() => {
     if (stableRequest.mockState === "loading" && runtime.isMock) { setResponse(null); return }
+    // `active` 管「别把过期结果画上去」，`controller` 管「别让过期请求继续跑」——
+    // 两件事，都要做：只丢结果的话，连点几次窗口就是几次白算
+    const controller = new AbortController()
     let active = true
     setResponse(null)
-    runtime.client.query(stableRequest).then((value) => { if (active) setResponse(value) }, (cause) => { if (active) setResponse(clientError(cause)) })
-    return () => { active = false }
+    runtime.client.query(stableRequest, controller.signal).then(
+      (value) => { if (active) setResponse(value) },
+      (cause) => {
+        // 自己取消的不算失败，别在界面上报一个红条
+        if (active && !controller.signal.aborted) setResponse(clientError(cause))
+      },
+    )
+    return () => { active = false; controller.abort() }
   }, [runtime, stableRequest])
   return { response, isMock: runtime.isMock, loading: response === null }
 }

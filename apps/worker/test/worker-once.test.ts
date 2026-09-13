@@ -13,7 +13,8 @@ function ports(value: unknown = result()) {
 
 describe("worker once server config", () => {
   it("requires an explicit workspace/media/source and defaults only cadence-independent controls", () => {
-    expect(parseWorkerOnceConfig(env)).toEqual({ workspaceId, media: "KUAISHOU", mode: "auto", databaseUrl: env.DATABASE_URL, qihangBaseUrl: env.QIHANG_BASE_URL, maxMs: 600_000, leaseSeconds: 60 });
+    // v1.9.47（Q-042）：源时区没配就是 null —— 不采小时数据，而不是拿服务器本地时区蒙一个。
+    expect(parseWorkerOnceConfig(env)).toEqual({ workspaceId, media: "KUAISHOU", mode: "auto", databaseUrl: env.DATABASE_URL, qihangBaseUrl: env.QIHANG_BASE_URL, maxMs: 600_000, leaseSeconds: 60, sourceTimeZone: null });
   });
   it.each(["DATABASE_URL", "QIHANG_BASE_URL", "WORKER_ONCE_WORKSPACE_ID", "WORKER_ONCE_MEDIA"])("missing %s never falls back to owner/service identity", (key) => {
     const missing: Record<string, string> = { ...env }; delete missing[key];

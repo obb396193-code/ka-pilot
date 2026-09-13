@@ -86,6 +86,8 @@ const workerConfigSchema = z.object({
   WORKER_POLL_INTERVAL_MS: positiveInteger.default(1_000),
   WORKER_LEASE_SECONDS: positiveInteger.default(60),
   WORKER_SERVICE_QIHANG_USER_ID: z.string().trim().min(1).optional(),
+  // v1.9.47（Q-042）：与 data-api 同名同义；配错在启动时就炸，不让它去错标每一行。
+  DATA_SOURCE_TIMEZONE: z.string().trim().regex(/^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){1,2}$/, "Invalid IANA timezone").optional(),
   MATERIAL_POOL_BASE_URL: materialPoolUrlSchema.optional(),
   MATERIAL_SOURCE_ALLOWED_HOSTS: materialHostListSchema,
   MATERIAL_SOURCE_MAX_BYTES: positiveInteger.default(500 * 1024 * 1024),
@@ -144,6 +146,12 @@ export interface WorkerConfig {
   pollIntervalMs: number;
   leaseSeconds: number;
   serviceQihangUserId: string | null;
+  /**
+   * v1.9.47（Q-042）：源的业务时区（IANA）。小时采样拿它判断「这个小时过完了没有」。
+   * **没配就不采**——判不出完整性的行会被错标，比缺行更糟。与 data-api 的
+   * `DATA_SOURCE_TIMEZONE` 是同一个键、同一个含义，两个进程配同一个值。
+   */
+  sourceTimeZone: string | null;
   materialSources: {
     poolBaseUrl?: string;
     allowedHosts: string[];
@@ -165,6 +173,7 @@ export function loadWorkerConfig(environment: NodeJS.ProcessEnv): WorkerConfig {
     pollIntervalMs: parsed.WORKER_POLL_INTERVAL_MS,
     leaseSeconds: parsed.WORKER_LEASE_SECONDS,
     serviceQihangUserId: parsed.WORKER_SERVICE_QIHANG_USER_ID ?? null,
+    sourceTimeZone: parsed.DATA_SOURCE_TIMEZONE ?? null,
     materialSources: {
       ...(parsed.MATERIAL_POOL_BASE_URL === undefined
         ? {}
