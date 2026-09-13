@@ -36,8 +36,10 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
       expect((await pool.query("SELECT to_regclass('agent_run_events') AS name")).rows[0].name).toBe("agent_run_events");
     }
     await pool.query("UPDATE changeset_items SET from_value=NULL WHERE id=$1", [item]);
-    const coefficient = (await pool.query(`INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date)
-      VALUES($1,$2,0.7812,'multiply','2026-09-01') RETURNING id`, [ws, `test-${randomUUID()}`])).rows[0].id;
+    // This test targets the older operation-loss guard, not 029 audit loss.
+    // Explicit legacy unknown metadata lets the downgrade reach migration 012.
+    const coefficient = (await pool.query(`INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date,created_at)
+      VALUES($1,$2,0.7812,'multiply','2026-09-01',NULL) RETURNING id`, [ws, `test-${randomUUID()}`])).rows[0].id;
     await expect(runMigrations({ databaseUrl, direction: "down", count: windowSize("012") })).rejects.toThrow(/cannot downgrade semantics/);
     await pool.query("DELETE FROM channel_coefficients WHERE id=$1", [coefficient]);
     expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("012") })).toHaveLength(windowSize("012"));
