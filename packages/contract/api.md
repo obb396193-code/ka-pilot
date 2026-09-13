@@ -1550,3 +1550,18 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **四键（`biConv/biCashCost/overCost/incentiveCost`）转必填分两段**：本轮**只对 platform（个人）源**的 summary/trend/dimension/pivot2 行生效；团队 `ka_data` 与 `reconcile` 模式的行（`dimension-v3.json`、`reconcile-pending.json`）**豁免到 Q-041 ⑧ 落地**，届时一并转必填。理由：团队源本地连不上，硬转必填只会逼出假 fixture。
 - **Q-041 ⑧ 的验证方式**：本地两道闸（`KA_DATA_ENABLED` 默认 false 的路由闸、`KA_DATA_BASE_URL/READER_TOKEN` 的组装闸）使团队侧真响应在开发机上不可得。采纳 be2 的**选项 2**：实现 + 无库单测交付，回执**明写「团队侧未实测」**，真实验证在内网由 OS 按 A42 跑团队侧探针（冒烟脚本追加团队空间四个窗口）。不下发 ka-data 凭证到开发机。
 - **归属**：Q-042（小时采样 job，写 `account_metrics_hourly`）归 **be2**（数据链）；Q-044 ③ 的两条读路径在 `reports/**`，由 **Codex** 按 be2 给出的 helper 接线，be2 只出 domain/db 与 data 路径。
+
+## v1.9.46 追加（2026-09-12 arch；治理权限矩阵更正、出站不确定结果、列表筛选与镜像比对、团队源两处更正）
+**① 治理范围：更正 v1.9.44 ② 的「统一 workspace-local」——那条在新用户场景下走不通**（Codex 实读发现：新建 identity 有自己的 personal workspace，治理管理员不在其中，「先切空间」根本切不过去）。改为：
+- **治理动作按 identity 定位，不依赖调用方当前空间**：`PATCH /admin/members/:identityId`（role/is_active）作用于该 identity；`GET|PUT /admin/members/:identityId/grants` 作用于**该 identity 的 active personal workspace**（服务端解析），团队空间按 v1.4 不建账户授权、GET 返空。
+- **`GET /admin/members` 保持 v1.9.21 的全局语义**（治理后台要看到全部成员），v1.9.44 那句「三个端点都 workspace-local」只针对 grants 的作用对象，特此收窄澄清。
+- **治理权限来源 = 任一有效 team workspace 的 admin 角色**（live 校验，撤权立即生效）；个人空间的 optimizer 角色不赋予任何治理权。最小矩阵：`GET /admin/members`（team admin，全局）｜`PATCH /admin/members/:id`（team admin，目标 identity）｜`GET|PUT /admin/members/:id/grants`（team admin，目标的 active personal workspace）。审计逐条记 actor identity、target identity、target workspace。
+- **停用 = 身份级**：`is_active=false` 撤销该 identity 的**全部**会话（沿用 `api.md:890` 与 `schema.sql:997`），不是只撤当前空间那一份。
+**② 出站投递「结果未知」（P-198）**：远端超时/连接中断且无响应体时，**不得置 `sent`**。出站行加 `dedupe_key`（`workspace_id + kind + target + 业务主键 + 业务日`）；投递器发送前查 24 小时内是否已有同 `dedupe_key` 的 `sent` 行，有则跳过。未知结果的行**允许下一轮重试**（漏发告警比重发一条更糟，重复由 dedupe_key 兜住）；**连续两次未知 → 置 `failed` + `fail_reason:"UNKNOWN_OUTCOME"`**，等人工确认，不再自动重试。
+**③ 列表筛选：问题是「在被截断的一页上筛」，不是筛两次**（采纳 fe 的更正）。当前 `GET /accounts` / `GET /tasks` 单页上限 100，前端对产品名/负责人这类后端不认的键做本地过滤时，第 3 页的账户会显示成「没有符合条件的」且不报错。裁决：
+- 后端认的键（`q/media/stage/starred/status`）由前端下推、前端不再重筛；
+- 后端不认的键（产品名、负责人显示名）暂留前端，**必须显式提示「共 N 个，这里只取了前 M 个，这两项是在已取到的这批里过滤的」**；
+- **`GET /accounts` 增加 `productName`、`ownerUserId` 两个可选筛选参数**（Codex，排在 P-193 之后），落地后前端撤掉这两项本地过滤。不采用「前端分页拉全量」——500 户以上会把首屏拖垮。
+**④ 镜像与契约的全量比对：做，单独一轮**（fe 已连撞三次同类：`lineage.warnings` 对象形、`assessmentPriceChangeSchema` 少 `op`、`savedViewConfigSchema` 少 `charts`）。范围 = `apps/web/lib/data/r014/schemas.ts` 与 `canonical-query-rows.ts` 的每个 `.strict()` 对象 vs api.md 字段清单，产出差异表并把「契约可选键镜像必须收」写成用例。**记作 F8-28**，排在 F8-19b P1 余项之前。
+**⑤ 更正 v1.9.4 的一句话**（be2 实读发现）：原文「团队 ka-data 源的 SQL 直出汇总拿不到逐成员缺失信息」**不成立**——`ka-window-aggregate-sql` 的 `COUNT(col)`/`COUNT(ds)` 本来就是逐成员完整性，只是此前被用来做「缺一个就整列 NULL」。这句是 v1.9.35 暂缓团队 partial 的依据，现予更正；团队源部分合计已按 v1.9.46 落地。
+**⑥ 导出 CSV 必须带 UTF-8 BOM**（fe 提）：不带的话中文 Windows 的 Excel 按 GBK 解，整张表乱码，而 macOS 上永远看不出来。写进门禁清单 A45。
