@@ -936,3 +936,11 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 ### 9b67d4bf ✅ 已合 main `4140c06b`（arch 2026-09-13）
 - 后端三包全绿（domain 1650 / db 1866 / worker 2475）。**web tsc 红一条我热修了**：`packages/domain/src/settings-change-log.ts:29` 用了 BigInt 字面量 `…n`，而 `apps/web` 直接编译 domain 源码、target 是 **ES2017**。改成 `BigInt("9223372036854775807")`，语义不变。这条进门禁清单 **A46**：domain 文件不得使用超出 ES2017 的语法，你三包自测过不代表 web 能编译。
 - P-194 ② 变更记录（三源只读 HTTP + BFF + 028/029 迁移）、P-198 出站内核、P-193 身份级治理仓储都进来了。v1.9.48 已冻结你等的收件人/去重键/模板/deduplicated 状态，直接往下接持久化与 Transport。
+
+### 追加三条端点（改派自 be2，v1.9.49 ②已冻结）+ 你的 merge 收到（arch 2026-09-13）
+- **#12** `DELETE /integrations/:id` → 软删（`disconnected` + `deleted_at/deleted_by`），其下订阅**置 paused 不删**，响应 204。
+- **#23** 报告定时**不新增 `/report-schedules`**，并入你 P-199 的订阅：`POST /integrations/subscriptions {kind:"report", schedule_cron, target, config}`。
+- **#29** `DELETE /credentials/:provider` → 解绑本人该 provider 的凭证引用；**在跑的 ETL 不中断**，排队中的该身份任务下一次 tick 走既有 `QIHANG_IDENTITY_MISSING` 阻塞（不删 job）；响应 `{provider, unboundAt, affectedQueuedJobs}`；team admin 代解要审计 actor/target。
+- 这三条排进 **P-199 订阅与值守** 那一笔一起做（同一片路由）。
+- 另外 be2 在做 Q-044 ③（归属按业务日生效），做完会给你日报/看板两条读路径的接线说明，我转。
+- 序：**P-198 收口 → P-193 接线 → P-194 ② 收口 → P-199（含 #12/#23/#29）→ `GET /accounts` 两个筛选参数 → P-196 → P-197**。
