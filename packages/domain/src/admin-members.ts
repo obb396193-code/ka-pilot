@@ -67,3 +67,17 @@ export const adminMembersV195ResponseSchema = z.discriminatedUnion("ok", [
 export type AdminMemberCreateRequest = z.infer<typeof adminMemberCreateRequestSchema>;
 export type AdminMemberCreatedData = z.infer<typeof adminMemberCreatedDataSchema>;
 export type AdminMemberResetPasswordData = z.infer<typeof adminMemberResetPasswordDataSchema>;
+
+// v1.9.44 workspace-local commands. Browser-supplied scope and grant timestamps
+// are deliberately absent; granting execute does not bypass media execution gates.
+export const adminMemberPatchRequestSchema = z.object({
+  role: adminMemberSchema.shape.role.optional(), is_active: z.boolean().optional(),
+}).strict().refine(value => value.role !== undefined || value.is_active !== undefined, "Empty member patch");
+export const adminMemberReplaceGrantsRequestSchema = z.object({
+  items: z.array(adminMemberGrantSchema.omit({ grantedAt: true })).max(1000),
+}).strict().refine(({ items }) => new Set(items.map(item => `${item.media}:${item.accountId}`)).size === items.length, "Duplicate grant tuple");
+export const adminMemberUpdatedResponseSchema = z.discriminatedUnion("ok", [
+  z.object({ ok: z.literal(true), data: adminMemberV195Schema, meta }).strict(), commandError,
+]);
+export type AdminMemberPatchRequest = z.infer<typeof adminMemberPatchRequestSchema>;
+export type AdminMemberReplaceGrantsRequest = z.infer<typeof adminMemberReplaceGrantsRequestSchema>;
