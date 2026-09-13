@@ -7788,3 +7788,29 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 2. `ka_data` 与 `reconcile` 的行现在**必须**带四个键，缺任一整条判废。
 
 **⑧ 还剩「团队源同三维」没做**：团队源现在连 `account.dimension` 都不收——registry 里 ka_data 只有 detail/summary/table/trend/reconciliation 五个 `buildSql`，维度查询直接 `VIEW_UNSUPPORTED`。要接的话得给团队源一条按账户出行的 SQL，再用**我们自己库里的**解析行（`account_name_parses`）在本地分组——团队账户的昵称清洗数据在我们这边，不在 ka-data。这部分我下一轮做，除非你要先看这笔合完的冒烟结果。
+
+### Q-041 ⑧ 收尾：团队源同三维（be2 2026-09-12，v1.9.46）
+
+**交付 SHA**：`202b2c87`（分支 `be/r017`，路径限定提交、未 push）。⑧ 两半齐了（partial 见上一封 `b1965242`）。
+
+**★ 团队侧仍未实测**（同上一封，不重复理由）。用例是拿真客户端 + 注入传输层跑的。
+
+**做了什么**
+团队源原来**根本没有维度查询**——注册表里 ka_data 没有 `account.dimension` 的 `buildSql`，直接回 `VIEW_UNSUPPORTED`。现在接上了，但它的两半来自不同地方：
+- **事实**：ka-data 的成员网格（与团队大盘同一张网格，不另拉一次）；
+- **标签**：**我们自己库里的** `account_name_parses`——团队账户的昵称解析行在我们这边，ka-data 从来没见过它。
+
+所以给客户端加了个标签读取器，生产侧注入的是**透视那条路同一个 `loadAccountLabels`**。两处各读各的，迟早会出现「透视说这户归张三、团队维度说归李四」，而这种分歧不会有任何东西报错。
+
+**分组汇总复用大盘那一份**（`summarizeKaWindowGroup`），没另写聚合：团队源已经有两条独立算窗口的路，再加第三份的话「按优化师分组的合计」与「大盘合计」迟早对不上。
+
+**两处我特意拒掉的**（都属于「放行不会报错、只会给一张看着正常的错表」）：
+1. **没注入标签读取器时回 `VIEW_UNSUPPORTED`，而且连源都不去打**——缺的是我们自己这半，不是对面的；悄悄退回「全部归未标注」在页面上跟「这批账户真的都没标注」长得一模一样。
+2. **团队源只收标签维度**（optimizer/goal/placement + `segment:<key>`）。`account`/`task`/`biz` 要的是事实侧分组，团队那条路没有；放行只会得到「所有账户归一个空桶」的一行表。`details.supported[]` 如实只列它真能做的四项。
+   —— 这一条是 `dimension-registry.test.ts` 那条旧边界用例提醒我的：它原来钉「团队维度一律拒」，我改它的时候才注意到不能一口气全放开。用例已改成钉新边界（`account` 仍拒并列出可用清单、`optimizer` 放行）。
+
+**门禁四包全绿**：domain **1553** / db **157 文件 1759** / worker **205 文件 2344**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了**：`account.dimension` 现在对 `ka_data` 源可用（原来恒 `VIEW_UNSUPPORTED`）；团队维度行与个人源同形（带 `source`/`sources` 的命名维度行）。fe 若按「团队空间没有维度查询」写过分支，可以拆了。
+
+**下一步**：⑧⑨ 都完了，按你的序做 **⑤ Q-042 小时采样 job**（你 v1.9.45 已裁归我）。现状我上一轮核过：迁移 025、domain normalizer、db 写库、启航 client 的 `hh` 都在，缺的是采样 job + 调度 + 注入；写库要挂在现成的 `etl_incr` job/run/lease 上。
