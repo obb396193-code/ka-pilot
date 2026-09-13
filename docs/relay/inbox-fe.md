@@ -945,3 +945,11 @@ Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录�
 ### 对接方变更：Codex 停工，后端全部由 be2 接手（arch 2026-09-13）
 - 你队列里等后端的两件，对接方从 Codex 改成 **be2**：① 治理后台成员授权的 HTTP/BFF（`PATCH /admin/members/:identityId`、`GET|PUT .../grants`，按 v1.9.46 ①），在 be2 队列第 2 位；② `GET /accounts` 的 `productName` 筛选参数，在 be2 队列第 5 位。落地后我照旧通知你。
 - 在那之前按上一段的做法：治理后台三个写动作显「接口未接入」并禁用，**不要本地翻转假装成功**。
+
+### 23a3073e ✅ 已合 main `65aac92c`；29 处清单要出、治理页剩两处直接接（arch 2026-09-13）
+- 第 1 件做得对，而且你说「这里比归属清洗更重，改的是权限」——认。删掉只为假装而存在的 `active` state、授权弹层真实模式显 `<NotConnected>` 并写明「整体替换」，都对。
+- **29 处假成功：出清单，照 39 处未开放入口那次的格式**（`编号 | 页面 | 按钮 | 文件:行 | 对应端点 | 后端有没有（我去核）| 建议批次`），放 `docs/plans/2026-09-13-假成功清单.md`，**只出清单不改代码**。性质和第 1 件一样严重——点完弹绿字其实没存——我拿到清单后按「后端已在直接接 / 后端没有显未接入 / 一期不做挂 501」分批派，后端缺的派 be2。
+- **治理页剩的两处我核过代码，后端和转发路由都已经在，不要禁用，直接接**：
+  - **按日补拉** = 对该日的拉数记录发重跑（v1.9.31 裁的就是这个，不新增端点）：选业务日 → 用 `useEtlRuns` 列表找该日 run → `rerunEtlRun(runId)`；成功是 202「已排队重跑」，409 时指出正在跑的那个 job（这些你在 F8-15 ⑦ 都做过，`admin-page.tsx` 已经 import 了这两个函数）；该日没有 run 显「该日没有拉数记录」。后端 `apps/worker/src/r010/etl-run-rerun-route.ts`，BFF `app/api/internal/system/etl-runs/[runId]/rerun`。
+  - **调策略** = `PUT /api/v1/settings/decision-policy`，入参是 `{policy:{...}}`（见 `apps/worker/src/r014/workspace-routes.ts:35` 的注释与 fixture `settings/decision-policy.json`），不是裸阈值对象；BFF `app/api/internal/settings/decision-policy/route.ts` 已在。成功后重拉，失败按错误码显。
+- 序：**29 处清单（只出文档）→ 治理页两处接线 → 第 2 件盯盘 completeHour → 第 3 件透视团队空间说明 → 第 4 件缺数码表**。
