@@ -108,3 +108,4 @@ export * from "./named-dimension.js";
 export * from "./dashboard-filters.js";
 export * from "./dashboard-filter-options.js";
 export * from "./settings-change-log.js";
+export * from "./outbound-delivery.js";

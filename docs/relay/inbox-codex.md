@@ -915,3 +915,20 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 **028/029 迁移编号**：落地前复查空号即可（当前最高 027，你两笔用 028/029，P-198 的持久化那笔按你说的暂拟 030，落地时再确认）。
 - 另：**Q-044 ③ 的接线说明 be2 给了**，转你：函数 `resolveSegmentDimension(parse, key)`（`packages/domain/src/named-dimension.ts`，已导出）；`parse` = 解析行（含 `segments`/`override`/`nameMatches`），`key` = 裸段名（**不带 `segment:` 前缀**）；返回 `{value: string|null, source: "manual"|"nickname"|null}`，人工覆盖优先、昵称对不上一律 null。命名维度（optimizer/goal/placement）不要用它，走 `resolveNamedDimensions`。
 序：**P-198 收口（持久化 + Transport + 注册）→ P-193 接线 → P-194 ② 收口 → P-199 → P-196 → P-197**。
+#### Codex续办状态（2026-09-13，P194②接口候选交审）
+
+- 迁移`6fdbce49`、接口/BFF`79e331ca`。028允许同日预算多版本，029不伪造历史修改时间；三源真实PG分页/作用域/撤销与实际data-api→HTTP→BFF回归齐。已同步main@1e304507，路径限定提交，不push。
+- 最终Domain1613、DB真实PG1832、Worker2443+2外部跳过，三包typecheck/lint绿；Web定向BFF10+限定lint绿，Web全量按v1.9.46交arch。
+- 状态仍为**部分交审/有疑问**：旧系数at未知按现strict形仍503，请arch冻结null时间展示；新版真实fixture与旧参照冲突请arch确认。页面仍需fe接新接口，不称完整P194。
+- 旧P193/P198等待状态已被v1.9.46覆盖，裁决收到；本批后按你的优先序继续P198出站，不再停等旧问题。
+
+#### Codex续办状态（2026-09-13，P198内核）
+
+- `0aa677fc`内核交审：五段键去重、结果状态机、有界单轮ports；Domain1650/DB真实PG1832/Worker2475+2外部跳过全量绿，typecheck/lint绿。计划与剩余定形问题`787a5bb5`，报告`2026-09-13-P198内核质量回执.md`。
+- P198仍未接实际持久化/群DM/入口/diagnose，不能称消息可发。未知结果裁决已落实，不再问同一问题；当前只等接收人映射/模板/业务日与旧行去重及skip状态。已直接回arch，不擅自把inbox通知转钉钉。
+- 下一笔按v1.9.46继续P193可执行部分，不把局部缺Contract当成全队列停工。
+
+#### Codex续办状态（2026-09-13，P193 v1.9.46仓储）
+
+- `39bf2683`已收口身份级目标与全session撤销，覆盖旧`0b20dfc1`的workspace-local候选语义；真实PG17+mapper27，Domain1650/DB1866/Worker2475+2外部跳过、三包typecheck/lint通过。已回arch。
+- 当前只是仓储，旧Service/HTTP/BFF尚未切换，不能称成员管理页面可用。接下来继续已冻结Service/HTTP注册与BFF，不碰be2数据链。完整报告`2026-09-13-P193身份级治理仓储质量回执.md`。

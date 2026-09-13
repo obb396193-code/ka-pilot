@@ -39,7 +39,7 @@ describe("P194 change log actual PostgreSQL", { timeout: 30000 }, () => {
   beforeAll(async () => { await runMigrations({ databaseUrl }); });
   afterAll(async () => {
     try {
-      for (const table of ["assessment_price_history", "task_accounts", "tasks", "account_access_grants", "workspace_memberships", "accounts", "users"])
+      for (const table of ["task_budget_history", "channel_coefficients", "assessment_price_history", "task_accounts", "tasks", "account_access_grants", "workspace_memberships", "accounts", "users"])
         await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [spaces]);
       await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [spaces]);
       await pool.query("DELETE FROM auth_identities WHERE id=ANY($1::uuid[])", [identities]);
@@ -64,7 +64,7 @@ describe("P194 change log actual PostgreSQL", { timeout: 30000 }, () => {
     await price(a, "allowed", "40", "2026-09-01T00:00:00.000001Z", "2026-09-30");
     await price(a, "allowed", "38", "2026-09-02T00:00:00.000002Z", "2026-08-01");
     const rows = (await page(a)).data.items;
-    expect(rows.map(x => [x.oldValue, x.newValue, x.effectiveDate])).toEqual([[40, 38, "2026-08-01"], [null, 40, "2026-09-30"]]);
+    expect(rows.map(x => [x.oldValue, x.newValue, x.effectiveDate])).toEqual([[null, 38, "2026-08-01"], [38, 40, "2026-09-30"]]);
     expect(rows[0]?.at).toBe("2026-09-02T00:00:00.000002Z");
   });
   it("cursor pages through tied timestamps without loss or repeat", async () => {
@@ -76,11 +76,58 @@ describe("P194 change log actual PostgreSQL", { timeout: 30000 }, () => {
     const all = [...first.data.items, ...second.data.items];
     expect(all.filter(x => x.kind === "assessment_price").map(x => x.newValue)).toEqual(Array.from({ length: 52 }, (_, i) => 52 - i));
   });
-  it("unmigrated budget source is explicitly unavailable; never seed a fake production table to turn the test green", async () => {
+  it("reads real migrated budgets and coefficients without manufacturing source tables", async () => {
     const a = await seed();
     const exists = await pool.query("SELECT to_regclass('public.task_budget_history') AS source");
-    expect(exists.rows[0]?.source).toBeNull();
-    await expect(page(a, { kinds: ["daily_budget_cap"] })).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" });
+    expect(exists.rows[0]?.source).toBe("task_budget_history");
+    await pool.query(`INSERT INTO task_budget_history(workspace_id,task_id,daily_cap,effective_date,created_at)
+      VALUES($1,'allowed',100,'2026-09-01','2026-09-02T00:00:00Z'),($1,'allowed',200,'2026-09-02','2026-09-01T00:00:00Z')`, [a.workspaceId]);
+    await pool.query(`INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date,created_at)
+      VALUES($1,'KUAISHOU',0.8,'multiply','2026-09-01','2026-09-02T00:00:00Z'),
+        ($1,'KUAISHOU',1.1,'divide','2026-09-02','2026-09-01T00:00:00Z'),
+        ($1,'TENCENT',9,'multiply','2026-09-01','2026-09-02T00:00:00Z')`, [a.workspaceId]);
+    const rows = (await repo.page(a, {}, "2026-09-13")).data.items;
+    expect(rows).toHaveLength(4);
+    expect(rows.filter(x => x.kind === "daily_budget_cap").map(x => [x.oldValue, x.newValue, x.changedBy])).toEqual([[null, 100, null], [100, 200, null]]);
+    expect(rows.filter(x => x.kind === "channel_coefficient").map(x => [x.oldValue, x.newValue])).toEqual([
+      [null, { op: "multiply", coefficient: 0.8 }], [{ op: "multiply", coefficient: 0.8 }, { op: "divide", coefficient: 1.1 }],
+    ]);
+    expect(rows.every(x => x.id.startsWith(`${x.kind}:`) && x.op === "set")).toBe(true);
+    expect((await repo.page(a, { task_id: "denied" }, "2026-09-13")).data.items).toEqual([]);
+    expect((await repo.page({ ...a, workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [] } }, {}, "2026-09-13")).data.items).toEqual([]);
+  });
+  it("same-day budget revisions and tied timestamps page across all three sources without loss", async () => {
+    const a = await seed();
+    for (let n = 1; n <= 20; n++) {
+      await price(a, "allowed", String(n), "2026-09-02T00:00:00.000001Z", "2026-09-01");
+      await pool.query(`INSERT INTO task_budget_history(workspace_id,task_id,daily_cap,effective_date,created_at)
+        VALUES($1,'allowed',$2,'2026-09-01','2026-09-02T00:00:00.000001Z')`, [a.workspaceId, n * 100]);
+      await pool.query(`INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date,created_at)
+        VALUES($1,'KUAISHOU',$2,'multiply',$3,'2026-09-02T00:00:00.000001Z')`, [a.workspaceId, n, `2026-09-${String(n).padStart(2, "0")}`]);
+    }
+    const first = await repo.page(a, {}, "2026-09-13");
+    const second = await repo.page(a, { cursor: first.data.nextCursor }, "2026-09-13");
+    expect(first.data.items).toHaveLength(50); expect(second.data.items).toHaveLength(10); expect(second.data.nextCursor).toBeNull();
+    const rows = [...first.data.items, ...second.data.items];
+    expect(new Set(rows.map(row => row.id)).size).toBe(60);
+    expect(rows.map(row => row.kind)).toEqual([
+      ...Array<string>(20).fill("daily_budget_cap"), ...Array<string>(20).fill("channel_coefficient"), ...Array<string>(20).fill("assessment_price"),
+    ]);
+    expect(rows.filter(row => row.kind === "daily_budget_cap").map(row => [row.oldValue, row.newValue])).toEqual(
+      Array.from({ length: 20 }, (_, i) => [(19 - i) * 100 || null, (20 - i) * 100]),
+    );
+    expect(rows.every(row => row.at === "2026-09-02T00:00:00.000001Z")).toBe(true);
+  });
+  it("shows revoke and absent actor without discarding history; oldValue follows the previous effective version", async () => {
+    const a = await seed();
+    await price(a, "allowed", "30", "2026-09-01T00:00:00Z", "2026-09-01");
+    await price(a, "allowed", "40", "2026-09-02T00:00:00Z", "2026-09-02");
+    await price(a, "allowed", "40", "2026-09-03T00:00:00Z", "2026-09-02", "revoke");
+    await price(a, "allowed", "50", "2026-09-04T00:00:00Z", "2026-09-03");
+    await pool.query("UPDATE assessment_price_history SET changed_by=NULL WHERE workspace_id=$1", [a.workspaceId]);
+    expect((await page(a)).data.items.map(x => [x.op, x.oldValue, x.newValue, x.changedBy])).toEqual([
+      ["set", null, 50, null], ["revoke", 40, null, null], ["set", 30, 40, null], ["set", null, 30, null],
+    ]);
   });
   it("soft-revoked grant and inactive membership reject stale approved contexts", async () => {
     const a = await seed(); await price(a);

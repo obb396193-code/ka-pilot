@@ -68,7 +68,7 @@ export type AdminMemberCreateRequest = z.infer<typeof adminMemberCreateRequestSc
 export type AdminMemberCreatedData = z.infer<typeof adminMemberCreatedDataSchema>;
 export type AdminMemberResetPasswordData = z.infer<typeof adminMemberResetPasswordDataSchema>;
 
-// v1.9.44 workspace-local commands. Browser-supplied scope and grant timestamps
+// v1.9.46 identity-governance commands. Browser-supplied scope and grant timestamps
 // are deliberately absent; granting execute does not bypass media execution gates.
 export const adminMemberPatchRequestSchema = z.object({
   role: adminMemberSchema.shape.role.optional(), is_active: z.boolean().optional(),

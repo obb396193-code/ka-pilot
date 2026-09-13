@@ -77,6 +77,8 @@ import { createEtlRunListRoute } from "../r010/etl-run-list-route.js";
 import type { EtlRunRerunService } from "../admin/etl-run-rerun-service.js";
 import { createEtlRunRerunRoute } from "../r010/etl-run-rerun-route.js";
 import { createDeferredActionRoutes } from "../r010/deferred-action-routes.js";
+import type { SettingsChangeLogService } from "../admin/settings-change-log-service.js";
+import { createSettingsChangeLogRoute } from "../r010/settings-change-log-route.js";
 
 
 // arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
@@ -102,6 +104,7 @@ export interface DataApiServerOptions {
   adminMembersService?: Pick<AdminMembersService, "read" | "create" | "resetPassword">;
   etlRunListService?: Pick<EtlRunListService, "list">;
   etlRunRerunService?: Pick<EtlRunRerunService, "rerun">;
+  settingsChangeLogService?: Pick<SettingsChangeLogService, "read">;
 }
 
 export type { ServerDataSourcePolicy as DataQueryAccessPolicy } from "./data-source-routing.js";
@@ -320,6 +323,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
   const etlRunListRoute = createEtlRunListRoute(options.etlRunListService);
   const etlRunRerunRoute = createEtlRunRerunRoute(options.etlRunRerunService);
   const deferredActionRoutes = createDeferredActionRoutes();
+  const settingsChangeLogRoute = createSettingsChangeLogRoute(options.settingsChangeLogService);
 
   return createServer(async (request, response) => {
     const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
@@ -417,6 +421,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isEtlRunListRoute = etlRunListRoute.matches(url.pathname);
       const isEtlRunRerunRoute = etlRunRerunRoute.matches(url.pathname);
       const deferredActionRoute = deferredActionRoutes.find(route => route.matches(url.pathname));
+      const isSettingsChangeLogRoute = settingsChangeLogRoute.matches(url.pathname);
       // arch 开的缝：R-014 由 be2 在 src/r014/routes.ts 注册，壳层不认识具体路径，只问一句归不归它。
       const r014Route = findR014Route(url.pathname);
       if (
@@ -434,6 +439,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         !isAdminMembersRoute &&
         !isEtlRunListRoute &&
         !isEtlRunRerunRoute &&
+        !isSettingsChangeLogRoute &&
         deferredActionRoute === undefined &&
         r014Route === null
       ) {
@@ -475,7 +481,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           sendJson(response, taskListHttpStatus(result), result, requestId);
           return;
         }
-        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute || isEtlRunListRoute || isEtlRunRerunRoute || deferredActionRoute !== undefined) {
+        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute || isEtlRunListRoute || isEtlRunRerunRoute || isSettingsChangeLogRoute || deferredActionRoute !== undefined) {
           sendJson(
             response,
             401,
@@ -506,6 +512,10 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       }
       if (deferredActionRoute !== undefined) {
         await deferredActionRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
+        return;
+      }
+      if (isSettingsChangeLogRoute) {
+        await settingsChangeLogRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
         return;
       }
       if (isAgentModelRoute) {

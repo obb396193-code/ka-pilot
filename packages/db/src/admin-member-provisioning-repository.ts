@@ -34,7 +34,7 @@ async function boundary<T>(work: () => Promise<T>): Promise<T> {
 }
 
 /** Session-derived context is only a selector: live identity + any active team admin grant authorizes governance. */
-export async function requireMemberGovernance(connection: SemanticReadConnection, auth: ApprovedWorkspaceAuthContext, lock: boolean): Promise<void> {
+export async function requireMemberGovernance(connection: SemanticReadConnection, auth: ApprovedWorkspaceAuthContext, lock: boolean): Promise<string> {
   const actor = await connection.query(`SELECT i.id FROM workspace_memberships m
     JOIN workspaces w ON w.id=m.workspace_id AND w.is_active=true AND w.kind=$4 AND w.is_demo=false
     JOIN users u ON u.id=m.user_id AND u.workspace_id=m.workspace_id AND u.is_active=true
@@ -49,6 +49,7 @@ export async function requireMemberGovernance(connection: SemanticReadConnection
     WHERE m.identity_id=$1 AND m.is_active=true AND m.role='admin'
     ORDER BY m.workspace_id LIMIT 1 ${lock ? "FOR SHARE OF m,w,u" : ""}`, [actor.rows[0].id]);
   if (admin.rows.length !== 1) return fail("FORBIDDEN");
+  return actor.rows[0].id;
 }
 
 /** v1.9.21 global member management. No media permissions, credentials or team memberships are assigned here. */
