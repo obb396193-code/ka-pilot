@@ -19,7 +19,7 @@ import { mockBizRows, mockOptimizerRows, mockResourcePositionRows, useDashboardD
 import { windowPresetLabel, type DataWindow } from "@/components/business/data/dashboard/window-picker"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
 import { costStatusReasonShort } from "@/lib/fixtures/contract"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { MetricHint } from "@/components/business/metric-hint"
 
 /**
  * 数据分析 · 概览（F8-19，P0 数据看板）。
@@ -132,10 +132,10 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
             : null}
           <span className="font-medium">{windowPresetLabel[window.preset]}</span>
           <span className="text-muted-foreground tabular-nums">{window.from} ～ {window.to}</span>
-          <Tooltip>
-            <TooltipTrigger asChild><span className="cursor-help text-xs text-muted-foreground underline decoration-dotted underline-offset-4">口径</span></TooltipTrigger>
-            <TooltipContent side="bottom" className="max-w-80">{metricFormulas.cashCpa}；颜色按窗口累计判，不按单日。</TooltipContent>
-          </Tooltip>
+          {/* 页头这个「口径」和 KPI 卡上的是同一种东西，走同一个组件 */}
+          <span className="text-xs text-muted-foreground">
+            <MetricHint>{`${metricFormulas.cashCpa}；颜色按窗口累计判，不按单日。`}</MetricHint>
+          </span>
         </div>
       </div>
 

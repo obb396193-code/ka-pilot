@@ -9,7 +9,7 @@ import { PartialMark } from "./partial-mark"
 import { StatusChip } from "@/components/business/data-grid/data-grid"
 import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { MetricHint } from "@/components/business/metric-hint"
 import { isPartial, mv, rv } from "@/lib/fixtures/contract"
 import type { DashboardRow } from "@/lib/fixtures/dashboard"
 import type { LineageWarning } from "./missing-data-notice"
@@ -119,15 +119,10 @@ export function DistributionCard({ id, title, description, rows, colorKey, warni
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
                         {sample ? (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="cursor-help border-b border-dotted border-muted-foreground/50">{sample.total}</span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>这个分组由 {sample.total} 个账户构成</p>
-                              <p className="mt-0.5 opacity-80">归属来源：{sample.parts.join(" · ")}</p>
-                            </TooltipContent>
-                          </Tooltip>
+                          <MetricHint label={sample.total}>
+                            <p>这个分组由 {sample.total} 个账户构成</p>
+                            <p className="mt-0.5 opacity-80">归属来源：{sample.parts.join(" · ")}</p>
+                          </MetricHint>
                         ) : <span className="text-muted-foreground">−</span>}
                       </TableCell>
                     </TableRow>

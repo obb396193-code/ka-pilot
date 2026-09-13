@@ -1,8 +1,8 @@
-import { IconInfoCircle, IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { MetricHint } from "@/components/business/metric-hint"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { cn } from "@/lib/utils"
 import { metricDefinition } from "./metric-definitions"
@@ -71,20 +71,15 @@ export function KpiCards({ metrics, sparklines = {}, className }: { metrics: Dis
           <Card key={metric.key} className="@container/card gap-2.5 py-4">
             <CardHeader className="gap-1 px-4">
               <CardDescription className="flex items-center gap-1.5">
-                {metric.label}
-                {definition ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button type="button" aria-label={`${metric.label} 口径`} className="inline-flex rounded-sm text-muted-foreground/70 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
-                        <IconInfoCircle className="size-3.5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="max-w-72">
+                {/* 这版本来就是 ⓘ；改成共用组件，四处才真的是同一个实现 */}
+                <MetricHint label={metric.label}>
+                  {definition ? (
+                    <>
                       <p className="font-medium">{definition.formula}</p>
                       <p className="mt-1 opacity-80">来源：{definition.source}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                ) : null}
+                    </>
+                  ) : null}
+                </MetricHint>
               </CardDescription>
               <CardTitle title={metric.value} className={cn("text-[22px] font-semibold tabular-nums tracking-tight whitespace-nowrap @[220px]/card:text-2xl", missing ? "text-muted-foreground" : toneClass[metric.tone])}>
                 {overviewValue(metric.value)}
