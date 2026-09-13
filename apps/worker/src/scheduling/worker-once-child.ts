@@ -32,6 +32,7 @@ export async function executeWorkerOnceChild(
     const tick = new WorkspaceSyncTickService(new WorkspaceSyncRepository(pool), jobs);
     const consumer = await atWorkerOnceStage("BOOTSTRAP_FAILED", async () => createWorkerConsumer({
       pool, leaseScope, leaseSeconds: config.leaseSeconds, serviceQihangUserId: null,
+      sourceTimeZone: config.sourceTimeZone,
       qihang: dependencies.qihang ?? new QihangClient({ baseUrl: config.qihangBaseUrl }),
       onJobState: (event) => emit(event, "consumer"),
     }));

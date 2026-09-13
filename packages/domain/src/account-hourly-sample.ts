@@ -80,3 +80,29 @@ export function normalizeAccountHourlySample(raw: unknown): {
     return Object.freeze({ rows: Object.freeze(rows), missingAccountIds: Object.freeze(input.accountIds.filter(id => !seen.has(id)).sort()) });
   } catch { return invalid(); } // Do not leak upstream payload or trusted identity via Zod errors.
 }
+
+/**
+ * v1.9.47（Q-042）：把配置的 IANA 时区换算成**那一天的** UTC 偏移（`+08:00` 这种）。
+ *
+ * 小时采样要拿偏移去判断「这个小时过完了没有」（`complete`）。为什么不直接配一个固定偏移：
+ * 有夏令时的地区一年里偏移会变，配死的那个数在切换日当天会把整整一小时判错——
+ * 而 `complete=false` 的行是会被下一次采样覆盖的，判错就意味着一个已经定格的小时
+ * 被当成还在变，或者反过来，一个还在涨的小时被冻住。按天算出来就不会有这个问题。
+ *
+ * 时区没配就返回 null：**不猜**。调用方据此关掉采样，而不是用服务器本地时区蒙一个。
+ */
+export function sourceUtcOffsetFor(timeZone: string | null, ds: string): string | null {
+  if (timeZone === null || !/^\d{4}-\d{2}-\d{2}$/.test(ds)) return null;
+  let parts: Intl.DateTimeFormatPart[];
+  try {
+    parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "longOffset" })
+      .formatToParts(new Date(`${ds}T12:00:00Z`));
+  } catch { return null; }
+  const name = parts.find((part) => part.type === "timeZoneName")?.value ?? "";
+  // `GMT+8`、`GMT+08:00`、以及 UTC 本身的 `GMT` 都要认。
+  if (name === "GMT" || name === "UTC") return "+00:00";
+  const match = /^(?:GMT|UTC)([+-])(\d{1,2})(?::(\d{2}))?$/.exec(name);
+  if (!match) return null;
+  const hours = String(Number(match[2])).padStart(2, "0");
+  return `${match[1]}${hours}:${match[3] ?? "00"}`;
+}

@@ -11,67 +11,122 @@
             "key": "channel",
             "value": "广点通",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "agent_type": {
             "key": "agent_type",
             "value": "自投",
             "mapsTo": "agent_type",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "optimizer": {
             "key": "optimizer",
             "value": "刘晓佳",
             "mapsTo": "optimizer",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "biz": {
             "key": "biz",
             "value": "淘宝促活UVHS专项",
             "mapsTo": "biz",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "device": {
             "key": "device",
             "value": "安卓",
             "mapsTo": "device",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "resource_position": {
             "key": "resource_position",
             "value": "联盟",
             "mapsTo": "placement",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "ad_slot": {
             "key": "ad_slot",
             "value": "自动",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "goal": {
             "key": "goal",
             "value": "IPV",
             "mapsTo": "goal",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "landing": {
             "key": "landing",
             "value": "13244",
             "mapsTo": "landing",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "unknown_1": {
             "key": "unknown_1",
             "value": "10",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "marker": {
             "key": "marker",
             "value": "※",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "note": {
             "key": "note",
@@ -91,61 +146,111 @@
             "key": "channel",
             "value": "广点通",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "agent_type": {
             "key": "agent_type",
             "value": "自投",
             "mapsTo": "agent_type",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "optimizer": {
             "key": "optimizer",
             "value": "刘晓佳",
             "mapsTo": "optimizer",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "biz": {
             "key": "biz",
             "value": "淘宝促活UVHS专项",
             "mapsTo": "biz",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "device": {
             "key": "device",
             "value": "安卓",
             "mapsTo": "device",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "resource_position": {
             "key": "resource_position",
             "value": "朋友圈",
             "mapsTo": "placement",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "ad_slot": {
             "key": "ad_slot",
             "value": "自动",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "goal": {
             "key": "goal",
             "value": "IPV",
             "mapsTo": "goal",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "rule",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "landing": {
             "key": "landing",
             "value": "13244",
             "mapsTo": "landing",
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "unknown_1": {
             "key": "unknown_1",
             "value": "10",
             "mapsTo": null,
-            "taskIds": []
+            "taskIds": [],
+            "basis": {
+              "ruleVersion": 1,
+              "source": "raw",
+              "at": "2026-09-13T00:00:00.000Z"
+            }
           },
           "note": {
             "key": "note",

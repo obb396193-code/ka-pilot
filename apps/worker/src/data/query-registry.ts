@@ -21,7 +21,7 @@ import { z } from "zod";
 import { buildKaWindowAggregateSql } from "./ka-window-aggregate-sql.js";
 // 可用维度只有一份定义（`account-labels.ts` 就是算标签的地方）：注册表另抄一份，
 // 迟早出现「注册表放行、查询不认」——那种不一致不会报错，只会返回一张空透视表。
-import { FIXED_DIMENSIONS } from "./account-labels.js";
+import { FIXED_DIMENSIONS, LABEL_DIMENSIONS } from "./account-labels.js";
 
 const RESOLVED_QUERY = Symbol("resolved-data-query");
 const AUTHORITY_POLICY_VERSION = "2026-08-24";
@@ -380,7 +380,9 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-pivot-window-v1",
     metricVersion: "account-pivot-v3", authorityPolicy: authority("cross_media_operations", "platform"), paramsSchema: pivotSchema,
   }, {
-    queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    // v1.9.46（Q-041 ⑧）：团队源也支持维度分组——事实走 ka-data 的成员网格，
+    // 标签走我们自己库里的昵称解析行（ka-data 没有那份数据）。
+    queryId: "account.dimension", supportedViews: ["platform", "ka_data"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-dimension-window-v1",
     metricVersion: "account-dimension-v3", authorityPolicy: authority("cross_media_operations", "platform"),
     paramsSchema: normalizedSchema({ ...commonDateFields, filters: dashboardFiltersSchema.optional(), preset: queryWindowSchema.shape.preset.optional(), dimensionType: dimensionTypeSchema }),
@@ -543,8 +545,8 @@ export class DataQueryRegistry {
     // 都能拿来分析和透视，段名由各媒体的命名规则决定、注册表不可能穷举，所以只校验形状。
     // pivot2 与 account.dimension **都收**（⑪ 起，概览分布卡要按任意段分组）。
     // 不支持时把可用清单一并交出去，调用方不用猜。
-    const usable = (dimension: string | undefined): boolean =>
-      dimension !== undefined && (FIXED_DIMENSIONS.includes(dimension) || segmentDimensionKey(dimension) !== null);
+    const usable = (dimension: string | undefined, allowed: readonly string[] = FIXED_DIMENSIONS): boolean =>
+      dimension !== undefined && (allowed.includes(dimension) || segmentDimensionKey(dimension) !== null);
     if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !usable(dim))) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source",
         { supported: [...FIXED_DIMENSIONS, "segment:<key>"] });
@@ -552,6 +554,14 @@ export class DataQueryRegistry {
     if (queryId.data === "account.dimension" && !usable(parsedParams.data.dimensionType)) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source",
         { supported: [...FIXED_DIMENSIONS, "segment:<key>"] });
+    }
+    // v1.9.46（Q-041 ⑧）：团队源**只能按标签分组**——它的分组值全部来自我们库里的昵称解析行。
+    // `account`/`task`/`biz` 要的是事实侧分组，团队那条路没有，放行只会得到「所有账户归一个
+    // 空桶」的一行表，页面上看着完全正常。可用清单如实只列它真能做的几个。
+    if (queryId.data === "account.dimension" && dataView.data === "ka_data"
+      && !usable(parsedParams.data.dimensionType, LABEL_DIMENSIONS)) {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for the team source",
+        { supported: [...LABEL_DIMENSIONS, "segment:<key>"] });
     }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
       (queryId.data === "account.summary" || queryId.data === "account.trend")) {
@@ -608,7 +618,9 @@ export class DataQueryRegistry {
    * Byte/row cap or duplicate account-days must be rejected by the reader before assessment.
    */
   private teamKaWindowBase(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: WindowComparisonMode, aggregate = false): KaDataWindowQueryPlan {
-    if (!isResolvedDataQuery(resolved) || (resolved.queryId !== "account.summary" && resolved.queryId !== "account.trend")) {
+    // v1.9.46（Q-041 ⑧）：`account.dimension` 也走这条成员网格——团队源的维度分组是
+    // 「ka-data 出账户日事实 + 我们自己库里的昵称解析行分组」，事实那半用的就是同一张网格。
+    if (!isResolvedDataQuery(resolved) || !["account.summary", "account.trend", "account.dimension"].includes(resolved.queryId)) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
     }
     rejectKaTaskWindow(resolved);

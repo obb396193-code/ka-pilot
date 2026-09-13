@@ -57,6 +57,18 @@ export function summarizeKaWindowMembers(members: readonly KaWindowMember[], win
   };
 }
 
+/**
+ * v1.9.46（Q-041 ⑧）：任意一组成员的窗口汇总，给维度分组用。
+ *
+ * **复用 `summarize` 那一份**，不另写分组聚合——团队源已经有两条独立算 assessment 的路
+ * （SQL 直出与成员网格），再加第三份的话，「按优化师分组的合计」与「大盘合计」迟早对不上，
+ * 而这种分歧不会有任何东西报错。
+ */
+export function summarizeKaWindowGroup(members: readonly KaWindowMember[], window: Window) {
+  const { row } = summarize(members, window);
+  return { metrics: row.metrics, assessment: row.assessment };
+}
+
 export function trendKaWindowMembers(members: readonly KaWindowMember[]) {
   return [...new Set(members.map((member) => member.ds))].sort().map((ds) => ({
     ds, metrics: summarize(members.filter((member) => member.ds === ds), { from: ds, to: ds }).row.metrics,

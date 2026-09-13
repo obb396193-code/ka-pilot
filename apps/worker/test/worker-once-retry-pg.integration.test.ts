@@ -22,7 +22,7 @@ describe("actual once tick before retry lease / real PG", () => {
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','synthetic-once-retry')", [workspaceId]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','synthetic-once-retry','read')", [workspaceId, identityId]);
     config = { workspaceId, media: "KUAISHOU", mode: "full", databaseUrl,
-      qihangBaseUrl: "https://synthetic.invalid/get_data", maxMs: 30_000, leaseSeconds: 60 };
+      qihangBaseUrl: "https://synthetic.invalid/get_data", maxMs: 30_000, leaseSeconds: 60, sourceTimeZone: null };
   });
   afterAll(async () => {
     if (!pool) return;

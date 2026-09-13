@@ -643,3 +643,70 @@ describe("v1.9.29 ① empty segments hold their position", () => {
     expect(parse.segments.landing?.value).toBe("13177");
   });
 });
+
+/**
+ * v1.9.29 ②（Q-044）：枚举取值**归一**。
+ *
+ * 同一个东西在昵称里有好几种写法时，不归一的话它们在维度里是**不同的桶**——
+ * 一个优化师的花费被劈成三份，看上去像三个人，而且没有任何东西会报错。
+ */
+describe("v1.9.29 ② canonical segment values", () => {
+  const rule = (values: unknown[]): NamingRule => namingRuleSchema.parse({
+    media: "KUAISHOU", version: 7, separators: ["-"],
+    segments: [
+      { key: "device", label: "设备", order: 0, source: "enum", values, required: true, mapsTo: "device" },
+      { key: "optimizer", label: "优化师", order: 1, source: "free", required: true, mapsTo: "optimizer" },
+    ],
+  });
+  const at = new Date("2026-09-12T10:00:00Z");
+  const parse = (name: string, values: unknown[]) => parseAccountName(name, rule(values), { now: at });
+
+  it("maps every alias onto one canonical value", () => {
+    const values = [{ canonical: "iOS", aliases: ["苹果", "IPHONE"] }, "安卓"];
+    for (const written of ["iOS", "苹果", "IPHONE"]) {
+      expect(parse(`${written}-张三`, values).segments.device?.value, written).toBe("iOS");
+    }
+  });
+
+  it("treats a case-only difference as the same value", () => {
+    // 这条是这项需求的要害：`IOS`/`ios` 与 `iOS` 指的是同一个东西。要求规则作者把每种
+    // 写法都列成别名既记不全也总会漏，而大小写不同从来不表示不同的取值。
+    const values = [{ canonical: "iOS" }];
+    for (const written of ["IOS", "ios", "iOs"]) {
+      expect(parse(`${written}-张三`, values).segments.device?.value, written).toBe("iOS");
+    }
+  });
+
+  it("keeps what the nickname actually said, so a mistyped value is still visible", () => {
+    // 只给归一值的话，写错的人永远不知道自己错在哪；归属清洗页要显示原文。
+    const segment = parse("苹果-张三", [{ canonical: "iOS", aliases: ["苹果"] }]).segments.device!;
+    expect(segment.value).toBe("iOS");
+    expect(segment.raw).toBe("苹果");
+  });
+
+  it("omits raw when nothing was normalised away", () => {
+    const segment = parse("iOS-张三", [{ canonical: "iOS" }]).segments.device!;
+    expect(segment.value).toBe("iOS");
+    expect(segment).not.toHaveProperty("raw");
+  });
+
+  it("records which rule version did the normalising and where the value came from", () => {
+    const matched = parse("苹果-张三", [{ canonical: "iOS", aliases: ["苹果"] }]).segments.device!;
+    expect(matched.basis).toEqual({ ruleVersion: 7, source: "rule", at: at.toISOString() });
+    // 自由段没有取值表，原文即归一值——来源标 `raw`，不冒充「按规则归一过」。
+    expect(parse("iOS-张三", [{ canonical: "iOS" }]).segments.optimizer!.basis)
+      .toEqual({ ruleVersion: 7, source: "raw", at: at.toISOString() });
+  });
+
+  it("still accepts the old bare-string form", () => {
+    // 老形等价于「canonical 是它自己、没有别名」，库里既有的规则不用改就继续可用。
+    expect(parse("安卓-张三", ["安卓", "iOS"]).segments.device?.value).toBe("安卓");
+  });
+
+  it("keeps a task id out of the canonical value, since it already has its own field", () => {
+    const values = [{ canonical: "CVR有端(1803240580)" }];
+    const segment = parse("CVR有端(1803240580)-张三", values).segments.device!;
+    expect(segment.value).toBe("CVR有端");
+    expect(segment.taskIds).toEqual(["1803240580"]);
+  });
+});
