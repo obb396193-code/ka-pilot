@@ -73,4 +73,52 @@ export function useAccounts(query: AccountsQuery = {}): AccountsState {
   return { items, total, loading, error, incomplete, reload }
 }
 
+/**
+ * 账户九态流程条（`GET /api/internal/accounts/pipeline`）。
+ *
+ * 这一块和账户清单**不是同一个源**：清单是当前筛选后的行，流程条是全空间九态计数。
+ * 页面里那句注释说得对——「不能拿列表页的 total」，否则会出现「全部 5、投放中 18」的自相矛盾。
+ * 所以它得单独取一次。
+ */
+export type PipelineStage = { poolStatus: string; count: number; deltaVsYesterday: { value: number | null; availability: string } }
+
+export function useAccountPipeline(): {
+  stages: PipelineStage[] | null
+  asOf: string | null
+  loading: boolean
+  error: { message: string; requestId: string | null } | null
+  reload: () => void
+} {
+  const [stages, setStages] = useState<PipelineStage[] | null>(null)
+  const [asOf, setAsOf] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<{ message: string; requestId: string | null } | null>(null)
+  const [nonce, setNonce] = useState(0)
+  const reload = useCallback(() => setNonce((value) => value + 1), [])
+
+  useEffect(() => {
+    if (IS_MOCK) return
+    let active = true
+    setLoading(true)
+    setError(null)
+    fetch("/api/internal/accounts/pipeline", { credentials: "same-origin", headers: { accept: "application/json" } })
+      .then(async (response) => {
+        const payload = (await response.json().catch(() => null)) as
+          { ok?: boolean; data?: { stages?: PipelineStage[]; asOf?: string }; error?: { message?: string; requestId?: string } } | null
+        if (!active) return
+        if (!payload?.ok || !Array.isArray(payload.data?.stages)) {
+          setError({ message: payload?.error?.message ?? `读取九态失败（HTTP ${response.status}）`, requestId: payload?.error?.requestId ?? null })
+          return
+        }
+        setStages(payload.data.stages)
+        setAsOf(payload.data.asOf ?? null)
+      })
+      .catch(() => { if (active) setError({ message: "网络异常，稍后重试", requestId: null }) })
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [nonce])
+
+  return { stages, asOf, loading, error, reload }
+}
+
 export const accountsIsMock = IS_MOCK

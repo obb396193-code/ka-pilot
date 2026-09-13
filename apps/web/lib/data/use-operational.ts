@@ -19,6 +19,11 @@ const IS_MOCK = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
 
 export type OperationalState<T> = {
   rows: T[] | null
+  /**
+   * 这次响应的血缘。**必须跟着响应走**：三个 tab 原来固定读样例里的 lineage，
+   * 真实模式下等于把假的「数据截至 / 来源」贴在真数字旁边——比不显更糟（F8-25）。
+   */
+  lineage: Record<string, unknown> | null
   loading: boolean
   error: { message: string; requestId: string | null } | null
   /** 后端明说这个查询当前不可用时的原因（不是报错，是「还没到」） */
@@ -36,6 +41,7 @@ function useOperationalQuery<T>(
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<{ message: string; requestId: string | null } | null>(null)
   const [unavailable, setUnavailable] = useState<string | null>(null)
+  const [lineage, setLineage] = useState<Record<string, unknown> | null>(null)
   const [nonce, setNonce] = useState(0)
   const reload = useCallback(() => setNonce((value) => value + 1), [])
 
@@ -55,6 +61,7 @@ function useOperationalQuery<T>(
         const source = response.data.source
         if (source.status === "unavailable") { setUnavailable(source.error?.message ?? "这个查询暂时没有数据"); setRows([]); return }
         setRows(source.rows as unknown as T[])
+        setLineage((source.lineage ?? null) as Record<string, unknown> | null)
       })
       .catch((cause: unknown) => { if (active) setError({ message: cause instanceof Error ? cause.message : "取数失败", requestId: null }) })
       .finally(() => { if (active) setLoading(false) })
@@ -62,7 +69,7 @@ function useOperationalQuery<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, nonce])
 
-  return { rows, loading, error, unavailable, reload }
+  return { rows, lineage, loading, error, unavailable, reload }
 }
 
 export function useHourly<T>(query: HourlyQuery | null, workspaceId?: string): OperationalState<T> {

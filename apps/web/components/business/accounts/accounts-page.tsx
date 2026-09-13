@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { useAccounts, accountsIsMock } from "@/lib/data/use-accounts"
+import { useAccounts, useAccountPipeline, accountsIsMock } from "@/lib/data/use-accounts"
 import { accountsFixture, infraFixture, lifecycleLabel, pipelineFixture, poolStatusMap, type AccountItem, type LifecycleStage } from "@/lib/fixtures/accounts"
 import { isOk } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
@@ -76,8 +76,11 @@ export function AccountsPage() {
   const accounts = useAccounts({ pageSize: 100 })
   const mockItems = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items : []), [])
   const items = accountsIsMock ? mockItems : accounts.items ?? []
-  const stages = isOk(pipelineFixture) ? pipelineFixture.data.stages : []
-  const asOf = isOk(pipelineFixture) ? pipelineFixture.data.asOf : ""
+  // 九态流程条**单独取一次**：它是全空间计数，和「当前筛选后的清单」不是一个源
+  const pipeline = useAccountPipeline()
+  const mockStages = isOk(pipelineFixture) ? pipelineFixture.data.stages : []
+  const stages = accountsIsMock ? mockStages : (pipeline.stages as typeof mockStages) ?? []
+  const asOf = accountsIsMock ? (isOk(pipelineFixture) ? pipelineFixture.data.asOf : "") : pipeline.asOf ?? ""
   // 分层卡 / 流程条的「全部账户」= 九态之和（与九态同源 pipeline），不能拿列表页的 total —— 那是当前筛选后的行数，会出现「全部 5、投放中 18」的自相矛盾
   const pipelineTotal = stages.some((stage) => stage.count !== null) ? stages.reduce((sum, stage) => sum + (stage.count ?? 0), 0) : null
   const products = useMemo(() => [...new Set(items.map((item) => item.product?.name).filter((name): name is string => Boolean(name)))], [items])
