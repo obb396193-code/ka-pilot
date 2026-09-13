@@ -7223,6 +7223,29 @@ tsc 查不出（没人 import），用例也查不出（测的是 handler 不是
 
 门禁：tsc 0 错、eslint 0 错 18 警告、npm test 282/282、mock 生产构建过、1280 实测。
 
+### Codex 复工核验与契约缺口（2026-09-13；P-192…197 新批次）
+
+- 已按令在 be/r010 合本机 main@802e31a4，fast-forward，无冲突。按新并行边界，不改 data/**。
+- **P-192 阻断信息**：v1.9.31 只列按钮+501；`2026-09-10-未开放入口清单.md` 中 #3/#11/#13=#21/#15/#18/#20/#26/#27/#28 仍无方法/路径。请冻结这些 HTTP method/path；#24 的三 review 路由已有 501。不能自造 API 路径后宣称契约完成。
+- **P-193 请定形**：PATCH 成功是否沿用 `adminMemberV195Schema` 单成员+现有 meta？PUT body 是否 `{items:[{media,accountId,accessLevel}]}`（无 grantedAt，服务端生成），回现有 `adminMemberGrantsResponseSchema`？全局管理员只改目标唯一 personal membership，还是也改 team membership？当前 GET grants 仍 workspace-local（team 固定空），与此次全局管理目标不一致，请同时裁 GET 的个人目标解析。
+- **P-194 纯忽略**：内部 `WorkItemCommandRepository.apply(ignore)` 已能只改状态并审计；公开成功 DTO 未冻结。当前 ignore+mute 真响应是 `{mutedUntil,scope}`，不是 `mute_days`。请给纯 ignore 完整 data 字段/fixture，再同步 BFF 的 strict schema；只删第130行仍会被 muteResultSchema 拦。
+- **新增路由挂载边界**：当前 R010 的生产注册仅在禁止修改的 `apps/worker/src/data/http-server.ts`；后续 change-log/归因/report 请授权该文件的注册/option hunk（不动 data/query），以及 `src/data-api.ts` service 注入，或由 arch/be2 代接。
+- **P-195 已有**：main 的两条 BFF 与 reset-password 后端都在，PENDING 已清空；正在复验，不重复开发。
+- 不空等：先做已有权威 fixture 的 P-194 change-log Domain/DB/Service。计划 `docs/plans/2026-09-13-Codex复工接口收口.md`，未宣称交付。
+- **P-194 数据源实读补充**：主分支 migrations 全扫 + 真 PG migration replay 后，`task_budget_history` 不存在（schema.sql:774 只是契约）；`channel_coefficients` 无 created_at/evidence_url。不可把 effective_date 伪造为 at。请分配预算表迁移与系数审计字段迁移；现先实现 assessment_price-only 内核，显式请求缺失来源报 SOURCE_UNAVAILABLE。不在测试里 CREATE 假表掩盖部署缺口。
+- 考核价 `op=revoke` 已在 027；change-log fixture 尚无作废字段，v1.9.28 只要求显示「作废标记」未定 wire key。请给该行完整 fixture（及 changedBy/at 历史为空的展示形）。在裁决前不能把 revoke 当 set 出，内核遇到它显式 unavailable。旧值当前按写入时间+id 的前一个版本理解，若需「生效日当时价」也请定口径。
+
+### Codex P-194 内核交审 / P-195 已有实现复验（2026-09-13）
+
+- **代码 SHA 9ed8ec5c**；基线 main@802e31a4，提交前 merge main 已 up to date。未 push、未合流；前端视觉、data/**、窗口/指标源文件零 diff。
+- **范围**：strict change-log fixture schema + 只读 Repository + Service +4份测试。仅考核价单源已真PG可读；预算/系数/revoke/缺旧元数据显式 unavailable，**没有注册 HTTP/BFF**，不称 P-194 完成。
+- **P-195**：已有两 BFF/reset 后端复验通过：HTTP/覆盖53、PG+HTTP11、BFF20；PENDING 空，未重复实现。
+- **门禁**：Domain101files/1575；DB158files/1773真实PG；Worker202passed+2skipped、2285passed+2skipped（外部 ASR/SDK，非PG）。三包 typecheck/lint 全过；git diff --check 通过。
+- **形状声明 A40**：没有现有响应形变，没有新公开响应。内部 schema 严格接现有 camelCase settings/change-log fixture；不能让前端以为路由已可调。
+- **唯一额外既有测试改动**：`packages/db/test/r014/assessment-price-selection.test.ts` 加具名历史查询豁免（不是按生效日选当前价），原守卫仍验证它不得按 effective_date 上界过滤；请审查这1行。tuple 共用 helper 未改，真PG同号跨媒体/空间/空grant/撤权/过期link均过。
+- **待裁内容**：见上一条完整清单（P192 paths、P193 request/response+全局个人成员范围、P194纯忽略DTO+历史缺源/revoke、注册点授权）。不越过这些缺口发明 API。
+- **证据**：`docs/plans/2026-09-13-P194内核质量回执.md`；`output/codex-20260913-{domain-full,db-full,db-full-r2,worker-full}.log`。首轮DB3红保留，两新绊线已修，迁移残留后完整重跑全绿，不降门槛。
+
 ---
 
 ## fe → arch（2026-09-12）：⑳ 交了，单独一笔 `7a0c94ba`
@@ -7487,6 +7510,21 @@ Q-041 ⑩ 统一后，把白名单里 `window_from/window_to` 两个键删掉即
 
 **下一步**：fixture 一次重导 + 四键转必填（含 pivot2 两份新形、两份 partial、`tasks/list-manage.json` 带 budget）。PG 已回，这就开始。
 
+### Codex 自查 2026-09-13：A41 合并冲突停手 + P-196 公式核对
+
+- 本条为 **live worktree 未提交回信**：`/Users/aik/Desktop/投放agent/.worktrees/be-r010`，分支 `be/r010`。HEAD 仍 `c594eab4`，正在合并本机 main `ea30f7e4`。仅 `docs/relay/inbox-arch.md` 冲突（两侧均有追加交付记录）；其他 main 变更由 Git 自动暂存，非 Codex 越界改 be2 文件。
+- 按复工派单“冲突了停手报我”，没有选择 ours/theirs、没有删除任一侧记录、没有完成合并提交或 abort/reset。请授权将此处双方追加记录完整并集保留后完成 merge，或由 arch 指定处理方式。现有代码交付 `9ed8ec5c`、留痕 `c594eab4` 均保留。
+- P-196 只读审计新增待裁决：api.md §3.7 给出 root 量模式 target−projected / 成本模式 over-target 公式，但 `tasks/attribution.json` 与 `attribution-cost.json` 除 mode/note 外的节点数值相同；样例中的 bid_targeting=2200、cvr_room=1100、structure_gap=1600 没有在 metrics.md 找到计算式，不能作为生产事实照抄。请求明确两种 mode 下 cost/volume/structure 子节点的单位、share 分母与拆分公式；未定义公式的节点是否统一 gap=missing、availability=undeterminable。另请明确 volume projected 使用既有 TaskPacing 的哪一字段/窗口，避免把固定月目标与任意日期窗口混算。
+- 未改 Contract、未加归因计算、未改前端、未启动 worker/beat、未 push。待裁决后沿现有 P-192…P-197 继续，不宣称完成。
+
+### Codex 自查 2026-09-13：收到 P-198/P-199，投递故障窗口需裁决
+
+- 已只读获取 main `c861ee7d` 派单与 api.md v1.9.42；按新序 P192→P198→P193→P199→P194→P195→P196→P197。当前仍处于上条 A41 信箱合并冲突，尚无处理授权，故只读核查，不继续 merge、不落实现、不运行发送器。本回信同样是 live worktree 未提交追加。
+- 核实 `packages/db/src/outbound-message-repository.ts` 只有 enqueue；001 表仅 status/attempts/fail_reason/sent_at/created_at，无 retry_at/claimed_at/lease 标识。可复用 worker-once 的 PG session advisory lock 模式；网络请求不应占长事务。请确认 P198 可配套新增迁移（下一个空号），存 due/claim 状态，避免从 fail_reason 文本推算重试时间。
+- **必须裁决的故障窗口**：远端已经成功投递、进程却在写 sent_at 前崩溃（或远端已接收但客户端超时），本地仍是 sending + sent_at null。仅凭 sent_at 不能判断“没发”，自动重试会重复；把它当 sent 则会谎报送达。在无已证实远端幂等键/回查能力前，请批准 unknown/待核验（不自动重发），或明确选择至少一次可能重复。已明确拒绝/发送前失败才可安全走指数退避；普通网络错误并不都证明未发送。
+- **实际覆盖差异**：`r014/account-transfer-repository.ts` 的双方通知、`r014/assessment-price-repository.ts` 的 owner 通知均写 channel='inbox'，并非 dingtalk。P198 只消费 dingtalk 后，这些仍不会自动发钉钉；不能声称所有派发/审批/报表因此全部出站。请确认 inbox 是仅站内通知还是需独立订阅路由转换，不擅自修改生产者扩大推送受众。
+- **单聊与渲染契约**：target 当前只是 TEXT（subscriptions 注释 group|dm，部分生产者直接写 user UUID）；现有 DingTalkSessionReply 只能拿入站 sessionWebhook 回话，不是任意 staffId 主动单聊。请补 target 的冻结表示/身份映射、群与单聊缺一种凭证时跳过范围、支持的 payload/kind 及缺模板的处理。不会把原始业务 payload 直接 stringify 发群。
+- P199 新建/PATCH订阅/值守的完整响应 fixture、管理权限与时区也请随实现前冻结。等待上述精确裁决期间保持现有代码与审查记录，不改 Contract、不用真实凭证、不发真实消息。
 ### 序 ② 一次重导（第一部分）：21 份 data-query fixture 从真响应重导（be2 2026-09-12）
 
 **交付 SHA**：`f978f77a`（分支 `be/r017`，路径限定提交、未 push）
@@ -7561,3 +7599,85 @@ KPI 和趋势**复用数据分析那套取数层**，参数已对齐实测表—
 
 门禁：tsc 0 错、eslint 0 错 17 警告、npm test 298/298、A44 自查干净。
 下一步：F8-25 ④ 账户池（含详情）→ ⑤ 任务列表 → 数据分析三个 tab 的血缘跟响应走。
+
+## Codex → arch（2026-09-13）：P192交审 ae171957；BFF测试路径修复 a91523e3
+
+- 本机main已同步到 `94e9dc25`，交付前再次merge显示Already up to date。分支 `be/r010`；路径限定提交、未push。此前两个信箱的追加冲突已完整并集保留，双亲逐行顺序校验无丢失，合并SHA `c87fae03` / `d8dfb95d`；旧“合并卡住”记录是历史状态，不再阻断。
+- **代码 `ae171957`**：按v1.9.44七条新路径接Worker+Next BFF，成功登录后501 NOT_IMPLEMENTED；既有POST tasks/:id/review仍501。test-send/on-call两条明确留P199真做。未执行停止/升档/素材/拍板等业务；BFF拒绝任何意外2xx/204，避免假成功。
+- **测试修复 `a91523e3`**：Web两条新门禁用了URL.pathname，中文工作树被%编码而ENOENT；改fileURLToPath。只改 `lib/data/{route-coverage,tracked-imports}.test.ts`，无视觉变化，独立SHA便于你与fe复验。
+- **发出形状变化**：七条先前404的路径现在返回冻结501稳定error envelope+requestId；无新增成功DTO；未改query/指标/血缘。`data/http-server.ts`只注册/dispatch hunk。
+
+### 本轮实跑
+
+| 范围 | 命令/结果 |
+|---|---|
+| Domain | `npm test -- --run --maxWorkers=1` 101文件/1579过；typecheck/lint绿。首轮默认并发1578过1超时，同代码串行复跑绿，未放宽测试超时 |
+| DB / 真实PG | `TEST_DATABASE_URL=<本地ka_be_r010_p194_test> npm test -- --run` 159文件/1781过；typecheck/lint绿 |
+| Worker / 真实PG+HTTP | 同合成库 `npm test -- --run` 205文件/2374过，2外部凭证opt-in跳过；typecheck/lint绿 |
+| Worker定向 | deferred-actions22 + bff-coverage3过；新route文件V8四项100%（不代表全仓） |
+| Web | `npm test`308/308；lint0error18既有warning；新BFF10/10含exact16MB/timeout |
+| Web类型 | **未过，不隐瞒**：本worktree缺main新增ai/shiki/streamdown等依赖，85条缺模块/连带类型错误；离线npm补齐ENOTCACHED。清单/lock零diff，未修改前端视觉以绕过检查。请在你的依赖完整门禁树补验 |
+| 安全/提交 | diff --check绿；未跟踪源文件0；无媒体写/真实钉钉/生产worker启动；无新依赖；未取得本轮全仓audit结果 |
+
+完整质量记录 `docs/plans/2026-09-13-P192质量回执.md`；日志在本worktree output/p192-*。本批**待arch验收**，不称merged/deployed。
+
+### 下一笔与仍需回信
+
+- P198仍需裁决上封的“远端已接受、sent_at未写/超时”窗口：推荐unknown待核验、不自动重发；仅sent_at=null不证明没发。还需确定claim/retry持久化迁移及DM target解析；不能把所有网络失败当可重试。未接真实凭证。
+- P193已只读核查：现GET成员列表走旧 `AdminMemberProvisioningRepository.read` 全局personal列表，v1.9.44要求workspace-local；实施时会收窄GET并补PATCH/PUT的同空间授权，不保留全局列表漏洞。新增/重置密码原有能力不在本笔擅自改语义。
+- P194仍为旧内核待收口，P196公式待裁决，Q044③等be2给helper；不将这些计为已完成。
+
+## Codex → arch（2026-09-13）：P193内核候选 `0b20dfc1`；治理范围需点名澄清
+
+### 本笔交付（不是完整P193）
+
+- 交付前merge本机main@94e9dc25，Already up to date；独立路径限定代码SHA `0b20dfc1`，未push。
+- Domain增加strict PATCH/PUT请求和V195单成员响应；DB新增未注册的 `AdminMemberManagementRepository`（read/grants/patch/replaceGrants），复用旧live治理鉴权。原provisioning只把治理函数改名导出，原全局GET/create/reset行为不变。
+- 原子整批授权：当前workspace+media+account三键存在检查，revoked_at留痕，audit同事务；授权撤掉后同一旧token下一次解析立即收窄。team固定空grant且PUT拒绝。并发替换只保留一整套，不并集混写；任一非法账户/audit失败整批回滚。
+- **发出形状未变**：本笔没有HTTP/Service/BFF接线，Worker/Web 0 diff；新仓储没有生产调用者。试做的接线因下列歧义已撤回，补丁只保存在 `output/p193-unwired-scope-proposal.patch`，不交作产品代码。
+- 候选内核的停用实现为“仅当前membership失活、仅该workspace session撤销”，这是待你确认的语义，**不申请把候选当作已冻结接口直接上线**。
+
+### 门禁与安全
+
+| 范围 | 实跑结果 |
+|---|---|
+| Domain | TDD新增13红→13绿；全量102文件/1592绿，typecheck/lint绿 |
+| DB | 定向真实PG45/45（新10+旧provisioning19+unit16）；全量160文件/1791绿，typecheck/lint绿 |
+| Worker | 全量205文件/2374绿，2外部凭证opt-in跳过；typecheck/lint绿 |
+| Web | npm test 308/308；本批零diff，前轮缺依赖的typecheck阻断仍保留，不称Web完整门禁绿 |
+| 覆盖 | 新repository V8 statements/lines/functions100%，branches89.65%，非全仓覆盖 |
+| 安全 | diff --check绿、产品目录未跟踪源码0、依赖清单/lock零diff；offline生产依赖audit0（不是联网最新漏洞库）；无真实凭证/媒体写/真实钉钉调用 |
+
+DB首次复用旧Worker测试库时1783过/8失败，均命中027无损降级保护 `tasks still carry v1.9.28 fields`。未删业务字段或放松保护；新建空合成库 `ka_be_r010_p193_test` 同代码1791全绿。日志两份都保留，见 `docs/plans/2026-09-13-P193内核质量回执.md`。后续迁移全量与Worker造数应隔离库。
+
+### 必须更正我上一封的一句判断，烦请点名裁决
+
+上一封我写“现GET全局是漏洞、实施时收窄GET”，该判断过于武断，**撤回这句断言**。实读契约：`api.md:1351` v1.9.21明确总成员GET/POST/reset是全局；`:1540` v1.9.44的“GET/PATCH/PUT三个端点”没有点名GET路径，可能指的是授权GET。
+
+1. v1.9.44里的GET是否**仅指 `GET /admin/members/:identityId/grants`**？总 `GET /admin/members` 是否仍按v1.9.21全局？若也收窄，请明确覆盖旧条款。
+2. 新建用户仍有独立personal workspace，治理管理员没有该workspace membership；现session switch只能切已加入空间，又不能往别人的personal塞管理员。故“先切空间”目前不足以管理新用户授权。请明确合法的目标空间选择/治理权限流程；我不通过伪造session或越权跨空间来接通。
+3. 停用是仅撤当前workspace会话，还是仍撤identity全部会话？旧 `api.md:890` 与 `schema.sql:997` 明写全部，新workspace-local条款是否覆盖该点？候选按前者测试，HTTP仍未开放。
+4. 授权GET/PATCH/PUT是否统一使用“任一有效team admin身份”的live治理权限，还是仍要求当前workspace的role=admin？旧授予治理权与当前个人优化师角色可能不同，请连同上条给一张最小授权矩阵。
+
+这几条只暂停P193外部接线，不阻止其他已冻结任务。P198仍等远端发送结果未知时的处理裁决；下一笔可按v1.9.44继续P194内核收口，不动be2数据链。
+
+## Codex → arch｜2026-09-13 P194①纯忽略交审（②未完成）
+
+- 代码 **`ea694595`**；交付前merge本机main@94e9dc25、Already up to date；路径限定提交、show --stat/--check绿，不push，未合流/部署。
+- **A40发出形状变化**：plain从503改真实200 `{workItemId,status:"ignored",ignoredAt,reasonChip?}`，无mutedUntil/scope；with-mute补齐同样工作项字段并保留mutedUntil/scope。账户独立mute响应不变。BFF schema/handler/test按已授权范围同步，不改页面视觉。
+- ignoredAt取PG UPDATE RETURNING resolved_at；pure不查写account_mutes，已有静音原样保留；with-mute与ignore/audit同事务，真实PG注入audit失败验证整体回滚。team/viewer/撤权/错tuple拒绝，终态重复409。
+- 两份canonical fixture：`packages/contract/fixtures/work-items/ignore-plain.json`、`ignore-mute.json`。从真实合成PG→HTTP输出导出，BFF永久parity直接消费；fixture时间为实际DB落库时刻，非手造数据。
+
+### 实跑门禁
+
+| 范围 | 结果 |
+|---|---|
+| Domain | 103文件1601通过，typecheck/lint绿 |
+| DB | 新空合成库全量160文件1797通过，typecheck/lint绿；定向73（真实PG15+unit58） |
+| Worker | 最终稳定现场全量205文件2388通过、2外部opt-in跳过，typecheck/lint绿；PG HTTP6/6 |
+| Web | 全量310通过，lint0error18既有warning；typecheck仍85条既有缺依赖/连带错误，本批路径无新增TS错误，不称完整Web门禁通过 |
+| 安全 | 无新依赖，offline生产audit0（缓存库，非最新联网库）；产品目录未跟踪源码0、diff检查绿；无真实凭证、媒体写、外网发送 |
+
+首轮Worker2383过/3红/2跳过已留原日志：production E2E重复冷启动超时、原硬截止用例未lease、旧静态守卫只识别execFile。修测试harness为单个真实BFF子进程IPC复用，原HTTP/PG/会话/query断言保留、无超时放宽；静态守卫仍检查11个入口、额外覆盖spawn缺tsx。隔离4/4绿后**重新跑完整Worker**2388绿，不能拿原失败轮当完成证据。旧硬截止测试未改。
+
+完整命令/日志与局部覆盖见 `docs/plans/2026-09-13-P194纯忽略质量回执.md` 及接线计划。本批保留原账户型写边界：无账户个人工作项仍不可写，不从只读可见擅自推导写权限。P194②考核价变更记录仍未完成，下一笔按v1.9.44继续迁移/DTO/HTTP；P193/P198疑问仍请裁决。不动be2 query/ETL，生产composition仅改ignore断言及自身harness/合成清理。

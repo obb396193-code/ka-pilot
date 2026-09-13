@@ -14,7 +14,7 @@ describe("R010 mute real HTTP transport", () => {
   const servers: Server[] = [];
   afterEach(async () => { for (const server of servers.splice(0)) { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); } });
   async function start(maxRequestBytes: number) {
-    const service = { mute: vi.fn(async () => valid), ignoreAndMute: vi.fn(async () => valid) };
+    const service = { mute: vi.fn(async () => valid), ignoreAndMute: vi.fn(async () => ({ ...valid, workItemId: "00000000-0000-4000-8000-000000000003", status: "ignored" as const, ignoredAt: "2026-09-08T00:00:00Z" })) };
     const routes = createAccountMuteRoutes(service);
     const server = createServer((request, response) => {
       const url = new URL(request.url ?? "/", "http://synthetic.invalid"), route = routes.find(r => r.matches(url.pathname));

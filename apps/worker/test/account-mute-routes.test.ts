@@ -10,10 +10,11 @@ const userId = "00000000-0000-4000-8000-000000000002";
 const workItemId = "00000000-0000-4000-8000-000000000003";
 const auth: ApprovedWorkspaceAuthContext = { workspaceId, userId, role: "optimizer", workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "account-1", accessLevel: "read" }] } };
 const valid = { mutedUntil: "2026-09-09T03:00:00+08:00", scope: "notifications_and_p1p2" as const };
+const ignored = { workItemId, status: "ignored" as const, ignoredAt: "2026-09-08T00:00:00Z" };
 const mutePath = "/api/v1/accounts/KUAISHOU/account-1/mute";
 const ignorePath = `/api/v1/work-items/${workItemId}/ignore`;
 function setup() {
-  const service = { mute: vi.fn(async () => valid), ignoreAndMute: vi.fn(async () => valid) };
+  const service = { mute: vi.fn(async () => valid), ignoreAndMute: vi.fn(async (_auth: unknown, _id: unknown, body: { mute_days?: number }) => ({ ...ignored, ...(body.mute_days === undefined ? {} : valid) })) };
   const routes = createAccountMuteRoutes(service);
   return { service, routes };
 }
@@ -71,6 +72,7 @@ describe("R010 account mute route adapters (not production registration)", () =>
     { ...auth, workspaceKind: "team", scope: { kind: "team_workspace_readonly" } },
     { ...auth, scope: { kind: "explicit_accounts", accounts: [] } },
     { ...auth, userId: "invalid" },
+    { ...auth, role: "viewer" },
   ])("rejects non-approved personal context before command", async value => {
     const s = setup(), response = await call(s, { auth: value });
     expect(response.status).toBe(403); expect(s.service.mute).not.toHaveBeenCalled();
@@ -88,10 +90,24 @@ describe("R010 account mute route adapters (not production registration)", () =>
     const s = setup(), response = await call(s, { path: "/api/v1/accounts/TENCENT/account-1/mute" });
     expect(response.status).toBe(403); expect(s.service.mute).not.toHaveBeenCalled();
   });
-  it("plain ignore is valid but unavailable, not a fabricated success or malformed request", async () => {
+  it("plain ignore reaches the shared command and returns no mute fields", async () => {
     const s = setup(), response = await call(s, { path: ignorePath, body: {} });
-    expect(response.status).toBe(503); expect(response.body).toMatchObject({ error: { code: "SOURCE_UNAVAILABLE" } });
-    expect(s.service.ignoreAndMute).not.toHaveBeenCalled();
+    expect(response.status).toBe(200); expect(response.body).toMatchObject({ data: ignored });
+    expect(s.service.ignoreAndMute).toHaveBeenCalledWith(auth, workItemId, {});
+    expect(response.text).not.toContain("mutedUntil");
+  });
+  it.each([false, true])("ignore response exact cap is enforced (mute=%s)", async withMute => {
+    const s = setup(), data = { ...ignored, ...(withMute ? valid : {}) };
+    const body = withMute ? { mute_days: 1 } : {};
+    const cap = Buffer.byteLength(JSON.stringify({ ok: true, data, meta: { requestId: "synthetic-request" } }));
+    expect((await call(s, { path: ignorePath, body, maxResponseBytes: cap + 1 })).status).toBe(200);
+    expect(await call(s, { path: ignorePath, body, maxResponseBytes: cap })).toMatchObject({ status: 502, body: { error: { code: "SOURCE_TRUNCATED", requestId: "synthetic-request" } } });
+  });
+  it("rejects wrong work item and request/result mute mismatch", async () => {
+    for (const [body, output] of [[{}, { ...ignored, workItemId: userId }], [{}, { ...ignored, ...valid }], [{ mute_days: 1 }, ignored]] as const) {
+      const s = setup(); s.service.ignoreAndMute.mockResolvedValueOnce(output);
+      expect(await call(s, { path: ignorePath, body })).toMatchObject({ status: 502, body: { error: { code: "UPSTREAM_INVALID_RESPONSE" } } });
+    }
   });
   it.each([
     ["INVALID_REQUEST", 400], ["FORBIDDEN", 403], ["NOT_FOUND", 404], ["INVALID_STATE", 409],

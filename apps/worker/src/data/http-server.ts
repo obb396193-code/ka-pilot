@@ -76,6 +76,7 @@ import type { EtlRunListService } from "../admin/etl-run-list-service.js";
 import { createEtlRunListRoute } from "../r010/etl-run-list-route.js";
 import type { EtlRunRerunService } from "../admin/etl-run-rerun-service.js";
 import { createEtlRunRerunRoute } from "../r010/etl-run-rerun-route.js";
+import { createDeferredActionRoutes } from "../r010/deferred-action-routes.js";
 
 
 // arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
@@ -318,6 +319,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
   const adminMembersRoute = createAdminMembersRoutes(options.adminMembersService);
   const etlRunListRoute = createEtlRunListRoute(options.etlRunListService);
   const etlRunRerunRoute = createEtlRunRerunRoute(options.etlRunRerunService);
+  const deferredActionRoutes = createDeferredActionRoutes();
 
   return createServer(async (request, response) => {
     const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
@@ -414,6 +416,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isAdminMembersRoute = adminMembersRoute.matches(url.pathname);
       const isEtlRunListRoute = etlRunListRoute.matches(url.pathname);
       const isEtlRunRerunRoute = etlRunRerunRoute.matches(url.pathname);
+      const deferredActionRoute = deferredActionRoutes.find(route => route.matches(url.pathname));
       // arch 开的缝：R-014 由 be2 在 src/r014/routes.ts 注册，壳层不认识具体路径，只问一句归不归它。
       const r014Route = findR014Route(url.pathname);
       if (
@@ -431,6 +434,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         !isAdminMembersRoute &&
         !isEtlRunListRoute &&
         !isEtlRunRerunRoute &&
+        deferredActionRoute === undefined &&
         r014Route === null
       ) {
         sendJson(
@@ -471,7 +475,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           sendJson(response, taskListHttpStatus(result), result, requestId);
           return;
         }
-        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute || isEtlRunListRoute || isEtlRunRerunRoute) {
+        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute || isEtlRunListRoute || isEtlRunRerunRoute || deferredActionRoute !== undefined) {
           sendJson(
             response,
             401,
@@ -498,6 +502,10 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         request.resume();
         sendJson(response, 403, { ok: false, error: { code: "READ_ONLY_ROLE", message: "This role is read-only",
           retryable: false, requestId } }, requestId);
+        return;
+      }
+      if (deferredActionRoute !== undefined) {
+        await deferredActionRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
         return;
       }
       if (isAgentModelRoute) {

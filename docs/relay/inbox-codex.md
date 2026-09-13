@@ -845,6 +845,18 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 
 **纪律**：`[be2]` 不是你的前缀，用 `[codex]`；路径限定提交、不 push；每笔交付前 `git merge main`（A41）+ `git status --porcelain` 无未跟踪源文件（A44）；发出形状变了要在回执里声明（A40）；回执写 `docs/relay/inbox-arch.md`。门禁我在 `ka-arch-gates` 跑，你本地跑完 `packages/domain`、`packages/db`、`apps/worker` 三包再交。
 
+#### Codex 处理状态（2026-09-13）
+
+- 已 merge main@802e31a4。P-195 在最新主线已实现并复验，不重复写。
+- P-192 / P-193 / P-194纯忽略：有疑问，精确缺路径/DTO/授权范围已写 inbox-arch（fadef118 起），不自定 Contract。
+- P-194 change-log：9ed8ec5c 仅 Domain/DB/Service 内核交审；完整门禁已过。预算表迁移、系数审计列、revoke/缺值形及 HTTP 注册授权未齐，未称 API 完成。
+- P-196/P-197 未开工，不混入这笔不完整交付；待 arch 对上列依赖及注册点回执后继续。
+
+#### Codex 续办状态（2026-09-13，main@94e9dc25 后）
+
+- P192 代码 `ae171957` + 测试路径修复 `a91523e3` 已交 inbox-arch。七条新入口与七条BFF、既有review回归；P199两条未挂501。不是实际业务功能开放。
+- 三包全量：Domain1579 / DB真实PG1781 / Worker2374+2外部opt-in跳过；三包typecheck/lint绿。Web308测试绿、lint0error18warning；本机Web类型检查缺主线依赖未过，不称完整前端门禁通过。
+- P198故障窗口/持久化与DM目标问题已写arch信箱；未获明确裁决，不自动重发结果未知的消息。P193可继续按v1.9.44做workspace-local内核，P194依最新DTO收口；不改be2数据逻辑。
 ### 追加 P-198 / P-199（arch 2026-09-12，v1.9.42）：把钉钉那条链接通——这是现在整条链唯一「只进不出」的地方
 实证：`outbound_messages` 只有入队方，**没有任何进程消费**，status 永远 `queued`。也就是说告警、派发、审批、日报**一条都发不出去**，而入站（收消息、鉴权、加密、重放、幂等）你之前做得很扎实，36 条用例在。
 - **P-198 出站投递器**（口径见 v1.9.42）：单轮消费 + 跨实例单飞锁（沿用 job 锁，不要常驻循环）；先只做 `channel='dingtalk'`（群机器人 webhook 签名 / 单聊由 `target` 决定）；URL 白名单沿用你入站那套防 SSRF；指数退避、`attempts` 上限 5；**同一 id 不得重发**（`sending` 中间态 + 条件更新，崩溃后按 `sent_at` 判）；未配置凭证时整体跳过并在 `worker:diagnose` 显 `dingtalkOutbound:"not_configured"`。
@@ -879,3 +891,15 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - **新增一条给你（v1.9.46 ③）**：`GET /accounts` 加 `productName`、`ownerUserId` 两个可选筛选参数，排在 P-193 之后。原因：前端对这两项只能在「已取到的一页」里过滤，500 户空间里搜第 3 页的账户会显示「没有符合条件的」且不报错。
 - **Q-044 ③** 的 `reports/**` 两条读路径仍归你，等 be2 的 helper 说明，我转给你。
 - Web 门禁你不用跑（你树里缺 web 依赖，那 85 条 tsc 是缺依赖的连带）；**web 由我在门禁树统一跑**，你只跑 domain/db/worker 三包。你三笔的实跑记录与「不拿失败轮当完成证据」的做法都记下了。
+#### Codex续办状态（2026-09-13，P193内核）
+
+- P193内核代码 `0b20dfc1` 已交arch：Domain strict请求/响应、未注册DB事务仓储与真实PG反例；既有Worker/Web零diff。Domain1592/DB1791/Worker2374+2外部跳过全量通过、三包typecheck/lint绿，Web308测试通过。不是完整API、未合流/未部署。
+- 新增待裁决点已直接写inbox-arch：v1.9.44的GET具体路径、管理员如何合法选别人personal空间、停用撤全部还是当前空间session、治理资格与当前role的矩阵。撤回前封把全局总GET断定为漏洞的过度推断；HTTP试做已撤回，保留补丁待裁。
+- 首次旧测试库DB8条降级失败与新空库1791全绿均留痕，未绕迁移保护。完整报告 `docs/plans/2026-09-13-P193内核质量回执.md`。
+- P198等待发送结果未知窗口裁决；P194可继续按已冻结DTO与迁移授权推进，不改be2数据链。
+
+#### Codex续办状态（2026-09-13，P194①纯忽略）
+
+- 代码 `ea694595`：纯忽略真实落库且不触碰已有静音；ignore+mute同事务，审计失败回滚；Worker/BFF按请求分支严格校验完整DTO。两份合成PG→HTTP真实fixture已放契约目录。
+- Domain1601、DB真实PG全量1797、Worker2388+2外部跳过；三包typecheck/lint绿。Web310测试绿、lint0error18warning；既有依赖缺失导致typecheck85条错误仍未过。首轮Worker3红及修复后全量绿均留报告，不掩盖。
+- 已回inbox-arch，未合流/部署/推送。P194②变更记录尚未完成；下一笔按已冻结迁移/DTO继续。P193治理范围、P198未知发送窗口仍待arch裁决。

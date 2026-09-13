@@ -4,7 +4,10 @@ import { accountScopeClause, accountScopeParams } from "./r014/workspace-authori
 
 export interface AccountMuteTarget { media: string; accountId: string }
 export interface SetAccountMuteInput extends AccountMuteTarget { mutedUntil: string; reasonChip: string | null }
-export interface IgnoreAndMuteInput { workItemId: string; mutedUntil: string; reasonChip: string | null }
+export interface IgnoreAndMuteInput { workItemId: string; mutedUntil?: string; reasonChip: string | null }
+export interface IgnoreWorkItemRecord extends AccountMuteTarget {
+  workspaceId: string; workItemId: string; ignoredAt: Date; reasonChip: string | null; mute: AccountMuteRecord | null;
+}
 export interface AccountMuteRecord extends SetAccountMuteInput {
   workspaceId: string;
   mutedBy: string | null;
@@ -129,15 +132,15 @@ export class AccountMuteRepository {
   /** Internal atomic command. The account is resolved from the locked work item,
    * not supplied by a browser. No media operation, job, or legacy muted_until write.
    */
-  async ignoreAndMute(auth: ApprovedWorkspaceAuthContext, input: IgnoreAndMuteInput): Promise<AccountMuteRecord> {
+  async ignoreAndMute(auth: ApprovedWorkspaceAuthContext, input: IgnoreAndMuteInput): Promise<IgnoreWorkItemRecord> {
     const parsed = approvedWorkspaceAuthContextSchema.safeParse(auth);
-    if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.scope.accounts.length === 0) {
+    if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.role === "viewer" || parsed.data.scope.accounts.length === 0) {
       throw new AccountMuteRepositoryError("FORBIDDEN");
     }
     const keys = ["workItemId", "mutedUntil", "reasonChip"];
-    if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).length !== keys.length ||
+    if (!input || typeof input !== "object" || Array.isArray(input) ||
       Object.keys(input).some(key => !keys.includes(key)) || typeof input.workItemId !== "string" || !uuid.test(input.workItemId) ||
-      !validDate(input.mutedUntil) || !validReason(input.reasonChip)) throw new AccountMuteRepositoryError("INVALID_INPUT");
+      (Object.hasOwn(input, "mutedUntil") && !validDate(input.mutedUntil)) || !validReason(input.reasonChip)) throw new AccountMuteRepositoryError("INVALID_INPUT");
     const approved = parsed.data, fixed = { ...input };
     const scope = accountScopeParams(approved);
     return this.withTransaction(async client => {
@@ -162,12 +165,19 @@ export class AccountMuteRepository {
       const updated = await client.query(
         `UPDATE work_items SET status='ignored', ignore_reason=$3, resolved_at=now()
          WHERE workspace_id=$1 AND id=$2 AND status=$4
-         RETURNING id, workspace_id, media, account_id, status`,
+         RETURNING id, workspace_id, media, account_id, status, resolved_at`,
         [approved.workspaceId, fixed.workItemId, fixed.reasonChip, current.status]);
       const row = updated.rows[0] as Record<string, unknown> | undefined;
       if (updated.rows.length !== 1 || !row || row.id !== fixed.workItemId || row.workspace_id !== approved.workspaceId ||
-        row.media !== target.media || row.account_id !== target.accountId || row.status !== "ignored") throw new AccountMuteRepositoryError("INVALID_RESULT");
-      return writeMute(client, approved, { ...target, mutedUntil: fixed.mutedUntil, reasonChip: fixed.reasonChip });
+        row.media !== target.media || row.account_id !== target.accountId || row.status !== "ignored" ||
+        !(row.resolved_at instanceof Date) || !Number.isFinite(row.resolved_at.valueOf())) throw new AccountMuteRepositoryError("INVALID_RESULT");
+      // Plain ignore must not touch an existing mute, even when one already exists.
+      const mute = fixed.mutedUntil === undefined ? null : await writeMute(client, approved, { ...target, mutedUntil: fixed.mutedUntil, reasonChip: fixed.reasonChip });
+      await client.query(`INSERT INTO audit_log(workspace_id,user_id,action,object_type,object_id,detail)
+        VALUES($1,$2,'work_item.ignore','work_item',$3,$4::jsonb)`, [approved.workspaceId, approved.userId, fixed.workItemId,
+        JSON.stringify({ from: current.status, to: "ignored", muteApplied: mute !== null })]);
+      return { workspaceId: approved.workspaceId, ...target, workItemId: fixed.workItemId, ignoredAt: row.resolved_at,
+        reasonChip: fixed.reasonChip, mute };
     });
   }
 

@@ -45,7 +45,7 @@ describe("account mute PostgreSQL scope and authority", () => {
   afterAll(async () => {
     try {
       // Restrict teardown to IDs created by this suite, including partially seeded cases.
-      for (const table of ["account_mutes", "work_items", "account_access_grants", "workspace_memberships", "accounts", "users"] as const) {
+      for (const table of ["audit_log", "account_mutes", "work_items", "account_access_grants", "workspace_memberships", "accounts", "users"] as const) {
         await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [ownedWorkspaces]);
       }
       await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [ownedWorkspaces]);
@@ -113,7 +113,7 @@ describe("account mute PostgreSQL scope and authority", () => {
   it("atomically ignores the locked work item and mutes only its actual tuple", async () => {
     const workItemId = await item();
     const result = await repo.ignoreAndMute(first, { workItemId, mutedUntil: input.mutedUntil, reasonChip: "known" });
-    expect(result).toMatchObject({ workspaceId: first.workspaceId, media: "KUAISHOU", accountId: input.accountId, mutedBy: first.userId });
+    expect(result).toMatchObject({ workspaceId: first.workspaceId, workItemId, media: "KUAISHOU", accountId: input.accountId, mute: { mutedBy: first.userId } });
     const state = await pool.query("SELECT status,ignore_reason,muted_until,resolved_at IS NOT NULL AS resolved FROM work_items WHERE id=$1", [workItemId]);
     expect(state.rows).toEqual([{ status: "ignored", ignore_reason: "known", muted_until: null, resolved: true }]);
     expect(await repo.find(first, { media: "TENCENT", accountId: input.accountId })).toBeNull();
@@ -131,6 +131,23 @@ describe("account mute PostgreSQL scope and authority", () => {
       expect((await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [first.workspaceId])).rows).toEqual([]);
     } finally { await pool.query("ALTER TABLE account_mutes DROP CONSTRAINT synthetic_p131_failure"); }
   });
+  it("plain ignore audit failure rolls back the real PG work item and leaves old mute intact", async () => {
+    const workItemId = await item(); await repo.set(first, input);
+    const before = (await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [first.workspaceId])).rows;
+    const broken = new AccountMuteRepository({ connect: async () => {
+      const client = await pool.connect();
+      return new Proxy(client, { get(target, key) {
+        if (key === "query") return async (sql: string, args?: unknown[]) => {
+          if (sql.includes("INSERT INTO audit_log")) throw new Error("synthetic audit failure");
+          return target.query(sql, args);
+        };
+        const value = Reflect.get(target, key); return typeof value === "function" ? value.bind(target) : value;
+      } });
+    } } as unknown as Pool);
+    await expect(broken.ignoreAndMute(first, { workItemId, reasonChip: "checked" })).rejects.toThrow("synthetic audit failure");
+    expect((await pool.query("SELECT status,ignore_reason,resolved_at FROM work_items WHERE id=$1", [workItemId])).rows).toEqual([{ status: "open", ignore_reason: null, resolved_at: null }]);
+    expect((await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [first.workspaceId])).rows).toEqual(before);
+  });
   it("concurrent ignore attempts commit only one pair of writes", async () => {
     const workItemId = await item();
     const args = { workItemId, mutedUntil: input.mutedUntil, reasonChip: "known" };
@@ -144,12 +161,15 @@ describe("account mute PostgreSQL scope and authority", () => {
     const own: ApprovedWorkspaceAuthContext = { ...first, workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: input.accountId, accessLevel: "read" }] } };
     await expect(repo.ignoreAndMute(own, { workItemId: foreign, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "NOT_FOUND" });
     await expect(repo.ignoreAndMute(own, { workItemId: otherMedia, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(repo.ignoreAndMute(own, { workItemId: foreign, reasonChip: null })).rejects.toMatchObject({ code: "NOT_FOUND" });
+    await expect(repo.ignoreAndMute(own, { workItemId: otherMedia, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
     expect((await pool.query("SELECT status FROM work_items WHERE id=ANY($1::uuid[])", [[foreign, otherMedia]])).rows).toEqual([{ status: "open" }, { status: "open" }]);
   });
   it("a live grant revocation rolls back before changing the work item", async () => {
     const workItemId = await item();
     await pool.query("DELETE FROM account_access_grants WHERE workspace_id=$1 AND identity_id=$2", [first.workspaceId, identityId]);
     await expect(repo.ignoreAndMute(first, { workItemId, mutedUntil: input.mutedUntil, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(repo.ignoreAndMute(first, { workItemId, reasonChip: null })).rejects.toMatchObject({ code: "FORBIDDEN" });
     expect((await pool.query("SELECT status FROM work_items WHERE id=$1", [workItemId])).rows).toEqual([{ status: "open" }]);
   });
 });

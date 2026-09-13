@@ -1,7 +1,6 @@
 // Real src/data-api.ts child + HTTP + PG + DB sessions, synthetic data only.
 import { randomUUID } from "node:crypto";
-import { execFile, spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { promisify } from "node:util";
+import { spawn, type ChildProcess, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createServer } from "node:net";
 import { Pool } from "pg";
 import { AuthSessionRepository, ChangeSetRepository, runMigrations } from "@ka/db";
@@ -17,8 +16,9 @@ if (!["localhost", "127.0.0.1"].includes(db.hostname) || db.port !== "55432" || 
 describe("R010 actual production composition with KA disabled", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 2, connectionTimeoutMillis: 3000 });
   const ws = randomUUID(), team = randomUUID(), user = randomUUID(), teamUser = randomUUID(), identity = randomUUID();
-  const workItem = randomUUID(), internalToken = "synthetic-r010-production-test-internal-token";
+  const workItem = randomUUID(), plainWorkItem = randomUUID(), internalToken = "synthetic-r010-production-test-internal-token";
   let cookie = `ka_session=${randomUUID()}${randomUUID()}`, base = "", draftId = "", child: ChildProcessWithoutNullStreams | undefined;
+  let bffChild: ChildProcess | undefined;
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
     for (const [workspace, kind, actor] of [[ws, "personal", user], [team, "team", teamUser]]) {
@@ -37,6 +37,7 @@ describe("R010 actual production composition with KA disabled", () => {
       await pool.query("INSERT INTO workspace_memberships(workspace_id,identity_id,user_id,role) VALUES($1,$2,$3,'optimizer')", [workspace, identity, actor]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','synthetic-same','preview')", [ws, identity]);
     await pool.query("INSERT INTO work_items(id,workspace_id,media,account_id,type,status,title) VALUES($1,$2,'KUAISHOU','synthetic-same','diagnosis','open','synthetic')", [workItem, ws]);
+    await pool.query("INSERT INTO work_items(id,workspace_id,media,account_id,type,status,title) VALUES($1,$2,'KUAISHOU','synthetic-same','diagnosis','open','synthetic plain')", [plainWorkItem, ws]);
     draftId = (await new ChangeSetRepository(pool).create({ workspaceId: ws, media: "KUAISHOU", accountId: "synthetic-same", title: "synthetic source-off",
       initiator: user, credentialOwnerUserId: user, ttlExpireAt: new Date(Date.now() + 600_000), reasonCode: "synthetic",
       items: [{ targetType: "unit", targetId: "synthetic-unit", field: "bid", fromValue: { type: "number", value: 30 }, toValue: { type: "number", value: 29 } }] })).id;
@@ -55,15 +56,34 @@ describe("R010 actual production composition with KA disabled", () => {
       child!.once("exit", code => { clearTimeout(timer); reject(new Error(`Synthetic process exited ${code}`)); });
       child!.stderr.on("data", () => undefined); // Never print environment/upstream output.
     });
+    // One real BFF process per suite, like a deployed server. Starting a fresh
+    // tsx/Node process for every click tests repeated cold imports, not the route.
+    bffChild = spawn(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
+      `const {handleR010CommandRequest}=await import(process.argv[1]).then(m=>m.default??m);
+       process.on('message',async p=>{try {
+         const result=await handleR010CommandRequest(new Request('https://web.example'+p.path,{method:'POST',
+           headers:{origin:'https://web.example','content-type':'application/json',cookie:p.cookie,'x-ka-workspace-id':p.team,'x-ka-account-scope':'*'},body:JSON.stringify(p.body)}),
+           {environment:{KA_DATA_BACKEND_ORIGIN:p.base,KA_DATA_SERVICE_TOKEN:p.token},requestId:()=> 'r010-bff-pg'});
+         process.send({kind:'result',result});
+       }catch{process.send({kind:'error'});}}); process.send({kind:'ready'});`,
+      new URL("../../web/lib/data/r010-command-bff.ts", import.meta.url).href], { stdio: ["ignore", "ignore", "ignore", "ipc"] });
+    await new Promise<void>((resolve, reject) => {
+      const runner = bffChild!;
+      const cleanup = () => { clearTimeout(timer); runner.off("message", ready); runner.off("error", failed); runner.off("exit", failed); };
+      const failed = () => { cleanup(); reject(new Error("Synthetic BFF startup failed")); };
+      const ready = (value: unknown) => { if (value && typeof value === "object" && "kind" in value && value.kind === "ready") { cleanup(); resolve(); } else failed(); };
+      const timer = setTimeout(failed, 15000);
+      runner.once("message", ready); runner.once("error", failed); runner.once("exit", failed);
+    });
   }, 30_000);
   afterAll(async () => {
-    if (child && child.exitCode === null && child.signalCode === null) {
-      const closed = new Promise<void>(resolve => child!.once("close", () => resolve())); child.kill("SIGTERM"); await closed;
+    for (const runner of [bffChild, child]) if (runner && runner.exitCode === null && runner.signalCode === null) {
+      const closed = new Promise<void>(resolve => runner.once("close", () => resolve())); runner.kill("SIGTERM"); await closed;
     }
     try {
       await pool.query("DELETE FROM auth_sessions WHERE identity_id=$1", [identity]);
       await pool.query("DELETE FROM execution_runs r USING changesets c WHERE r.changeset_id=c.id AND c.workspace_id=ANY($1::uuid[])", [[ws, team]]);
-      for (const table of ["changeset_items", "changesets", "account_mutes", "work_items", "account_access_grants", "workspace_memberships", "account_metrics_hourly", "account_metrics_daily", "assessment_price_history", "task_accounts", "accounts", "tasks", "users"])
+      for (const table of ["audit_log", "changeset_items", "changesets", "account_mutes", "work_items", "account_access_grants", "workspace_memberships", "account_metrics_hourly", "account_metrics_daily", "assessment_price_history", "task_accounts", "accounts", "tasks", "users"])
         await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [[ws, team]]);
       await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [[ws, team]]);
       await pool.query("DELETE FROM auth_identities WHERE id=$1", [identity]);
@@ -76,17 +96,21 @@ describe("R010 actual production composition with KA disabled", () => {
     return { response, body: await response.json() };
   }
   async function bff(path: string, body: unknown, session = cookie) {
-    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
-      `const {handleR010CommandRequest}=await import(process.argv[1]).then(m => m.default ?? m); const p=JSON.parse(process.argv[2]);
-       const result=await handleR010CommandRequest(new Request('https://web.example'+p.path,{method:'POST',
-         headers:{origin:'https://web.example','content-type':'application/json',cookie:p.cookie,'x-ka-workspace-id':p.team,'x-ka-account-scope':'*'},body:JSON.stringify(p.body)}),
-         {environment:{KA_DATA_BACKEND_ORIGIN:p.base,KA_DATA_SERVICE_TOKEN:p.token},requestId:()=> 'r010-bff-pg'});
-       process.stdout.write(JSON.stringify(result));`,
-      new URL("../../web/lib/data/r010-command-bff.ts", import.meta.url).href, JSON.stringify({ path, body, cookie: session, team, base, token: internalToken })],
-    { timeout: 15000, maxBuffer: 1024 * 1024 });
-    const result = JSON.parse(stdout);
+    if (!bffChild?.connected) throw new Error("Synthetic BFF not connected");
+    const runner = bffChild;
+    const value = await new Promise<unknown>((resolve, reject) => {
+      const cleanup = () => { clearTimeout(timer); runner.off("message", received); runner.off("error", failed); runner.off("exit", failed); };
+      const failed = () => { cleanup(); reject(new Error("Synthetic BFF request failed")); };
+      const received = (message: unknown) => { cleanup(); resolve(message); };
+      const timer = setTimeout(failed, 15000);
+      runner.once("message", received); runner.once("error", failed); runner.once("exit", failed);
+      // Synthetic credentials travel via IPC, not process argv or diagnostic output.
+      runner.send({ path, body, cookie: session, team, base, token: internalToken }, error => { if (error) failed(); });
+    });
+    if (!value || typeof value !== "object" || !("kind" in value) || value.kind !== "result" || !("result" in value)) throw new Error("Invalid synthetic BFF message");
+    const result = value.result as { status: number; requestId: string; body: { ok: boolean; data?: unknown; meta?: { requestId: string }; error?: { requestId: string } } };
     expect(result.requestId).toBe("r010-bff-pg");
-    expect(result.body.ok ? result.body.meta.requestId : result.body.error.requestId).toBe("r010-bff-pg");
+    expect(result.body.ok ? result.body.meta?.requestId : result.body.error?.requestId).toBe("r010-bff-pg");
     return result;
   }
   it("queries real scoped pivot, persists mute/ignore, then rejects team and logged-out session", async () => {
@@ -136,7 +160,14 @@ describe("R010 actual production composition with KA disabled", () => {
     expect((await bff("/api/internal/accounts/TENCENT/synthetic-same/mute", { days: 1, reason_chip: "synthetic" })).status).toBe(403);
     expect((await call("/api/v1/accounts/KUAISHOU/synthetic-same/mute", { days: 1, reason_chip: "synthetic" })).response.status).toBe(200);
     expect((await bff("/api/internal/accounts/KUAISHOU/synthetic-same/mute", { days: 1, reason_chip: "synthetic" })).status).toBe(200);
-    expect((await bff(`/api/internal/work-items/${workItem}/ignore`, {})).status).toBe(503);
+    const muteBefore = (await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [ws])).rows;
+    const plain = await bff(`/api/internal/work-items/${plainWorkItem}/ignore`, {});
+    expect(plain.status).toBe(200);
+    const storedPlain = (await pool.query("SELECT status,resolved_at FROM work_items WHERE id=$1", [plainWorkItem])).rows[0];
+    expect(plain.body.data).toEqual({ workItemId: plainWorkItem, status: "ignored", ignoredAt: storedPlain.resolved_at.toISOString() });
+    expect(storedPlain.status).toBe("ignored");
+    expect((await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [ws])).rows).toEqual(muteBefore);
+    expect((await bff(`/api/internal/work-items/${plainWorkItem}/ignore`, {})).status).toBe(409);
     expect((await bff(`/api/internal/work-items/${workItem}/ignore`, { mute_days: 3 })).status).toBe(200);
     expect((await bff(`/api/internal/work-items/${workItem}/ignore`, { mute_days: 3 })).status).toBe(409);
     expect(await bff(`/api/internal/changesets/${draftId}/dry-run`, {})).toMatchObject({ status: 503, body: { ok: false, error: {
@@ -155,8 +186,9 @@ describe("R010 actual production composition with KA disabled", () => {
     expect((await call("/api/v1/query", query, "POST", old)).response.status).toBe(401);
     expect((await call("/api/v1/accounts/KUAISHOU/synthetic-same/mute", { days: 1, reason_chip: "synthetic" })).response.status).toBe(403);
     expect((await call(`/api/v1/work-items/${workItem}/ignore`, { mute_days: 1 })).response.status).toBe(403);
+    expect((await call(`/api/v1/work-items/${plainWorkItem}/ignore`, {})).response.status).toBe(403);
     for (const [path, body] of [["/api/internal/accounts/KUAISHOU/synthetic-same/mute", { days: 1, reason_chip: "synthetic" }],
-      [`/api/internal/work-items/${workItem}/ignore`, { mute_days: 1 }], [`/api/internal/changesets/${draftId}/dry-run`, {}]] as const) {
+      [`/api/internal/work-items/${workItem}/ignore`, { mute_days: 1 }], [`/api/internal/work-items/${plainWorkItem}/ignore`, {}], [`/api/internal/changesets/${draftId}/dry-run`, {}]] as const) {
       expect((await bff(path, body, old)).status).toBe(401);
       expect((await bff(path, body)).status).toBe(403);
     }

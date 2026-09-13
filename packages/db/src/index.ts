@@ -68,6 +68,7 @@ export * from "./agent-model-catalog-repository.js";
 export * from "./admin-calendar-repository.js";
 // be: server-approved workspace member/grant reads.
 export * from "./admin-members-repository.js";
+export * from "./admin-member-management-repository.js";
 export * from "./admin-member-provisioning-repository.js";
 export * from "./r014/task-detail-repository.js";
 export * from "./r014/task-manage-repository.js";
@@ -94,3 +95,4 @@ export * from "./r014/guest-access-repository.js";
 export * from "./r014/task-timeline-repository.js";
 export * from "./r014/task-funnel-repository.js";
 export * from "./r014/assessment-price-repository.js";
+export * from "./settings-change-log-repository.js";

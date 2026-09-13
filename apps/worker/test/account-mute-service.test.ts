@@ -8,9 +8,12 @@ const target = { media: "KUAISHOU", accountId: "synthetic" };
 const auth: ApprovedWorkspaceAuthContext = { workspaceId, userId, role: "optimizer", workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [{ ...target, accessLevel: "read" }] } };
 function setup() {
   const row = { workspaceId, ...target, mutedUntil: "2026-09-09", reasonChip: "known", mutedBy: userId, createdAt: null };
-  const store = { set: vi.fn(async () => row), ignoreAndMute: vi.fn(async () => row) };
+  const ignored = { workspaceId, ...target, workItemId: id, ignoredAt: new Date("2026-09-08T00:00:00Z") };
+  const store = { set: vi.fn(async () => row), ignoreAndMute: vi.fn(async (_auth: unknown, input: { mutedUntil?: string }) => ({
+    ...ignored, reasonChip: row.reasonChip, mute: input.mutedUntil === undefined ? null : row,
+  })) };
   const service = new AccountMuteService(store, () => new Date("2026-09-08T03:00:00+08:00"));
-  return { row, store, service };
+  return { row, ignored, store, service };
 }
 describe("P096 trusted account mute commands", () => {
   it("maps server-clock expiry and calls only the standalone store mutation", async () => {
@@ -24,6 +27,20 @@ describe("P096 trusted account mute commands", () => {
     expect(await s.service.ignoreAndMute(auth, id, { mute_days: 1 })).toMatchObject({ mutedUntil: "2026-09-09T03:00:00+08:00" });
     expect(s.store.ignoreAndMute).toHaveBeenCalledWith(auth, { workItemId: id, mutedUntil: "2026-09-09", reasonChip: null });
     expect(s.store.set).not.toHaveBeenCalled();
+  });
+  it("plain ignore returns persisted timestamp without requiring or calculating a mute deadline", async () => {
+    const s = setup(), service = new AccountMuteService(s.store, () => new Date("bad"));
+    expect(await service.ignoreAndMute(auth, id, { reason_chip: "known" })).toEqual({ workItemId: id, status: "ignored", ignoredAt: s.ignored.ignoredAt.toISOString(), reasonChip: "known" });
+    expect(s.store.ignoreAndMute).toHaveBeenCalledWith(auth, { workItemId: id, reasonChip: "known" });
+    expect(s.store.set).not.toHaveBeenCalled();
+  });
+  it.each([{ workspaceId: id }, { workItemId: userId }, { media: "TENCENT" }, { ignoredAt: "invalid" }])("rejects malformed plain ignored row %j", async patch => {
+    const s = setup(); Object.assign(s.ignored, patch);
+    await expect(s.service.ignoreAndMute(auth, id, { reason_chip: "known" })).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
+  it("rejects storage silently applying a mute to a plain request", async () => {
+    const s = setup(); s.store.ignoreAndMute.mockResolvedValueOnce({ ...s.ignored, reasonChip: "known", mute: s.row });
+    await expect(s.service.ignoreAndMute(auth, id, { reason_chip: "known" })).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
   it.each([null, { ...auth, workspaceKind: "team", scope: { kind: "team_workspace_readonly" } }, { ...auth, scope: { kind: "explicit_accounts", accounts: [] } }])("rejects context %j before mutations", async context => {
     const s = setup();

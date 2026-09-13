@@ -28,7 +28,7 @@ describe("R010 mute HTTP with real repository/transaction", () => {
     const unrelated = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
     server = createDataApiServer({ service: unrelated, detailService: unrelated, accountListService: unrelated,
       taskListService: unrelated, workItemListService: unrelated, internalToken, sessionAuthService: sessionAuth,
-      accountMuteService: new AccountMuteService(repo, () => new Date("2026-09-08T03:00:00+08:00")) } as unknown as DataApiServerOptions);
+      accountMuteService: new AccountMuteService(repo, () => new Date("2026-09-13T03:00:00+08:00")) } as unknown as DataApiServerOptions);
     await new Promise<void>((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
     const address = server.address(); if (address === null || typeof address === "string") throw new Error("Missing synthetic listener");
     origin = `http://127.0.0.1:${address.port}`;
@@ -51,7 +51,7 @@ describe("R010 mute HTTP with real repository/transaction", () => {
     if (server?.listening) { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); }
     try {
       await pool.query("DELETE FROM auth_sessions WHERE identity_id=ANY($1::uuid[])", [identities]);
-      for (const table of ["account_mutes", "work_items", "account_access_grants", "workspace_memberships", "accounts", "users"] as const)
+      for (const table of ["audit_log", "account_mutes", "work_items", "account_access_grants", "workspace_memberships", "accounts", "users"] as const)
         await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [workspaces]);
       await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [workspaces]);
       await pool.query("DELETE FROM auth_identities WHERE id=ANY($1::uuid[])", [identities]);
@@ -63,18 +63,40 @@ describe("R010 mute HTTP with real repository/transaction", () => {
   }
   it("writes only approved media tuple and returns the server day-cut deadline", async () => {
     expect(await post("/accounts/KUAISHOU/synthetic-account/mute", { days: 1, reason_chip: "synthetic" })).toEqual({ status: 200, body: {
-      ok: true, data: { mutedUntil: "2026-09-09T03:00:00+08:00", scope: "notifications_and_p1p2" }, meta: { requestId: "pg-http-request" },
+      ok: true, data: { mutedUntil: "2026-09-14T03:00:00+08:00", scope: "notifications_and_p1p2" }, meta: { requestId: "pg-http-request" },
     } });
     expect((await pool.query("SELECT media,account_id,muted_by FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows)
       .toEqual([{ media: "KUAISHOU", account_id: "synthetic-account", muted_by: auth.userId }]);
     expect((await post("/accounts/TENCENT/synthetic-account/mute", { days: 1, reason_chip: "synthetic" })).status).toBe(403);
   });
   it("ignore+mute commits both effects, replay is 409 and preserves state", async () => {
-    expect((await post(`/work-items/${workItemId}/ignore`, { mute_days: 3 })).status).toBe(200);
+    const response = await post(`/work-items/${workItemId}/ignore`, { mute_days: 3 });
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({ data: { workItemId, status: "ignored", mutedUntil: "2026-09-16T03:00:00+08:00", scope: "notifications_and_p1p2" } });
+    expect(response.body.data.ignoredAt).toBe((await pool.query("SELECT resolved_at FROM work_items WHERE id=$1", [workItemId])).rows[0].resolved_at.toISOString());
+    if (process.env.CAPTURE_P194_FIXTURES === "1") console.info("P194_FIXTURE ignore-mute " + JSON.stringify(response.body));
     expect((await pool.query("SELECT status FROM work_items WHERE id=$1", [workItemId])).rows).toEqual([{ status: "ignored" }]);
-    expect((await pool.query("SELECT to_char(muted_until,'YYYY-MM-DD') AS until FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows).toEqual([{ until: "2026-09-11" }]);
+    expect((await pool.query("SELECT to_char(muted_until,'YYYY-MM-DD') AS until FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows).toEqual([{ until: "2026-09-16" }]);
     const replay = await post(`/work-items/${workItemId}/ignore`, { mute_days: 3 });
     expect(replay.status).toBe(409); expect(replay.body).toMatchObject({ error: { code: "INVALID_STATE", requestId: "pg-http-request" } });
+  });
+  it("plain ignore persists only this work item and never creates an account mute", async () => {
+    const response = await post(`/work-items/${workItemId}/ignore`, {});
+    expect(response.status).toBe(200);
+    const row = (await pool.query("SELECT status,ignore_reason,resolved_at,muted_until FROM work_items WHERE id=$1", [workItemId])).rows[0];
+    expect(row).toMatchObject({ status: "ignored", ignore_reason: null, muted_until: null });
+    expect(response.body).toEqual({ ok: true, data: { workItemId, status: "ignored", ignoredAt: row.resolved_at.toISOString() }, meta: { requestId: "pg-http-request" } });
+    if (process.env.CAPTURE_P194_FIXTURES === "1") console.info("P194_FIXTURE ignore-plain " + JSON.stringify(response.body));
+    expect((await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows).toEqual([]);
+    expect((await post(`/work-items/${workItemId}/ignore`, {})).status).toBe(409);
+  });
+  it("plain ignore preserves a pre-existing mute without extending or clearing it", async () => {
+    await post("/accounts/KUAISHOU/synthetic-account/mute", { days: 7, reason_chip: "previous" });
+    const before = (await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows;
+    const response = await post(`/work-items/${workItemId}/ignore`, { reason_chip: "checked" });
+    expect(response.status).toBe(200); expect(response.body.data.reasonChip).toBe("checked");
+    expect(response.body.data).not.toHaveProperty("mutedUntil");
+    expect((await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows).toEqual(before);
   });
   it("grant revocation cannot mutate through fresh session resolution", async () => {
     await pool.query("DELETE FROM account_access_grants WHERE workspace_id=$1", [auth.workspaceId]);
