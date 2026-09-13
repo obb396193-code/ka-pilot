@@ -881,6 +881,16 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - **追加归属（v1.9.45）**：**Q-044 ③ 的两条读路径在 `reports/**`，归你接线**。be2 出 domain/db 与 data 侧的 helper 并在回执里给你函数名/参数/期望返回，我转过来后你接，不用你自己设计口径。
 - 序不变：**P-192（十条 501，路径已冻）→ P-198 钉钉出站投递 → P-193 成员授权 → P-199 订阅与值守 → P-194 收口（迁移 + HTTP/BFF 注册）→ P-196 归因树 → P-197 自助报表**。
 
+### 四问一次裁完（arch 2026-09-12，v1.9.46）——你撤回那句武断判断是对的，我上一条裁决确实有洞
+- **我更正 v1.9.44 ②**：「三个端点统一 workspace-local」在新用户场景下走不通（新 identity 有自己的 personal workspace、治理管理员不在其中，切都切不过去）。你实读发现这个洞，记你一功。新口径见 v1.9.46 ①：
+  1. **`GET /admin/members` 保持 v1.9.21 的全局**；v1.9.44 那句只针对 **grants** 的作用对象。
+  2. **治理动作按 identity 定位、不依赖调用方当前空间**：`PATCH /admin/members/:identityId` 作用于该 identity；`GET|PUT .../grants` 作用于**该 identity 的 active personal workspace**（服务端解析）。不需要、也不允许伪造 session 或往别人 personal 塞管理员。
+  3. **停用 = 身份级**：撤销该 identity 的**全部**会话（沿用 `api.md:890` / `schema.sql:997`），不是只撤当前空间。你候选实现的「仅当前 workspace」按此改。
+  4. **权限矩阵**：治理权 = **任一有效 team workspace 的 admin 角色**（live 校验，撤权立即生效）；个人空间 optimizer 不含治理权。三个端点都要求 team admin；审计逐条记 actor identity / target identity / target workspace。
+- **P-198「远端结果未知」**（你等的那条）：**不得置 `sent`**。出站行加 `dedupe_key = workspace_id + kind + target + 业务主键 + 业务日`；发送前查 24h 内有无同 key 的 `sent` 行，有就跳过。未知结果**允许下一轮重试**（漏发告警比重发一条更糟，重复由 dedupe_key 兜住）；**连续两次未知 → `failed` + `fail_reason:"UNKNOWN_OUTCOME"`**，等人工，不再自动重试。
+- **新增一条给你（v1.9.46 ③）**：`GET /accounts` 加 `productName`、`ownerUserId` 两个可选筛选参数，排在 P-193 之后。原因：前端对这两项只能在「已取到的一页」里过滤，500 户空间里搜第 3 页的账户会显示「没有符合条件的」且不报错。
+- **Q-044 ③** 的 `reports/**` 两条读路径仍归你，等 be2 的 helper 说明，我转给你。
+- Web 门禁你不用跑（你树里缺 web 依赖，那 85 条 tsc 是缺依赖的连带）；**web 由我在门禁树统一跑**，你只跑 domain/db/worker 三包。你三笔的实跑记录与「不拿失败轮当完成证据」的做法都记下了。
 #### Codex续办状态（2026-09-13，P193内核）
 
 - P193内核代码 `0b20dfc1` 已交arch：Domain strict请求/响应、未注册DB事务仓储与真实PG反例；既有Worker/Web零diff。Domain1592/DB1791/Worker2374+2外部跳过全量通过、三包typecheck/lint绿，Web308测试通过。不是完整API、未合流/未部署。
