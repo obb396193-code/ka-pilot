@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { IconBell, IconSend } from "@tabler/icons-react"
 import { toast } from "sonner"
@@ -21,11 +21,9 @@ import type { DisplayMetric } from "@/lib/data/contracts"
 import { timelineFixture } from "@/lib/fixtures/accounts"
 import { useDashboardSummary, useDashboardTrend } from "@/lib/data/use-dashboard"
 import { useWorkItems, workItemsIsMock } from "@/lib/data/use-work-items"
-import { resolvePreset } from "@/components/business/data/dashboard/window-picker"
+import { resolvePreset, type DataWindow } from "@/components/business/data/dashboard/window-picker"
+import { localToday, readDataDate } from "@/lib/data/data-date"
 
-// 数据日：所有预设以它为终点往前推，不是以今天——今天的数还没跑完。
-// TODO(F8-25 ⑥)：接会话/健康条的 dataAsOf 后改成从会话取（和 data-page.tsx 同一处 TODO）。
-const DATA_DATE = "2026-09-05"
 import { fieldText } from "@/lib/fixtures/automation"
 import { changesetStatusText, fmtTime, isOk, mv, rv, costStatusReasonShort, costStatusReasonText } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel } from "@/lib/fixtures/data-analysis"
@@ -64,9 +62,26 @@ export function WorkbenchPage() {
    *   · 待处理队列 → `GET /work-items`
    * 其余块（变更集 / 工作流 / 警报 / 早报 / 派发待回执）后端还没有，A35 开关一开自然是空的。
    */
-  const dataWindow = useMemo(() => resolvePreset("month_to_date", DATA_DATE, { preset: "month_to_date", from: DATA_DATE, to: DATA_DATE }), [])
+  /**
+   * ★数据日不能写死（arch A 派单）。原来这里是 `"2026-09-05"`——
+   * 工作台 KPI 和趋势虽然接了真接口，**窗口仍以那个日期为终点**，
+   * 别人部署一打开，首屏那几个数算的是和今天无关的一段。
+   *
+   * 先按今天算一版把 summary 拉回来，拿到 `lineage` 再按真数据日重算窗口。
+   * 兜底链和数据分析页共用 `lib/data/data-date.ts`——各写一份的话，
+   * 「两个页面的本月至今不是同一段」这种事只有对账时才会发现。
+   */
   const workspaceId = session?.activeWorkspace.id
+  const [dataWindow, setDataWindow] = useState<DataWindow>(() => {
+    const fallback = localToday()
+    return resolvePreset("month_to_date", fallback, { preset: "month_to_date", from: fallback, to: fallback })
+  })
   const summaryQuery = useDashboardSummary(dataWindow, workspaceId)
+  const dataDate = readDataDate(summaryQuery.data?.lineage as never)
+  useEffect(() => {
+    if (!dataDate) return
+    setDataWindow((current) => resolvePreset(current.preset, dataDate, current))
+  }, [dataDate])
   const trendQuery = useDashboardTrend(dataWindow, workspaceId)
   const workItems = useWorkItems({ status: "open", pageSize: 50 })
 

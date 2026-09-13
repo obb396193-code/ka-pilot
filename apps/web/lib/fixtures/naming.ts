@@ -57,7 +57,21 @@ export const parseStatusMeta: Record<ParseStatus, { label: string; tone: "succes
 }
 
 /** 一段的解析结果：值 + 对应系统维度 + 该段带出的任务 ID（业务段会带） */
-export type ParsedSegment = { key: string; value: string | null; mapsTo: string | null; taskIds: string[] }
+/**
+ * 解析出来的一段（契约 v1.9.44，be2 Q-044 ②）。
+ * · `value` 是 **canonical**（统计归到谁）——维度分组、透视、日报一律用它；
+ * · `raw` 是账户名里的**原文**（`IOS` 可能归一成 `iOS`）；
+ * · `basis.source`：`rule` = 按取值表归一过；**`raw` = 自由段，没有取值表**——
+ *   这种段的 value 就是原文本身，**不能显示成「已归一」**（arch C 点名）。
+ */
+export type ParsedSegment = {
+  key: string
+  value: string | null
+  raw?: string | null
+  basis?: { ruleVersion?: number; source?: "rule" | "raw" | "manual" | "auto"; at?: string } | null
+  mapsTo: string | null
+  taskIds: string[]
+}
 export type NameConflict = { field: string; fromNickname: string; fromPlatform: string }
 
 export type AccountNameParse = {

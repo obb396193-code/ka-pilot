@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { addAssessmentPrice, revokeAssessmentPrice } from "@/lib/data/use-me-actions"
 import { changeLogFixture, fmtChangeValue, type ChangeLogItem } from "@/lib/fixtures/tasks"
-import { isOk } from "@/lib/fixtures/contract"
+import { changeLogIsMock, useChangeLog } from "@/lib/data/use-change-log"
+import { fmtTime, isOk } from "@/lib/fixtures/contract"
 
 /**
  * 考核价历史弹层（契约 v1.9.28）。**任务管理视图和任务详情共用这一个组件**——
@@ -38,12 +39,25 @@ export function AssessmentPriceHistory({ taskId, taskName, current }: {
   const [evidence, setEvidence] = useState("")
   const [busy, setBusy] = useState(false)
 
-  const segments = useMemo(() => {
+  /**
+   * 分段列表（arch B 派单：Codex 的 `GET /settings/change-log` 已接通）。
+   * mock 读样例，真实模式打真接口——原来那句「BFF 未接、回退 timeline」的分支撤了。
+   */
+  const remote = useChangeLog(taskId, open)
+  const mockSegments = useMemo(() => {
     const items = isOk(changeLogFixture) ? changeLogFixture.data.items : []
-    return items
-      .filter((item) => item.kind === "assessment_price" && item.scope.taskId === taskId)
-      .sort((left, right) => right.effectiveDate.localeCompare(left.effectiveDate))
+    return items.filter((item) => item.kind === "assessment_price" && item.scope.taskId === taskId)
   }, [taskId])
+  /**
+   * ★按**生效日**排序，不按 `at`。
+   * `at` 可以是 null（时间未知时后端不伪造迁移时间）——按它排会把老行全甩到一头，
+   * 而「哪一段在管哪一天」本来就是生效日说了算。
+   */
+  const segments = useMemo(
+    () => [...(changeLogIsMock ? mockSegments : remote.items ?? [])]
+      .sort((left, right) => right.effectiveDate.localeCompare(left.effectiveDate)),
+    [mockSegments, remote.items],
+  )
 
   const submit = async () => {
     const value = Number(price)
@@ -75,6 +89,7 @@ export function AssessmentPriceHistory({ taskId, taskName, current }: {
             <TableHeader className="bg-muted">
               <TableRow>
                 <TableHead>生效日</TableHead>
+                <TableHead>改动时间</TableHead>
                 <TableHead className="text-right">值</TableHead>
                 <TableHead>改的人</TableHead>
                 <TableHead>证据</TableHead>
@@ -83,10 +98,11 @@ export function AssessmentPriceHistory({ taskId, taskName, current }: {
             </TableHeader>
             <TableBody>
               {segments.length === 0 ? (
-                <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground">
-                  {/* ★有当前生效价却列不出分段，是自相矛盾的——只能是记录没取到，不能说成「还没有分段」。
-                      变更记录目前只有 fixture，`GET /settings/change-log` 的 BFF 还没接（已报 arch）。 */}
-                  {current
+                <TableRow><TableCell colSpan={6} className="text-center text-sm text-muted-foreground">
+                  {/* ★有当前生效价却列不出分段，是自相矛盾的——只能是记录没取到，不能说成「还没有分段」 */}
+                  {remote.loading ? "正在读取变更记录…"
+                    : remote.error ? <span className="text-status-critical">读取变更记录失败：{remote.error}</span>
+                    : current
                     ? <>没取到这个任务的变更记录。当前确实有一段在生效（¥{current.value.toFixed(2)}，{current.effectiveDate} 起），所以记录是缺的不是没有。</>
                     : "这个任务还没有考核价分段"}
                 </TableCell></TableRow>
@@ -95,10 +111,13 @@ export function AssessmentPriceHistory({ taskId, taskName, current }: {
                 return (
                   <TableRow key={`${item.effectiveDate}|${item.at}|${index}`} className={revoked ? "text-muted-foreground" : undefined}>
                     <TableCell className="tabular-nums">{item.effectiveDate}</TableCell>
+                    {/* ★`at` 为 null 是后端**不伪造迁移时间**的结果，显「—」；
+                        显成 1970 或当前时间都是编数据 */}
+                    <TableCell className="tabular-nums text-muted-foreground">{item.at ? fmtTime(item.at) : "—"}</TableCell>
                     <TableCell className={`text-right tabular-nums ${revoked ? "line-through" : ""}`}>
                       {fmtChangeValue(revoked ? item.oldValue : item.newValue)}
                     </TableCell>
-                    <TableCell>{item.changedBy.name}</TableCell>
+                    <TableCell>{item.changedBy?.name ?? <span className="text-muted-foreground">—</span>}</TableCell>
                     <TableCell>
                       {item.evidenceUrl
                         ? <a href={item.evidenceUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs underline underline-offset-4">凭证<IconExternalLink className="size-3" /></a>

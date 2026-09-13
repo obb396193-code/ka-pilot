@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
 import { useDashboardSummary } from "@/lib/data/use-dashboard"
+import { localToday, readDataDate } from "@/lib/data/data-date"
 import { FilterBar } from "@/components/business/data/dashboard/filter-bar"
 import type { FilterSelection } from "@/lib/data/use-data-filters"
 import { mediaOptions } from "@/lib/fixtures/naming"
@@ -15,14 +16,7 @@ import { isOk } from "@/lib/fixtures/contract"
 import { useSavedViews } from "@/lib/data/use-saved-views"
 import { WindowPicker, resolvePreset, type DataWindow } from "@/components/business/data/dashboard/window-picker"
 
-/**
- * 数据日兜底：**只有在后端还没告诉我们数据日时才用**（F8-26 ②）。
- *
- * 原来这里写死 `"2026-09-05"`，所有窗口预设以它为终点往前推——
- * 别人真实部署一打开，「近 7 天」算出来是**和今天毫无关系的一段**，而页面上看不出异常。
- * 真正的数据日在响应的 `lineage.dataAsOf` 里（今天的数还没跑完，所以不能直接用今天）。
- */
-const today = () => new Date().toISOString().slice(0, 10)
+
 import { AttributionTab } from "./tabs/attribution-tab"
 import { GapTab } from "./tabs/gap-tab"
 import { IntelTab } from "./tabs/intel-tab"
@@ -55,7 +49,7 @@ export function DataPage() {
   // TODO(F8-20)：接 `/me/counts` 或健康条的 dataAsOf 后改成从会话取
   // 第一次渲染还不知道数据日，先按今天算一版；响应回来后若用户没自己选过窗口，按真数据日重算
   const [dataWindow, setDataWindow] = useState<DataWindow>(() => {
-    const fallback = today()
+    const fallback = localToday()
     return resolvePreset("month_to_date", fallback, { preset: "month_to_date", from: fallback, to: fallback })
   })
   const pickedByUser = useRef(false)
@@ -70,16 +64,8 @@ export function DataPage() {
   // 概览的 summary 提到这一层：页头要用它的 `lineage.dataAsOf` 定数据日，
   // 而 OverviewTab 也要用同一份——放两处就是两次请求打同一个端点
   const summaryQuery = useDashboardSummary(dataWindow, session?.activeWorkspace.id, filters)
-  /**
-   * 数据日的兜底链，从最准到最糙：
-   *   1. `lineage.dataAsOf` —— 后端明说的截数时刻；
-   *   2. `lineage.window.to` —— 这次响应**实际覆盖到的最后一天**。dataAsOf 可能是 null
-   *      （联调库那份就是），但窗口末日一定有，而且它就是「有数的最后一天」；
-   *   3. 都没有 → 今天，并在页头标「数据日未知」。
-   * 不写死任何日期：写死的那个在别人部署里必然是错的（F8-26 ②）。
-   */
-  const lineage = summaryQuery.data?.lineage as { dataAsOf?: string | null; window?: { to?: string } } | null | undefined
-  const dataDate = lineage?.dataAsOf?.slice(0, 10) ?? lineage?.window?.to ?? null
+  // 数据日的兜底链在 `lib/data/data-date.ts`（工作台用同一份，别再写第二遍）
+  const dataDate = readDataDate(summaryQuery.data?.lineage as never)
 
   useEffect(() => {
     // 数据日到手后，把「用户没动过的」预设窗口按真数据日重算一次
@@ -112,7 +98,7 @@ export function DataPage() {
         description="全量明细不聚合不裁剪；指标、环比、达标、色标全部由后端给，前端只展示"
         actions={
           <>
-            <WindowPicker value={dataWindow} dataDate={dataDate ?? today()} onChange={chooseWindow} />
+            <WindowPicker value={dataWindow} dataDate={dataDate ?? localToday()} onChange={chooseWindow} />
             {/* 数据日未知就说未知：窗口预设是以它为终点往前推的，不知道终点，这些预设的含义就是虚的 */}
             {dataDate ? null : <span className="text-xs text-status-warning">数据日未知</span>}
             
