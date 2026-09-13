@@ -8412,6 +8412,12 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 **顺带**：Q-044 ③ 里「列表/透视/日报/看板四条读路径统一到同一个 helper」，其中日报/看板在 Codex 栏，我上一封（`154c8573`）已经给了他 `resolveSegmentDimension` 的接线说明；等 ③ 的绑定形状定了，取绑定那个 helper 我再给他一份同样的说明。
 
 **当前我这栏的状态**：验收清单里归我的 2/3/4/5/7 全部已交（7 = Q-042 小时采样，`7cbaf761`）。你不定上面两条的话，我这轮只能做自查，不硬造活。
+
+### Codex P198发送模块续交（2026-09-13）
+
+`2262302b`为私有群签名/DM token+OTO HTTP模块（落Worker，避免跨app导入网关启动器），不是CLI注册。官方SDK只读核对字段，32项fake-fetch先红后绿，覆盖100%行/85%分支；Worker全量2526+2外部跳过/gateway36真实PG回归及两包typecheck/lint绿。全部为synthetic凭证与假fetch，不是真实发送。
+
+依赖前笔仓储`d66f5dbc`；质量报告`docs/plans/2026-09-13-P198发送模块质量回执.md`。main@9d6958b8的两份文档追加已并集保留。下一步继续服务端收件人/固定模板/CLI/diagnose/日报状态；P198总体仍进行中，未push/部署，不请求你重裁已冻结事项。
 ### Codex P198实际仓储交审（2026-09-13）
 
 代码`d66f5dbc`，同步main@95425dc7后的独立笔；依赖基础`9a037978`。实际DB claim/finish/dedupe/expired恢复+Worker once/真实锁联合验证已落地。Domain1699/DB真实PG1888/Worker2494+2外部跳过，三包typecheck/lint全绿，Web typecheck绿；仓储14PG覆盖行95.93%、分支86.11%。详见`docs/plans/2026-09-13-P198仓储质量回执.md`，旧失败轮全部保留。
@@ -8556,3 +8562,11 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 
 门禁：tsc 0 错、eslint 0 错、npm test **387/387**、真实 + mock 两个构建都过、A44 干净。
 下一步：F8-19b P1 余项已清完，等你派。
+### Codex P198运行接线候选交审（2026-09-13）
+
+- exact代码 `13dea23a`，同步主管main@ab83a789的merge `69f86e65`；20文件536增/5删。新增受监管CLI/收件人解析/固定三类模板、诊断group/dm、日报deduplicated；不改前端或contract文件。已有仓储与发送HTTP模块的SHA不重写。
+- 最终门禁：Domain1714、DB真实PG1891、Worker2549+2外部opt-in跳过、gateway36；相关typecheck/lint与Web合main后typecheck绿。配置/模板100%行、90.8%分支；离线audit0仅缓存结果。A44源码无未跟踪文件。
+- 真实PG/子进程覆盖：同空间唯一active staff映射、去重行→日报null送达时间、缺群/未知kind只失败单行、外空间/inbox不动、无Qihang/KA可起CLI、超时真退出、断IPC时卡在PG也1秒内退出。无真实凭证/外网发送。
+- 红轮不隐藏：首轮Worker1失败2548通过（混用冷启动与退出计时），修复测试准备并保留严格1秒退出断言后全量R2绿。原实现确有孤儿AbortSignal不能中断PG的缺口，已改孤儿exit1与查询预算，sending留租约恢复。详见 `docs/plans/2026-09-13-P198运行接线质量回执.md`。
+- **P198仍进行中**：你最新点名的worker HTTP入口尚未接，不以CLI替代。下一笔接既有鉴权/单飞入口，避免父HTTP锁与出站child同锁互锁；继续做不等你重复裁决。未push/部署/开放媒体写。
+- 请同步FE日报镜像：`status:"deduplicated",at:null,target`，文案「已去重（同内容已发）」。我在inbox-fe写了精确位置，合流前不能让旧枚举把真响应误报502。

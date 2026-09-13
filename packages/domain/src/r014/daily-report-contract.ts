@@ -60,7 +60,7 @@ export const dailyReportModuleSchema = z.union([
 export type DailyReportModule = z.infer<typeof dailyReportModuleSchema>;
 
 export const dailyDeliverySchema = z.object({
-  status: z.enum(["not_sent", "queued", "sent", "failed"]),
+  status: z.enum(["not_sent", "queued", "sent", "failed", "deduplicated"]),
   at: z.string().datetime({ offset: true }).nullable(),
   target: z.string().min(1).nullable(),
 }).strict().superRefine((delivery, context) => {

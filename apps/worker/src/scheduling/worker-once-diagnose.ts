@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 import { createPool, WorkerOnceDiagnosticsRepository } from "@ka/db";
 import { parseWorkerOnceConfig } from "./worker-once.js";
+import { outboundChannelStatus } from "../notifications/outbound-config.js";
 import { atWorkerOnceStage, formatWorkerOnceFailure, WorkerOnceFailure } from "./worker-once-failure.js";
 
 const n = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
@@ -36,7 +37,8 @@ export async function runWorkerOnceDiagnosis(options: {
     finally { await port.close(); }
     options.write(`${JSON.stringify({ diagnosticOnly: true, readOnly: true,
       checks: { configuration: "valid", database: "readable", credentials: "presence_only", qihangNetwork: "not_checked", upstreamData: "not_checked" },
-      extraCaConfigured: !!options.env.NODE_EXTRA_CA_CERTS?.trim(), ...snapshot })}\n`);
+      extraCaConfigured: !!options.env.NODE_EXTRA_CA_CERTS?.trim(),
+      dingtalkOutbound: outboundChannelStatus(options.env, config.workspaceId), ...snapshot })}\n`);
   });
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
