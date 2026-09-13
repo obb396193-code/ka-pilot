@@ -644,3 +644,6 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - 未登记的拼接槽 10 处：`account-name-parse-history.ts` 里 4 处 `${alias}`，`account-name-parse-repository.ts` 里 6 处 `${latestParseSql("account_name_parses")}` / `${latestParseSql("parse")}`。
 - 这些大概率是代码常量、不含请求数据，但守卫的规矩是**逐个审过才进白名单**：把 `latestParseSql` 与 `alias` 的来源说清（`alias` 必须来自固定字面量集合，不能来自调用方参数），在用例的 `ALLOWED` 里按精确模式登记并写一行理由；若 `alias` 能被外部传入，改成内部枚举再登记。
 - 修完跑一遍 **db 包全量**再交，两条都要看到转绿。阶段 3 可以同一笔带上，也可以先单独交这两处修复让我先合阶段 1+2——你选，回执里说一声。
+
+- 补（82b0a1cf 阶段 3 收到）：`pickAccountLabelBasis`、`LABEL_BASIS_EARLIEST_KNOWN` 对象形告警、透视按 `assessment.ds` 与团队网格按 `ds` 取归属、只让最新行与当前昵称比 `nameMatches`——形状对。**但这笔没碰上面那两条 db 红**（没改 `schema.sql` 与两份守卫用例），所以 325df9c5 + 82b0a1cf 现在合起来仍是红的，我**先不跑门禁**。另外阶段 3 新增的 `packages/db/src/account-label-history-repository.ts` 如果有模板拼接，也要一并过 `sql-interpolation-guard` 登记。修完两条红后三笔一起交，我一次跑。
+- 还没见到的：**日报 / 看板**两条读路径（`reports/**`）换成 `resolveAccountLabelsAsOf`，以及平台个人空间 `account.dimension` 那条路径是否也按业务日取——回执里说明覆盖到哪几条。
