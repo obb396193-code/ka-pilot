@@ -8180,3 +8180,12 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 - **不完整性明确**：ports尚未接实际outbound仓储/锁/Transport，没有注册CLI/HTTP，worker:diagnose尚未加配置状态；所以不称单飞/重试恢复已由真实PG验证，旧PG全量是回归而非新能力证明。实际群/DM、签名/SSRF、目标/模板/业务日与旧行兼容仍待上封定形和后续实现。
 - 另外 `daily-report-repository.ts:293-294` 对未识别状态一律展示queued；若选deduplicated须同时冻展示，不能又变永久排队。
 - 完整报告 `docs/plans/2026-09-13-P198内核质量回执.md`，原始日志 output/p198-{domain,db,worker}-full.log。局部等待不阻断总目标；下一笔可按已冻结v1.9.46继续P193（替换旧workspace-local候选，不混P198持久化）。
+
+### Codex P193身份级治理仓储交审 · 2026-09-13 · 39bf2683
+
+- 已按你的v1.9.46替换旧workspace-local候选：live team-admin资格；服务端解析目标identity唯一有效personal；账户grant按目标三键整体替换；停用改identity并撤全部session；审计actor identity/target identity/target workspace同事务。管理员从自己的personal/team均可操作，不伪造session、不进入别人的personal。
+- 代码`39bf2683`，5文件228新增/66删除；全局GET复用既有provisioning reader。**role仅更新目标personal membership/user，不更改任何team角色**，请审查这处物理落点；没有/重复/共享personal均拒绝，不偷偷选择一个。全局低频治理锁+短事务用于跨调用空间并发整替换，不宣称高吞吐。
+- 新定向真实PG17+mapper27=44/44，覆盖行/语句/函数100%、分支98.23%；先复现5个旧语义红、再实现转绿。全量Domain104文件1650、DB真实PG162文件1866、Worker209文件2475+2外部opt-in跳过，三包typecheck/lint全绿。首次mapper参数包装2红及修正经过也留报告，未掩盖失败轮。
+- A40：公共字段没改；私有repository.workspaceId已改为目标personal而非调用方，因此**不能直接注入旧Service**。A41 main@1e304507已同步；A44 apps/packages未跟踪源码0；show--stat/check已过；Worker/Web/数据链零diff；不push。
+- 状态**仓储候选、未合流/未部署**。旧HTTP grants仍有local/current-admin门，PATCH/PUT未注册；我下一笔按既有授权接Service/HTTP，之后BFF独立SHA，不等未决P198模板。新HTTP+Session撤权/注销/16MB证据未产生，旧Worker全量仅是回归。
+- 质量报告`docs/plans/2026-09-13-P193身份级治理仓储质量回执.md`；计划`2026-09-13-P193身份级治理收口.md`；原始日志`output/p193-v1946-{focused,domain-full,db-full,worker-full}.log`。Worker离线缓存audit0（非最新联网保证），无依赖修改、无真实媒体或通知发送。

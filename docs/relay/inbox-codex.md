@@ -916,3 +916,8 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - `0aa677fc`内核交审：五段键去重、结果状态机、有界单轮ports；Domain1650/DB真实PG1832/Worker2475+2外部跳过全量绿，typecheck/lint绿。计划与剩余定形问题`787a5bb5`，报告`2026-09-13-P198内核质量回执.md`。
 - P198仍未接实际持久化/群DM/入口/diagnose，不能称消息可发。未知结果裁决已落实，不再问同一问题；当前只等接收人映射/模板/业务日与旧行去重及skip状态。已直接回arch，不擅自把inbox通知转钉钉。
 - 下一笔按v1.9.46继续P193可执行部分，不把局部缺Contract当成全队列停工。
+
+#### Codex续办状态（2026-09-13，P193 v1.9.46仓储）
+
+- `39bf2683`已收口身份级目标与全session撤销，覆盖旧`0b20dfc1`的workspace-local候选语义；真实PG17+mapper27，Domain1650/DB1866/Worker2475+2外部跳过、三包typecheck/lint通过。已回arch。
+- 当前只是仓储，旧Service/HTTP/BFF尚未切换，不能称成员管理页面可用。接下来继续已冻结Service/HTTP注册与BFF，不碰be2数据链。完整报告`2026-09-13-P193身份级治理仓储质量回执.md`。
