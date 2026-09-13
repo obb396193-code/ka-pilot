@@ -1,0 +1,281 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "dimension": "segment:operator",
+      "status": "ready",
+      "rows": [
+        {
+          "source": "nickname",
+          "sources": {
+            "nickname": 1
+          },
+          "key": "代投",
+          "label": "代投",
+          "metrics": {
+            "cost": {
+              "value": 40,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 1000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 50,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 4,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 30,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 10,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": {
+              "value": 20,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 2,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -10,
+              "availability": "available"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "source": "nickname",
+          "sources": {
+            "nickname": 2
+          },
+          "key": "自投",
+          "label": "自投",
+          "metrics": {
+            "cost": {
+              "value": 200,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 5000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 250,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 20,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 10,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 150,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 50,
+              "availability": "available"
+            },
+            "incentiveCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.05,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 20,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 1,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "priceSource": "history",
+            "price": {
+              "value": 20,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConv": {
+              "value": 10,
+              "availability": "available"
+            },
+            "biCashCost": {
+              "value": 15,
+              "state": "finite"
+            },
+            "overCost": {
+              "value": -50,
+              "availability": "available"
+            }
+          },
+          "anomaly": false
+        }
+      ],
+      "returnedRowCount": 2,
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "datasetVersion": null,
+        "dataAsOf": "2026-09-05T10:00:00.000Z",
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "partial",
+        "queryTemplateVersion": "account-dimension-window-v1",
+        "metricVersion": "account-dimension-v3",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true,
+          "requestedObjects": 3,
+          "returnedObjects": 3
+        },
+        "truncated": false,
+        "partial": false,
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-02",
+          "preset": "custom"
+        },
+        "warnings": [
+          "BUDGET_SOURCE_NOT_READY"
+        ]
+      },
+      "warnings": [
+        "BUDGET_SOURCE_NOT_READY"
+      ],
+      "wholeResultTotal": {
+        "value": 2,
+        "availability": "available"
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /data/query {queryId:\"account.dimension\", dimensionType:\"segment:operator\"}：真响应。自投/代理分布按**清洗段**分组。v1.9.45 起本份取代 `dimension-v3-agent_type.json` 与 `-v198.json`：那两份钉的 `agent_type` 在 dimensionTypeSchema 里合法但没有任何解析器产出，真响应必是 DIMENSION_UNSUPPORTED；快手的自投/代投实际就落在 `operator` 这个段上。同批删除的还有 `dimension-v3-deduction_range.json`（返点区间是派生桶，一期不做）"
+  }
+}

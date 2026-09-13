@@ -140,3 +140,19 @@ test("★拿联调真响应验：partial 的现金消耗渲染成数字而不是
   // 角标的 tooltip 要能列出「缺了谁、哪天」——真响应里确实带着点名
   assert.ok((payload.data.source.lineage.warnings ?? []).length > 0, "partial 必须伴随缺数点名，否则用户无从知道缺的是谁")
 })
+
+test("★数和环比必须同口径：转化数配 realConversion、转化成本配 realCpa（F8-26 ③）", () => {
+  // 这条锁的是一类**看不出来的假话**：卡上显 A 指标、角标挂 B 指标的环比，
+  // 于是「这个数涨了 8%」说的其实是另一个数涨了 8%。审出来之前没人会怀疑。
+  const source = readFileSync(new URL("../../components/business/data/dashboard/kpi-rows.tsx", import.meta.url), "utf8")
+  const card = (label: string) => {
+    const at = source.indexOf(`label="${label}"`)
+    assert.notEqual(at, -1, `找不到「${label}」这张卡`)
+    return source.slice(at, at + 700)
+  }
+  assert.match(card("真实转化"), /mv\(now\.realConversion\)/, "真实转化卡要显 realConversion")
+  assert.match(card("真实转化"), /deltas\?\.realConversion/, "它的环比也必须是 realConversion")
+  assert.match(card("转化成本"), /ratios\.realCpa/, "转化成本卡显 realCpa")
+  assert.match(card("转化成本"), /deltas\?\.realCpa/, "它的环比必须是 realCpa，不许拿 cashCpa 顶")
+  assert.doesNotMatch(card("转化成本"), /deltas\?\.cashCpa/, "cashCpa 的环比属于 BI 现金成本那张卡")
+})

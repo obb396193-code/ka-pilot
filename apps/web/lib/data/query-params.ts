@@ -116,6 +116,10 @@ export function pivotParams(dimA: string, dimB: string | null, window: QueryWind
  */
 export const DIMENSION_SUPPORTED = ["account", "task", "biz", "optimizer", "goal", "placement"] as const
 export function dimensionSupported(value: string): boolean {
+  // be2 Q-041 ⑪ 起，`account.dimension` 也收 `segment:<key>`（v1.9.45）——
+  // 清洗规则里的段（自投/代理、出价模式、设备…）从此都能当分组维度用。
+  // 段是否真的可用由后端按源判断，前端一律放行。
+  if (value.startsWith("segment:")) return true
   return (DIMENSION_SUPPORTED as readonly string[]).includes(value)
 }
 

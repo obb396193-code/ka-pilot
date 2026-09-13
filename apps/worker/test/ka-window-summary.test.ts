@@ -33,12 +33,18 @@ describe("team v3 window summary from registered member reader", () => {
     const { client, fetchFn } = setup(rows);
     const result = await client.queryTeamWindowSummary(resolved, scope, window, "dod");
     expect(result.row.compare?.deltas.onTargetRate).toEqual({ value: 1, state: "finite" });
-    expect(result.row.assessment.costStatusReason).toBe("conversion_missing");
+    // v1.9.46：账户 b 的 BI 转化缺 → 目标只算得出有数那部分，判定挂起为 `partial_data`。
+    // 原来报 `conversion_missing`（整窗算不出目标）——那是「缺一个就整体缺」的旧口径，
+    // 而这里明明有一部分目标算得出来，只是不能拿它去判达标。
+    expect(result.row.assessment.costStatusReason).toBe("partial_data");
     expect(fetchFn).toHaveBeenCalledTimes(1);
   });
   it.each([
     [[member("2026-09-01", 30, 20), member("2026-09-02", 0, 20)], "day_over_window_ok", "yellow"],
-    [[member("2026-09-01", null, 20), member("2026-09-02", 0, 20)], "cash_missing", null],
+    // v1.9.46：09-01 缺现金、09-02 有（0 也是观测到的值）→ 现金是部分合计，判定挂起。
+    // 「一个都没有」才是 cash_missing，见下面那条。
+    [[member("2026-09-01", null, 20), member("2026-09-02", 0, 20)], "partial_data", null],
+    [[member("2026-09-01", null, 20), member("2026-09-02", null, 20)], "cash_missing", null],
     [[member("2026-09-01", 1, null), member("2026-09-02", 0, 20)], "assessment_missing", null],
     [[], "assessment_missing", null],
   ] as const)("retains weighted status and missing values", async (rows, reason, color) => {

@@ -60,7 +60,9 @@ export function HourlyTab({ window, workspaceId }: { window: DataWindow; workspa
   const hours = Array.from({ length: 24 }, (_, hh) => hh)
   const lastSync = rows.find((row) => row.lastSyncAt)?.lastSyncAt ?? null
   // A35 同上：盯盘的数据来自 `account.hourly` 真接口，别因为样例没了就空白
-  const lineage = isOk(hourlyFixture) ? hourlyFixture.data.source.lineage : null
+  // ★血缘跟着**这次响应**走：固定读样例的话，真实模式下等于把假的
+  //   「数据截至 / 来源」贴在真数字旁边——比不显更糟。mock 下才回落到样例。
+  const lineage = (remote.lineage as Parameters<typeof LineageFooter>[0]["lineage"] | null) ?? (isOk(hourlyFixture) ? hourlyFixture.data.source.lineage : null)
 
   return (
     <div className="grid gap-4 @4xl/main:grid-cols-12">

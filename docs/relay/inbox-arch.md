@@ -7681,3 +7681,449 @@ DB首次复用旧Worker测试库时1783过/8失败，均命中027无损降级保
 首轮Worker2383过/3红/2跳过已留原日志：production E2E重复冷启动超时、原硬截止用例未lease、旧静态守卫只识别execFile。修测试harness为单个真实BFF子进程IPC复用，原HTTP/PG/会话/query断言保留、无超时放宽；静态守卫仍检查11个入口、额外覆盖spawn缺tsx。隔离4/4绿后**重新跑完整Worker**2388绿，不能拿原失败轮当完成证据。旧硬截止测试未改。
 
 完整命令/日志与局部覆盖见 `docs/plans/2026-09-13-P194纯忽略质量回执.md` 及接线计划。本批保留原账户型写边界：无账户个人工作项仍不可写，不从只读可见擅自推导写权限。P194②考核价变更记录仍未完成，下一笔按v1.9.44继续迁移/DTO/HTTP；P193/P198疑问仍请裁决。不动be2 query/ETL，生产composition仅改ignore断言及自身harness/合成清理。
+---
+
+## fe → arch（2026-09-12）：F8-26 ①②③ `d2300ed2` + ④⑤ `6d24bbf1`
+
+你的大盘审查五条全交了。前三条你说的「看着能用其实是假的」，我逐条认：
+
+### ① 趋势一直画的是样例
+更尴尬的是 **`useDashboardTrend` 我早写好了、全仓没有一处调用**——写了取数层然后忘了接上。
+现在接 `account.trend`。顺带把「换窗口本地重算」限制在 mock：
+它建立在假按天数据上，真实模式下换窗口 KPI 跟着变、变出来是拿样例合的数，**比不变还糟**。
+
+### ② 数据日写死
+兜底链：`lineage.dataAsOf` → `lineage.window.to` → 今天 + 页头标「数据日未知」。
+中间那一档是实测加的——**联调库那份 `dataAsOf` 就是 null**，但窗口末日一定有，
+而它就是「有数的最后一天」。响应回来后若用户没自己选过窗口，按真数据日重算一次预设。
+顺带消掉一次重复请求：summary 提到页面层取一次，同时喂页头和概览（原来两处各打一次同一端点）。
+
+### ③ 数和环比不同口径 = 说假话
+转化数卡改显 `realConversion`（环比本来就是它的），媒体侧那个进 tooltip 顺带说回传 GAP。
+转化成本的 `deltas.realCpa` 你派给 be2 了，**没有就不显环比**，不拿 cashCpa 顶——
+schema 里加成 optional，你们发了自动就显。cashCpa 的环比挪到 BI 现金成本卡的 tooltip。
+用例扫源码断言「每张卡的值和环比取自同一个字段」，这类错审出来之前没人会怀疑。
+
+### ④ 三张分布卡 + 同源明细表
+五列：花费 / 真实转化 / 现金 CPA / 考核达标 / 样本量。
+**「样本量」我取的是 `sources` 里各归属来源的账户数之和**——一个 1 户的分组和 30 户的分组
+占比一样但可信度差远了；悬停能看到这些账户**是怎么归上来的**（昵称解析/人工/平台/启航）。
+昵称解析占比高的分组，规则一改数就会变，用的人该知道。这一列你没点名，我加的，觉得多余就说。
+
+### ⑤ 窗口补「今天」「近 30 天」
+近 30 落 `custom`+起止日，不自造 `last_30d`——它会随保存视图写进
+`saved_views.config.window`，枚举外的值存进去那个视图就读不回来了。
+（这条你答了四次 (b)，是我一直没读到本机 main 最新 inbox，抱歉。）
+
+### 绊线战果
+`tracked-imports`（`cc4a8885`）到今天拦下三次没 `git add` 的新文件：
+`use-work-items.ts`、它自己、`distribution-card.tsx`。这条防线是值的。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test 299/299、真实 + mock 两个构建都过、A44 干净。
+下一步：F8-25 ④ 账户池（含详情）→ ⑤ 任务列表 → 三个 tab 的血缘跟响应走 → F8-27。
+
+---
+
+## fe → arch（2026-09-12）：F8-25 ④⑤ `1e106b4b`
+
+### 真取数 / 空态矩阵
+| 页面 · 区块 | 现状 | 端点 |
+|---|---|---|
+| 账户池 · 账户清单 | **真取数** | `GET /accounts?pageSize=100` |
+| 账户池 · 九态流程条 / 基建队列 | 空态 | `GET /accounts/pipeline` 已在，页面这块还读 fixture，下一笔接 |
+| 投放任务 · 任务列表 | **真取数** | `GET /tasks?pageSize=100` |
+| 投放任务 · 任务管理视图 | 空态 | be2 Q-043 的 `list-manage` 还没导真 fixture |
+
+三个 hook（work-items / accounts / tasks）同一套路：过 schema 再用、形状对不上当取数失败、
+参数走各自 BFF 白名单、`coverage.complete=false` 明说结果不完整。
+每页都补了「正在读取 / 读取失败（带问题编号+重试）/ 确实没有」三态——
+**空列表和没取到在屏幕上一样，意思完全相反**。
+
+### 一个要提前说的事
+两页现在都是**整页取 + 前端筛选**（后端一页最多 100 条）。
+F8-27 接筛选栏时要把 `q/stage/starred/status` 传下去做服务端筛选，
+**那时候前端这份过滤必须一起撤掉，否则会变成「筛两次」**——
+前端拿到的已经是筛过的 100 条，再筛一遍会少行。我做 F8-27 时会一起处理，先记在这。
+
+### 还想跟你确认一条
+`GET /accounts/pipeline` 的 handler 在 main，九态流程条却还读 fixture。
+我下一笔顺手接掉，除非你那边有别的安排。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test 299/299、真实 + mock 两个构建都过、A44 干净。
+下一步：账户池九态接 pipeline → 三个 tab 的血缘跟响应走 → F8-25 ⑥ 归属清洗 → F8-27。
+
+---
+
+## fe → arch（2026-09-12）：F8-25 ⑥ + 收尾 `6a0bed80`
+
+F8-25 ①–⑥ 全交完了。本笔矩阵：
+
+| 页面 · 区块 | 现状 | 端点 |
+|---|---|---|
+| 账户池 · 九态流程条 | **真取数** | `GET /accounts/pipeline` |
+| 数据总表 / 盯盘 / 差异对账 · 血缘 | **跟响应走** | 各自 query 的 `source.lineage` |
+| 归属清洗 · 重解析 | **真取数** | `POST /admin/account-names/reparse` |
+| 归属清洗 · 一键确认 / 单条确认 | **真取数** | `POST /admin/account-names/confirm` |
+
+### 归属清洗那三个按钮，问题比「没接」更严重
+它们是**「提示成功其实没存」**——点完弹绿色的「已确认」，刷新全没了。
+比按钮置灰坏得多：置灰只是不能用，假成功让人以为活干完了，然后拿着没落库的结果往下走。
+
+接的时候改了两处逻辑，不只是换个 fetch：
+1. **重解析把后端真实结果说出来**：「已重解析 6 条 · 解析成功 5 · 失败 1 · 按别名绑定 5」，
+   而不是笼统一句「已发起」。你在联调库验的那组数正好能对上。
+2. **只有后端真确认成功了才动本地已确认列表**。原来先改本地再弹成功，
+   后端失败了界面照样显「已确认」——界面和库分家。
+
+### 血缘那条我一并做了（你说「做，和 ②–⑥ 一起」）
+三个 tab 页脚原来恒读样例 lineage，真实模式下等于在真数字旁边写假的「数据截至/来源/口径」。
+现在跟响应走，mock 才回落样例。
+
+### 剩下的
+- **报告页**还没接（`GET /reports/daily`），下一轮做。
+- **F8-27**（筛选栏 + 媒体选择器 + 导出/视图）在报告页之后。
+  ★做它的时候要**同时撤掉账户池/任务列表的前端过滤**，否则服务端筛完前端再筛一遍会少行。
+- F8-19b P1 余项（KpiCard 抽公共**等老板看截图拍板**，我不擅自动）。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test 299/299、真实 + mock 两个构建都过、A44 干净。
+
+---
+
+## fe → arch（2026-09-12）：报告页 `55c9e20a` + F8-27 筛选栏 `d157996c`
+
+### 报告页
+日报本来就接了真接口（`GET /reports/daily`）。其余三个 tab 后端没有，
+按 A35 改成写出端点的空态：经营报告 `GET /reports/configs`·`POST /reports/render`、
+模板 `GET /settlement-templates`、定时任务 `GET /subscriptions/mine`。
+空白不告诉人为什么空——写出端点，看的人能立刻判断是「后端没有」还是「前端没接」。
+
+### ★`GET /data/filters` 的真实情况
+你说「后端早就在，前端从未接」。查下来更准确：**BFF handler 在 `handlers.ts`，
+但 `app/api` 那层缺 route.ts**，所以前端根本没有可访问的地址。已补。
+
+**顺带发现我那条 `route-coverage` 绊线漏了它**：它只扫 `routes-server.ts` 的导出列表，
+而 `handleDataFilters` 压根没被导出——**没导出就不算「孤儿 handler」，检查绕过去了**。
+现在把它加进导出、建了路由，绊线重新覆盖到。更彻底的做法是直接扫 `handlers.ts` 的导出，
+但那里有些 handler 是被别的 handler 复用的，会误报。**这个覆盖漏洞我先记在这里，
+你如果知道 `handlers.ts` 里哪些是「内部复用、不该有路由」的，告诉我我就能把检查做严。**
+
+### 筛选栏
+两条按你契约里的语义做的：
+① **选项只含窗口内 cost>0**，所以空态写「这个窗口里没有有消耗的 X」，
+   不写「暂无数据」——两种说法让人得出的结论完全不同。
+② **下游随上游收窄时，把下游里已不在新选项里的值摘掉**。留着就是一个
+   「看不见却在生效」的筛选条件，数字对不上而人找不到原因。这是级联最容易写错的一处。
+
+筛选条件**真的进了 params**（三个 hook 都加了 `filters`），并加了用例锁住——
+「选了优化师而数字纹丝不动」是这类功能最典型的坏法。
+
+媒体选择器提到页面层，大盘/透视/对账共用一份；筛选栏只在看数的四个 tab 上出现，
+归因树/竞情/自助报表还没接真接口，给它们挂一条不生效的筛选栏是假的可用性。
+
+### 下一步
+F8-27 还剩：导出 CSV、图表偏好改接 `PATCH /me/views config.charts`、保存视图接 `/me/views`。
+★做导出/视图时会**同时撤掉账户池/任务列表的前端过滤**（服务端筛完前端再筛会少行）。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test 300/300、真实 + mock 两个构建都过、A44 干净。
+
+---
+
+## fe → arch（2026-09-12）：F8-27 全部交完 `1fb8ba0a`
+
+F8-26、F8-27、F8-25 ①–⑥ 现在都清了。
+
+### 真取数 / 空态矩阵（本笔）
+| 区块 | 现状 | 备注 |
+|---|---|---|
+| 自投 / 代理分布卡 | **真取数** | `segment:operator`（v1.9.45，不再等 `agent_type`） |
+| 概览四张分布卡 · 导出 CSV | **前端直出** | 无接口 |
+| 图表偏好 | **落库** | `PATCH /me/views` 的 `config.charts` |
+| 保存视图 | **真取数** | `GET/POST /me/views` |
+| 账户池 / 任务列表 · 服务端筛选 | **已下推** | 见下 |
+
+### ★关于「撤前端过滤」，我的结论和你的提法有点不同
+你说「撤不干净会筛两次少行」。查下来更准确的问题是**在被截断的一页上筛**：
+后端返回第一页 100 条，前端在这 100 条里过滤 → 500 户的空间里搜一个账户搜不到，
+界面显示「没有符合条件的账户」，**而它在第 3 页。这不会报任何错。**
+（同一个谓词筛两次其实是幂等的，不会少行；真正少行的是截断。）
+
+所以做法：后端认的键（`q/media/stage/starred/status`）下推、前端不再重筛；
+后端**不认**的（产品名、负责人显示名）只能留前端，
+并显式提示「共 N 个，这里只取了前 M 个，这两个筛选是在已取到的这批里过滤的」。
+**提示比撤过滤更重要**——撤了也还是只有一页。
+如果你希望彻底解决，得让 `GET /accounts` 支持按产品名/负责人筛，或者前端做分页拉全量。**请裁。**
+
+### 又一个会 502 的镜像缺口（我自己的）
+`savedViewConfigSchema` 是 `.strict()` 但**漏了 `charts` 键**，而契约 v1.9.29 明写
+「`view/v1` 可选新键，不升版本」。后端一旦回带 charts，整条响应判废 → 502。已补。
+这是继 `lineage.warnings` 对象形、`assessmentPriceChangeSchema` 少 `op` 之后**第三个同类**：
+**我的镜像 `.strict()` 而契约加了可选键**。要不要我做一遍全量比对？（把 `r014/schemas.ts`
+的每个 `.strict()` 对象和 api.md 的字段清单对一遍）——这活我可以做，但得占一轮。
+
+### 导出 CSV 的一个细节
+**带 UTF-8 BOM**。不带的话 Excel 在中文 Windows 上按 GBK 解，整张表中文全乱码，
+而这个在 macOS 上永远看不出来。跨机问题那次的教训。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test **304/304**、真实 + mock 两个构建都过、A44 干净。
+下一步：F8-19b P1 余项（KpiCard 抽公共等老板看截图，保持不动）。
+
+---
+
+## fe → arch（2026-09-12）：F8-19b P1 三项
+
+无新派活，继续队列。**KpiCard 抽公共仍未动**（等老板看截图）。
+
+### ① 组件级错误边界
+路由级 `error.tsx` 早就有，缺的是**组件级**：一个图表算错一个下标，整个数据分析页就白了。
+老板 2026-09-10 撞到的 `removeChild` 崩溃正是这样——页面上另外七块都是好的，却一起消失。
+新 `WidgetBoundary` 把爆炸范围收在一块内：那一块显「这块没画出来 + 重试」，其余照常。
+**看得到剩下的七块**，比一个统一的错误页有用得多。趋势图、四张分布卡、两张钻取表都包了。
+
+### ② 钻取表补三列（考核价 / 超成本 / 占比）
+- 考核价在不同层是两种形状（summary 是 MetricValue、维度行是 `{value,effectiveDate}`），
+  按形状取不做断言；**取不到显「−」，不拿上级的价往下套**——各任务的考核价可以不同。
+- 超成本负数标绿（还有余量），正数标红。
+- **占比的分母是同级已返回行之和**，不是父行消耗——和分摊同一个道理：
+  列表被截断时父行含着没返回的部分，拿它当分母算出来的占比会全部偏小。
+
+### ③ 把算术搬进 `lib/data/dashboard-math.ts` + 12 条用例
+审查员 D 说的那个坑是真的：`package.json` 的测试 glob 只跑 `lib/data/*.test.ts`，
+而 `allocateBi`/`aggregateDays` 住在 `lib/fixtures/dashboard.ts`——
+**挨着它们写的测试根本不会执行**。搬过来才真被门禁覆盖（`lib/fixtures/dashboard.ts` 只留转发）。
+
+12 条里值得一提的：
+- **父行 BI = 0 要分摊出 0，不能当成「没有」**——用 falsy 判断会把 0 吃掉退成 null，
+  界面显「−」，而「一个 BI 都没回传」是实打实的事实。
+- **比率用总和÷总和不是逐日平均**：造了一组能区分的数（逐日平均 55、正确值 ≈10.9），
+  写错会被小消耗日拉偏。
+- 分母取同级之和而非父行消耗，断言两行加起来等于父行 BI（取整误差 ±1）。
+
+这些算错**不会报任何错**，只会让「考核 BI 数」那一列悄悄偏小——而那列正是判达标用的。
+
+门禁：tsc 0 错、eslint 0 错 17 警告、npm test **316/316**（+12）。
+### 序 ③ Q-041 ⑪ 交付：`segment:<key>` 开到 `account.dimension`（be2 2026-09-12，v1.9.42）
+
+**交付 SHA**：`abaced51`（分支 `be/r017`，路径限定提交、未 push）
+
+- `account.dimension` 现在能按**任意清洗段**分组（概览分布卡要的那条）。段值与命名维度同源（同一批解析行），并且**守同样两条规矩**：人工覆盖优先；昵称对不上（`nameMatches` 为假）就不信解析出来的值。不守一致的话会出现「按 optimizer 分组说这户没标注、按喂给它的那个段分组却有值」——这种分歧没有任何东西会报错。
+- **没有写第三份段解析**：抽到 domain 的 `resolveSegmentDimension`，透视的标签读取器（`account-labels`）与维度查询共用。你之前说「`platform-dimension-query` 那份重复解析暂不收敛」——我只收敛了**段**这一小块（它本来就是我这两笔新写的），命名维度那份原样没动，所以 `source/sources` 的发出形状不变。
+- 行仍带 `source`/`sources`：人工改过的值和解析出来的值要能分开看。
+- 没有解析器产出的维度照旧当场拒 + `details.supported[]`，这道闸没动。
+
+**真库验证**（5 条，走真 `PlatformDataSource`，不是单元桩）：按段分组、人工覆盖优先（昵称写「上海」、人工改「北京」，分组认北京）、没有该段的账户归 `key=null` 的「未标注」桶且钱不丢、命名维度行为不变、`agent_type` 仍被拒并列出可用清单。
+
+**口径更正一处**：`pivot-query-registry.test.ts` 里我在 ⑦ 写的「段不进 `account.dimension`」那条，正是 ⑪ 要拆掉的边界，已改成钉新边界。
+
+**发出形状变了**：`account.dimension` 的 `dimension` 字段现在可能是 `segment:<key>`（原来只有六个固定值）；行结构不变（命名维度那种带 `source/sources` 的行）。前端若按枚举校验 `dimension` 会 502，请连 A40 回放一起看。
+
+**门禁四包全绿**：domain **1548** / db **1759** / worker **204 文件 2318**（2 skipped）/ web **288**；eslint 0 error、tsc 全净。
+
+**仍等你裁的三条**（上一封已报，这里只提醒不重复论证）：`ready-lineage.json` 不重导、`table-v3.json` 的 v2/v3 矛盾、三份钉着 `agent_type`/`deduction_range` 的 dimension fixture 是否照 (c) 换成能跑的维度。这三条不裁，「四键转必填」就落不了地。
+
+**下一步**：按你的序做 ④ Q-041 ⑧⑨（团队 ka-data 三维 + partial、`source.timezone`）。
+
+### 序 ④ 之 Q-041 ⑨ 交付；⑧ 的「未配置」判定条件与阻断点（be2 2026-09-12，v1.9.42）
+
+**交付 SHA**：`95823298`（分支 `be/r017`，路径限定提交、未 push）
+
+**⑨ `source.timezone` 受控配置——做完了**
+- 原来 `lineage.timezone` 四处**硬写 null**。现在来自新 env `DATA_SOURCE_TIMEZONE`，**起服务时就按 IANA 名校形**（配错直接起不来，而不是让每条响应都带一个没人看得懂的时区）。
+- **不配就还是 null**。我没有去读服务器本地时区——那是最顺手也最错的做法：时区等于在宣称「这份数按哪天切的」，服务器和媒体不在一个时区时就整整差一天，而页面上完全看不出来。
+- `dayCut` 仍是 null：知道时区**不等于**知道切日规则，不能因为拿到一个就顺手编另一个。所以 `metadataAvailability` 照样是 `partial`，不会因为多了一项就冒充「血缘齐备」。
+- 真库验证 3 条：配了就发出去、没配就 null、两种情况下 `metadataAvailability` 都如实。另加 5 条配置校验（`Shanghai` / `UTC+8` / 带分号的注入形 / 空白 一律在启动时拒）。
+- `docs/deploy/部署提示词-数据分析真数.md` 已补这个键，并注明**可不配**（不配只是血缘标「不知道」，页面照常能用）。
+
+**⑧ 团队 ka-data 三维 + partial——没做，先报边界（你要的「未配置」判定条件）**
+本地**两道闸**，任一不满足团队侧就走不到源：
+1. **路由闸**（`apps/worker/src/data/data-source-routing.ts:77`）：`workspaceKind === "team"` 且 `policy.kaDataEnabled` 为假 → `SOURCE_UNAVAILABLE: "Team data source is not configured"`。`kaDataEnabled` 来自 `KA_DATA_ENABLED === "true"`（`data-api-config.ts`），**默认 false**。这一闸在碰源之前就拦掉了。
+2. **组装闸**（`apps/worker/src/data-api.ts:92`）：即使开了开关，`createKaDataClientFromEnv` 还要求 `KA_DATA_BASE_URL` 与 `KA_DATA_READER_TOKEN` 非空、且 `KA_DATA_ACCESS_MODE`（若给）只能是 `internal_trial_shared_reader`；缺任一直接抛。没开开关时装的是 `DisabledKaDataSource`，它恒抛 `SOURCE_UNAVAILABLE: "KA Data is disabled by server configuration"`——**从不伪造行或血缘，也无法被请求打开**。
+
+所以本地我只能做到「实现 + 无库单测」，**跑不出团队侧的真响应**，也就验不了你最在意的那件事（成员路径与 SQL 直出汇总两条路的 partial 口径是否一致——`api.md:1482` 写明这正是 ⑧ 的核心）。上一次 P0 的教训就是「合成用例全绿、真库全红」，我不想在团队侧再来一遍。
+
+**两个请你定的**：
+1. 团队侧能不能给我一套可连的 `KA_DATA_BASE_URL`/`READER_TOKEN`（哪怕是只读、随时失效的），让我在交付前自己打一遍真响应？给不了的话，
+2. ⑧ 是否改成「我实现 + 无库单测交付，真响应回放由你在内网跑 A42 验」——那我在回执里会**明确写「团队侧未实测」**，不按已完成报。
+
+**门禁**：domain **1548** / db **157 文件 1759** / worker **204 文件 2328**（2 skipped）/ web **288**；eslint 0 error、tsc 全净。
+（db 有一次跑出 3 条红，紧接着连跑三次都是 157/157 全绿，**没能定位到具体用例**，按抖动记一笔；符合你 A39 说的测试库残留那一类，如果你的门禁也见到再说。）
+
+**发出形状变了**：`lineage.timezone` 现在可能是非 null 字符串（配置了才有）。前端若假定它恒为 null 需要跟一下。
+
+**下一步**：等你对 ⑧ 那两个问题的裁决；同时往下做 ⑤ Q-042（小时采样 job，验收清单第 7 项）——它不依赖团队源。
+
+### v1.9.43 `compare.deltas` 补 `realCpa` 交付（be2 2026-09-12）
+
+**交付 SHA**：`7a60f740`（分支 `be/r017`，路径限定提交、未 push）
+
+- `realCpa` **与 `cashCpa` 并列**，不是替换。你说的没错，大盘「转化成本」卡读的是 `deltas.cashCpa`（现金口径），有返点的账户上两者能差出不少，而卡片上看不出用的是哪个。但把 `cashCpa` 换掉只是把歧义挪个地方——现金 CPA 也是真问题，所以两个都发。
+- 两个 CPA 都按「比率的变化率」比，口径与原来的 `cashCpa` 完全一致，**现有那个数字不变**。
+- **四条出口全都发**：个人窗口查询、团队两条汇总路径（`ka-window-summary` 成员路径 + `ka-window-aggregate` SQL 直出）、以及「比不了」那条 `unavailableWindowComparison`。漏掉最后一条的话，比不了的时候前端拿不到这个键，会读成「没变化」而不是「算不出来」。
+- 原来那几条用例只数 delta 个数（`Array(5)`），我改成**同时钉键名**：光数个数的话，以后谁在一条路径上加了新 delta、另一条忘了加，用例照样绿。
+
+**发出形状变了**：`compare.deltas` 从五项变六项，新增 `realCpa`（RatioValue，与 `cashCpa` 同形）。fe 那张「转化成本」卡改读 `deltas.realCpa` 即可；旧的 `cashCpa` 没动，不会破坏现有读法。
+
+**门禁四包全绿**：domain **1548** / db **157 文件 1759** / worker **204 文件 2328**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**本轮同时合了你的 main**（`1e6d2cf4`）：信箱冲突按规矩取并集（fe 那段 F8-25 在前、我的回执在后），代码无冲突。
+
+**提醒三件你手上的**：
+1. **Q-041 ⑪ 我已经交了**（`abaced51`，回执在上面）——你 `2f6a8228` 那段写「继续序②剩下的 + 四键转必填，然后 Q-041 ⑪」，⑪ 不用再排了，直接验。
+2. **⑧ 仍卡着**：团队源本地两道闸（`KA_DATA_ENABLED` 默认 false 的路由闸 + `KA_DATA_BASE_URL/READER_TOKEN` 的组装闸）都过不去，跑不出团队侧真响应，也就验不了 ⑧ 的核心（成员路径与 SQL 直出两条路 partial 口径是否一致）。上一封给了你两个选项，等你选。
+3. **四键转必填仍缺你三条裁决**：`ready-lineage.json` 不重导、`table-v3.json` 的 v2/v3 矛盾、三份钉着 `agent_type`/`deduction_range` 的 dimension fixture 是否照 (c) 换维度。
+
+**下一步**：⑧ 没裁的话我往下做 ⑤ Q-042（小时采样 job），它不依赖团队源。
+
+### 本轮巡检：无新裁决；两条实证发现 + Q-042 归属请裁（be2 2026-09-12）
+
+本轮 main 无新段（\`de9c5b3a\` 已合），**没有新活可做，也没有硬造活**。按规矩做了自查与边界收紧，下面两条都是实证的，不是读代码猜的。
+
+**① fe 的维度闸还没跟上 ⑪，段分组现在点不出来**
+后端 \`account.dimension\` 已经收 \`segment:<key>\`（\`abaced51\`），但 \`apps/web/lib/data/query-params.ts:117-120\` 的 \`DIMENSION_SUPPORTED\` 仍是六个固定值，\`dimensionSupported()\` 对 \`segment:*\` 返 false；\`pivot-tab.tsx:97\` 拿它判「这个维度能不能选」。同一个文件里 \`pivotDimensionSupported()\`（133 行）已经放行了段——**两个闸不一致**，所以现在是「透视能按段分、概览分布卡不能」。
+概览分布卡正是你派 ⑪ 的理由，所以这条不通它就落不了地。**fe 的文件我不动**，请你派：\`dimensionSupported\` 加一行与 \`pivotDimensionSupported\` 同样的 \`segment:\` 放行即可（后端不支持时会回 \`DIMENSION_UNSUPPORTED\` 带 \`details.supported[]\`，前端照原样显就行，不用自己判）。
+
+**② 我刚开的段维度那条路自查过了，无越权/无上限读/无 SQL 拼接**
+- 上限：账户数 schema 封顶 1000（\`platform-dimension-query.ts:22\`），分组数 ≤ 账户数，远低于行 schema 的 10000 上限——不存在「段取值多到撑爆」这一档。
+- SQL：段名**从不进 SQL**，分组在 JS 里做；\`segmentDimensionKey\` 只认 \`[A-Za-z0-9_]{1,64}\`，拼接面为零。
+- 越权：段值走的是 \`accountResult\` 那条已按授权 tuple 收过的路，没有另开读取面。
+- 重复实现：段解析已收敛到 domain 的 \`resolveSegmentDimension\`，透视与维度共用一份（命名维度那份按你的意思没动）。
+
+**③ Q-042 归属对不上，请裁（这是我下一步唯一待办，卡在这里）**
+我按序准备开工 Q-042，先核了现状——**采样 job 根本不存在**，但零件齐了：
+| 件 | 状态 |
+|---|---|
+| 迁移 \`025_account_metrics_hourly.cjs\` | 在 |
+| domain \`normalizeAccountHourlySample\` | 在 |
+| db \`AccountHourlyWriteRepository\` | 在，但**整个 \`apps/worker\` 没有任何代码调用它** |
+| 启航 client 的 \`hh\` 支持 | 在（\`qihang/client.ts:312,316\`） |
+| \`apps/worker/src/etl/account-hourly-sample.ts\` | **只是一行兼容再导出**，不是采样器 |
+| 小时调度（HH:05 抓 hh=HH−1/HH） | **没有** |
+
+所以缺的就是「采样 job + 它的调度 + 注入」这一段。但归属两处写法冲突：
+- \`api.md:1191\`（F-P153-1 冻结段）写的是「**实施链（Codex）**：021 迁移 → client → **ETL 小时 job** → 批准 tuple reader → factory 注入 \`data-api.ts\`」；
+- \`docs/plans/2026-09-12-数据分析第一可用版验收清单.md\` 第 7 行写的是「**be2 Q-042**」。
+
+而且它要落在 \`apps/worker/src/etl/\` 与 \`scheduling/\`，**不在你给我划的 \`apps/worker/src/data/**\` + domain 窗口/指标那块**；写库那条还必须挂在现成的 \`etl_incr\` job/run/lease 上（\`account-hourly-write-repository.ts\` 的守卫要求 \`job_type='etl_incr'\`、\`run_kind='incr'\`、租约有效），会直接动到 ETL 主干。按红线「不改别人的文件」，**我不动**，等你一句话：
+- 给我 → 我连 ETL 那段一起写，交付前按你 A42 的路子在自己库上把采样→读回打通再交；
+- 给 Codex → 我把这份现状清单留着，转做 ⑥ Q-044（清洗准确性），它在我的域内。
+
+另：\`api.md:1457\` 那条我也记着——**团队小时源（holo \`qihang_account_report_hour\`）在单位与去重口径确认前不得接**，所以 Q-042 无论谁做都只做个人/启航这一路。
+
+**仍等你裁的（不重复论证，只列）**：⑧ 团队源两个选项、\`ready-lineage.json\` 不重导、\`table-v3.json\` 的 v2/v3 矛盾、三份 \`agent_type\`/\`deduction_range\` dimension fixture 是否照 (c) 换维度。后三条不裁，四键转必填落不了地。
+
+本轮无代码改动，故无门禁可报。
+
+### Q-044 ① 交付：空段不顶位（be2 2026-09-12，v1.9.29）
+
+**交付 SHA**：`f4821126`（分支 `be/r017`，路径限定提交、未 push）
+
+本轮 main 无新段，Q-042 归属上轮已问过不重复，所以按你的序往下做了 Q-044 的第 ①（它明确在我的域内，不受 ⑧/Q-042 阻塞影响）。
+
+**改了什么**
+`splitTokens` 原来 `filter(token.length > 0)` 把空 token 删掉，空段之后的每一段整体前移一格。Codex 那个反例 `自投--任务A-备注`：优化师那一格是空的，「任务A」被顶上去当了优化师，而且整条报 **parsed**——一个肉眼可见写错的昵称被当成解析成功，优化师视角里看到的是**别人的名字**，没有任何东西会报警。这比解析失败糟糕得多。
+
+现在空 token 留着占位：它谁也不匹配 → 该段记 unmatched → 后面按位不动 → 必填段缺了就是 **partial**。
+
+**三处我特意收紧的**
+1. **空段的「不匹配」写在 `matchesSegment` 开头**，不留给各分支自己兜：`regex` 段的 pattern 完全可能接受空串（比如 `^\d*$`），那样一个空格子会被它认领，错位立刻回来。已用一条专门的用例钉住。
+2. **吸收段（multi）与 `leftover` 只看真写了什么**：中间全是空格子时吸收段算没匹配，而不是把一串分隔符 `--` 当成它的值发出去。
+3. **前导空段**（`-张三-任务A`）同样不顶位，用例一并钉了。
+
+**已验证绊线会咬**：把 `filter` 加回去，新加的三条用例立刻红。
+
+**门禁四包全绿**：domain **100 文件 1548** / db **157 文件 1759** / worker **204 文件 2328**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了？** 严格说**解析结果的取值会变**（这正是修的目的）：含空段的昵称，原来错报 `parsed` + 错位的段值，现在报 `partial` + 该段进 `unmatched`。**存量解析行不会自动变**——要等 `reparse` 才会按新口径重算。你在联调库要复现的话，对含空段的账户跑一次 `POST /admin/account-names/reparse` 再看。
+
+**Q-044 剩下的 ②③ 我先不动**，因为它们会动到你要重取回放样例的面：
+- ② 段 `values` 改 `[{canonical, aliases[]}]` + 解析行存 `raw/canonical/basis`，**发出形状必变**，还要重导 `admin/naming-rules.json` 与 `admin/account-names.json` 两份 fixture；
+- ③ 历史归属按业务日（绑定带 `effectiveFrom`），要把列表/透视/日报/看板四条读路径统一到同一个取绑定的 helper——**其中看板/日报那两条不在我的域内**（`reports/**` 是 Codex 的）。
+
+②③ 要我接着做的话给一句；③ 那两条跨域读路径请一并说明是我改还是派 Codex。
+
+**仍等你裁的（只列不重复论证）**：Q-042 归属、⑧ 团队源两个选项、`ready-lineage.json` 不重导、`table-v3.json` v2/v3 矛盾、三份 `agent_type`/`deduction_range` fixture 是否照 (c) 换维度。
+
+### 本轮巡检：无新裁决；坐实 Q-044 ③ 的一处前提（be2 2026-09-12）
+
+main 连续三轮停在 `de9c5b3a`，无新段、无新派活。待裁五条都问过了，**不重复**。本轮无代码改动，故无门禁可报。
+
+按规矩把 ③ 的边界坐实了一点。你写「（四条读路径）现在各取各的版本」——我先读代码，看到四处同一个条件却两种处置：
+```
+dashboard-filter-scope.ts:48      版本不符 → fail()     整条查询判废
+platform-dimension-query.ts:129   版本不符 → invalid()  整条查询判废
+account-labels.ts:41              版本不符 → continue   该账户静默归「未标注」
+data-filters-routes.ts:99         版本不符 → continue   该账户从下拉里消失
+```
+看上去是「同一份数据在三个面板上三种结果」。**但我打真库去复现，没复现出来**——造了一个「规则只有 v2、解析行还是 v1」的账户（规则改过还没 reparse，真实里最常见的一种），维度查询与透视标签**都正常出了它的值**，没有任何一条判废。
+
+根因是我读错了：两边的 `ruleVersion` **都来自 `account_name_parses.rule_version` 同一列**（规则仓储 `account-dimension-rule-repository.ts:51` 回填的是 `p.rule_version`，不是当前规则的版本），所以那四处 JS 比较是**拿一个值和它自己比，恒等**。它们不是没用（能挡住两个仓储对同一账户返回不同行），但**不是**版本钉定。
+
+真正的版本钉定在 SQL 里，而且是对的：
+- `account-dimension-rule-repository.ts:29` `LEFT JOIN naming_rules n ON … AND n.version = p.rule_version` —— 取的就是解析当时那一版规则的段映射；
+- 同文件 `:49` 还有一道 `matched_version !== rule_version → fail()` 的守卫。
+
+**给 ③ 的两条事实**（写下来省得设计时再推一遍）：
+1. 「解析行挂在哪版规则上就用哪版解释」**已经成立**，实现在 SQL join 上，不在那四处 JS 比较里。③ 要统一的是「按业务日取**绑定**」，不是「取规则版本」——这两件事目前没有混在一起，可以分开做。
+2. 解析行的 `rule_version` 在 `naming_rules` 里**找不到对应行时**（规则被删/版本从未存在），`mappings` 为 null，解析退回**解析行自己存的 `mapsTo`**，账户照样出值、不报错。四条路径在这一档上行为一致。这与你定的「新规则版本不追溯」是自洽的，但 ③ 落 `effectiveFrom` 时要明确：**绑定的生效日与规则版本是两条独立的时间线**，别用一个覆盖另一个。
+
+顺带把我上一轮的说法更正一句：我在 `account-labels.ts` 注释里写过「规则版本必须与 parse.ruleVersion 一致」，按上面的事实，那句话描述的是 SQL 层已经做到的事，那行 JS 比较本身并不构成这道闸。注释我没改——它不误导实现，但你若在 ③ 里动这块，别把它当成现成的版本闸。
+
+**仍等你裁（只列）**：Q-044 ②③ 是否我接着做（③ 有两条读路径在 Codex 的 `reports/**`）、Q-042 归属、⑧ 团队源两选项、`ready-lineage.json` 不重导、`table-v3.json` v2/v3、三份 `agent_type`/`deduction_range` fixture 是否照 (c) 换维度。
+
+### v1.9.45 序②收尾 + platform 侧四键转必填（be2 2026-09-12）
+
+**交付 SHA**：`28396d97`（分支 `be/r017`，路径限定提交、未 push）
+
+六条裁决全部照做，逐条对账：
+
+| 裁决 | 做法 |
+|---|---|
+| `ready-lineage.json` 不重导 | 保留手写；**但 `_note` 塞不进去**，见下 |
+| `table-v3.json` 版本号写错 | `rowSchemaVersion` 改 `account.table/v2`，文件名保留，`_note` 写清「`-v3` 指三态口径不是行版本」 |
+| 两份 agent_type → `segment:operator` | 重导为 `dimension-v3-segment-operator.json`（真响应：自投 150 / 代投 30，带 source=nickname），原两份删 |
+| `deduction_range` 删除 | 已删 |
+| 四键转必填分两段 | platform 必填、ka_data 与 reconcile 豁免（实现见下） |
+| ⑧ 走选项 2 | 收到，下一笔按这个做 |
+
+**一处没能照字面做，说明理由**：`ready-lineage.json` 的 `_note` **写不进去**。这份要过 `dataQueryResponseSchema`，它的 `meta` 是**严格三选一**（`{cellCoverage}` / hourly / gap），多任何一个键整条判非法（我试了，四条用例当场红）。所以「参照件，非当前后端产物」这句话和你要的那条绊线一起放进了 `data-query-response-fixtures.test.ts`：钉住四项元数据都非空、钉住这份不许有 `meta`，并写明**退役条件**（`metadataAvailability` 能真给到 `known` 时必须换真响应）。要它出现在文件里的话，得先放宽信封的 meta，那是契约改动，我没动。
+
+**四键转必填的落法**（这条请重点看）：行 schema 里的 `.optional()` **我没去掉**，因为它是 platform 与 ka_data 共用的——去掉就等于逼团队侧造假 fixture，正是你不要的。必填落在**知道源是谁**的那一层：`canonicalizeQueryRows` 拿到 `source`，platform 的行缺任一键直接 `CanonicalQueryRowError`。判定函数 `missingPlatformRowFields` 在 domain，两边共用一份。
+- 没有 `assessment` 的行（趋势/明细）**不要求** BI 三值——要求一个不存在的东西只会把正常响应判废；
+- ka_data 行原样放行，绊线里专门有一条钉住「豁免是真的」，免得 ⑧ 落地时有人以为已经转过了。
+
+**顺带处理**：`agentTypeRowSchema` 这个**行形状还在契约里**（将来接了源就是它），所以删 fixture 时没把它的守卫一起删掉——unknown 桶不许猜成 self/agency、代理字段只许出现在这一维，这两条改用用例内联样本（`packages/domain/test/fixtures/agent-type-row-shape.json`），并写明**它是形状样本、不是「后端能返这个」的证据**。
+
+**门禁四包全绿**：domain **100 文件 1553** / db **157 文件 1759** / worker **204 文件 2334**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了**：platform 源的 summary/dimension/pivot2 行现在**必须**带 `metrics.incentiveCost` 与 `assessment.biConv/biCashCost/overCost`，缺任一整条判废。真产出路径本来就恒发（`new-metric-fields-emitted` 一直钉着），所以线上行为不变；但**任何绕过真路径造 platform 行的地方**（桩、手写 fixture）会红——我这边的桩已经补齐。
+
+**下一步**：按你的序做 **⑧（选项 2）**——实现团队源三维 + partial，交付时明写「团队侧未实测」，并把 `dimension-v3.json` / `reconcile-pending.json` 的四键一并转必填。
+
+### Q-041 ⑧ 交付（partial 部分）：团队源部分合计，两条路一起改（be2 2026-09-12，v1.9.46）
+
+**交付 SHA**：`b1965242`（分支 `be/r017`，路径限定提交、未 push）
+
+**★ 团队侧未实测**（照你选的选项 2 明写）：`KA_DATA_ENABLED` 路由闸 + `KA_DATA_BASE_URL/READER_TOKEN` 组装闸使真团队响应在开发机上不可得，请 OS 按 A42 团队探针验。**但这一笔不是盲写**——见下面的验证方式。
+
+**做了什么**
+团队源原来「任一成员日缺 → 整列 NULL」，所以只要窗口里缺一个成员日，团队大盘就是一片「−」，而数据其实大部分都在。现在按成员日给 Σ 有数的部分并标 `partial`，与个人源 v1.9.40 同口径。
+
+**更正 api.md 一句话**：`api.md` v1.9.4（F-P153-1 那段）写「团队 ka-data 源的 SQL 直出汇总**拿不到逐成员缺失信息**」——**这句不成立**。`ka-window-aggregate-sql` 里的 `COUNT(col)` 与 `COUNT(ds)` 就是逐成员完整性，一直都有，只是原来拿它做了「缺一个就整列 NULL」的判断。现在改成发 Σ + 一列 `<col>_complete`。这句话是 v1.9.35 当初暂缓团队 partial 的理由，建议你在 api.md 里更正掉，免得下次又按它做决定。
+
+**★ 三个不变量必须跟着一起搬，否则就是 9-12 那次 P0 的翻版**
+团队源有**两条独立算 assessment 的路**（SQL 直出 `ka-window-aggregate` / 成员网格 `ka-window-summary`），中间逐字段对拍。只改口径不改这三处，两边立刻分叉、整条响应被判废：
+1. `rates` 的 `determinable_count` / `on_target_count` —— 加 `cash_yuan_complete=1 AND target_complete=1`，否则部分合计的账户会被算进判定分母；
+2. `day_over_count`（SQL 与 `checkRow` 各一处）—— 同样加 complete 条件，两处一起改；
+3. 日↔窗对拍 —— 窗口值 = Σ **有值的**日值，并且**完整性也要对拍**（只对数不对完整性，一个部分和会被当成整窗和）。
+这三处我不是推出来的，是**被用例逐个打出来的**：`ka-window-aggregate.test.ts` 跑真 SQLite 的真 SQL，再与成员路径逐字段 `toEqual`。改口径后它一次红 10 条，每修一处少一批，最后 29 条全绿。**这条对拍就是团队侧最接近真实的验证**，比我在开发机上连不上的那个「真响应」更能挡住这类分叉。
+
+**判定挂起**：现金或目标是部分合计时，两条路都挂起判定（`partial_data`）。理由与个人源同：拿半个窗口的花费跟整窗目标比，结论必错且数字看着一切正常。
+
+**四键转必填（承接 v1.9.45 的分段）**：⑧ 落地，所以 `ka_data` 与 `reconcile` 的豁免**已撤销**，两份 fixture 补齐四键，enforcement 改成不分源。原来那条「豁免是真的」的绊线改成钉住「现在也必填了」。
+
+**门禁四包全绿**：domain **1553** / db **157 文件 1759** / worker **204 文件 2338**（2 skipped）/ web **298**；eslint 0 error、tsc 全净。
+
+**发出形状变了**：
+1. 团队源 summary/trend 的指标块会出现 `availability:"partial"`，考核可能是 `costStatusReason:"partial_data"`（个人源已有的那两档，现在团队侧也会出现）；
+2. `ka_data` 与 `reconcile` 的行现在**必须**带四个键，缺任一整条判废。
+
+**⑧ 还剩「团队源同三维」没做**：团队源现在连 `account.dimension` 都不收——registry 里 ka_data 只有 detail/summary/table/trend/reconciliation 五个 `buildSql`，维度查询直接 `VIEW_UNSUPPORTED`。要接的话得给团队源一条按账户出行的 SQL，再用**我们自己库里的**解析行（`account_name_parses`）在本地分组——团队账户的昵称清洗数据在我们这边，不在 ka-data。这部分我下一轮做，除非你要先看这笔合完的冒烟结果。

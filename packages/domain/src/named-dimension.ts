@@ -61,6 +61,34 @@ export function resolveNamedDimensions(raw: unknown) {
   return { optimizer: resolved.optimizer, goal: resolved.goal, placement: resolved.placement };
 }
 
+/**
+ * v1.9.42（Q-041 ⑪）：按**任意清洗段**取值 —— `segment:<key>` 问的是「这一段写了什么」，
+ * 不是「这一段落到哪个维度」，所以不经过 `mapsTo`，待确认段照样看得见。
+ *
+ * 规矩与命名维度**必须一致**，否则同一个账户会出现「按优化师分组认为它没标注、
+ * 按段分组却有值」这种没人会报错的分歧：
+ * - 人工覆盖优先，并标 `manual`；
+ * - 昵称对不上了（`nameMatches` 为假）就不信解析出来的值 —— 昵称改过，段值多半已经过期；
+ * - 空串按没填算。
+ *
+ * 收在这里一处：`account-labels`（透视用）与 `platform-dimension-query`（维度用）共用它，
+ * 各写一份的话两处的分组结果迟早对不上。
+ */
+export function resolveSegmentDimension(
+  raw: unknown, key: string,
+): { value: string | null; source: z.infer<typeof sourceSchema> | null } {
+  const input = inputSchema.omit({ ruleMappings: true }).parse({
+    segments: (raw as { segments?: unknown } | null)?.segments ?? {},
+    override: (raw as { override?: unknown } | null)?.override ?? {},
+    nameMatches: (raw as { nameMatches?: unknown } | null)?.nameMatches ?? false,
+  });
+  const manual = Object.hasOwn(input.override, key) ? input.override[key] : undefined;
+  if (manual !== undefined) return { value: manual === "" ? null : manual, source: "manual" };
+  const segment = input.segments[key];
+  if (!input.nameMatches || segment === undefined) return { value: null, source: null };
+  return { value: segment.value === "" ? null : segment.value, source: "nickname" };
+}
+
 /** Members are distinct accounts, not account-days; caller enforces that identity. */
 export function summarizeDimensionSources(raw: readonly unknown[]): z.infer<typeof dimensionSourceSummarySchema> {
   const values = z.array(sourceSchema.nullable()).max(1000).parse(raw);

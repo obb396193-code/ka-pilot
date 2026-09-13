@@ -69,7 +69,10 @@ export const windowComparisonSchema = z.object({
   mode: z.enum(["dod", "wow", "prev_window"]),
   deltas: z.object({
     cost: ratioValueSchema, cashCost: ratioValueSchema, realConversion: ratioValueSchema,
-    cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
+    // v1.9.43：`realCpa` 与 `cashCpa` **并列**，不是二选一。大盘「转化成本」卡要的是
+    // 真实转化的成本（cost/realConversion），之前错挂了 `cashCpa`（现金口径）——
+    // 两者在有返点的账户上能差出很多，而卡片上看不出用的是哪一个。
+    realCpa: ratioValueSchema, cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
   }).strict(),
 }).strict();
 export const windowComparisonModeSchema = windowComparisonSchema.shape.mode;
@@ -137,7 +140,7 @@ export function aggregateWindowMetrics(input: readonly unknown[]): z.infer<typeo
 
 const comparisonPointSchema = z.object({
   cost: canonicalMetricValueSchema, cashCost: canonicalMetricValueSchema, realConversion: canonicalMetricValueSchema,
-  cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
+  realCpa: ratioValueSchema, cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
 }).strict();
 
 export function compareWindowPoints(mode: WindowComparisonMode, current: unknown, previous: unknown): z.infer<typeof windowComparisonSchema> {
@@ -149,6 +152,8 @@ export function compareWindowPoints(mode: WindowComparisonMode, current: unknown
     cost: toRatio(compareAbsolute(now.cost.value, before.cost.value)),
     cashCost: toRatio(compareAbsolute(now.cashCost.value, before.cashCost.value)),
     realConversion: toRatio(compareAbsolute(now.realConversion.value, before.realConversion.value)),
+    // 两个 CPA 都按「比率的变化率」比，口径与原来的 cashCpa 完全一致。
+    realCpa: toRatio(compareRate(now.realCpa.value, before.realCpa.value)),
     cashCpa: toRatio(compareRate(now.cashCpa.value, before.cashCpa.value)),
     // v1.7.4: percentage-point difference; zero is an observed rate, not a NEW denominator.
     onTargetRate: now.onTargetRate.state === "finite" && before.onTargetRate.state === "finite"

@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react"
 import { IconAlertTriangle, IconCheck, IconChecks, IconFlask, IconRefresh } from "@tabler/icons-react"
 import { toast } from "sonner"
 
+import { confirmAccountNames, reparseAccountNames } from "@/lib/data/use-me-actions"
+
 import { MissingValue, StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { useSession } from "@/components/business/session/session-provider"
 import { Badge } from "@/components/ui/badge"
@@ -48,6 +50,7 @@ export function NamingTab() {
   const [editing, setEditing] = useState<AccountNameParse | null>(null)
   const [draft, setDraft] = useState<Record<string, string>>({})
   const [confirmed, setConfirmed] = useState<string[]>([])
+  const [busy, setBusy] = useState(false)
 
   const rule: NamingRule | null = isOk(namingRulesFixture) ? namingRulesFixture.data : null
   const allRows = useMemo(() => (isOk(accountNamesFixture) ? accountNamesFixture.data.items : []), [])
@@ -101,7 +104,9 @@ export function NamingTab() {
           <SelectContent>{mediaOptions.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
         </Select>
         <Badge variant="outline">规范 v{rule.version}{rule.effectiveFrom ? ` · ${rule.effectiveFrom} 起` : ""} · {segments.length} 段</Badge>
-        <Button size="sm" variant="outline" onClick={() => toast("已发起重解析", { description: "人工改过的段会跳过，不被覆盖" })}><IconRefresh className="size-4" />重解析</Button>
+        {/* F8-25 ⑥：接真接口。原来是「提示成功其实没存」——点完弹绿字，刷新全没了。
+            这比按钮置灰坏：置灰只是不能用，假成功让人以为活干完了。 */}
+        <Button size="sm" variant="outline" disabled={busy} onClick={async () => { setBusy(true); await reparseAccountNames(media); setBusy(false) }}><IconRefresh className="size-4" />重解析</Button>
         {rule.note ? <span className="text-xs text-muted-foreground">{rule.note}</span> : null}
       </div>
 
@@ -199,7 +204,13 @@ export function NamingTab() {
             <div><CardTitle className="text-base">待确认</CardTitle><CardDescription>冲突的必须人工看，系统绝不静默选一边</CardDescription></div>
             <div className="flex flex-wrap items-center gap-2">
               <Input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜账户名 / ID" className="h-8 w-40" aria-label="搜索" />
-              <Button size="sm" disabled={pendingParsed.length === 0} onClick={() => { setConfirmed((prev) => [...prev, ...pendingParsed.map((item) => item.accountId)]); toast.success(`已确认 ${pendingParsed.length} 条`, { description: "只过「解析成功」的，冲突和失败仍需人工看" }) }}>
+              <Button size="sm" disabled={pendingParsed.length === 0} onClick={async () => {
+                setBusy(true)
+                const ids = pendingParsed.map((item) => item.accountId)
+                // 只有后端真的确认成功了才动本地已确认列表——否则界面和库就分家了
+                if (await confirmAccountNames(media, ids)) setConfirmed((prev) => [...prev, ...ids])
+                setBusy(false)
+              }}>
                 <IconChecks className="size-4" />一键确认解析成功的{pendingParsed.length ? `（${pendingParsed.length}）` : ""}
               </Button>
             </div>
@@ -240,7 +251,7 @@ export function NamingTab() {
                       </div>
                       <div className="flex shrink-0 gap-2">
                         <Button size="sm" variant="outline" onClick={() => openEdit(item)}>逐段编辑</Button>
-                        {!isConfirmed ? <Button size="sm" disabled={item.status === "conflict" || item.status === "failed"} title={item.status === "conflict" ? "先解决冲突再确认" : item.status === "failed" ? "先逐段编辑补齐" : ""} onClick={() => { setConfirmed((prev) => [...prev, item.accountId]); toast.success("已确认") }}><IconCheck className="size-4" />确认</Button> : null}
+                        {!isConfirmed ? <Button size="sm" disabled={item.status === "conflict" || item.status === "failed"} title={item.status === "conflict" ? "先解决冲突再确认" : item.status === "failed" ? "先逐段编辑补齐" : ""} onClick={async () => { if (await confirmAccountNames(media, [item.accountId])) setConfirmed((prev) => [...prev, item.accountId]) }}><IconCheck className="size-4" />确认</Button> : null}
                       </div>
                     </div>
 

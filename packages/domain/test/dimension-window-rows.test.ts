@@ -3,7 +3,21 @@ import { describe, expect, it } from "vitest";
 import { dimensionWindowRowsSchema } from "../src/dimension-window-rows.js";
 
 const names = ["dimension-v3", "dimension-v3-account", "dimension-v3-task", "dimension-v3-biz",
-  "dimension-v3-agent_type", "dimension-v3-deduction_range"] as const;
+  "dimension-v3-segment-operator"] as const;
+
+/**
+ * v1.9.45：`dimension-v3-agent_type.json` / `-deduction_range.json` 已删——
+ * 这两个维度在 `dimensionTypeSchema` 里合法，但**没有任何解析器产出它们**，
+ * 真响应永远是 `DIMENSION_UNSUPPORTED`，所以它们不该有「真响应 fixture」。
+ *
+ * 但 `agentTypeRowSchema` 这个**行形状**还在契约里（将来接了源就是它），
+ * 下面几条守卫仍然要钉住：unknown 桶不许猜成 self/agency、代理字段只许出现在这一维。
+ * 所以样本改成用例内联——**它是一份形状样本，不是「后端能返这个」的证据**。
+ */
+const AGENT_TYPE_SAMPLE = JSON.parse(await readFile(
+  new URL("./fixtures/agent-type-row-shape.json", import.meta.url), "utf8")) as {
+    dimension: string; rows: Record<string, unknown>[] };
+const agentTypeSample = () => structuredClone(AGENT_TYPE_SAMPLE);
 
 async function fixture(name: typeof names[number] = "dimension-v3-account") {
   const body = JSON.parse(await readFile(new URL(`../../contract/fixtures/data-query/${name}.json`, import.meta.url), "utf8"));
@@ -21,8 +35,8 @@ describe("dimension v3 row boundary (not source envelope or source availability)
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
   });
   it("preserves the authoritative unknown agent bucket without guessing self or agency", async () => {
-    const value = await fixture("dimension-v3-agent_type");
-    const unknown = value.rows.find((row: { agent_type: string }) => row.agent_type === "unknown");
+    const value = agentTypeSample();
+    const unknown = value.rows.find((row) => row.agent_type === "unknown");
     expect(unknown).toMatchObject({ key: "unknown", label: "未标注", agent_type: "unknown" });
     expect(dimensionWindowRowsSchema.parse(value)).toEqual(value);
     expect(unknown).not.toHaveProperty("agency_name");
@@ -66,12 +80,13 @@ describe("dimension v3 row boundary (not source envelope or source availability)
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
   });
   it("keeps agency fields limited to the frozen agency dimension", async () => {
-    const value = await fixture("dimension-v3-agent_type");
-    value.rows[0].agent_type = "guessed";
+    const value = agentTypeSample();
+    const first = value.rows[0]!;
+    first.agent_type = "guessed";
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
-    value.rows[0].agent_type = "agency"; value.rows[0].agency_name = null;
+    first.agent_type = "agency"; first.agency_name = null;
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
-    Reflect.deleteProperty(value.rows[0], "agency_name");
+    Reflect.deleteProperty(first, "agency_name");
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(true);
     value.dimension = "task";
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);

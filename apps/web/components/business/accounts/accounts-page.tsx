@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useAccounts, useAccountPipeline, accountsIsMock } from "@/lib/data/use-accounts"
 import { accountsFixture, infraFixture, lifecycleLabel, pipelineFixture, poolStatusMap, type AccountItem, type LifecycleStage } from "@/lib/fixtures/accounts"
 import { isOk } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
@@ -62,21 +63,55 @@ export function AccountsPage() {
   const [selected, setSelected] = useState<string[]>([])
   const [dialog, setDialog] = useState<DialogKind>(null)
 
-  const items = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items : []), [])
-  const stages = isOk(pipelineFixture) ? pipelineFixture.data.stages : []
-  const asOf = isOk(pipelineFixture) ? pipelineFixture.data.asOf : ""
+  /**
+   * F8-25 ④：账户池接真接口（`GET /accounts`）。
+   *
+   * devix 的改库探针就是拿这一页证的：改 account-6 的名字页面纹丝不动，
+   * **九态合计 39 户而库里只有 6 户**。账户池是最容易看出假数据的一页，
+   * 也是最容易被当真的一页——人会照着它去分配账户。
+   *
+   * 先按空筛选整页取（后端一页最多 100 条），页内筛选仍在前端做；
+   * 服务端筛选/分页等 F8-27 的筛选栏一起接，那时把 `q/stage/starred` 传下去。
+   */
+  /**
+   * ★F8-27：**服务端能筛的下推，不能筛的才留在前端**。
+   *
+   * 真正的坑不是「筛两次」，是**在被截断的一页上筛**：后端返回第一页 100 条，
+   * 前端在这 100 条里过滤，于是 500 户的空间里搜一个账户搜不到——
+   * 界面显示「没有符合条件的账户」，而它其实在第 3 页。这不会报任何错。
+   *
+   * 后端认的：`q / media / stage / starred / status`（见 `accountListRequestSchema`）。
+   * 不认的：产品名、负责人显示名——那两个只能继续在前端过滤，
+   * 并且下面会显式提示「结果被截断」，不让人以为看到的是全量。
+   */
+  const accounts = useAccounts({
+    pageSize: 100,
+    q: search.trim() || undefined,
+    stage: lifecycle === "all" ? undefined : lifecycle,
+    starred: starredOnly || undefined,
+    status: status === "all" ? undefined : status,
+  })
+  const mockItems = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items : []), [])
+  const items = accountsIsMock ? mockItems : accounts.items ?? []
+  // 九态流程条**单独取一次**：它是全空间计数，和「当前筛选后的清单」不是一个源
+  const pipeline = useAccountPipeline()
+  const mockStages = isOk(pipelineFixture) ? pipelineFixture.data.stages : []
+  const stages = accountsIsMock ? mockStages : (pipeline.stages as typeof mockStages) ?? []
+  const asOf = accountsIsMock ? (isOk(pipelineFixture) ? pipelineFixture.data.asOf : "") : pipeline.asOf ?? ""
   // 分层卡 / 流程条的「全部账户」= 九态之和（与九态同源 pipeline），不能拿列表页的 total —— 那是当前筛选后的行数，会出现「全部 5、投放中 18」的自相矛盾
   const pipelineTotal = stages.some((stage) => stage.count !== null) ? stages.reduce((sum, stage) => sum + (stage.count ?? 0), 0) : null
   const products = useMemo(() => [...new Set(items.map((item) => item.product?.name).filter((name): name is string => Boolean(name)))], [items])
   const owners = useMemo(() => [...new Set(items.map((item) => item.owner?.displayName).filter((name): name is string => Boolean(name)))], [items])
+  // 真实模式下 status/stage/starred/q 已由后端筛过，这里不再重筛（重筛无害但会掩盖
+  // 「后端没筛」这种 bug）；产品名和负责人后端不认，只能留在前端。
   const filtered = useMemo(() => items.filter((item) =>
-    (status === "all" || item.poolStatus === status) &&
+    (accountsIsMock ? status === "all" || item.poolStatus === status : true) &&
     (media === "all" || item.media === media) &&
     (product === "all" || (item.product?.name ?? UNASSIGNED) === product) &&
     (owner === "all" || item.owner?.displayName === owner) &&
-    (lifecycle === "all" || item.lifecycleStage === lifecycle) &&
-    (!starredOnly || item.starred) &&
-    (search.trim() === "" || item.accountName.includes(search.trim()) || item.accountId.includes(search.trim())),
+    (accountsIsMock ? lifecycle === "all" || item.lifecycleStage === lifecycle : true) &&
+    (accountsIsMock ? !starredOnly || item.starred : true) &&
+    (accountsIsMock ? search.trim() === "" || item.accountName.includes(search.trim()) || item.accountId.includes(search.trim()) : true),
   ), [items, status, media, product, owner, lifecycle, starredOnly, search])
   const selectedItems = useMemo(() => filtered.filter((item) => selected.includes(rowId(item))), [filtered, selected])
   const groups = useMemo(() => {
@@ -137,6 +172,24 @@ export function AccountsPage() {
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="账户池扩展字段接口接入后切换为真数据" empty={{ title: "当前空间没有可见账户", description: "个人空间只看本人授权账户；导入认领或新建账户后出现。" }}>
+          {/* 取数状态照实说：空列表和「还没取到 / 取失败」在屏幕上一样，意思完全相反 */}
+          {!accountsIsMock && (accounts.loading || accounts.error || accounts.incomplete) ? (
+            <p className={cn("mb-3 rounded-lg border border-dashed px-3 py-2 text-sm", accounts.error ? "text-status-critical" : "text-muted-foreground")}>
+              {accounts.loading && !accounts.items
+                ? "正在读取账户…"
+                : accounts.error
+                ? <>读取账户失败：{accounts.error.message}{accounts.error.requestId ? <span className="ml-1 text-muted-foreground">（问题编号 {accounts.error.requestId}）</span> : null}<button type="button" onClick={accounts.reload} className="ml-2 underline underline-offset-2">重试</button></>
+                : <span className="text-status-warning">{accounts.incomplete}</span>}
+            </p>
+          ) : null}
+          {/* ★结果被截断时必须说出来：后端只回了第一页，而产品名/负责人是在这一页里过滤的——
+              不提示的话，500 户的空间里筛出 3 条，人会以为就这 3 条。 */}
+          {!accountsIsMock && accounts.items && accounts.total > accounts.items.length ? (
+            <p className="mb-3 rounded-lg border border-dashed border-status-warning/40 px-3 py-2 text-xs text-status-warning">
+              共 {accounts.total} 个账户，这里只取了前 {accounts.items.length} 个。
+              产品名 / 负责人这两个筛选是在<b>已取到的这批</b>里过滤的，可能漏掉后面的——先用搜索或状态筛小范围。
+            </p>
+          ) : null}
           {tab === "pool" ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center justify-between gap-2">

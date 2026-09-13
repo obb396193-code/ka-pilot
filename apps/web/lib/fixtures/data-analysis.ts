@@ -8,8 +8,8 @@ import dimensionV3 from "@contract/fixtures/data-query/dimension-v3.json"
 import dimensionTask from "@contract/fixtures/data-query/dimension-v3-task.json"
 import dimensionBiz from "@contract/fixtures/data-query/dimension-v3-biz.json"
 import dimensionAccount from "@contract/fixtures/data-query/dimension-v3-account.json"
-import dimensionAgentType from "@contract/fixtures/data-query/dimension-v3-agent_type.json"
-import dimensionDeduction from "@contract/fixtures/data-query/dimension-v3-deduction_range.json"
+// v1.9.45：agent_type 的两份样例重导为 segment:operator（自投/代投就落这个段）；deduction_range 是派生桶、无解析器产出，一期不做，样例已删。
+import dimensionSegmentOperator from "@contract/fixtures/data-query/dimension-v3-segment-operator.json"
 import dimensionUnsupported from "@contract/fixtures/data-query/dimension-unsupported.json"
 import hourly from "@contract/fixtures/data-query/hourly.json"
 import gap from "@contract/fixtures/data-query/gap.json"
@@ -101,7 +101,9 @@ export const reportRenderFixture = reportRender as unknown as Fixture<{ rows: Re
  *   但没有任何解析器产出它，查了直接 DIMENSION_UNSUPPORTED——所以它留在列表里只是为了
  *   界面上能显示「待接源」，不是可用选项。
  */
-export type Dimension = "task" | "biz" | "account" | "optimizer" | "goal" | "placement" | "agent_type" | "resource_position" | "bid_tool" | "ubp" | "deduction_range"
+// v1.9.42/45：清洗段维度用 `segment:<key>` 传（be2 Q-041 ⑦⑪ 已开到 pivot2 与 account.dimension）；
+// 固定维度里 agent_type/resource_position/bid_tool/ubp/deduction_range 没有解析器产出，留在联合里只为界面能显示「待接源」。
+export type Dimension = "task" | "biz" | "account" | "optimizer" | "goal" | "placement" | "agent_type" | "resource_position" | "bid_tool" | "ubp" | "deduction_range" | `segment:${string}`
 export const dimensions: { value: Dimension; label: string }[] = [
   { value: "task", label: "任务" },
   { value: "biz", label: "业务" },
@@ -129,8 +131,9 @@ export const dimensionFixtures: Record<Dimension, QueryFixture<DimensionRow> | {
   task: dimensionFixture(dimensionTask),
   biz: dimensionFixture(dimensionBiz),
   account: dimensionFixture(dimensionAccount),
-  agent_type: dimensionFixture(dimensionAgentType),
-  deduction_range: dimensionFixture(dimensionDeduction),
+  agent_type: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
+  deduction_range: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
+  "segment:operator": dimensionFixture(dimensionSegmentOperator),
   bid_tool: { unsupported: true, message: pivot2UnsupportedFixture.error.message },
   ubp: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
 }

@@ -145,7 +145,7 @@ export class PlatformWindowQuery {
           const previousRate = targetRate(await repository.loadAccountCounts(previousScope), input.accounts.length, previous.accountCount);
           const point = (metrics: typeof summary.metrics, rate: ReturnType<typeof targetRate>) => ({
             cost: metrics.cost, cashCost: metrics.cashCost, realConversion: metrics.realConversion,
-            cashCpa: metrics.ratios.cashCpa, onTargetRate: rate,
+            realCpa: metrics.ratios.realCpa, cashCpa: metrics.ratios.cashCpa, onTargetRate: rate,
           });
           compare = compareWindowPoints(input.compare, point(summary.metrics, onTargetRate), point(previous.metrics, previousRate));
         }

@@ -109,3 +109,35 @@ describe("canonical data-query response fixtures", () => {
     });
   });
 });
+
+/**
+ * 绊线：`ready-lineage.json` 是**参照件，不是当前后端的产物**（arch v1.9.45 裁：不重导）。
+ *
+ * 它钉的是「血缘齐备」那一档的形状——`metadataAvailability:"known"` 且
+ * `datasetVersion`/`timezone`/`dayCut` 三项都有值。今天的后端给不出这三项
+ * （真响应是 `partial` + 三个 null），拿现状覆盖它等于把参照降级成「我们目前只能做到这样」，
+ * 以后真能给出这些元数据时就没有东西钉形状了。
+ *
+ * 说明写在这里而不是文件的 `_note` 里，是因为这份要过 `dataQueryResponseSchema`，
+ * 它的 `meta` 是**严格三选一**（`{cellCoverage}` / hourly / gap），多一个键整条判非法。
+ *
+ * **退役条件**：`metadataAvailability` 能真给到 `known` 的那天，这份必须换成真响应，
+ * 这条绊线随之删除。
+ */
+describe("ready-lineage is a contract reference, not a snapshot of today's backend", () => {
+  it("keeps all four lineage metadata fields populated", async () => {
+    const parsed = dataQueryResponseSchema.parse(await readFixture("ready-lineage"));
+    if (!parsed.ok || parsed.data.mode === "reconcile") throw new Error("unexpected fixture");
+    const lineage = parsed.data.source.lineage;
+    expect(lineage.metadataAvailability).toBe("known");
+    for (const field of ["datasetVersion", "dataAsOf", "timezone", "dayCut"] as const) {
+      expect(lineage[field], `${field} 不能为空：这份的全部价值就是钉住「四项都有」那一档`).not.toBeNull();
+    }
+  });
+
+  it("carries no meta, because the envelope's meta is a strict three-way union", async () => {
+    // 想给它加出处说明的人会先撞到这条：说明只能写在用例里。
+    const raw = await readFixture("ready-lineage") as Record<string, unknown>;
+    expect(Object.hasOwn(raw, "meta"), "加了 meta 会让 dataQueryResponseSchema 判非法").toBe(false);
+  });
+});

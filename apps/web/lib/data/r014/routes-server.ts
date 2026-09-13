@@ -9,6 +9,7 @@ export {
   handleAccountTransfer,
   handleAuthPassword,
   handleDailyReport,
+  handleDataFilters,
   handleKbBacklinks,
   handleKbByObject,
   handleKbDocument,

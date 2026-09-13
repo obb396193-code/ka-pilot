@@ -8,6 +8,13 @@ const configSchema = z.object({
   DATA_API_INTERNAL_TOKEN: z.string().min(32),
   DATA_API_MAX_REQUEST_BYTES: z.coerce.number().int().positive().default(1024 * 1024),
   DATA_API_MAX_RESPONSE_BYTES: z.coerce.number().int().positive().default(16 * 1024 * 1024),
+  /**
+   * v1.9.42（Q-041 ⑨）：canonical 数据的业务时区，**只能配置、不能推断**。
+   * 从服务器本地时区猜会把「这份数按哪天切的」说错一整天，而页面上看不出来；
+   * 没配就继续发 `null`（血缘如实说「不知道」），这是安全的默认。
+   * 值按 IANA 名（如 `Asia/Shanghai`）校验形状，不去解析它的含义。
+   */
+  DATA_SOURCE_TIMEZONE: z.string().trim().regex(/^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){1,2}$/, "Invalid IANA timezone").optional(),
   KA_DATA_ENABLED: z.enum(["true", "false"]).default("false"),
   DATA_DIAGNOSTIC_ENABLED: z.enum(["true", "false"]).default("false"),
   DATA_DIAGNOSTIC_ENTITLEMENTS_JSON: z.string().min(1).optional(),
@@ -43,6 +50,8 @@ export interface DataApiConfig {
   internalToken: string;
   maxRequestBytes: number;
   maxResponseBytes: number;
+  /** canonical 数据的业务时区；没配置就是 null（血缘如实说「不知道」），绝不猜。 */
+  sourceTimezone: string | null;
   kaDataEnabled: boolean;
   dataDiagnosticEnabled: boolean;
   dataDiagnosticEntitlements: readonly DataDiagnosticEntitlement[];
@@ -70,6 +79,7 @@ export function loadDataApiConfig(environment: NodeJS.ProcessEnv): DataApiConfig
     internalToken: parsed.DATA_API_INTERNAL_TOKEN,
     maxRequestBytes: parsed.DATA_API_MAX_REQUEST_BYTES,
     maxResponseBytes: parsed.DATA_API_MAX_RESPONSE_BYTES,
+    sourceTimezone: parsed.DATA_SOURCE_TIMEZONE ?? null,
     kaDataEnabled: parsed.KA_DATA_ENABLED === "true",
     dataDiagnosticEnabled,
     dataDiagnosticEntitlements,
