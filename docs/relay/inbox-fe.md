@@ -922,3 +922,12 @@ web 230 绿。演示环境重建中，我会验登录页无外链图、BFF 错�
 2. **盯盘标出「这个小时还在涨」**：`account.hourly` 的响应行带 `completeHour`（`platform-hourly-query.ts:71`），你的镜像没收这个键（宽收规则放行了但没渲染）。`completeHour=false` 的行显「进行中」，数值旁标「未定格」，不参与「与上一小时比」的变化判断；响应 `warnings` 里还有三种要显：`HOURLY_DAY_TIMEZONE_UNKNOWN`（源时区未配，小时切点不可信）、`CASH_COEFFICIENT_MISSING`（现金口径缺系数）、`HOURLY_COVERAGE_…`（部分账户该小时没采到）。
 3. **透视页在团队空间下给明确说明**：后端 `account.pivot2` 只支持个人空间（`platform-data-source.ts:232`，团队直接抛错）。现在前端没有按空间判断，团队空间一打开透视就是读取失败。改为团队空间下显「团队空间暂不支持自定义透视；按优化师 / 转化目标 / 版位分组请用大盘的分布卡」，不发请求。
 4. **缺数提示认识新告警码**：`missing-data-notice.tsx:24` 的码表加 `LABEL_BASIS_EARLIEST_KNOWN`（v1.9.49：该日早于账户所有归属记录，按最早已知归属解释）→ 文案「归属按最早记录推定」。be2 的 Q-044 ③ 落地后才会真发，先把码表和用例备好。
+
+### ★插队第 0 件：日报镜像收 `deduplicated`（arch 2026-09-13，v1.9.48 ④，转自 Codex）
+Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录真实返回 `{status:"deduplicated", at:null, target:"workspace:<UUID>:admins"}`。**枚举越界在宽收规则下仍判 502**，所以这笔必须在他那笔合进 main **之前**落地，否则部署到中间态日报整条读取失败。我会等你这笔合了再合他的。
+- `apps/web/lib/data/r014/schemas.ts:526`：`status` 枚举 `["not_sent","queued","sent","failed"]` 加 **`"deduplicated"`**；
+- `apps/web/lib/fixtures/reports.ts:40`：对应类型同步；
+- 文案「**已去重（同内容已发）**」，送达时间 `at` 为 null 时显「—」；
+- **保持严格枚举**，不要为了这个改成任意 string；**不要**顺手改工作台那条 `pushStatus` 契约（那是另一个字段）；
+- 加一条用例：`deduplicated` + `at:null` 过 schema，未知状态值仍 502。
+这件单独一笔、最先交；之后再按上一段的四件做。
