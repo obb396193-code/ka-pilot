@@ -37,10 +37,10 @@ export type DailyDimensionRow = {
 }
 export type DailyTrendPoint = { ds: string; metrics: DailyMetrics }
 export type DailyModule = { key: string; title: string; cards?: { cost: MetricValue; cashCost: MetricValue; realConversion: MetricValue; cashCpa: RatioValue; onTargetRate: RatioValue; costSpace: MetricValue }; anomalies?: string[]; trend?: DailyTrendPoint[]; rows?: DailyDimensionRow[]; unsupported?: boolean; status?: string }
-export type DailyDelivery = { status: "sent" | "not_sent" | "queued" | "failed"; at: string | null; target: string | null }
+export type DailyDelivery = { status: "sent" | "not_sent" | "queued" | "failed" | "deduplicated"; at: string | null; target: string | null }
 // role 用后端那三个值：admin / finance 后端不认，发过去直接 400（F8-13 对齐 be2 的 dailyReportSchema）
 export type DailyReport = { schema: "daily-report/v1"; date: string; role: "optimizer" | "lead" | "exec"; dataAsOf: string | null; modules: DailyModule[]; actions: { pushDingtalk: boolean; exportPdf: boolean }; delivery?: DailyDelivery }
-export const dailyDeliveryMeta: Record<DailyDelivery["status"], { label: string; tone: "success" | "pending" | "critical" }> = { sent: { label: "已推送", tone: "success" }, queued: { label: "排队中", tone: "pending" }, not_sent: { label: "未推送", tone: "pending" }, failed: { label: "推送失败", tone: "critical" } }
+export const dailyDeliveryMeta: Record<DailyDelivery["status"], { label: string; tone: "success" | "pending" | "critical" }> = { sent: { label: "已推送", tone: "success" }, deduplicated: { label: "已去重（同内容已发）", tone: "success" }, queued: { label: "排队中", tone: "pending" }, not_sent: { label: "未推送", tone: "pending" }, failed: { label: "推送失败", tone: "critical" } }
 export const dailyFixture = dailyV1 as unknown as Fixture<DailyReport>
 export const dailyNotSentFixture = dailyV1NotSent as unknown as Fixture<DailyReport>
 export const dailyRoleLabel: Record<DailyReport["role"], string> = { optimizer: "优化师", lead: "负责人", exec: "管理层" }

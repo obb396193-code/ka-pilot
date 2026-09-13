@@ -523,7 +523,8 @@ export const dailyReportSchema = z.object({
   modules: z.array(z.object({ key: z.string().min(1), title: z.string().min(1) }).passthrough()),
   actions: z.object({ pushDingtalk: z.boolean(), exportPdf: z.boolean() }).strict(),
   delivery: z.object({
-    status: z.enum(["not_sent", "queued", "sent", "failed"]),
+    // v1.9.48 ④：出站命中已发过的同内容行 → deduplicated（不谎称 sent），at 为 null。枚举保持严格。
+    status: z.enum(["not_sent", "queued", "sent", "failed", "deduplicated"]),
     at: z.string().nullable(),
     target: z.string().nullable(),
   }).strict(),
