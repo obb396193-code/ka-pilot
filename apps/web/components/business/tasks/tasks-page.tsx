@@ -91,7 +91,8 @@ export function TasksPage() {
   const [legacyState, setLegacyState] = useState<keyof typeof taskListStates | "v151">("v151")
   // F8-25 ⑤：任务列表接真接口（`GET /tasks`）。页内筛选仍在前端做，
   // 服务端筛选/分页等 F8-27 的筛选栏一起接。
-  const tasksQuery = useTasks({ pageSize: 100 })
+  // 服务端能筛的下推（status）；「我负责的 / 关注」后端不认，留前端并提示截断
+  const tasksQuery = useTasks({ pageSize: 100, status: status === "all" ? undefined : status })
   const mockAll = useMemo(() => (isOk(tasksFixture) ? tasksFixture.data.items : []), [])
   const all = tasksIsMock ? mockAll : tasksQuery.items ?? []
   const legacy = legacyState === "v151" ? null : taskListStates[legacyState]

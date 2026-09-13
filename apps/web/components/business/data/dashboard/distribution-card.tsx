@@ -1,6 +1,10 @@
 "use client"
 
+import { IconDownload } from "@tabler/icons-react"
+
 import { DimensionChart } from "./dimension-chart"
+import { Button } from "@/components/ui/button"
+import { csvName, downloadCsv } from "@/lib/data/export-csv"
 import { PartialMark } from "./partial-mark"
 import { StatusChip } from "@/components/business/data-grid/data-grid"
 import { Card, CardContent } from "@/components/ui/card"
@@ -38,20 +42,50 @@ function sampleSize(row: NamedRow): { total: number; parts: string[] } | null {
   }
 }
 
-export function DistributionCard({ id, title, description, rows, colorKey, warnings }: {
+export function DistributionCard({ id, title, description, rows, colorKey, warnings, window }: {
   id: string
   title: string
   description: string
   rows: DashboardRow[]
   colorKey?: string
   warnings?: LineageWarning[]
+  /** 导出文件名里带上窗口——一堆「导出.csv」躺在下载目录里谁也认不出哪个是哪个 */
+  window?: { from: string; to: string }
 }) {
   const named = rows as NamedRow[]
+
+  /**
+   * 导出的是**屏幕上这份**，不再向后端要一次：
+   * 两次请求之间数据可能已经变了，人会拿到一份和刚才看的不一样的表，而且看不出来。
+   * 所以缺数在 CSV 里也是「−」、部分合计也带标记，和明细表一字不差。
+   */
+  const exportCsv = () => {
+    downloadCsv(
+      csvName("分布", window ?? { from: "", to: "" }, title),
+      ["分组", "花费", "真实转化", "现金 CPA", "考核达标", "样本量"],
+      named.map((row) => [
+        row.label,
+        mv(row.metrics.cost, "money0") + (isPartial(row.metrics.cost) ? "（部分）" : ""),
+        mv(row.metrics.realConversion) + (isPartial(row.metrics.realConversion) ? "（部分）" : ""),
+        rv(row.metrics.ratios.cashCpa, "money"),
+        row.assessment.onTarget === null
+          ? (row.assessment.costStatusReason === "partial_data" ? "待补齐" : "−")
+          : row.assessment.onTarget ? "达标" : "超线",
+        sampleSize(row)?.total ?? "",
+      ]),
+    )
+  }
   return (
     <Card>
       <CardContent className="flex flex-col gap-3 pt-5">
         <DimensionChart id={id} title={title} description={description} rows={rows} colorKey={colorKey} height={220} />
         {rows.length ? (
+          <>
+          <div className="flex justify-end">
+            <Button variant="ghost" size="sm" className="h-6 gap-1 px-1.5 text-xs font-normal text-muted-foreground" onClick={exportCsv}>
+              <IconDownload className="size-3" />导出 CSV
+            </Button>
+          </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-muted">
@@ -102,6 +136,7 @@ export function DistributionCard({ id, title, description, rows, colorKey, warni
               </TableBody>
             </Table>
           </div>
+          </>
         ) : null}
       </CardContent>
     </Card>

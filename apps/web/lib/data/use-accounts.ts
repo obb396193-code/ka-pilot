@@ -28,7 +28,8 @@ export type AccountsState = {
   reload: () => void
 }
 
-export type AccountsQuery = { page?: number; pageSize?: number; q?: string; stage?: string; starred?: boolean }
+/** 键名以 `accountListRequestSchema` 为准——BFF 对未知键直接拒 */
+export type AccountsQuery = { page?: number; pageSize?: number; q?: string; media?: string; stage?: string; starred?: boolean; status?: string }
 
 export function useAccounts(query: AccountsQuery = {}): AccountsState {
   const search = useMemo(() => {

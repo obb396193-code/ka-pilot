@@ -57,6 +57,14 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
   //   两者口径不同，挂在一起会让分摊的分母整个错（审查 ③ 点名）。
   const goalQuery = useDashboardDimension("goal", window, workspaceId, mockOptimizerRows(), filters)
   const goalRows = goalQuery.data ?? []
+  /**
+   * 自投 / 代理分布（v1.9.45）：走 **`segment:operator`**，不是 `agent_type`。
+   * `agent_type` 在 schema 里合法但没有解析器产出（v1.9.41），
+   * 而「自投还是代理」这个信息实际藏在账户昵称的 operator 段里——
+   * be2 ⑪ 把段维度开到 `account.dimension` 之后才拿得到。
+   */
+  const operatorQuery = useDashboardDimension("segment:operator", window, workspaceId, mockOptimizerRows(), filters)
+  const operatorRows = operatorQuery.data ?? []
   const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows(), filters)
   const bizRows = bizQuery.data ?? []
 
@@ -192,9 +200,10 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
         自投/代理等其余清洗段等 be2 Q-041 ⑪ 把 `segment:<key>` 开到 `account.dimension` 再加。
       */}
       <div className="grid gap-4 @4xl/main:grid-cols-2 @6xl/main:grid-cols-3">
-        <DistributionCard id="overview.placement" title="资源位分布" description="按账面花费；只画有消耗的项" rows={resourceRows} colorKey={colorKey} warnings={lineage?.warnings} />
-        <DistributionCard id="overview.goal" title="转化目标分布" description="按账面花费；只画有消耗的项" rows={goalRows} colorKey={colorKey} warnings={lineage?.warnings} />
-        <DistributionCard id="overview.optimizer" title="优化师分布" description="按账面花费；只画有消耗的项" rows={optimizerRows} colorKey={colorKey} warnings={lineage?.warnings} />
+        <DistributionCard id="overview.placement" title="资源位分布" description="按账面花费；只画有消耗的项" rows={resourceRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
+        <DistributionCard id="overview.goal" title="转化目标分布" description="按账面花费；只画有消耗的项" rows={goalRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
+        <DistributionCard id="overview.optimizer" title="优化师分布" description="按账面花费；只画有消耗的项" rows={optimizerRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
+        <DistributionCard id="overview.operator" title="自投 / 代理分布" description="按账面花费；来自账户昵称的 operator 段" rows={operatorRows} colorKey={colorKey} warnings={lineage?.warnings} window={window} />
       </div>
 
       {lineage ? <LineageFooter lineage={lineage} extra={<span>账户 {summary.accountCount} · 异常行 {summary.anomalyRows}</span>} /> : null}

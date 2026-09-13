@@ -12,7 +12,7 @@ import { useChartColorKey } from "@/lib/theme/use-chart-color-key"
 import { StateFrame, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { isOk } from "@/lib/fixtures/contract"
-import { viewsFixture, type SavedView } from "@/lib/fixtures/data-analysis"
+import { useSavedViews } from "@/lib/data/use-saved-views"
 import { WindowPicker, resolvePreset, type DataWindow } from "@/components/business/data/dashboard/window-picker"
 
 /**
@@ -86,8 +86,21 @@ export function DataPage() {
     if (!dataDate || pickedByUser.current) return
     setDataWindow((current) => (current.preset === "custom" ? current : resolvePreset(current.preset, dataDate, current)))
   }, [dataDate])
-  const [views, setViews] = useState<SavedView[]>(() => (isOk(viewsFixture) ? viewsFixture.data.items : []))
-  const saveView = (name: string, columns: string[]) => setViews((prev) => [{ id: `local-${Date.now()}`, page: "data.table", name, config: { version: "view/v1", filters: {}, columns, sort: [], window: { preset: dataWindow.preset, from: dataWindow.from, to: dataWindow.to } }, isShared: false, updatedAt: new Date().toISOString() }, ...prev])
+  /**
+   * F8-27：保存视图接真接口。之前只在内存里 push 一条——**刷新就没了**，
+   * 而按钮弹的是绿色的「已保存」。假成功比不能用更坏，人会以为存住了。
+   * 顺带把当前筛选条件一起存进 `config.filters`：视图的意义就是「把这一套条件记下来」。
+   */
+  const { views, save } = useSavedViews()
+  const saveView = (name: string, columns: string[]) => {
+    void save({
+      name,
+      page: "data.table",
+      columns,
+      window: { preset: dataWindow.preset, from: dataWindow.from, to: dataWindow.to },
+      filters,
+    })
+  }
   // ★重画信号是**主题**不是空间：空间 id 变了图当然也该重画，但那由 dataKey（参数指纹）负责；
   // 颜色是跟着模式/主色/深浅走的（审查员 C 点名：切颜色模式图表不重画）。
   const colorKey = useChartColorKey()
