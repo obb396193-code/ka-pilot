@@ -8210,3 +8210,23 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 2. **`PUT /admin/naming-rules` 收新形的校验与 `meta.dryRun` 跟着走**。
 
 **Q-044 ③ 给 Codex 的接线说明**在上一封（`154c8573`）里，函数名/参数/返回都写全了，转他即可。
+
+### Q-044 ② 收尾：两份 fixture 重导 + PUT 校验核实（be2 2026-09-13）
+
+**交付 SHA**：`b55d1e21`（分支 `be/r017`，路径限定提交、未 push）。② 齐了（内核见上一封 `e0d9c9e3`）。
+
+**做了什么**
+- **`scripts/seed-naming-rule-kuaishou-v1.json` 的 `device` 段改成归一形**：`iOS` + 别名 `IOS`/`苹果`。选它当首个样板是因为设备是最容易出现多种写法的一段，「一个值劈成几个桶」在这里最疼。（这份 seed 你上次授权过我改 `channel`，这次动的是 `device`，**一并报备**。）
+- 六份 admin fixture 全部**从真路由重导**。`admin/account-names.json` 现在把整条路显出来了：昵称里写 `IOS` → `value:"iOS"` + `raw:"IOS"`，读的人既看见归一后的桶，也看见运营实际敲的是什么。
+
+**`basis.at` 做了归一化**：它是解析发生的时刻，每导一次都不同。不归一的话每次重导都 diff，而变的只是个与契约无关的时间戳——谁也看不出这次到底改了什么。**已验证连跑两遍逐字节相同**。
+
+**`PUT /admin/naming-rules` 不需要改**：它走 `namingRuleSchema` 校验，而那个 schema 上一笔已经收新形，`meta.dryRun` 用的是同一份解析结果，自然跟上。**这一条我是用「让导出脚本走那条真路由跑一遍」确认的，不是读代码推断的**——六份 fixture 正是那条路 PUT 出来的。
+
+**门禁四包全绿**：domain **103 文件 1617** / db **160 文件 1797** / worker **208 文件 2427**（2 skipped）/ web **328**；eslint 0 error、tsc 全净。
+
+**发出形状变了**（承接上一封）：`GET /admin/naming-rules` 的 `values` 现在可能是 `{canonical, aliases[]}` 对象（老形字符串仍然合法，两种混排也合法——快手 `device` 段就是混排）；`GET /admin/account-names` 的每段多 `raw`/`basis` 两个可选键。**fe 那边若对 `values` 按 `string[]` 强类型解，会在这份 fixture 上炸**——请一并派 F8-28 镜像比对时覆盖这一项。
+
+**仍等你裁的一条**（上一封提的，只提醒不重复论证）：大小写不归一那档（`IOS`/`ios` → `iOS`）是我自行加的收紧，不要就说一声。
+
+**下一步**：按你的序做 **⑦ Q-045 剩余项**（①②④⑤ 已改派 Codex，我只留与数据链耦合的）。我先核一遍哪些还在我这头，核完直接做。
