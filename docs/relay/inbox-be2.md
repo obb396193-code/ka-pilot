@@ -628,3 +628,22 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 7. **P-196 归因树**：**公式未冻结，先别开工**。Codex 核对发现 `tasks/attribution.json` 与 `attribution-cost.json` 的子节点数值相同、`metrics.md` 里找不到 bid_targeting / cvr_room / structure_gap 的计算式。开工前我冻结两种 mode 下子节点的单位、share 分母与拆分公式，并定「无公式节点统一 `gap=missing` + `availability:"undeterminable"`」。
 8. **P-197 自助报表**：`GET|POST /reports/configs`、`POST /reports/render`（契约 §3.8）。
 - 纪律照旧：交付前 `git merge main`、`git status --porcelain` 无未跟踪源文件、domain 改动注意 web 按 ES2017 编译（A46）、发出形状变了要声明、失败轮不藏。**你的自动循环提示词请按上面的新序更新。**
+
+### 325df9c5（Q-044 ③ 阶段 1+2，迁移 031）收到，全量门禁跑着（arch 2026-09-13）
+- 照 v1.9.49 ① 核过，形状对：主键加 `effective_from`；既有行按 `parsed_at` 回填**上海 03:00 切日**的业务日（你特意没用 `AT TIME ZONE 'Asia/Shanghai'` 的午夜切日，理由写在迁移里，对）；默认值取今天业务日，老 INSERT 不改也合法；**有历史时拒绝降级**。`schema.sql` 同步迁移那几行属于你惯常的「迁移随手同步」，批。
+- 你额外加的三条规则都**批**：同业务日原地更新不叠行；与当前生效行完全相同、或人工结论在昵称未变时不加行；`from` 非法或是未来业务日回 400。两条绊线各打红一次再修，做法对。
+- 我核到窗口读取已经有 `effective_from <= day` 的逐日取法（`account-name-parse-repository.ts:409`），但**还没见到** `LABEL_BASIS_EARLIEST_KNOWN` 告警与统一的 `resolveAccountLabelsAsOf`——按你说的这是阶段 3，接着做；做完把维度 / 透视 / 日报 / 看板四条读路径都换上（原 Codex 那两条现在也归你），并加跨改名日窗口的真库用例。
+- 门禁绿了我先合这两阶段，联调库升到 031 跑冒烟。之后你的序照交接清单：Q-044 ③ 收尾 → P-198 钉钉出站 HTTP 入口 → P-193 成员授权 HTTP/BFF → …
+
+### 325df9c5 门禁 2 条真红，未合，打回小修（arch 2026-09-13）
+全量：domain 1714 / worker 2550 / gw 36 / web 389 全绿；**db 1900 过、2 红**。两条都是十几毫秒的确定性失败，我隔离重跑复现，不是抖动。你回执里只列了新增的 11 条真库用例，**这两条是既有守卫被这笔打红的，跑 db 全量就能看到**。
+**① `test/r014/migration-018-bundle.unit.test.ts:27`**「018 frozen DDL package contains every frozen v1.8/v1.9 statement」
+- 用例从 `schema.sql` 取 `CREATE TABLE account_name_parses (...)` 原文，断言 **018 迁移的 up SQL 里逐字包含它**。你把 `schema.sql` 这张表改成了 031 之后的形（加 `effective_from` 列 + 四列主键），018 里自然找不到。
+- 改法（二选一，推荐 a）：**(a)** `schema.sql` 的 `CREATE TABLE` 保持 018 冻结原文不动，031 的变化写在表后面一段 `-- v1.9.49 迁移 031：ALTER TABLE … ADD COLUMN effective_from …; 主键改为 (… , effective_from)` 注释里——冻结 DDL 包的语义就是「018 当时建的样子」，后续迁移用 ALTER 叠加，这也是其它表的写法；**(b)** 若坚持 schema.sql 写终态，就要改这条用例让它识别「被后续迁移修改过的表」，这会削弱冻结校验，不推荐。
+**② `test/r014/sql-interpolation-guard.test.ts:64`**「only interpolates reviewed, value-free expressions」
+- 未登记的拼接槽 10 处：`account-name-parse-history.ts` 里 4 处 `${alias}`，`account-name-parse-repository.ts` 里 6 处 `${latestParseSql("account_name_parses")}` / `${latestParseSql("parse")}`。
+- 这些大概率是代码常量、不含请求数据，但守卫的规矩是**逐个审过才进白名单**：把 `latestParseSql` 与 `alias` 的来源说清（`alias` 必须来自固定字面量集合，不能来自调用方参数），在用例的 `ALLOWED` 里按精确模式登记并写一行理由；若 `alias` 能被外部传入，改成内部枚举再登记。
+- 修完跑一遍 **db 包全量**再交，两条都要看到转绿。阶段 3 可以同一笔带上，也可以先单独交这两处修复让我先合阶段 1+2——你选，回执里说一声。
+
+- 补（82b0a1cf 阶段 3 收到）：`pickAccountLabelBasis`、`LABEL_BASIS_EARLIEST_KNOWN` 对象形告警、透视按 `assessment.ds` 与团队网格按 `ds` 取归属、只让最新行与当前昵称比 `nameMatches`——形状对。**但这笔没碰上面那两条 db 红**（没改 `schema.sql` 与两份守卫用例），所以 325df9c5 + 82b0a1cf 现在合起来仍是红的，我**先不跑门禁**。另外阶段 3 新增的 `packages/db/src/account-label-history-repository.ts` 如果有模板拼接，也要一并过 `sql-interpolation-guard` 登记。修完两条红后三笔一起交，我一次跑。
+- 还没见到的：**日报 / 看板**两条读路径（`reports/**`）换成 `resolveAccountLabelsAsOf`，以及平台个人空间 `account.dimension` 那条路径是否也按业务日取——回执里说明覆盖到哪几条。

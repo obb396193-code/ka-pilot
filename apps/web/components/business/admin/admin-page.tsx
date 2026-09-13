@@ -23,7 +23,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { fmtTime, isOk, rv } from "@/lib/fixtures/contract"
+import { NotConnected } from "@/components/business/state/not-connected"
+import { FIXTURES_ENABLED, fmtTime, isOk, rv } from "@/lib/fixtures/contract"
 import { AddMemberDialog, ResetPasswordDialog } from "@/components/business/admin/member-dialogs"
 import { rerunEtlRun, useEtlRuns } from "@/lib/data/use-etl-runs"
 import { assetKindLabel, assetsFixture, assetStatusMeta, calendarFixture, etlJobLabel, etlRunsFixture, normalizeEtlRun, eventTypeLabel, flagMeta, flagsFixture, grantsFixtures, membersFixture, reconcileFixture, roleLabel, type AssetItem, type CalendarEvent, type EtlRun, type FlagKey, type Member } from "@/lib/fixtures/admin"
@@ -45,7 +46,7 @@ type Tab = (typeof tabs)[number]["value"]
 
 const identitySourceLabel: Record<string, string> = { internal_test: "内测账号", buc: "公司统一登录", sso: "统一身份" }
 const memberHelper = createColumnHelper<GridFeatures, Member>()
-function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member: Member) => void, onResetPassword: (member: Member) => void) {
+function makeMemberColumns(onGrants: (member: Member) => void, onResetPassword: (member: Member) => void) {
   return memberHelper.columns([
     dragColumn<Member>(),
     selectionColumn<Member>(),
@@ -66,17 +67,22 @@ function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member
     actionsColumn<Member>((member) => (
       <>
         <DropdownMenuItem onSelect={() => onGrants(member)}>账户授权</DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => toast("改角色", { description: `接口接入后生效（当前为示例）` })}>改角色</DropdownMenuItem>
+        {/*
+          ★这三个写动作原来是「点完弹绿字、其实没调任何接口」——和归属清洗那三个按钮同一类问题。
+          假成功比按钮置灰坏得多：置灰只是不能用，假成功让人以为改完了，
+          然后按着一份没落库的权限往下走（这里改的还是**权限**，后果更重）。
+          be2 的 HTTP/BFF 落地前一律禁用并写出端点（arch 2026-09-13）。
+        */}
+        <DropdownMenuItem disabled title="接口未接入 · PATCH /admin/members/:identityId">改角色（接口未接入）</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => onResetPassword(member)}>重置密码</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant={member.isActive ? "destructive" : "default"} onSelect={() => onToggle(member)}>{member.isActive ? "停用（立刻踢下线，记录保留）" : "恢复"}</DropdownMenuItem>
+        <DropdownMenuItem disabled title="接口未接入 · PATCH /admin/members/:identityId">{member.isActive ? "停用（接口未接入）" : "恢复（接口未接入）"}</DropdownMenuItem>
       </>
     )),
   ])
 }
 
 function MembersTab() {
-  const [active, setActive] = useState<Record<string, boolean>>({})
   const [grantsFor, setGrantsFor] = useState<Member | null>(null)
   const [adding, setAdding] = useState(false)
   const [resetFor, setResetFor] = useState<Member | null>(null)
@@ -84,8 +90,9 @@ function MembersTab() {
   const [addedMembers, setAddedMembers] = useState<Member[]>([])
   const [mustChange, setMustChange] = useState<Record<string, boolean>>({})
   const items = useMemo(() => [...(isOk(membersFixture) ? membersFixture.data.items : []), ...addedMembers]
-    .map((item) => ({ ...item, isActive: active[item.identityId] ?? item.isActive, mustChangePassword: mustChange[item.identityId] ?? item.mustChangePassword })), [active, addedMembers, mustChange])
-  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已已停用：成员失效并踢下线" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }, setResetFor), [])
+    .map((item) => ({ ...item, mustChangePassword: mustChange[item.identityId] ?? item.mustChangePassword })), [addedMembers, mustChange])
+  // 停用/恢复接口未接入前**不本地翻转**：翻转 + 弹成功 = 假装生效了
+  const columns = useMemo(() => makeMemberColumns(setGrantsFor, setResetFor), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => item.identityId })
   const grantsFixture = grantsFor ? grantsFixtures[grantsFor.identityId] : undefined
   const grants = grantsFixture && isOk(grantsFixture) ? grantsFixture.data.items : null
@@ -97,13 +104,19 @@ function MembersTab() {
       <Dialog open={grantsFor !== null} onOpenChange={(open) => { if (!open) setGrantsFor(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>账户授权 · {grantsFor?.displayName}</DialogTitle><DialogDescription>admin/grants · read 只看，execute 可执行写操作（仍走变更集确认）</DialogDescription></DialogHeader>
-          {grants ? (
+          {/* A35：真实模式不读样例。授权是权限数据，拿样例糊上去比空着危险得多 */}
+          {!FIXTURES_ENABLED ? (
+            <NotConnected endpoint="GET /admin/members/:identityId/grants" hint="be2 队列第 2 位；接通前这里不显示任何样例授权。" />
+          ) : grants ? (
             <Table>
               <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>级别</TableHead><TableHead>授权于</TableHead><TableHead /></TableRow></TableHeader>
-              <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => toast("已撤销", { description: "接口接入后生效（当前为示例）" })}>撤销</Button></TableCell></TableRow>)}</TableBody>
+              <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" disabled title="接口未接入 · PUT /admin/members/:identityId/grants（整体替换）">撤销</Button></TableCell></TableRow>)}</TableBody>
             </Table>
           ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（示例给了两位成员）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
-          <DialogFooter><Button size="sm" variant="outline" onClick={() => toast("新增授权", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新增授权</Button></DialogFooter>
+          <DialogFooter>
+            <span className="mr-auto text-xs text-muted-foreground">授权走整体替换（`PUT .../grants`），接通后在这里改完一次性提交</span>
+            <Button size="sm" variant="outline" disabled title="接口未接入 · PUT /admin/members/:identityId/grants"><IconPlus />新增授权</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

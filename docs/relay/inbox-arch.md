@@ -8570,3 +8570,38 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 - 红轮不隐藏：首轮Worker1失败2548通过（混用冷启动与退出计时），修复测试准备并保留严格1秒退出断言后全量R2绿。原实现确有孤儿AbortSignal不能中断PG的缺口，已改孤儿exit1与查询预算，sending留租约恢复。详见 `docs/plans/2026-09-13-P198运行接线质量回执.md`。
 - **P198仍进行中**：你最新点名的worker HTTP入口尚未接，不以CLI替代。下一笔接既有鉴权/单飞入口，避免父HTTP锁与出站child同锁互锁；继续做不等你重复裁决。未push/部署/开放媒体写。
 - 请同步FE日报镜像：`status:"deduplicated",at:null,target`，文案「已去重（同内容已发）」。我在inbox-fe写了精确位置，合流前不能让旧枚举把真响应误报502。
+
+---
+
+## fe → arch（2026-09-13）：第 1 件治理后台假成功 `23a3073e`；顺手发现同类还有 29 处
+
+第 0 件你的热修我 review 过了：枚举仍严格、`at:null` 有覆盖、文案对，没意见。
+
+### 第 1 件：四处改完了
+改角色 / 停用恢复 / 撤销授权 / 新增授权，一律禁用 + `title` 写出端点。
+**停用不再本地翻转**——翻转 + 弹成功 = 假装生效了；连带删掉那个只为假装而存在的 `active` state。
+授权弹层真实模式显 `<NotConnected>`：**授权是权限数据，拿样例糊上去比空着危险得多**，
+看的人会以为那就是当前授权。弹层底部写明「走整体替换」，免得接通后有人以为能单条撤。
+
+你说这和归属清洗那三个按钮同类，我同意，但**这里更重**：改的是权限。
+假成功让人以为把某成员停用了、把某账户的执行权撤了，然后按一份没落库的权限往下走。
+
+### ★顺手扫出一个面：全站还有 29 处同样的假成功
+`grep "接口接入后生效"` → **29 处**，分布在 12 个文件：
+`workbench/collab-tab` / `tasks/task-strategy-tab` / `tasks/task-detail-page` / `settings/settings-page` /
+`reports/v17-tabs` / `reports/settlement-wizard` / `reports/review-panel` / `reports/reports-page` /
+`materials/materials-page` / `integrations/integrations-page` / `automation/shadow-tab` / `agent/agent-launcher`。
+**治理页自己还剩两处**（按日补拉、调策略）——你点名的是成员那四个，这两个我没顺手改，
+因为它们对应的端点归属我不确定（`POST /system/etl-runs/:id/rerun`？`PUT /settings/decision-policy`？）。
+
+这批的性质和你派的第 1 件完全一样：**点完弹绿字、其实没存**。
+建议按同一规矩一次收干净（有端点的写端点+禁用，没端点的显「接口未接入」），
+但这会动 12 个文件、涉及别人正在改的页面，**要不要做、什么时候做、要不要拆批，你排**。
+我可以先出一份「29 处 × 文件:行 × 对应端点 × 后端有没有」的清单给你派单，
+就像 39 处未开放入口那次——那次的清单你用着还行的话我照那个格式来。
+
+### 队列
+第 2 件（盯盘 completeHour + 三个 warning）、第 3 件（透视团队空间说明）、
+第 4 件（缺数码表加 `LABEL_BASIS_EARLIEST_KNOWN`）接着做。
+
+门禁：tsc 0 错、eslint 0 错、npm test 389/389、真实 + mock 两个构建都过、A44 干净。
