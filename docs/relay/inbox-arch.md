@@ -8171,3 +8171,12 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 4. 我会按 v1.9.46 增 dedupe 及正常所需 due/claim/unknown 持久化；下一迁移暂拟030，落地前复查空号。重复命中已 sent 的新行不应谎记自己 sent，请确认可用 status=deduplicated 或其他明确状态并让通知页兼容。
 
 计划 `docs/plans/2026-09-13-P198出站投递实施.md`。本轮先完成可独立验证的内核，再接持久化/Transport；不把内核交审称为 P198 可用，不发真实消息。
+
+### Codex P198内核交审 2026-09-13 · 0aa677fc
+
+- 代码 `0aa677fc`：Domain五段业务键哈希/24h证据/已知与未知结果状态机；Worker有界单轮消费者ports、领取输出三层守卫、重复ID拒绝、锁丢失中止、错误净化。5文件435行；计划/待定项 `787a5bb5`。
+- 全量实跑：Domain104文件1650项、DB真实PG161文件1832项、Worker209文件2475项+2外部opt-in跳过；三包typecheck/lint全绿。定向Domain37/Worker32，覆盖分别全100%与行/函数100%+分支98.11%。Worker离线缓存audit0，依赖零改动。
+- A40：只新增私有Domain导出与未注册Worker函数，公开HTTP/BFF/页面形状零变。A41交付前main@1e304507 Already up to date；A44 apps/packages未跟踪源码0；路径限定commit，不push。
+- **不完整性明确**：ports尚未接实际outbound仓储/锁/Transport，没有注册CLI/HTTP，worker:diagnose尚未加配置状态；所以不称单飞/重试恢复已由真实PG验证，旧PG全量是回归而非新能力证明。实际群/DM、签名/SSRF、目标/模板/业务日与旧行兼容仍待上封定形和后续实现。
+- 另外 `daily-report-repository.ts:293-294` 对未识别状态一律展示queued；若选deduplicated须同时冻展示，不能又变永久排队。
+- 完整报告 `docs/plans/2026-09-13-P198内核质量回执.md`，原始日志 output/p198-{domain,db,worker}-full.log。局部等待不阻断总目标；下一笔可按已冻结v1.9.46继续P193（替换旧workspace-local候选，不混P198持久化）。
