@@ -14,9 +14,14 @@ import {
   type DataViewMode,
   type WindowComparisonMode,
   windowComparisonModeSchema,
+
+  segmentDimensionKey,
 } from "@ka/domain";
 import { z } from "zod";
 import { buildKaWindowAggregateSql } from "./ka-window-aggregate-sql.js";
+// 可用维度只有一份定义（`account-labels.ts` 就是算标签的地方）：注册表另抄一份，
+// 迟早出现「注册表放行、查询不认」——那种不一致不会报错，只会返回一张空透视表。
+import { FIXED_DIMENSIONS } from "./account-labels.js";
 
 const RESOLVED_QUERY = Symbol("resolved-data-query");
 const AUTHORITY_POLICY_VERSION = "2026-08-24";
@@ -108,6 +113,8 @@ export class QueryRegistryError extends Error {
   constructor(
     readonly code: "QUERY_NOT_ALLOWED" | "VIEW_UNSUPPORTED" | "DIMENSION_UNSUPPORTED" | "INVALID_REQUEST",
     message: string,
+    /** v1.9.34：`DIMENSION_UNSUPPORTED` 时带上这个源可用的维度清单，调用方不用猜。 */
+    readonly details?: Record<string, unknown>,
   ) {
     super(message);
     this.name = "QueryRegistryError";
@@ -203,10 +210,28 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
   });
 }
 
+/**
+ * v1.9.34 ⑩：pivot2 的键名与 summary 对齐——收 `dateFrom/dateTo`，`window_from/to` **保留一版别名**
+ * （fe 已经发出去的请求不能一刀切断），两种都给就是调用方自己没想清楚，直接拒。
+ * 同时加 `filters`（与 summary 同形），自定义透视要能先筛再透。
+ */
+
 const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
-  window_from: dateInputSchema, window_to: dateInputSchema, media: mediaSchema,
+  dateFrom: dateInputSchema.optional(), dateTo: dateInputSchema.optional(),
+  window_from: dateInputSchema.optional(), window_to: dateInputSchema.optional(),
+  media: mediaSchema, filters: dashboardFiltersSchema.optional(),
   taskIds: z.array(taskQueryIdSchema).max(1000).refine(ids => new Set(ids).size === ids.length, "Duplicate task IDs").optional(),
-}).strict().transform(({ window_from, window_to, taskIds, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to,
+}).strict().superRefine((input, context) => {
+  const camel = input.dateFrom !== undefined || input.dateTo !== undefined;
+  const snake = input.window_from !== undefined || input.window_to !== undefined;
+  if (camel && snake) context.addIssue({ code: "custom", message: "date range spellings cannot be mixed" });
+  const from = input.dateFrom ?? input.window_from, to = input.dateTo ?? input.window_to;
+  if (from === undefined || to === undefined) {
+    context.addIssue({ code: "custom", message: "provide both dateFrom and dateTo" });
+  }
+}).transform(({ window_from, window_to, dateFrom, dateTo, taskIds, filters, ...input }): NormalizedQueryParams => ({
+  ...input, dateFrom: (dateFrom ?? window_from)!, dateTo: (dateTo ?? window_to)!,
+  ...(filters === undefined ? {} : { filters }),
   ...(taskIds === undefined ? {} : { taskIds }) }));
 const intervalSchema = normalizedSchema(commonDateFields);
 const windowFields = { ...commonDateFields, filters: dashboardFiltersSchema.optional(), taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
@@ -514,11 +539,20 @@ export class DataQueryRegistry {
       if (dataView.data !== "platform") throw new QueryRegistryError("VIEW_UNSUPPORTED", "Dashboard filters are not available for this source");
       assertDateBudget(parsedParams.data, 31);
     }
-    if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !["account", "task", "biz"].includes(dim ?? ""))) {
-      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source");
+    // v1.9.34 ⑦：`segment:<key>` 是「按某个清洗段分析」——老板要每个清洗字段都能拿来透视，
+    // 段名由各媒体的命名规则决定、注册表不可能穷举，所以只校验形状。
+    // **只有 pivot2 收段**：`account.dimension` 的下游只解析命名维度，放段进去会在更深处炸。
+    // 不支持时把可用清单一并交出去，调用方不用猜。
+    const usable = (dimension: string | undefined, segments: boolean): boolean =>
+      dimension !== undefined && (FIXED_DIMENSIONS.includes(dimension)
+        || (segments && segmentDimensionKey(dimension) !== null));
+    if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !usable(dim, true))) {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source",
+        { supported: [...FIXED_DIMENSIONS, "segment:<key>"] });
     }
-    if (queryId.data === "account.dimension" && !["account", "task", "biz", "optimizer", "goal", "placement"].includes(parsedParams.data.dimensionType ?? "")) {
-      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source");
+    if (queryId.data === "account.dimension" && !usable(parsedParams.data.dimensionType, false)) {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source",
+        { supported: [...FIXED_DIMENSIONS] });
     }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
       (queryId.data === "account.summary" || queryId.data === "account.trend")) {

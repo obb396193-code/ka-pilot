@@ -10,7 +10,26 @@ const dimensionFields = {
   assessment: windowAssessmentSchema,
   anomaly: z.boolean(),
 };
-export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"]);
+/** 固定维度枚举。`segment:<key>` 不在这里——它是「按某个清洗段分析」，段名由规则决定，不能写死。 */
+export const fixedDimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"]);
+
+/**
+ * v1.9.34 ⑩（Q-041 ⑦）：维度开放到**任意清洗段** —— `segment:<key>`。
+ * 老板要的是「每个渠道昵称清洗出的每个字段都能拿来做分析和透视」，
+ * 段名来自各媒体自己的命名规则，所以只能约束形状不能枚举取值：
+ * key 与规则段 key 同形（字母数字下划线），长度与段 key 一致。
+ */
+export const dimensionTypeSchema = z.union([
+  fixedDimensionTypeSchema,
+  z.string().regex(/^segment:[A-Za-z0-9_]{1,64}$/),
+]);
+
+/** `segment:<key>` → `<key>`；固定维度返回 null。判定只此一处，别在各处自己切字符串。 */
+export function segmentDimensionKey(dimension: unknown): string | null {
+  if (typeof dimension !== "string" || !dimension.startsWith("segment:")) return null;
+  const key = dimension.slice("segment:".length);
+  return /^[A-Za-z0-9_]{1,64}$/.test(key) ? key : null;
+}
 
 const groupedRowSchema = z.object(dimensionFields).strict().superRefine(refineWindowMetricAssessment);
 export const groupedDimensionWindowRowSchema = groupedRowSchema;

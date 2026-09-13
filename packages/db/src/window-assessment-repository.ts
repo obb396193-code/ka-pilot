@@ -38,6 +38,12 @@ interface AssessmentGroupRow {
   version_id: string | null;
   price: string | number | null;
   effective_date: string | null;
+  /**
+   * v1.9.40：这一天的合计是不是**所有**期望账户日都有数。缺席 = 老调用方，按齐全处理。
+   * 逐账户日的 `loadByAccount` 本来就一天一户，不会出现「一半有数」，所以它不发这两个键。
+   */
+  cash_cost_complete?: boolean;
+  real_conversion_complete?: boolean;
 }
 
 function decodedNumber(value: unknown): number | null {
@@ -48,10 +54,20 @@ function decodedNumber(value: unknown): number | null {
   return nullableNumber(value);
 }
 
+/**
+ * v1.9.40：有值但这一天并非所有账户都有数 → `partial`（有数那部分的和），不是 `available`。
+ * 没值仍是 `missing`。**这一档必须跟着值一起传出去**：光给数不给标，
+ * `computeWindowAssessment` 会拿半天的花费去判达标，而判出来的绿是错的、还看不出来。
+ */
+function partialAware(value: number | null, complete: boolean | undefined): DailyAssessmentInput["cashCost"] {
+  if (value === null || complete !== false) return metricValue(value);
+  return { value, availability: "partial" };
+}
+
 function decodeAssessment(row: AssessmentGroupRow): DailyAssessmentInput {
   const mapped = dailyAssessmentInputSchema.safeParse({
-    ds: row.ds, cashCost: metricValue(decodedNumber(row.cash_cost)),
-    realConversion: metricValue(decodedNumber(row.real_conversion)),
+    ds: row.ds, cashCost: partialAware(decodedNumber(row.cash_cost), row.cash_cost_complete),
+    realConversion: partialAware(decodedNumber(row.real_conversion), row.real_conversion_complete),
     price: row.version_id === null && row.price === null && row.effective_date === null ? null : {
       versionKey: row.version_id, value: decodedNumber(row.price), effectiveDate: row.effective_date,
     },
@@ -199,9 +215,9 @@ export class WindowAssessmentRepository {
     const result = await this.connection.query<AssessmentGroupRow>(`${EXPECTED_METRIC_CTE}
       SELECT metric.ds::text AS ds, assessment.id::text AS version_id,
         assessment.price, assessment.effective_date::text AS effective_date,
-        ${["cash_cost", "real_conversion"].map((field) => `CASE
-          WHEN count(metric.${field})=count(*) OR bool_or(metric.${field}::text IN ('NaN','Infinity','-Infinity'))
-          THEN sum(metric.${field}) ELSE NULL END AS ${field}`).join(",\n")}
+        ${["cash_cost", "real_conversion"].map((field) => `sum(metric.${field}) AS ${field},
+          (count(metric.${field})=count(*)
+           OR bool_or(metric.${field}::text IN ('NaN','Infinity','-Infinity'))) AS ${field}_complete`).join(",\n")}
       ${assessmentFromSql}
       WHERE ${filter.whereSql}
       GROUP BY metric.ds, assessment.id, assessment.price, assessment.effective_date

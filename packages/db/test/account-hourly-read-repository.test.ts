@@ -65,6 +65,41 @@ describe("account hourly reader / real PG", () => {
     await pool?.end();
     if (admin) { await admin.query(`DROP SCHEMA ${schema} CASCADE`); await admin.end(); }
   });
+  /**
+   * v1.9.39：整日采样存在性。它把「还没采到」（pending）与「采过了就是没有」（missing）分开，
+   * 所以**必须按整日问**——按请求的小时段问会把只在窗口外投放的账户说成没采到。
+   */
+  describe("whole-day sampling existence", () => {
+    const granted = [
+      { media: "KUAISHOU", accountId: "a", accessLevel: "read" as const },
+      { media: "KUAISHOU", accountId: "b", accessLevel: "read" as const },
+    ];
+    it("names an account sampled outside the requested hours, and omits one with no samples at all", async () => {
+      // a 只在 20 点有样本，窗口问的是 1–2 点：a 依然算「今天采过」。b 一行都没有。
+      await sample(20, "a");
+      const result = await repository.read(auth(granted), request);
+      expect(result.rows).toEqual([]);
+      expect(result.sampledAccounts).toEqual([{ media: "KUAISHOU", accountId: "a" }]);
+    });
+    it("returns one entry per account, not one per sampled hour", async () => {
+      for (const hh of [0, 1, 2, 3]) await sample(hh, "a");
+      const result = await repository.read(auth(granted), request);
+      expect(result.sampledAccounts).toEqual([{ media: "KUAISHOU", accountId: "a" }]);
+    });
+    it("never names another workspace's, another medium's or an ungranted account", async () => {
+      await sample(1, "a", "KUAISHOU", foreignId);
+      await sample(1, "a", "TENCENT");
+      await sample(1, "b");
+      // 只授权了 a：b 当天确实有样本，但它不在授权里，不能出现在名单上。
+      const result = await repository.read(auth(), request);
+      expect(result.sampledAccounts).toEqual([]);
+    });
+    it("is empty when the day has no samples at all", async () => {
+      await sample(1, "a", "KUAISHOU", foreignId);
+      expect((await repository.read(auth(granted), request)).sampledAccounts).toEqual([]);
+    });
+  });
+
   it("only reads approved triple keys; keeps predecessor, actual timestamps, null and zero", async () => {
     for (const hh of [0, 1, 2, 3]) {
       await sample(hh); await sample(hh, "b"); await sample(hh, "a", "TENCENT"); await sample(hh, "a", "KUAISHOU", foreignId);

@@ -763,6 +763,8 @@ describe("data API HTTP composition", () => {
         rowCount: 1,
         accountCount: 1,
         anomalyRows: 0,
+        // v1.9.40：部分合计的列名单；本桩不造缺口。
+        partial: [],
         cost: "not-a-number",
       }),
       queryTrend: async () => [],

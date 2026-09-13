@@ -32,13 +32,27 @@ interface TrendDatabaseRow extends AggregateDatabaseRow {
 const SUM_COLUMNS = ["cost", "exposure", "click", "conversion", "real_conversion",
   "cash_cost", "cost_space", "wake_uv", "potential_uv"] as const;
 
+/**
+ * v1.9.40（老板拍板 B 的主体，2026-09-12 重做）：窗口聚合按**部分合计**出数。
+ *
+ * `sum()` 天然跳过缺的账户日，所以这里直接给「Σ 有数的那部分」，另发一列 `<col>_complete`
+ * 说明这个和是不是覆盖了全部期望账户日。原来的写法是「只要缺一个账户日，整列给 NULL」——
+ * 页面上最显眼的几张卡因此长期是「−」，而缺的往往只是几十户里的一两户。
+ *
+ * 坏值（NaN/Infinity）**仍然进 sum**，让解码层抛：把它们当缺数吞掉，会把一个坏掉的源
+ * 伪装成一份「部分合计」。
+ *
+ * ⚠️ 这个口径与 `window-assessment-repository.load` 必须一致：那边按天分组，
+ * 同一天只要有一个账户缺数就整天塌成 NULL 的话，两边算出的窗口合计不同，
+ * `platform-window-query` 的一致性核对会把整条 summary 判废（2026-09-12 P0 就是这么炸的）。
+ */
 // These identifiers are code-owned, never request SQL. NULL cannot conceal a corrupt NaN/Infinity.
 export const METRIC_AGGREGATE_SQL = `
   count(*) FILTER (WHERE metric.observed)::text AS row_count,
   count(DISTINCT (metric.media, metric.account_id)) FILTER (WHERE metric.observed)::text AS account_count,
-  ${SUM_COLUMNS.map((column) => `CASE WHEN count(metric.${column})=count(*)
-    OR bool_or(metric.${column}::text IN ('NaN','Infinity','-Infinity'))
-    THEN sum(metric.${column}) ELSE NULL END AS ${column}`).join(",\n  ")},
+  ${SUM_COLUMNS.map((column) => `sum(metric.${column}) AS ${column},
+    (count(metric.${column})=count(*)
+     OR bool_or(metric.${column}::text IN ('NaN','Infinity','-Infinity'))) AS ${column}_complete`).join(",\n  ")},
   count(*) FILTER (WHERE metric.data_anomaly)::text AS anomaly_rows`;
 
 /** Expected account-days remain visible even when ETL has no row; observed counts stay factual.
@@ -72,7 +86,7 @@ function subtractOne(ratio: ReturnType<typeof safeDivide>): ReturnType<typeof sa
     : ratio;
 }
 
-function buildRatios(values: Omit<MetricSummary, "ratios">): MetricRatios {
+function buildRatios(values: Omit<MetricSummary, "ratios" | "partial">): MetricRatios {
   return {
     ctr: safeDivide(values.click, values.exposure),
     cvr: safeDivide(values.conversion, values.click),
@@ -88,8 +102,19 @@ function buildRatios(values: Omit<MetricSummary, "ratios">): MetricRatios {
   };
 }
 
+/**
+ * v1.9.40：哪些列给的是**部分合计**。只列「有值但不完整」的——
+ * 一个列压根没值时仍旧是 missing，标成 partial 等于宣称「有一部分数据」而其实一条都没有。
+ */
+function partialColumns(row: AggregateDatabaseRow): string[] {
+  return SUM_COLUMNS.filter((column) => {
+    const complete = (row as unknown as Record<string, unknown>)[`${column}_complete`];
+    return complete === false && (row as unknown as Record<string, unknown>)[column] !== null;
+  }).map((column) => column);
+}
+
 export function mapMetricSummary(row: AggregateDatabaseRow): MetricSummary {
-  const values: Omit<MetricSummary, "ratios"> = {
+  const values: Omit<MetricSummary, "ratios" | "partial"> = {
     rowCount: requiredNumber(row.row_count),
     accountCount: requiredNumber(row.account_count),
     cost: nullableNumber(row.cost),
@@ -103,7 +128,9 @@ export function mapMetricSummary(row: AggregateDatabaseRow): MetricSummary {
     potentialUv: nullableNumber(row.potential_uv),
     anomalyRows: requiredNumber(row.anomaly_rows),
   };
-  return { ...values, ratios: buildRatios(values) };
+  // 比率照常由部分合计的分子分母算出来——「算出来了但只覆盖部分天」与「算不出来」
+  // 在用户眼里完全不是一回事，压成 undefined 会把前者退回一个「−」。
+  return { ...values, ratios: buildRatios(values), partial: partialColumns(row) };
 }
 
 export async function queryMetricSummary(

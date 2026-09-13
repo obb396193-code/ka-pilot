@@ -122,3 +122,35 @@ describe("formal account-hourly source projection", () => {
     await expect(setup({ ...snapshot(), unexpected: "x".repeat(16 * 1024 * 1024) }).query.query(resolved(), auth)).rejects.toMatchObject({ code: "SOURCE_TRUNCATED" });
   });
 });
+
+/**
+ * v1.9.39：小时表这一整天对某账户零行时，返 `pending`（还没采）而不是 `missing`（采过了没有）。
+ * 整日 25 行全 `missing` 会让人以为这个账户当天真的没花钱，实际只是采集还没跑到它。
+ */
+describe("v1.9.39 hourly reports an unsampled day as pending", () => {
+  const twoAccounts: ApprovedWorkspaceAuthContext = { ...auth, scope: { kind: "explicit_accounts",
+    accounts: [{ media: "KUAISHOU", accountId: "a", accessLevel: "read" },
+      { media: "KUAISHOU", accountId: "b", accessLevel: "read" }] } };
+
+  it("marks the unsampled account pending and leaves the sampled one alone", async () => {
+    const { query } = setup({ ...snapshot(), sampledAccounts: [{ media: "KUAISHOU", accountId: "a" }] });
+    const source = validateHourlySource(await query.query(resolved(), twoAccounts), resolved(), twoAccounts);
+    const pending = { value: null, availability: "pending" };
+    expect(source.rows.find((r) => r.accountId === "b"))
+      .toMatchObject({ cumulative: { cost: pending, cashCost: pending, conversion: pending, realConversion: pending } });
+    expect(source.rows.find((r) => r.accountId === "a")).toMatchObject({ cumulative: { cost: mv(80) } });
+    // 还没采到当然算不上完整覆盖——这一档不能因为「给了个状态」就冒充齐全。
+    expect(source.lineage.coverage.complete).toBe(false);
+  });
+
+  it("keeps the old shape when the snapshot carries no sampling list", async () => {
+    const source = validateHourlySource(
+      await setup().query.query(resolved(), twoAccounts), resolved(), twoAccounts);
+    expect(source.rows.find((r) => r.accountId === "b")).toMatchObject({ cumulative: { cost: mv(null) } });
+  });
+
+  it("refuses a sampling list naming an account outside the grant", async () => {
+    const { query } = setup({ ...snapshot(), sampledAccounts: [{ media: "KUAISHOU", accountId: "outsider" }] });
+    await expect(query.query(resolved(), twoAccounts)).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+});

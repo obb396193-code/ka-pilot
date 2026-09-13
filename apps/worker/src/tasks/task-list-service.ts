@@ -2,6 +2,7 @@ import {
   computeTaskPacing,
   deriveSystemReadiness,
   mergeReadiness,
+  metricValue,
   shanghaiTaskBusinessDate,
   taskListRequestSchema,
   taskListResponseSchema,
@@ -149,6 +150,10 @@ function itemFor(row: TaskListRepositoryRow, businessDate: string): TaskListItem
     aliases: row.aliases,
     monitorUrl: row.monitorUrl,
     productName: row.productName,
+    // v1.9.37（Q-043 ⑦）：日预算上限。仓储取的就是任务详情那一列，
+    // 这里只做 MetricValue 包装，**不参与 pacing 的任何推算**——
+    // pacing 里的 budget 是拿来算进度的，漏了会被 projectedGap 兜住；这一列是直接显示给人看的。
+    budget: metricValue(row.budget),
   };
 }
 

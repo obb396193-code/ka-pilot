@@ -101,6 +101,12 @@ export interface MetricSummary {
   potentialUv: number | null;
   anomalyRows: number;
   ratios: MetricRatios;
+  /**
+   * v1.9.40：这些列给的是**部分合计**（SQL 侧列名，snake_case）——有值、但没覆盖全部期望账户日。
+   * 空数组 = 全齐。列名单由 `SUM_COLUMNS` 决定，响应侧的映射表必须与它逐字对齐，
+   * 否则漏掉的那一列会把部分合计当完整合计发出去。
+   */
+  partial: string[];
 }
 
 export interface MetricTrendRow {

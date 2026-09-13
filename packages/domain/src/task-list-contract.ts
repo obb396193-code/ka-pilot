@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { ratioValueSchema } from "./data-query-rows.js";
+import { canonicalMetricValueSchema } from "./metric-value.js";
 import {
   requestIdSchema,
   stableDataQueryErrorSchema,
@@ -234,6 +235,17 @@ export const taskListItemSchema = z
     aliases: z.array(z.string()),
     monitorUrl: z.string().nullable(),
     productName: z.string().nullable(),
+    /**
+     * v1.9.37（Q-043 ⑦）日预算上限，与任务详情**同一列**（`tasks.budget`）。
+     * 用 MetricValue 而不是 `number | null`：这里的空是「这个任务没填预算」，
+     * 跟「填了 0」是两件事——压成裸 null 之后，页面没法把两者分开显示。
+     *
+     * 暂为 optional，理由与 v1.9.27 那四个键**完全一样**：几份冻结 fixture 是这个字段
+     * 存在之前从真响应导出的，转必填会把它们全判非法。**「optional」不等于「可以不发」**——
+     * `task-list-budget-emitted.test.ts` 那条绊线钉着真产出方恒发它；fixture 重导之后转必填，
+     * 绊线随之退役。
+     */
+    budget: canonicalMetricValueSchema.optional(),
   })
   .strict();
 export type TaskListItem = z.infer<typeof taskListItemSchema>;

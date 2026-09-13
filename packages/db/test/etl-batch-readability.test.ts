@@ -57,7 +57,9 @@ describe("failed tuple-day readability / real PG", () => {
   });
   afterAll(async () => { await pool?.end(); });
   const missing = async () => {
-    expect(await semantic.querySummary(scope())).toMatchObject({ cost: null, realConversion: null, rowCount: 1 });
+    // v1.9.40：失败批次屏蔽掉的那天算「缺」——给有数那部分的和并点名两列不完整，不是整窗 null。
+    expect(await semantic.querySummary(scope())).toMatchObject({ rowCount: 1,
+      partial: expect.arrayContaining(["cost", "real_conversion"]) });
     expect(await semantic.queryTable(scope())).toMatchObject({ total: 1, rows: [{ accountId: "b" }] });
     expect(await semantic.queryLineage(scope())).toMatchObject({ canonicalRows: 1, requestedAccountDays: 2, returnedAccountDays: 1 });
   };
@@ -69,7 +71,13 @@ describe("failed tuple-day readability / real PG", () => {
     expect((await semantic.querySummary(scope())).cost).toBe(20);
     await fail(); await missing();
     expect(await new RawMetricsRepository(pool).loadMergeInputs({ ...scope(), reportDate: ds })).toEqual([]);
-    expect((await semantic.queryTrend(scope()))[0]?.metrics.cost).toBeNull();
+    // v1.9.40：屏蔽掉的是账户 a 的那一天，账户 b 当天还有数——
+    // 所以**当天这一行**是部分合计（10）并点名 cost 不完整；
+    // 而**账户 a 自己那一行**只有这一天、这一天被屏蔽了，一个数都没有 → 仍是 null
+    //（partial 的前提是「有一部分」，全缺就是缺）。
+    const maskedDay = (await semantic.queryTrend(scope()))[0]?.metrics;
+    expect(maskedDay?.cost).toBe(10);
+    expect(maskedDay?.partial).toContain("cost");
     expect((await semantic.queryDimension({ ...scope(), dimension: "account" })).find(r => r.dimensionKey === "a")?.metrics.cost).toBeNull();
     expect((await semantic.queryHealth(scope())).coverage).toMatchObject({ canonicalRows: 1, expectedAccountDays: 2, missingAccountDays: 1 });
     expect((await semantic.querySummary({ ...scope(), filters: { accountScopes: [{ media: "TENCENT", accountId: "a" }] } })).cost).toBe(10);

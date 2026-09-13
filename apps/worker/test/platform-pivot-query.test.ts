@@ -151,3 +151,84 @@ describe("PlatformPivotQuery", () => {
     expect(client.release).toHaveBeenCalledOnce();
   });
 });
+
+/**
+ * v1.9.34 ⑦：两条轴开放到命名维度（optimizer/goal/placement）与任意清洗段 `segment:<key>`。
+ * 标签从注入的读取器来，与 `account.dimension` 同一份 `loadAccountLabels`。
+ */
+describe("PlatformPivotQuery labelled axes", () => {
+  const two = { ...auth, scope: { kind: "explicit_accounts", accounts: [
+    { media: "KUAISHOU", accountId: "same", accessLevel: "read" },
+    { media: "KUAISHOU", accountId: "other", accessLevel: "read" }] } };
+  function pair() {
+    const mine = member("2026-09-01", "a", 10, 1);
+    const theirs = { ...member("2026-09-01", "a", 90, 3), accountId: "other", accountName: "other" };
+    return { window: { ...window, to: "2026-09-01" }, members: [mine, theirs],
+      observation: { expectedAccountDays: 2, observedAccountDays: 2, observedAccounts: 2, missingComputedAt: 0,
+        earliestComputedAt: "2026-09-01T02:00:00.000Z", latestComputedAt: "2026-09-01T02:00:00.000Z" } };
+  }
+  const labelled = { ...input, auth: two, window: { ...window, to: "2026-09-01" } };
+  const labels = (rows: Record<string, Record<string, string | null>>) =>
+    ({ read: async () => new Map(Object.entries(rows)) });
+
+  it("groups both axes by naming labels instead of account identity", async () => {
+    const result = await new PlatformPivotQuery({ read: async () => pair() }, labels({
+      "KUAISHOU:same": { optimizer: "张三", goal: "拉新" },
+      "KUAISHOU:other": { optimizer: "李四", goal: "拉新" },
+    })).query({ ...labelled, dimA: "optimizer", dimB: "goal" });
+    expect(result.rows.map(row => [row.a.key, row.b.key, row.metrics.cashCost.value]))
+      .toEqual([["张三", "拉新", 10], ["李四", "拉新", 90]]);
+    // 轴的 label 就是值本身，不另起一套显示名——两者分叉时前端会显示一个查不到的名字。
+    expect(result.rows[0]?.a).toEqual({ key: "张三", label: "张三" });
+  });
+
+  it("pivots by an arbitrary cleaning segment", async () => {
+    const result = await new PlatformPivotQuery({ read: async () => pair() }, labels({
+      "KUAISHOU:same": { "segment:city": "杭州" },
+      "KUAISHOU:other": { "segment:city": "杭州" },
+    })).query({ ...labelled, dimA: "segment:city", dimB: "account" });
+    expect(result.rows.map(row => [row.a.key, row.b.key])).toEqual([["杭州", "KUAISHOU:same"], ["杭州", "KUAISHOU:other"]]);
+  });
+
+  it("keeps an unlabelled account as its own null bucket instead of dropping or guessing it", async () => {
+    const result = await new PlatformPivotQuery({ read: async () => pair() }, labels({
+      "KUAISHOU:same": { optimizer: "张三" },
+    })).query({ ...labelled, dimA: "optimizer", dimB: "goal" });
+    // 没标注的那户照样成行（key/label 都是 null），花的 90 块不会凭空消失，
+    // 也不会被塞进「张三」——两种都会让某个人的成本凭空多出来或少掉。
+    expect(result.rows.map(row => [row.a.key, row.b.key, row.metrics.cashCost.value]))
+      .toEqual([["张三", null, 10], [null, null, 90]]);
+    expect(result.cellCoverage).toEqual({ cells: 2, withData: 2, undeterminable: 0 });
+  });
+
+  it("reads labels for the authorized scope, never for whatever the snapshot returned", async () => {
+    const read = vi.fn(async () => new Map());
+    await new PlatformPivotQuery({ read: async () => pair() }, { read })
+      .query({ ...labelled, dimA: "optimizer", dimB: "account" });
+    expect(read).toHaveBeenCalledWith({ workspaceId: ws, accounts: [
+      { media: "KUAISHOU", accountId: "same" }, { media: "KUAISHOU", accountId: "other" }] });
+  });
+
+  it("skips the label read entirely for the three fact dimensions", async () => {
+    const read = vi.fn(async () => new Map());
+    await new PlatformPivotQuery({ read: async () => pair() }, { read }).query({ ...labelled, dimA: "biz", dimB: "task" });
+    expect(read).not.toHaveBeenCalled();
+  });
+
+  it.each(["ubp", "bid_tool", "agent_type", "resource_position", "deduction_range"])(
+    "refuses %s even with a labels reader wired, rather than returning one empty bucket", async dimA => {
+      // 这几个在 dimensionTypeSchema 里合法，但没有任何解析器产出——放行的后果不是报错，
+      // 是一张「所有账户归一个空桶」的透视表，看上去完全正常。
+      const read = vi.fn();
+      await expect(new PlatformPivotQuery({ read }, labels({})).query({ ...labelled, dimA }))
+        .rejects.toMatchObject({ code: "DIMENSION_UNSUPPORTED" });
+      expect(read).not.toHaveBeenCalled();
+    });
+
+  it.each(["segment:bad-key", "segment:", `segment:${"x".repeat(65)}`])(
+    "rejects a malformed segment name %s at the input schema", async dimA => {
+      const read = vi.fn();
+      await expect(new PlatformPivotQuery({ read }, labels({})).query({ ...labelled, dimA })).rejects.toThrow();
+      expect(read).not.toHaveBeenCalled();
+    });
+});

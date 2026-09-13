@@ -307,3 +307,50 @@ describe("TaskListService", () => {
 function randomWorkspace(): string {
   return "00000000-0000-4000-8000-000000000099";
 }
+
+/**
+ * 绊线：v1.9.37（Q-043 ⑦）的 `budget` **产出路径必须恒发**。
+ *
+ * 它在 schema 里暂为 optional，只因为几份冻结 fixture 是这个字段存在之前从真响应导出的，
+ * 转必填会把它们全判非法。**「optional」不等于「可以不发」**——没有这条绊线，漏发它不会有
+ * 任何东西报警，页面只是不显示预算列，而「后端没发」与「这些任务都没填预算」长得一模一样。
+ * fixture 重导、`budget` 转必填之后，这条绊线退役。
+ */
+describe("v1.9.37 task list always emits budget", () => {
+  async function itemFor(budget: number | null) {
+    const base = readyResult();
+    const { service } = serviceFor({ ...base, rows: [{ ...base.rows[0]!, budget }] });
+    const response = await service.execute({}, auth, "task-list-budget", new Date("2026-08-25T04:00:00Z"));
+    expect(response.ok).toBe(true);
+    if (!response.ok) throw new Error("unreachable");
+    return response.data.items[0]!;
+  }
+
+  it("emits it as a MetricValue reading the same column the task detail reads", async () => {
+    expect(await itemFor(10_000)).toMatchObject({ budget: { value: 10_000, availability: "available" } });
+  });
+
+  it("reports an unset budget as missing, never as zero and never by omission", async () => {
+    // 「没填预算」和「预算填了 0」是两件事：压成 0 会让页面显示一个这个任务根本没有的上限，
+    // 整个键不发又让前端分不清是后端没算还是真没填。
+    const item = await itemFor(null);
+    expect(item).toHaveProperty("budget");
+    expect(item.budget).toEqual({ value: null, availability: "missing" });
+  });
+
+  it("does not disturb the pacing budget, which is a different consumer of the same column", async () => {
+    // pacing 里的 budget 是拿去算进度的；这一列是直接显示给人看的。两者同源但不同用途，
+    // 加这一列不该改动任何进度数字。
+    const { service } = serviceFor(readyResult());
+    const response = await service.execute({}, auth, "task-list-budget-pacing", new Date("2026-08-25T04:00:00Z"));
+    if (!response.ok) throw new Error("unreachable");
+    const item = response.data.items[0]!;
+    expect(item.pacing?.budgetProgress).toEqual(
+      computeTaskPacing({
+        periodStart: "2026-08-01", periodEnd: "2026-08-31", asOf: "2026-08-25",
+        targetVolume: 1_000, completedVolume: 420, budget: 10_000, spent: 4_000,
+        recentDailyVolumes: [20, 22, 24, 26, 28, 30, 32],
+      }).budgetProgress,
+    );
+  });
+});
