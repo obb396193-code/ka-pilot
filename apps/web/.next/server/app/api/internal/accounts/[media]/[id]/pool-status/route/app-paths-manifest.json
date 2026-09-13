@@ -1,0 +1,3 @@
+{
+  "/api/internal/accounts/[media]/[id]/pool-status/route": "app/api/internal/accounts/[media]/[id]/pool-status/route.js"
+}

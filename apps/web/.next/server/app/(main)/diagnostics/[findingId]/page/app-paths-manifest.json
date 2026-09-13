@@ -1,0 +1,3 @@
+{
+  "/(main)/diagnostics/[findingId]/page": "app/(main)/diagnostics/[findingId]/page.js"
+}

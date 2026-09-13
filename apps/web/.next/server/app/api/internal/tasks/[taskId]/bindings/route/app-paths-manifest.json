@@ -1,0 +1,3 @@
+{
+  "/api/internal/tasks/[taskId]/bindings/route": "app/api/internal/tasks/[taskId]/bindings/route.js"
+}

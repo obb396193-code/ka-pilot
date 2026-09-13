@@ -1,0 +1,3 @@
+{
+  "/api/internal/accounts/[media]/[id]/mute/route": "app/api/internal/accounts/[media]/[id]/mute/route.js"
+}

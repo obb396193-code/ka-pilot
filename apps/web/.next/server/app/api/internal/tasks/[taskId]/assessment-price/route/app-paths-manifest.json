@@ -1,0 +1,3 @@
+{
+  "/api/internal/tasks/[taskId]/assessment-price/route": "app/api/internal/tasks/[taskId]/assessment-price/route.js"
+}

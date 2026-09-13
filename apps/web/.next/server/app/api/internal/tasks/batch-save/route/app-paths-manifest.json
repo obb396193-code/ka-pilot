@@ -1,0 +1,3 @@
+{
+  "/api/internal/tasks/batch-save/route": "app/api/internal/tasks/batch-save/route.js"
+}

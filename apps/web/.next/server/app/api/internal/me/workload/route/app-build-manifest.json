@@ -1,0 +1,12 @@
+{
+  "pages": {
+    "/api/internal/me/workload/route": [
+      "static/chunks/1439e7c281898811.js",
+      "static/chunks/27eb0afb71ef6729.js",
+      "static/chunks/cc995f3ea2d4a2e6.js",
+      "static/chunks/26a51d018109bea9.js",
+      "static/chunks/a5b64e501c0f989e.js",
+      "static/chunks/turbopack-0d37e7cb409d08bc.js"
+    ]
+  }
+}

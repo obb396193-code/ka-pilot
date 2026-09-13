@@ -1,0 +1,3 @@
+{
+  "/api/internal/accounts/transfer/route": "app/api/internal/accounts/transfer/route.js"
+}

@@ -1,0 +1,3 @@
+{
+  "/api/internal/changesets/[id]/dry-run/route": "app/api/internal/changesets/[id]/dry-run/route.js"
+}
