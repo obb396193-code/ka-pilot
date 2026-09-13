@@ -8,8 +8,8 @@ import dimensionV3 from "@contract/fixtures/data-query/dimension-v3.json"
 import dimensionTask from "@contract/fixtures/data-query/dimension-v3-task.json"
 import dimensionBiz from "@contract/fixtures/data-query/dimension-v3-biz.json"
 import dimensionAccount from "@contract/fixtures/data-query/dimension-v3-account.json"
-import dimensionAgentType from "@contract/fixtures/data-query/dimension-v3-agent_type.json"
-import dimensionDeduction from "@contract/fixtures/data-query/dimension-v3-deduction_range.json"
+// v1.9.45：agent_type 的两份样例重导为 segment:operator（自投/代投就落这个段）；deduction_range 是派生桶、无解析器产出，一期不做，样例已删。
+import dimensionSegmentOperator from "@contract/fixtures/data-query/dimension-v3-segment-operator.json"
 import dimensionUnsupported from "@contract/fixtures/data-query/dimension-unsupported.json"
 import hourly from "@contract/fixtures/data-query/hourly.json"
 import gap from "@contract/fixtures/data-query/gap.json"
@@ -129,8 +129,9 @@ export const dimensionFixtures: Record<Dimension, QueryFixture<DimensionRow> | {
   task: dimensionFixture(dimensionTask),
   biz: dimensionFixture(dimensionBiz),
   account: dimensionFixture(dimensionAccount),
-  agent_type: dimensionFixture(dimensionAgentType),
-  deduction_range: dimensionFixture(dimensionDeduction),
+  agent_type: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
+  deduction_range: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
+  "segment:operator": dimensionFixture(dimensionSegmentOperator),
   bid_tool: { unsupported: true, message: pivot2UnsupportedFixture.error.message },
   ubp: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
 }
