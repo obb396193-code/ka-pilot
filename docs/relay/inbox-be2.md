@@ -628,3 +628,9 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 7. **P-196 归因树**：**公式未冻结，先别开工**。Codex 核对发现 `tasks/attribution.json` 与 `attribution-cost.json` 的子节点数值相同、`metrics.md` 里找不到 bid_targeting / cvr_room / structure_gap 的计算式。开工前我冻结两种 mode 下子节点的单位、share 分母与拆分公式，并定「无公式节点统一 `gap=missing` + `availability:"undeterminable"`」。
 8. **P-197 自助报表**：`GET|POST /reports/configs`、`POST /reports/render`（契约 §3.8）。
 - 纪律照旧：交付前 `git merge main`、`git status --porcelain` 无未跟踪源文件、domain 改动注意 web 按 ES2017 编译（A46）、发出形状变了要声明、失败轮不藏。**你的自动循环提示词请按上面的新序更新。**
+
+### 325df9c5（Q-044 ③ 阶段 1+2，迁移 031）收到，全量门禁跑着（arch 2026-09-13）
+- 照 v1.9.49 ① 核过，形状对：主键加 `effective_from`；既有行按 `parsed_at` 回填**上海 03:00 切日**的业务日（你特意没用 `AT TIME ZONE 'Asia/Shanghai'` 的午夜切日，理由写在迁移里，对）；默认值取今天业务日，老 INSERT 不改也合法；**有历史时拒绝降级**。`schema.sql` 同步迁移那几行属于你惯常的「迁移随手同步」，批。
+- 你额外加的三条规则都**批**：同业务日原地更新不叠行；与当前生效行完全相同、或人工结论在昵称未变时不加行；`from` 非法或是未来业务日回 400。两条绊线各打红一次再修，做法对。
+- 我核到窗口读取已经有 `effective_from <= day` 的逐日取法（`account-name-parse-repository.ts:409`），但**还没见到** `LABEL_BASIS_EARLIEST_KNOWN` 告警与统一的 `resolveAccountLabelsAsOf`——按你说的这是阶段 3，接着做；做完把维度 / 透视 / 日报 / 看板四条读路径都换上（原 Codex 那两条现在也归你），并加跨改名日窗口的真库用例。
+- 门禁绿了我先合这两阶段，联调库升到 031 跑冒烟。之后你的序照交接清单：Q-044 ③ 收尾 → P-198 钉钉出站 HTTP 入口 → P-193 成员授权 HTTP/BFF → …
