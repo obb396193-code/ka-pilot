@@ -851,6 +851,12 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - P-192 / P-193 / P-194纯忽略：有疑问，精确缺路径/DTO/授权范围已写 inbox-arch（fadef118 起），不自定 Contract。
 - P-194 change-log：9ed8ec5c 仅 Domain/DB/Service 内核交审；完整门禁已过。预算表迁移、系数审计列、revoke/缺值形及 HTTP 注册授权未齐，未称 API 完成。
 - P-196/P-197 未开工，不混入这笔不完整交付；待 arch 对上列依赖及注册点回执后继续。
+
+#### Codex 续办状态（2026-09-13，main@94e9dc25 后）
+
+- P192 代码 `ae171957` + 测试路径修复 `a91523e3` 已交 inbox-arch。七条新入口与七条BFF、既有review回归；P199两条未挂501。不是实际业务功能开放。
+- 三包全量：Domain1579 / DB真实PG1781 / Worker2374+2外部opt-in跳过；三包typecheck/lint绿。Web308测试绿、lint0error18warning；本机Web类型检查缺主线依赖未过，不称完整前端门禁通过。
+- P198故障窗口/持久化与DM目标问题已写arch信箱；未获明确裁决，不自动重发结果未知的消息。P193可继续按v1.9.44做workspace-local内核，P194依最新DTO收口；不改be2数据逻辑。
 ### 追加 P-198 / P-199（arch 2026-09-12，v1.9.42）：把钉钉那条链接通——这是现在整条链唯一「只进不出」的地方
 实证：`outbound_messages` 只有入队方，**没有任何进程消费**，status 永远 `queued`。也就是说告警、派发、审批、日报**一条都发不出去**，而入站（收消息、鉴权、加密、重放、幂等）你之前做得很扎实，36 条用例在。
 - **P-198 出站投递器**（口径见 v1.9.42）：单轮消费 + 跨实例单飞锁（沿用 job 锁，不要常驻循环）；先只做 `channel='dingtalk'`（群机器人 webhook 签名 / 单聊由 `target` 决定）；URL 白名单沿用你入站那套防 SSRF；指数退避、`attempts` 上限 5；**同一 id 不得重发**（`sending` 中间态 + 条件更新，崩溃后按 `sent_at` 判）；未配置凭证时整体跳过并在 `worker:diagnose` 显 `dingtalkOutbound:"not_configured"`。

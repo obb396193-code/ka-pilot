@@ -7599,3 +7599,30 @@ KPI 和趋势**复用数据分析那套取数层**，参数已对齐实测表—
 
 门禁：tsc 0 错、eslint 0 错 17 警告、npm test 298/298、A44 自查干净。
 下一步：F8-25 ④ 账户池（含详情）→ ⑤ 任务列表 → 数据分析三个 tab 的血缘跟响应走。
+
+## Codex → arch（2026-09-13）：P192交审 ae171957；BFF测试路径修复 a91523e3
+
+- 本机main已同步到 `94e9dc25`，交付前再次merge显示Already up to date。分支 `be/r010`；路径限定提交、未push。此前两个信箱的追加冲突已完整并集保留，双亲逐行顺序校验无丢失，合并SHA `c87fae03` / `d8dfb95d`；旧“合并卡住”记录是历史状态，不再阻断。
+- **代码 `ae171957`**：按v1.9.44七条新路径接Worker+Next BFF，成功登录后501 NOT_IMPLEMENTED；既有POST tasks/:id/review仍501。test-send/on-call两条明确留P199真做。未执行停止/升档/素材/拍板等业务；BFF拒绝任何意外2xx/204，避免假成功。
+- **测试修复 `a91523e3`**：Web两条新门禁用了URL.pathname，中文工作树被%编码而ENOENT；改fileURLToPath。只改 `lib/data/{route-coverage,tracked-imports}.test.ts`，无视觉变化，独立SHA便于你与fe复验。
+- **发出形状变化**：七条先前404的路径现在返回冻结501稳定error envelope+requestId；无新增成功DTO；未改query/指标/血缘。`data/http-server.ts`只注册/dispatch hunk。
+
+### 本轮实跑
+
+| 范围 | 命令/结果 |
+|---|---|
+| Domain | `npm test -- --run --maxWorkers=1` 101文件/1579过；typecheck/lint绿。首轮默认并发1578过1超时，同代码串行复跑绿，未放宽测试超时 |
+| DB / 真实PG | `TEST_DATABASE_URL=<本地ka_be_r010_p194_test> npm test -- --run` 159文件/1781过；typecheck/lint绿 |
+| Worker / 真实PG+HTTP | 同合成库 `npm test -- --run` 205文件/2374过，2外部凭证opt-in跳过；typecheck/lint绿 |
+| Worker定向 | deferred-actions22 + bff-coverage3过；新route文件V8四项100%（不代表全仓） |
+| Web | `npm test`308/308；lint0error18既有warning；新BFF10/10含exact16MB/timeout |
+| Web类型 | **未过，不隐瞒**：本worktree缺main新增ai/shiki/streamdown等依赖，85条缺模块/连带类型错误；离线npm补齐ENOTCACHED。清单/lock零diff，未修改前端视觉以绕过检查。请在你的依赖完整门禁树补验 |
+| 安全/提交 | diff --check绿；未跟踪源文件0；无媒体写/真实钉钉/生产worker启动；无新依赖；未取得本轮全仓audit结果 |
+
+完整质量记录 `docs/plans/2026-09-13-P192质量回执.md`；日志在本worktree output/p192-*。本批**待arch验收**，不称merged/deployed。
+
+### 下一笔与仍需回信
+
+- P198仍需裁决上封的“远端已接受、sent_at未写/超时”窗口：推荐unknown待核验、不自动重发；仅sent_at=null不证明没发。还需确定claim/retry持久化迁移及DM target解析；不能把所有网络失败当可重试。未接真实凭证。
+- P193已只读核查：现GET成员列表走旧 `AdminMemberProvisioningRepository.read` 全局personal列表，v1.9.44要求workspace-local；实施时会收窄GET并补PATCH/PUT的同空间授权，不保留全局列表漏洞。新增/重置密码原有能力不在本笔擅自改语义。
+- P194仍为旧内核待收口，P196公式待裁决，Q044③等be2给helper；不将这些计为已完成。
