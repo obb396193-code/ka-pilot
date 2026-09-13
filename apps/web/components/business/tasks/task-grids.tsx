@@ -41,7 +41,8 @@ const logColumns = logHelper.columns([
   logHelper.accessor((row) => (typeof row.oldValue === "number" ? row.oldValue : null), { id: "old", header: "从", meta: { label: "从", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{fmtChangeValue(row.original.oldValue)}</span> }),
   logHelper.accessor((row) => (typeof row.newValue === "number" ? row.newValue : null), { id: "new", header: "到", meta: { label: "到", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{fmtChangeValue(row.original.newValue)}{row.original.recomputedDays ? <span className="ml-1 text-xs text-muted-foreground">重算 {row.original.recomputedDays} 日</span> : null}</span> }),
   logHelper.accessor("effectiveDate", { header: "生效", meta: { label: "生效" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue()}</span> }),
-  logHelper.accessor((row) => row.changedBy.name, { id: "by", header: "改动人", meta: { label: "改动人" } }),
+  // 老行没有变更人（迁移前就存在的数据），显「—」不显空
+  logHelper.accessor((row) => row.changedBy?.name ?? "—", { id: "by", header: "改动人", meta: { label: "改动人" } }),
   logHelper.accessor((row) => row.evidenceUrl ?? "", { id: "evidence", header: "证据", meta: { label: "证据" }, cell: ({ getValue }) => getValue() ? <a href={getValue()} target="_blank" rel="noreferrer" className="text-xs text-muted-foreground underline-offset-4 hover:underline">{getValue()}</a> : <MissingValue /> }),
   actionsColumn<ChangeLogItem>((row) => <DropdownMenuItem disabled>{changeLogKindLabel[row.kind]}只增不改</DropdownMenuItem>),
 ])

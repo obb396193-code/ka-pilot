@@ -177,7 +177,23 @@ export function NamingTab() {
                             <div className="flex flex-wrap gap-1">
                               {segments.map((segment) => {
                                 const parsed = row.segments[segment.key]
-                                return parsed?.value ? <TypeChip key={segment.key}>{segment.label} {parsed.value}</TypeChip> : null
+                                if (!parsed?.value) return null
+                                /**
+                                 * 显 canonical 为主（统计归到谁），原文放悬停。
+                                 * ★`basis.source === "raw"` 是**自由段、没有取值表**——
+                                 *   它的 value 就是原文本身，标「已归一」是骗人的（arch C 点名）。
+                                 *   别名命中 ≠ 归一：`IOS` 和 `iOS` 是两个值，只有取值表能把它们并成一个。
+                                 */
+                                const normalized = parsed.basis?.source === "rule" && parsed.raw && parsed.raw !== parsed.value
+                                const differs = Boolean(parsed.raw && parsed.raw !== parsed.value)
+                                return (
+                                  <span key={segment.key} title={differs ? `原文：${parsed.raw}` : undefined} className={differs ? "cursor-help" : undefined}>
+                                    <TypeChip>
+                                      {segment.label} {parsed.value}
+                                      {normalized ? <span className="ml-0.5 text-[10px] text-muted-foreground">已归一</span> : null}
+                                    </TypeChip>
+                                  </span>
+                                )
                               })}
                               {filledSegmentCount(row.segments) === 0 ? <span className="text-xs text-muted-foreground">一段都没匹配上</span> : null}
                             </div>

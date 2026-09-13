@@ -12,7 +12,7 @@ import metrics from "@contract/fixtures/tasks/metrics.json"
 import funnel from "@contract/fixtures/tasks/funnel.json"
 import taskAccounts from "@contract/fixtures/tasks/accounts.json"
 import taskTimeline from "@contract/fixtures/tasks/timeline.json"
-import changeLog from "@contract/fixtures/settings/change-log.json"
+import changeLog from "@contract/fixtures/settings/change-log-v1944.json"
 import bindingsReady from "@contract/fixtures/rules/bindings-fixture-task-ready.json"
 
 // 投放任务（F-007 §4，契约 TASK-LIST-001 + v1.4 + v1.5.1 ②）的 fixture 读取层。不算数。
@@ -79,7 +79,25 @@ export const taskAccountsFixture = taskAccounts as unknown as Fixture<{ items: T
 export type TaskTimelineItem = { at: string; kind: string; actor: { user_id?: string; userId?: string; name: string } | "system" | "external" | null; summary: string; ref: { type: string; id: string } | null }
 export const taskTimelineFixture = taskTimeline as unknown as Fixture<{ items: TaskTimelineItem[]; next_cursor: string | null }>
 export type ChangeLogValue = number | { op: string; coefficient: number } | null
-export type ChangeLogItem = { at: string; kind: "assessment_price" | "daily_budget_cap" | "channel_coefficient"; scope: { taskId?: string; media?: string }; oldValue: ChangeLogValue; newValue: ChangeLogValue; effectiveDate: string; changedBy: { userId: string; name: string }; evidenceUrl: string | null; recomputedDays?: number }
+/**
+ * 变更记录一行（v1.9.44）。两个字段**可以是 null**，不是遗漏：
+ * · `changedBy`：老行没有变更人（迁移前就存在的数据）；
+ * · `at`：时间未知时后端给 null，**不伪造迁移时间**——
+ *   所以列表按「生效日」排序，时间列显「—」，绝不能显示成 1970。
+ */
+export type ChangeLogItem = {
+  id?: string
+  op?: string
+  at: string | null
+  kind: "assessment_price" | "daily_budget_cap" | "channel_coefficient"
+  scope: { taskId?: string; media?: string }
+  oldValue: ChangeLogValue
+  newValue: ChangeLogValue
+  effectiveDate: string
+  changedBy: { userId: string; name: string } | null
+  evidenceUrl: string | null
+  recomputedDays?: number
+}
 /** 变更值展示：数字 / 返点系数对象 / 空 → 文本（不算数，只格式化） */
 export const fmtChangeValue = (value: ChangeLogValue): string => value === null ? "−" : typeof value === "number" ? value.toLocaleString("zh-CN") : `${value.op === "multiply" ? "×" : value.op} ${value.coefficient}`
 export const changeLogFixture = changeLog as unknown as Fixture<{ items: ChangeLogItem[]; nextCursor: string | null }>
