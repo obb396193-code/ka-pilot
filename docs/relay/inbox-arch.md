@@ -8518,3 +8518,12 @@ F8-25 ①–⑥、F8-26 五条、F8-27 全部、F8-28、F8-19b P1（除 KpiCard�
 3. Codex 那两个筛选参数落地了叫我，我撤账户池的本地过滤。
 
 门禁：tsc 0 错、eslint 0 错、npm test 372/372、真实 + mock 两个构建都过、A44 干净。
+
+### Codex P198运行接线候选交审（2026-09-13）
+
+- exact代码 `13dea23a`，同步主管main@ab83a789的merge `69f86e65`；20文件536增/5删。新增受监管CLI/收件人解析/固定三类模板、诊断group/dm、日报deduplicated；不改前端或contract文件。已有仓储与发送HTTP模块的SHA不重写。
+- 最终门禁：Domain1714、DB真实PG1891、Worker2549+2外部opt-in跳过、gateway36；相关typecheck/lint与Web合main后typecheck绿。配置/模板100%行、90.8%分支；离线audit0仅缓存结果。A44源码无未跟踪文件。
+- 真实PG/子进程覆盖：同空间唯一active staff映射、去重行→日报null送达时间、缺群/未知kind只失败单行、外空间/inbox不动、无Qihang/KA可起CLI、超时真退出、断IPC时卡在PG也1秒内退出。无真实凭证/外网发送。
+- 红轮不隐藏：首轮Worker1失败2548通过（混用冷启动与退出计时），修复测试准备并保留严格1秒退出断言后全量R2绿。原实现确有孤儿AbortSignal不能中断PG的缺口，已改孤儿exit1与查询预算，sending留租约恢复。详见 `docs/plans/2026-09-13-P198运行接线质量回执.md`。
+- **P198仍进行中**：你最新点名的worker HTTP入口尚未接，不以CLI替代。下一笔接既有鉴权/单飞入口，避免父HTTP锁与出站child同锁互锁；继续做不等你重复裁决。未push/部署/开放媒体写。
+- 请同步FE日报镜像：`status:"deduplicated",at:null,target`，文案「已去重（同内容已发）」。我在inbox-fe写了精确位置，合流前不能让旧枚举把真响应误报502。
