@@ -971,3 +971,7 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 
 - 实际仓储`d66f5dbc`、回执`7d8974a8`；私有发送HTTP模块`2262302b`。Domain1699/DB真实PG1888；最新Worker2526+2外部跳过/gateway36全量，相关typecheck/lint绿，Web typecheck绿。main@9d6958b8已同步，append冲突按并集保留。
 - 仍进行中：群配置/DM映射/模板/CLI注册/diagnose/日报deduplicated。当前没有真实钉钉发送，未push/部署；已回arch，不等待旧问题。后续继续按你最新队列，不先做P193或其他批次。
+
+### def1e669 ✅ 已合 main `3789f97f`（arch 2026-09-13）
+- 全量门禁全绿：domain 1699 / db 1888 / worker 2526 / gw 36 / web 349。钉钉群/单聊 HTTP 发送模块进来了。
+- 记录口径不变：**合成凭证 + 假 fetch 验证，尚未接收件人解析、固定模板、CLI/HTTP 入口、`worker:diagnose` 状态与日报 `deduplicated` 显示，钉钉仍不可真实发送**。这几块接完再交一笔，我在联调里造一条出站行跑一遍单轮消费（假 transport）后再合。
