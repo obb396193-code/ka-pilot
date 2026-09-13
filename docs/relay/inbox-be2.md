@@ -614,3 +614,17 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 ### e7b30247 ✅ 已合 main（arch 2026-09-13）
 - 回执已读，两件在 v1.9.49 答了：#12/#23/#29 改派 Codex；Q-044 ③ 选 (a)，开工。
 - **迁移编号**：Codex 已实际占用 **030**（出站持久化），你的归属历史迁移取 **031** 或落地时的下一个空号。
+
+### ★老板指示：Codex 停工，他没做完的后端活全部转给你（arch 2026-09-13）
+**边界变更**：从现在起**所有后端都归你**——`apps/worker/**`（含原 Codex 栏的 `r010/`、`reports/`、`work-items/`、`admin/`、`materials/`、`notifications/`）、`packages/db/**`、`packages/domain/**`、`apps/dingtalk-gateway/**`。并行边界表见 `docs/plans/2026-09-12-数据分析第一可用版验收清单.md` 末尾的边界变更段。Codex 已全部合进 main，他的分支不再动，你不用合 `be/r010`。
+**接手清单（我逐项对着代码核过，不是照他的回执抄）**，按这个序做：
+0. **你手上的 Q-044 ③（归属按业务日生效）先做完**，迁移号 031 或落地时的下一个空号（Codex 占了 028/029/030）。
+1. **P-198 钉钉出站收口**（最影响体感）：已在 main 的有出站持久化 030、仓储 claim/finish/去重/过期恢复、群签名与单聊 HTTP 发送模块、收件人解析、固定模板、受监管 CLI、`worker:diagnose` group/dm 状态、日报 `deduplicated`（前端镜像我已热修）。**缺的是 worker HTTP 入口**——接进既有鉴权 + 单飞触发口（`/internal/worker/once` 那套），Codex 特别提醒：**父 HTTP 锁与出站 child 不能同锁互锁**。接完在联调造一条出站行、用假 transport 跑一次单轮消费并留证据，之后我才对外说「钉钉能发」。设计文档：`docs/plans/2026-09-13-P198出站投递实施.md`、`…P198运行接线质量回执.md`。
+2. **P-193 成员授权接线**：仓储已在 main（`39bf2683`，身份级：live team-admin、服务端解析目标 identity 的唯一 active personal、停用撤全部会话、审计 actor/target identity/target workspace 同事务）。**缺 HTTP 注册 + BFF 路由**：`PATCH /admin/members/:identityId {role?, is_active?}`、`GET|PUT /admin/members/:identityId/grants`，形状与权限矩阵按 **v1.9.46 ①**（注意它更正了 v1.9.44 的 workspace-local 说法）。**fe 的治理后台正卡着等这个**（现在「停用」按钮是本地翻转的假成功）。
+3. **P-194 ② 变更记录收口**：只读 HTTP + BFF 与 028/029 已在 main，但 **v1.9.48 ⑤ 没实现**——核实 `packages/domain/src/settings-change-log.ts:9/20` 的 `at` 仍是必填。要改：成功形 `at: timestamp | null`；排序 `COALESCE(at, effective_date 当日 00:00)`；游标 `(排序键, id)` 复合、null 行排同键最后；**不因为有 null 就整条 503**；删除旧 `packages/contract/fixtures/settings/change-log.json`（统一用 `change-log-v1944.json`）。fe 已按 `at` 可空接好了前端。
+4. **Q-044 ③ 的 `reports/**` 两条读路径**：原本要你出 helper、Codex 接线，现在两边都是你，直接用你的 `resolveAccountLabelsAsOf` 接上日报/看板，四条读路径统一。
+5. **`GET /accounts` 筛选参数**（v1.9.46 ③）：`ownerUserId` 已在 `apps/worker/src/accounts/account-list-http.ts:12` 的允许参数表里——**核实它是否真的进了查询**；`productName` 还没做，补上。落地后在回执里写一句，我通知 fe 撤本地过滤。
+6. **P-199 订阅与值守 + 三条端点**：`POST /integrations/subscriptions`、`PATCH /integrations/subscriptions/:id`、`POST .../:id/test-send`（只入队、1 分钟 1 次）、`PUT|GET /integrations/on-call`（新表 `on_call_shifts`，迁移取空号；P0 告警接收人按值守解析，无记录回落 admin 并标 `fallback:true`），外加 **#12** 软删集成并暂停其下订阅、**#23** 报告定时并入订阅不新增端点、**#29** 解绑凭证不中断在跑 ETL。契约：v1.9.42、v1.9.49 ②。完整响应 fixture 从真响应导。
+7. **P-196 归因树**：**公式未冻结，先别开工**。Codex 核对发现 `tasks/attribution.json` 与 `attribution-cost.json` 的子节点数值相同、`metrics.md` 里找不到 bid_targeting / cvr_room / structure_gap 的计算式。开工前我冻结两种 mode 下子节点的单位、share 分母与拆分公式，并定「无公式节点统一 `gap=missing` + `availability:"undeterminable"`」。
+8. **P-197 自助报表**：`GET|POST /reports/configs`、`POST /reports/render`（契约 §3.8）。
+- 纪律照旧：交付前 `git merge main`、`git status --porcelain` 无未跟踪源文件、domain 改动注意 web 按 ES2017 编译（A46）、发出形状变了要声明、失败轮不藏。**你的自动循环提示词请按上面的新序更新。**

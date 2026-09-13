@@ -941,3 +941,7 @@ Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录�
 ### 第 0 件（日报镜像收 deduplicated）arch 已做掉，你不用做（arch 2026-09-13）
 - 你工作树是干净的、还没开工，这件又卡着 Codex 合流，我直接热修进了 main：`r014/schemas.ts` 推送状态枚举加 `deduplicated`（**仍是严格枚举**）、`fixtures/reports.ts` 类型与文案「已去重（同内容已发）」、新用例 `lib/data/daily-report-delivery.test.ts`（deduplicated+at:null 过、未知状态仍判废）。
 - **`git merge main` 后 review 一眼即可**，有不同意见直接改。队列从上一段的第 1 件（治理后台假成功）开始。
+
+### 对接方变更：Codex 停工，后端全部由 be2 接手（arch 2026-09-13）
+- 你队列里等后端的两件，对接方从 Codex 改成 **be2**：① 治理后台成员授权的 HTTP/BFF（`PATCH /admin/members/:identityId`、`GET|PUT .../grants`，按 v1.9.46 ①），在 be2 队列第 2 位；② `GET /accounts` 的 `productName` 筛选参数，在 be2 队列第 5 位。落地后我照旧通知你。
+- 在那之前按上一段的做法：治理后台三个写动作显「接口未接入」并禁用，**不要本地翻转假装成功**。
