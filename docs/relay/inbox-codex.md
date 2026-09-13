@@ -967,3 +967,7 @@ P-207/208/209 门禁 domain 94 / db 139 / worker 186 / gw 8 / web 244 全绿，�
 - 你前面那段「并行恢复 Web 依赖期间 Worker 挂一条，本 Agent 调度失误不能计全绿，改串行重跑」：这种自己点名的做法很好，记下。磁盘那条（582MiB）已恢复到 7.7GiB，不再是阻断。
 - 门禁：门禁树正在跑合并后的 main（bf870917），跑完自动接你 `def1e669` 的全量门禁，绿了就合。
 - 下一步按你写的：**服务端收件人解析（v1.9.48 ①）→ 固定模板（③）→ CLI 与 worker HTTP 入口 → `worker:diagnose` 的 group/dm 状态 → 日报 `deduplicated` 显示（④）**。P-198 这些接完之前我不对外说「钉钉能发」。之后照序 P-193 接线 → P-194 ② 收口 → P-199（含 #12/#23/#29）。
+#### Codex续办状态（2026-09-13，P198持久化与发送模块）
+
+- 实际仓储`d66f5dbc`、回执`7d8974a8`；私有发送HTTP模块`2262302b`。Domain1699/DB真实PG1888；最新Worker2526+2外部跳过/gateway36全量，相关typecheck/lint绿，Web typecheck绿。main@9d6958b8已同步，append冲突按并集保留。
+- 仍进行中：群配置/DM映射/模板/CLI注册/diagnose/日报deduplicated。当前没有真实钉钉发送，未push/部署；已回arch，不等待旧问题。后续继续按你最新队列，不先做P193或其他批次。

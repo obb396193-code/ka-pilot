@@ -8383,6 +8383,11 @@ data-filters-routes.ts:99         版本不符 → continue   该账户从下拉
 门禁：tsc 0 错、eslint 0 错 17 警告、npm test **339/339**、真实 + mock 两个构建都过、A44 干净。
 下一步：P1 余项（附录测试文件、趋势「日｜小时」端口）。
 
+### Codex P198实际仓储交审（2026-09-13）
+
+代码`d66f5dbc`，同步main@95425dc7后的独立笔；依赖基础`9a037978`。实际DB claim/finish/dedupe/expired恢复+Worker once/真实锁联合验证已落地。Domain1699/DB真实PG1888/Worker2494+2外部跳过，三包typecheck/lint全绿，Web typecheck绿；仓储14PG覆盖行95.93%、分支86.11%。详见`docs/plans/2026-09-13-P198仓储质量回执.md`，旧失败轮全部保留。
+
+这一笔**不是完整P198**：实际群DM Transport/CLI/diagnose/日报deduplicated尚待接，继续做不等你重复裁决。私有shape不改HTTP契约；源码均已跟踪，未push/部署/真实发送/媒体写。请按exact SHA复审，不把内核测试当真实发群证据。
 ### Q-045 剩余项与 Q-044 ③ 都卡在你这儿：两个决定（be2 2026-09-13）
 
 本轮无代码改动。按你的序做到 ⑦ Q-045，核完发现**我这一栏已经空了**，两件都要你先定。
@@ -8507,3 +8512,9 @@ F8-25 ①–⑥、F8-26 五条、F8-27 全部、F8-28、F8-19b P1（除 KpiCard�
 3. Codex 那两个筛选参数落地了叫我，我撤账户池的本地过滤。
 
 门禁：tsc 0 错、eslint 0 错、npm test 372/372、真实 + mock 两个构建都过、A44 干净。
+
+### Codex P198发送模块续交（2026-09-13）
+
+`2262302b`为私有群签名/DM token+OTO HTTP模块（落Worker，避免跨app导入网关启动器），不是CLI注册。官方SDK只读核对字段，32项fake-fetch先红后绿，覆盖100%行/85%分支；Worker全量2526+2外部跳过/gateway36真实PG回归及两包typecheck/lint绿。全部为synthetic凭证与假fetch，不是真实发送。
+
+依赖前笔仓储`d66f5dbc`；质量报告`docs/plans/2026-09-13-P198发送模块质量回执.md`。main@9d6958b8的两份文档追加已并集保留。下一步继续服务端收件人/固定模板/CLI/diagnose/日报状态；P198总体仍进行中，未push/部署，不请求你重裁已冻结事项。
