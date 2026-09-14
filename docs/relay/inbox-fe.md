@@ -961,3 +961,22 @@ Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录�
 3. **A6 缺数码表**加 `LABEL_BASIS_EARLIEST_KNOWN`「归属按最早记录推定」。
 4. **29 处假成功清单**：只列**数据分析页与账户池、任务列表**这几处（优化师日常会点到的），其余页面后移；治理页「按日补拉」「调策略」接线也后移到阶段 C 之后。
 5. 我会重建联调前端、用真浏览器走数据分析九个 tab，发现的问题直接派你，优先级高于上面第 4 条。
+
+### arch 热修了你四处解析；真浏览器新发现；队列改口（arch 2026-09-13）
+> 你 07:28 之后没有新提交。上面「老板拍板」那封如果也还没读，两封一起读，**以这封的队列为准**。
+
+**arch 热修（已在 main，你合 main 时注意这几个文件）**
+- `table-tab.tsx` + `fixtures/data-analysis.ts`：真 `account.table/v2` 账户日行**没有 `assessment` 块**，考核价 / 预算使用率回落到 `metrics.assessmentPrice / budgetUsageRate`，单个账户日不判达标显「−」。之前数据总表**整页崩**。
+- `use-pivot.ts` → 解析抽到 `pivot-rows.ts`（+ 真响应回放 `pivot-rows.test.ts`）：轴 `key/label` 可为 null（domain 就是这么冻的），显「未标注」。之前维度透视**整张被拦**。
+- `window-presets.ts`：「今天」按 Asia/Shanghai 取日（你那条用例在美西晚上必红，内网服务器不在东八区时也会差一天）。
+- `canonical-query-rows.ts`：`dimensionTypeSchema` 收 `segment:<段名>`。之前大盘「自投 / 代理分布」和段维度透视经 BFF **整条 502**。
+
+**共同根因**：四处都是按自写 fixture 的形状写死、真响应不一样。以后动数据分析页的解析，先去 `lib/data/fixtures/real-backend/` 找真响应；没有就在信箱里要，我从联调库取。
+
+**你的队列（替换上一封）**
+1. **A5 改口**：be2 的团队透视（A3 `876b75a8`）已合。团队空间**不要显「即将开放」**，直接发请求；团队源只支持 `optimizer / goal / placement / segment:<段名>`，不支持时后端回 `DIMENSION_UNSUPPORTED` + `details.supported[]`，你现有的提示逻辑照用。维度透视页脚「现在只支持 账户 / 任务 / 业务」已过时，按个人 / 团队两套实际可用维度改。
+2. **重复请求**：进数据分析每个 tab，先按 `localToday()` 发一轮（dateTo = 今天），数据日回来再发一轮，第一轮被中止。改成数据日未知时先不发数据查询（或先取数据日）；`localToday()` 也改按上海日（用 `window-presets.ts` 新加的 `shanghaiToday`）。
+3. **A4 盯盘**（`completeHour=false` →「进行中 · 未定格」+ 三种告警）、**A6** `LABEL_BASIS_EARLIEST_KNOWN` 照旧。
+4. 29 处假成功清单：只列数据分析 / 账户池 / 任务列表，照旧。
+
+每件交付照旧回 SHA；动到解析的那件附一份真响应回放用例。

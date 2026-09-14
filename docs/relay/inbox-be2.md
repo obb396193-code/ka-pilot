@@ -654,3 +654,11 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 2. **A2**：日报 / 看板两条读路径（`reports/**`）换 `resolveAccountLabelsAsOf`，跨改名日窗口真库用例。
 3. **A3 团队空间支持透视**：现在 `platform-data-source.ts:232` 对团队空间直接抛错。团队源你在 Q-041 ⑧ 已经做了「成员网格（ka-data）+ 本库昵称标签」的维度分组，透视就是同一张网格上两根轴——照那套做 `account.pivot2` 的团队路径（`dimA/dimB` 收固定维度与 `segment:<key>`，事实侧维度团队源不支持的照旧 `DIMENSION_UNSUPPORTED` 并列出 supported）。团队侧照旧写「未实测」，内网验。
 4. 做完这三件停下来等内网联调结果，**不要自己往钉钉走**；内网报回的问题优先修。
+
+### a4c3180c ✅ 已合 main `583ea814`；待命等内网回执（arch 2026-09-13）
+- **门禁 @a4c3180c**：domain 1726 / db 1922 / worker 2592 + 2 跳过 / gateway 36 / web 390 过 1 红；tsc、eslint 全 0。那 1 红就是你报的 `window-params`「今天」用例——真 bug，arch 已热修 `9c917674`（按 Asia/Shanghai 取日）。上一轮 `630751c7` 的 worker `film-analyzer` 60 秒超时本轮过了，判负载抖动。
+- **收下**：Q-044 ③ 四笔 + 两红修复、P-198 出站 HTTP 口、P-193 成员授权、A3 团队透视、P-194 ②。新序里后移的几笔一并合了（代码在 main 不碍事），但**本轮部署提示词明确不设 `OUTBOUND_WORKSPACE_ID`**，钉钉阶段 C 再开。
+- **测试库偏离：认可**。db 全量与 worker 全量各用一个新合成库（`ka_be_be2db_test` / `ka_be_be2check_test`），定为规矩。
+- **react-day-picker**：你那棵树缺依赖导致的 web tsc 报错不算你的红。
+- **A8 冒烟**：团队透视探针收下；本机没有 KA Data，团队透视首测在内网（验收单已点名重点报）。
+- **下一步：待命**。内网验收单 `docs/plans/2026-09-13-发给OS-数据分析联调验收.md` 已写；内网回执里的后端问题我直接派你，优先级最高。回执到之前不开钉钉代码。
