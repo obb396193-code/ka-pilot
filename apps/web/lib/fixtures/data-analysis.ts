@@ -37,7 +37,8 @@ export type Lineage = { source: string; workspaceKind?: "personal" | "team"; win
 export type QuerySource<TRow> = { queryId: string; rowSchemaVersion: string; status: "ready" | "partial" | "stale" | "empty"; rows: TRow[]; returnedRowCount: number; wholeResultTotal: MetricValue; lineage: Lineage; warnings: string[]; dimension?: string; groupBy?: string; dimA?: string; dimB?: string }
 export type QueryFixture<TRow> = Fixture<{ mode: string; source: QuerySource<TRow> }>
 
-export type TableRow = { workspaceId: string; media: string; accountId: string; accountName: string; ds: string; tasks: { taskId: string; taskName: string }[]; dataAnomaly: boolean; metrics: MetricsV3; assessment: AssessmentV3 }
+// 真 account.table/v2 账户日行**没有 assessment 块**，考核价/预算使用率在 metrics 里（09-13 联调实测：按必有去读 .assessment.price 整页崩）
+export type TableRow = { workspaceId: string; media: string; accountId: string; accountName: string; ds: string; tasks: { taskId: string; taskName: string }[]; dataAnomaly: boolean; metrics: MetricsV3 & { assessmentPrice?: MetricValue; budgetUsageRate?: MetricValue }; assessment?: AssessmentV3 }
 export type SummaryRow = { rowCount: number; accountCount: number; anomalyRows: number; metrics: MetricsV3; assessment: AssessmentV3 }
 export type TrendRow = { ds: string; metrics: MetricsV3 }
 export type DimensionRow = { key: string; label: string; metrics: MetricsV3; assessment: AssessmentV3; anomaly: boolean; agent_type?: "agency" | "self"; agency_name?: string | null }

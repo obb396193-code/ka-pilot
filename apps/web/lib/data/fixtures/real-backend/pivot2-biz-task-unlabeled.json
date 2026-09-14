@@ -1,0 +1,493 @@
+{
+ "ok": true,
+ "data": {
+  "mode": "platform",
+  "source": {
+   "queryId": "account.pivot2",
+   "dimA": "biz",
+   "dimB": "task",
+   "rowSchemaVersion": "account.pivot2/v1",
+   "status": "ready",
+   "rows": [
+    {
+     "a": {
+      "key": null,
+      "label": null
+     },
+     "b": {
+      "key": "1803240580",
+      "label": "CVR有端"
+     },
+     "metrics": {
+      "cost": {
+       "value": 76890.09000000001,
+       "availability": "partial"
+      },
+      "exposure": {
+       "value": 6256557,
+       "availability": "partial"
+      },
+      "click": {
+       "value": 212858,
+       "availability": "partial"
+      },
+      "conversion": {
+       "value": 14356,
+       "availability": "partial"
+      },
+      "realConversion": {
+       "value": 12951,
+       "availability": "partial"
+      },
+      "cashCost": {
+       "value": 60066.53,
+       "availability": "partial"
+      },
+      "costSpace": {
+       "value": 413537.47,
+       "availability": "partial"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03402158727236082,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06744402371534074,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 5.937000231642345,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.637983939464134,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.10848583120994526,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": null,
+      "priceVersions": 2,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "partial_data",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 12951,
+       "availability": "partial"
+      },
+      "biCashCost": {
+       "value": 4.637983939464134,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     }
+    },
+    {
+     "a": {
+      "key": null,
+      "label": null
+     },
+     "b": {
+      "key": "280707655",
+      "label": "M运动"
+     },
+     "metrics": {
+      "cost": {
+       "value": 66674.80000000002,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 5645517,
+       "availability": "available"
+      },
+      "click": {
+       "value": 173687,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 11507,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 10209,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 52086.35,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 478781.65,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03076547285217634,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.066251360205427,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 6.530982466451173,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 5.102003134489176,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.12714271721030457,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 52,
+       "effectiveDate": "2026-08-01"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 10209,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 5.102003134489176,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -478781.65,
+       "availability": "available"
+      }
+     }
+    },
+    {
+     "a": {
+      "key": null,
+      "label": null
+     },
+     "b": {
+      "key": "1278297263",
+      "label": "闲鱼DAU"
+     },
+     "metrics": {
+      "cost": {
+       "value": 48645.68,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 3421054,
+       "availability": "available"
+      },
+      "click": {
+       "value": 113767,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 7838,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 7136,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 38002.009999999995,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 168941.99,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03325495592878686,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.0688951980802869,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 6.8169394618834085,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 5.325393778026905,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.09837443946188351,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 29,
+       "effectiveDate": "2026-08-01"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 7136,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 5.325393778026905,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -168941.99,
+       "availability": "available"
+      }
+     }
+    },
+    {
+     "a": {
+      "key": null,
+      "label": null
+     },
+     "b": {
+      "key": null,
+      "label": null
+     },
+     "metrics": {
+      "cost": {
+       "value": 27003.119999999995,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 2305310,
+       "availability": "available"
+      },
+      "click": {
+       "value": 74283,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 5107,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 4571,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 21094.83,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": null,
+       "availability": "missing"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03222256442734383,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06875058896382752,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 5.907486326843141,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.614926711879239,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.11726099321811412,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": null,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "assessment_missing",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 4571,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 4.614926711879239,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     }
+    }
+   ],
+   "returnedRowCount": 4,
+   "wholeResultTotal": {
+    "value": null,
+    "availability": "partial",
+    "reason": "Canonical account-day coverage or time is incomplete"
+   },
+   "lineage": {
+    "window": {
+     "from": "2026-09-01",
+     "to": "2026-09-11",
+     "preset": "custom"
+    },
+    "workspaceKind": "personal",
+    "source": "canonical",
+    "datasetVersion": null,
+    "queryTemplateVersion": "account-pivot-window-v1",
+    "metricVersion": "account-pivot-v3",
+    "dataAsOf": "2026-09-11T15:10:03.302Z",
+    "timezone": null,
+    "dayCut": null,
+    "metadataAvailability": "partial",
+    "authority": {
+     "policyVersion": "2026-08-24",
+     "useCase": "cross_media_operations",
+     "role": "default_authoritative"
+    },
+    "objectIdentity": {
+     "objectType": "account",
+     "joinKeys": [
+      "workspace_id",
+      "media",
+      "account_id"
+     ]
+    },
+    "coverage": {
+     "complete": false,
+     "reason": "Canonical account-day coverage or time is incomplete",
+     "requestedObjects": 6,
+     "returnedObjects": 6
+    },
+    "truncated": false,
+    "partial": true
+   },
+   "warnings": []
+  }
+ },
+ "meta": {
+  "cellCoverage": {
+   "cells": 4,
+   "withData": 4,
+   "undeterminable": 2
+  }
+ }
+}

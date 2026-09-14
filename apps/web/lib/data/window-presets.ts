@@ -26,6 +26,11 @@ export function iso(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
 
+/** 业务日一律按上海算。本机不在东八区时本机日期会差一天（美西晚上 9 点，上海已是第二天中午） */
+export function shanghaiToday(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(now)
+}
+
 export function shiftDays(date: string, days: number): string {
   const [year, month, day] = date.split("-").map(Number)
   return iso(new Date(year!, month! - 1, day! + days))
@@ -35,7 +40,7 @@ export function resolvePreset(preset: WindowPreset, dataDate: string, current: D
   const [year, month] = dataDate.split("-").map(Number)
   switch (preset) {
     // 「今天」用真今天，不是数据日——它问的就是「今天到现在跑了多少」
-    case "today": { const now = iso(new Date()); return { preset, from: now, to: now } }
+    case "today": { const now = shanghaiToday(); return { preset, from: now, to: now } }
     case "yesterday": return { preset, from: dataDate, to: dataDate }
     // 含数据日在内的 7 天，所以是 -6 不是 -7
     case "last_7d": return { preset, from: shiftDays(dataDate, -6), to: dataDate }

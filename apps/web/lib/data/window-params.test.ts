@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-import { resolvePreset, windowPresetLabel, type DataWindow } from "./window-presets.ts"
+import { resolvePreset, shanghaiToday, windowPresetLabel, type DataWindow } from "./window-presets.ts"
 
 /**
  * 窗口预设的推算规则（F8-19b P1 附录）。
@@ -37,11 +37,17 @@ test("跨年时上月要落到去年 12 月", () => {
 })
 
 test("★「今天」用真今天，不是数据日 —— 它问的就是「今天到现在跑了多少」", () => {
-  const today = new Date().toISOString().slice(0, 10)
+  // 业务日按上海：toISOString 是 UTC 日期，本机日期随机器时区——两个都会在某些钟点差一天
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date())
   const w = resolvePreset("today", DATA_DATE, current)
   assert.equal(w.from, today)
   assert.equal(w.to, today)
   assert.notEqual(w.from, DATA_DATE, "拿数据日当今天，这个预设就没意义了")
+})
+
+test("★「今天」按上海日期 —— 美西 9-13 晚 9 点，上海已是 9-14", () => {
+  assert.equal(shanghaiToday(new Date("2026-09-13T21:00:00-07:00")), "2026-09-14")
+  assert.equal(shanghaiToday(new Date("2026-09-13T08:59:00-07:00")), "2026-09-13")
 })
 
 test("★切到「自定义」保留现有区间 —— 不然点一下区间就被清空", () => {
