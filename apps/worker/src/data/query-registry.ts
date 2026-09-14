@@ -376,7 +376,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
       ...(accountIds === undefined ? {} : { accountIds }), ...(hhFrom === undefined ? {} : { hhFrom }), ...(hhTo === undefined ? {} : { hhTo }) })),
   },
   {
-    queryId: "account.pivot2", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    queryId: "account.pivot2", supportedViews: ["platform", "ka_data"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-pivot-window-v1",
     metricVersion: "account-pivot-v3", authorityPolicy: authority("cross_media_operations", "platform"), paramsSchema: pivotSchema,
   }, {
@@ -563,6 +563,18 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for the team source",
         { supported: [...LABEL_DIMENSIONS, "segment:<key>"] });
     }
+    // A3（arch 2026-09-13 执行序）：团队透视与团队维度同一规矩——两根轴的值都来自本库昵称解析行；
+    // 事实侧维度（account/task/biz）团队成员网格没有，放行只会得到一张「全归空桶」的表。
+    if (queryId.data === "account.pivot2" && dataView.data === "ka_data") {
+      if ([parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !usable(dim, LABEL_DIMENSIONS))) {
+        throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for the team source",
+          { supported: [...LABEL_DIMENSIONS, "segment:<key>"] });
+      }
+      // 团队成员网格没有任务归属：按任务筛只能静默忽略，所以当场拒。
+      if (parsedParams.data.taskIds !== undefined) {
+        throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task filters are not available for the team source");
+      }
+    }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
       (queryId.data === "account.summary" || queryId.data === "account.trend")) {
       throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");
@@ -620,7 +632,8 @@ export class DataQueryRegistry {
   private teamKaWindowBase(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: WindowComparisonMode, aggregate = false): KaDataWindowQueryPlan {
     // v1.9.46（Q-041 ⑧）：`account.dimension` 也走这条成员网格——团队源的维度分组是
     // 「ka-data 出账户日事实 + 我们自己库里的昵称解析行分组」，事实那半用的就是同一张网格。
-    if (!isResolvedDataQuery(resolved) || !["account.summary", "account.trend", "account.dimension"].includes(resolved.queryId)) {
+    // A3：`account.pivot2` 的团队路径也是这张网格上的两根标签轴。
+    if (!isResolvedDataQuery(resolved) || !["account.summary", "account.trend", "account.dimension", "account.pivot2"].includes(resolved.queryId)) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
     }
     rejectKaTaskWindow(resolved);

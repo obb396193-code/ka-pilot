@@ -1,5 +1,6 @@
 import {
   namedDimensionWindowRowSchema,
+  pivotWindowRowsSchema,
   summarizeDimensionSources,
   labelBasisEarliestKnownWarning,
   capLabelBasisWarnings,
@@ -461,6 +462,76 @@ export class KaDataClient {
     return { rows, dimension, window: plan.window,
       lineage: sourceLineage(resolved, scope, envelope, accounts.length, false, true, reason, plan.queryTemplateVersion),
       warnings: [reason], labelBasis: capLabelBasisWarnings(labelBasis) };
+  }
+
+  /**
+   * A3（arch 2026-09-13 执行序）：团队空间透视。与团队维度（Q-041 ⑧）同一套：事实来自 ka-data 成员网格，
+   * 两根轴的值来自本库昵称解析行、按每个成员自己的业务日取归属（v1.9.49 ①）；每个格子复用
+   * `summarizeKaWindowGroup`（大盘那一份），不另写聚合——否则「透视里张三的合计」与
+   * 「按优化师分组里张三的合计」迟早对不上，而且不会有东西报错。团队侧未实测，内网验。
+   */
+  async teamPivot(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<{
+    source: SourceQueryResult; cellCoverage: { cells: number; withData: number; undeterminable: number };
+  }> {
+    if (!isResolvedDataQuery(resolved) || resolved.queryId !== "account.pivot2") {
+      throw new KaDataClientError("INVALID_REQUEST", "Query was not resolved by the registry", false);
+    }
+    if (scope.scopeKind !== "team_workspace_readonly" || this.#teamWorkspaceId === undefined
+      || scope.workspaceId !== this.#teamWorkspaceId) {
+      throw new KaDataClientError("FORBIDDEN", "Team pivot requires approved team context", false);
+    }
+    const dimA = resolved.params.dimA, dimB = resolved.params.dimB;
+    if (dimA === undefined || dimB === undefined) throw new KaDataClientError("INVALID_REQUEST", "Pivot dimensions are required", false);
+    // 缺的是我们自己这半（标签），就连源都不打，也不退回「全部未标注」。
+    if (this.#labels === undefined) {
+      throw new KaDataClientError("VIEW_UNSUPPORTED", "Team naming labels are not configured for this source", false);
+    }
+    const plan = this.#registry.buildTeamKaWindowPlan(resolved,
+      { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" });
+    const { envelope, exactLimit } = await this.#readPlan(plan);
+    if (exactLimit || envelope.truncated || envelope.limit_clamped || envelope.rowCount !== envelope.rows.length
+      || envelope.rows.length >= plan.limit) {
+      throw new KaDataClientError("SOURCE_TRUNCATED", "Team pivot response is incomplete", false);
+    }
+    let members;
+    try { members = decodeKaWindowMembers(envelope.rows, plan, resolved, scope.workspaceId); }
+    catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid team member grid", false); }
+    const accounts = [...new Map(members.map((member) =>
+      [`${member.media}:${member.accountId}`, { media: member.media, accountId: member.accountId }])).values()];
+    const labels = await this.#labels.read({ workspaceId: scope.workspaceId, accounts, from: plan.window.from, to: plan.window.to });
+    const cells = new Map<string, { a: string | null; b: string | null; members: typeof members }>();
+    const borrowed: LabelBasisEarliestKnownWarning[] = [];
+    for (const member of members) {
+      const basis = labels.on(member, member.ds);
+      if (basis?.earliestKnown) {
+        borrowed.push(labelBasisEarliestKnownWarning({ media: member.media, accountId: member.accountId, businessDate: member.ds }));
+      }
+      const a = basis?.dimensions?.[dimA]?.value ?? null, b = basis?.dimensions?.[dimB]?.value ?? null;
+      const key = JSON.stringify([a, b]), cell = cells.get(key) ?? { a, b, members: [] };
+      cell.members.push(member); cells.set(key, cell);
+    }
+    const order = (x: string | null, y: string | null) => x === y ? 0 : x === null ? -1 : y === null ? 1 : x < y ? -1 : 1;
+    const sorted = [...cells.values()].sort((x, y) => order(x.a, y.a) || order(x.b, y.b));
+    let projection;
+    try {
+      projection = pivotWindowRowsSchema.parse({ queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
+        dimA, dimB, rows: sorted.map((cell) => ({ a: { key: cell.a, label: cell.a }, b: { key: cell.b, label: cell.b },
+          ...summarizeKaWindowGroup(cell.members, plan.window) })) });
+    } catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid team pivot cells", false); }
+    const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
+    const lineage = sourceLineage(resolved, scope, envelope, accounts.length, false, true, reason, plan.queryTemplateVersion);
+    return {
+      source: {
+        queryId: resolved.queryId, rowSchemaVersion: projection.rowSchemaVersion, dimA, dimB, status: "ready",
+        rows: projection.rows, returnedRowCount: projection.rows.length,
+        wholeResultTotal: { value: null, availability: "partial", reason: "Team inventory coverage is unknown" },
+        // 对象形告警只进 lineage；顶层 warnings 仍只放字符串。
+        lineage: { ...lineage, window: plan.window, warnings: [reason, ...capLabelBasisWarnings(borrowed)] },
+        warnings: [reason],
+      } as SourceQueryResult,
+      cellCoverage: { cells: sorted.length, withData: sorted.filter((cell) => cell.members.some((member) => member.observed)).length,
+        undeterminable: projection.rows.filter((row) => row.assessment.onTarget === null).length },
+    };
   }
 
   private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: WindowComparisonMode) {

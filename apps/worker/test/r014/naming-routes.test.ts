@@ -72,7 +72,9 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
   });
 
   afterAll(async () => {
-    for (const table of ["account_name_parses", "naming_rules", "accounts", "workspace_memberships", "users"]) {
+    // tasks 对 workspaces 没有级联：Q-043 ③ 插的别名任务不在这里删，就会成孤儿行留在共用测试库，
+    // db 包的迁移回放降级到 027 之前时被「tasks still carry v1.9.28 fields」拒掉。
+    for (const table of ["account_name_parses", "naming_rules", "tasks", "accounts", "workspace_memberships", "users"]) {
       await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspaceId]);
     }
     await pool.query("DELETE FROM workspaces WHERE id=$1", [workspaceId]);

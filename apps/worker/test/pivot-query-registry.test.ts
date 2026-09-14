@@ -56,8 +56,16 @@ describe("pivot Registry admission", () => {
       .toThrowError(expect.objectContaining({ code: "DIMENSION_UNSUPPORTED",
         details: { supported: ["account", "task", "biz", "optimizer", "goal", "placement", "segment:<key>"] } }));
   });
-  it.each(["ka_data", "reconcile"])("does not borrow %s", view => {
-    expect(() => createDataQueryRegistry().resolve("account.pivot2", params, view))
+  it("does not borrow reconcile", () => {
+    expect(() => createDataQueryRegistry().resolve("account.pivot2", params, "reconcile"))
       .toThrowError(expect.objectContaining({ code: "VIEW_UNSUPPORTED" }));
+  });
+  /** A3（arch 2026-09-13 执行序）：团队源开放透视，但两根轴只收标签维度与清洗段（与团队维度同一规矩）。 */
+  it("admits ka_data only for label axes and names what the team source supports", () => {
+    expect(() => createDataQueryRegistry().resolve("account.pivot2", params, "ka_data"))
+      .toThrowError(expect.objectContaining({ code: "DIMENSION_UNSUPPORTED",
+        details: { supported: ["optimizer", "goal", "placement", "segment:<key>"] } }));
+    expect(createDataQueryRegistry().resolve("account.pivot2", { ...params, dimA: "optimizer", dimB: "segment:city" }, "ka_data").params)
+      .toMatchObject({ dimA: "optimizer", dimB: "segment:city" });
   });
 });

@@ -162,13 +162,22 @@ class MemoryAlerts implements AlertSink {
 
 describe("real PostgreSQL data pipeline", () => {
   const pool = new Pool({ connectionString: databaseUrl });
+  const createdWorkspaces: string[] = [];
 
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
 
   afterAll(async () => {
-    await pool.end();
+    try {
+      // 029 起 channel_coefficients.created_at 默认 now()：这里留下的系数行带审计元数据，
+      // db 包的迁移回放测试降级到 029 之前时会被「不许无损降级」拒掉（同库先跑 worker 再跑 db 必红）。
+      if (createdWorkspaces.length > 0) {
+        await pool.query("DELETE FROM channel_coefficients WHERE workspace_id = ANY($1::uuid[])", [createdWorkspaces]);
+      }
+    } finally {
+      await pool.end();
+    }
   });
 
   it("connects fake Qihang to canonical, quality, semantic facts, rules and work items", async () => {
@@ -185,6 +194,7 @@ describe("real PostgreSQL data pipeline", () => {
     );
     const workspaceId = workspace.rows[0]!.id;
     const otherWorkspaceId = other.rows[0]!.id;
+    createdWorkspaces.push(workspaceId, otherWorkspaceId);
     await pool.query(
       `INSERT INTO accounts (
          workspace_id, account_id, account_name, media, lifecycle_stage, status
