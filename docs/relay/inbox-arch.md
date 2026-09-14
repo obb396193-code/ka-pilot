@@ -8666,3 +8666,40 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 迁移 031 对 `account_name_parses` 取 ACCESS EXCLUSIVE（`lock_timeout 5s`），表小、秒级；回填不改任何归属值。
 
 下一件按你的新序做 **P-198 钉钉出站 worker HTTP 入口**（父 HTTP 锁与出站 child 不同锁）。
+
+---
+
+## be2 → arch（2026-09-13）：P-198 钉钉出站接进既有 worker HTTP 触发口 `84eff667`
+
+接手清单第 1 件。Q-044 ③ 的回执在上一封（`a9f32a62`）。
+
+### 做了什么
+- 同一个 `start:worker-http` 进程上新增 **`POST /internal/worker/outbound-once`**：鉴权（`X-Worker-Trigger-Token`，401）、空 body / 禁 query（400）、方法（405）、进程内单飞（409）全部与 `/internal/worker/once` 共用同一段代码，**两条路由互相单飞**（ETL 在跑时出站 409，反之亦然）。
+- **父 HTTP 不拿 `workerOnceLock`，由出站 child 自己拿**——这就是 Codex 提醒的互锁点，实测是这样的：锁是按空间的**会话级** `pg_try_advisory_lock`，父进程拿着再 fork child，child 在另一个会话上 try 同一个 key 永远失败，只会回 `locked`。**不会卡死，但一条也发不出去**；而且原来的 child 对 `locked` 照样报 `terminal: completed`，HTTP 会回 200，看上去像跑过了。ETL 与出站仍经这把锁跨进程互斥。
+- child 现在在 terminal 之前多报一条 IPC `outbound_pass {status: locked|drained|batch_limit, counts}`；监督器只收一次、必须在 terminal 前、计数必须自洽（sent+retried+failed+deduplicated ≤ claimed），否则整轮判失败并杀 child。被超时/中止杀掉时丢弃计数。
+- CLI `outbound:once` 与 HTTP 共用 `runOutboundOnceProcess`；CLI 遇 `locked` 改为输出「skipped（另一轮占着这个空间）」，不再说 finished。
+- 配置：`start:worker-http` 进程若设了 `OUTBOUND_WORKSPACE_ID`，就开出站路由；**必须与 `WORKER_ONCE_WORKSPACE_ID` 相同，否则启动失败**（两个空间各拿各的锁，单飞就不成立；也不能让 A 空间的触发口替 B 发）。没设 → 路由回 503 `SOURCE_UNAVAILABLE`（鉴权之后才回，未授权探不到）。child 环境仍只继承本空间群凭证，不继承触发令牌与 ETL 身份。
+
+### 发出形状（内部触发口，非浏览器契约）
+| 情况 | HTTP |
+|---|---|
+| 一轮跑完 / 到批次上限 | 200 `{status:"drained"|"batch_limit", outbound:{claimed,sent,retried,failed,deduplicated}}` |
+| 超过 `OUTBOUND_MAX_MS`，child 已确认退出 | 200 `{status:"budget", outbound:null}`（计数没回来，不编） |
+| 同空间已有一轮（本进程或别的进程） | 409 `WORKER_BUSY` |
+| 未配出站 / 进程停止中 / child 被中止 | 503 `SOURCE_UNAVAILABLE` |
+| child 结果形状不对 | 502；child 失败 500（错误文本不外露） |
+
+### 证据（本机合成 PG，未发任何外部请求）
+- 真库 + **真实子进程**经 HTTP 入口跑一轮：本空间 dingtalk 行被领取（该配置无群 → 按 v1.9.48 只失败这一条 `NO_CHANNEL_FOR_WORKSPACE`），**别的空间与站内信一行不动**，响应计数与库一致。
+- 真库：测试先拿住该空间的 worker 锁 → HTTP 出站 409，队列 `queued/attempts 0` 不动。
+- 真库 + **假钉钉 transport**经 HTTP 入口：一条 `sent`、`attempts 1`、fetch 恰好一次。（子进程里注不进假 fetch，这条在同进程跑同一个 `executeOutboundRuntime`；跨进程那半由前两条证明。）
+- 绊线：F 让父进程也拿锁 → 打红 3 条（单测「父进程不拿锁」+ 真库两条，真实子进程只回 locked → 409）；G 让 child 不报 `outbound_pass` → 打红 2 条（真库：正常结束却没有本轮结果，按失败处理）。
+- 门禁：Worker 全量 218 文件 2572 + 2 外部 opt-in 跳过；新增单测 HTTP 7 + 进程/监督 9、真库 3；tsc 0、eslint 0。本笔只动 worker 与部署文档，domain / db / web 未改（上一笔门禁 Domain 1724、DB 1917、Web 389）。
+
+### 联调还差你那边一步
+你说的「在联调造一条出站行、用假 transport 跑一次单轮消费并留证据」：联调机上注入假 transport 要改运行时，我没做。可选的做法是在联调给 `OUTBOUND_WORKSPACE_ID` 那个空间**不配群**，造一条 `job_failed` 行，`curl -X POST -H "X-Worker-Trigger-Token: $TOK" http://127.0.0.1:3102/internal/worker/outbound-once`，预期 200 `failed:1` 且该行 `fail_reason=NO_CHANNEL_FOR_WORKSPACE`，全程不出网——证明「HTTP → child → 领取 → 落库」整链通；真正发群要等你批凭证。
+
+### 文档
+- `apps/worker/.env.example`、`docs/runbooks/2026-09-04-DataAPI内网部署与环境变量.md`：补出站路由、同空间约束与响应表；删掉「HTTP 触发接线另笔收口」那句。**部署提示词没动**：要不要开发送、何时对外说「钉钉能发」由你定。
+
+下一件：**P-193 成员授权 HTTP 注册 + BFF**（fe 治理后台在等）。
