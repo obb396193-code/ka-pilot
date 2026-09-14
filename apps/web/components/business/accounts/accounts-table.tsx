@@ -4,7 +4,6 @@ import { useMemo, useState, type ReactNode } from "react"
 import Link from "next/link"
 import { IconSparkles } from "@tabler/icons-react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { toast } from "sonner"
 
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, useLocalOrder, type GridFeatures } from "@/components/business/data-grid/data-grid"
@@ -19,7 +18,16 @@ import { accountStatusTone, mediaLabel } from "./account-status"
 // 账户池表（F-007 §2 12 列，母版格式 D6）：☐ | 账户 | 负责人 | 绑定任务 | 产品名 | 账户状态 + 投放阶段 | 余额·断量 | 日预算卡 | 消耗 | 现金 CPA(达标) | 容量负载 | 最近操作 | 建议下一步 | ⋯
 export const rowId = (item: AccountItem) => `${item.media}:${item.accountId}`
 
-export type RowActions = { onTransfer: (items: AccountItem[]) => void; onPoolStatus: (item: AccountItem) => void; onProduct: (item: AccountItem) => void; onReplicate: (item: AccountItem) => void }
+export type RowActions = {
+  onTransfer: (items: AccountItem[]) => void
+  onPoolStatus: (item: AccountItem) => void
+  onProduct: (item: AccountItem) => void
+  onReplicate: (item: AccountItem) => void
+  /** 加入 / 移出盯盘名单（`PUT /me/watchlist` 整体替换）。原来只弹一句「接入后保存」的假成功 */
+  onWatch: (item: AccountItem) => void
+  /** 这个账户在不在名单里——菜单项据此显「加入盯盘」还是「移出盯盘」 */
+  isWatched: (item: AccountItem) => boolean
+}
 
 const helper = createColumnHelper<GridFeatures, AccountItem>()
 function buildColumns(actions: RowActions) {
@@ -64,7 +72,7 @@ function buildColumns(actions: RowActions) {
         <DropdownMenuItem onSelect={() => actions.onProduct(item)}>改产品名</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onTransfer([item])}>转移负责人</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onReplicate(item)}>发起优质户复制</DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => toast("已加入盯盘名单", { description: "接入后保存" })}>加入盯盘</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => actions.onWatch(item)}>{actions.isWatched(item) ? "移出盯盘" : "加入盯盘"}</DropdownMenuItem>
         <DropdownMenuItem disabled title="星标随用户偏好接口开放">星标</DropdownMenuItem>
       </>
     )),

@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { IconChevronRight } from "@tabler/icons-react"
 
+import { warningText } from "@/lib/data/warning-codes"
 import { cn } from "@/lib/utils"
 
 /**
@@ -19,11 +20,8 @@ import { cn } from "@/lib/utils"
 
 export type LineageWarning = string | { code: string; media?: string; accountId?: string; businessDate?: string; fields?: string[] }
 
-/** 有明确成因的两个码：拉数失败 vs 就是没数。用户处置方式不同，所以分开说。 */
-const REASON: Record<string, string> = {
-  BATCH_FAILED: "拉数失败",
-  ACCOUNT_DAY_MISSING: "源未回数",
-}
+/* 码 → 人话的表在 `lib/data/warning-codes.ts`：`source.warnings[]` 的字符串码和这里的
+   对象码同源，分两份表就会出现「同一个码在盯盘写一句、在大盘写另一句」。 */
 
 const FIELD_LABEL: Record<string, string> = {
   cost: "账面花费", cashCost: "现金花费", conversion: "转化数", realConversion: "真实转化",
@@ -56,7 +54,7 @@ export function MissingDataNotice({ warnings }: { warnings?: LineageWarning[] })
             <li key={`${item.code}|${item.media}|${item.accountId}|${item.businessDate}|${index}`} className="flex flex-wrap gap-x-2 tabular-nums">
               <span>{item.businessDate ?? "日期未标"}</span>
               <span className="text-foreground">{item.media ?? "—"} · {item.accountId ?? "账户未标"}</span>
-              <span>{REASON[item.code] ?? item.code}</span>
+              <span>{warningText(item.code)}</span>
               {item.fields?.length ? <span>缺：{item.fields.map((field) => FIELD_LABEL[field] ?? field).join("、")}</span> : null}
             </li>
           ))}

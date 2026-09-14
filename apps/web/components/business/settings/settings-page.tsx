@@ -32,7 +32,9 @@ import { themeModes } from "@/lib/theme/theme"
 import { useTheme } from "@/components/business/theme/theme-provider"
 import { mediaLabel } from "@/components/business/accounts/account-status"
 import { subscriptionKindLabel, subscriptionsFixture, type Subscription } from "@/lib/fixtures/reports"
-import { coefficientText, coefficientsFixture, credentialHint, credentialsFixture, viewPageLabel, viewsFixture, watchlistFixture, type ChannelCoefficient, type Credential, type SavedView } from "@/lib/fixtures/settings"
+import { coefficientText, coefficientsFixture, credentialHint, credentialsFixture, viewPageLabel, type ChannelCoefficient, type Credential, type SavedView } from "@/lib/fixtures/settings"
+import { useSavedViews } from "@/lib/data/use-saved-views"
+import { useWatchlist } from "@/lib/data/use-watchlist"
 import { changeLogFixture, changeLogKindLabel, fmtChangeValue } from "@/lib/fixtures/tasks"
 import { cn } from "@/lib/utils"
 
@@ -240,18 +242,27 @@ const viewColumns = viewHelper.columns([
 ])
 
 function ViewsTab() {
-  const items = isOk(viewsFixture) ? viewsFixture.data.items : []
-  const watchlist = isOk(watchlistFixture) ? watchlistFixture.data : null
-  const table = useGridTable({ data: items, columns: viewColumns, pageSize: 20, getRowId: (item) => item.id })
+  // 视图和名单都走真接口（`GET /me/views`、`GET /me/watchlist`）。
+  // 原来两份都读样例：真实模式下样例是空的，这一页就永远是「还没保存视图 + 名单空」，
+  // 哪怕用户刚在数据总表里存过视图（arch 2026-09-14 点名的五处之一）。
+  const { views, loading: viewsLoading } = useSavedViews()
+  const watchlist = useWatchlist()
+  const table = useGridTable({ data: views, columns: viewColumns, pageSize: 20, getRowId: (item) => item.id })
   return (
     <div className="flex flex-col gap-4">
-      <DataGrid table={table} empty="还没保存视图；在数据分析总表里「另存为视图」" toolbar={<p className="text-xs text-muted-foreground">保存的视图 · Agent 的修改建议可全部或局部接受</p>} showPagination={false} />
+      <DataGrid table={table} empty={viewsLoading ? "正在读…" : "还没保存视图；在数据分析总表里「另存为视图」"} toolbar={<p className="text-xs text-muted-foreground">保存的视图 · Agent 的修改建议可全部或局部接受</p>} showPagination={false} />
       <Card>
-        <CardHeader><CardTitle>关注的账户与任务</CardTitle><CardDescription>工作台「我关注的」用这份名单 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
+        <CardHeader><CardTitle>关注的账户与任务</CardTitle><CardDescription>工作台「我关注的」用这份名单 · 更新 {fmtTime(watchlist.updatedAt)}</CardDescription></CardHeader>
         {/* 名单是联合类型：task 型只有 taskId，没有 media/accountId——两支要分开渲染，不能共用一套字段 */}
-        <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => item.type === "task"
-          ? <Link key={`task-${item.taskId}`} href={`/tasks/${encodeURIComponent(item.taskId)}`}><Badge variant="outline" className="gap-1">任务 · {item.taskId}</Badge></Link>
-          : <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {accountName(item.accountId)}</Badge></Link>)}</CardContent>
+        <CardContent className="flex flex-wrap gap-2">
+          {watchlist.loading && watchlist.items.length === 0 ? <span className="text-xs text-muted-foreground">正在读名单…</span> : null}
+          {/* 拉不到 ≠ 名单是空的：不说清楚，用户会以为自己的关注没了 */}
+          {watchlist.error ? <span className="text-xs text-status-critical">{watchlist.error}<button type="button" onClick={watchlist.reload} className="ml-2 underline underline-offset-2">重试</button></span> : null}
+          {!watchlist.loading && !watchlist.error && watchlist.items.length === 0 ? <span className="text-xs text-muted-foreground">名单是空的——在账户池或任务列表里点「加入盯盘」</span> : null}
+          {watchlist.items.map((item) => item.type === "task"
+            ? <Link key={`task-${item.taskId}`} href={`/tasks/${encodeURIComponent(item.taskId)}`}><Badge variant="outline" className="gap-1">任务 · {item.taskId}</Badge></Link>
+            : <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {accountName(item.accountId)}</Badge></Link>)}
+        </CardContent>
       </Card>
     </div>
   )
