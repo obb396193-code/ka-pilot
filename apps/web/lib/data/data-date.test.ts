@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-import { localToday, readDataDate } from "./data-date.ts"
+import { readDataDate, shanghaiToday } from "./data-date.ts"
 
 /**
  * 数据日写错不会报错，只会让每个窗口预设都落在错误的区间上——对账时才发现。
@@ -24,13 +24,16 @@ test("两个都没有 → null，由调用方回落今天并标「数据日未�
   assert.equal(readDataDate(undefined), null)
 })
 
-test("localToday 是本地日历日，不是 UTC —— 差一天会让「今天」这个预设错位", () => {
-  const noon = new Date(2026, 8, 13, 12, 0, 0) // 本地 2026-09-13 中午
-  assert.equal(localToday(noon), "2026-09-13")
-  // 本地深夜：UTC 已经是次日，但「今天」对用户就是 09-13
-  assert.equal(localToday(new Date(2026, 8, 13, 23, 30, 0)), "2026-09-13")
+test("★「今天」按上海日取，不按浏览器本地时区", () => {
+  // 业务日是上海日。浏览器可能在任何时区、内网服务器也不一定在东八区——
+  // 用本地时区会差一天，而差一天的窗口看不出异常，只有对账时才发现。
+  // 美西 09-13 17:00 = 上海 09-14 08:00
+  assert.equal(shanghaiToday(new Date("2026-09-14T00:00:00Z")), "2026-09-14")
+  // 上海 09-14 07:59 仍是 14 号；UTC 那一刻是 13 号 23:59
+  assert.equal(shanghaiToday(new Date("2026-09-13T23:59:00Z")), "2026-09-14")
+  assert.equal(shanghaiToday(new Date("2026-09-13T15:59:00Z")), "2026-09-13")
 })
 
 test("月/日补零", () => {
-  assert.equal(localToday(new Date(2026, 0, 5)), "2026-01-05")
+  assert.equal(shanghaiToday(new Date("2026-01-05T04:00:00Z")), "2026-01-05")
 })

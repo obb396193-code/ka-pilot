@@ -39,19 +39,26 @@ function format(value: number | null, kind: string): string {
   return num.format(value)
 }
 
-export function PivotBuilder({ window, workspaceId, colorKey }: {
+export function PivotBuilder({ window, workspaceId, workspaceKind = "personal", colorKey }: {
   window: DataWindow
   workspaceId: string | undefined
+  /**
+   * 可用维度按空间分两套（be2 A3 合入后）：团队源（ka-data）只有
+   * 优化师 / 转化目标 / 版位 和清洗段——没有账户/任务/业务那几层的可分组字段。
+   * 所以同一个下拉在两个空间里「待接源」的项不一样。
+   */
+  workspaceKind?: "personal" | "team"
   colorKey?: string
 }) {
   const dimensions = useMemo(() => pivotDimensions(), [])
-  // 默认落在**后端支持的**维度上（v1.9.34：只有 account/task/biz）。
-  // 原来默认是「资源位 × 任务」——那个组合现在会 DIMENSION_UNSUPPORTED，
-  // 等于一打开这个 tab 就是错的。
-  // 副作用：mock 的那份示例 fixture 恰好是「资源位 × 任务」，所以 mock 下默认组合无数、
-  // 页面照实说「示例数据只覆盖…」。真实模式对 > mock 好看（数据分析页本来就要去 fixture）。
-  const [rowDim, setRowDim] = useState("biz")
-  const [colDim, setColDim] = useState("task")
+  /**
+   * 默认组合必须落在**当前空间真能分组**的维度上，否则一打开这个 tab 就是
+   * DIMENSION_UNSUPPORTED——个人空间给 业务 × 任务，团队空间（KA Data 源没有
+   * 账户/任务/业务那几层）给 优化师 × 版位。
+   * 空间切换时整个内容区按 workspaceId 重挂（session-provider），所以这个 initializer 会重跑。
+   */
+  const [rowDim, setRowDim] = useState(() => (workspaceKind === "team" ? "optimizer" : "biz"))
+  const [colDim, setColDim] = useState(() => (workspaceKind === "team" ? "placement" : "task"))
   const [metric, setMetric] = useState("cost")
   // pivot2 的 `media` 是**必填**参数（v1.9.34 实测），所以这里必须有个选择器
   const [media, setMedia] = useState(mediaOptions[0]!.value)
@@ -89,9 +96,8 @@ export function PivotBuilder({ window, workspaceId, colorKey }: {
               <SelectGroup key={group}>
                 <SelectLabel>{group}</SelectLabel>
                 {items.map((item) => {
-                  // 后端现在只认 账户/任务/业务；其余标「待接源」并禁选——
-                  // 让人选完再吃一个 DIMENSION_UNSUPPORTED，不如一开始就说清楚（v1.9.34）
-                  const ready = pivotDimensionSupported(item.value)
+                  // 让人选完再吃一个 DIMENSION_UNSUPPORTED，不如一开始就禁掉（v1.9.34）
+                  const ready = pivotDimensionSupported(item.value, workspaceKind)
                   return (
                     <SelectItem key={item.value} value={item.value} disabled={!ready}>
                       {item.label}{ready ? "" : " · 待接源"}
@@ -231,7 +237,10 @@ export function PivotBuilder({ window, workspaceId, colorKey }: {
 
       <p className="text-[11px] text-muted-foreground">
         维度下拉里「命名规则段」来自当前媒体的账户昵称解析规则——规则里新增一个可分析段，这里自动多一项。
-        标「待接源」的维度后端还没接（现在只支持 账户 / 任务 / 业务），接通一个开放一个。
+        {workspaceKind === "team"
+          ? "团队空间（KA Data 源）可分组的是：优化师 / 转化目标 / 版位，以及命名规则段；账户 / 任务 / 业务那几层这个源没有。"
+          : "个人空间可分组的是：账户 / 任务 / 业务 / 优化师 / 转化目标 / 版位，以及命名规则段。"}
+        标「待接源」的是这个源分不出来的维度——不是没做，是数据里没有那个字段。
         缺的格子显「−」不补 0：那个组合没有数，不是花了 0 块。
       </p>
     </div>

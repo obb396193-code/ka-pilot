@@ -143,21 +143,21 @@ export function useDashboardSummary(window: DataWindow, workspaceId: string | un
   return { data: row ? { row, lineage } : null, loading: false, isValidating: false, error: null, reload: () => {} }
 }
 
-export function useDashboardTrend(window: DataWindow, workspaceId: string | undefined, filters?: Record<string, unknown>) {
+export function useDashboardTrend(window: DataWindow, workspaceId: string | undefined, filters?: Record<string, unknown>, enabled = true) {
   return useQuery<{ ds: string; metrics: DashboardRow["metrics"] }[]>(
     "account.trend",
     { ...windowParams(window), ...(buildFilters(filters).filters ? { filters: buildFilters(filters).filters } : {}) },
-    !IS_MOCK,
+    !IS_MOCK && enabled,
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as { ds: string; metrics: DashboardRow["metrics"] }[]) : null),
     workspaceId,
   )
 }
 
-export function useDashboardDimension(dimension: string, window: DataWindow, workspaceId: string | undefined, fallback: DashboardRow[], filters?: Record<string, unknown>) {
+export function useDashboardDimension(dimension: string, window: DataWindow, workspaceId: string | undefined, fallback: DashboardRow[], filters?: Record<string, unknown>, enabled = true) {
   const remote = useQuery<DashboardRow[]>(
     "account.dimension",
     dimensionParams(dimension, window, filters).params,
-    !IS_MOCK,
+    !IS_MOCK && enabled,
     (response) => (response.ok && response.data.mode !== "reconcile" ? (response.data.source.rows as unknown as DashboardRow[]) : null),
     workspaceId,
   )

@@ -32,7 +32,7 @@ import { MetricHint } from "@/components/business/metric-hint"
  * 数据源：`assessment.biConv/biCashCost/overCost` 与环比是契约 v1.9.22 新增，后端 Codex P-210 未到，
  * 现读 `lib/data/fixtures/v1922/` 的过渡 fixture（自写、按 api.md 形，落地后并回删除）。
  */
-export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filters }: {
+export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filters, dataDateReady = true }: {
   colorKey?: string
   window: DataWindow
   workspaceId?: string
@@ -41,6 +41,15 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
   summaryQuery: ReturnType<typeof useDashboardSummary>
   /** 页头筛选栏选中的条件；进每个查询的 params，不然筛选栏就是摆设 */
   filters?: Record<string, unknown>
+  /**
+   * ★数据日确定之前**不发这些查询**。
+   *
+   * 数据日只能从 summary 的 lineage 里拿（health 那条路 BFF 未冻），所以 summary 是探针：
+   * 它先按上海今天发一轮，回来之后窗口按真数据日重算。
+   * 如果这几个查询不等，就会**整套发两遍**——第一遍窗口是错的（dateTo=今天），
+   * 拿回来的数还会先画到屏幕上闪一下，然后被第二遍覆盖。
+   */
+  dataDateReady?: boolean
 }) {
   const summary = summaryQuery.data?.row ?? null
   // ★lineage 跟着这次响应走，不再固定读 mock fixture——真实模式下那等于把假的「数据截至」
@@ -52,12 +61,12 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
   // ★查询用 `placement`，界面仍叫「资源位」：快手的资源位实际落在 placement 维度
   //   （v1.9.41 实测分出 优选/搜索/联盟/主站/上下滑）。`resource_position` 这个键
   //   在 schema 里合法但没有解析器产出，查了直接 DIMENSION_UNSUPPORTED。
-  const resourceQuery = useDashboardDimension("placement", window, workspaceId, mockResourcePositionRows(), filters)
+  const resourceQuery = useDashboardDimension("placement", window, workspaceId, mockResourcePositionRows(), filters, dataDateReady)
   const optimizerRows = optimizerQuery.data ?? []
   const resourceRows = resourceQuery.data ?? []
   // ★任务大类顶层行走**和 summary 同源**的那份，不用契约里那份 personal 的 biz fixture：
   //   两者口径不同，挂在一起会让分摊的分母整个错（审查 ③ 点名）。
-  const goalQuery = useDashboardDimension("goal", window, workspaceId, mockOptimizerRows(), filters)
+  const goalQuery = useDashboardDimension("goal", window, workspaceId, mockOptimizerRows(), filters, dataDateReady)
   const goalRows = goalQuery.data ?? []
   /**
    * 自投 / 代理分布（v1.9.45）：走 **`segment:operator`**，不是 `agent_type`。
@@ -65,9 +74,9 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
    * 而「自投还是代理」这个信息实际藏在账户昵称的 operator 段里——
    * be2 ⑪ 把段维度开到 `account.dimension` 之后才拿得到。
    */
-  const operatorQuery = useDashboardDimension("segment:operator", window, workspaceId, mockOptimizerRows(), filters)
+  const operatorQuery = useDashboardDimension("segment:operator", window, workspaceId, mockOptimizerRows(), filters, dataDateReady)
   const operatorRows = operatorQuery.data ?? []
-  const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows(), filters)
+  const bizQuery = useDashboardDimension("biz", window, workspaceId, mockBizRows(), filters, dataDateReady)
   const bizRows = bizQuery.data ?? []
 
   /**
@@ -77,7 +86,7 @@ export function OverviewTab({ colorKey, window, workspaceId, summaryQuery, filte
    * 趋势图、以及建立在它之上的「换窗口重算」，在真实部署里画的全是样例数据。
    * 更尴尬的是 `useDashboardTrend` 我早写好了，**全仓没有一处调用**。
    */
-  const trendQuery = useDashboardTrend(window, workspaceId, filters)
+  const trendQuery = useDashboardTrend(window, workspaceId, filters, dataDateReady)
   const mockDays = useMemo(() => (isOk(trendFixture) ? trendFixture.data.source.rows : []), [])
   const days = useMemo(
     () => (IS_MOCK ? mockDays : (trendQuery.data as typeof mockDays) ?? []),

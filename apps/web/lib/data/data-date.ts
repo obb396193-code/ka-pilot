@@ -22,7 +22,10 @@ export function readDataDate(lineage: LineageLike): string | null {
   return lineage?.dataAsOf?.slice(0, 10) ?? lineage?.window?.to ?? null
 }
 
-/** 本地今天（`YYYY-MM-DD`）。只在数据日未知时当兜底用。 */
-export function localToday(now = new Date()): string {
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
-}
+/**
+ * 「今天」一律按 **Asia/Shanghai** 取（arch 热修同一处的理由）：
+ * 业务日是上海日，而浏览器可能在任何时区、内网服务器也不一定在东八区——
+ * 用本地时区会差一天，而差一天的窗口看不出异常，只有对账时才发现。
+ * 实现在 `window-presets.ts`，这里只转发，别再写第二份。
+ */
+export { shanghaiToday } from "./window-presets.ts"

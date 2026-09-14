@@ -134,6 +134,22 @@ test("★pivot2 收 segment:<key> —— 这是「按昵称字段透视」的入
   assert.equal(pivotDimensionSupported("resource_position"), false, "合法但查不出来的，照样标待接源")
 })
 
+test("★团队空间可分组的维度只有三个 + 段（be2 A3 876b75a8）", () => {
+  // ka-data 源没有账户 / 任务 / 业务这几层的可分组字段。把它们当成可选项摆在下拉里，
+  // 人选完只会吃一个 DIMENSION_UNSUPPORTED——这条锁住两套集合确实是两套。
+  for (const value of ["optimizer", "goal", "placement"]) {
+    assert.ok(pivotDimensionSupported(value, "team"), `团队空间应当可选 ${value}`)
+  }
+  for (const value of ["account", "task", "biz"]) {
+    assert.equal(pivotDimensionSupported(value, "team"), false, `团队空间分不出 ${value}`)
+    assert.ok(pivotDimensionSupported(value, "personal"), `个人空间照旧可选 ${value}`)
+  }
+  // 段两边都放行：段来自昵称清洗，两个源都有昵称
+  assert.ok(pivotDimensionSupported("segment:bid_mode", "team"))
+  // 不传第二个参数 = 个人空间（老调用点不用全改）
+  assert.equal(pivotDimensionSupported("biz"), pivotDimensionSupported("biz", "personal"))
+})
+
 test("★筛选条件必须进 params —— 否则筛选栏是摆设", () => {
   // 选了优化师而数字纹丝不动，是这类功能最典型的坏法：控件在、看着生效了，
   // 其实请求里压根没带条件。这条锁住「选中的值确实变成了 filters」。

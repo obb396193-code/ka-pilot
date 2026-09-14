@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
 import { useDashboardSummary } from "@/lib/data/use-dashboard"
-import { localToday, readDataDate } from "@/lib/data/data-date"
+import { readDataDate, shanghaiToday } from "@/lib/data/data-date"
 import { FilterBar } from "@/components/business/data/dashboard/filter-bar"
 import type { FilterSelection } from "@/lib/data/use-data-filters"
 import { mediaOptions } from "@/lib/fixtures/naming"
@@ -49,7 +49,7 @@ export function DataPage() {
   // TODO(F8-20)：接 `/me/counts` 或健康条的 dataAsOf 后改成从会话取
   // 第一次渲染还不知道数据日，先按今天算一版；响应回来后若用户没自己选过窗口，按真数据日重算
   const [dataWindow, setDataWindow] = useState<DataWindow>(() => {
-    const fallback = localToday()
+    const fallback = shanghaiToday()
     return resolvePreset("month_to_date", fallback, { preset: "month_to_date", from: fallback, to: fallback })
   })
   const pickedByUser = useRef(false)
@@ -98,7 +98,7 @@ export function DataPage() {
         description="全量明细不聚合不裁剪；指标、环比、达标、色标全部由后端给，前端只展示"
         actions={
           <>
-            <WindowPicker value={dataWindow} dataDate={dataDate ?? localToday()} onChange={chooseWindow} />
+            <WindowPicker value={dataWindow} dataDate={dataDate ?? shanghaiToday()} onChange={chooseWindow} />
             {/* 数据日未知就说未知：窗口预设是以它为终点往前推的，不知道终点，这些预设的含义就是虚的 */}
             {dataDate ? null : <span className="text-xs text-status-warning">数据日未知</span>}
             
@@ -116,9 +116,9 @@ export function DataPage() {
       ) : null}
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
-          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} workspaceId={session?.activeWorkspace.id} summaryQuery={summaryQuery} filters={filters} /> : null}
+          {tab === "overview" ? <OverviewTab colorKey={colorKey} window={dataWindow} workspaceId={session?.activeWorkspace.id} summaryQuery={summaryQuery} filters={filters} dataDateReady={dataDate !== null} /> : null}
           {tab === "table" ? <TableTab onSaveView={saveView} window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
-          {tab === "pivot" ? <PivotTab window={dataWindow} workspaceId={session?.activeWorkspace.id} colorKey={colorKey} /> : null}
+          {tab === "pivot" ? <PivotTab window={dataWindow} workspaceId={session?.activeWorkspace.id} workspaceKind={session?.activeWorkspace.kind} colorKey={colorKey} /> : null}
           {tab === "hourly" ? <HourlyTab window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
           {tab === "gap" ? <GapTab window={dataWindow} workspaceId={session?.activeWorkspace.id} /> : null}
           {tab === "strategy" ? <StrategyTab /> : null}
