@@ -2,7 +2,7 @@ import { randomUUID, randomBytes } from "node:crypto";
 import type { Server } from "node:http";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { AdminMembersRepository, AdminMemberProvisioningRepository, AuthSessionRepository, IdentityPasswordRepository, deriveScrypt, runMigrations } from "@ka/db";
+import { AdminMemberManagementRepository, AdminMemberProvisioningRepository, AuthSessionRepository, IdentityPasswordRepository, deriveScrypt, runMigrations } from "@ka/db";
 import { AdminMembersService } from "../src/admin/members-service.js";
 import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
 import { SessionAuthService } from "../src/auth/session-auth-service.js";
@@ -38,7 +38,7 @@ describe("F-OS-004 real HTTP login/member lifecycle", { timeout: 30000 }, () => 
     const unused = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
     server = createDataApiServer({ service: unused, detailService: unused, taskListService: unused, accountListService: unused, workItemListService: unused,
       internalToken, sessionAuthService: sessionAuth, sessionHttpService: new SessionHttpService(sessionAuth, provider),
-      adminMembersService: new AdminMembersService(new AdminMembersRepository(pool), undefined, new AdminMemberProvisioningRepository(pool)),
+      adminMembersService: new AdminMembersService(undefined, new AdminMemberProvisioningRepository(pool), new AdminMemberManagementRepository(pool)),
     } as unknown as DataApiServerOptions);
     await new Promise<void>((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
     const address = server.address(); if (!address || typeof address === "string") throw new Error("No listener"); origin = `http://127.0.0.1:${address.port}`;

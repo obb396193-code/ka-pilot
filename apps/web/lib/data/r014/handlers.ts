@@ -43,7 +43,7 @@ import {
   kbSearchSchema,
   kbTreeSchema,
   passwordChangedSchema,
-  poolStatusRecordSchema,
+  poolStatusRecordSchema, memberUpdatedSchema, memberGrantsSchema,
 } from "./schemas.ts"
 
 type Environment = Record<string, string | undefined>
@@ -355,6 +355,24 @@ export const handleAdminMemberResetPassword = (request: Request, identityId: str
     path: `/api/v1/admin/members/${encodeURIComponent(identityId)}/reset-password`,
     method: "POST",
     dataSchema: memberPasswordResetSchema,
+    ...withDeps(deps),
+  })
+
+/** v1.9.46 ①：改角色 / 停用（身份级；停用即撤该身份全部会话）。不开任何查询参数白名单。 */
+export const handleAdminMemberPatch = (request: Request, identityId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/admin/members/${encodeURIComponent(identityId)}`,
+    method: "PATCH",
+    dataSchema: memberUpdatedSchema,
+    ...withDeps(deps),
+  })
+
+/** v1.9.46 ①：整体替换目标身份个人空间的账户授权（不是逐条增删）。 */
+export const handleAdminMemberGrantsReplace = (request: Request, identityId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/admin/members/${encodeURIComponent(identityId)}/grants`,
+    method: "PUT",
+    dataSchema: memberGrantsSchema,
     ...withDeps(deps),
   })
 

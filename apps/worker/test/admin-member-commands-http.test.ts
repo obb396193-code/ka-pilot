@@ -16,8 +16,9 @@ describe("F-OS-004 command HTTP", () => {
   async function start(options: { result?: unknown; error?: unknown; max?: number; maxRequest?: number; role?: typeof auth.role; missing?: boolean } = {}) {
     const invoke = (data: unknown) => async () => { if (options.error) throw options.error; return options.result ?? data; };
     const global = { read: vi.fn(invoke({ items: [] })), create: vi.fn(invoke(created)), resetPassword: vi.fn(invoke(reset)) };
-    const local = { read: vi.fn(async () => ({ workspaceId: auth.workspaceId, data: { identityId: id, items: [] } })) };
-    const service = new AdminMembersService(local, () => new Date("2026-09-10T01:00:00Z"), options.missing ? undefined : global);
+    // v1.9.46 ① 的按 identity 治理端口；这组用例只测新建/重置，它一次都不该被碰。
+    const local = { grants: vi.fn(async () => ({ workspaceId: auth.workspaceId, data: { identityId: id, items: [] } })), patch: vi.fn(), replaceGrants: vi.fn() };
+    const service = new AdminMembersService(() => new Date("2026-09-10T01:00:00Z"), options.missing ? undefined : global, local);
     const unused = new Proxy({}, { get() { throw new Error("Unrelated service called"); } });
     const server = createDataApiServer({ service: unused, detailService: unused, taskListService: unused, accountListService: unused, workItemListService: unused,
       internalToken: token, sessionAuthService: approvedSessionAuth({ ...auth, role: options.role ?? "optimizer" }),
@@ -37,7 +38,7 @@ describe("F-OS-004 command HTTP", () => {
     expect(response).toMatchObject({ status: 201, body: { ok: true, data: created, meta: { requestId, dataAsOf: null } } });
     expect(response.headers.get("cache-control")).toBe("no-store"); expect(response.headers.get("x-request-id")).toBe(requestId);
     expect(s.global.create).toHaveBeenCalledWith(expect.objectContaining({ role: "optimizer" }), input);
-    expect(s.local.read).not.toHaveBeenCalled();
+    expect(s.local.grants).not.toHaveBeenCalled();
   });
   it("reset passes only server-approved context and target to repository", async () => {
     const s = await start(); expect(await s.call(`/${id}/reset-password`, "POST", {})).toMatchObject({ status: 200, body: { data: reset } });
@@ -67,7 +68,7 @@ describe("F-OS-004 command HTTP", () => {
     const bounded = await start({ maxRequest: 20 }); expect((await bounded.call()).status).toBe(413); expect(bounded.global.create).not.toHaveBeenCalled();
   });
   it("missing global adapter never falls back to old local list", async () => {
-    const s = await start({ missing: true }); expect((await s.call()).status).toBe(503); expect((await s.call("", "GET")).status).toBe(503); expect(s.local.read).not.toHaveBeenCalled();
+    const s = await start({ missing: true }); expect((await s.call()).status).toBe(503); expect((await s.call("", "GET")).status).toBe(503); expect(s.local.grants).not.toHaveBeenCalled();
   });
   it("rejects malformed/sensitive output and hides unknown errors", async () => {
     expect((await (await start({ result: { ...created, token: "secret" } })).call()).status).toBe(502);

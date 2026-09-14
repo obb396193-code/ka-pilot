@@ -555,6 +555,20 @@ export const memberCreatedSchema = memberRowSchema.extend({
   loginName: z.string().min(1),
 })
 
+/** v1.9.46 ① `PATCH /admin/members/:identityId` → 改完之后的那一行（与列表行同形）。收回来的宽：不 strict。 */
+export const memberUpdatedSchema = memberRowSchema
+
+/** v1.9.46 ① `PUT /admin/members/:identityId/grants` → 目标身份个人空间整体替换后的授权清单。 */
+export const memberGrantsSchema = z.object({
+  identityId: z.string().uuid(),
+  items: z.array(z.object({
+    media: z.string().min(1),
+    accountId: z.string().min(1),
+    accessLevel: z.enum(["read", "preview", "execute"]),
+    grantedAt: z.string().min(1),
+  })),
+})
+
 /** `POST /admin/members/:identityId/reset-password` → 新初始密码只回一次 + 该身份全部 session 吊销 */
 export const memberPasswordResetSchema = z.object({
   identityId: z.string().uuid(),

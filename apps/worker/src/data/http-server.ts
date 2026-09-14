@@ -101,7 +101,7 @@ export interface DataApiServerOptions {
   accountMuteService?: Pick<AccountMuteService, "mute" | "ignoreAndMute">;
   agentModelCatalogService?: Pick<AgentModelCatalogService, "list">;
   adminCalendarService?: Pick<AdminCalendarService, "list">;
-  adminMembersService?: Pick<AdminMembersService, "read" | "create" | "resetPassword">;
+  adminMembersService?: Pick<AdminMembersService, "read" | "create" | "resetPassword" | "grants" | "patch" | "replaceGrants">;
   etlRunListService?: Pick<EtlRunListService, "list">;
   etlRunRerunService?: Pick<EtlRunRerunService, "rerun">;
   settingsChangeLogService?: Pick<SettingsChangeLogService, "read">;

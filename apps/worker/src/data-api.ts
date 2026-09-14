@@ -7,8 +7,7 @@ import {
   IdentityPasswordRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
-  AdminMembersRepository,
-  AdminMemberProvisioningRepository,
+  AdminMemberManagementRepository, AdminMemberProvisioningRepository,
   EtlRunListRepository,
   EtlRunRerunRepository,
   SettingsChangeLogRepository,
@@ -118,7 +117,8 @@ async function main(): Promise<void> {
     settingsChangeLogService: new SettingsChangeLogService(new SettingsChangeLogRepository(pool)),
     agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
     adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
-    adminMembersService: new AdminMembersService(new AdminMembersRepository(pool), undefined, new AdminMemberProvisioningRepository(pool)),
+    // v1.9.46 ①：成员治理按 identity 定位（改角色/停用、读与整体替换授权），走管理仓储。
+    adminMembersService: new AdminMembersService(undefined, new AdminMemberProvisioningRepository(pool), new AdminMemberManagementRepository(pool)),
     etlRunListService: new EtlRunListService(new EtlRunListRepository(pool)),
     etlRunRerunService: new EtlRunRerunService(new EtlRunRerunRepository(pool)),
     detailService: new ReadDetailService({
