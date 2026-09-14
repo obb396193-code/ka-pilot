@@ -97,3 +97,80 @@ describe("worker HTTP frozen trigger boundary", () => {
     expect((await first).status).toBe(503); expect(release).toHaveBeenCalledTimes(1);
   });
 });
+
+/**
+ * P-198：钉钉出站接在同一个触发口上。鉴权、空参数、进程内单飞与 ETL 那条完全一致；
+ * 唯一的差别是**父进程不拿 workspace 锁**——child 自己拿，父进程先拿的话 child 永远只能看到「已被占用」。
+ */
+describe("P-198 outbound trigger on the same boundary", () => {
+  const drained = { status: "drained", outbound: { claimed: 2, sent: 1, retried: 0, failed: 1, deduplicated: 0 } };
+  async function setupOutbound(outboundRun = vi.fn(async (): Promise<unknown> => drained), run = vi.fn(async (): Promise<unknown> => ready)) {
+    const acquireLock = vi.fn(async () => vi.fn(async () => undefined));
+    const server = createWorkerOnceHttpServer({ token, run, acquireLock, outbound: { run: outboundRun } }); servers.push(server);
+    server.listen(0, "127.0.0.1"); await once(server, "listening");
+    const address = server.address(); if (!address || typeof address === "string") throw new Error("No listener");
+    return { base: `http://127.0.0.1:${address.port}`, outboundRun, run, acquireLock };
+  }
+  const postOutbound = (base: string, init: RequestInit = {}) =>
+    fetch(`${base}/internal/worker/outbound-once`, { method: "POST", headers: { "X-Worker-Trigger-Token": token }, ...init });
+
+  it("runs one outbound pass without taking the workspace lock in the HTTP parent", async () => {
+    const s = await setupOutbound();
+    const response = await postOutbound(s.base, { headers: { "X-Worker-Trigger-Token": token, "x-request-id": "outbound-test-1" } });
+    expect(response.status).toBe(200); expect(response.headers.get("x-request-id")).toBe("outbound-test-1");
+    expect(await response.json()).toEqual(drained);
+    expect(s.outboundRun).toHaveBeenCalledTimes(1); expect(s.outboundRun.mock.calls[0]).toHaveLength(1);
+    expect(s.acquireLock).not.toHaveBeenCalled(); expect(s.run).not.toHaveBeenCalled();
+  });
+  it("reports a workspace held by another round as busy, not as a finished pass", async () => {
+    const s = await setupOutbound(vi.fn(async (): Promise<unknown> =>
+      ({ status: "locked", outbound: { claimed: 0, sent: 0, retried: 0, failed: 0, deduplicated: 0 } })));
+    const response = await postOutbound(s.base);
+    expect(response.status).toBe(409); expect(await response.json()).toMatchObject({ ok: false, error: { code: "WORKER_BUSY" } });
+  });
+  it("keeps budget explicit with unknown counts, and rejects fabricated or leaking results", async () => {
+    const s = await setupOutbound(vi.fn(async (): Promise<unknown> => ({ status: "budget", outbound: null })));
+    const budget = await postOutbound(s.base);
+    expect(budget.status).toBe(200); expect(await budget.json()).toEqual({ status: "budget", outbound: null });
+    for (const result of [{ status: "budget", outbound: drained.outbound }, { status: "drained", outbound: null },
+      { ...drained, outbound: { ...drained.outbound, sent: 5 } }, { ...drained, private: token }]) {
+      s.outboundRun.mockResolvedValueOnce(result);
+      const response = await postOutbound(s.base);
+      expect(response.status).toBe(502); expect(await response.text()).not.toContain(token);
+    }
+  });
+  it("an interrupted child is not reported as success", async () => {
+    const s = await setupOutbound(vi.fn(async (): Promise<unknown> => ({ status: "aborted", outbound: null })));
+    expect((await postOutbound(s.base)).status).toBe(503);
+  });
+  it("shares single flight with the ETL trigger in both directions", async () => {
+    let finishEtl!: (value: unknown) => void; let finishOutbound!: (value: unknown) => void;
+    const run = vi.fn((): Promise<unknown> => new Promise((resolve) => { finishEtl = resolve; }));
+    const outboundRun = vi.fn((): Promise<unknown> => new Promise((resolve) => { finishOutbound = resolve; }));
+    const s = await setupOutbound(outboundRun, run);
+    const etl = post(s.base); await vi.waitFor(() => expect(run).toHaveBeenCalledTimes(1));
+    expect((await postOutbound(s.base)).status).toBe(409); expect(outboundRun).not.toHaveBeenCalled();
+    finishEtl(ready); expect((await etl).status).toBe(200);
+    const outbound = postOutbound(s.base); await vi.waitFor(() => expect(outboundRun).toHaveBeenCalledTimes(1));
+    expect((await post(s.base)).status).toBe(409); expect(run).toHaveBeenCalledTimes(1);
+    finishOutbound(drained); expect((await outbound).status).toBe(200);
+  });
+  it("authenticates before revealing whether outbound is configured, and takes no parameters", async () => {
+    const unconfigured = await setup();
+    expect((await fetch(`${unconfigured.base}/internal/worker/outbound-once`, { method: "POST" })).status).toBe(401);
+    const response = await postOutbound(unconfigured.base);
+    expect(response.status).toBe(503); expect(await response.json()).toMatchObject({ error: { code: "SOURCE_UNAVAILABLE" } });
+    expect(unconfigured.run).not.toHaveBeenCalled(); expect(unconfigured.acquireLock).not.toHaveBeenCalled();
+    const s = await setupOutbound();
+    expect((await fetch(`${s.base}/internal/worker/outbound-once?workspaceId=other`, { method: "POST", headers: { "X-Worker-Trigger-Token": token } })).status).toBe(400);
+    expect((await postOutbound(s.base, { body: '{"workspaceId":"other"}' })).status).toBe(400);
+    expect((await postOutbound(s.base, { method: "GET" })).status).toBe(405);
+    expect(s.outboundRun).not.toHaveBeenCalled();
+  });
+  it("sanitizes an outbound failure and can run again", async () => {
+    const s = await setupOutbound(vi.fn(async (): Promise<unknown> => { throw new Error(`secret ${token} webhook`); }));
+    const failed = await postOutbound(s.base);
+    expect(failed.status).toBe(500); const body = await failed.text(); expect(body).not.toContain(token); expect(body).not.toContain("webhook");
+    s.outboundRun.mockResolvedValue(drained); expect((await postOutbound(s.base)).status).toBe(200);
+  });
+});
