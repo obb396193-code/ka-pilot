@@ -147,7 +147,7 @@
 - `session-http/team.json`
 
 ## settings
-- `settings/change-log.json`
+- `settings/change-log-v1944.json` — 合成 PG→HTTP 真响应（v1.9.44 id/op）；v1.9.48 ⑤ 起老行 `at` 可为 null。旧 `settings/change-log.json` 已废弃删除
 - `settings/channel-coefficients.json` — team 空间 editable=false，POST 返回 403 FORBIDDEN；生效日期为占位，老板给真值后替换
 - `settings/credentials.json` — 只显绑定状态，不显值
 - `settings/decision-policy.json`

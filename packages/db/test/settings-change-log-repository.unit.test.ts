@@ -4,7 +4,7 @@ import { SettingsChangeLogRepository } from "../src/settings-change-log-reposito
 
 const workspaceId = "00000000-0000-4000-8000-000000000001", userId = "00000000-0000-4000-8000-000000000002";
 const auth = { workspaceId, userId, role: "optimizer", workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "same", accessLevel: "read" }] } };
-const row = { workspace_id: workspaceId, id: "1", at: "2026-09-01T01:00:00.000001Z", kind: "assessment_price",
+const row = { workspace_id: workspaceId, id: "1", at: "2026-09-01T01:00:00.000001Z", sort_key: "2026-09-01T01:00:00.000001Z", kind: "assessment_price",
   task_id: "task-a", media: null, old_value: null, new_value: 38, effective_date: "2026-09-01", changed_by: userId, actor_name: "Synthetic",
   evidence_url: null, op: "set" };
 function setup(rows: unknown[] = [row]) {
@@ -30,10 +30,21 @@ describe("P194 readonly change log repository boundaries", () => {
     await expect(s.repository.page(auth, input, "2026-09-13")).rejects.toMatchObject({ code: "INVALID_REQUEST" });
     expect(s.pool.connect).not.toHaveBeenCalled();
   });
-  it("does not use coefficient effective_date as a fabricated modification timestamp", async () => {
-    const s = setup([{ ...row, kind: "channel_coefficient", at: null, task_id: null, media: "KUAISHOU", new_value: { op: "multiply", coefficient: 0.8 } }]);
-    await expect(s.repository.page(auth, { kinds: ["channel_coefficient"] }, "2026-09-13")).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" });
-    expect(s.client.query).toHaveBeenLastCalledWith("ROLLBACK");
+  it("keeps a row whose modification time is unknown as null, never fabricating one from its effective date", async () => {
+    // v1.9.48 ⑤：老行没有修改时间照样返回（at=null）；生效日只进排序键，不写回 at。
+    const s = setup([{ ...row, kind: "channel_coefficient", at: null, sort_key: "2026-08-31T16:00:00.000000Z", task_id: null, media: "KUAISHOU", new_value: { op: "multiply", coefficient: 0.8 } }]);
+    const result = await s.repository.page(auth, { kinds: ["channel_coefficient"] }, "2026-09-13");
+    expect(result.data.items).toEqual([expect.objectContaining({ id: "channel_coefficient:1", at: null, effectiveDate: "2026-09-01" })]);
+    expect(s.client.query).toHaveBeenLastCalledWith("COMMIT");
+  });
+  it("records whether the boundary row had a time, so the next page resumes inside a tied sort key", async () => {
+    const rows = Array.from({ length: 51 }, (_, index) => ({ ...row, id: String(51 - index), at: null, sort_key: "2026-08-31T16:00:00.000000Z" }));
+    const s = setup(rows), first = await s.repository.page(auth, {}, "2026-09-13");
+    expect(JSON.parse(Buffer.from(first.data.nextCursor!, "base64url").toString("utf8")))
+      .toEqual({ v: 2, key: "2026-08-31T16:00:00.000000Z", atMissing: true, kind: "assessment_price", id: "2" });
+    await s.repository.page(auth, { cursor: first.data.nextCursor! }, "2026-09-13");
+    const params = (s.client.query.mock.calls.filter(([sql]) => sql.includes("change-log-page"))[1] as unknown[])[1] as unknown[];
+    expect([params[7], params[8], params[9], params[11]]).toEqual(["2026-08-31T16:00:00.000000Z", "assessment_price", "2", 0]);
   });
   it.each([{ new_value: "NaN" }, { new_value: "Infinity" }, { new_value: "bad" }, { workspace_id: userId }, { effective_date: "2026-02-31" },
     { changed_by: "not-uuid", actor_name: null }, { changed_by: null, actor_name: 123 }, { changed_by: undefined }, { actor_name: undefined }, { new_value: undefined }, { old_value: undefined }])("fails closed on present-invalid DB output %j", async patch => {
@@ -63,7 +74,8 @@ describe("P194 readonly change log repository boundaries", () => {
     await expect(s.repository.page(auth, {}, "2026-02-31")).rejects.toMatchObject({ code: "INVALID_REQUEST" });
     expect(s.pool.connect).not.toHaveBeenCalled();
   });
-  it.each(["a+/=", "e31", Buffer.from("not-json").toString("base64url"), Buffer.from('{"v":2}').toString("base64url")])("rejects noncanonical/invalid cursor %s", async cursor => {
+  it.each(["a+/=", "e31", Buffer.from("not-json").toString("base64url"), Buffer.from('{"v":2}').toString("base64url"),
+    Buffer.from(JSON.stringify({ v: 1, at: "2026-09-01T01:00:00.000001Z", kind: "assessment_price", id: "1" })).toString("base64url")])("rejects noncanonical/invalid cursor %s", async cursor => {
     const s = setup();
     await expect(s.repository.page(auth, { cursor }, "2026-09-13")).rejects.toMatchObject({ code: "INVALID_REQUEST" });
     expect(s.pool.connect).not.toHaveBeenCalled();
@@ -79,7 +91,7 @@ describe("P194 readonly change log repository boundaries", () => {
     const s = setup(); s.pool.connect.mockRejectedValue({ code, message: "synthetic-private-diagnostic" });
     await expect(s.repository.page(auth, {}, "2026-09-13")).rejects.toMatchObject({ code: "UPSTREAM_TIMEOUT", message: "Change log UPSTREAM_TIMEOUT" });
   });
-  it.each([{ id: "0" }, { at: "2026-09-01T99:00:00.000000Z" }, { kind: "unknown" }, { media: "KUAISHOU" }, { kind: "channel_coefficient", media: "KUAISHOU" }])("rejects invalid internal row position/identity %j", async patch => {
+  it.each([{ id: "0" }, { at: "2026-09-01T99:00:00.000000Z" }, { sort_key: "2026-09-01T99:00:00.000000Z" }, { sort_key: null }, { kind: "unknown" }, { media: "KUAISHOU" }, { kind: "channel_coefficient", media: "KUAISHOU" }])("rejects invalid internal row position/identity %j", async patch => {
     const s = setup([{ ...row, ...patch }]);
     await expect(s.repository.page(auth, {}, "2026-09-13")).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });

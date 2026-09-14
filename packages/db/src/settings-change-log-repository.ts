@@ -19,7 +19,9 @@ function decodeCursor(value: string | undefined) {
   } catch { return fail("INVALID_REQUEST"); }
 }
 /** RR/RO version history. Outer chronology is modification time; oldValue comes
- * from effective version order. A missing historical time is never fabricated. */
+ * from effective version order. A missing historical time is never fabricated.
+ * v1.9.48 ⑤: such rows are returned with at=null and ordered by their effective day
+ * (Shanghai 00:00), after timed rows sharing that instant; the page never 503s for them. */
 export class SettingsChangeLogRepository {
   constructor(private readonly pool: Pool) {}
   async page(rawAuth: unknown, rawInput: unknown, businessDate: string) {
@@ -80,22 +82,28 @@ export class SettingsChangeLogRepository {
                       ON m.workspace_id=g.workspace_id AND m.identity_id=g.identity_id AND m.user_id=$11
                       WHERE g.workspace_id=linked.workspace_id AND g.media=linked.media AND g.account_id=linked.account_id
                         AND g.revoked_at IS NULL AND g.access_level IN ('read','preview','execute'))))))
-          ), history AS (${historySql})
+          ), history AS (${historySql}), ordered AS (
+            SELECT h.*, COALESCE(h.at, h.effective_date::timestamp AT TIME ZONE 'Asia/Shanghai') AS sort_key,
+              CASE WHEN h.at IS NULL THEN 0 ELSE 1 END AS at_rank
+            FROM history h
+          )
           SELECT h.workspace_id,h.id::text,to_char(h.at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS at,
+            to_char(h.sort_key AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS sort_key,
             h.kind,h.task_id,h.media,h.old_value,h.new_value,to_char(h.effective_date,'YYYY-MM-DD') AS effective_date,
             h.changed_by,u.name AS actor_name,h.evidence_url,h.op
-          FROM history h LEFT JOIN users u ON u.workspace_id=h.workspace_id AND u.id=h.changed_by
-          WHERE h.kind=ANY($7::text[]) AND ($8::timestamptz IS NULL OR (h.at,h.kind COLLATE "C",h.id)<($8::timestamptz,$9::text COLLATE "C",$10::bigint))
-          ORDER BY h.at DESC NULLS FIRST,h.kind COLLATE "C" DESC,h.id DESC LIMIT 51`,
+          FROM ordered h LEFT JOIN users u ON u.workspace_id=h.workspace_id AND u.id=h.changed_by
+          WHERE h.kind=ANY($7::text[]) AND ($8::timestamptz IS NULL OR
+            (h.sort_key,h.at_rank,h.kind COLLATE "C",h.id)<($8::timestamptz,$12::integer,$9::text COLLATE "C",$10::bigint))
+          ORDER BY h.sort_key DESC,h.at_rank DESC,h.kind COLLATE "C" DESC,h.id DESC LIMIT 51`,
         [auth.workspaceId, scope.kind, scope.allowed, businessDate, input.task_id ?? null, input.media ?? null,
-          kinds, cursor?.at ?? null, cursor?.kind ?? null, cursor?.id ?? null, auth.userId]);
+          kinds, cursor?.key ?? null, cursor?.kind ?? null, cursor?.id ?? null, auth.userId,
+          cursor === null ? null : cursor.atMissing ? 0 : 1]);
         if (rows.length > 51) return fail("UPSTREAM_INVALID_RESPONSE");
         const positions = rows.map(row => {
           if (row.workspace_id !== auth.workspaceId || !kinds.includes(row.kind)) return fail("UPSTREAM_INVALID_RESPONSE");
-          if (row.at === null) return fail("SOURCE_UNAVAILABLE");
           if (!settingsChangeLogActorColumnsSchema.safeParse({ userId: row.changed_by, name: row.actor_name }).success) return fail("UPSTREAM_INVALID_RESPONSE");
           if (row.kind === "channel_coefficient" ? row.task_id !== null : row.media !== null) return fail("UPSTREAM_INVALID_RESPONSE");
-          const position = settingsChangeLogPositionSchema.safeParse({ v: 1, at: row.at, kind: row.kind, id: row.id });
+          const position = settingsChangeLogPositionSchema.safeParse({ v: 2, key: row.sort_key, atMissing: row.at === null, kind: row.kind, id: row.id });
           if (!position.success) return fail("UPSTREAM_INVALID_RESPONSE");
           return position.data;
         });
