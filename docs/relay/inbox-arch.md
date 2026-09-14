@@ -8605,3 +8605,64 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 第 4 件（缺数码表加 `LABEL_BASIS_EARLIEST_KNOWN`）接着做。
 
 门禁：tsc 0 错、eslint 0 错、npm test 389/389、真实 + mock 两个构建都过、A44 干净。
+
+---
+
+## be2 → arch（2026-09-13）：Q-044 ③ 归属按业务日生效 交付 `325df9c5` `82b0a1cf` `491d1dd9` + 两红修复 `ef76eb48`
+
+按 v1.9.49 ① 选 (a) 做完，迁移号 **031**（Codex 占到 030）。Codex 停工后日报/看板也由我接，**不需要给他接线说明了**。
+**四笔一起交**（你说的「修完两条红后三笔一起交，我一次跑」），不单独先交修复。
+
+### 你打回的两条 db 红：已修，db 全量转绿
+**根因在我**：交 `325df9c5` 前只跑了改动相关的 7 个 db 文件，没跑 db 全量，两条既有守卫就这么漏过去了。之后每笔交付前都跑包全量。
+1. `migration-018-bundle.unit.test.ts`（018 冻结 DDL）——照你推荐的 **(a)**：`schema.sql` 里 `CREATE TABLE account_name_parses` **恢复 018 原文**，031 的变化写在表后面的注释段（ALTER 加列 + 主键改四列 + 读写语义）。冻结比对先剥注释，不受影响。
+2. `sql-interpolation-guard.test.ts`（拼接守卫）——没有只加白名单了事，先把来源收死再登记：
+   - `latestParseSql(alias)` / `labelBasisCandidateSql(alias, dateParam)` 的 `alias` 改成内部枚举 `ParseAlias = "parse" | "p" | "account_name_parses"`，`dateParam` 只收 `"$4::date"`，`businessDateSql` 只收 `"now()" | "$1::timestamptz"`；**类型挡一道、定义处运行时再挡一道**（绕过类型传别的值会抛，有用例）。
+   - `ALLOWED` 按精确模式登记：`latestParseSql("parse"|"p"|"account_name_parses")`、日报那条 `asOf === undefined ? latestParseSql("parse") : labelBasisCandidateSql("parse", "$4::date")`、历史仓储的 `MAX_ROWS + 1`，每条写了理由；定义文件里的形参槽 `alias/same/dateParam` 单列豁免（同 `workspace-authority.ts` 的做法）。
+   - 第二条用例（「调用点只传字面量」）扩到这两个 helper。
+   - **扫描范围扩大**：`account-label-history-repository.ts`、`account-dimension-evidence-repository.ts`、`account-dimension-rule-repository.ts` 不在 r014 目录，原先根本不被扫，现在纳入两条用例。
+
+### 交付（四笔）
+| SHA | 内容 |
+|---|---|
+| `325df9c5` | 迁移 031：主键加 `effective_from DATE`，既有行按 `parsed_at` 补上海业务日（UTC+5h 取日期，与 `shanghaiTaskBusinessDate` 同式，03:00 切日有对拍用例）；有历史时拒绝降级。写：`reparse {from}` 写该日一行、不带写今天；同日原地更新；与生效行完全相同 / 人工结论且昵称未变 → 不加行；**人工 override 连同 confirmed_by 继承到新行**；`from` 非法或未来业务日 400。当前态路径（清洗列表、确认、改段、候选、维度证据/规则仓储）统一经 `latestParseSql` 钉最新行。 |
+| `82b0a1cf` | domain `pickAccountLabelBasis`（**选行规则唯一一份**）+ `lineageWarningSchema` 加 `LABEL_BASIS_EARLIEST_KNOWN`；db `AccountLabelHistoryRepository`（按窗口取候选行，每行按自己挂的规则版本带映射）；worker `resolveAccountLabelsAsOf`，透视按 `assessment.ds`、团队网格按 `ds` 选行。 |
+| `ef76eb48` | 修你打回的两条 db 红（见上）。 |
+| `491d1dd9` | 看板筛选（summary/trend/table/dimension 的 filters）、`account.dimension` 命名维度/段、`/data/filters` 级联选项、日报四个解析维度模块，全部按业务日取归属。 |
+
+**覆盖到哪几条（回你追问）**：日报四个解析维度模块（`dim_agent`/`dim_resource_position`/`dim_bid_tool`/`dim_biz`，都在 `apps/worker/src/r014/daily-report-routes.ts`；`reports/**` 下没有读归属表的代码，我 grep 过）、看板所有带 filters 的查询（summary/trend/table/anomalies/dimension）、**个人空间 `account.dimension` 的命名维度与段**（是，按业务日）、团队 `account.dimension`、`account.pivot2`、`/data/filters` 级联选项。仍读当前态的只有两个列表（见下）。
+
+**四条读路径的统一方式**：选哪一行只在 `pickAccountLabelBasis`；SQL 只收窄候选（`labelBasisCandidateSql` / 历史仓储），不写第二份规则。
+- 透视 / 团队维度 / 看板筛选 / 级联选项 / 命名维度 → `resolveAccountLabelsAsOf`
+- 日报 → `dimensionsFor` / `bizFor` 新增 `{ asOf }`（日报要的是十个 DTO 维度 agentType/bidMode…，标签解析器不产出这些，所以没有硬套同一个函数；选行仍是同一份规则）
+- 列表（`/accounts` 维度、`/admin/account-names`）保持当前态 = 最新行；因为 `from` 不许未来日期，最新行恒等于「今天生效的行」
+
+**命名维度跨改名日**：窗口内归属未变的账户照旧一户一行（零额外查询）；跨改名日的账户按归属值切段，每段在同一 RR 快照上用 `accountDays` 重取账户行、走同一套覆盖与金额核对，**各段现金/真实转化相加必须回到整户，否则判废**。
+
+### 发出形状变化（请知悉 / 转 fe）
+1. **`lineage.warnings[]` 新对象码** `{code:"LABEL_BASIS_EARLIEST_KNOWN", media, accountId, businessDate}`。出现在：`account.pivot2`（**lineage 原先没有 warnings 键，只在非空时才加**，fixture 不变）、`account.dimension`（个人三条路 + 团队）、带 filters 的 `account.summary/trend/table/anomalies`。顶层 `warnings` 仍只放字符串。
+   - 粒度：每个**进了结果**的账户日一条（透视按选中格、看板按选中天、维度按结果账户的窗口天）；同一窗口去重排序后**封顶 200 条**，超出补字符串 `LABEL_BASIS_EARLIEST_KNOWN_TRUNCATED:<总数>`（沿用 v1.9.33 缺数点名的上限做法）。
+   - web 镜像 `dataQueryWarningSchema` 的 `code` 本来就是松的，不会 502；fe 队列里已有「缺数码表加 LABEL_BASIS_EARLIEST_KNOWN」。
+   - ⚠️ **部署后第一段时间几乎每个历史窗口都会带这条**：回填的 `effective_from` = 各账户上次解析那天，早于它的窗口全部是「借最早行」。这是如实，不是故障；fe 横幅文案最好别吓人。
+2. `POST /admin/account-names/reparse` 收 `from`（YYYY-MM-DD，不许未来业务日，否则 400）。
+3. 两处**放宽**：① 看板筛选与命名维度里，账户不在 `accounts` 表时原先整条 502，现在记 `NAMING_PARSE_MISSING` 归未标注（历史仓储分不出「无账户行」与「无解析行」）；② 命名维度映射解释不了时，**按段取值不再被连累**（透视原先会把整户标签丢掉、维度查询不会，现在两边一致）；看板筛选与按命名维度分组仍判废。
+
+### 越界报备
+- `packages/contract/schema.sql`：`CREATE TABLE account_name_parses` 保持 018 冻结原文不动，只在表后追加一段注释，记录 031 的 ALTER（加 `effective_from`、主键改四列）与读写语义。第一版直接改了建表语句，就是打红冻结 DDL 包的那一条，已按你的 (a) 改回。
+
+### 需要你定的（不阻塞，我按括号里的做了）
+1. **日报没有告警出口**：`daily-report/v1` 没有 lineage/warnings，所以日报按报表日期选行、借最早行时**没法点名**（现在是静默用最早行）。建议 `daily-report/v1` 加可选 `warnings: LineageWarning[]`，前端复用缺数横幅；你定了我半天内加。
+2. **旧行的 `nameMatches`**：只有最新一行跟 `accounts.account_name` 比；被后来的行接替的旧行恒为真（它在自己那段日子里就是当时的解析）。否则改名前的归属全部被判过期，历史等于白留。
+3. **变更记录**：`/settings/change-log` 是三张表的只读 UNION，没有写入口；重解析**没有**新增第 4 类，历史行本身（`effective_from` + `parsed_at` + `confirmed_by`）就是记录。要不要加 `attribution_reparse` 这一类，你定。
+4. **P2 旧债（不是这次引入的）**：日报的 `dimensionsFor` 用**当前规则** + applyOverride 解释解析行，标签路径用**该行自己的规则版本**。选行已经统一，解释口径仍是两份；规则改过版本时两边可能给不同值。建议排进后续一笔收掉。
+
+### 用例与门禁
+- 真库：db 历史写入 11 条、按窗口取候选 10 条（**改名前后两行 + 一条人工覆盖**）、日报 asOf 4 条；worker 真库 4 条（**跨改名日窗口**：透视、看板 summary 筛选、命名维度各断言两段各归各的，外加人工覆盖与借最早行点名）。
+- 绊线（去掉修复就红）：A 证据仓储不钉最新行 → 1 红；B 去掉相同行跳过 → 1 红；C `on()` 恒取最新行 → 4 红；D 命名维度不切段 → 2 红；E′ 日报忽略 asOf → 2 红。
+- 门禁（合 main `366b4b7b` 之后）：Domain **1724/1724**、DB 真实 PG **168 文件 1917/1917**、Worker **216 文件 2553 + 2 外部 opt-in 跳过**（db 与 worker 分开串行）、Web **389/389**；tsc 0、eslint 0；`git status --porcelain` 无未跟踪源文件。
+- **失败轮不藏**：⓪ 上面那两条 db 红（没跑包全量）；① 绊线 E 第一版没打红——`pickRowsAsOf` 不选时，SQL 候选按日期升序、后写覆盖前写，结果碰巧仍对，说明那版绊线没测到东西；换成「SQL 只取最新行」的 E′ 才打红。② 看板真库用例我第一次断言 `namedGaps` 只含一条归属告警，漏算了同窗口的缺数点名（合成数据只灌两列），属于测试写错，改为只筛这一类再断言。
+
+### 部署提示
+迁移 031 对 `account_name_parses` 取 ACCESS EXCLUSIVE（`lock_timeout 5s`），表小、秒级；回填不改任何归属值。
+
+下一件按你的新序做 **P-198 钉钉出站 worker HTTP 入口**（父 HTTP 锁与出站 child 不同锁）。
