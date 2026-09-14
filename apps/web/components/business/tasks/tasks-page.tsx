@@ -2,9 +2,8 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { IconPlus, IconSparkles, IconStar } from "@tabler/icons-react"
+import { IconPlus, IconSparkles, IconStar, IconStarOff } from "@tabler/icons-react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { toast } from "sonner"
 
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, useLocalOrder, type GridFeatures } from "@/components/business/data-grid/data-grid"
@@ -21,7 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { costStatusDot, costStatusLabel, isOk, rv } from "@/lib/fixtures/contract"
 import { useTasks, tasksIsMock } from "@/lib/data/use-tasks"
 import { taskAccountsFixture, taskListStates, taskStageMap, taskStages, tasksFixture, type TaskItem } from "@/lib/fixtures/tasks"
-import { useWatchlist } from "@/lib/data/use-watchlist"
+import { commitWatchlist, useWatchlist } from "@/lib/data/use-watchlist"
 import { cn } from "@/lib/utils"
 import { ReadinessBar } from "./readiness"
 import { TaskManageTab } from "./task-manage-tab"
@@ -53,7 +52,7 @@ function PacingCell({ pacing }: { pacing: TaskItem["pacing"] }) {
 }
 
 const helper = createColumnHelper<GridFeatures, TaskItem>()
-const columns = helper.columns([
+const buildColumns = (onWatch: (task: TaskItem) => void, isWatched: (task: TaskItem) => boolean) => helper.columns([
   dragColumn<TaskItem>(),
   selectionColumn<TaskItem>(),
   helper.accessor("taskName", { header: "任务", enableHiding: false, meta: { label: "任务" }, cell: ({ row }) => <Button asChild variant="link" className="h-auto w-fit px-0 text-left font-medium text-foreground"><Link href={taskHref(row.original)}>{row.original.taskName}</Link></Button> }),
@@ -77,7 +76,9 @@ const columns = helper.columns([
       <DropdownMenuItem asChild><Link href={taskHref(task)}>查看详情</Link></DropdownMenuItem>
       <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成率、投放进度与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem onSelect={() => toast("已关注", { description: "关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
+      {/* 关注 = me/watchlist 的 task 型条目。原来只弹一句「接入后保存」的假成功——
+          而这是**唯一**能产生 task 型条目的入口，工作台「我关注的」里那块相关任务因此永远空着 */}
+      <DropdownMenuItem onSelect={() => onWatch(task)}>{isWatched(task) ? <><IconStarOff />取消关注</> : <><IconStar />关注</>}</DropdownMenuItem>
       <DropdownMenuItem disabled title="任务编辑接口开放后启用">编辑</DropdownMenuItem>
       <DropdownMenuItem disabled title="归档接口开放后启用">归档</DropdownMenuItem>
     </>
@@ -115,6 +116,15 @@ export function TasksPage() {
   const counts = useMemo(() => ({ all: all.length, active: all.filter((task) => task.status === "active").length, preparing: all.filter((task) => task.status === "preparing").length, ended: all.filter((task) => task.status === "ended").length }), [all])
   const [view, setView] = usePageTab<ViewTab>(viewTabs, "list")
   const { ordered, reorder } = useLocalOrder(items, (task) => task.taskId)
+  const columns = useMemo(() => buildColumns(
+    (task) => {
+      const watched = watchlist.items.some((item) => item.type === "task" && item.taskId === task.taskId)
+      void commitWatchlist(watchlist, watched
+        ? watchlist.items.filter((item) => !(item.type === "task" && item.taskId === task.taskId))
+        : [...watchlist.items, { type: "task", taskId: task.taskId }])
+    },
+    (task) => watchlist.items.some((item) => item.type === "task" && item.taskId === task.taskId),
+  ), [watchlist])
   const table = useGridTable({ data: legacy ? [] : ordered, columns, pageSize: 20, getRowId: (task) => task.taskId, initialColumnVisibility: { taskId: false, period: false, rta: false, placementPref: false } })
   const stageDistribution = taskStages.map((stage) => ({ stage, count: all.filter((task) => task.stage === stage.value).length })).filter((item) => item.count > 0)
   const health = (["green", "yellow", "red"] as const).map((status) => ({ status, count: all.filter((task) => task.costStatus === status).length }))
