@@ -980,3 +980,12 @@ Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录�
 4. 29 处假成功清单：只列数据分析 / 账户池 / 任务列表，照旧。
 
 每件交付照旧回 SHA；动到解析的那件附一份真响应回放用例。
+
+### ★插到队列第 1：盯盘名单还在读 fixture，真实模式下盯盘整页没数（arch 2026-09-14）
+真浏览器截图：盯盘名单为空、小时表 0–23 时全「−」；同一天 data-api `account.hourly` 回 150 行。根因是 `hourly-tab.tsx:42` 从 `watchlistFixture` 取名单，真实模式没有名单 → 不发小时查询。
+- 后端 `GET/PUT /api/v1/me/watchlist`（`apps/worker/src/r014/me-routes.ts`）和 BFF `/api/internal/me/watchlist` **都已在**，契约 api.md:762 / :989（`items[].type` account|task），纯接线。
+- 同病还有 4 处：`settings-page.tsx:244`、`tasks-page.tsx:101`、`workbench/onboarding-card.tsx:25`、`workbench/starred-tab.tsx:22`。**先修盯盘**，其余四处同一笔或紧跟一笔。
+- 「加入账户」要 PUT 落库、刷新还在；名单为空时小时表别画 24 行「−」，改成「先加一个账户」的空态。
+- 和 A4（`completeHour=false`「进行中 · 未定格」+ 三种告警）同一个 tab，可以一起交。
+
+新队列：① 盯盘名单接线 + A4 → ② A5 团队透视改口 + 透视页脚 → ③ 首轮重复请求 → ④ A6 → ⑤ 29 处清单。
