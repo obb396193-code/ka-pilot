@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import {
-  handleAdminMemberCreate, handleAdminMemberResetPassword, handleAdminReconcile, handleEtlRunRerun, handleEtlRuns,
+  handleAdminMemberCreate, handleAdminMemberGrantsReplace, handleAdminMemberPatch, handleAdminMemberResetPassword, handleAdminReconcile, handleEtlRunRerun, handleEtlRuns,
   handleDecisionPolicy, handleExportDetail, handleMeView, handleMeViews, handleMeWatchlist,
   handleTaskBindings, handleTaskReadiness,
 } from "./r014/handlers.ts"
@@ -175,6 +175,34 @@ test("reset-password encodes the identity id and opens no query whitelist", asyn
     "a/b", { environment, fetchImpl: clean.fetchImpl, requestId: () => "req-m3" },
   )
   assert.equal(new URL(clean.seen[0]!.url).pathname, "/api/v1/admin/members/a%2Fb/reset-password")
+})
+
+/* v1.9.46 ①：成员治理两条命令透传 */
+test("member patch and grants replace forward to identity paths with their own methods and no query", async () => {
+  const row = { identityId: "00000000-0000-4000-8000-000000000201", displayName: "王五", provider: "internal_test",
+    userId: "00000000-0000-4000-8000-000000000301", role: "lead", isActive: false, joinedAt: "2026-09-01", grantsCount: 0,
+    lastSeenAt: null, mustChangePassword: false }
+  const patched = spy("req-g1", row)
+  const result = await handleAdminMemberPatch(req("http://localhost/api/internal/admin/members/x", "PATCH", { is_active: false }),
+    "a/b", { environment, fetchImpl: patched.fetchImpl, requestId: () => "req-g1" })
+  assert.equal(result.status, 200)
+  assert.equal(new URL(patched.seen[0]!.url).pathname, "/api/v1/admin/members/a%2Fb")
+  assert.equal(patched.seen[0]!.method, "PATCH")
+
+  const grants = { identityId: row.identityId, items: [{ media: "KUAISHOU", accountId: "same", accessLevel: "execute", grantedAt: "2026-09-13" }] }
+  const replaced = spy("req-g2", grants)
+  const put = await handleAdminMemberGrantsReplace(req("http://localhost/api/internal/admin/members/x/grants", "PUT", { items: [] }),
+    row.identityId, { environment, fetchImpl: replaced.fetchImpl, requestId: () => "req-g2" })
+  assert.equal(put.status, 200)
+  assert.equal(new URL(replaced.seen[0]!.url).pathname, `/api/v1/admin/members/${row.identityId}/grants`)
+  assert.equal(replaced.seen[0]!.method, "PUT")
+
+  // 授权是权限数据：?workspaceId= 这类覆盖一律拒，不静默丢弃后照发
+  const withQuery = spy("req-g3", grants)
+  const rejected = await handleAdminMemberGrantsReplace(req("http://localhost/api/internal/admin/members/x/grants?workspaceId=other", "PUT", { items: [] }),
+    row.identityId, { environment, fetchImpl: withQuery.fetchImpl, requestId: () => "req-g3" })
+  assert.equal(rejected.status, 400)
+  assert.equal(withQuery.seen.length, 0)
 })
 
 /* F8-15：治理后台两条透传 + 来源 IP 透传 */

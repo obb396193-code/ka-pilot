@@ -79,5 +79,12 @@ export const adminMemberReplaceGrantsRequestSchema = z.object({
 export const adminMemberUpdatedResponseSchema = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(true), data: adminMemberV195Schema, meta }).strict(), commandError,
 ]);
+/**
+ * v1.9.46 ① 授权读与整体替换：目标按 identity 在服务端解析到它唯一的 active personal 空间，
+ * 解析出两个时是 `CONFLICT`——所以错误码要用命令那一套，否则一个合法的 409 会被当成上游不合契约。
+ */
+export const adminMemberGrantsCommandResponseSchema = z.discriminatedUnion("ok", [
+  z.object({ ok: z.literal(true), data: adminMemberGrantsDataSchema, meta }).strict(), commandError,
+]);
 export type AdminMemberPatchRequest = z.infer<typeof adminMemberPatchRequestSchema>;
 export type AdminMemberReplaceGrantsRequest = z.infer<typeof adminMemberReplaceGrantsRequestSchema>;

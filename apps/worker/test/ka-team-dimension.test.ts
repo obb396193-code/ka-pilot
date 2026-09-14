@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { KaDataClient } from "../src/data/ka-data-client.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { accountLabelsFromHistory, type AccountLabelsAsOf } from "../src/data/account-labels.js";
 
 /**
  * v1.9.46（Q-041 ⑧）：团队源按命名维度/清洗段分组。
@@ -24,12 +25,26 @@ const member = (ds: string, accountId: string, cash: number | null, conv: number
 const grid = () => ["a", "b", "c"].flatMap((id) =>
   [member("2026-09-01", id, 20), member("2026-09-02", id, 20)]);
 
-function setup(rows: unknown[], labels?: Record<string, Record<string, string | null>>) {
+/** 不随日期变的标签：只测分组；按天选行的用例走真的 `accountLabelsFromHistory`。 */
+const asOf = (rows: Record<string, Record<string, string | null>>): AccountLabelsAsOf => ({
+  on: (account) => {
+    const entry = rows[`${account.media}:${account.accountId}`];
+    return entry === undefined ? null : { effectiveFrom: "2026-08-01", earliestKnown: false, nameMatches: true, ruleMissing: false, namedDimensionsInvalid: false,
+      dimensions: Object.fromEntries(Object.entries(entry).map(([key, value]) => [key, { value, source: value === null ? null : "nickname" as const }])) };
+  },
+});
+const historyRow = (accountId: string, effectiveFrom: string, owner: string) => ({
+  workspaceId, media: "KUAISHOU", accountId, effectiveFrom, mappings: [{ key: "owner", mapsTo: "optimizer", pending: false }],
+  parse: { ruleVersion: 1, status: "parsed" as const, segments: { owner: { key: "owner", value: owner, mapsTo: "optimizer", taskIds: [] } },
+    override: null, conflicts: null, parsedAt: null, nameMatches: true },
+});
+
+function setup(rows: unknown[], labels?: Record<string, Record<string, string | null>> | AccountLabelsAsOf) {
   const fetchFn = vi.fn<typeof fetch>(async () =>
     new Response(JSON.stringify({ backend: "sqlite", rowCount: rows.length, rows })));
   const client = new KaDataClient({
     baseUrl: "https://ka.test.invalid", token: "synthetic", teamWorkspaceId: workspaceId, fetchFn,
-    ...(labels === undefined ? {} : { labels: { read: async () => new Map(Object.entries(labels)) } }),
+    ...(labels === undefined ? {} : { labels: { read: async () => ("on" in labels ? labels as AccountLabelsAsOf : asOf(labels as Record<string, Record<string, string | null>>)) } }),
   });
   return { client, fetchFn };
 }
@@ -50,6 +65,26 @@ describe("v1.9.46 team dimension grouping", () => {
       { key: "张三", metrics: { cashCost: { value: 80 } } },
       { key: "李四", metrics: { cashCost: { value: 40 } } },
     ]);
+  });
+
+  it("splits one account's spend across owners when the window crosses its rename day", async () => {
+    // v1.9.49 ①：a 9-02 从张三改名李四；c 的第一行在 9-02，9-01 只能借最早已知的张三并点名。
+    const history = accountLabelsFromHistory([
+      historyRow("a", "2026-09-01", "张三"), historyRow("a", "2026-09-02", "李四"),
+      historyRow("b", "2026-09-01", "李四"), historyRow("c", "2026-09-02", "张三"),
+    ]);
+    const { client } = setup(grid(), history);
+    const result = await client.query(resolve("optimizer"), scope);
+    // 张三 = a@9-01 + c@9-01 + c@9-02 = 60；李四 = a@9-02 + b 两天 = 60。
+    expect(result.rows).toMatchObject([
+      { key: "张三", metrics: { cashCost: { value: 60 } } },
+      { key: "李四", metrics: { cashCost: { value: 60 } } },
+    ]);
+    expect(result.lineage.warnings).toContainEqual(
+      { code: "LABEL_BASIS_EARLIEST_KNOWN", media: "KUAISHOU", accountId: "c", businessDate: "2026-09-01" });
+    expect((result.lineage.warnings ?? []).filter((warning) => typeof warning !== "string")).toHaveLength(1);
+    // 顶层 warnings 仍只放字符串——对象形告警只进 lineage。
+    expect(result.warnings.every((warning) => typeof warning === "string")).toBe(true);
   });
 
   it("groups by an arbitrary cleaning segment too", async () => {

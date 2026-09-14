@@ -38,6 +38,10 @@ export interface DataSourceQueryPort {
   pivot?(resolved: ResolvedDataQuery, auth: ApprovedWorkspaceAuthContext): Promise<{
     source: SourceQueryResult; cellCoverage: { cells: number; withData: number; undeterminable: number };
   }>;
+  /** A3：团队空间透视（ka-data 成员网格 + 本库昵称标签）。只有 ka-data 源实现。 */
+  teamPivot?(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<{
+    source: SourceQueryResult; cellCoverage: { cells: number; withData: number; undeterminable: number };
+  }>;
 }
 
 export interface DataQueryServiceDependencies {
@@ -466,6 +470,17 @@ export class DataQueryService {
         }
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "platform", source }, meta: { requestId,
           businessDate: resolved.params.dateFrom, dataAsOf: source.lineage.dataAsOf, workspaceKind: "personal", selectedSource: "platform" } });
+      }
+      if (resolved.queryId === "account.pivot2" && route.selectedSource === "ka_data") {
+        // A3：团队空间透视走 ka-data 成员网格 + 本库昵称标签。没接这条就明说不可用，不退回个人源。
+        if (auth.workspaceKind !== "team" || !this.dependencies.kaData.teamPivot) {
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Team pivot source is not configured");
+        }
+        const result = await this.dependencies.kaData.teamPivot(resolved, structuredClone(scope));
+        const source = withFrozenAuthority(guardSourceOutput(result.source, resolved, scope), resolved, "ka_data", requestId, auth.workspaceKind);
+        const response = dataQueryResponseSchema.safeParse({ ok: true, data: { mode: "ka_data", source }, meta: { cellCoverage: result.cellCoverage } });
+        if (!response.success) throw new OutputContractError();
+        return response.data;
       }
       if (resolved.queryId === "account.pivot2") {
         if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.platform.pivot) {

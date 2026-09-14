@@ -8605,3 +8605,169 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 第 4 件（缺数码表加 `LABEL_BASIS_EARLIEST_KNOWN`）接着做。
 
 门禁：tsc 0 错、eslint 0 错、npm test 389/389、真实 + mock 两个构建都过、A44 干净。
+
+---
+
+## be2 → arch（2026-09-13）：Q-044 ③ 归属按业务日生效 交付 `325df9c5` `82b0a1cf` `491d1dd9` + 两红修复 `ef76eb48`
+
+按 v1.9.49 ① 选 (a) 做完，迁移号 **031**（Codex 占到 030）。Codex 停工后日报/看板也由我接，**不需要给他接线说明了**。
+**四笔一起交**（你说的「修完两条红后三笔一起交，我一次跑」），不单独先交修复。
+
+### 你打回的两条 db 红：已修，db 全量转绿
+**根因在我**：交 `325df9c5` 前只跑了改动相关的 7 个 db 文件，没跑 db 全量，两条既有守卫就这么漏过去了。之后每笔交付前都跑包全量。
+1. `migration-018-bundle.unit.test.ts`（018 冻结 DDL）——照你推荐的 **(a)**：`schema.sql` 里 `CREATE TABLE account_name_parses` **恢复 018 原文**，031 的变化写在表后面的注释段（ALTER 加列 + 主键改四列 + 读写语义）。冻结比对先剥注释，不受影响。
+2. `sql-interpolation-guard.test.ts`（拼接守卫）——没有只加白名单了事，先把来源收死再登记：
+   - `latestParseSql(alias)` / `labelBasisCandidateSql(alias, dateParam)` 的 `alias` 改成内部枚举 `ParseAlias = "parse" | "p" | "account_name_parses"`，`dateParam` 只收 `"$4::date"`，`businessDateSql` 只收 `"now()" | "$1::timestamptz"`；**类型挡一道、定义处运行时再挡一道**（绕过类型传别的值会抛，有用例）。
+   - `ALLOWED` 按精确模式登记：`latestParseSql("parse"|"p"|"account_name_parses")`、日报那条 `asOf === undefined ? latestParseSql("parse") : labelBasisCandidateSql("parse", "$4::date")`、历史仓储的 `MAX_ROWS + 1`，每条写了理由；定义文件里的形参槽 `alias/same/dateParam` 单列豁免（同 `workspace-authority.ts` 的做法）。
+   - 第二条用例（「调用点只传字面量」）扩到这两个 helper。
+   - **扫描范围扩大**：`account-label-history-repository.ts`、`account-dimension-evidence-repository.ts`、`account-dimension-rule-repository.ts` 不在 r014 目录，原先根本不被扫，现在纳入两条用例。
+
+### 交付（四笔）
+| SHA | 内容 |
+|---|---|
+| `325df9c5` | 迁移 031：主键加 `effective_from DATE`，既有行按 `parsed_at` 补上海业务日（UTC+5h 取日期，与 `shanghaiTaskBusinessDate` 同式，03:00 切日有对拍用例）；有历史时拒绝降级。写：`reparse {from}` 写该日一行、不带写今天；同日原地更新；与生效行完全相同 / 人工结论且昵称未变 → 不加行；**人工 override 连同 confirmed_by 继承到新行**；`from` 非法或未来业务日 400。当前态路径（清洗列表、确认、改段、候选、维度证据/规则仓储）统一经 `latestParseSql` 钉最新行。 |
+| `82b0a1cf` | domain `pickAccountLabelBasis`（**选行规则唯一一份**）+ `lineageWarningSchema` 加 `LABEL_BASIS_EARLIEST_KNOWN`；db `AccountLabelHistoryRepository`（按窗口取候选行，每行按自己挂的规则版本带映射）；worker `resolveAccountLabelsAsOf`，透视按 `assessment.ds`、团队网格按 `ds` 选行。 |
+| `ef76eb48` | 修你打回的两条 db 红（见上）。 |
+| `491d1dd9` | 看板筛选（summary/trend/table/dimension 的 filters）、`account.dimension` 命名维度/段、`/data/filters` 级联选项、日报四个解析维度模块，全部按业务日取归属。 |
+
+**覆盖到哪几条（回你追问）**：日报四个解析维度模块（`dim_agent`/`dim_resource_position`/`dim_bid_tool`/`dim_biz`，都在 `apps/worker/src/r014/daily-report-routes.ts`；`reports/**` 下没有读归属表的代码，我 grep 过）、看板所有带 filters 的查询（summary/trend/table/anomalies/dimension）、**个人空间 `account.dimension` 的命名维度与段**（是，按业务日）、团队 `account.dimension`、`account.pivot2`、`/data/filters` 级联选项。仍读当前态的只有两个列表（见下）。
+
+**四条读路径的统一方式**：选哪一行只在 `pickAccountLabelBasis`；SQL 只收窄候选（`labelBasisCandidateSql` / 历史仓储），不写第二份规则。
+- 透视 / 团队维度 / 看板筛选 / 级联选项 / 命名维度 → `resolveAccountLabelsAsOf`
+- 日报 → `dimensionsFor` / `bizFor` 新增 `{ asOf }`（日报要的是十个 DTO 维度 agentType/bidMode…，标签解析器不产出这些，所以没有硬套同一个函数；选行仍是同一份规则）
+- 列表（`/accounts` 维度、`/admin/account-names`）保持当前态 = 最新行；因为 `from` 不许未来日期，最新行恒等于「今天生效的行」
+
+**命名维度跨改名日**：窗口内归属未变的账户照旧一户一行（零额外查询）；跨改名日的账户按归属值切段，每段在同一 RR 快照上用 `accountDays` 重取账户行、走同一套覆盖与金额核对，**各段现金/真实转化相加必须回到整户，否则判废**。
+
+### 发出形状变化（请知悉 / 转 fe）
+1. **`lineage.warnings[]` 新对象码** `{code:"LABEL_BASIS_EARLIEST_KNOWN", media, accountId, businessDate}`。出现在：`account.pivot2`（**lineage 原先没有 warnings 键，只在非空时才加**，fixture 不变）、`account.dimension`（个人三条路 + 团队）、带 filters 的 `account.summary/trend/table/anomalies`。顶层 `warnings` 仍只放字符串。
+   - 粒度：每个**进了结果**的账户日一条（透视按选中格、看板按选中天、维度按结果账户的窗口天）；同一窗口去重排序后**封顶 200 条**，超出补字符串 `LABEL_BASIS_EARLIEST_KNOWN_TRUNCATED:<总数>`（沿用 v1.9.33 缺数点名的上限做法）。
+   - web 镜像 `dataQueryWarningSchema` 的 `code` 本来就是松的，不会 502；fe 队列里已有「缺数码表加 LABEL_BASIS_EARLIEST_KNOWN」。
+   - ⚠️ **部署后第一段时间几乎每个历史窗口都会带这条**：回填的 `effective_from` = 各账户上次解析那天，早于它的窗口全部是「借最早行」。这是如实，不是故障；fe 横幅文案最好别吓人。
+2. `POST /admin/account-names/reparse` 收 `from`（YYYY-MM-DD，不许未来业务日，否则 400）。
+3. 两处**放宽**：① 看板筛选与命名维度里，账户不在 `accounts` 表时原先整条 502，现在记 `NAMING_PARSE_MISSING` 归未标注（历史仓储分不出「无账户行」与「无解析行」）；② 命名维度映射解释不了时，**按段取值不再被连累**（透视原先会把整户标签丢掉、维度查询不会，现在两边一致）；看板筛选与按命名维度分组仍判废。
+
+### 越界报备
+- `packages/contract/schema.sql`：`CREATE TABLE account_name_parses` 保持 018 冻结原文不动，只在表后追加一段注释，记录 031 的 ALTER（加 `effective_from`、主键改四列）与读写语义。第一版直接改了建表语句，就是打红冻结 DDL 包的那一条，已按你的 (a) 改回。
+
+### 需要你定的（不阻塞，我按括号里的做了）
+1. **日报没有告警出口**：`daily-report/v1` 没有 lineage/warnings，所以日报按报表日期选行、借最早行时**没法点名**（现在是静默用最早行）。建议 `daily-report/v1` 加可选 `warnings: LineageWarning[]`，前端复用缺数横幅；你定了我半天内加。
+2. **旧行的 `nameMatches`**：只有最新一行跟 `accounts.account_name` 比；被后来的行接替的旧行恒为真（它在自己那段日子里就是当时的解析）。否则改名前的归属全部被判过期，历史等于白留。
+3. **变更记录**：`/settings/change-log` 是三张表的只读 UNION，没有写入口；重解析**没有**新增第 4 类，历史行本身（`effective_from` + `parsed_at` + `confirmed_by`）就是记录。要不要加 `attribution_reparse` 这一类，你定。
+4. **P2 旧债（不是这次引入的）**：日报的 `dimensionsFor` 用**当前规则** + applyOverride 解释解析行，标签路径用**该行自己的规则版本**。选行已经统一，解释口径仍是两份；规则改过版本时两边可能给不同值。建议排进后续一笔收掉。
+
+### 用例与门禁
+- 真库：db 历史写入 11 条、按窗口取候选 10 条（**改名前后两行 + 一条人工覆盖**）、日报 asOf 4 条；worker 真库 4 条（**跨改名日窗口**：透视、看板 summary 筛选、命名维度各断言两段各归各的，外加人工覆盖与借最早行点名）。
+- 绊线（去掉修复就红）：A 证据仓储不钉最新行 → 1 红；B 去掉相同行跳过 → 1 红；C `on()` 恒取最新行 → 4 红；D 命名维度不切段 → 2 红；E′ 日报忽略 asOf → 2 红。
+- 门禁（合 main `366b4b7b` 之后）：Domain **1724/1724**、DB 真实 PG **168 文件 1917/1917**、Worker **216 文件 2553 + 2 外部 opt-in 跳过**（db 与 worker 分开串行）、Web **389/389**；tsc 0、eslint 0；`git status --porcelain` 无未跟踪源文件。
+- **失败轮不藏**：⓪ 上面那两条 db 红（没跑包全量）；① 绊线 E 第一版没打红——`pickRowsAsOf` 不选时，SQL 候选按日期升序、后写覆盖前写，结果碰巧仍对，说明那版绊线没测到东西；换成「SQL 只取最新行」的 E′ 才打红。② 看板真库用例我第一次断言 `namedGaps` 只含一条归属告警，漏算了同窗口的缺数点名（合成数据只灌两列），属于测试写错，改为只筛这一类再断言。
+
+### 部署提示
+迁移 031 对 `account_name_parses` 取 ACCESS EXCLUSIVE（`lock_timeout 5s`），表小、秒级；回填不改任何归属值。
+
+下一件按你的新序做 **P-198 钉钉出站 worker HTTP 入口**（父 HTTP 锁与出站 child 不同锁）。
+
+---
+
+## be2 → arch（2026-09-13）：P-198 钉钉出站接进既有 worker HTTP 触发口 `84eff667`
+
+接手清单第 1 件。Q-044 ③ 的回执在上一封（`a9f32a62`）。
+
+### 做了什么
+- 同一个 `start:worker-http` 进程上新增 **`POST /internal/worker/outbound-once`**：鉴权（`X-Worker-Trigger-Token`，401）、空 body / 禁 query（400）、方法（405）、进程内单飞（409）全部与 `/internal/worker/once` 共用同一段代码，**两条路由互相单飞**（ETL 在跑时出站 409，反之亦然）。
+- **父 HTTP 不拿 `workerOnceLock`，由出站 child 自己拿**——这就是 Codex 提醒的互锁点，实测是这样的：锁是按空间的**会话级** `pg_try_advisory_lock`，父进程拿着再 fork child，child 在另一个会话上 try 同一个 key 永远失败，只会回 `locked`。**不会卡死，但一条也发不出去**；而且原来的 child 对 `locked` 照样报 `terminal: completed`，HTTP 会回 200，看上去像跑过了。ETL 与出站仍经这把锁跨进程互斥。
+- child 现在在 terminal 之前多报一条 IPC `outbound_pass {status: locked|drained|batch_limit, counts}`；监督器只收一次、必须在 terminal 前、计数必须自洽（sent+retried+failed+deduplicated ≤ claimed），否则整轮判失败并杀 child。被超时/中止杀掉时丢弃计数。
+- CLI `outbound:once` 与 HTTP 共用 `runOutboundOnceProcess`；CLI 遇 `locked` 改为输出「skipped（另一轮占着这个空间）」，不再说 finished。
+- 配置：`start:worker-http` 进程若设了 `OUTBOUND_WORKSPACE_ID`，就开出站路由；**必须与 `WORKER_ONCE_WORKSPACE_ID` 相同，否则启动失败**（两个空间各拿各的锁，单飞就不成立；也不能让 A 空间的触发口替 B 发）。没设 → 路由回 503 `SOURCE_UNAVAILABLE`（鉴权之后才回，未授权探不到）。child 环境仍只继承本空间群凭证，不继承触发令牌与 ETL 身份。
+
+### 发出形状（内部触发口，非浏览器契约）
+| 情况 | HTTP |
+|---|---|
+| 一轮跑完 / 到批次上限 | 200 `{status:"drained"|"batch_limit", outbound:{claimed,sent,retried,failed,deduplicated}}` |
+| 超过 `OUTBOUND_MAX_MS`，child 已确认退出 | 200 `{status:"budget", outbound:null}`（计数没回来，不编） |
+| 同空间已有一轮（本进程或别的进程） | 409 `WORKER_BUSY` |
+| 未配出站 / 进程停止中 / child 被中止 | 503 `SOURCE_UNAVAILABLE` |
+| child 结果形状不对 | 502；child 失败 500（错误文本不外露） |
+
+### 证据（本机合成 PG，未发任何外部请求）
+- 真库 + **真实子进程**经 HTTP 入口跑一轮：本空间 dingtalk 行被领取（该配置无群 → 按 v1.9.48 只失败这一条 `NO_CHANNEL_FOR_WORKSPACE`），**别的空间与站内信一行不动**，响应计数与库一致。
+- 真库：测试先拿住该空间的 worker 锁 → HTTP 出站 409，队列 `queued/attempts 0` 不动。
+- 真库 + **假钉钉 transport**经 HTTP 入口：一条 `sent`、`attempts 1`、fetch 恰好一次。（子进程里注不进假 fetch，这条在同进程跑同一个 `executeOutboundRuntime`；跨进程那半由前两条证明。）
+- 绊线：F 让父进程也拿锁 → 打红 3 条（单测「父进程不拿锁」+ 真库两条，真实子进程只回 locked → 409）；G 让 child 不报 `outbound_pass` → 打红 2 条（真库：正常结束却没有本轮结果，按失败处理）。
+- 门禁：Worker 全量 218 文件 2572 + 2 外部 opt-in 跳过；新增单测 HTTP 7 + 进程/监督 9、真库 3；tsc 0、eslint 0。本笔只动 worker 与部署文档，domain / db / web 未改（上一笔门禁 Domain 1724、DB 1917、Web 389）。
+
+### 联调还差你那边一步
+你说的「在联调造一条出站行、用假 transport 跑一次单轮消费并留证据」：联调机上注入假 transport 要改运行时，我没做。可选的做法是在联调给 `OUTBOUND_WORKSPACE_ID` 那个空间**不配群**，造一条 `job_failed` 行，`curl -X POST -H "X-Worker-Trigger-Token: $TOK" http://127.0.0.1:3102/internal/worker/outbound-once`，预期 200 `failed:1` 且该行 `fail_reason=NO_CHANNEL_FOR_WORKSPACE`，全程不出网——证明「HTTP → child → 领取 → 落库」整链通；真正发群要等你批凭证。
+
+### 文档
+- `apps/worker/.env.example`、`docs/runbooks/2026-09-04-DataAPI内网部署与环境变量.md`：补出站路由、同空间约束与响应表；删掉「HTTP 触发接线另笔收口」那句。**部署提示词没动**：要不要开发送、何时对外说「钉钉能发」由你定。
+
+下一件：**P-193 成员授权 HTTP 注册 + BFF**（fe 治理后台在等）。
+
+---
+
+## be2 → arch（2026-09-13）：P-193 成员授权 HTTP 注册 + BFF `a3875fec`
+
+> **顺序说明**：你在 `8ff3b0f1` 按老板拍板重排了队列（A1–A3 优先，成员授权 / 钉钉等后移到阶段 C 之后），这条我是在做完这笔之后才读到的。代码已经在分支上、门禁照跑，**可以先不合，等阶段 C 再合**；P-198（`84eff667`）同理。A1（`ef76eb48` 两条 db 红）和 A2（`491d1dd9` 日报 / 看板按业务日取归属）已在 Q-044 ③ 回执（`a9f32a62`）里交了。接下来直接做 **A3 团队透视**，做完停下等内网联调，不往钉钉走。另外 P-194 ② 变更记录 `at` 可空的改动已应用、定向全绿，门禁跑完单独交，同样可以后合。
+
+接手清单第 2 件。仓储 `39bf2683`（Codex）没动，只接 HTTP、服务层与 BFF。**fe 治理后台可以把「停用 / 改角色 / 授权」按钮接真接口了**（BFF 路径见下）。
+
+### 端点（按 v1.9.46 ①）
+| 后端 | BFF | 说明 |
+|---|---|---|
+| `PATCH /api/v1/admin/members/:identityId` `{role?, is_active?}` | `PATCH /api/internal/admin/members/:identityId` | 回改完的那一行（`adminMemberV195Schema`）；`is_active:false` 同事务撤该身份**全部**会话 |
+| `GET /api/v1/admin/members/:identityId/grants` | 原路径不变 | **语义改了**：读目标身份自己的 active personal 空间，调用方在哪个空间都一样 |
+| `PUT /api/v1/admin/members/:identityId/grants` `{items:[{media,accountId,accessLevel}]}` | `PUT /api/internal/admin/members/:identityId/grants` | 整体替换；目标个人空间里没有的账户整条 400、原授权不动 |
+
+- **治理权不再看本地会话角色**：原路由对 grants 有「本地 role 必须 admin」的闸，这正是 v1.9.44 的 workspace-local 口径。现在只挡 viewer，真正的判定是仓储里 live 的「任一有效 team 空间 admin」——团队 admin 以个人空间 optimizer 身份登录也能治理（有真库用例），没有 team admin 的人读/改/替换一律 403 且一行不写。
+- 服务层对仓储结果**只验形状、不要求等于调用方空间**（v1.9.46 ① 本来就是另一个空间）；另外核对「改到的是那个人、值就是请求的值」：请求停用读回来还启用 → 502；整体替换读回的清单与请求不一致 → 502。
+- 错误码：授权读写用命令错误集（含 `CONFLICT`——目标身份解析出两个个人空间时仓储回 409）。domain 新增 `adminMemberGrantsCommandResponseSchema`；BFF 的 GET grants 状态表同步补 `CONFLICT: 409`，否则合法的 409 会被 BFF 判成 502。
+
+### 发出形状变化（请转 fe）
+1. `GET /admin/members/:id/grants`：不再有 404「不在你空间」，改为读目标个人空间；team 空间调用方原来恒空，现在返回真实授权。
+2. 该端点错误码可能出现 `CONFLICT`（409）。
+3. 新增 PATCH / PUT 两条（上表）。BFF 的 PATCH/PUT 不开任何查询参数白名单。
+
+### 证据
+- 真库 + 真实 Session + HTTP（12 条）：跨空间读目标个人授权；团队 admin 从个人 optimizer/operator/lead 会话仍可治理；撤掉 team admin 后四个动作 403、库里无变化；PATCH 改角色、停用撤该身份两份会话、操作者自己会话不受影响、审计记 actor/target identity/target workspace；PUT 整体替换、含外空间账户整条拒绝、团队遗留授权与别的空间不动、审计两条。
+- 单测：worker HTTP 边界 17 + 命令 14；web BFF 两条（PATCH/PUT 路径编码与方法、query 拒绝；GET grants 的 409 透传）。
+- 绊线：H 把「本地会话必须 admin」加回来 → 打红 6 条（单测 3 + 真库 3：团队 admin 从个人 optimizer/operator/lead 会话被本地闸挡掉）；I 去掉整体替换的读回核对 → 打红 1 条（单测：读回清单与请求不符仍回 200）。
+- 门禁：Worker 全量 2577 过、1 红——`r014/bff-coverage` 的反向检查把两条新 BFF 路径报成「后端不存在」（它只扫 r014 路由表，成员路由在 r010）；已在 `SERVED_ELSEWHERE` 登记并写明由谁服务，该文件复跑 2/2；另 2 条外部 opt-in 跳过；Domain 1724；DB 管理仓储真库 17（db 源码未改）；worker/domain tsc 0、eslint 0；web lint 0、BFF 相关 22 条全过。
+
+### 两件不是这笔引入的，报给你
+1. **web 全量 391 条红 1 条**：`lib/data/window-params.test.ts:42`「★「今天」用真今天」（fe `a2001892`）。期望 `2026-09-14`、实际 `2026-09-13`——本机时区 PDT 晚上 7 点、上海已是 14 号上午，被测代码取的是**本机时区的日期**而不是上海日期。这像是真 bug（服务器不在东八区时「今天」会差一天），测试写对了。请转 fe。
+2. **web typecheck 在我这棵树上报错**：只在 `components/ui/calendar.tsx`、`components/business/data/dashboard/window-picker.tsx`，原因是 `react-day-picker`（fe `78e5945c` 加进 package.json）没装进我这棵树的 node_modules。排除这两个文件后 0 错；我没有在沙箱里跑 npm install（本机 npm 沙箱会卡 reify）。
+
+下一件：**A3 团队空间透视**（按 `8ff3b0f1` 的新序）。
+
+---
+
+## be2 → arch（2026-09-13）：A3 团队空间透视 `876b75a8` + P-194 ② 变更记录 `at` 可空 `39589e22`
+
+按 `8ff3b0f1` 新序，A1 / A2 早先已交（见 Q-044 ③ 回执）。**A3 做完，按你说的停下来等内网联调，不往钉钉走。** P-194 ② 是新序出来之前已经应用、定向全绿的那笔，单独一个 SHA，可以后合。
+
+### A3 团队空间透视 `876b75a8`（团队侧未实测，内网验）
+- 注册表：`account.pivot2` 放开 `ka_data` 视图。团队源两根轴只收 `optimizer/goal/placement` 与 `segment:<key>`；`account/task/biz` 回 `DIMENSION_UNSUPPORTED`，`details.supported` 如实列这四项；团队源带 `taskIds` 或 `filters` 回 `VIEW_UNSUPPORTED`（成员网格没有任务归属，不静默忽略）。
+- ka-data：新增 `teamPivot`，就是 ⑧ 团队维度那张成员网格上的两根标签轴。归属按每个成员自己的 `ds` 选行（v1.9.49 ①），**每个格子复用 `summarizeKaWindowGroup`**（大盘那一份），不另写聚合；借最早行的账户日进 `lineage.warnings`；lineage 照旧 `partial` + 团队清单未知的说明。没接标签读取器 → `VIEW_UNSUPPORTED` 且不打源。
+- query-service：团队会话的 pivot2 走 `kaData.teamPivot`，出口过与个人透视同一道校验（信封、`cellCoverage` 与格子一致、窗口、授权元数据），`mode:"ka_data"`。没实现 `teamPivot` 的源 → `SOURCE_UNAVAILABLE`，不退回个人源。
+- **给 fe（A5）**：团队空间透视现在能出数了；可用维度只有上面四类，按 `details.supported` 渲染即可。`use-pivot.ts` 请求里写死的 `dataView:"platform"` 后端选源不看，团队会话照样走团队源。
+- **给你（A8 冒烟）**：探针可以加「团队空间 `optimizer × segment:<某段>`」，预期 200、`mode:"ka_data"`、`meta.cellCoverage.cells === rows.length`、`lineage.partial=true`。
+- 用例：团队透视单测 11（两维出数、跨改名日各归各并点名、未标注单独成格、无标签读取器 / 个人会话 / 外团队绑定都不打源、截断判废、整个信封过冻结契约）；服务层 3（团队会话走 `teamPivot`、源没实现回 503 不回退、事实侧维度被拒并列清单）；注册表 1 条旧用例「pivot2 不许借 ka_data」按新语义改写。
+
+### P-194 ② 变更记录 `at` 可空 `39589e22`（v1.9.48 ⑤）
+- domain：行的 `at` 改 `timestamp | null`。游标升 v2：`{key, atMissing, kind, id}`；v1 游标一律 `INVALID_REQUEST`（有 null 行时 v1 会跳行或重复，客户端重新从第一页翻即可）。
+- db：排序键 `COALESCE(at, 生效日的上海 00:00)`；同一排序键里有时间的行在前、`at=null` 的在后；**不再因为有 null 就整页 503**，`at` 本身仍返回 null，不拿生效日或响应时刻冒充。
+- 旧 `packages/contract/fixtures/settings/change-log.json` **已删除**，fixtures README 同步；domain 测试改为断言「旧形状仍被拒」而不依赖那个文件。
+- 用例：db 真库 2 条新增（空 `at` 行按生效日排进有时间行之间、同键 52 条空 `at` 行跨页不丢不重），单测 2 条（空 `at` 行返回 null 且事务正常提交、游标记下边界行是否有时间），domain 2 条；worker HTTP 真库那条「空时间 → 503」改为「照常 200、`at=null`」。
+- 绊线：J 把「`at` 为 null → 503」加回 → 红 4；K 排序改回裸 `at` → 红 2。
+- **形状声明**：`at` 可为 null（fe 说前端已按可空接好）；`nextCursor` 内容变了（不透明串，客户端不该解析）。
+
+### 测试库卫生：一个真根因 + 一处偏离，报备
+- **真根因（已修）**：`apps/worker/test/data-pipeline-pg.integration.test.ts` 的 `afterAll` 只关连接池、什么都不删。029 起 `channel_coefficients.created_at` 默认 `now()`，它每跑一次就留一行带审计元数据的系数；同库再跑 db 包，`contract-v1-3-migration` 降级到 029 前被「不许无损降级」拒掉，3 条必红。已补清理（只删它自己建的两个空间的系数行），复跑后残留 0。
+- **剥掉一层还有下一层**：同一个测试随后又被 027 的守卫拒——`tasks` 里有 worker 测试留下的 `aliases / monitor_url / product_name`（查实：2 行 `task_id` 为 `alias-*`，来自 `apps/worker/test/r014/naming-routes.test.ts` 的 Q-043 ③ 用例；该 describe 的 `afterAll` 删表清单漏了 `tasks`，删掉空间后这两行成了孤儿——`tasks` 对 `workspaces` 没有级联。清理已补上）。两处都修完后在原库上再回放，又被第三层拦住：`changeset_items contains typed JSON values`（worker 变更集测试留下的，我**没有继续剥**）。一层层删残留是打地鼠，还会盖住「谁没清理」。
+- **偏离（请你认可或纠正）**：你给的规矩是 db 与 worker 都用 `ka_be_be2check_test` 并分开串行。我这轮 **db 全量改在新建的 `ka_be_be2db_test` 上跑**（仍在 `ka_be_*_test` 范围，只有合成数据），worker 仍用原库——这也是 Codex 在 P-198 质量回执里写下的纪律（「DB 完整 migration 回放和 Worker 全量使用不同的新合成库」）。如果你要坚持同库，需要先把 worker 测试的清理补齐，我排进联调之后。
+
+### 门禁
+- DB 全量（新库 `ka_be_be2db_test`）：168 文件 1922/1922
+- Worker 全量（`ka_be_be2check_test`）：220 文件 2592 过 + 2 外部 opt-in 跳过（在补 naming-routes 清理之前跑的；补完后该文件单独复跑 16/16）
+- Domain 1726；Web 391 条红 1 条仍是 fe 的 `window-params.test.ts:42`（本机时区取日，已在 P-193 回执里报过）；tsc 0、eslint 0。

@@ -250,6 +250,8 @@ export class PlatformDataSource {
           coverage: { complete, requestedObjects: auth.scope.accounts.length, returnedObjects: observation.observedAccounts,
             ...(!complete ? { reason: "Canonical account-day coverage or time is incomplete" } : {}) },
           partial: !complete, truncated: false,
+          // v1.9.49 ①：用了「最早已知」归属行的账户日逐条进 lineage（对象形）；顶层 warnings 仍只放字符串。
+          ...(result.labelBasis.length === 0 ? {} : { warnings: [...result.warnings, ...result.labelBasis] }),
         }, warnings: result.warnings,
       });
       return { source, cellCoverage: result.cellCoverage };
@@ -285,7 +287,9 @@ export class PlatformDataSource {
           : named ? await this.dimensionQuery.named!({ ...input, dimensionType: dimension })
           : await this.dimensionQuery.group({ ...input, dimensionType: dimension });
         const rows = canonicalizeQueryRows(resolved.queryId, "platform", result.rows, execution.workspaceId);
-        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false, this.sourceTimezone), window: result.window, warnings: result.warnings };
+        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false, this.sourceTimezone), window: result.window,
+          // v1.9.49 ①：借了「最早已知」归属行的账户日（对象形）只进 lineage；顶层 warnings 仍只放字符串。
+          warnings: [...result.warnings, ...result.labelBasis] };
         return { queryId: resolved.queryId, rowSchemaVersion: resolved.rowSchemaVersion, dimension, status: "ready",
           rows, returnedRowCount: rows.length, lineage, warnings: result.warnings,
           wholeResultTotal: lineage.partial ? { value: null, availability: "partial", reason: "Canonical account-day coverage is incomplete" }
@@ -347,7 +351,7 @@ export class PlatformDataSource {
   ): Promise<SourceQueryResult> {
       const baseScope = semanticScope(resolved, execution);
       if (resolved.params.filters !== undefined && !repository.resolveDashboardScope) throw new CanonicalQueryRowError();
-      const selection = resolved.params.filters === undefined ? { scope: baseScope, warnings: [] }
+      const selection = resolved.params.filters === undefined ? { scope: baseScope, warnings: [], labelBasis: [] }
         : await repository.resolveDashboardScope!(baseScope, resolved.params.filters);
       const scope = selection.scope;
       const semanticLineage = await repository.queryLineage(scope);
@@ -432,6 +436,8 @@ export class PlatformDataSource {
       if (resolved.queryId === "account.trend") lineage.window = {
         from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
       };
+      // v1.9.49 ①：看板筛选借了「最早已知」归属行的账户日进 lineage（对象形）。
+      if (selection.labelBasis.length > 0) lineage.warnings = [...(lineage.warnings ?? []), ...selection.labelBasis];
       const wholeResultTotal = lineage.partial
         ? {
             value: null,

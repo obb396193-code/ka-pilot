@@ -72,7 +72,9 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
   });
 
   afterAll(async () => {
-    for (const table of ["account_name_parses", "naming_rules", "accounts", "workspace_memberships", "users"]) {
+    // tasks 对 workspaces 没有级联：Q-043 ③ 插的别名任务不在这里删，就会成孤儿行留在共用测试库，
+    // db 包的迁移回放降级到 027 之前时被「tasks still carry v1.9.28 fields」拒掉。
+    for (const table of ["account_name_parses", "naming_rules", "tasks", "accounts", "workspace_memberships", "users"]) {
       await pool.query(`DELETE FROM ${table} WHERE workspace_id=$1`, [workspaceId]);
     }
     await pool.query("DELETE FROM workspaces WHERE id=$1", [workspaceId]);
@@ -187,6 +189,32 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
       { media: "KUAISHOU", sample_names: [] }]) {
       expect((await call("/api/v1/admin/naming-rules/test", "POST", body)).status).toBe(400);
     }
+  });
+
+  it("re-parses from a past business day without disturbing the conclusion in effect today", async () => {
+    const history = async () => (await pool.query(
+      `SELECT account_id, effective_from::text AS effective_from, status FROM account_name_parses
+       WHERE workspace_id=$1 ORDER BY account_id, effective_from`, [workspaceId],
+    )).rows as { account_id: string; effective_from: string; status: string }[];
+    const before = await history();
+    // 未来日期会让这条归属在那天之前完全不可见，看上去像重解析没生效——必须当场拒掉，且一行不写。
+    for (const from of ["2999-12-31", "2026-02-30", "20260901", 20260901, null]) {
+      const result = await call("/api/v1/admin/account-names/reparse", "POST", { media: "KUAISHOU", from });
+      expect(result.status, String(from)).toBe(400);
+    }
+    expect(await history()).toEqual(before);
+
+    const result = await call("/api/v1/admin/account-names/reparse", "POST", {
+      media: "KUAISHOU", accountIds: ["r017h-a1"], from: "2026-01-01",
+    });
+    expect(result.status).toBe(200);
+    const a1 = (await history()).filter((row) => row.account_id === "r017h-a1");
+    // 往回补的是 1 月那一格的归属；今天那行的人工确认原样留着。
+    expect(a1.map((row) => [row.effective_from, row.status])).toEqual([
+      ["2026-01-01", "parsed"], [before.find((row) => row.account_id === "r017h-a1")!.effective_from, "confirmed"],
+    ]);
+    const listed = dataOf(await call("/api/v1/admin/account-names", "GET", undefined, "?status=confirmed"));
+    expect((listed.items as { accountId: string }[]).map((item) => item.accountId)).toEqual(["r017h-a1", "r017h-a2"]);
   });
 
   it("splits the governance backend 按 v1.9.9: two are lead-only, four are member-but-scoped", async () => {

@@ -105,9 +105,12 @@ describe("P194 history real HTTP/PG", () => {
     await pool.query("UPDATE workspace_memberships SET is_active=false WHERE workspace_id=$1", [ws]);
     expect((await get()).status).toBe(403);
   });
-  it("unknown timestamps stay unavailable; bad values are invalid, not zero", async () => {
+  it("unknown timestamps come back as null instead of failing the page; bad values are invalid, not zero", async () => {
     await pool.query("UPDATE channel_coefficients SET created_at=NULL WHERE workspace_id=$1", [ws]);
-    expect(await get()).toMatchObject({ status: 503, body: { error: { code: "SOURCE_UNAVAILABLE" } } });
+    // v1.9.48 ⑤：老行没有修改时间 → at=null 照常返回，不再整页 503，也不拿响应时刻冒充。
+    const timeless = await get(); expect(timeless.status).toBe(200);
+    const coefficients = timeless.body.data.items.filter((r: { kind: string }) => r.kind === "channel_coefficient");
+    expect(coefficients.length).toBeGreaterThan(0); expect(coefficients.every((r: { at: unknown }) => r.at === null)).toBe(true);
     expect((await get("?kinds=assessment_price")).status).toBe(200);
     await pool.query("UPDATE assessment_price_history SET price='NaN'::numeric WHERE workspace_id=$1 AND op='set'", [ws]);
     expect(await get("?kinds=assessment_price")).toMatchObject({ status: 502, body: { error: { code: "UPSTREAM_INVALID_RESPONSE" } } });

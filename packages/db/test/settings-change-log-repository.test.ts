@@ -140,10 +140,30 @@ describe("P194 change log actual PostgreSQL", { timeout: 30000 }, () => {
     const a = await seed(); await price(a, "allowed", "NaN");
     await expect(page(a)).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
-  it("no source timestamp is an explicit availability error, never the response time", async () => {
-    const a = await seed(); await price(a);
-    await pool.query("UPDATE assessment_price_history SET created_at=NULL WHERE workspace_id=$1", [a.workspaceId]);
-    await expect(page(a)).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" });
+  it("keeps rows with an unknown modification time, ordered by effective day and after timed rows on the same instant", async () => {
+    // v1.9.48 ⑤：老行 at=null 不再让整页 503；排序键 = COALESCE(at, 生效日上海 00:00)，at 本身仍是 null。
+    const a = await seed();
+    await price(a, "allowed", "10", "2026-09-01T17:00:00Z", "2026-09-01");
+    await price(a, "allowed", "20", "2026-09-01T16:00:00Z", "2026-09-01");
+    await price(a, "allowed", "30", "2026-09-01T15:00:00Z", "2026-09-01");
+    await pool.query(`INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date,changed_by,created_at,op)
+      VALUES($1,'allowed',99,'2026-09-02',$2,NULL,'set')`, [a.workspaceId, a.userId]);
+    expect((await page(a)).data.items.map(x => [x.newValue, x.at])).toEqual([
+      [10, "2026-09-01T17:00:00.000000Z"], [20, "2026-09-01T16:00:00.000000Z"], [99, null], [30, "2026-09-01T15:00:00.000000Z"],
+    ]);
+  });
+  it("pages through many timeless rows on one sort key without loss or repeat", async () => {
+    const a = await seed();
+    for (let n = 1; n <= 52; n++) await pool.query(`INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date,created_at,op)
+      VALUES($1,'allowed',$2,'2026-09-01',NULL,'set')`, [a.workspaceId, n]);
+    await price(a, "allowed", "500", "2026-08-31T16:00:00Z", "2026-08-01");
+    const first = await page(a), second = await page(a, { cursor: first.data.nextCursor });
+    expect(first.data.items).toHaveLength(50); expect(second.data.items).toHaveLength(3); expect(second.data.nextCursor).toBeNull();
+    const all = [...first.data.items, ...second.data.items];
+    expect(new Set(all.map(x => x.id)).size).toBe(53);
+    // 与 9-01 上海 00:00 同一刻的有时间行排在最前，其后是 52 条无时间行（跨页不丢不重）。
+    expect(all[0]).toMatchObject({ newValue: 500, at: "2026-08-31T16:00:00.000000Z" });
+    expect(all.slice(1).every(x => x.at === null)).toBe(true);
   });
   it("expired links no longer grant task history", async () => {
     const a = await seed(); await price(a);

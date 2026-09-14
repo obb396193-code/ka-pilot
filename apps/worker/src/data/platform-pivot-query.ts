@@ -4,11 +4,10 @@ import { PlatformPivotRepository, PlatformPivotContractError, withSemanticReadSn
 import {
   aggregatePivotWindow, approvedWorkspaceAuthContextSchema, queryWindowSchema, dimensionTypeSchema,
   canonicalMetricSetSchema, dailyAssessmentInputSchema, calendarDateSchema,
-  aggregateWindowMetrics, computeWindowAssessment, pivotWindowRowsSchema,
-} from "@ka/domain";
+  aggregateWindowMetrics, computeWindowAssessment, pivotWindowRowsSchema, capLabelBasisWarnings, labelBasisEarliestKnownWarning } from "@ka/domain";
 import { taskQueryIdSchema } from "./query-registry.js";
 import {
-  type AccountLabels, accountLabelKey, groupableDimension, loadAccountLabels, needsAccountLabels,
+  type AccountLabelsAsOf, groupableDimension, labelValue, needsAccountLabels, resolveAccountLabelsAsOf,
 } from "./account-labels.js";
 
 const inputSchema = z.object({ auth: approvedWorkspaceAuthContextSchema, window: queryWindowSchema,
@@ -27,7 +26,8 @@ const snapshotSchema = z.object({ window: queryWindowSchema, members: z.array(me
 type Member = z.infer<typeof memberSchema>;
 export interface PlatformPivotReader { read(auth: unknown, window: unknown): Promise<unknown> }
 export interface AccountLabelReader {
-  read(input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[] }): Promise<AccountLabels>;
+  /** v1.9.49 ①：按窗口读归属历史，再按每个成员自己的业务日选行（`on(account, businessDate)`）。 */
+  read(input: { workspaceId: string; accounts: readonly { media: string; accountId: string }[]; from: string; to: string }): Promise<AccountLabelsAsOf>;
 }
 export class PlatformPivotQueryError extends Error {
   readonly retryable = false;
@@ -44,15 +44,15 @@ function bounded(value: unknown): void {
 }
 /**
  * v1.9.34 ⑩（Q-041 ⑦）：透视的两条轴开放到**全部清洗维度**与任意清洗段 `segment:<key>`。
- * 固定三维从 member 自己身上取；其余从昵称标签取——标签由 `loadAccountLabels` 一处算，
+ * 固定三维从 member 自己身上取；其余从昵称标签取——标签由 `resolveAccountLabelsAsOf` 一处算、按成员的业务日选行，
  * 与维度查询、级联选项同源（三处各读各的必然分组结果对不上，而且不会报错）。
  * 标签里没有这一维 = 这个账户没标注 → key 为 null，前端归「未标注」桶，**不猜不填默认值**。
  */
-function axis(member: Member, dimension: string, labels: AccountLabels) {
+function axis(member: Member, dimension: string, labels: AccountLabelsAsOf | null) {
   if (dimension === "account") return { key: `${member.media}:${member.accountId}`, label: member.accountName };
   if (dimension === "task") return { key: member.taskId, label: member.taskName };
   if (dimension === "biz") return { key: member.bizName, label: member.bizName };
-  const value = labels.get(accountLabelKey(member))?.[dimension] ?? null;
+  const value = labelValue(labels?.on(member, member.assessment.ds) ?? null, dimension);
   return { key: value, label: value };
 }
 
@@ -88,9 +88,10 @@ export class PlatformPivotQuery {
     if (snapshot.window.from !== input.window.from || snapshot.window.to !== input.window.to || snapshot.window.preset !== input.window.preset) return invalid();
     // 标签按**授权范围**取，不按快照里出现的账户取：快照里没有的账户本来就不会成行，
     // 而让读取范围跟着快照走，等于让上游响应决定我们去查谁。
-    const labels: AccountLabels = labelled
-      ? await this.labels!.read({ workspaceId: input.auth.workspaceId, accounts })
-      : new Map();
+    // v1.9.49 ①：按窗口取归属历史；账户窗口跨改名日时，改名前后的账户日各归各的。
+    const labels: AccountLabelsAsOf | null = labelled
+      ? await this.labels!.read({ workspaceId: input.auth.workspaceId, accounts, from: input.window.from, to: input.window.to })
+      : null;
     const cells = new Map<string, { a: ReturnType<typeof axis>; b: ReturnType<typeof axis>; members: Member[] }>();
     const observedAccounts = new Set<string>(); let observedAccountDays = 0, missingComputedAt = 0;
     let earliestComputedAt: string | null = null, latestComputedAt: string | null = null;
@@ -134,6 +135,10 @@ export class PlatformPivotQuery {
     const selectedCells = [...cells.values()].map(cell => ({ ...cell,
       members: selectedTasks.size === 0 ? cell.members : cell.members.filter(member => member.taskId !== null && selectedTasks.has(member.taskId)),
     })).filter(cell => cell.members.length > 0);
+    // 早于该账户所有归属行的账户日，用的是最早一行——逐条点名，只点真正进了结果的成员。
+    const labelBasis = labels === null ? [] : capLabelBasisWarnings(selectedCells.flatMap(cell => cell.members)
+      .filter(member => labels.on(member, member.assessment.ds)?.earliestKnown === true)
+      .map(member => labelBasisEarliestKnownWarning({ media: member.media, accountId: member.accountId, businessDate: member.assessment.ds })));
     let projection: ReturnType<typeof pivotWindowRowsSchema.parse>;
     try { projection = selectedTasks.size === 0 ? aggregated : pivotWindowRowsSchema.parse({
       queryId: aggregated.queryId, rowSchemaVersion: aggregated.rowSchemaVersion, dimA: aggregated.dimA, dimB: aggregated.dimB,
@@ -143,7 +148,7 @@ export class PlatformPivotQuery {
           assessment: assessment.assessment };
       }),
     }); } catch { return invalid(); }
-    return { ...projection, warnings: aggregated.warnings, window: input.window, observation,
+    return { ...projection, warnings: aggregated.warnings, labelBasis, window: input.window, observation,
       cellCoverage: { cells: selectedCells.length, withData: selectedCells.filter(cell => cell.members.some(member => member.observed)).length,
         undeterminable: projection.rows.filter(row => row.assessment.onTarget === null).length } };
   }
@@ -152,6 +157,6 @@ export function createPlatformPivotQuery(pool: Pick<Pool, "connect">): PlatformP
   return new PlatformPivotQuery(new PlatformPivotRepository(pool), {
     // 标签与透视快照各取一次连接：标签是账户级元数据、快照是账户日事实，
     // 两者不共享一次事务也不会互相矛盾（标签按解析行自己的规则版本解释）。
-    read: (input) => withSemanticReadSnapshot(pool, (connection) => loadAccountLabels(connection, input)),
+    read: (input) => withSemanticReadSnapshot(pool, (connection) => resolveAccountLabelsAsOf(connection, input)),
   });
 }

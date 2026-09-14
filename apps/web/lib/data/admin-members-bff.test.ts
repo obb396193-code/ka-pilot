@@ -41,3 +41,10 @@ test("preserves all typed errors, not raw upstream body", async () => {
     const r = await handleAdminMembersRequest(req(), { environment, requestId: () => requestId, fetchImpl: async () => Response.json({ ok: false, error: { code, message: "safe", requestId, retryable: false } }, { status, headers: { "x-request-id": requestId } }) }); assert.equal(r.status, status)
   }
 })
+
+test("v1.9.46 grants read passes a target CONFLICT through as 409 instead of calling the upstream invalid", async () => {
+  const body = { ok: false, error: { code: "CONFLICT", message: "Member request could not be completed", requestId, retryable: false } }
+  const r = await handleAdminMembersRequest(req(), { environment, requestId: () => requestId,
+    fetchImpl: async () => Response.json(body, { status: 409, headers: { "x-request-id": requestId } }) }, identity)
+  assert.equal(r.status, 409); assert.deepEqual(r.body, body)
+})

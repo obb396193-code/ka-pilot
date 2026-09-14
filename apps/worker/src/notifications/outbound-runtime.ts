@@ -29,14 +29,17 @@ if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.ur
   // An orphan may be blocked inside a driver which does not observe AbortSignal.
   // Immediate exit releases DB sockets; an in-flight send stays fenced for unknown recovery.
   const abort=():never=>{controller.abort();process.exit(1);};process.once("disconnect",abort);
+  const report=(message:unknown)=>new Promise<void>((resolve,reject)=>{
+    if(!process.connected||!process.send){reject(new Error());return;}
+    process.send(message,error=>error?reject(new Error()):resolve());
+  });
   try{
     if(!process.send||!process.connected||process.argv.length!==2)throw new Error();
-    const result=await executeOutboundRuntime(parseOutboundConfig(process.env),{signal:controller.signal});
-    if(result.status==="aborted")throw new Error();
-    await new Promise<void>((resolve,reject)=>{
-      if(!process.connected||!process.send){reject(new Error());return;}
-      process.send({kind:"terminal",status:"completed"},error=>error?reject(new Error()):resolve());
-    });
+    const {status,...counts}=await executeOutboundRuntime(parseOutboundConfig(process.env),{signal:controller.signal});
+    if(status!=="locked"&&status!=="drained"&&status!=="batch_limit")throw new Error();
+    // P-198：先报本轮结果再报结束。只报 completed 的话，锁没拿到（一条没发）也会被说成跑过了。
+    await report({kind:"outbound_pass",status,counts});
+    await report({kind:"terminal",status:"completed"});
   }catch{process.exitCode=1;}
   finally{process.removeListener("disconnect",abort);if(process.connected)process.disconnect();}
 }

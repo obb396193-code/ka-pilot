@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { metricValue } from "@ka/domain";
 import { PlatformPivotQuery, createPlatformPivotQuery } from "../src/data/platform-pivot-query.js";
+import { accountLabelsFromHistory, type AccountLabelsAsOf } from "../src/data/account-labels.js";
 import { PlatformPivotContractError } from "@ka/db";
 
 const ws = "00000000-0000-4000-8000-000000000001";
@@ -154,7 +155,7 @@ describe("PlatformPivotQuery", () => {
 
 /**
  * v1.9.34 ⑦：两条轴开放到命名维度（optimizer/goal/placement）与任意清洗段 `segment:<key>`。
- * 标签从注入的读取器来，与 `account.dimension` 同一份 `loadAccountLabels`。
+ * 标签从注入的读取器来，与团队维度同一份 `resolveAccountLabelsAsOf`（v1.9.49 ① 按业务日选行）。
  */
 describe("PlatformPivotQuery labelled axes", () => {
   const two = { ...auth, scope: { kind: "explicit_accounts", accounts: [
@@ -168,8 +169,21 @@ describe("PlatformPivotQuery labelled axes", () => {
         earliestComputedAt: "2026-09-01T02:00:00.000Z", latestComputedAt: "2026-09-01T02:00:00.000Z" } };
   }
   const labelled = { ...input, auth: two, window: { ...window, to: "2026-09-01" } };
-  const labels = (rows: Record<string, Record<string, string | null>>) =>
-    ({ read: async () => new Map(Object.entries(rows)) });
+  /** 不随日期变的标签：只用来测分组本身；按天选行另有用例走真的 `accountLabelsFromHistory`。 */
+  const asOf = (rows: Record<string, Record<string, string | null>>): AccountLabelsAsOf => ({
+    on: (account) => {
+      const entry = rows[`${account.media}:${account.accountId}`];
+      return entry === undefined ? null : { effectiveFrom: "2026-08-01", earliestKnown: false, nameMatches: true, ruleMissing: false, namedDimensionsInvalid: false,
+        dimensions: Object.fromEntries(Object.entries(entry).map(([key, value]) => [key, { value, source: value === null ? null : "nickname" as const }])) };
+    },
+  });
+  const labels = (rows: Record<string, Record<string, string | null>>) => ({ read: async () => asOf(rows) });
+  /** 一行真实形状的归属历史（owner 段 → optimizer）。 */
+  const historyRow = (accountId: string, effectiveFrom: string, owner: string) => ({
+    workspaceId: ws, media: "KUAISHOU", accountId, effectiveFrom, mappings: [{ key: "owner", mapsTo: "optimizer", pending: false }],
+    parse: { ruleVersion: 1, status: "parsed" as const, segments: { owner: { key: "owner", value: owner, mapsTo: "optimizer", taskIds: [] } },
+      override: null, conflicts: null, parsedAt: null, nameMatches: true },
+  });
 
   it("groups both axes by naming labels instead of account identity", async () => {
     const result = await new PlatformPivotQuery({ read: async () => pair() }, labels({
@@ -180,6 +194,29 @@ describe("PlatformPivotQuery labelled axes", () => {
       .toEqual([["张三", "拉新", 10], ["李四", "拉新", 90]]);
     // 轴的 label 就是值本身，不另起一套显示名——两者分叉时前端会显示一个查不到的名字。
     expect(result.rows[0]?.a).toEqual({ key: "张三", label: "张三" });
+  });
+
+  it("attributes each account-day to the owner in effect that day when the window crosses a rename", async () => {
+    // v1.9.49 ①：这户 9-02 从张三改名李四。只读最新一行的话，9-01 那 10 块也会记到李四头上。
+    const renamed = accountLabelsFromHistory([historyRow("same", "2026-09-01", "张三"), historyRow("same", "2026-09-02", "李四")]);
+    const result = await new PlatformPivotQuery({ read: async () => snapshot() }, { read: async () => renamed })
+      .query({ ...input, dimA: "optimizer", dimB: "account" });
+    expect(result.rows.map(row => [row.a.key, row.b.key, row.metrics.cashCost.value]))
+      .toEqual([["张三", "KUAISHOU:same", 10], ["李四", "KUAISHOU:same", 90]]);
+    expect(result.labelBasis).toEqual([]);
+  });
+
+  it("names every account-day that borrowed the earliest known owner", async () => {
+    const lateHistory = accountLabelsFromHistory([historyRow("same", "2026-09-02", "李四")]);
+    const result = await new PlatformPivotQuery({ read: async () => snapshot() }, { read: async () => lateHistory })
+      .query({ ...input, dimA: "optimizer", dimB: "biz" });
+    // 9-01 早于它所有归属行：照样归李四（最早已知），但必须点名，不能看上去跟确知的一样。
+    expect(result.rows.map(row => [row.a.key, row.metrics.cashCost.value])).toEqual([["李四", 100]]);
+    expect(result.labelBasis).toEqual([{ code: "LABEL_BASIS_EARLIEST_KNOWN", media: "KUAISHOU", accountId: "same", businessDate: "2026-09-01" }]);
+    // 按 task 过滤掉 9-01 的成员后，它就不该再被点名。
+    const filtered = await new PlatformPivotQuery({ read: async () => snapshot() }, { read: async () => lateHistory })
+      .query({ ...input, dimA: "optimizer", dimB: "biz", taskIds: ["b"] });
+    expect(filtered.labelBasis).toEqual([]);
   });
 
   it("pivots by an arbitrary cleaning segment", async () => {
@@ -202,15 +239,15 @@ describe("PlatformPivotQuery labelled axes", () => {
   });
 
   it("reads labels for the authorized scope, never for whatever the snapshot returned", async () => {
-    const read = vi.fn(async () => new Map());
+    const read = vi.fn(async () => asOf({}));
     await new PlatformPivotQuery({ read: async () => pair() }, { read })
       .query({ ...labelled, dimA: "optimizer", dimB: "account" });
     expect(read).toHaveBeenCalledWith({ workspaceId: ws, accounts: [
-      { media: "KUAISHOU", accountId: "same" }, { media: "KUAISHOU", accountId: "other" }] });
+      { media: "KUAISHOU", accountId: "same" }, { media: "KUAISHOU", accountId: "other" }], from: "2026-09-01", to: "2026-09-01" });
   });
 
   it("skips the label read entirely for the three fact dimensions", async () => {
-    const read = vi.fn(async () => new Map());
+    const read = vi.fn(async () => asOf({}));
     await new PlatformPivotQuery({ read: async () => pair() }, { read }).query({ ...labelled, dimA: "biz", dimB: "task" });
     expect(read).not.toHaveBeenCalled();
   });

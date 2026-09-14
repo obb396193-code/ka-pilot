@@ -17,14 +17,17 @@ export const settingsChangeLogActorColumnsSchema = z.object({
   userId: z.string().uuid().nullable(), name: z.string().min(1).max(256).nullable(),
 }).strict();
 const common = z.object({
-  id: z.string().min(1).max(128), op: z.enum(["set", "revoke"]), at, effectiveDate: date,
+  // v1.9.48 ⑤：老行没有修改时间就是 null——不拿迁移时刻、生效日或响应时刻冒充。
+  id: z.string().min(1).max(128), op: z.enum(["set", "revoke"]), at: at.nullable(), effectiveDate: date,
   changedBy: z.object({ userId: z.string().uuid(), name: z.string().min(1).max(256) }).strict().nullable(),
   evidenceUrl: z.string().url().max(4096).nullable(),
 });
 export const settingsChangeLogKindSchema = z.enum(["assessment_price", "daily_budget_cap", "channel_coefficient"]);
 // Internal pagination state, not an additional public row field.
-export const settingsChangeLogPositionSchema = z.object({ v: z.literal(1), at: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$/)
-  .refine(v => date.safeParse(v.slice(0, 10)).success && Number.isFinite(Date.parse(v))),
+// v1.9.48 ⑤：排序键 key = COALESCE(at, 生效日上海 00:00)；同一 key 里 at 为 null 的行排在有时间的行之后，
+// 所以游标要记下边界行有没有时间。v1 游标（只有 at）在有 null 行的库上会跳行或重复，不再接受。
+export const settingsChangeLogPositionSchema = z.object({ v: z.literal(2), key: z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$/)
+  .refine(v => date.safeParse(v.slice(0, 10)).success && Number.isFinite(Date.parse(v))), atMissing: z.boolean(),
   kind: settingsChangeLogKindSchema, id: z.string().regex(/^[1-9][0-9]{0,18}$/)
     // A46：domain 文件被 apps/web 直接编译（target ES2017），**不能用 BigInt 字面量**（`…n`）。
     // 改成字符串构造，语义不变：id 是 bigint 主键的十进制串，上界即 int8 max。

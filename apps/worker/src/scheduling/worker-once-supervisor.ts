@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process";
 import type { JobStateEvent } from "../jobs/consumer.js";
-import { workerOnceMessageSchema, type WorkerOnceOutcome } from "./worker-once-protocol.js";
+import { workerOnceMessageSchema, type OutboundPass, type WorkerOnceOutcome } from "./worker-once-protocol.js";
 import { WorkerOnceFailure, type WorkerOnceFailureCode } from "./worker-once-failure.js";
 
 /** A deadline is complete only after the OS closes the child, not when a timer wins. */
@@ -19,6 +19,7 @@ export async function superviseWorkerOnce(options: {
     let outcome: "budget" | "aborted" | "failed" | undefined;
     let terminal: "completed" | "blocked_auth" | undefined;
     let blocked = false;
+    let outbound: OutboundPass | undefined;
     let closed = false;
     let failureCode: WorkerOnceFailureCode = "UNEXPECTED_FAILURE";
     const stop = (reason: "budget" | "aborted" | "failed", code?: WorkerOnceFailureCode): void => {
@@ -40,6 +41,12 @@ export async function superviseWorkerOnce(options: {
       if (terminal) { stop("failed", "UNEXPECTED_IPC_ORDER"); return; }
       const value = parsed.data;
       if (value.kind === "failure") { stop("failed", value.code); return; }
+      if (value.kind === "outbound_pass") {
+        // 一轮只有一个结果；报两次说明 child 的状态机坏了，不挑一个信。
+        if (outbound) { stop("failed", "UNEXPECTED_IPC_ORDER"); return; }
+        outbound = { status: value.status, counts: value.counts };
+        return;
+      }
       if (value.kind === "terminal") {
         if ((value.status === "blocked_auth") !== blocked) { stop("failed", "TERMINAL_MISMATCH"); return; }
         terminal = value.status;
@@ -63,7 +70,8 @@ export async function superviseWorkerOnce(options: {
       options.signal?.removeEventListener("abort", onAbort);
       if (outcome === "failed") reject(new WorkerOnceFailure(failureCode));
       else if (!outcome && (code !== 0 || !terminal)) reject(new WorkerOnceFailure(code !== 0 ? "CHILD_EXIT_NONZERO" : "MISSING_TERMINAL"));
-      else resolve({ status: outcome ?? terminal!, jobs });
+      // 超时或中止杀掉的 child 即使先报过结果也不带出去：那一轮没有正常结束，计数不能当成定论。
+      else resolve({ status: outcome ?? terminal!, jobs, ...(outbound && !outcome ? { outbound } : {}) });
     };
     child.on("message", onMessage);
     child.on("error", onError);

@@ -1,4 +1,5 @@
 import { parseConflictSchema, parseOverrideSchema, parseStatusSchema, type ParsedSegment } from "@ka/domain";
+import { latestParseSql } from "./r014/account-name-parse-history.js";
 import type { SemanticReadConnection } from "./semantic-read-snapshot.js";
 
 export class AccountDimensionEvidenceError extends Error {
@@ -51,7 +52,8 @@ function segments(value: unknown): Record<string, ParsedSegment> {
     return [name, { key: name, value: segment.value, mapsTo: segment.mapsTo, taskIds: [...segment.taskIds] } as ParsedSegment];
   }));
 }
-function parseEvidence(row: Record<string, unknown>): AccountDimensionEvidence["parse"] {
+/** 一行解析证据的逐字段校验。归属历史仓储复用它：同一张表的行，不许有两套放行标准。 */
+export function readParseEvidence(row: Record<string, unknown>): AccountDimensionEvidence["parse"] {
   if (row.parse_account_id === null) {
     if (["rule_version", "status", "segments", "override", "conflicts", "parsed_at", "name_matches"].some(k => row[k] !== null)) return fail();
     return null;
@@ -86,6 +88,7 @@ export class AccountDimensionEvidenceRepository {
         FROM jsonb_to_recordset($2::jsonb) AS wanted(media text,"accountId" text)
         JOIN accounts a ON a.workspace_id=$1 AND a.media=wanted.media AND a.account_id=wanted."accountId"
         LEFT JOIN account_name_parses p ON p.workspace_id=a.workspace_id AND p.media=a.media AND p.account_id=a.account_id
+          AND ${latestParseSql("p")}
         ORDER BY a.media COLLATE "C",a.account_id COLLATE "C" LIMIT 1001
       ), sized AS (
         SELECT *,sum(COALESCE(octet_length(segments::text),0)+COALESCE(octet_length(override::text),0)+
@@ -110,7 +113,7 @@ export class AccountDimensionEvidenceRepository {
       const tuple = { media: raw.media, accountId: raw.account_id }, tupleKey = key(tuple);
       if (!allowed.has(tupleKey) || seen.has(tupleKey)) return fail();
       seen.add(tupleKey);
-      return { workspaceId: scope.workspaceId, ...tuple, parse: parseEvidence(raw) };
+      return { workspaceId: scope.workspaceId, ...tuple, parse: readParseEvidence(raw) };
     });
   }
 }

@@ -7,8 +7,7 @@ import {
   IdentityPasswordRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
-  AdminMembersRepository,
-  AdminMemberProvisioningRepository,
+  AdminMemberManagementRepository, AdminMemberProvisioningRepository,
   EtlRunListRepository,
   EtlRunRerunRepository,
   SettingsChangeLogRepository,
@@ -28,7 +27,7 @@ import { createDataApiServer } from "./data/http-server.js";
 import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
 import { PlatformDataSource, createPlatformReadSnapshot } from "./data/platform-data-source.js";
-import { loadAccountLabels } from "./data/account-labels.js";
+import { resolveAccountLabelsAsOf } from "./data/account-labels.js";
 import { createPlatformWindowQuery } from "./data/platform-window-query.js";
 import { createPlatformDimensionQuery } from "./data/platform-dimension-query.js";
 import { createPlatformPivotQuery } from "./data/platform-pivot-query.js";
@@ -95,9 +94,9 @@ async function main(): Promise<void> {
     hourly: createPlatformHourlyQuery(pool),
     kaData: config.kaDataEnabled
       // v1.9.46（Q-041 ⑧）：团队维度分组要的标签在**我们自己的库**里，所以把读取器注进去。
-      // 用的是透视那条路同一个 `loadAccountLabels`——两处各读各的，分组结果迟早对不上。
+      // 用的是透视那条路同一个 `resolveAccountLabelsAsOf`（v1.9.49 ① 按业务日选行）——两处各读各的，分组结果迟早对不上。
       ? createKaDataClientFromEnv(process.env, {
-        labels: { read: (input) => withSemanticReadSnapshot(pool, (connection) => loadAccountLabels(connection, input)) },
+        labels: { read: (input) => withSemanticReadSnapshot(pool, (connection) => resolveAccountLabelsAsOf(connection, input)) },
       })
       : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool), createPlatformReadSnapshot(pool),
@@ -118,7 +117,8 @@ async function main(): Promise<void> {
     settingsChangeLogService: new SettingsChangeLogService(new SettingsChangeLogRepository(pool)),
     agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
     adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
-    adminMembersService: new AdminMembersService(new AdminMembersRepository(pool), undefined, new AdminMemberProvisioningRepository(pool)),
+    // v1.9.46 ①：成员治理按 identity 定位（改角色/停用、读与整体替换授权），走管理仓储。
+    adminMembersService: new AdminMembersService(undefined, new AdminMemberProvisioningRepository(pool), new AdminMemberManagementRepository(pool)),
     etlRunListService: new EtlRunListService(new EtlRunListRepository(pool)),
     etlRunRerunService: new EtlRunRerunService(new EtlRunRerunRepository(pool)),
     detailService: new ReadDetailService({

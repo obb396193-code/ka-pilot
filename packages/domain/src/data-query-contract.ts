@@ -120,6 +120,16 @@ export const lineageWarningSchema = z.union([
     businessDate: calendarDateSchema,
     fields: z.array(z.string().min(1).max(64)).min(1).max(32),
   }).strict(),
+  /**
+   * v1.9.49 ①（Q-044 ③）：这个账户日早于该账户所有归属行，分组用的是**最早已知**的那一行。
+   * 账户在那之前可能归别人——不点名的话，历史窗口的分组看上去和确知的一模一样。
+   */
+  z.object({
+    code: z.literal("LABEL_BASIS_EARLIEST_KNOWN"),
+    media: z.string().min(1).max(32),
+    accountId: z.string().min(1).max(128),
+    businessDate: calendarDateSchema,
+  }).strict(),
 ]);
 export type LineageWarning = z.infer<typeof lineageWarningSchema>;
 

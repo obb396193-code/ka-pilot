@@ -21,6 +21,8 @@ export {
   handleAdminMemberCreate,
   handleAdminReconcile,
   handleAdminMemberResetPassword,
+  handleAdminMemberPatch,
+  handleAdminMemberGrantsReplace,
   handleAdminAccountNamesConfirm,
   handleAdminAccountNamesReparse,
   handleAdminNamingRules,

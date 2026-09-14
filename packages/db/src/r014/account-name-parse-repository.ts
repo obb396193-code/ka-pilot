@@ -1,10 +1,11 @@
+import { BUSINESS_DATE_TODAY_SQL, latestParseSql, labelBasisCandidateSql } from "./account-name-parse-history.js";
 import {
+  calendarDateSchema,
   EMPTY_DIMENSIONS_DTO, applyOverride, namingRuleSchema, parseAccountName, parsedSegmentsSchema,
   parseOverrideSchema, parseStatusSchema, pendingSegmentDefs,
   resolveAccountDimensions, toDimensionsDto, toNamingRule,
   type AccountDimensionsDto, type ApprovedWorkspaceAuthContext, type NamingRule,
-  type ParseConflict, type ParseStatus, type TaskAlias,
-} from "@ka/domain";
+  type ParseConflict, type ParseStatus, type TaskAlias, pickAccountLabelBasis } from "@ka/domain";
 import type { Pool } from "pg";
 
 import {
@@ -165,6 +166,23 @@ function assertAccountInScope(auth: ApprovedWorkspaceAuthContext, media: string,
 }
 const MEDIA = /^[A-Z0-9_]{1,32}$/;
 
+/**
+ * v1.9.49 ①：按某个业务日取归属时，每个账户在候选行里选一行。规则只用 domain 那一份（`pickAccountLabelBasis`）。
+ * 不给 `asOf` 时 SQL 已经钉死最新一行，原样返回。
+ */
+function pickRowsAsOf(rows: Record<string, unknown>[], asOf: string | undefined): Record<string, unknown>[] {
+  if (asOf === undefined) return rows;
+  const byAccount = new Map<string, (Record<string, unknown> & { effectiveFrom: string })[]>();
+  for (const row of rows) {
+    const key = `${String(row.media)}:${String(row.account_id)}`;
+    byAccount.set(key, [...(byAccount.get(key) ?? []), { ...row, effectiveFrom: String(row.effective_from) }]);
+  }
+  return [...byAccount.values()].flatMap((history) => {
+    const picked = pickAccountLabelBasis(history, asOf);
+    return picked === null ? [] : [picked.row];
+  });
+}
+
 export class AccountNameParseRepository {
   constructor(private readonly pool: Pool) {}
 
@@ -251,7 +269,9 @@ export class AccountNameParseRepository {
        AND ($3::text IS NULL OR parse.media=$3)
        AND ($4::text IS NULL OR parse.account_id ILIKE $4 ESCAPE '\\' OR parse.account_name ILIKE $4 ESCAPE '\\')
        -- v1.9.9：成员看得到列表，但只看得到自己授权内的账户。
-       AND ${accountScopeClause("$5", "$6", "parse.media", "parse.account_id")}`;
+       AND ${accountScopeClause("$5", "$6", "parse.media", "parse.account_id")}
+       -- v1.9.49：归属清洗列表看的是当前态，一个账户只出最新那一行。
+       AND ${latestParseSql("parse")}`;
     const values = [approved.workspaceId, options.status ?? null, options.media ?? null, like,
       scope.kind, scope.allowed];
     const total = Number((await this.pool.query(
@@ -344,6 +364,7 @@ export class AccountNameParseRepository {
            WHERE parse.workspace_id=$1 AND parse.media=$2
              AND COALESCE(parse.override->>$3::text, parse.segments->$3::text->>'value') IS NOT NULL
              AND ${accountScopeClause("$4", "$5", "parse.media", "parse.account_id")}
+             AND ${latestParseSql("parse")}
            GROUP BY 1 ORDER BY n DESC, value ASC`,
           [approved.workspaceId, item, segment.key, scope.kind, scope.allowed],
         )).rows as { value: string; n: number }[];
@@ -370,6 +391,11 @@ export class AccountNameParseRepository {
       media: string; accountId: string; accountName: string; ruleVersion: number;
       status: ParseStatus; segments: Record<string, unknown>; taskIds: readonly string[];
       conflicts: readonly ParseConflict[];
+      /**
+       * v1.9.49 ①：这次解析从哪个业务日起生效。缺省 = 今天（「新规则版本不追溯」）；
+       * 只有显式给了才往回写历史。
+       */
+      effectiveFrom?: string | undefined;
     },
   ): Promise<AccountNameParseRecord> {
     const approved = approveAuth(auth);
@@ -377,12 +403,52 @@ export class AccountNameParseRepository {
     if (!MEDIA.test(input.media) || !parseStatusSchema.safeParse(input.status).success) {
       throw new R014RepositoryError("INVALID_INPUT");
     }
+    // 在这里校，而不是让它进 `$10::date` 再由数据库抛：那样一个写错的日期会变成 500，
+    // 调用方分不清是自己传错了还是服务坏了。`calendarDateSchema` 连 2 月 30 日这种也拒。
+    if (input.effectiveFrom !== undefined && !calendarDateSchema.safeParse(input.effectiveFrom).success) {
+      throw new R014RepositoryError("INVALID_INPUT");
+    }
     assertAccountInScope(approved, input.media, input.accountId);
     const result = await this.pool.query(
-      `INSERT INTO account_name_parses
-         (workspace_id, media, account_id, account_name, rule_version, status, segments, task_ids, conflicts, parsed_at)
-       VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8::text[],$9::jsonb,now())
-       ON CONFLICT (workspace_id, media, account_id) DO UPDATE SET
+      /*
+       * v1.9.49 ①（Q-044 ③）写入规则，一条语句做完，不给并发的两次重解析留「都没看到同日行、都去插」的缝：
+       * - 目标业务日 d = 显式 from，否则今天；
+       * - d 当天已有行 → 沿用原来的 ON CONFLICT 更新，守卫不变（人工改过的不动；确认过的只有改名才动）；
+       * - d 当天没有行 → 以「d 之前最新那一行」为前一行，写一行新的，**人工 override 继承过来**
+       *   （人工覆盖永远优先，重解析不得丢）；
+       * - 前一行是人工结论（overridden/confirmed）且名字没变 → 不写新行：这正是原来那道守卫的意思；
+       * - 与前一行完全一样 → 也不写：否则每重解析一次就多一行一模一样的历史。
+       */
+      `WITH day AS (SELECT COALESCE($10::date, ${BUSINESS_DATE_TODAY_SQL}) AS d),
+       prior AS (
+         SELECT p.* FROM account_name_parses AS p, day
+         WHERE p.workspace_id=$1 AND p.media=$2 AND p.account_id=$3 AND p.effective_from <= day.d
+         ORDER BY p.effective_from DESC LIMIT 1
+       ),
+       inherits AS (
+         SELECT prior.effective_from IS NOT NULL AND prior.override IS NOT NULL
+                  AND prior.override <> '{}'::jsonb AS has_override
+         FROM day LEFT JOIN prior ON true
+       )
+       INSERT INTO account_name_parses
+         (workspace_id, media, account_id, effective_from, account_name, rule_version, status,
+          segments, task_ids, conflicts, override, confirmed_by, confirmed_at, parsed_at)
+       SELECT $1, $2, $3, day.d, $4, $5,
+              CASE WHEN inherits.has_override THEN 'overridden' ELSE $6 END,
+              $7::jsonb, $8::text[], $9::jsonb,
+              CASE WHEN inherits.has_override THEN prior.override END,
+              CASE WHEN inherits.has_override THEN prior.confirmed_by END,
+              CASE WHEN inherits.has_override THEN prior.confirmed_at END,
+              now()
+       FROM day CROSS JOIN inherits LEFT JOIN prior ON true
+       WHERE NOT (prior.effective_from IS NOT NULL AND prior.effective_from < day.d
+                  AND prior.status IN ('overridden', 'confirmed') AND prior.account_name = $4)
+         AND NOT (prior.effective_from IS NOT NULL AND prior.effective_from < day.d
+                  AND prior.account_name = $4 AND prior.rule_version = $5 AND prior.status = $6
+                  AND prior.segments = $7::jsonb
+                  AND prior.task_ids IS NOT DISTINCT FROM $8::text[]
+                  AND prior.conflicts IS NOT DISTINCT FROM $9::jsonb)
+       ON CONFLICT (workspace_id, media, account_id, effective_from) DO UPDATE SET
          account_name = EXCLUDED.account_name,
          rule_version = EXCLUDED.rule_version,
          status = EXCLUDED.status,
@@ -396,13 +462,17 @@ export class AccountNameParseRepository {
        RETURNING ${PARSE_COLUMNS}`,
       [approved.workspaceId, input.media, input.accountId, input.accountName, input.ruleVersion,
         input.status, JSON.stringify(input.segments), [...input.taskIds],
-        input.conflicts.length === 0 ? null : JSON.stringify(input.conflicts)],
+        input.conflicts.length === 0 ? null : JSON.stringify(input.conflicts),
+        input.effectiveFrom ?? null],
     );
-    // 被 WHERE 挡住 = 这行有人工结论，按约定原样返回它，不报错也不覆盖。
+    // 没写 = 那一天生效的是一条人工结论，或与前一行完全一样：按约定原样返回**那一天生效的行**，不报错也不覆盖。
     if (result.rows.length === 0) {
       const existing = await this.pool.query(
-        `SELECT ${PARSE_COLUMNS} FROM account_name_parses WHERE workspace_id=$1 AND media=$2 AND account_id=$3`,
-        [approved.workspaceId, input.media, input.accountId],
+        `SELECT ${PARSE_COLUMNS} FROM account_name_parses
+         WHERE workspace_id=$1 AND media=$2 AND account_id=$3
+           AND effective_from <= COALESCE($4::date, ${BUSINESS_DATE_TODAY_SQL})
+         ORDER BY effective_from DESC LIMIT 1`,
+        [approved.workspaceId, input.media, input.accountId, input.effectiveFrom ?? null],
       );
       if (existing.rows.length !== 1) throw new R014RepositoryError("INVALID_RESULT");
       return mapParse(existing.rows[0] as Record<string, unknown>, approved.workspaceId);
@@ -436,6 +506,8 @@ export class AccountNameParseRepository {
            confirmed_by = CASE WHEN $5::boolean OR $4::jsonb IS NOT NULL THEN $6::uuid ELSE confirmed_by END,
            confirmed_at = CASE WHEN $5::boolean OR $4::jsonb IS NOT NULL THEN now() ELSE confirmed_at END
          WHERE workspace_id=$1 AND media=$2 AND account_id=$3
+           -- v1.9.49：人工改段/确认作用于当前态（最新那一行）；之后的重解析会把 override 继承下去。
+           AND ${latestParseSql("account_name_parses")}
          RETURNING ${PARSE_COLUMNS}`,
         [approved.workspaceId, media, accountId,
           hasOverride ? JSON.stringify(override!.data) : null,
@@ -472,13 +544,15 @@ export class AccountNameParseRepository {
         `UPDATE account_name_parses SET status='confirmed', confirmed_by=$2, confirmed_at=now()
          WHERE workspace_id=$1 AND status='parsed'
            AND (media, account_id) IN (SELECT * FROM unnest($3::text[], $4::text[]))
+           AND ${latestParseSql("account_name_parses")}
          RETURNING media, account_id`,
         [approved.workspaceId, approved.userId, media, ids],
       );
       const skipped = await client.query(
         `SELECT media, account_id, status FROM account_name_parses
          WHERE workspace_id=$1 AND status <> 'confirmed'
-           AND (media, account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))`,
+           AND (media, account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))
+           AND ${latestParseSql("account_name_parses")}`,
         [approved.workspaceId, media, ids],
       );
       return {
@@ -508,6 +582,7 @@ export class AccountNameParseRepository {
          ON parse.workspace_id = account.workspace_id
         AND parse.media = account.media
         AND parse.account_id = account.account_id
+        AND ${latestParseSql("parse")}
        WHERE account.workspace_id=$1
          AND ($2::text IS NULL OR account.media=$2)
          AND ($3::text[] IS NULL OR account.account_id = ANY($3::text[]))
@@ -533,18 +608,26 @@ export class AccountNameParseRepository {
   async dimensionsFor(
     auth: ApprovedWorkspaceAuthContext,
     tuples: readonly { media: string; accountId: string }[],
+    /** v1.9.49 ①：不给 = 当前态（账户列表）；给了 = 那个业务日生效的归属（日报）。 */
+    options: { asOf?: string | undefined } = {},
   ): Promise<Map<string, AccountDimensionsDto>> {
     const approved = approveAuth(auth);
+    const { asOf } = options;
+    if (asOf !== undefined && !calendarDateSchema.safeParse(asOf).success) throw new R014RepositoryError("INVALID_INPUT");
     const result = new Map<string, AccountDimensionsDto>();
     if (tuples.length === 0) return result;
 
-    const rows = (await this.pool.query(
-      `SELECT parse.media, parse.account_id, parse.segments, parse.override, parse.rule_version
+    const rows = pickRowsAsOf((await this.pool.query(
+      `SELECT parse.media, parse.account_id, parse.effective_from::text AS effective_from,
+         parse.segments, parse.override, parse.rule_version
        FROM account_name_parses AS parse
        WHERE parse.workspace_id=$1
-         AND (parse.media, parse.account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))`,
-      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId)],
-    )).rows as Record<string, unknown>[];
+         AND (parse.media, parse.account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))
+         AND ${asOf === undefined ? latestParseSql("parse") : labelBasisCandidateSql("parse", "$4::date")}
+       ORDER BY parse.effective_from`,
+      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId),
+        ...(asOf === undefined ? [] : [asOf])],
+    )).rows as Record<string, unknown>[], asOf);
     if (rows.length === 0) return result;
 
     // 规范按 media 存，一次列表最多几个 media，按 media 缓存避免逐行查规范。
@@ -590,16 +673,24 @@ export class AccountNameParseRepository {
   async bizFor(
     auth: ApprovedWorkspaceAuthContext,
     tuples: readonly { media: string; accountId: string }[],
+    /** v1.9.49 ①：同 `dimensionsFor`。 */
+    options: { asOf?: string | undefined } = {},
   ): Promise<Map<string, string>> {
     const approved = approveAuth(auth);
+    const { asOf } = options;
+    if (asOf !== undefined && !calendarDateSchema.safeParse(asOf).success) throw new R014RepositoryError("INVALID_INPUT");
     const found = new Map<string, string>();
     if (tuples.length === 0) return found;
 
-    const rows = (await this.pool.query(
-      `SELECT media, account_id, segments, override FROM account_name_parses
-       WHERE workspace_id=$1 AND (media, account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))`,
-      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId)],
-    )).rows as Record<string, unknown>[];
+    const rows = pickRowsAsOf((await this.pool.query(
+      `SELECT parse.media, parse.account_id, parse.effective_from::text AS effective_from, parse.segments, parse.override
+       FROM account_name_parses AS parse
+       WHERE parse.workspace_id=$1 AND (parse.media, parse.account_id) IN (SELECT * FROM unnest($2::text[], $3::text[]))
+         AND ${asOf === undefined ? latestParseSql("parse") : labelBasisCandidateSql("parse", "$4::date")}
+       ORDER BY parse.effective_from`,
+      [approved.workspaceId, tuples.map((item) => item.media), tuples.map((item) => item.accountId),
+        ...(asOf === undefined ? [] : [asOf])],
+    )).rows as Record<string, unknown>[], asOf);
 
     const rules = new Map<string, NamingRule | null>();
     for (const row of rows) {
