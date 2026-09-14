@@ -1,0 +1,773 @@
+{
+ "ok": true,
+ "data": {
+  "mode": "platform",
+  "source": {
+   "queryId": "account.dimension",
+   "dimension": "segment:operator",
+   "rowSchemaVersion": "account.dimension/v3",
+   "status": "ready",
+   "rows": [
+    {
+     "source": null,
+     "sources": {},
+     "key": null,
+     "label": "未标注",
+     "metrics": {
+      "cost": {
+       "value": 27003.12,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 2305310,
+       "availability": "available"
+      },
+      "click": {
+       "value": 74283,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 5107,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 4571,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 21094.83,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": null,
+       "availability": "missing"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03222256442734383,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06875058896382752,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 5.9074863268431415,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.614926711879239,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.11726099321811412,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": null,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "assessment_missing",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 4571,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 4.614926711879239,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     },
+     "anomaly": false
+    },
+    {
+     "source": "nickname",
+     "sources": {
+      "nickname": 2
+     },
+     "key": "代投",
+     "label": "代投",
+     "metrics": {
+      "cost": {
+       "value": 66674.8,
+       "availability": "available"
+      },
+      "exposure": {
+       "value": 5645517,
+       "availability": "available"
+      },
+      "click": {
+       "value": 173687,
+       "availability": "available"
+      },
+      "conversion": {
+       "value": 11507,
+       "availability": "available"
+      },
+      "realConversion": {
+       "value": 10209,
+       "availability": "available"
+      },
+      "cashCost": {
+       "value": 52086.350000000006,
+       "availability": "available"
+      },
+      "costSpace": {
+       "value": 478781.65,
+       "availability": "available"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.03076547285217634,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.066251360205427,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 6.530982466451171,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 5.102003134489177,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.12714271721030457,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": {
+       "value": 52,
+       "effectiveDate": "2026-08-01"
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 10209,
+       "availability": "available"
+      },
+      "biCashCost": {
+       "value": 5.102003134489176,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": -478781.65,
+       "availability": "available"
+      }
+     },
+     "anomaly": false
+    },
+    {
+     "source": "nickname",
+     "sources": {
+      "nickname": 3
+     },
+     "key": "自投",
+     "label": "自投",
+     "metrics": {
+      "cost": {
+       "value": 125535.76999999999,
+       "availability": "partial"
+      },
+      "exposure": {
+       "value": 9677611,
+       "availability": "partial"
+      },
+      "click": {
+       "value": 326625,
+       "availability": "partial"
+      },
+      "conversion": {
+       "value": 22194,
+       "availability": "partial"
+      },
+      "realConversion": {
+       "value": 20087,
+       "availability": "partial"
+      },
+      "cashCost": {
+       "value": 98068.54,
+       "availability": "partial"
+      },
+      "costSpace": {
+       "value": 582479.46,
+       "availability": "partial"
+      },
+      "incentiveCost": {
+       "value": null,
+       "availability": "missing"
+      },
+      "wakeUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "potentialUv": {
+       "value": null,
+       "availability": "missing"
+      },
+      "ratios": {
+       "ctr": {
+        "value": 0.033750581625981865,
+        "state": "finite"
+       },
+       "cvr": {
+        "value": 0.06794948335246842,
+        "state": "finite"
+       },
+       "realCpa": {
+        "value": 6.249602728132623,
+        "state": "finite"
+       },
+       "cashCpa": {
+        "value": 4.882189475780355,
+        "state": "finite"
+       },
+       "gap": {
+        "value": 0.10489371235127187,
+        "state": "finite"
+       },
+       "potentialRate": {
+        "value": null,
+        "state": "undefined"
+       },
+       "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+       }
+      }
+     },
+     "assessment": {
+      "priceSource": "history",
+      "price": null,
+      "priceVersions": 3,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "partial_data",
+      "budgetUsageRate": {
+       "value": null,
+       "state": "undefined"
+      },
+      "biConv": {
+       "value": 20087,
+       "availability": "partial"
+      },
+      "biCashCost": {
+       "value": 4.882189475780354,
+       "state": "finite"
+      },
+      "overCost": {
+       "value": null,
+       "availability": "missing"
+      }
+     },
+     "anomaly": true
+    }
+   ],
+   "returnedRowCount": 3,
+   "wholeResultTotal": {
+    "value": null,
+    "availability": "partial",
+    "reason": "Canonical account-day coverage is incomplete"
+   },
+   "lineage": {
+    "workspaceKind": "personal",
+    "window": {
+     "from": "2026-09-01",
+     "to": "2026-09-11",
+     "preset": "custom"
+    },
+    "warnings": [
+     "BUDGET_SOURCE_NOT_READY",
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-01"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-02"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-03"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-04"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-05"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-06"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-07"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-08"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-09"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-10"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "businessDate": "2026-09-11"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-01"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-02"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-03"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-04"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-05"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-06"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-07"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-08"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-09"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-10"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "businessDate": "2026-09-11"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-01"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-02"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-03"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-04"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-05"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-06"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-07"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-08"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-09"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-10"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "businessDate": "2026-09-11"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-01"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-02"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-03"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-04"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-05"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-06"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-07"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-08"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-09"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-10"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-4",
+      "businessDate": "2026-09-11"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-01"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-02"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-03"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-04"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-05"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-06"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-07"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-08"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-09"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-10"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "businessDate": "2026-09-11"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-01"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-02"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-03"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-04"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-05"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-06"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-07"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-08"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-09"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-10"
+     },
+     {
+      "code": "LABEL_BASIS_EARLIEST_KNOWN",
+      "media": "KUAISHOU",
+      "accountId": "account-6",
+      "businessDate": "2026-09-11"
+     }
+    ],
+    "source": "canonical",
+    "datasetVersion": null,
+    "queryTemplateVersion": "account-dimension-window-v1",
+    "metricVersion": "account-dimension-v3",
+    "dataAsOf": "2026-09-11T15:10:03.407Z",
+    "timezone": null,
+    "dayCut": null,
+    "metadataAvailability": "partial",
+    "authority": {
+     "policyVersion": "2026-08-24",
+     "useCase": "cross_media_operations",
+     "role": "default_authoritative"
+    },
+    "objectIdentity": {
+     "objectType": "account",
+     "joinKeys": [
+      "workspace_id",
+      "media",
+      "account_id"
+     ]
+    },
+    "coverage": {
+     "complete": false,
+     "reason": "Canonical account-day coverage is incomplete",
+     "requestedObjects": 6,
+     "returnedObjects": 6
+    },
+    "truncated": false,
+    "partial": true
+   },
+   "warnings": [
+    "BUDGET_SOURCE_NOT_READY"
+   ]
+  }
+ }
+}

@@ -162,7 +162,12 @@ export const accountTrendRowSchema = z.object({
 }).strict()
 
 // v1.9.22 起后端还有三个按昵称解析的命名维度 optimizer/goal/placement（arch 热修 2026-09-11：不认会让大盘首屏按优化师分组 502）
-export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"])
+// v1.9.45 起维度与透视都可按昵称段分组（`segment:<段名>`），正则照抄 domain dimension-window-rows.ts。
+// arch 热修（2026-09-13）：不认这一形，大盘「自投 / 代理分布」（segment:operator）和段维度透视的真响应整条 502。
+export const dimensionTypeSchema = z.union([
+  z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range", "optimizer", "goal", "placement"]),
+  z.string().regex(/^segment:[A-Za-z0-9_]{1,64}$/),
+])
 const dimensionFields = { key: z.string().min(1).nullable(), label: z.string().nullable(),
   metrics: canonicalMetricSetSchema, assessment: accountSummaryRowSchema.shape.assessment, anomaly: z.boolean() }
 export const dimensionWindowRowSchema = z.union([
