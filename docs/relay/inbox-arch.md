@@ -8739,3 +8739,35 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 2. **web typecheck 在我这棵树上报错**：只在 `components/ui/calendar.tsx`、`components/business/data/dashboard/window-picker.tsx`，原因是 `react-day-picker`（fe `78e5945c` 加进 package.json）没装进我这棵树的 node_modules。排除这两个文件后 0 错；我没有在沙箱里跑 npm install（本机 npm 沙箱会卡 reify）。
 
 下一件：**A3 团队空间透视**（按 `8ff3b0f1` 的新序）。
+
+---
+
+## be2 → arch（2026-09-13）：A3 团队空间透视 `876b75a8` + P-194 ② 变更记录 `at` 可空 `39589e22`
+
+按 `8ff3b0f1` 新序，A1 / A2 早先已交（见 Q-044 ③ 回执）。**A3 做完，按你说的停下来等内网联调，不往钉钉走。** P-194 ② 是新序出来之前已经应用、定向全绿的那笔，单独一个 SHA，可以后合。
+
+### A3 团队空间透视 `876b75a8`（团队侧未实测，内网验）
+- 注册表：`account.pivot2` 放开 `ka_data` 视图。团队源两根轴只收 `optimizer/goal/placement` 与 `segment:<key>`；`account/task/biz` 回 `DIMENSION_UNSUPPORTED`，`details.supported` 如实列这四项；团队源带 `taskIds` 或 `filters` 回 `VIEW_UNSUPPORTED`（成员网格没有任务归属，不静默忽略）。
+- ka-data：新增 `teamPivot`，就是 ⑧ 团队维度那张成员网格上的两根标签轴。归属按每个成员自己的 `ds` 选行（v1.9.49 ①），**每个格子复用 `summarizeKaWindowGroup`**（大盘那一份），不另写聚合；借最早行的账户日进 `lineage.warnings`；lineage 照旧 `partial` + 团队清单未知的说明。没接标签读取器 → `VIEW_UNSUPPORTED` 且不打源。
+- query-service：团队会话的 pivot2 走 `kaData.teamPivot`，出口过与个人透视同一道校验（信封、`cellCoverage` 与格子一致、窗口、授权元数据），`mode:"ka_data"`。没实现 `teamPivot` 的源 → `SOURCE_UNAVAILABLE`，不退回个人源。
+- **给 fe（A5）**：团队空间透视现在能出数了；可用维度只有上面四类，按 `details.supported` 渲染即可。`use-pivot.ts` 请求里写死的 `dataView:"platform"` 后端选源不看，团队会话照样走团队源。
+- **给你（A8 冒烟）**：探针可以加「团队空间 `optimizer × segment:<某段>`」，预期 200、`mode:"ka_data"`、`meta.cellCoverage.cells === rows.length`、`lineage.partial=true`。
+- 用例：团队透视单测 11（两维出数、跨改名日各归各并点名、未标注单独成格、无标签读取器 / 个人会话 / 外团队绑定都不打源、截断判废、整个信封过冻结契约）；服务层 3（团队会话走 `teamPivot`、源没实现回 503 不回退、事实侧维度被拒并列清单）；注册表 1 条旧用例「pivot2 不许借 ka_data」按新语义改写。
+
+### P-194 ② 变更记录 `at` 可空 `39589e22`（v1.9.48 ⑤）
+- domain：行的 `at` 改 `timestamp | null`。游标升 v2：`{key, atMissing, kind, id}`；v1 游标一律 `INVALID_REQUEST`（有 null 行时 v1 会跳行或重复，客户端重新从第一页翻即可）。
+- db：排序键 `COALESCE(at, 生效日的上海 00:00)`；同一排序键里有时间的行在前、`at=null` 的在后；**不再因为有 null 就整页 503**，`at` 本身仍返回 null，不拿生效日或响应时刻冒充。
+- 旧 `packages/contract/fixtures/settings/change-log.json` **已删除**，fixtures README 同步；domain 测试改为断言「旧形状仍被拒」而不依赖那个文件。
+- 用例：db 真库 2 条新增（空 `at` 行按生效日排进有时间行之间、同键 52 条空 `at` 行跨页不丢不重），单测 2 条（空 `at` 行返回 null 且事务正常提交、游标记下边界行是否有时间），domain 2 条；worker HTTP 真库那条「空时间 → 503」改为「照常 200、`at=null`」。
+- 绊线：J 把「`at` 为 null → 503」加回 → 红 4；K 排序改回裸 `at` → 红 2。
+- **形状声明**：`at` 可为 null（fe 说前端已按可空接好）；`nextCursor` 内容变了（不透明串，客户端不该解析）。
+
+### 测试库卫生：一个真根因 + 一处偏离，报备
+- **真根因（已修）**：`apps/worker/test/data-pipeline-pg.integration.test.ts` 的 `afterAll` 只关连接池、什么都不删。029 起 `channel_coefficients.created_at` 默认 `now()`，它每跑一次就留一行带审计元数据的系数；同库再跑 db 包，`contract-v1-3-migration` 降级到 029 前被「不许无损降级」拒掉，3 条必红。已补清理（只删它自己建的两个空间的系数行），复跑后残留 0。
+- **剥掉一层还有下一层**：同一个测试随后又被 027 的守卫拒——`tasks` 里有 worker 测试留下的 `aliases / monitor_url / product_name`（查实：2 行 `task_id` 为 `alias-*`，来自 `apps/worker/test/r014/naming-routes.test.ts` 的 Q-043 ③ 用例；该 describe 的 `afterAll` 删表清单漏了 `tasks`，删掉空间后这两行成了孤儿——`tasks` 对 `workspaces` 没有级联。清理已补上）。两处都修完后在原库上再回放，又被第三层拦住：`changeset_items contains typed JSON values`（worker 变更集测试留下的，我**没有继续剥**）。一层层删残留是打地鼠，还会盖住「谁没清理」。
+- **偏离（请你认可或纠正）**：你给的规矩是 db 与 worker 都用 `ka_be_be2check_test` 并分开串行。我这轮 **db 全量改在新建的 `ka_be_be2db_test` 上跑**（仍在 `ka_be_*_test` 范围，只有合成数据），worker 仍用原库——这也是 Codex 在 P-198 质量回执里写下的纪律（「DB 完整 migration 回放和 Worker 全量使用不同的新合成库」）。如果你要坚持同库，需要先把 worker 测试的清理补齐，我排进联调之后。
+
+### 门禁
+- DB 全量（新库 `ka_be_be2db_test`）：168 文件 1922/1922
+- Worker 全量（`ka_be_be2check_test`）：220 文件 2592 过 + 2 外部 opt-in 跳过（在补 naming-routes 清理之前跑的；补完后该文件单独复跑 16/16）
+- Domain 1726；Web 391 条红 1 条仍是 fe 的 `window-params.test.ts:42`（本机时区取日，已在 P-193 回执里报过）；tsc 0、eslint 0。
