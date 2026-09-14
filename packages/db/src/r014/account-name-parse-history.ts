@@ -16,24 +16,29 @@
  * 迁移 031 是 .cjs、引不了这里，所以那边手抄了同一个式子——`account-name-parse-history.test.ts`
  * 有一条绊线逐字比对两处，并在 03:00 切日点上与 domain 的函数对拍。
  */
-export function businessDateSql(timestampExpr: string): string {
-  // 只接代码里写死的表达式（`now()`、`$1::timestamptz`），从不接请求参数。
+const TIMESTAMP_EXPRESSIONS: ReadonlySet<string> = new Set(["now()", "$1::timestamptz"]);
+
+export function businessDateSql(timestampExpr: "now()" | "$1::timestamptz"): string {
+  // 只接这两个写死的表达式，从不接请求参数；类型挡一道，运行时再挡一道（绕过类型的调用照样被拒）。
+  if (!TIMESTAMP_EXPRESSIONS.has(timestampExpr)) throw new Error("Invalid business date timestamp expression");
   return `(((${timestampExpr}) AT TIME ZONE 'UTC') + interval '5 hours')::date`;
 }
 
 export const BUSINESS_DATE_TODAY_SQL = `(${businessDateSql("now()")})`;
 
-const ALIAS = /^[a-z][a-z0-9_]*$/;
+/** 能拼进 SQL 的表别名只有这三个字面量（`sql-interpolation-guard` 登记过、并逐个验调用点）；不收调用方变量。 */
+export type ParseAlias = "parse" | "p" | "account_name_parses";
+const PARSE_ALIASES: ReadonlySet<string> = new Set<ParseAlias>(["parse", "p", "account_name_parses"]);
 
 /**
  * 「这一行是该账户最新的那一行」。用在 WHERE 或 LEFT JOIN 的 ON 里。
  *
- * 别名只收小写标识符：它会被原样拼进 SQL，与 `etlBatchReadableSql` 同一道闸。
+ * 别名只收 `ParseAlias` 的三个字面量：它会被原样拼进 SQL，定义处运行时再校验一次。
  * 内层别名叫 `latest_parse`，避开调用方常用的 `p`/`parse`/`a`，免得名字解析命中外层
  * ——那种命中不报错，只会让条件恒真（参见 `accountScopeClause` 那次越权）。
  */
-export function latestParseSql(alias: string): string {
-  if (!ALIAS.test(alias)) throw new Error("Invalid account name parse alias");
+export function latestParseSql(alias: ParseAlias): string {
+  if (!PARSE_ALIASES.has(alias)) throw new Error("Invalid account name parse alias");
   return `${alias}.effective_from = (
     SELECT max(latest_parse.effective_from) FROM account_name_parses AS latest_parse
     WHERE latest_parse.workspace_id = ${alias}.workspace_id
@@ -41,16 +46,16 @@ export function latestParseSql(alias: string): string {
       AND latest_parse.account_id = ${alias}.account_id)`;
 }
 
-const DATE_PARAM = /^\$\d+::date$/;
+const LABEL_BASIS_DATE_PARAMS: ReadonlySet<string> = new Set(["$4::date"]);
 
 /**
  * v1.9.49 ①：某个业务日**可能**用到的候选行——那天生效的一行，或（该日早于所有行时）最早一行。
  * 只收窄候选、不做选择：选哪一行只由 domain 的 `pickAccountLabelBasis` 决定，SQL 里不写第二份规则。
- * 日期只收 `$n::date` 形式的占位符，不收值。
+ * 日期只收 `$4::date` 这一个占位符，值一律走参数。
  */
-export function labelBasisCandidateSql(alias: string, dateParam: string): string {
-  if (!ALIAS.test(alias)) throw new Error("Invalid account name parse alias");
-  if (!DATE_PARAM.test(dateParam)) throw new Error("Invalid label basis date parameter");
+export function labelBasisCandidateSql(alias: ParseAlias, dateParam: "$4::date"): string {
+  if (!PARSE_ALIASES.has(alias)) throw new Error("Invalid account name parse alias");
+  if (!LABEL_BASIS_DATE_PARAMS.has(dateParam)) throw new Error("Invalid label basis date parameter");
   const same = `candidate.workspace_id = ${alias}.workspace_id AND candidate.media = ${alias}.media
       AND candidate.account_id = ${alias}.account_id`;
   return `${alias}.effective_from IN (

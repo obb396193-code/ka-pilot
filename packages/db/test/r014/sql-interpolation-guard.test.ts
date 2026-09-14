@@ -21,6 +21,11 @@ const ALLOWED: RegExp[] = [
   /^visible\.sql$/, /^mediaIndex$/,                       // 可见性子句与它的参数序号
   /^SELECT_COLUMNS\.replace\(/,                           // 去表别名，纯字符串变换
   /^hasBoundAt \? ", bound_at" : ""$/,                    // 列存在与否的二选一，两边都是字面量
+  // v1.9.49 ①（Q-044 ③）归属历史。别名只能是 `ParseAlias` 的三个字面量（定义处运行时也校验），
+  // 下面第二条用例逐个验调用点传的是字面量；日期只走 `$4::date` 占位符，值在参数数组里。
+  /^latestParseSql\("(parse|p|account_name_parses)"\)$/,
+  /^asOf === undefined \? latestParseSql\("parse"\) : labelBasisCandidateSql\("parse", "\$4::date"\)$/,
+  /^MAX_ROWS \+ 1$/,                                      // 归属历史仓储的行预算：模块常量加一，用来判「超了」
 ];
 
 /**
@@ -35,12 +40,23 @@ const HELPER_DEFINITION_SLOTS = new Set([
   "taskAlias", "dateParam", "tupleHit",
 ]);
 
+/**
+ * `account-name-parse-history.ts` 里 `latestParseSql` / `labelBasisCandidateSql` 的形参与内部片段：
+ * `alias` ∈ ParseAlias、`dateParam` ∈ {"$4::date"}，定义处运行时校验；`same` 只由 `alias` 拼成。
+ * 同样靠第二条用例验「调用点只传字面量」这个前提。
+ */
+const HISTORY_HELPER_SLOTS = new Set(["alias", "same", "dateParam"]);
+/** 不在 r014 目录、但同样拼归属 SQL 的三个证据仓储（v1.9.49 ① 纳入扫描）。 */
+const LABEL_EVIDENCE_FILES = [
+  "account-label-history-repository.ts", "account-dimension-evidence-repository.ts", "account-dimension-rule-repository.ts",
+];
+
 const SQL_TEMPLATE = /`([^`]*?(?:SELECT|INSERT|UPDATE|DELETE)[^`]*?)`/gs;
 
-function scan(directory: URL): { file: string; expression: string }[] {
+function scan(directory: URL, only?: readonly string[]): { file: string; expression: string }[] {
   const found: { file: string; expression: string }[] = [];
   for (const name of readdirSync(directory)) {
-    if (!name.endsWith(".ts")) continue;
+    if (!name.endsWith(".ts") || (only !== undefined && !only.includes(name))) continue;
     const source = readFileSync(new URL(name, directory), "utf8");
     for (const template of source.matchAll(SQL_TEMPLATE)) {
       for (const slot of template[1]!.matchAll(/\$\{([^}]+)\}/g)) {
@@ -56,11 +72,13 @@ describe("no request data is ever concatenated into R-014 SQL", () => {
     const slots = [
       ...scan(new URL("../../src/r014/", import.meta.url)),
       ...scan(new URL("../../../../apps/worker/src/r014/", import.meta.url)),
+      ...scan(new URL("../../src/", import.meta.url), LABEL_EVIDENCE_FILES),
     ];
     // 名单是白名单，不是黑名单：新写法默认不通过。
     const unreviewed = slots.filter((slot) =>
       !ALLOWED.some((pattern) => pattern.test(slot.expression))
-      && !(slot.file === "workspace-authority.ts" && HELPER_DEFINITION_SLOTS.has(slot.expression)));
+      && !(slot.file === "workspace-authority.ts" && HELPER_DEFINITION_SLOTS.has(slot.expression))
+      && !(slot.file === "account-name-parse-history.ts" && HISTORY_HELPER_SLOTS.has(slot.expression)));
     expect(unreviewed.map((slot) => `${slot.file}: \${${slot.expression}}`)).toEqual([]);
     // 顺带守住「确实扫到了东西」——正则写错会让这条测试空转变成永远绿。
     expect(slots.length).toBeGreaterThan(30);
@@ -68,12 +86,14 @@ describe("no request data is ever concatenated into R-014 SQL", () => {
 
   it("passes only string literals into the scope-clause helpers", () => {
     const callSites: string[] = [];
-    for (const directory of ["../../src/r014/", "../../../../apps/worker/src/r014/"]) {
+    for (const [directory, only] of [["../../src/r014/"], ["../../../../apps/worker/src/r014/"], ["../../src/", LABEL_EVIDENCE_FILES]] as const) {
       const base = new URL(directory, import.meta.url);
       for (const name of readdirSync(base)) {
-        if (!name.endsWith(".ts") || name === "workspace-authority.ts") continue;
+        // 两个 helper 的定义文件本身不算调用点（形参在那里是变量，前提由这条用例在调用点上验）。
+        if (!name.endsWith(".ts") || name === "workspace-authority.ts" || name === "account-name-parse-history.ts"
+          || (only !== undefined && !(only as readonly string[]).includes(name))) continue;
         const source = readFileSync(new URL(name, base), "utf8");
-        for (const call of source.matchAll(/(?:accountScopeClause|workItemScopeClause|taskGrantScopeClause|assessmentPriceEffectiveSql|assessmentPriceNotRevokedSql)\(([^)]*)\)/g)) {
+        for (const call of source.matchAll(/(?:accountScopeClause|workItemScopeClause|taskGrantScopeClause|assessmentPriceEffectiveSql|assessmentPriceNotRevokedSql|latestParseSql|labelBasisCandidateSql)\(([^)]*)\)/g)) {
           callSites.push(`${name}: ${call[1]!.trim()}`);
         }
       }

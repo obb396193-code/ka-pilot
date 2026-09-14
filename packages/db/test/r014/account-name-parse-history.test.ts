@@ -8,7 +8,7 @@ import { shanghaiTaskBusinessDate } from "@ka/domain";
 import { AccountDimensionEvidenceRepository } from "../../src/account-dimension-evidence-repository.js";
 import { AccountDimensionRuleRepository } from "../../src/account-dimension-rule-repository.js";
 import { runMigrations } from "../../src/migrate.js";
-import { businessDateSql } from "../../src/r014/account-name-parse-history.js";
+import { businessDateSql, latestParseSql } from "../../src/r014/account-name-parse-history.js";
 import { AccountNameParseRepository } from "../../src/r014/account-name-parse-repository.js";
 import { withSemanticReadSnapshot } from "../../src/semantic-read-snapshot.js";
 import { windowSize } from "../migration-window.js";
@@ -104,8 +104,8 @@ describe("v1.9.49 account name parse history (real PostgreSQL)", () => {
     }
     // 迁移 031 是 .cjs、引不了 TS 常量，只能手抄同一个式子——逐字钉住，免得两边各改各的。
     // 回填与列默认值两处都要对上：取 helper 里时刻表达式之后的那一截去比。
-    const probe = businessDateSql("__instant__");
-    const shared = probe.slice(probe.indexOf("__instant__") + "__instant__".length + 1);
+    const probe = businessDateSql("now()");
+    const shared = probe.slice(probe.indexOf("now()") + "now()".length + 1);
     const migration = readFileSync(new URL("../../migrations/031_account_name_parse_history.cjs", import.meta.url), "utf8");
     const up = migration.slice(0, migration.indexOf("exports.down"));
     expect(up.split(shared)).toHaveLength(3);
@@ -177,6 +177,11 @@ describe("v1.9.49 account name parse history (real PostgreSQL)", () => {
     const rules = await withSemanticReadSnapshot(pool, (connection) => new AccountDimensionRuleRepository(connection).load(scope));
     expect(evidence).toHaveLength(ACCOUNTS.length);
     expect(rules).toHaveLength(ACCOUNTS.length);
+  });
+
+  it("refuses expressions and aliases outside the reviewed literal sets, even when types are bypassed", () => {
+    expect(() => businessDateSql("clock_timestamp()" as never)).toThrow();
+    expect(() => latestParseSql("parse; DROP TABLE accounts" as never)).toThrow();
   });
 
   it("refuses an impossible business date before it reaches the database", async () => {

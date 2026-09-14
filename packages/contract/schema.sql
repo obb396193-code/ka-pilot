@@ -1160,11 +1160,7 @@ CREATE TABLE naming_rules (            -- 按渠道版本化的命名规范模�
 );
 CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与人工确认
   workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
-  -- v1.9.49 ①（迁移 031）：归属按业务日生效。原主键 (workspace_id, media, account_id) 与「留旧行做历史」
-  -- 自相矛盾——reparse 即覆盖。现在一个账户按 effective_from 多行；读窗口时逐业务日取
-  -- effective_from <= 该日的最新一行。业务日 = UTC 时刻 + 5 小时取日期（上海 03:00 切日）。
-  effective_from DATE NOT NULL DEFAULT (((now() AT TIME ZONE 'UTC') + interval '5 hours')::date),
-  account_name TEXT NOT NULL,          -- 解析时的原名（改名后重解析写新的一行，旧行留作历史）
+  account_name TEXT NOT NULL,          -- 解析时的原名（改名后重解析、留旧行做历史）
   rule_version INTEGER NOT NULL,
   status TEXT NOT NULL,                -- parsed|partial|failed|conflict|confirmed|overridden
   segments JSONB NOT NULL DEFAULT '{}'::jsonb,     -- 解析出的各段
@@ -1172,10 +1168,17 @@ CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与�
   conflicts JSONB,                     -- [{field, fromNickname, fromPlatform, source}]
   override JSONB,                      -- 人工改过的段；永远优先，重解析不覆盖
   parsed_at TIMESTAMPTZ DEFAULT now(), confirmed_by UUID, confirmed_at TIMESTAMPTZ,
-  PRIMARY KEY (workspace_id, media, account_id, effective_from),
+  PRIMARY KEY (workspace_id, media, account_id),
   FOREIGN KEY (workspace_id, media, account_id)
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
 );
+-- v1.9.49 ①（Q-044 ③，迁移 031）在上面这张 018 冻结原表上叠加。只作记录、不是可执行 DDL：
+-- 018 冻结包逐句比对的是「018 当时建的样子」，后续变化一律在这里用 ALTER 叠加说明。
+--   ALTER TABLE account_name_parses ADD COLUMN effective_from DATE NOT NULL
+--     DEFAULT (((now() AT TIME ZONE 'UTC') + interval '5 hours')::date)   -- 业务日 = UTC + 5h 取日期（上海 03:00 切日）
+--   既有行按 parsed_at 回填业务日；主键改为 (workspace_id, media, account_id, effective_from)
+--   语义：改名后重解析写新的一行、旧行留作历史；读窗口时逐业务日取 effective_from <= 该日的最新一行，
+--   早于所有行时用最早一行并在 lineage.warnings 发 LABEL_BASIS_EARLIEST_KNOWN
 
 -- ===== v1.9（2026-09-07 arch；be2 九条缺口裁决；并入 migration 018 = R-017） =====
 ALTER TABLE account_access_grants ADD COLUMN revoked_at TIMESTAMPTZ;   -- A7 交接：置位保留审计，不删行

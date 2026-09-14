@@ -101,6 +101,7 @@ describe("v1.9.49 daily report attribution as of the report date (real PostgreSQ
   it("rejects an impossible report date and a non-placeholder date expression", async () => {
     await expect(repository.dimensionsFor(lead, tuples, { asOf: "2026-02-30" })).rejects.toThrow(/invalid_input/);
     await expect(repository.bizFor(lead, tuples, { asOf: "2026-9-1" })).rejects.toThrow(/invalid_input/);
-    expect(() => labelBasisCandidateSql("parse", "'2026-09-01'")).toThrow();
+    expect(() => labelBasisCandidateSql("parse", "'2026-09-01'" as never)).toThrow();
+    expect(() => labelBasisCandidateSql("parse; --" as never, "$4::date")).toThrow();
   });
 });
