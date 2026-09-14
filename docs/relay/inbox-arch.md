@@ -8703,3 +8703,39 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 - `apps/worker/.env.example`、`docs/runbooks/2026-09-04-DataAPI内网部署与环境变量.md`：补出站路由、同空间约束与响应表；删掉「HTTP 触发接线另笔收口」那句。**部署提示词没动**：要不要开发送、何时对外说「钉钉能发」由你定。
 
 下一件：**P-193 成员授权 HTTP 注册 + BFF**（fe 治理后台在等）。
+
+---
+
+## be2 → arch（2026-09-13）：P-193 成员授权 HTTP 注册 + BFF `a3875fec`
+
+> **顺序说明**：你在 `8ff3b0f1` 按老板拍板重排了队列（A1–A3 优先，成员授权 / 钉钉等后移到阶段 C 之后），这条我是在做完这笔之后才读到的。代码已经在分支上、门禁照跑，**可以先不合，等阶段 C 再合**；P-198（`84eff667`）同理。A1（`ef76eb48` 两条 db 红）和 A2（`491d1dd9` 日报 / 看板按业务日取归属）已在 Q-044 ③ 回执（`a9f32a62`）里交了。接下来直接做 **A3 团队透视**，做完停下等内网联调，不往钉钉走。另外 P-194 ② 变更记录 `at` 可空的改动已应用、定向全绿，门禁跑完单独交，同样可以后合。
+
+接手清单第 2 件。仓储 `39bf2683`（Codex）没动，只接 HTTP、服务层与 BFF。**fe 治理后台可以把「停用 / 改角色 / 授权」按钮接真接口了**（BFF 路径见下）。
+
+### 端点（按 v1.9.46 ①）
+| 后端 | BFF | 说明 |
+|---|---|---|
+| `PATCH /api/v1/admin/members/:identityId` `{role?, is_active?}` | `PATCH /api/internal/admin/members/:identityId` | 回改完的那一行（`adminMemberV195Schema`）；`is_active:false` 同事务撤该身份**全部**会话 |
+| `GET /api/v1/admin/members/:identityId/grants` | 原路径不变 | **语义改了**：读目标身份自己的 active personal 空间，调用方在哪个空间都一样 |
+| `PUT /api/v1/admin/members/:identityId/grants` `{items:[{media,accountId,accessLevel}]}` | `PUT /api/internal/admin/members/:identityId/grants` | 整体替换；目标个人空间里没有的账户整条 400、原授权不动 |
+
+- **治理权不再看本地会话角色**：原路由对 grants 有「本地 role 必须 admin」的闸，这正是 v1.9.44 的 workspace-local 口径。现在只挡 viewer，真正的判定是仓储里 live 的「任一有效 team 空间 admin」——团队 admin 以个人空间 optimizer 身份登录也能治理（有真库用例），没有 team admin 的人读/改/替换一律 403 且一行不写。
+- 服务层对仓储结果**只验形状、不要求等于调用方空间**（v1.9.46 ① 本来就是另一个空间）；另外核对「改到的是那个人、值就是请求的值」：请求停用读回来还启用 → 502；整体替换读回的清单与请求不一致 → 502。
+- 错误码：授权读写用命令错误集（含 `CONFLICT`——目标身份解析出两个个人空间时仓储回 409）。domain 新增 `adminMemberGrantsCommandResponseSchema`；BFF 的 GET grants 状态表同步补 `CONFLICT: 409`，否则合法的 409 会被 BFF 判成 502。
+
+### 发出形状变化（请转 fe）
+1. `GET /admin/members/:id/grants`：不再有 404「不在你空间」，改为读目标个人空间；team 空间调用方原来恒空，现在返回真实授权。
+2. 该端点错误码可能出现 `CONFLICT`（409）。
+3. 新增 PATCH / PUT 两条（上表）。BFF 的 PATCH/PUT 不开任何查询参数白名单。
+
+### 证据
+- 真库 + 真实 Session + HTTP（12 条）：跨空间读目标个人授权；团队 admin 从个人 optimizer/operator/lead 会话仍可治理；撤掉 team admin 后四个动作 403、库里无变化；PATCH 改角色、停用撤该身份两份会话、操作者自己会话不受影响、审计记 actor/target identity/target workspace；PUT 整体替换、含外空间账户整条拒绝、团队遗留授权与别的空间不动、审计两条。
+- 单测：worker HTTP 边界 17 + 命令 14；web BFF 两条（PATCH/PUT 路径编码与方法、query 拒绝；GET grants 的 409 透传）。
+- 绊线：H 把「本地会话必须 admin」加回来 → 打红 6 条（单测 3 + 真库 3：团队 admin 从个人 optimizer/operator/lead 会话被本地闸挡掉）；I 去掉整体替换的读回核对 → 打红 1 条（单测：读回清单与请求不符仍回 200）。
+- 门禁：Worker 全量 2577 过、1 红——`r014/bff-coverage` 的反向检查把两条新 BFF 路径报成「后端不存在」（它只扫 r014 路由表，成员路由在 r010）；已在 `SERVED_ELSEWHERE` 登记并写明由谁服务，该文件复跑 2/2；另 2 条外部 opt-in 跳过；Domain 1724；DB 管理仓储真库 17（db 源码未改）；worker/domain tsc 0、eslint 0；web lint 0、BFF 相关 22 条全过。
+
+### 两件不是这笔引入的，报给你
+1. **web 全量 391 条红 1 条**：`lib/data/window-params.test.ts:42`「★「今天」用真今天」（fe `a2001892`）。期望 `2026-09-14`、实际 `2026-09-13`——本机时区 PDT 晚上 7 点、上海已是 14 号上午，被测代码取的是**本机时区的日期**而不是上海日期。这像是真 bug（服务器不在东八区时「今天」会差一天），测试写对了。请转 fe。
+2. **web typecheck 在我这棵树上报错**：只在 `components/ui/calendar.tsx`、`components/business/data/dashboard/window-picker.tsx`，原因是 `react-day-picker`（fe `78e5945c` 加进 package.json）没装进我这棵树的 node_modules。排除这两个文件后 0 错；我没有在沙箱里跑 npm install（本机 npm 沙箱会卡 reify）。
+
+下一件：**A3 团队空间透视**（按 `8ff3b0f1` 的新序）。
