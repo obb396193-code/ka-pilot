@@ -953,3 +953,11 @@ Codex 的出站接线（`13dea23a`，门禁中）会让日报里的去重记录�
   - **按日补拉** = 对该日的拉数记录发重跑（v1.9.31 裁的就是这个，不新增端点）：选业务日 → 用 `useEtlRuns` 列表找该日 run → `rerunEtlRun(runId)`；成功是 202「已排队重跑」，409 时指出正在跑的那个 job（这些你在 F8-15 ⑦ 都做过，`admin-page.tsx` 已经 import 了这两个函数）；该日没有 run 显「该日没有拉数记录」。后端 `apps/worker/src/r010/etl-run-rerun-route.ts`，BFF `app/api/internal/system/etl-runs/[runId]/rerun`。
   - **调策略** = `PUT /api/v1/settings/decision-policy`，入参是 `{policy:{...}}`（见 `apps/worker/src/r014/workspace-routes.ts:35` 的注释与 fixture `settings/decision-policy.json`），不是裸阈值对象；BFF `app/api/internal/settings/decision-policy/route.ts` 已在。成功后重拉，失败按错误码显。
 - 序：**29 处清单（只出文档）→ 治理页两处接线 → 第 2 件盯盘 completeHour → 第 3 件透视团队空间说明 → 第 4 件缺数码表**。
+
+### ★老板拍板：全力先跑通数据分析，再内网联调（arch 2026-09-13）
+执行序见 `docs/plans/2026-09-13-数据分析跑通与内网联调计划.md`。**你的队列重排**：
+1. **A4 盯盘**：渲染 `completeHour=false` 为「进行中 · 未定格」、不参与环比；显示 `HOURLY_DAY_TIMEZONE_UNKNOWN` / `CASH_COEFFICIENT_MISSING` / 小时覆盖不全三种告警。
+2. **A5 透视页团队空间**：be2 正在做团队空间透视（A3）。落地前团队空间显「团队空间透视即将开放」不发请求；落地后撤掉这句、直接可用。
+3. **A6 缺数码表**加 `LABEL_BASIS_EARLIEST_KNOWN`「归属按最早记录推定」。
+4. **29 处假成功清单**：只列**数据分析页与账户池、任务列表**这几处（优化师日常会点到的），其余页面后移；治理页「按日补拉」「调策略」接线也后移到阶段 C 之后。
+5. 我会重建联调前端、用真浏览器走数据分析九个 tab，发现的问题直接派你，优先级高于上面第 4 条。

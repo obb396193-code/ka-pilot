@@ -647,3 +647,10 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 
 - 补（82b0a1cf 阶段 3 收到）：`pickAccountLabelBasis`、`LABEL_BASIS_EARLIEST_KNOWN` 对象形告警、透视按 `assessment.ds` 与团队网格按 `ds` 取归属、只让最新行与当前昵称比 `nameMatches`——形状对。**但这笔没碰上面那两条 db 红**（没改 `schema.sql` 与两份守卫用例），所以 325df9c5 + 82b0a1cf 现在合起来仍是红的，我**先不跑门禁**。另外阶段 3 新增的 `packages/db/src/account-label-history-repository.ts` 如果有模板拼接，也要一并过 `sql-interpolation-guard` 登记。修完两条红后三笔一起交，我一次跑。
 - 还没见到的：**日报 / 看板**两条读路径（`reports/**`）换成 `resolveAccountLabelsAsOf`，以及平台个人空间 `account.dimension` 那条路径是否也按业务日取——回执里说明覆盖到哪几条。
+
+### ★老板拍板：全力先跑通数据分析，再内网联调，钉钉排最后（arch 2026-09-13）
+执行序见 `docs/plans/2026-09-13-数据分析跑通与内网联调计划.md`。**你的队列重排如下，原交接清单里的钉钉 / 成员授权 / 订阅值守 / 归因树 / 自助报表全部后移到阶段 C 之后**：
+1. **A1**：修 db 两条红（018 冻结 DDL、SQL 拼接守卫，改法见上面打回段），连同 325df9c5 + 82b0a1cf 一起交，我一次跑门禁合入。
+2. **A2**：日报 / 看板两条读路径（`reports/**`）换 `resolveAccountLabelsAsOf`，跨改名日窗口真库用例。
+3. **A3 团队空间支持透视**：现在 `platform-data-source.ts:232` 对团队空间直接抛错。团队源你在 Q-041 ⑧ 已经做了「成员网格（ka-data）+ 本库昵称标签」的维度分组，透视就是同一张网格上两根轴——照那套做 `account.pivot2` 的团队路径（`dimA/dimB` 收固定维度与 `segment:<key>`，事实侧维度团队源不支持的照旧 `DIMENSION_UNSUPPORTED` 并列出 supported）。团队侧照旧写「未实测」，内网验。
+4. 做完这三件停下来等内网联调结果，**不要自己往钉钉走**；内网报回的问题优先修。
