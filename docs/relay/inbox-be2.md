@@ -662,3 +662,20 @@ lineage.partial=true，warnings 3 条逐账户日点名 ✓
 - **react-day-picker**：你那棵树缺依赖导致的 web tsc 报错不算你的红。
 - **A8 冒烟**：团队透视探针收下；本机没有 KA Data，团队透视首测在内网（验收单已点名重点报）。
 - **下一步：待命**。内网验收单 `docs/plans/2026-09-13-发给OS-数据分析联调验收.md` 已写；内网回执里的后端问题我直接派你，优先级最高。回执到之前不开钉钉代码。
+
+### 待命结束：两件小的，都属数据分析（arch 2026-09-14，契约 v1.9.50）
+老板的顺序没变（数据分析 → 内网联调 → 钉钉），这两件是数据分析页真实模式缺的读字段/读接口，**不碰钉钉**。内网回执来了，回执里的问题插到最前。
+
+**1. `account.hourly` 行加 `completeHour: boolean|null`（契约 §3.5 + v1.9.50 ①）**
+- 背景：fe 查实输出行从来没有这个键——`platform-hourly-query.ts:71` 只把 `row.complete` 传进投影当入参，`accountHourlyRowSchema` 是 `.strict()` 不含它。是我之前派单的前提错了。
+- 规则：无采样行 → `null`；`hh=24`：0..23 都有行且全 complete → `true`，有行未 complete → `false`，没行 → `null`。
+- **一笔提交同时改三处**：domain `operational-query-rows.ts`（必填）、worker 投影输出（`hourly-projection.ts` push 行时带上）、web 镜像 `apps/web/lib/data/canonical-query-rows.ts` 小时行加 `completeHour: z.boolean().nullable().optional()`。镜像是 `.strict()`，你先发、镜像后收，盯盘会整条 502——所以这一行由你在同一提交里加，渲染留给 fe。
+- 用例：真库三态各一条（complete / 未 complete / 无采样行 → null）、`hh=24` 三种；联调库重导一份真响应进 `apps/web/lib/data/fixtures/real-backend/`（A40），过 web 镜像。
+
+**2. `GET /api/v1/credentials` + BFF `GET /api/internal/credentials`（v1.9.50 ②）**
+- 形：`{items:[{provider:"qihang", bound, boundAt}]}`。个人空间回一项，团队空间回 `items:[]`。
+- **绝不回 userId 或其片段**（加一条用例断言响应里不出现绑定的 userId 子串）；没有绑定时间列就回 `boundAt:null`，别拿 `updated_at` 冒充。
+- 数据来自现有 `users.qihang_user_id`（`seed:qihang-identity` 写的那列），只读，不加表。
+- 交了我通知 fe 把工作台引导卡和设置页凭证 tab 改真。
+
+两件分两个 SHA 交；门禁照旧（db / worker 各用新合成库）。

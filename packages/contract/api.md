@@ -758,7 +758,8 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 冲突：目标用户非 active 或非同空间 → 403；账户有 running 变更集 → 409 `TRANSFER_BLOCKED_BY_CHANGESET`。
 
 ### 3.5 小时盯盘 `POST /api/v1/query {queryId:"account.hourly", params:{date, media, accountIds?, hhFrom?, hhTo?}}`
-- 行 `(media, accountId, hh)`：`{cumulative:{cost:MV, cashCost:MV, conversion:MV, realConversion:MV}, delta:{同上四项}, ratios:{cashCpa:RV, realCpa:RV}, velocity:{costPerHour:MV}, projectedDayCost:MV, budgetUsage:RV, lastSyncAt}`；hh 0..23，24=全天。缺小时=missing 不补 0。
+- 行 `(media, accountId, hh)`：`{cumulative:{cost:MV, cashCost:MV, conversion:MV, realConversion:MV}, delta:{同上四项}, ratios:{cashCpa:RV, realCpa:RV}, velocity:{costPerHour:MV}, projectedDayCost:MV, budgetUsage:RV, lastSyncAt, completeHour:boolean|null}`；hh 0..23，24=全天。缺小时=missing 不补 0。
+- `completeHour`（v1.9.50）：该小时是否已定格 = `account_metrics_hourly.complete`；该小时**没有采样行 → null**（不是 false）。`hh=24` 行：0..23 都有行且全 complete → true；有行未 complete → false；一行都没有 → null。前端：`false` 行标「进行中 · 未定格」且不参与与上一小时比较；`null` 按缺数显示。
 - 盯盘名单：`GET/PUT /api/v1/me/watchlist` `{items:[{media,account_id}]}`（个人视图的一种，表 `user_watchlists`）。
 
 ### 3.6 Gap 对账 `POST /api/v1/query {queryId:"account.gap", params:{date_from,date_to,media,accountIds?,groupBy:"account"|"task"|"biz"}}`
@@ -1603,3 +1604,8 @@ v1.9.30 那条「驼峰」只说 `/data/query`，不是全局规则。前端两�
 - **#29** `DELETE /api/v1/credentials/:provider` → 解绑当前身份在该 provider 的凭证引用；**正在跑的 ETL 不中断**，排队中的该身份任务在下一次调度 tick 以既有 `QIHANG_IDENTITY_MISSING` 机制阻塞（不删 job）；响应 `{provider, unboundAt, affectedQueuedJobs}`。只能解绑本人的；team admin 代解需在审计记 actor/target。
 **③ 趋势「日｜小时」端口：选 fe 的 (b)**——本期大盘趋势**不加小时开关**。`account.hourly` 按账户，大盘级小时趋势需要跨账户聚合与覆盖语义（部分账户当小时未采到怎么算），小时采样今天才落地，口径没有实测依据；按账户看小时已由盯盘 tab 承担。大盘级 hourly 聚合记 P1，待内网采样跑满一周再定。
 **④ 工作台数据日**：`workbench-page.tsx:28` 仍 `DATA_DATE = "2026-09-05"`，工作台 KPI/趋势虽已接真接口，窗口仍以写死日期为终点。按数据分析页同一兜底链修（`lineage.dataAsOf → lineage.window.to → 今天 + 标注`）。
+
+## v1.9.50 追加（2026-09-14 arch；小时定格标记、凭证状态读接口、假成功批次裁决）
+**① `account.hourly` 行加 `completeHour: boolean|null`**（§3.5 已改）。来源 `account_metrics_hourly.complete`；该小时无采样行 → `null`（不是 `false`）；`hh=24`：0..23 都有行且全 complete → `true`，有行未 complete → `false`，一行都没有 → `null`。domain `accountHourlyRowSchema` 必填；web 镜像同一提交里加（镜像是 `.strict()`，后端先发会让盯盘整条 502）。前端：`false` 标「进行中 · 未定格」、不参与与上一小时比较；`null` 按缺数。**更正**：v1.9.27 起派给前端的「渲染 completeHour」前提有误——此前它只是 `hourly-projection` 的入参，从未进输出行（fe 2026-09-14 查实）。
+**② `GET /api/v1/credentials`**（凭证状态读；BFF `GET /api/internal/credentials`）→ `{items:[{provider:"qihang", bound:boolean, boundAt:timestamp|null}]}`。按当前会话身份：个人空间回一项；团队空间回 `items:[]`（团队源不走个人凭证）。**绝不回 userId 本身或其任何片段**；没有记录绑定时间的列就回 `boundAt:null`，不编。401 未登录。现状全仓零处读路由，工作台「三步开工」与设置页凭证 tab 都在读样例——落地后两处一起改真。
+**③ 假成功清单（fe `docs/plans/2026-09-13-假成功清单.md`，34 条）裁决**：批次 A（后端与 BFF 已在）剩 9 条交 fe 整批接；批次 B（缺端点）11 条内网联调后排 be2，届时逐条补契约；批次 C（产品未定）11 条一律换诚实占位（置灰 + 写明卡在哪），决策交老板。新增一类「假现状说明」（如「接口接入后生效（当前为示例）」而路由已在）：fe 全仓核对，路由在则接线或改文案。
