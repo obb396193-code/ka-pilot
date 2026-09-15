@@ -24,6 +24,12 @@ export type OperationalState<T> = {
    * 真实模式下等于把假的「数据截至 / 来源」贴在真数字旁边——比不显更糟（F8-25）。
    */
   lineage: Record<string, unknown> | null
+  /**
+   * 这次响应的 `source.warnings[]`（字符串码）。**也必须跟着响应走**：
+   * 盯盘原来把**样例**里的三个告警贴在真数字旁边——真实模式下那是三句假话。
+   * 码 → 人话在 `warning-codes.ts`。
+   */
+  warnings: string[]
   loading: boolean
   error: { message: string; requestId: string | null } | null
   /** 后端明说这个查询当前不可用时的原因（不是报错，是「还没到」） */
@@ -42,6 +48,7 @@ function useOperationalQuery<T>(
   const [error, setError] = useState<{ message: string; requestId: string | null } | null>(null)
   const [unavailable, setUnavailable] = useState<string | null>(null)
   const [lineage, setLineage] = useState<Record<string, unknown> | null>(null)
+  const [warnings, setWarnings] = useState<string[]>([])
   const [nonce, setNonce] = useState(0)
   const reload = useCallback(() => setNonce((value) => value + 1), [])
 
@@ -52,6 +59,7 @@ function useOperationalQuery<T>(
     setLoading(true)
     setError(null)
     setUnavailable(null)
+    setWarnings([])
     runtimeDataClient("operational").client
       .query({ queryId, params, dataView: "platform" })
       .then((response) => {
@@ -62,6 +70,9 @@ function useOperationalQuery<T>(
         if (source.status === "unavailable") { setUnavailable(source.error?.message ?? "这个查询暂时没有数据"); setRows([]); return }
         setRows(source.rows as unknown as T[])
         setLineage((source.lineage ?? null) as Record<string, unknown> | null)
+        // 只收字符串码：对象形的点名告警在 `lineage.warnings[]`，由 MissingDataNotice 管
+        const codes = (source as { warnings?: unknown }).warnings
+        setWarnings(Array.isArray(codes) ? codes.filter((code): code is string => typeof code === "string") : [])
       })
       .catch((cause: unknown) => { if (active) setError({ message: cause instanceof Error ? cause.message : "取数失败", requestId: null }) })
       .finally(() => { if (active) setLoading(false) })
@@ -69,7 +80,7 @@ function useOperationalQuery<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, nonce])
 
-  return { rows, lineage, loading, error, unavailable, reload }
+  return { rows, lineage, warnings, loading, error, unavailable, reload }
 }
 
 export function useHourly<T>(query: HourlyQuery | null, workspaceId?: string): OperationalState<T> {

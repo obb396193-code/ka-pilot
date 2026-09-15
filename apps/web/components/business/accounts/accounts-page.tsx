@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAccounts, useAccountPipeline, accountsIsMock } from "@/lib/data/use-accounts"
 import { accountsFixture, infraFixture, lifecycleLabel, pipelineFixture, poolStatusMap, type AccountItem, type LifecycleStage } from "@/lib/fixtures/accounts"
 import { isOk } from "@/lib/fixtures/contract"
+import { commitWatchlist, useWatchlist } from "@/lib/data/use-watchlist"
 import { cn } from "@/lib/utils"
 import { AccountDialogs, type DialogKind } from "./account-dialogs"
 import { AccountsTable, rowId, type RowActions } from "./accounts-table"
@@ -122,12 +123,23 @@ export function AccountsPage() {
     return [...map.entries()]
   }, [groupBy, filtered])
 
+  // 盯盘名单：菜单里「加入盯盘」要真落库，还要知道当前在不在名单里（决定显加入还是移出）
+  const watchlist = useWatchlist()
   const rowActions = useMemo<RowActions>(() => ({
     onTransfer: (list) => setDialog({ kind: "transfer", items: list }),
     onPoolStatus: (item) => setDialog({ kind: "poolStatus", item }),
     onProduct: (item) => setDialog({ kind: "product", item }),
     onReplicate: (item) => setDialog({ kind: "replicate", item }),
-  }), [])
+    // 加入 / 移出盯盘：整份名单覆盖（契约就是这样）。原来这一项只弹「接入后保存」的假成功——
+    // 而盯盘页、工作台「我关注的」都指着这个入口，等于整条链路是断的
+    isWatched: (item) => watchlist.items.some((entry) => entry.type === "account" && entry.media === item.media && entry.accountId === item.accountId),
+    onWatch: (item) => {
+      const watched = watchlist.items.some((entry) => entry.type === "account" && entry.media === item.media && entry.accountId === item.accountId)
+      void commitWatchlist(watchlist, watched
+        ? watchlist.items.filter((entry) => !(entry.type === "account" && entry.media === item.media && entry.accountId === item.accountId))
+        : [...watchlist.items, { type: "account", media: item.media, accountId: item.accountId }])
+    },
+  }), [watchlist])
 
   const filters = (
     <>

@@ -75,7 +75,7 @@ function DimensionTable({ dimension }: { dimension: Dimension }) {
  * - **单维明细**：原来那套 8 维 tab + 母版表，看某一维的全量行、能勾选交给 Agent。
  * 不用前者替掉后者：透视看的是交叉关系，明细看的是逐行数据，两件事。
  */
-export function PivotTab({ window, workspaceId, colorKey }: { window: DataWindow; workspaceId?: string; colorKey?: string }) {
+export function PivotTab({ window, workspaceId, workspaceKind = "personal", colorKey }: { window: DataWindow; workspaceId?: string; workspaceKind?: "personal" | "team"; colorKey?: string }) {
   const [mode, setMode] = useState<"custom" | "single">("custom")
   // 默认落在能查出来的维度上（v1.9.41 六个之一）；「资源位」这个键查不出来
   const [dimension, setDimension] = useState<Dimension>("placement")
@@ -87,7 +87,7 @@ export function PivotTab({ window, workspaceId, colorKey }: { window: DataWindow
           <TabsTrigger value="single">单维明细</TabsTrigger>
         </TabsList>
       </Tabs>
-      {mode === "custom" ? <PivotBuilder window={window} workspaceId={workspaceId} colorKey={colorKey} /> : (
+      {mode === "custom" ? <PivotBuilder window={window} workspaceId={workspaceId} workspaceKind={workspaceKind} colorKey={colorKey} /> : (
         <>
           <Tabs value={dimension} onValueChange={(value) => setDimension(value as Dimension)}>
             <TabsList className="flex-wrap">

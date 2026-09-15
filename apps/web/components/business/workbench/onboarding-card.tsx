@@ -9,10 +9,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { isOk } from "@/lib/fixtures/contract"
 import { credentialsFixture } from "@/lib/fixtures/settings"
-import { watchlistFixture } from "@/lib/fixtures/settings"
+import { useWatchlist } from "@/lib/data/use-watchlist"
 
 // 新人开工引导：三步都完成（或手动关掉）就不再出现。关闭状态只记在本机浏览器。
 const DISMISS_KEY = "ka-pilot.onboarding.dismissed"
+const IS_MOCK = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
 
 export function OnboardingCard() {
   const [dismissed, setDismissed] = useState(true)
@@ -20,12 +21,19 @@ export function OnboardingCard() {
     try { setDismissed(window.localStorage.getItem(DISMISS_KEY) === "1") } catch { setDismissed(false) }
   }, [])
 
-  const credentials = isOk(credentialsFixture) ? credentialsFixture.data.items : []
-  const boundQihang = credentials.some((item) => item.provider === "qihang" && item.bound)
-  const watching = isOk(watchlistFixture) ? watchlistFixture.data.items.length > 0 : false
+  // 名单走真接口：读样例的话，真实模式下这一步永远显示「没做」，哪怕用户已经加过账户
+  const watchlist = useWatchlist()
+  const watching = watchlist.items.length > 0
+  /**
+   * 凭证这一步还**查不到真状态**：`/settings/credentials` 没有对应端点（BFF 里也没有）。
+   * 真实模式下拿样例判「已绑定」就是假打钩——照着它走的人会以为绑过了，
+   * 然后满页「−」不知道为什么。所以真实模式下这一步一律当「未知」：不打钩、照样给入口。
+   */
+  const credentials = IS_MOCK && isOk(credentialsFixture) ? credentialsFixture.data.items : []
+  const boundQihang = IS_MOCK && credentials.some((item) => item.provider === "qihang" && item.bound)
 
   const steps = [
-    { done: boundQihang, title: "绑定启航凭证", hint: "没绑就没有数据，页面只会显示 −", href: "/settings?tab=credentials", cta: "去绑定" },
+    { done: boundQihang, title: "绑定启航凭证", hint: IS_MOCK ? "没绑就没有数据，页面只会显示 −" : "没绑就没有数据，页面只会显示 −（绑没绑这里还查不到，去设置页看）", href: "/settings?tab=credentials", cta: "去绑定" },
     { done: watching, title: "挑几个账户加盯盘", hint: "盯盘的账户会出现在工作台和通知里", href: "/accounts", cta: "去账户池" },
     { done: false, title: "让 Agent 帮你看一遍昨天", hint: "右下角球，问「昨天哪些户超成本」", href: "/?agent=1", cta: "试一下" },
   ]

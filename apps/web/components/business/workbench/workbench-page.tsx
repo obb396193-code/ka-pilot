@@ -22,7 +22,7 @@ import { timelineFixture } from "@/lib/fixtures/accounts"
 import { useDashboardSummary, useDashboardTrend } from "@/lib/data/use-dashboard"
 import { useWorkItems, workItemsIsMock } from "@/lib/data/use-work-items"
 import { resolvePreset, type DataWindow } from "@/components/business/data/dashboard/window-picker"
-import { localToday, readDataDate } from "@/lib/data/data-date"
+import { readDataDate, shanghaiToday } from "@/lib/data/data-date"
 
 import { fieldText } from "@/lib/fixtures/automation"
 import { changesetStatusText, fmtTime, isOk, mv, rv, costStatusReasonShort, costStatusReasonText } from "@/lib/fixtures/contract"
@@ -73,7 +73,7 @@ export function WorkbenchPage() {
    */
   const workspaceId = session?.activeWorkspace.id
   const [dataWindow, setDataWindow] = useState<DataWindow>(() => {
-    const fallback = localToday()
+    const fallback = shanghaiToday()
     return resolvePreset("month_to_date", fallback, { preset: "month_to_date", from: fallback, to: fallback })
   })
   const summaryQuery = useDashboardSummary(dataWindow, workspaceId)

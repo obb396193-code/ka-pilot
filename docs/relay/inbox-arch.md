@@ -8771,3 +8771,149 @@ canonical 为主、原文悬停。★**`basis.source === "raw"` 的段不标「�
 - DB 全量（新库 `ka_be_be2db_test`）：168 文件 1922/1922
 - Worker 全量（`ka_be_be2check_test`）：220 文件 2592 过 + 2 外部 opt-in 跳过（在补 naming-routes 清理之前跑的；补完后该文件单独复跑 16/16）
 - Domain 1726；Web 391 条红 1 条仍是 fe 的 `window-params.test.ts:42`（本机时区取日，已在 P-193 回执里报过）；tsc 0、eslint 0。
+
+## fe → arch：队列 ②③ + 插队第 1 件已交；`completeHour` 不在响应里（2026-09-14）
+
+先答你那句「07:28 起没有新提交，是不是停了」：没停，但你说得对——那段时间我在答老板的三个问题
+（数据分析进度、钉钉板块、端口预览），队列上的活确实没往下推。现在两笔都落了。
+
+### `802ba491` — A5 透视改口 + 首轮重复请求
+
+- **A5**：`pivotDimensionSupported(value, workspaceKind)` 拆两套。团队源（ka-data）只放
+  `optimizer / goal / placement` + `segment:<段名>`，个人空间照旧六维 + 段；不传第二参 = 个人，
+  老调用点不用全改。`workspaceKind` 由 `session.activeWorkspace.kind` 经 DataPage → PivotTab 传入。
+  团队空间**直接发请求**，没有「即将开放」那句了。
+  - 顺带修了一个你没点名但同源的坑：默认行/列维写死 `biz × task`，团队空间一打开就是
+    `DIMENSION_UNSUPPORTED`。现在默认按空间选（团队 优化师 × 版位）。
+  - 页脚按你说的改了，现在是按空间说两套实际可用集合 + 「标待接源的是这个源分不出来的维度，
+    不是没做，是数据里没有那个字段」。
+  - 用例 `query-params.test.ts` 加了一条锁两套集合确实是两套。
+- **重复请求**：`useDashboardTrend` / `useDashboardDimension` 加 `enabled`，OverviewTab 收
+  `dataDateReady`，数据日未知时五个维度查询 + 趋势都不发。`localToday()` 整个删掉，
+  全站改 `shanghaiToday`。`data-date.test.ts` 有一条「今天按上海日取，不按浏览器本地时区」。
+
+### `984ba325` — 盯盘名单接线（你插队的第 1 件）+ 那四处 + 一处你没列的
+
+新增 `lib/data/use-watchlist.ts`：读 `GET /me/watchlist`，写复用已有的
+`saveWatchlist`/`clearWatchlist`（`use-me-actions.ts` 里早就有，我没再抄一遍 fetch）。
+整份覆盖，移到空走显式 `clear()`。
+
+改完的地方：
+
+| 处 | 原来 | 现在 |
+|---|---|---|
+| `hourly-tab.tsx` | 名单读样例；没选账户画 24 行「−」 | 真读真写；空名单显「先加一个账户」，不画假空表 |
+| `accounts-table/page` | 「加入盯盘」弹一句「接入后保存」 | 真 PUT；已在名单里的显「移出盯盘」 |
+| `starred-tab.tsx` | 名单/账户/任务三份全读样例 | 三份都改真接口；读中/读不到/空三态分开 |
+| `tasks-page.tsx` | 「我关注的」筛样例名单 | 改真名单 |
+| `settings ViewsTab` | 视图 + 名单都读样例 | `useSavedViews` + `useWatchlist` |
+| `onboarding-card.tsx` | 名单 + 凭证都读样例 | 名单改真接口；凭证见下 |
+
+**你没列但我一起改了的那处**：`accounts-table.tsx:67` 的「加入盯盘」是个纯假成功 toast。
+盯盘页和工作台「我关注的」两处空态都写着「去账户池点加入盯盘」——那个入口是假的，
+整条链路就是断的，名单接了也没人能往里加。
+
+**凭证那一步照实说了**：`/settings/credentials` **没有端点**（BFF 里也没有对应路由）。
+真实模式下原来拿 `credentialsFixture` 判「已绑定」，那是假打钩——照着它走的人会以为绑过了，
+然后满页「−」不知道为什么。现在真实模式下这一步一律不打钩，提示写「绑没绑这里还查不到，
+去设置页看」。要接的话给我端点。
+
+### A4 的两半：告警那半做了，`completeHour` 那半做不了
+
+**告警**：`use-operational.ts` 暴露了 `source.warnings`，盯盘现在显**这次响应**的告警。
+原来那行固定读 `hourlyFixture.data.source.warnings`——真实模式下等于把三句假话贴在真数字旁边。
+新增 `lib/data/warning-codes.ts` 一份码表（小时三码 + 缺数点名两码 + 你要的 A6
+`LABEL_BASIS_EARLIEST_KNOWN`「归属按最早记录推定」），`missing-data-notice.tsx` 改用同一份表——
+分两份表迟早出现「同一个码在盯盘写一句、在大盘写另一句」。认不出来的码原样显示，不吞。
+`HOURLY_COVERAGE_` 按前缀兜了一句，后端再加一个同族码页面不至于哑。**A6 顺手一起做了。**
+
+**`completeHour` 这半我没做，因为它不在响应里。** 按你定的规矩先去查了真东西：
+
+- 你给的坐标 `platform-hourly-query.ts:71` 是**投影的入参**（`observations[].completeHour = row.complete`），
+  不是输出行。
+- 输出行的 schema 是 `packages/domain/src/operational-query-rows.ts` 的 `accountHourlyRowSchema`，
+  `.strict()`，字段就 `media/accountId/hh/cumulative/delta/ratios/velocity/projectedDayCost/budgetUsage/lastSyncAt`
+  ——**没有 `completeHour`**。后端自己那句 `sourceQueryResultSchema.parse` 会把带这个键的行拒掉，
+  所以它不可能到浏览器。
+- 全仓 `grep completeHour` 只有投影文件两处 + 它的用例 + api.md 那句说明，没有第三处。
+- `completeHour` 在输出侧唯一的痕迹是 `hourly-projection.ts:100`：
+  `velocity.costPerHour = (hh < 24 && completeHour === true) ? delta.cost : missing`。
+
+**我没有拿 `velocity.costPerHour` 缺来倒推「未定格」**，因为倒推是错的：complete 但那小时
+cost 本身缺数时，`delta.cost` 也是 missing，velocity 照样缺——这种行会被标成「进行中」，
+而它其实已经定格了，只是没数。那就是又一次「按自己猜的形状写死」。
+
+**要落这件事得后端加字段**：`accountHourlyRowSchema` 加一个 `completeHour: boolean`
+（投影里现成就有，`rows.push` 时带上即可），前端这边我一天就能接完（行尾标「进行中 · 未定格」、
+不参与与上一小时比）。请派给 be2，或者你裁定不做、我把这条从 A4 里划掉。
+
+### 队列现状
+
+- ① 盯盘名单 + A4 告警半 — 交（`984ba325`）；A4 `completeHour` 半**卡在上面那条**
+- ② A5 + 页脚 — 交（`802ba491`）
+- ③ 首轮重复请求 — 交（`802ba491`）
+- ④ A6 缺数码表 — 交（`984ba325`，和码表合并做了）
+- ⑤ 29 处假成功清单 — **下一件，我现在开始**
+
+门禁（两笔都过）：tsc 干净 / eslint 0 error / `npm test` 404 pass / 真实模式与 mock 模式
+`next build` 均 exit 0 / `git status --porcelain` 无 `??` 源文件。
+
+另：内网 OS 那边我没发任何消息，等你确认两条 CI 绿 + `SOURCE_SHA = b2559d99` 之后再说。
+不过现在又多了这两笔，等你那两条确认完，产物大概还要再滚一次才轮得到它们。
+
+## fe → arch：队列 ⑤ 假成功清单交付（2026-09-14，`fb1b18af`）
+
+`docs/plans/2026-09-13-假成功清单.md`，按你要的格式
+`编号 | 页面 | 按钮 | 文件:行 | 对应端点 | 后端有没有 | 建议批次` 逐条列。
+**共 34 条**（数据分析 11 · 账户池 15 · 任务 8）——比你说的 29 多，是因为我把
+「现在 disabled 但没说清卡在哪」和「文案在撒谎但功能是真的」也算进来了，都标了批次。
+
+「后端有没有」那栏是查 `app/api/internal/**/route.ts` **实际导出的 HTTP 方法**
+和 `apps/worker/src/r014/*-routes.ts` 得出的，没看 api.md 的散文——文档写了不等于路由在。
+
+分三批：
+
+- **A（后端和 BFF 都已经在，纯接线）12 条**，其中 3 条我已修（见下）。**剩 9 条没动。**
+- **B（后端没写端点，要 be2 加）11 条**
+- **C（产品决策未定，不是接口问题）11 条**
+
+### 三条判断（详见文末）
+
+1. **剩的 9 条 A 是纯亏**：活早干完了只差前端调一下，而这 9 个按钮在用户眼里全是
+   「点了没用还骗我」。建议整批一次做完，一天内能完。
+2. **`tests-tab.tsx:39` 那一类最危险**：「停止测试」弹的是「接口接入后生效（当前为示例）」，
+   而 `accounts/[media]/[id]/tests/[testId]/stop/route.ts` 就在那儿、导出的是 POST。
+   **这不是假成功，是假的现状说明**——它比假成功更难发现，因为看起来像在照实说，
+   连排查的人都会被它带偏。建议接线时全仓搜一遍「接入后 / 接口接入后生效 / 待接入」，
+   逐句核对路由是不是真的不在。这条我怀疑不止这一处。
+3. **C 那 11 条别急着接**，卡的是决策不是接口。更该做的是把假成功换成诚实占位
+   （置灰 + `title` 写清楚卡在哪），而不是继续弹绿色的「已 XX」。
+
+### 顺手修了一条，说明理由免得看着像越界
+
+`tasks-page.tsx` 行菜单的「关注」（清单 T-01）接了 `PUT /me/watchlist`。
+它是**唯一**能产生 `type:"task"` 名单条目的入口；我上一笔（`984ba325`）把名单的读通路
+全接了——工作台「我关注的」里那块「相关任务」、设置页的名单 badge 都读它——
+没有写入口的话那块区域永远是空的，等于名单只接了一半。所以我把它算作插队第 1 件的收尾，
+不算第 ⑤ 件。**其余 9 条 A 一条没动，等你派。**
+
+门禁：tsc 干净 / eslint 0 error / `npm test` 404 pass / 真实模式 `next build` exit 0 /
+`git status --porcelain` 无 `??` 源文件。
+
+### 队列清空了，等你派
+
+| 件 | 状态 |
+|---|---|
+| ① 盯盘名单接线 + A4 告警半 | 交 `984ba325` |
+| ① A4 `completeHour` 半 | **卡住**：那个键不在响应里（上一封回执有完整论证），要 be2 给 `accountHourlyRowSchema` 加字段 |
+| ② A5 团队透视 + 页脚 | 交 `802ba491` |
+| ③ 首轮重复请求 | 交 `802ba491` |
+| ④ A6 缺数码表 | 交 `984ba325` |
+| ⑤ 29 处假成功清单 | 交 `fb1b18af`（34 条） |
+
+三笔代码 + 一份文档都在 `fe/f006`，**没 push**。下一步我建议是**批次 A 剩的 9 条**
+（纯接线、用户天天点到、一天能完），但听你的——你那边真浏览器走查如果发了新问题，
+按你说的优先级高于这个。
+
+另：内网 OS 那边我一个字没发，等你确认两条 CI 绿 + `SOURCE_SHA = b2559d99`。
+不过从 `b2559d99` 到现在我又落了 4 笔，产物大概得再滚一次才轮得到这些。

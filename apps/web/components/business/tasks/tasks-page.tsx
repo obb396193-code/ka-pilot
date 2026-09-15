@@ -2,9 +2,8 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { IconPlus, IconSparkles, IconStar } from "@tabler/icons-react"
+import { IconPlus, IconSparkles, IconStar, IconStarOff } from "@tabler/icons-react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { toast } from "sonner"
 
 import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, useLocalOrder, type GridFeatures } from "@/components/business/data-grid/data-grid"
@@ -21,7 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { costStatusDot, costStatusLabel, isOk, rv } from "@/lib/fixtures/contract"
 import { useTasks, tasksIsMock } from "@/lib/data/use-tasks"
 import { taskAccountsFixture, taskListStates, taskStageMap, taskStages, tasksFixture, type TaskItem } from "@/lib/fixtures/tasks"
-import { watchlistFixture } from "@/lib/fixtures/settings"
+import { commitWatchlist, useWatchlist } from "@/lib/data/use-watchlist"
 import { cn } from "@/lib/utils"
 import { ReadinessBar } from "./readiness"
 import { TaskManageTab } from "./task-manage-tab"
@@ -53,7 +52,7 @@ function PacingCell({ pacing }: { pacing: TaskItem["pacing"] }) {
 }
 
 const helper = createColumnHelper<GridFeatures, TaskItem>()
-const columns = helper.columns([
+const buildColumns = (onWatch: (task: TaskItem) => void, isWatched: (task: TaskItem) => boolean) => helper.columns([
   dragColumn<TaskItem>(),
   selectionColumn<TaskItem>(),
   helper.accessor("taskName", { header: "任务", enableHiding: false, meta: { label: "任务" }, cell: ({ row }) => <Button asChild variant="link" className="h-auto w-fit px-0 text-left font-medium text-foreground"><Link href={taskHref(row.original)}>{row.original.taskName}</Link></Button> }),
@@ -77,7 +76,9 @@ const columns = helper.columns([
       <DropdownMenuItem asChild><Link href={taskHref(task)}>查看详情</Link></DropdownMenuItem>
       <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成率、投放进度与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem onSelect={() => toast("已关注", { description: "关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
+      {/* 关注 = me/watchlist 的 task 型条目。原来只弹一句「接入后保存」的假成功——
+          而这是**唯一**能产生 task 型条目的入口，工作台「我关注的」里那块相关任务因此永远空着 */}
+      <DropdownMenuItem onSelect={() => onWatch(task)}>{isWatched(task) ? <><IconStarOff />取消关注</> : <><IconStar />关注</>}</DropdownMenuItem>
       <DropdownMenuItem disabled title="任务编辑接口开放后启用">编辑</DropdownMenuItem>
       <DropdownMenuItem disabled title="归档接口开放后启用">归档</DropdownMenuItem>
     </>
@@ -94,20 +95,36 @@ export function TasksPage() {
   // 服务端能筛的下推（status）；「我负责的 / 关注」后端不认，留前端并提示截断
   const tasksQuery = useTasks({ pageSize: 100, status: status === "all" ? undefined : status })
   const mockAll = useMemo(() => (isOk(tasksFixture) ? tasksFixture.data.items : []), [])
+  // 关注名单走真接口：原来读样例，真实模式下样例是空的 → 「我关注的」筛出来永远是 0 条
+  const watchlist = useWatchlist()
   const all = tasksIsMock ? mockAll : tasksQuery.items ?? []
   const legacy = legacyState === "v151" ? null : taskListStates[legacyState]
   // 关注 = me/watchlist（v1.7.4：项可为 account 或 task；无 type 视为 account）→ 账户型按任务挂载账户命中，任务型按 taskId 命中
   const starred = useMemo(() => {
-    const watch = isOk(watchlistFixture) ? (watchlistFixture.data.items as { type?: "account" | "task"; media?: string; accountId?: string; taskId?: string }[]) : []
-    const watchedAccounts = new Set(watch.filter((item) => (item.type ?? "account") === "account").map((item) => item.accountId))
-    const watchedTasks = new Set(watch.filter((item) => item.type === "task").map((item) => item.taskId))
-    const mounted = isOk(taskAccountsFixture) ? taskAccountsFixture.data.items : []
-    return new Set(all.filter((task) => watchedTasks.has(task.taskId) || (task.taskId === "fixture-task-ready" && mounted.some((account) => watchedAccounts.has(account.accountId)))).map((task) => task.taskId))
-  }, [all])
+    const watch = watchlist.items
+    const watchedAccounts = new Set(watch.flatMap((item) => (item.type === "account" ? [item.accountId] : [])))
+    const watchedTasks = new Set(watch.flatMap((item) => (item.type === "task" ? [item.taskId] : [])))
+    // 账户型关注要落到任务上，得知道账户挂在哪个任务下。mock 下用样例的挂载表；
+    // 真实模式下这层映射还没有专门的接口（`GET /tasks` 不带挂载账户），所以只按任务型条目算——
+    // 宁可少标几个星，也别像原来那样把 `fixture-task-ready` 这个样例 ID 写死在真实模式的判断里。
+    const mounted = tasksIsMock && isOk(taskAccountsFixture) ? taskAccountsFixture.data.items : []
+    return new Set(all.filter((task) => watchedTasks.has(task.taskId)
+      || (tasksIsMock && task.taskId === "fixture-task-ready" && mounted.some((account) => watchedAccounts.has(account.accountId)))
+    ).map((task) => task.taskId))
+  }, [all, watchlist.items])
   const items = useMemo(() => all.filter((task) => (status === "all" || task.status === status) && (scope !== "mine" || task.owner?.displayName === "示例优化师") && (scope !== "starred" || starred.has(task.taskId))), [all, status, scope, starred])
   const counts = useMemo(() => ({ all: all.length, active: all.filter((task) => task.status === "active").length, preparing: all.filter((task) => task.status === "preparing").length, ended: all.filter((task) => task.status === "ended").length }), [all])
   const [view, setView] = usePageTab<ViewTab>(viewTabs, "list")
   const { ordered, reorder } = useLocalOrder(items, (task) => task.taskId)
+  const columns = useMemo(() => buildColumns(
+    (task) => {
+      const watched = watchlist.items.some((item) => item.type === "task" && item.taskId === task.taskId)
+      void commitWatchlist(watchlist, watched
+        ? watchlist.items.filter((item) => !(item.type === "task" && item.taskId === task.taskId))
+        : [...watchlist.items, { type: "task", taskId: task.taskId }])
+    },
+    (task) => watchlist.items.some((item) => item.type === "task" && item.taskId === task.taskId),
+  ), [watchlist])
   const table = useGridTable({ data: legacy ? [] : ordered, columns, pageSize: 20, getRowId: (task) => task.taskId, initialColumnVisibility: { taskId: false, period: false, rta: false, placementPref: false } })
   const stageDistribution = taskStages.map((stage) => ({ stage, count: all.filter((task) => task.stage === stage.value).length })).filter((item) => item.count > 0)
   const health = (["green", "yellow", "red"] as const).map((status) => ({ status, count: all.filter((task) => task.costStatus === status).length }))

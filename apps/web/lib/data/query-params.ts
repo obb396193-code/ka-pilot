@@ -134,7 +134,24 @@ export function dimensionSupported(value: string): boolean {
  * 由后端按源判断：不支持时返 `DIMENSION_UNSUPPORTED` 且 `details.supported[]` 列出该源可用维度，
  * 我们把那份清单原样显给用户——**后端说的比前端猜的准**。
  */
-export function pivotDimensionSupported(value: string): boolean {
+/**
+ * pivot2 可用维度**按空间分两套**（be2 A3 `876b75a8` 合入后）：
+ * · 个人空间（启航源）：固定六维 + `segment:<key>`；
+ * · 团队空间（ka-data 源）：**只有 `optimizer / goal / placement` 和段**——
+ *   ka-data 没有账户/任务/业务这几层的可分组字段。
+ *
+ * 前端只做「不让人选一个必炸的」，真不真支持仍以后端为准：
+ * 不支持时返 `DIMENSION_UNSUPPORTED` + `details.supported[]`，我们把那份清单原样转给用户。
+ */
+export const PIVOT_TEAM_DIMENSIONS = ["optimizer", "goal", "placement"] as const
+
+export function pivotDimensionSupported(value: string, workspaceKind: "personal" | "team" = "personal"): boolean {
+  if (value.startsWith("segment:")) return true
+  if (workspaceKind === "team") return (PIVOT_TEAM_DIMENSIONS as readonly string[]).includes(value)
+  return pivotDimensionSupportedPersonal(value)
+}
+
+function pivotDimensionSupportedPersonal(value: string): boolean {
   if (value.startsWith("segment:")) return true
   return dimensionSupported(value)
 }
