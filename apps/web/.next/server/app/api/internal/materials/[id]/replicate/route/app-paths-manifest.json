@@ -1,0 +1,3 @@
+{
+  "/api/internal/materials/[id]/replicate/route": "app/api/internal/materials/[id]/replicate/route.js"
+}

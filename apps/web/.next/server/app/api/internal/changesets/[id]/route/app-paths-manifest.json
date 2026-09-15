@@ -1,0 +1,3 @@
+{
+  "/api/internal/changesets/[id]/route": "app/api/internal/changesets/[id]/route.js"
+}

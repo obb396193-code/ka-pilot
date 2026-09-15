@@ -1,0 +1,3 @@
+{
+  "/api/internal/tasks/[taskId]/timeline/route": "app/api/internal/tasks/[taskId]/timeline/route.js"
+}

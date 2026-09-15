@@ -1,0 +1,3 @@
+{
+  "/api/internal/kb/documents/[documentId]/route": "app/api/internal/kb/documents/[documentId]/route.js"
+}

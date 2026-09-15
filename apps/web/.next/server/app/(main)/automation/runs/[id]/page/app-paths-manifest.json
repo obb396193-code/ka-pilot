@@ -1,0 +1,3 @@
+{
+  "/(main)/automation/runs/[id]/page": "app/(main)/automation/runs/[id]/page.js"
+}

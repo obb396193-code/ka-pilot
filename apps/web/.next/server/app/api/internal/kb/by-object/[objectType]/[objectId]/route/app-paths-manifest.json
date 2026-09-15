@@ -1,0 +1,3 @@
+{
+  "/api/internal/kb/by-object/[objectType]/[objectId]/route": "app/api/internal/kb/by-object/[objectType]/[objectId]/route.js"
+}

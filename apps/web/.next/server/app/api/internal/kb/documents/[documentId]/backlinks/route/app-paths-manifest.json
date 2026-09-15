@@ -1,0 +1,3 @@
+{
+  "/api/internal/kb/documents/[documentId]/backlinks/route": "app/api/internal/kb/documents/[documentId]/backlinks/route.js"
+}

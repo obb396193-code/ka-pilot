@@ -1,0 +1,3 @@
+{
+  "/api/internal/rules/[ruleId]/autonomy/promote/route": "app/api/internal/rules/[ruleId]/autonomy/promote/route.js"
+}

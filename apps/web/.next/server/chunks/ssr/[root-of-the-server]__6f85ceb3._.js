@@ -1,0 +1,3 @@
+module.exports=[193695,(a,b,c)=>{b.exports=a.x("next/dist/shared/lib/no-fallback-error.external.js",()=>require("next/dist/shared/lib/no-fallback-error.external.js"))},23236,a=>{a.n(a.i(702698))},582828,a=>{a.n(a.i(768219))},406555,a=>{a.n(a.i(569533))},307915,a=>{a.n(a.i(91808))},253502,a=>{a.n(a.i(905380))},39739,(a,b,c)=>{},653230,a=>{"use strict";a.s(["default",()=>c]),a.i(8984);var b=a.i(906792);function c(){(0,b.redirect)("/data?tab=pivot")}}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__6f85ceb3._.js.map

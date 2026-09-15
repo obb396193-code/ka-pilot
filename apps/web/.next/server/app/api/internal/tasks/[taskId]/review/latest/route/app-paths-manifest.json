@@ -1,0 +1,3 @@
+{
+  "/api/internal/tasks/[taskId]/review/latest/route": "app/api/internal/tasks/[taskId]/review/latest/route.js"
+}
